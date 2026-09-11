@@ -9,7 +9,7 @@ The project will be developed as four independently runnable versions:
 - V2: V1 plus retrieval-augmented generation
 - V3: V2 plus constraint validation, targeted repair, and re-validation
 
-V0 is the currently implemented baseline. It uses a fixed two-stage LangGraph workflow:
+V0 is the implemented plain-LLM baseline. It uses a fixed two-stage LangGraph workflow:
 
 ```text
 User request -> requirement extraction -> LLM generation -> structured itinerary
@@ -18,6 +18,10 @@ User request -> requirement extraction -> LLM generation -> structured itinerary
 V0 uses only the configured model deployment's pretrained knowledge through a Microsoft
 Foundry OpenAI-compatible endpoint. It does not use external tools, web search, RAG,
 validation, repair, weather, routes, places APIs, or persistence.
+
+V1-A is also independently implemented. It preserves the V0 requirement and result contracts,
+then adds bounded Google Places, Weather Daily Forecast, and Route Matrix evidence before final
+generation. V1-A has no Web Search, reviews, RAG, validation/repair loop, or database.
 
 ## Requirements
 
@@ -38,12 +42,15 @@ API key. `LLM_MODEL` records the underlying model shared by all system versions,
 The two values may differ and neither is hard-coded in a graph or node. The Foundry endpoint
 uses the OpenAI-compatible `/openai/v1` API and does not require an API version setting.
 
+V1-A additionally requires `GOOGLE_MAPS_API_KEY`. `APP_TIME_ZONE` controls the explicit IANA
+calendar time zone used by production date sources and defaults to `Australia/Sydney`.
+
 ## Run V0
 
 Run the independently executable V0 entry point:
 
 ```shell
-uv run python scripts/run_v0.py --request "Plan three days in Kyoto from 2026-10-01."
+uv run python scripts/run_v0.py --request "Plan three days in Kyoto starting tomorrow."
 ```
 
 Provide a fixed reference date when the request contains relative dates:
@@ -54,9 +61,30 @@ uv run python scripts/run_v0.py \
   --reference-date 2026-09-11
 ```
 
+`--reference-date` is a trusted research and testing override. Normal Product requests use the
+backend's configured-zone runtime date and cannot supply an alternative reference date.
+
+Every planner version shares an inclusive ten-day planning window. For a reference date of
+`2026-09-11`, requested and generated itinerary dates must stay between `2026-09-11` and
+`2026-09-20`. A short trip outside that window is invalid even when its duration is less than
+ten days.
+
 The command prints a `PlanningResult` JSON object. If destination, start date, or end date is
 missing after requirement extraction, V0 exits without generating an itinerary and reports the
 unresolved fields.
+
+## Run V1-A
+
+Run the independent V1 entry point after enabling Places API (New), Weather API, and Routes API
+for the configured Google Maps Platform key:
+
+```shell
+uv run python scripts/run_v1.py --request "Plan two days in Sydney starting tomorrow."
+```
+
+The trusted `--reference-date` research override is also supported. Normal V1 CLI runs create a
+best-effort local trace under `logs/`; raw provider and LLM payloads remain disabled unless
+`V1_TRACE_PAYLOAD_MODE=raw` is explicitly configured. The Product API continues to use V0.
 
 ## Development checks
 
@@ -123,11 +151,17 @@ npm run build
 backend/
 ├── app/
 │   ├── api/
+│   ├── evidence/
+│   ├── integrations/
 │   ├── llm/
+│   ├── observability/
+│   ├── policies/
+│   ├── runtime/
 │   ├── schemas/
 │   ├── services/
 │   └── versions/
-│       └── v0/
+│       ├── v0/
+│       └── v1/
 └── tests/
 frontend/
 └── src/
@@ -137,9 +171,10 @@ frontend/
     ├── routes/
     └── shared/
 scripts/
-└── run_v0.py
+├── run_v0.py
+└── run_v1.py
 ```
 
-Future version-specific code and entry points will be added only when each version is
-implemented. Shared result schemas will remain limited to fields common to every version;
-evidence, retrieval, validation, and repair data will use version-specific contracts.
+Future version-specific code and entry points will be added only when each version is approved.
+Shared result schemas remain limited to fields common to every version; evidence, retrieval,
+validation, and repair data use version-specific contracts.
