@@ -1,0 +1,35 @@
+[project]
+name = "reliable-trip-plan-agent"
+version = "0.1.0"
+description = "A reliable LLM-based travel planning system."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.116,<1.0",
+    "pydantic>=2.11,<3.0",
+    "uvicorn>=0.35,<1.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28,<1.0",
+    "pytest>=8.4,<9.0",
+    "ruff>=0.12,<1.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["backend"]
