@@ -11,6 +11,7 @@ from backend.app.api.schemas.planning import (
     ProductPlanningRequest,
     ProductPlanningResponse,
 )
+from backend.app.policies.trip_dates import TripDatePolicyError
 from backend.app.services.planning import (
     PlanningFailedError,
     PlanningNeedsClarificationError,
@@ -35,8 +36,12 @@ async def create_planning_result(
             traveler_count=body.traveler_count,
             budget=body.budget,
             additional_preferences=body.additional_preferences,
-            reference_date=body.reference_date,
         )
+    except TripDatePolicyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail=exc.as_detail(),
+        ) from exc
     except PlanningNeedsClarificationError as exc:
         return NeedsClarificationResponse(requirements=exc.requirements)
     except PlanningFailedError as exc:

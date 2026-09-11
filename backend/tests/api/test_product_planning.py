@@ -1,6 +1,7 @@
 """HTTP contract tests for the version-agnostic product planner."""
 
 import asyncio
+from datetime import date
 
 from httpx import ASGITransport, AsyncClient
 
@@ -8,6 +9,7 @@ from backend.app.api.dependencies import get_planning_service
 from backend.app.main import app
 from backend.app.schemas.request import TravelRequirements
 from backend.app.services.planning import PlanningService
+from backend.tests.fakes import FixedDateProvider
 from backend.tests.versions.v0.fakes import (
     FakeStructuredLLMClient,
     make_itinerary,
@@ -37,15 +39,18 @@ def make_product_payload() -> dict[str, object]:
 
     return {
         "destination": "Kyoto",
-        "start_date": "2026-10-01",
-        "end_date": "2026-10-01",
+        "start_date": "2026-09-12",
+        "end_date": "2026-09-12",
         "traveler_count": 1,
-        "reference_date": "2026-09-11",
     }
 
 
+def make_planning_service(client: FakeStructuredLLMClient) -> PlanningService:
+    return PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
+
+
 def test_product_planning_returns_completed_contract_without_version() -> None:
-    service = PlanningService(
+    service = make_planning_service(
         FakeStructuredLLMClient([make_requirements(), make_itinerary()])
     )
 
@@ -62,7 +67,7 @@ def test_product_planning_returns_completed_contract_without_version() -> None:
 
 
 def test_product_planning_maps_missing_fields_to_clarification() -> None:
-    service = PlanningService(
+    service = make_planning_service(
         FakeStructuredLLMClient([TravelRequirements(destination="Kyoto")])
     )
 
@@ -77,7 +82,7 @@ def test_product_planning_maps_missing_fields_to_clarification() -> None:
 
 
 def test_product_planning_rejects_version_field() -> None:
-    service = PlanningService(FakeStructuredLLMClient([]))
+    service = make_planning_service(FakeStructuredLLMClient([]))
     payload = {**make_product_payload(), "version": "v0"}
 
     status_code, body = post_product_planning(service, payload)
@@ -87,7 +92,7 @@ def test_product_planning_rejects_version_field() -> None:
 
 
 def test_product_planning_rejects_raw_request_text() -> None:
-    service = PlanningService(FakeStructuredLLMClient([]))
+    service = make_planning_service(FakeStructuredLLMClient([]))
     payload = {**make_product_payload(), "request_text": "Plan one day in Kyoto."}
 
     status_code, body = post_product_planning(service, payload)
@@ -97,7 +102,7 @@ def test_product_planning_rejects_raw_request_text() -> None:
 
 
 def test_product_planning_requires_all_structured_fields() -> None:
-    service = PlanningService(FakeStructuredLLMClient([]))
+    service = make_planning_service(FakeStructuredLLMClient([]))
     payload = make_product_payload()
     payload.pop("start_date")
 
@@ -108,11 +113,11 @@ def test_product_planning_requires_all_structured_fields() -> None:
 
 
 def test_product_planning_rejects_invalid_date_range() -> None:
-    service = PlanningService(FakeStructuredLLMClient([]))
+    service = make_planning_service(FakeStructuredLLMClient([]))
     payload = {
         **make_product_payload(),
-        "start_date": "2026-10-03",
-        "end_date": "2026-10-01",
+        "start_date": "2026-09-14",
+        "end_date": "2026-09-12",
     }
 
     status_code, body = post_product_planning(service, payload)
@@ -122,7 +127,7 @@ def test_product_planning_rejects_invalid_date_range() -> None:
 
 
 def test_product_planning_rejects_non_positive_traveler_count() -> None:
-    service = PlanningService(FakeStructuredLLMClient([]))
+    service = make_planning_service(FakeStructuredLLMClient([]))
     payload = {**make_product_payload(), "traveler_count": 0}
 
     status_code, body = post_product_planning(service, payload)
@@ -132,7 +137,7 @@ def test_product_planning_rejects_non_positive_traveler_count() -> None:
 
 
 def test_product_planning_rejects_incomplete_budget() -> None:
-    service = PlanningService(FakeStructuredLLMClient([]))
+    service = make_planning_service(FakeStructuredLLMClient([]))
     payload = {**make_product_payload(), "budget": {"amount": "2000"}}
 
     status_code, body = post_product_planning(service, payload)
@@ -142,7 +147,7 @@ def test_product_planning_rejects_incomplete_budget() -> None:
 
 
 def test_product_planning_rejects_invalid_currency() -> None:
-    service = PlanningService(FakeStructuredLLMClient([]))
+    service = make_planning_service(FakeStructuredLLMClient([]))
     payload = {
         **make_product_payload(),
         "budget": {"amount": "2000", "currency": "aud"},
@@ -155,7 +160,7 @@ def test_product_planning_rejects_invalid_currency() -> None:
 
 
 def test_product_planning_rejects_negative_budget() -> None:
-    service = PlanningService(FakeStructuredLLMClient([]))
+    service = make_planning_service(FakeStructuredLLMClient([]))
     payload = {
         **make_product_payload(),
         "budget": {"amount": "-1", "currency": "AUD"},
@@ -168,7 +173,9 @@ def test_product_planning_rejects_negative_budget() -> None:
 
 
 def test_product_planning_hides_provider_failure_details() -> None:
-    service = PlanningService(FakeStructuredLLMClient([RuntimeError("provider secret")]))
+    service = make_planning_service(
+        FakeStructuredLLMClient([RuntimeError("provider secret")])
+    )
 
     status_code, body = post_product_planning(
         service,
@@ -183,3 +190,31 @@ def test_product_planning_hides_provider_failure_details() -> None:
         }
     }
     assert "provider secret" not in str(body)
+
+
+def test_product_planning_rejects_client_controlled_reference_date() -> None:
+    service = make_planning_service(FakeStructuredLLMClient([]))
+    payload = {**make_product_payload(), "reference_date": "2027-01-01"}
+
+    status_code, body = post_product_planning(service, payload)
+
+    assert status_code == 422
+    assert body["detail"][0]["type"] == "extra_forbidden"
+
+
+def test_product_planning_rejects_direct_api_date_window_bypass() -> None:
+    client = FakeStructuredLLMClient([])
+    service = make_planning_service(client)
+    payload = {
+        **make_product_payload(),
+        "start_date": "2027-01-01",
+        "end_date": "2027-01-03",
+    }
+
+    status_code, body = post_product_planning(service, payload)
+
+    assert status_code == 422
+    assert body["detail"]["code"] == "trip_date_after_window"
+    assert body["detail"]["allowed_start"] == "2026-09-11"
+    assert body["detail"]["allowed_end"] == "2026-09-20"
+    assert client.calls == []

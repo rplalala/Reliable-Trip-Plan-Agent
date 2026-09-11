@@ -6,6 +6,10 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
 from backend.app.llm.client import StructuredLLMClient
+from backend.app.policies.trip_dates import (
+    create_trip_date_window,
+    validate_requested_trip_dates,
+)
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.request import TravelRequirements
 from backend.app.versions.v0.prompts import (
@@ -74,6 +78,12 @@ def build_v0_graph(llm_client: StructuredLLMClient) -> CompiledStateGraph:
                 unresolved_fields=missing_fields,
                 requirements=requirements,
             )
+
+        validate_requested_trip_dates(
+            requirements.start_date,
+            requirements.end_date,
+            create_trip_date_window(state["reference_date"]),
+        )
 
         return {"requirements": requirements}
 

@@ -4,7 +4,7 @@ import { submitDeveloperPlanningRequest } from "../../features/developer-plannin
 import { DeveloperPlanningForm } from "../../features/developer-planning/components/DeveloperPlanningForm";
 import { RawJsonView } from "../../features/developer-planning/components/RawJsonView";
 import type { DeveloperVersion } from "../../features/developer-planning/types";
-import { getBrowserLocalDate } from "../../features/planning/api";
+import { getBrowserLocalDate } from "../../features/planning/datePolicy";
 import { HttpError } from "../../shared/api/http";
 
 const IMPLEMENTED_VERSION: DeveloperVersion = "v0";

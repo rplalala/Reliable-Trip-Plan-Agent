@@ -9,6 +9,14 @@ from datetime import date
 
 from backend.app.llm.azure_foundry import AzureFoundryStructuredLLMClient
 from backend.app.llm.client import StructuredLLMClient
+from backend.app.policies.trip_dates import (
+    DateProvider,
+    SystemDateProvider,
+    TripDatePolicyError,
+    create_trip_date_window,
+    validate_itinerary_dates,
+)
+from backend.app.runtime.settings import RuntimeSettings
 from backend.app.schemas.planning import PlanningResult, SystemVersion
 from backend.app.schemas.request import TravelRequest
 from backend.app.versions.v0.config import V0Settings
@@ -24,10 +32,17 @@ async def run_v0(
     llm_client: StructuredLLMClient,
     *,
     reference_date: date | None = None,
+    date_provider: DateProvider | None = None,
 ) -> PlanningResult:
     """Run V0 and return its stable shared result contract."""
 
-    effective_reference_date = reference_date or date.today()
+    if reference_date is not None and date_provider is not None:
+        raise ValueError("reference_date and date_provider cannot both be supplied")
+
+    effective_reference_date = (
+        reference_date or (date_provider or SystemDateProvider()).today()
+    )
+    date_window = create_trip_date_window(effective_reference_date)
     graph = build_v0_graph(llm_client)
     final_state = await graph.ainvoke(
         {
@@ -40,6 +55,8 @@ async def run_v0(
     itinerary = final_state.get("itinerary")
     if requirements is None or itinerary is None:
         raise RuntimeError("V0 graph completed without a planning result")
+
+    validate_itinerary_dates(requirements, itinerary, date_window)
 
     return PlanningResult(
         system_version=SystemVersion.V0,
@@ -96,12 +113,18 @@ def main(
     args = build_argument_parser().parse_args(argv)
 
     try:
-        client = llm_client or create_foundry_client(V0Settings())
+        settings = V0Settings() if llm_client is None else RuntimeSettings()
+        client = llm_client or create_foundry_client(settings)
         result = asyncio.run(
             run_v0(
                 TravelRequest(request_text=args.request),
                 client,
                 reference_date=args.reference_date,
+                date_provider=(
+                    None
+                    if args.reference_date is not None
+                    else SystemDateProvider(settings.app_time_zone)
+                ),
             )
         )
     except MissingRequiredFieldsError as exc:
@@ -110,6 +133,9 @@ def main(
             "unresolved_fields": list(exc.unresolved_fields),
         }
         print(json.dumps(error), file=sys.stderr)
+        return 2
+    except TripDatePolicyError as exc:
+        print(json.dumps(exc.as_detail()), file=sys.stderr)
         return 2
     except V0StageError as exc:
         cause = exc.__cause__

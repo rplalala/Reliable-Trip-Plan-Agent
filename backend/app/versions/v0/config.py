@@ -1,17 +1,12 @@
 """Environment-backed configuration for the V0 runtime."""
 
 from pydantic import AnyHttpUrl, Field, SecretStr
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from backend.app.runtime.settings import RuntimeSettings
 
 
-class V0Settings(BaseSettings):
+class V0Settings(RuntimeSettings):
     """Configuration required to run V0 through Microsoft Foundry."""
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore",
-    )
 
     llm_model: str = Field(
         min_length=1,
