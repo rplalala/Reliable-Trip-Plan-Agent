@@ -1,7 +1,9 @@
 """Tests for local best-effort Run Trace output and secret redaction."""
 
+import asyncio
 import json
 from datetime import UTC, date, datetime
+from pathlib import Path
 from uuid import UUID
 
 from backend.app.observability.run_trace import (
@@ -13,6 +15,15 @@ from backend.app.observability.run_trace import (
 )
 from backend.app.policies.trip_dates import create_trip_date_window
 from backend.app.schemas.request import TravelRequest
+from backend.app.versions.v1.runner import run_v1
+from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+from backend.tests.versions.v1.fakes import (
+    FakePlacesProvider,
+    FakeRoutesProvider,
+    FakeWeatherProvider,
+    make_itinerary,
+    make_requirements,
+)
 
 RUN_ID = UUID("00000000-0000-0000-0000-000000000001")
 
@@ -85,6 +96,39 @@ def test_metadata_mode_does_not_write_optional_payloads(tmp_path) -> None:
     assert list((tracer.run_directory / "tools").iterdir()) == []
 
 
+def test_completed_v1_run_finalizes_trace_metadata_and_normalized_evidence(tmp_path) -> None:
+    tracer = FileRunTracer(
+        _context(), root=tmp_path, payload_mode=TracePayloadMode.NORMALIZED
+    )
+
+    result = asyncio.run(
+        run_v1(
+            TravelRequest(request_text="Plan Sydney."),
+            FakeStructuredLLMClient([make_requirements(), make_itinerary()]),
+            FakePlacesProvider(),
+            FakeWeatherProvider(),
+            FakeRoutesProvider(),
+            reference_date=date(2026, 9, 11),
+            tracer=tracer,
+        )
+    )
+    run_metadata = json.loads(
+        (tracer.run_directory / "run.json").read_text(encoding="utf-8")
+    )
+
+    assert result.system_version.value == "v1"
+    assert run_metadata["run_id"] == str(RUN_ID)
+    assert run_metadata["system_stage"] == "v1-a"
+    assert run_metadata["status"] == "completed"
+    assert run_metadata["requested_trip_dates"] == {
+        "start": "2026-09-12",
+        "end": "2026-09-13",
+    }
+    assert run_metadata["tool_usage"]["place_search_calls"]["used"] == 4
+    assert run_metadata["final_outcome"]["system_version"] == "v1"
+    assert len(list((tracer.run_directory / "evidence").glob("*.json"))) == 3
+    assert not (tracer.run_directory / "error.json").exists()
+
 
 def test_disabled_or_failed_trace_creation_returns_null_tracer(tmp_path) -> None:
     disabled = create_run_tracer(
@@ -104,3 +148,28 @@ def test_disabled_or_failed_trace_creation_returns_null_tracer(tmp_path) -> None
 
     assert isinstance(disabled, NullRunTracer)
     assert isinstance(failed, NullRunTracer)
+
+
+def test_trace_write_failure_does_not_change_planning_semantics(tmp_path, monkeypatch) -> None:
+    tracer = FileRunTracer(
+        _context(), root=tmp_path, payload_mode=TracePayloadMode.METADATA
+    )
+
+    def fail_open(self, *args, **kwargs):
+        raise OSError("simulated trace failure")
+
+    monkeypatch.setattr(Path, "open", fail_open)
+
+    result = asyncio.run(
+        run_v1(
+            TravelRequest(request_text="Plan two days in Sydney."),
+            FakeStructuredLLMClient([make_requirements(), make_itinerary()]),
+            FakePlacesProvider(),
+            FakeWeatherProvider(),
+            FakeRoutesProvider(),
+            reference_date=date(2026, 9, 11),
+            tracer=tracer,
+        )
+    )
+
+    assert result.system_version.value == "v1"
