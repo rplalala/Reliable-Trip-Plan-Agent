@@ -9,8 +9,15 @@ The project will be developed as four independently runnable versions:
 - V2: V1 plus retrieval-augmented generation
 - V3: V2 plus constraint validation, targeted repair, and re-validation
 
-The repository is currently in Phase 0. It contains the backend foundation and shared data
-contracts only. No planning version has been implemented yet.
+V0 is the currently implemented baseline. It uses a fixed two-stage LangGraph workflow:
+
+```text
+User request -> requirement extraction -> LLM generation -> structured itinerary
+```
+
+V0 uses only the configured model deployment's pretrained knowledge through a Microsoft
+Foundry OpenAI-compatible endpoint. It does not use external tools, web search, RAG,
+validation, repair, weather, routes, places APIs, or persistence.
 
 ## Requirements
 
@@ -25,8 +32,31 @@ Install the project and development dependencies:
 uv sync
 ```
 
-Copy `.env.example` to `.env` when local environment values are needed. Phase 0 does not
-require provider credentials.
+Copy `.env.example` to `.env`, then provide the Microsoft Foundry endpoint, deployment, and
+API key. `LLM_MODEL` records the underlying model shared by all system versions, while
+`AZURE_OPENAI_DEPLOYMENT` identifies the deployment sent in the API request's `model` field.
+The two values may differ and neither is hard-coded in a graph or node. The Foundry endpoint
+uses the OpenAI-compatible `/openai/v1` API and does not require an API version setting.
+
+## Run V0
+
+Run the independently executable V0 entry point:
+
+```shell
+uv run python scripts/run_v0.py --request "Plan three days in Kyoto from 2026-10-01."
+```
+
+Provide a fixed reference date when the request contains relative dates:
+
+```shell
+uv run python scripts/run_v0.py \
+  --request "Plan three days in Kyoto starting next Monday." \
+  --reference-date 2026-09-11
+```
+
+The command prints a `PlanningResult` JSON object. If destination, start date, or end date is
+missing after requirement extraction, V0 exits without generating an itinerary and reports the
+unresolved fields.
 
 ## Development checks
 
@@ -55,9 +85,13 @@ The health endpoint is available at `GET /health`.
 ```text
 backend/
 ├── app/
-│   ├── main.py
-│   └── schemas/
+│   ├── llm/
+│   ├── schemas/
+│   └── versions/
+│       └── v0/
 └── tests/
+scripts/
+└── run_v0.py
 ```
 
 Future version-specific code and entry points will be added only when each version is
