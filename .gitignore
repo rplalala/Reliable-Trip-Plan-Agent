@@ -16,6 +16,8 @@ htmlcov/
 build/
 dist/
 *.egg-info/
+node_modules/
+coverage/
 
 # Editor and operating system files
 .idea/
