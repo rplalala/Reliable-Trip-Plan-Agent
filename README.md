@@ -80,16 +80,62 @@ uv run uvicorn backend.app.main:app --reload
 
 The health endpoint is available at `GET /health`.
 
+## Run the frontend
+
+Install the frontend dependencies:
+
+```shell
+cd frontend
+npm install
+```
+
+Start the Vite development server:
+
+```shell
+npm run dev
+```
+
+The frontend uses relative API URLs. During local development, Vite proxies `/api` and
+`/health` to the FastAPI server at `http://127.0.0.1:8000`.
+
+The product routes are `/` and `/plan`. Product planning calls `POST /api/planning` through a
+version-agnostic service boundary. The service currently uses the programmatic V0 planner and
+can later switch to V3 without exposing a research version to product clients. Product clients
+submit explicit destination, date, and traveler fields, plus optional budget and preference
+fields. The service deterministically builds the natural-language request consumed by V0.
+
+The developer workbench is available at `/dev/planner` and calls `POST /api/dev/planning` with
+an explicit implemented research version. It currently supports only V0 and intentionally
+shows raw planning and debug responses. This local development functionality must be protected
+or disabled before a public production deployment.
+
+Run the frontend checks:
+
+```shell
+npm run test
+npm run lint
+npm run build
+```
+
 ## Current structure
 
 ```text
 backend/
 ├── app/
+│   ├── api/
 │   ├── llm/
 │   ├── schemas/
+│   ├── services/
 │   └── versions/
 │       └── v0/
 └── tests/
+frontend/
+└── src/
+    ├── app/
+    ├── features/
+    ├── layouts/
+    ├── routes/
+    └── shared/
 scripts/
 └── run_v0.py
 ```
