@@ -126,6 +126,12 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert '"non_walkable_pairs": []' in generation_prompt
     assert "provider_observed" in generation_system_prompt
     assert "mirrored_reverse_estimate" in generation_system_prompt
+    assert "schedule the entire visit within them" in " ".join(
+        generation_system_prompt.split()
+    )
+    assert "Never reuse another pair's measurement" in " ".join(
+        generation_system_prompt.split()
+    )
     assert "forecastDays" not in generation_prompt
     assert "currentOpeningHours" not in generation_prompt
 
