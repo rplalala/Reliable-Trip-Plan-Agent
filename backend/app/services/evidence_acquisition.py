@@ -43,6 +43,7 @@ from backend.app.integrations.models import (
 from backend.app.integrations.protocols import PlacesProvider, RoutesProvider, WeatherProvider
 from backend.app.observability.run_trace import RunTracer, TracePayloadMode
 from backend.app.policies.transport import TransportModeDecision
+from backend.app.policies.trip_dates import TRIP_DATE_WINDOW_DAYS
 from backend.app.runtime.budget import ToolBudget, ToolBudgetKey
 from backend.app.runtime.cache import RequestCache
 from backend.app.schemas.request import TravelRequirements
@@ -323,7 +324,10 @@ class V1EvidenceAcquisitionService:
 
         if requirements.start_date is None or requirements.end_date is None:
             raise ValueError("Complete trip dates are required for Weather")
-        horizon_days = (requirements.end_date - reference_date).days + 1
+        # Weather starts from the provider's current destination-local forecast day,
+        # which can lag the application's fixed calendar date at day boundaries.
+        # Request the full allowed horizon once, then expose only requested dates.
+        horizon_days = TRIP_DATE_WINDOW_DAYS
         request = WeatherRequest(
             location=LatLng(
                 latitude=destination.latitude,

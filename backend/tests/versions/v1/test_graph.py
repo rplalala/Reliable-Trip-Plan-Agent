@@ -111,7 +111,7 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert len(places.search_requests) == 4
     assert len(places.details_requests) == 8
     assert len(weather.requests) == 1
-    assert weather.requests[0].horizon_days == 3
+    assert weather.requests[0].horizon_days == 10
     assert len(routes.requests) == 1
     assert len(routes.requests[0].origins) == 8
     assert routes.requests[0].travel_mode == "WALK"
