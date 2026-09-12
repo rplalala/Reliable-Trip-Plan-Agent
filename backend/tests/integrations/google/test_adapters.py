@@ -74,6 +74,7 @@ def test_places_candidate_and_details_field_masks_match_current_api_paths() -> N
                 "id": "poi-1",
                 "displayName": {"text": "Museum"},
                 "location": {"latitude": -33.8, "longitude": 151.2},
+                "timeZone": {"id": "Australia/Sydney", "version": "2026a"},
             },
         ]
     )
@@ -89,11 +90,11 @@ def test_places_candidate_and_details_field_masks_match_current_api_paths() -> N
                 field_mask=PLACES_CANDIDATE_FIELD_MASK,
             )
         )
-        await provider.get_place_details(
+        return await provider.get_place_details(
             PlaceDetailsRequest(place_id="poi-1", field_mask=PLACES_DETAILS_FIELD_MASK)
         )
 
-    asyncio.run(scenario())
+    details = asyncio.run(scenario())
 
     assert PLACES_CANDIDATE_FIELD_MASK == (
         "places.id,places.displayName,places.location,places.formattedAddress,"
@@ -101,6 +102,7 @@ def test_places_candidate_and_details_field_masks_match_current_api_paths() -> N
     )
     assert "places.displayName.text" not in PLACES_CANDIDATE_FIELD_MASK
     assert "reviews" not in PLACES_DETAILS_FIELD_MASK.casefold()
+    assert details.time_zone == "Australia/Sydney"
     assert transport.calls[0]["headers"]["X-Goog-FieldMask"] == PLACES_CANDIDATE_FIELD_MASK
     assert transport.calls[1]["headers"]["X-Goog-FieldMask"] == PLACES_DETAILS_FIELD_MASK
 

@@ -72,6 +72,14 @@ def _optional_string(value: object) -> str | None:
     return value if isinstance(value, str) and value.strip() else None
 
 
+def _time_zone_id(value: object) -> str | None:
+    """Extract the IANA ID from the Places API TimeZone object."""
+
+    if isinstance(value, Mapping):
+        return _optional_string(value.get("id"))
+    return _optional_string(value)
+
+
 class GooglePlacesProvider:
     """Map Google Places JSON into small provider DTOs."""
 
@@ -182,7 +190,7 @@ class GooglePlacesProvider:
             formatted_address=_optional_string(place.get("formattedAddress")),
             primary_type=_optional_string(place.get("primaryType")),
             business_status=_optional_string(place.get("businessStatus")),
-            time_zone=_optional_string(place.get("timeZone")),
+            time_zone=_time_zone_id(place.get("timeZone")),
             current_opening_hours=(
                 dict(place["currentOpeningHours"])
                 if isinstance(place.get("currentOpeningHours"), Mapping)
