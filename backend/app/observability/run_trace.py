@@ -25,6 +25,7 @@ _SENSITIVE_KEY_PARTS = (
     "token",
 )
 _BEARER_PATTERN = re.compile(r"(?i)\bBearer\s+[^\s,;]+")
+_EMBEDDED_URL_PATTERN = re.compile(r"https?://[^\s\"'<>]+")
 _SECRET_ASSIGNMENT_PATTERN = re.compile(
     r"(?i)\b(api[_-]?key|authorization|bearer|credential|password|secret|token)"
     r"\s*[:=]\s*([^\s,;]+)"
@@ -155,7 +156,10 @@ def redact_secrets(value: object) -> object:
         return str(value)
     if isinstance(value, str):
         redacted = _SECRET_ASSIGNMENT_PATTERN.sub(r"\1=[REDACTED]", value)
-        return _BEARER_PATTERN.sub("Bearer [REDACTED]", _redact_url(redacted))
+        redacted = _EMBEDDED_URL_PATTERN.sub(
+            lambda match: _redact_url(match.group(0)), redacted
+        )
+        return _BEARER_PATTERN.sub("Bearer [REDACTED]", redacted)
     if hasattr(value, "model_dump"):
         return redact_secrets(value.model_dump(mode="json"))
     return value

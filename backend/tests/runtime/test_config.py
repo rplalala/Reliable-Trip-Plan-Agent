@@ -18,7 +18,7 @@ from backend.app.runtime.config_loader import (
     resolve_trace_directory,
     runtime_config_snapshot,
 )
-from backend.app.runtime.logging_config import configure_logging
+from backend.app.runtime.logging_config import _RedactingLogFilter, configure_logging
 
 
 def _write_config(path: Path, data: dict[str, object]) -> None:
@@ -157,3 +157,15 @@ def test_logging_policy_controls_owned_console_handler() -> None:
         assert not any(h.get_name() == "reliable-trip-plan-console" for h in root.handlers)
     finally:
         root.setLevel(original_level)
+
+
+def test_console_log_filter_redacts_provider_query_credentials() -> None:
+    record = logging.LogRecord(
+        "httpx", logging.INFO, __file__, 1,
+        "HTTP Request: GET https://weather.example.test/forecast?key=live-secret&days=10",
+        (), None,
+    )
+
+    assert _RedactingLogFilter().filter(record) is True
+    assert "live-secret" not in record.getMessage()
+    assert "key=%5BREDACTED%5D" in record.getMessage()
