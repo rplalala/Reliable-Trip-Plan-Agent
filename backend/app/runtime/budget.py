@@ -1,22 +1,16 @@
 """Request-level limits for bounded V1 external information acquisition."""
 
 from collections import Counter
-from enum import StrEnum
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, model_validator
+
+from backend.app.runtime.budget_limits import ToolBudgetKey, validate_budget_values
 
 
-class ToolBudgetKey(StrEnum):
-    """Provider operations and bounded result dimensions tracked per run."""
+def _configured_default(key: ToolBudgetKey) -> int:
+    from backend.app.runtime.config_loader import load_runtime_config
 
-    CANDIDATES = "candidates"
-    PLACE_SEARCH_CALLS = "place_search_calls"
-    PLACE_DETAIL_CALLS = "place_detail_calls"
-    REVIEW_ENRICHED_PLACES = "review_enriched_places"
-    WEB_SEARCH_QUERIES = "web_search_queries"
-    PAGE_FETCHES = "page_fetches"
-    ROUTE_MATRIX_ELEMENTS = "route_matrix_elements"
-    WEATHER_CALLS = "weather_calls"
+    return load_runtime_config().budget.as_key_limits()[key]
 
 
 class ToolBudgetLimits(BaseModel):
@@ -24,14 +18,41 @@ class ToolBudgetLimits(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    max_candidates: int = Field(default=20, ge=1, le=20)
-    max_place_search_calls: int = Field(default=4, ge=1)
-    max_place_detail_calls: int = Field(default=8, ge=1)
-    max_review_enriched_places: int = Field(default=3, ge=0)
-    max_web_search_queries: int = Field(default=6, ge=0)
-    max_page_fetches: int = Field(default=6, ge=0)
-    max_route_matrix_elements: int = Field(default=64, ge=1)
-    max_weather_calls: int = Field(default=1, ge=0)
+    max_candidates: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.CANDIDATES)
+    )
+    max_place_search_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.PLACE_SEARCH_CALLS)
+    )
+    max_place_detail_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.PLACE_DETAIL_CALLS)
+    )
+    max_review_enriched_places: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.REVIEW_ENRICHED_PLACES)
+    )
+    max_web_search_queries: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.WEB_SEARCH_QUERIES)
+    )
+    max_page_fetches: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.PAGE_FETCHES)
+    )
+    max_route_matrix_elements: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.ROUTE_MATRIX_ELEMENTS)
+    )
+    max_alternative_route_pairs: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS)
+    )
+    max_alternative_route_matrix_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS)
+    )
+    max_weather_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.WEATHER_CALLS)
+    )
+
+    @model_validator(mode="after")
+    def within_hard_limits(self) -> "ToolBudgetLimits":
+        validate_budget_values(self.as_key_limits())
+        return self
 
     def as_key_limits(self) -> dict[ToolBudgetKey, int]:
         """Map public setting names to runtime counter keys."""
@@ -44,6 +65,10 @@ class ToolBudgetLimits(BaseModel):
             ToolBudgetKey.WEB_SEARCH_QUERIES: self.max_web_search_queries,
             ToolBudgetKey.PAGE_FETCHES: self.max_page_fetches,
             ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: self.max_route_matrix_elements,
+            ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: self.max_alternative_route_pairs,
+            ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: (
+                self.max_alternative_route_matrix_calls
+            ),
             ToolBudgetKey.WEATHER_CALLS: self.max_weather_calls,
         }
 

@@ -56,6 +56,8 @@ class RunTraceContext:
     date_window: TripDateWindow
     request: TravelRequest
     started_at: datetime
+    runtime_config: dict[str, object] | None = None
+    runtime_config_sha256: str | None = None
 
 
 @runtime_checkable
@@ -207,11 +209,21 @@ class FileRunTracer:
         root: Path,
         payload_mode: TracePayloadMode,
         max_payload_bytes: int = 1_000_000,
+        capture_llm: bool = True,
+        capture_tools: bool = True,
+        capture_evidence: bool = True,
+        raw_provider_payloads: bool = True,
     ) -> None:
         self._context = context
         self._run_id = context.run_id
         self._payload_mode = payload_mode
         self._max_payload_bytes = max_payload_bytes
+        self._capture_categories = {
+            "llm": capture_llm,
+            "tools": capture_tools,
+            "evidence": capture_evidence,
+        }
+        self._raw_provider_payloads = raw_provider_payloads
         timestamp = context.started_at.astimezone(UTC).strftime("%Y%m%dT%H%M%SZ")
         self.run_directory = root / f"{timestamp}_{context.run_id}"
         self._events_path = self.run_directory / "events.jsonl"
@@ -274,6 +286,8 @@ class FileRunTracer:
             "status": status,
             "input": self._context.request.model_dump(mode="json"),
             "tool_usage": {},
+            "runtime_config": self._context.runtime_config,
+            "runtime_config_sha256": self._context.runtime_config_sha256,
             "final_outcome": None,
         }
         value.update(updates)
@@ -313,7 +327,13 @@ class FileRunTracer:
         *,
         minimum_mode: TracePayloadMode,
     ) -> None:
-        if self._failed or _PAYLOAD_LEVEL[self._payload_mode] < _PAYLOAD_LEVEL[minimum_mode]:
+        if (
+            self._failed
+            or not self._capture_categories.get(category, False)
+            or (category == "tools" and minimum_mode is TracePayloadMode.RAW
+                and not self._raw_provider_payloads)
+            or _PAYLOAD_LEVEL[self._payload_mode] < _PAYLOAD_LEVEL[minimum_mode]
+        ):
             return
         try:
             self._payload_sequence += 1
@@ -370,6 +390,10 @@ def create_run_tracer(
     root: Path,
     payload_mode: TracePayloadMode,
     max_payload_bytes: int = 1_000_000,
+    capture_llm: bool = True,
+    capture_tools: bool = True,
+    capture_evidence: bool = True,
+    raw_provider_payloads: bool = True,
 ) -> RunTracer:
     """Create a file tracer or a no-op tracer with the same immutable run ID."""
 
@@ -380,6 +404,10 @@ def create_run_tracer(
         root=root,
         payload_mode=payload_mode,
         max_payload_bytes=max_payload_bytes,
+        capture_llm=capture_llm,
+        capture_tools=capture_tools,
+        capture_evidence=capture_evidence,
+        raw_provider_payloads=raw_provider_payloads,
     )
     if tracer._failed:
         return NullRunTracer(context.run_id)

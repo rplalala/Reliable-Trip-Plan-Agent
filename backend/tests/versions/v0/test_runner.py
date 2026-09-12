@@ -19,10 +19,9 @@ from backend.tests.versions.v0.fakes import (
 )
 
 
-def test_v0_settings_keep_underlying_model_and_deployment_distinct(
+def test_v0_settings_use_deployment_for_foundry(
     monkeypatch,
 ) -> None:
-    monkeypatch.setenv("LLM_MODEL", "underlying-model")
     monkeypatch.setenv(
         "AZURE_OPENAI_ENDPOINT",
         "https://example.services.ai.azure.com/openai/v1",
@@ -32,7 +31,6 @@ def test_v0_settings_keep_underlying_model_and_deployment_distinct(
 
     settings = V0Settings(_env_file=None)
 
-    assert settings.llm_model == "underlying-model"
     assert str(settings.azure_openai_endpoint) == (
         "https://example.services.ai.azure.com/openai/v1"
     )
@@ -41,7 +39,6 @@ def test_v0_settings_keep_underlying_model_and_deployment_distinct(
 
 
 def test_v0_foundry_client_uses_deployment_for_api_model(monkeypatch) -> None:
-    monkeypatch.setenv("LLM_MODEL", "underlying-model")
     monkeypatch.setenv(
         "AZURE_OPENAI_ENDPOINT",
         "https://example.services.ai.azure.com/openai/v1",

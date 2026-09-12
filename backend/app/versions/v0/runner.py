@@ -16,6 +16,8 @@ from backend.app.policies.trip_dates import (
     create_trip_date_window,
     validate_itinerary_dates,
 )
+from backend.app.runtime.config_loader import load_runtime_config
+from backend.app.runtime.logging_config import configure_logging
 from backend.app.runtime.settings import RuntimeSettings
 from backend.app.schemas.planning import PlanningResult, SystemVersion
 from backend.app.schemas.request import TravelRequest
@@ -113,6 +115,7 @@ def main(
     args = build_argument_parser().parse_args(argv)
 
     try:
+        configure_logging(load_runtime_config().logging)
         settings = V0Settings() if llm_client is None else RuntimeSettings()
         client = llm_client or create_foundry_client(settings)
         result = asyncio.run(

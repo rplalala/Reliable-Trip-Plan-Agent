@@ -7,7 +7,6 @@ from enum import StrEnum
 from typing import Protocol, runtime_checkable
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from backend.app.runtime.settings import DEFAULT_APP_TIME_ZONE
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.request import TravelRequirements
 
@@ -29,11 +28,15 @@ class SystemDateProvider:
 
     def __init__(
         self,
-        time_zone: str = DEFAULT_APP_TIME_ZONE,
+        time_zone: str | None = None,
         *,
         now: Callable[[ZoneInfo], datetime] = datetime.now,
     ) -> None:
         try:
+            if time_zone is None:
+                from backend.app.runtime.config_loader import load_runtime_config
+
+                time_zone = load_runtime_config().app.time_zone
             self._time_zone = ZoneInfo(time_zone)
         except ZoneInfoNotFoundError as exc:
             raise ValueError(f"Unknown IANA time zone: {time_zone}") from exc

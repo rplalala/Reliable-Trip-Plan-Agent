@@ -14,6 +14,7 @@ from backend.app.observability.run_trace import (
     create_run_tracer,
 )
 from backend.app.policies.trip_dates import create_trip_date_window
+from backend.app.runtime.config_loader import load_runtime_config, runtime_config_snapshot
 from backend.app.schemas.request import TravelRequest
 from backend.app.versions.v1.runner import run_v1
 from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
@@ -82,6 +83,37 @@ def test_raw_run_trace_writes_structure_and_redacts_secrets(tmp_path) -> None:
     ).splitlines()
     assert len(event_lines) == 1
     assert json.loads(event_lines[0])["event"] == "run_started"
+
+
+def test_trace_records_effective_config_and_gates_optional_categories(tmp_path) -> None:
+    snapshot, digest = runtime_config_snapshot(load_runtime_config())
+    context = _context()
+    context = RunTraceContext(
+        **{
+            **context.__dict__,
+            "runtime_config": snapshot,
+            "runtime_config_sha256": digest,
+        }
+    )
+    tracer = FileRunTracer(
+        context,
+        root=tmp_path,
+        payload_mode=TracePayloadMode.RAW,
+        capture_llm=False,
+        capture_tools=True,
+        capture_evidence=False,
+        raw_provider_payloads=False,
+    )
+    tracer.payload("llm", "request", {"value": 1}, minimum_mode=TracePayloadMode.RAW)
+    tracer.payload("tools", "raw", {"value": 2}, minimum_mode=TracePayloadMode.RAW)
+    tracer.payload("evidence", "normalized", {"value": 3}, minimum_mode=TracePayloadMode.NORMALIZED)
+    metadata = json.loads((tracer.run_directory / "run.json").read_text(encoding="utf-8"))
+
+    assert metadata["runtime_config"] == snapshot
+    assert metadata["runtime_config_sha256"] == digest
+    assert list((tracer.run_directory / "llm").iterdir()) == []
+    assert list((tracer.run_directory / "tools").iterdir()) == []
+    assert list((tracer.run_directory / "evidence").iterdir()) == []
 
 
 def test_metadata_mode_does_not_write_optional_payloads(tmp_path) -> None:

@@ -1,0 +1,35 @@
+schema_version: 1
+
+app:
+  time_zone: Australia/Sydney
+
+budget:
+  candidates: 20
+  places:
+    search_calls: 4
+    detail_calls: 8
+  weather:
+    calls: 2
+  routes:
+    matrix_elements: 64
+    alternative_pairs: 8
+    alternative_matrix_calls: 8
+  web:
+    search_queries: 6
+    page_fetches: 6
+  experience:
+    review_enriched_places: 3
+
+logging:
+  level: INFO
+  console: true
+
+trace:
+  enabled: true
+  directory: logs
+  payload_level: metadata
+  capture_llm: true
+  capture_tools: true
+  capture_evidence: true
+  raw_provider_payloads: false
+  max_payload_bytes: 1000000

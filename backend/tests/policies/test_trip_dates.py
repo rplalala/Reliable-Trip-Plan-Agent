@@ -32,12 +32,12 @@ def test_system_date_provider_uses_explicit_iana_time_zone() -> None:
     assert observed_zones == ["Australia/Sydney"]
 
 
-def test_runtime_settings_accept_configurable_iana_time_zone(monkeypatch) -> None:
+def test_runtime_settings_ignore_env_time_zone_override(monkeypatch) -> None:
     monkeypatch.setenv("APP_TIME_ZONE", "Pacific/Auckland")
 
     settings = RuntimeSettings(_env_file=None)
 
-    assert settings.app_time_zone == "Pacific/Auckland"
+    assert settings.app_time_zone == "Australia/Sydney"
 
 
 def make_itinerary(

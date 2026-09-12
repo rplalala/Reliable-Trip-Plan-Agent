@@ -30,6 +30,12 @@ from backend.app.policies.trip_dates import (
 )
 from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
+from backend.app.runtime.config_loader import (
+    load_runtime_config,
+    resolve_trace_directory,
+    runtime_config_snapshot,
+)
+from backend.app.runtime.logging_config import configure_logging
 from backend.app.runtime.settings import RuntimeSettings
 from backend.app.schemas.planning import PlanningResult, SystemVersion
 from backend.app.schemas.request import TravelRequest
@@ -179,11 +185,16 @@ def main(
     )
     settings: V1Settings | None = None
     try:
+        runtime_config = load_runtime_config()
+        configure_logging(runtime_config.logging)
         if all_clients_injected:
             runtime_settings = RuntimeSettings()
         else:
             settings = V1Settings()
             runtime_settings = settings
+        budget_limits = budget_limits or (
+            settings.tool_budget_limits() if settings is not None else ToolBudgetLimits()
+        )
 
         if args.reference_date is not None and date_provider is not None:
             raise ValueError("reference_date and date_provider cannot both be supplied")
@@ -192,6 +203,12 @@ def main(
         ).today()
         run_id = uuid4()
         started_at = datetime.now(UTC)
+        config_snapshot, config_hash = runtime_config_snapshot(
+            runtime_config,
+            effective_budget={
+                key.value: value for key, value in budget_limits.as_key_limits().items()
+            },
+        )
         context = RunTraceContext(
             run_id=run_id,
             system_version=SystemVersion.V1.value,
@@ -199,6 +216,8 @@ def main(
             date_window=create_trip_date_window(effective_reference_date),
             request=TravelRequest(request_text=args.request),
             started_at=started_at,
+            runtime_config=config_snapshot,
+            runtime_config_sha256=config_hash,
         )
         if tracer is None:
             if settings is None:
@@ -206,10 +225,14 @@ def main(
             else:
                 effective_tracer = create_run_tracer(
                     context,
-                    enabled=settings.v1_trace_enabled,
-                    root=settings.v1_trace_directory,
-                    payload_mode=settings.v1_trace_payload_mode,
-                    max_payload_bytes=settings.v1_trace_max_payload_bytes,
+                    enabled=runtime_config.trace.enabled,
+                    root=resolve_trace_directory(runtime_config.trace.directory),
+                    payload_mode=runtime_config.trace.payload_level,
+                    max_payload_bytes=runtime_config.trace.max_payload_bytes,
+                    capture_llm=runtime_config.trace.capture_llm,
+                    capture_tools=runtime_config.trace.capture_tools,
+                    capture_evidence=runtime_config.trace.capture_evidence,
+                    raw_provider_payloads=runtime_config.trace.raw_provider_payloads,
                 )
         else:
             effective_tracer = tracer
@@ -222,7 +245,6 @@ def main(
             places_provider = places_provider or default_places
             weather_provider = weather_provider or default_weather
             routes_provider = routes_provider or default_routes
-            budget_limits = budget_limits or settings.tool_budget_limits()
 
         if (
             llm_client is None

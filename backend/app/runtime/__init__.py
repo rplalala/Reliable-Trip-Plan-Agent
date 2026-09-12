@@ -7,10 +7,9 @@ from backend.app.runtime.budget import (
     ToolBudgetLimits,
 )
 from backend.app.runtime.cache import RequestCache
-from backend.app.runtime.settings import DEFAULT_APP_TIME_ZONE, RuntimeSettings
+from backend.app.runtime.settings import RuntimeSettings
 
 __all__ = [
-    "DEFAULT_APP_TIME_ZONE",
     "RequestCache",
     "RuntimeSettings",
     "ToolBudget",
