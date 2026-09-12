@@ -140,8 +140,8 @@ class FakeRoutesProvider:
                 "destinationIndex": destination,
                 "status": {},
                 "condition": "ROUTE_EXISTS",
-                "distanceMeters": abs(origin - destination) * 1000,
-                "duration": f"{abs(origin - destination) * 600}s",
+                "distanceMeters": abs(origin - destination) * 400,
+                "duration": f"{abs(origin - destination) * 300}s",
             }
             for origin in range(len(request.origins))
             for destination in range(len(request.destinations))

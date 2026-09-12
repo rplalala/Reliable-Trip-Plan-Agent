@@ -3,7 +3,7 @@
 import json
 from datetime import date
 
-from backend.app.evidence.models import PlaceEvidence, RouteEvidence, WeatherEvidence
+from backend.app.evidence.models import PlaceEvidence, RouteEvidenceBundle, WeatherEvidence
 from backend.app.schemas.request import TravelRequest, TravelRequirements
 
 ITINERARY_GENERATION_SYSTEM_PROMPT = """
@@ -18,10 +18,20 @@ when they are 00. The utc_offset must use exactly +HH:MM or -HH:MM. For example:
 2026-10-01, time 13:30:00, utc_offset +09:00. Do not abbreviate 13:30:00 to 13:30. Keep
 activity identifiers unique within the itinerary.
 
-Use weather and route evidence to improve grouping and feasibility when it is available. Use
-Place evidence only for the place it identifies. Do not infer missing external facts, convert
-unavailable or partial evidence into confirmed facts, or claim that information outside the
-supplied evidence was checked. Preserve uncertainty in activity notes when it materially
+Use weather and route evidence to improve grouping and feasibility when it is available. For
+a WALK baseline, use it for short pairs but never treat non_walkable_pairs as realistic walking
+transfers. Honor an explicitly chosen transport mode without inferring a fallback. TRANSIT
+alternatives give representative durations at their recorded departure time for coarse
+sequencing and travel-time allowance only: provider_observed is measured by the provider in
+that direction; mirrored_reverse_estimate copies only the observed duration in reverse as an
+approximate proxy, not observed directional timetable evidence. If WALK is unrealistic and
+TRANSIT unavailable, avoid tight sequencing or note uncertain transport feasibility. Do not
+invent or promise transit lines, stops, timetables, departure times, fares, bookings, or exact
+services.
+
+Use Place evidence only for the place it identifies. Do not infer missing external facts,
+convert unavailable or partial evidence into confirmed facts, or claim that information outside
+the supplied evidence was checked. Preserve uncertainty in activity notes when it materially
 affects the plan. Do not search, call tools, validate an earlier itinerary, or repair an
 earlier itinerary. The response schema is supplied separately by the provider.
 """.strip()
@@ -34,7 +44,7 @@ def build_itinerary_generation_prompt(
     *,
     places: list[PlaceEvidence],
     weather: WeatherEvidence,
-    routes: RouteEvidence,
+    routes: RouteEvidenceBundle,
 ) -> str:
     """Build one bounded prompt containing normalized evidence only."""
 

@@ -117,10 +117,15 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert routes.requests[0].travel_mode == "WALK"
     assert routes.requests[0].routing_preference is None
     generation_prompt = llm.calls[1].user_prompt
+    generation_system_prompt = llm.calls[1].system_prompt
     assert "place_evidence" not in generation_prompt
     assert '"places"' in generation_prompt
     assert '"precipitation_probability_percent": 70' in generation_prompt
     assert '"travel_mode": "WALK"' in generation_prompt
+    assert '"baseline"' in generation_prompt
+    assert '"non_walkable_pairs": []' in generation_prompt
+    assert "provider_observed" in generation_system_prompt
+    assert "mirrored_reverse_estimate" in generation_system_prompt
     assert "forecastDays" not in generation_prompt
     assert "currentOpeningHours" not in generation_prompt
 
@@ -299,8 +304,16 @@ def test_request_scoped_cache_deduplicates_details_weather_and_routes() -> None:
         mode = select_transport_mode(
             TravelRequest(request_text="Plan Sydney."), requirements
         )
-        first_routes = await service.acquire_routes(places=first_places, mode=mode)
-        second_routes = await service.acquire_routes(places=first_places, mode=mode)
+        first_routes = await service.acquire_routes(
+            places=first_places,
+            mode=mode,
+            requirements=requirements,
+        )
+        second_routes = await service.acquire_routes(
+            places=first_places,
+            mode=mode,
+            requirements=requirements,
+        )
         return (
             destination,
             repeated_destination,
@@ -325,3 +338,5 @@ def test_request_scoped_cache_deduplicates_details_weather_and_routes() -> None:
     assert budget.summary()["place_detail_calls"]["used"] == 2
     assert budget.summary()["weather_calls"]["used"] == 1
     assert budget.summary()["route_matrix_elements"]["used"] == 4
+    assert budget.summary()["alternative_route_pairs"]["used"] == 0
+    assert budget.summary()["alternative_route_matrix_calls"]["used"] == 0

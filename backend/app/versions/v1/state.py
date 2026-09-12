@@ -7,7 +7,7 @@ from backend.app.evidence.models import (
     DestinationContext,
     PlaceCandidate,
     PlaceEvidence,
-    RouteEvidence,
+    RouteEvidenceBundle,
     WeatherEvidence,
 )
 from backend.app.policies.transport import TransportModeDecision
@@ -27,5 +27,5 @@ class V1State(TypedDict):
     place_evidence: NotRequired[list[PlaceEvidence]]
     weather_evidence: NotRequired[WeatherEvidence]
     transport_mode: NotRequired[TransportModeDecision]
-    route_evidence: NotRequired[RouteEvidence]
+    route_evidence: NotRequired[RouteEvidenceBundle]
     itinerary: NotRequired[Itinerary]

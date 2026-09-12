@@ -2,8 +2,9 @@
 
 from datetime import date, datetime
 from enum import StrEnum
+from typing import Self
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
 
 class EvidenceModel(BaseModel):
@@ -103,11 +104,21 @@ class WeatherEvidence(EvidenceModel):
     source_ref: str = Field(min_length=1)
 
 
+class RouteElementEvidenceType(StrEnum):
+    """Direct provider observation or an explicitly derived planning proxy."""
+
+    PROVIDER_OBSERVED = "provider_observed"
+    MIRRORED_REVERSE_ESTIMATE = "mirrored_reverse_estimate"
+
+
 class RouteElementEvidence(EvidenceModel):
     """One origin/destination result from a bounded route matrix."""
 
     origin_place_id: str = Field(min_length=1)
     destination_place_id: str = Field(min_length=1)
+    evidence_type: RouteElementEvidenceType = RouteElementEvidenceType.PROVIDER_OBSERVED
+    derived_from_origin_place_id: str | None = None
+    derived_from_destination_place_id: str | None = None
     status: str | None = None
     condition: str | None = None
     distance_meters: int | None = Field(default=None, ge=0)
@@ -115,14 +126,58 @@ class RouteElementEvidence(EvidenceModel):
     availability: EvidenceAvailability
 
 
+class RouteEvidencePurpose(StrEnum):
+    """Why one bounded route matrix was acquired."""
+
+    BASELINE = "baseline"
+    NON_WALKABLE_ALTERNATIVE = "non_walkable_alternative"
+
+
+class NonWalkableTrigger(StrEnum):
+    """Deterministic reason that a WALK pair needs alternative evidence."""
+
+    DISTANCE_THRESHOLD = "distance_threshold"
+    DURATION_THRESHOLD = "duration_threshold"
+    WALK_ROUTE_NOT_FOUND = "walk_route_not_found"
+
+
+class NonWalkablePairEvidence(EvidenceModel):
+    """One canonically ordered logical POI pair that is not locally walkable."""
+
+    place_id_a: str = Field(min_length=1)
+    place_id_b: str = Field(min_length=1)
+    trigger_reasons: list[NonWalkableTrigger] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_canonical_pair(self) -> Self:
+        """Require canonical IDs and stable, deduplicated trigger provenance."""
+
+        if self.place_id_a >= self.place_id_b:
+            raise ValueError("Logical route pair Place IDs must be in ascending order")
+        expected_reasons = sorted(set(self.trigger_reasons), key=lambda item: item.value)
+        if self.trigger_reasons != expected_reasons:
+            raise ValueError("Logical route pair triggers must be unique and sorted")
+        return self
+
+
 class RouteEvidence(EvidenceModel):
     """Normalized bounded route matrix and its deterministic mode decision."""
 
     travel_mode: str = Field(min_length=1)
     mode_reason: str = Field(min_length=1)
+    purpose: RouteEvidencePurpose = RouteEvidencePurpose.BASELINE
     routing_preference: str | None = None
+    representative_departure_time: AwareDatetime | None = None
     availability: EvidenceAvailability
     elements: list[RouteElementEvidence] = Field(default_factory=list)
     unavailable_reason: str | None = None
     retrieved_at: datetime
     source_ref: str = Field(min_length=1)
+
+
+class RouteEvidenceBundle(EvidenceModel):
+    """Baseline routes plus bounded alternatives for non-walkable pairs."""
+
+    baseline: RouteEvidence
+    alternatives: list[RouteEvidence] = Field(default_factory=list)
+    non_walkable_pairs: list[NonWalkablePairEvidence] = Field(default_factory=list)

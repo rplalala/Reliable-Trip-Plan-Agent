@@ -3,11 +3,16 @@
 from backend.app.evidence.models import (
     DestinationContext,
     EvidenceAvailability,
+    NonWalkablePairEvidence,
+    NonWalkableTrigger,
     OpeningHoursEvidence,
     PlaceCandidate,
     PlaceEvidence,
     RouteElementEvidence,
+    RouteElementEvidenceType,
     RouteEvidence,
+    RouteEvidenceBundle,
+    RouteEvidencePurpose,
     WeatherDayEvidence,
     WeatherEvidence,
 )
@@ -15,11 +20,16 @@ from backend.app.evidence.models import (
 __all__ = [
     "DestinationContext",
     "EvidenceAvailability",
+    "NonWalkablePairEvidence",
+    "NonWalkableTrigger",
     "OpeningHoursEvidence",
     "PlaceCandidate",
     "PlaceEvidence",
     "RouteElementEvidence",
+    "RouteElementEvidenceType",
     "RouteEvidence",
+    "RouteEvidenceBundle",
+    "RouteEvidencePurpose",
     "WeatherDayEvidence",
     "WeatherEvidence",
 ]

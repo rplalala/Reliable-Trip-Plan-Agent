@@ -172,13 +172,17 @@ def build_v1_graph(
         mode = select_transport_mode(state["request"], state["requirements"])
         tracer.event("route_matrix_started", mode.model_dump(mode="json"))
         routes = await evidence_service.acquire_routes(
-            places=state["place_evidence"], mode=mode
+            places=state["place_evidence"],
+            mode=mode,
+            requirements=state["requirements"],
         )
         tracer.event(
             "route_matrix_completed",
             {
-                "availability": routes.availability.value,
-                "element_count": len(routes.elements),
+                "baseline_availability": routes.baseline.availability.value,
+                "baseline_element_count": len(routes.baseline.elements),
+                "alternative_count": len(routes.alternatives),
+                "non_walkable_pair_count": len(routes.non_walkable_pairs),
             },
         )
         return {"transport_mode": mode, "route_evidence": routes}

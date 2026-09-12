@@ -1,11 +1,20 @@
-"""Deterministic single-mode Route Matrix selection for V1 and later versions."""
+"""Deterministic bounded transport selection for V1 and later versions."""
 
 import re
+from dataclasses import dataclass
 from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict
 
+from backend.app.evidence.models import (
+    NonWalkablePairEvidence,
+    NonWalkableTrigger,
+    RouteEvidence,
+)
 from backend.app.schemas.request import TravelRequest, TravelRequirements
+
+MAX_WALK_DISTANCE_METERS = 3_000
+MAX_WALK_DURATION_SECONDS = 2_700
 
 
 class TravelMode(StrEnum):
@@ -23,6 +32,12 @@ class TransportModeDecision(BaseModel):
     travel_mode: TravelMode
     reason: str
     routing_preference: str | None = None
+
+    @property
+    def is_explicit(self) -> bool:
+        """Return whether the user or extracted requirements named this mode."""
+
+        return self.reason.startswith("explicit_mode_")
 
 
 _EXPLICIT_PREFERENCE_VALUES = {
@@ -103,3 +118,146 @@ def select_transport_mode(
         travel_mode=TravelMode.WALK,
         reason="default_pedestrian_transfer_for_poi_grouping",
     )
+
+
+def _non_walkable_trigger(
+    *,
+    condition: str | None,
+    distance_meters: int | None,
+    duration_seconds: int | None,
+) -> NonWalkableTrigger | None:
+    if condition == "ROUTE_NOT_FOUND":
+        return NonWalkableTrigger.WALK_ROUTE_NOT_FOUND
+    if distance_meters is not None and distance_meters > MAX_WALK_DISTANCE_METERS:
+        return NonWalkableTrigger.DISTANCE_THRESHOLD
+    if duration_seconds is not None and duration_seconds > MAX_WALK_DURATION_SECONDS:
+        return NonWalkableTrigger.DURATION_THRESHOLD
+    return None
+
+
+@dataclass(frozen=True)
+class DirectedWalkTrigger:
+    """Internal directional trigger retained for ranking and trace provenance."""
+
+    origin_place_id: str
+    destination_place_id: str
+    trigger: NonWalkableTrigger
+    walk_distance_meters: int | None
+    walk_duration_seconds: int | None
+
+
+def _directed_severity(pair: DirectedWalkTrigger) -> tuple[int, float]:
+    distance_ratio = (pair.walk_distance_meters or 0) / MAX_WALK_DISTANCE_METERS
+    duration_ratio = (pair.walk_duration_seconds or 0) / MAX_WALK_DURATION_SECONDS
+    route_not_found = int(pair.trigger is NonWalkableTrigger.WALK_ROUTE_NOT_FOUND)
+    return route_not_found, max(distance_ratio, duration_ratio)
+
+
+def _directed_sort_key(pair: DirectedWalkTrigger) -> tuple[int, float, str, str]:
+    severity = _directed_severity(pair)
+    return (
+        -severity[0],
+        -severity[1],
+        pair.origin_place_id,
+        pair.destination_place_id,
+    )
+
+
+def find_directed_non_walkable_pairs(
+    evidence: RouteEvidence,
+) -> list[DirectedWalkTrigger]:
+    """Find and severity-sort directed WALK triggers without LLM involvement."""
+
+    pairs: dict[tuple[str, str], DirectedWalkTrigger] = {}
+    severity: dict[tuple[str, str], tuple[int, float]] = {}
+    for element in evidence.elements:
+        if element.origin_place_id == element.destination_place_id:
+            continue
+        trigger = _non_walkable_trigger(
+            condition=element.condition,
+            distance_meters=element.distance_meters,
+            duration_seconds=element.duration_seconds,
+        )
+        if trigger is None:
+            continue
+        pair_key = (element.origin_place_id, element.destination_place_id)
+        pair = DirectedWalkTrigger(
+            origin_place_id=element.origin_place_id,
+            destination_place_id=element.destination_place_id,
+            trigger=trigger,
+            walk_distance_meters=element.distance_meters,
+            walk_duration_seconds=element.duration_seconds,
+        )
+        candidate_severity = _directed_severity(pair)
+        if pair_key in severity and severity[pair_key] >= candidate_severity:
+            continue
+        severity[pair_key] = candidate_severity
+        pairs[pair_key] = pair
+    return sorted(pairs.values(), key=_directed_sort_key)
+
+
+def collapse_non_walkable_pairs(
+    directed_pairs: list[DirectedWalkTrigger],
+) -> list[NonWalkablePairEvidence]:
+    """Collapse directions and rank each logical pair by its most severe direction."""
+
+    reasons: dict[tuple[str, str], set[NonWalkableTrigger]] = {}
+    severity: dict[tuple[str, str], tuple[int, float]] = {}
+    for pair in directed_pairs:
+        logical_key = tuple(sorted((pair.origin_place_id, pair.destination_place_id)))
+        reasons.setdefault(logical_key, set()).add(pair.trigger)
+        severity[logical_key] = max(
+            severity.get(logical_key, (0, 0.0)),
+            _directed_severity(pair),
+        )
+    logical_pairs = [
+        NonWalkablePairEvidence(
+            place_id_a=place_id_a,
+            place_id_b=place_id_b,
+            trigger_reasons=sorted(reasons[(place_id_a, place_id_b)], key=lambda item: item.value),
+        )
+        for place_id_a, place_id_b in reasons
+    ]
+    return sorted(
+        logical_pairs,
+        key=lambda pair: (
+            -severity[(pair.place_id_a, pair.place_id_b)][0],
+            -severity[(pair.place_id_a, pair.place_id_b)][1],
+            pair.place_id_a,
+            pair.place_id_b,
+        ),
+    )
+
+
+def find_non_walkable_pairs(evidence: RouteEvidence) -> list[NonWalkablePairEvidence]:
+    """Return canonical logical pairs ranked by the worst directed WALK result."""
+
+    return collapse_non_walkable_pairs(find_directed_non_walkable_pairs(evidence))
+
+
+def select_alternative_route_pairs(
+    pairs: list[NonWalkablePairEvidence],
+    *,
+    max_pairs: int,
+    max_calls: int,
+) -> tuple[list[NonWalkablePairEvidence], list[NonWalkablePairEvidence]]:
+    """Select from severity-ranked logical pairs within pair and call limits."""
+
+    selected: list[NonWalkablePairEvidence] = []
+    selected_keys: set[tuple[str, str]] = set()
+    selected_origins: set[str] = set()
+    for pair in pairs:
+        if len(selected) == max_pairs:
+            break
+        is_new_origin = pair.place_id_a not in selected_origins
+        if is_new_origin and len(selected_origins) == max_calls:
+            continue
+        selected.append(pair)
+        selected_keys.add((pair.place_id_a, pair.place_id_b))
+        selected_origins.add(pair.place_id_a)
+    truncated = [
+        pair
+        for pair in pairs
+        if (pair.place_id_a, pair.place_id_b) not in selected_keys
+    ]
+    return selected, truncated

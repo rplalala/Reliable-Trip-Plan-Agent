@@ -2,7 +2,7 @@
 
 import asyncio
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from uuid import UUID
 
 from backend.app.integrations.google.places import (
@@ -162,3 +162,28 @@ def test_routes_adapter_uses_minimal_fields_and_omits_invalid_preference() -> No
     )
     assert body["travelMode"] == "WALK"
     assert "routingPreference" not in body
+    assert "departureTime" not in body
+
+
+def test_routes_adapter_serializes_transit_departure_time() -> None:
+    transport = FakeTransport(responses=[[]])
+    provider = GoogleRoutesProvider(
+        api_key="secret-key", transport=transport, tracer=TRACER
+    )
+    waypoint = RouteWaypoint(
+        place_id="poi-1", location=LatLng(latitude=-33.8, longitude=151.2)
+    )
+
+    asyncio.run(
+        provider.compute_route_matrix(
+            RouteMatrixRequest(
+                origins=[waypoint],
+                destinations=[waypoint],
+                travel_mode="TRANSIT",
+                departure_time=datetime.fromisoformat("2026-09-12T12:00:00+10:00"),
+                field_mask=ROUTE_MATRIX_FIELD_MASK,
+            )
+        )
+    )
+
+    assert transport.calls[0]["json_body"]["departureTime"] == "2026-09-12T02:00:00Z"

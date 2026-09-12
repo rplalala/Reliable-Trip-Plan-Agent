@@ -98,13 +98,22 @@ class ToolBudget:
     def consume(self, key: ToolBudgetKey, amount: int = 1) -> None:
         """Reserve capacity deterministically before performing work."""
 
-        if amount < 0:
-            raise ValueError("Tool budget consumption cannot be negative")
-        used = self._usage[key]
-        limit = self._limits[key]
-        if used + amount > limit:
-            raise ToolBudgetExceededError(key, amount, used, limit)
-        self._usage[key] += amount
+        self.consume_many(((key, amount),))
+
+    def consume_many(self, charges: tuple[tuple[ToolBudgetKey, int], ...]) -> None:
+        """Atomically reserve several related counters before provider work."""
+
+        requested: Counter[ToolBudgetKey] = Counter()
+        for key, amount in charges:
+            if amount < 0:
+                raise ValueError("Tool budget consumption cannot be negative")
+            requested[key] += amount
+        for key, amount in requested.items():
+            used = self._usage[key]
+            limit = self._limits[key]
+            if used + amount > limit:
+                raise ToolBudgetExceededError(key, amount, used, limit)
+        self._usage.update(requested)
 
     def remaining(self, key: ToolBudgetKey) -> int:
         """Return unused capacity for one budget key."""

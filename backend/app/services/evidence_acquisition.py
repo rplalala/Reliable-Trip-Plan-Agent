@@ -4,14 +4,21 @@ import math
 from collections import defaultdict
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime, time
 from typing import TypeVar
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from backend.app.evidence.models import (
     DestinationContext,
+    EvidenceAvailability,
+    NonWalkablePairEvidence,
     PlaceCandidate,
     PlaceEvidence,
+    RouteElementEvidence,
+    RouteElementEvidenceType,
     RouteEvidence,
+    RouteEvidenceBundle,
+    RouteEvidencePurpose,
     WeatherEvidence,
 )
 from backend.app.evidence.normalization import (
@@ -42,7 +49,16 @@ from backend.app.integrations.models import (
 )
 from backend.app.integrations.protocols import PlacesProvider, RoutesProvider, WeatherProvider
 from backend.app.observability.run_trace import RunTracer, TracePayloadMode
-from backend.app.policies.transport import TransportModeDecision
+from backend.app.policies.transport import (
+    MAX_WALK_DISTANCE_METERS,
+    MAX_WALK_DURATION_SECONDS,
+    DirectedWalkTrigger,
+    TransportModeDecision,
+    TravelMode,
+    collapse_non_walkable_pairs,
+    find_directed_non_walkable_pairs,
+    select_alternative_route_pairs,
+)
 from backend.app.policies.trip_dates import TRIP_DATE_WINDOW_DAYS
 from backend.app.runtime.budget import ToolBudget, ToolBudgetKey
 from backend.app.runtime.cache import RequestCache
@@ -102,11 +118,14 @@ class V1EvidenceAcquisitionService:
         key: tuple[object, ...],
         budget_key: ToolBudgetKey | None,
         budget_amount: int,
+        additional_budget_charges: tuple[tuple[ToolBudgetKey, int], ...] = (),
         factory: Callable[[], Awaitable[ValueT]],
     ) -> _ProviderResult[ValueT]:
         async def load() -> _ProviderResult[ValueT]:
+            charges = additional_budget_charges
             if budget_key is not None:
-                self._budget.consume(budget_key, budget_amount)
+                charges = ((budget_key, budget_amount), *charges)
+            self._budget.consume_many(charges)
             try:
                 return _ProviderResult(value=await factory())
             except Exception as exc:
@@ -377,8 +396,9 @@ class V1EvidenceAcquisitionService:
         *,
         places: list[PlaceEvidence],
         mode: TransportModeDecision,
-    ) -> RouteEvidence:
-        """Make one bounded Route Matrix call for the deterministic shortlist mode."""
+        requirements: TravelRequirements,
+    ) -> RouteEvidenceBundle:
+        """Acquire one baseline matrix and bounded alternatives for default WALK."""
 
         waypoints = [
             RouteWaypoint(
@@ -387,42 +407,352 @@ class V1EvidenceAcquisitionService:
             )
             for place in places
         ]
-        request = RouteMatrixRequest(
+        departure_time = None
+        if mode.travel_mode is TravelMode.TRANSIT:
+            departure_time = self._representative_departure_time(places, requirements)
+        baseline_request = RouteMatrixRequest(
             origins=waypoints,
             destinations=waypoints,
             travel_mode=mode.travel_mode.value,
             routing_preference=mode.routing_preference,
+            departure_time=departure_time,
             field_mask=ROUTE_MATRIX_FIELD_MASK,
         )
-        matrix_elements = len(waypoints) * len(waypoints)
-        key = (
+        if mode.travel_mode is TravelMode.TRANSIT and departure_time is None:
+            baseline = unavailable_routes(
+                baseline_request,
+                mode_reason=mode.reason,
+                reason="Transit unavailable because no valid destination timezone was found",
+            )
+        else:
+            baseline = await self._acquire_route_matrix(
+                baseline_request,
+                mode_reason=mode.reason,
+                purpose=RouteEvidencePurpose.BASELINE,
+                budget_key=ToolBudgetKey.ROUTE_MATRIX_ELEMENTS,
+            )
+        self._tracer.event(
+            "route_baseline_completed",
+            {
+                "travel_mode": baseline.travel_mode,
+                "availability": baseline.availability.value,
+                "element_count": len(baseline.elements),
+                "representative_departure_time": baseline.representative_departure_time,
+                "budget": self._route_budget_summary(),
+            },
+        )
+
+        non_walkable_pairs: list[NonWalkablePairEvidence] = []
+        alternatives: list[RouteEvidence] = []
+        if (
+            not mode.is_explicit
+            and mode.travel_mode is TravelMode.WALK
+            and baseline.availability is not EvidenceAvailability.UNAVAILABLE
+        ):
+            directed_triggers = find_directed_non_walkable_pairs(baseline)
+            non_walkable_pairs = collapse_non_walkable_pairs(directed_triggers)
+            selected, truncated = select_alternative_route_pairs(
+                non_walkable_pairs,
+                max_pairs=self._budget.remaining(ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS),
+                max_calls=self._budget.remaining(
+                    ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS
+                ),
+            )
+            alternative_departure_time = (
+                self._representative_departure_time(places, requirements)
+                if selected
+                else None
+            )
+            self._trace_alternative_trigger(
+                directed_triggers=directed_triggers,
+                logical_pairs=non_walkable_pairs,
+                selected=selected,
+                truncated=truncated,
+                departure_time=alternative_departure_time,
+            )
+            alternatives = await self._acquire_transit_alternatives(
+                selected=selected,
+                waypoints=waypoints,
+                departure_time=alternative_departure_time,
+            )
+        else:
+            skip_reason = (
+                "explicit_transport_mode"
+                if mode.is_explicit
+                else "baseline_unavailable"
+                if baseline.availability is EvidenceAvailability.UNAVAILABLE
+                else "baseline_mode_is_not_walk"
+            )
+            self._tracer.event(
+                "route_alternative_trigger_evaluated",
+                {
+                    "triggered": False,
+                    "skip_reason": skip_reason,
+                    "detected_directed_walk_triggers": [],
+                    "collapsed_logical_pairs": [],
+                    "selected_logical_pairs": [],
+                    "budget_truncated_logical_pairs": [],
+                    "canonical_directions": [],
+                    "representative_departure_time": None,
+                    "budget": self._route_budget_summary(),
+                },
+            )
+
+        bundle = RouteEvidenceBundle(
+            baseline=baseline,
+            alternatives=alternatives,
+            non_walkable_pairs=non_walkable_pairs,
+        )
+        self._tracer.payload(
+            "evidence",
+            "route_evidence_bundle",
+            bundle,
+            minimum_mode=TracePayloadMode.NORMALIZED,
+        )
+        return bundle
+
+    @staticmethod
+    def _representative_departure_time(
+        places: list[PlaceEvidence], requirements: TravelRequirements
+    ) -> datetime | None:
+        if requirements.start_date is None:
+            return None
+        for place in places:
+            if place.timezone_id is None:
+                continue
+            try:
+                destination_timezone = ZoneInfo(place.timezone_id)
+            except (ValueError, ZoneInfoNotFoundError):
+                continue
+            return datetime.combine(
+                requirements.start_date,
+                time(hour=12),
+                tzinfo=destination_timezone,
+            )
+        return None
+
+    @staticmethod
+    def _route_cache_key(request: RouteMatrixRequest) -> tuple[object, ...]:
+        return (
             "route_matrix",
             tuple(
                 (item.place_id, item.location.latitude, item.location.longitude)
-                for item in waypoints
+                for item in request.origins
+            ),
+            tuple(
+                (item.place_id, item.location.latitude, item.location.longitude)
+                for item in request.destinations
             ),
             request.travel_mode,
             request.routing_preference,
+            request.departure_time,
             request.field_mask,
         )
+
+    async def _acquire_route_matrix(
+        self,
+        request: RouteMatrixRequest,
+        *,
+        mode_reason: str,
+        purpose: RouteEvidencePurpose,
+        budget_key: ToolBudgetKey,
+        count_call: bool = False,
+    ) -> RouteEvidence:
+        matrix_elements = len(request.origins) * len(request.destinations)
+        additional_charges = (
+            ((ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS, 1),)
+            if count_call
+            else ()
+        )
         result: _ProviderResult[RouteMatrixDTO] = await self._cached_provider_call(
-            key=key,
-            budget_key=ToolBudgetKey.ROUTE_MATRIX_ELEMENTS,
+            key=self._route_cache_key(request),
+            budget_key=budget_key,
             budget_amount=matrix_elements,
+            additional_budget_charges=additional_charges,
             factory=lambda: self._routes.compute_route_matrix(request),
         )
         if result.value is None:
-            evidence = unavailable_routes(
+            return unavailable_routes(
                 request,
-                mode_reason=mode.reason,
+                mode_reason=mode_reason,
                 reason=f"Routes unavailable ({result.error_type})",
+                purpose=purpose,
             )
-        else:
-            evidence = normalize_routes(result.value, request=request, mode_reason=mode.reason)
-        self._tracer.payload(
-            "evidence",
-            "route_evidence",
-            evidence,
-            minimum_mode=TracePayloadMode.NORMALIZED,
+        return normalize_routes(
+            result.value,
+            request=request,
+            mode_reason=mode_reason,
+            purpose=purpose,
         )
-        return evidence
+
+    async def _acquire_transit_alternatives(
+        self,
+        *,
+        selected: list[NonWalkablePairEvidence],
+        waypoints: list[RouteWaypoint],
+        departure_time: datetime | None,
+    ) -> list[RouteEvidence]:
+        waypoint_by_id = {item.place_id: item for item in waypoints}
+        destinations_by_origin: dict[str, list[str]] = {}
+        for pair in selected:
+            destinations_by_origin.setdefault(pair.place_id_a, []).append(pair.place_id_b)
+
+        alternatives: list[RouteEvidence] = []
+        for origin_id, destination_ids in destinations_by_origin.items():
+            request = RouteMatrixRequest(
+                origins=[waypoint_by_id[origin_id]],
+                destinations=[waypoint_by_id[item] for item in destination_ids],
+                travel_mode=TravelMode.TRANSIT.value,
+                departure_time=departure_time,
+                field_mask=ROUTE_MATRIX_FIELD_MASK,
+            )
+            if departure_time is None:
+                evidence = unavailable_routes(
+                    request,
+                    mode_reason="selective_transit_missing_destination_timezone",
+                    reason=(
+                        "Transit alternative unavailable because no valid "
+                        "destination timezone was found"
+                    ),
+                    purpose=RouteEvidencePurpose.NON_WALKABLE_ALTERNATIVE,
+                )
+                alternatives.append(evidence)
+                self._tracer.event(
+                    "route_alternative_completed",
+                    {
+                        "origin_place_id": origin_id,
+                        "destination_place_ids": destination_ids,
+                        "availability": evidence.availability.value,
+                        "element_count": len(evidence.elements),
+                        "provider_observed_element_count": 0,
+                        "mirrored_reverse_estimate_count": 0,
+                        "billable_matrix_element_count": 0,
+                        "representative_departure_time": None,
+                        "unavailable_reason": evidence.unavailable_reason,
+                        "budget": self._route_budget_summary(),
+                    },
+                )
+                continue
+            self._tracer.event(
+                "route_alternative_started",
+                {
+                    "origin_place_id": origin_id,
+                    "destination_place_ids": destination_ids,
+                    "matrix_elements": len(destination_ids),
+                    "representative_departure_time": departure_time,
+                },
+            )
+            evidence = await self._acquire_route_matrix(
+                request,
+                mode_reason="selective_transit_for_non_walkable_pair",
+                purpose=RouteEvidencePurpose.NON_WALKABLE_ALTERNATIVE,
+                budget_key=ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS,
+                count_call=True,
+            )
+            evidence = self._with_mirrored_reverse_estimates(evidence)
+            alternatives.append(evidence)
+            provider_observed_count = sum(
+                item.evidence_type is RouteElementEvidenceType.PROVIDER_OBSERVED
+                for item in evidence.elements
+            )
+            mirrored_count = sum(
+                item.evidence_type is RouteElementEvidenceType.MIRRORED_REVERSE_ESTIMATE
+                for item in evidence.elements
+            )
+            self._tracer.event(
+                "route_alternative_completed",
+                {
+                    "origin_place_id": origin_id,
+                    "destination_place_ids": destination_ids,
+                    "availability": evidence.availability.value,
+                    "element_count": len(evidence.elements),
+                    "provider_observed_element_count": provider_observed_count,
+                    "mirrored_reverse_estimate_count": mirrored_count,
+                    "billable_matrix_element_count": len(destination_ids),
+                    "representative_departure_time": departure_time,
+                    "unavailable_reason": evidence.unavailable_reason,
+                    "budget": self._route_budget_summary(),
+                },
+            )
+        return alternatives
+
+    @staticmethod
+    def _with_mirrored_reverse_estimates(evidence: RouteEvidence) -> RouteEvidence:
+        mirrored = [
+            RouteElementEvidence(
+                origin_place_id=item.destination_place_id,
+                destination_place_id=item.origin_place_id,
+                evidence_type=RouteElementEvidenceType.MIRRORED_REVERSE_ESTIMATE,
+                derived_from_origin_place_id=item.origin_place_id,
+                derived_from_destination_place_id=item.destination_place_id,
+                duration_seconds=item.duration_seconds,
+                availability=EvidenceAvailability.AVAILABLE,
+            )
+            for item in evidence.elements
+            if item.evidence_type is RouteElementEvidenceType.PROVIDER_OBSERVED
+            and item.availability is EvidenceAvailability.AVAILABLE
+            and item.duration_seconds is not None
+            and item.origin_place_id != item.destination_place_id
+        ]
+        if not mirrored:
+            return evidence
+        return evidence.model_copy(update={"elements": [*evidence.elements, *mirrored]})
+
+    def _trace_alternative_trigger(
+        self,
+        *,
+        directed_triggers: list[DirectedWalkTrigger],
+        logical_pairs: list[NonWalkablePairEvidence],
+        selected: list[NonWalkablePairEvidence],
+        truncated: list[NonWalkablePairEvidence],
+        departure_time: datetime | None,
+    ) -> None:
+        self._tracer.event(
+            "route_alternative_trigger_evaluated",
+            {
+                "triggered": bool(logical_pairs),
+                "thresholds": {
+                    "walk_distance_meters": MAX_WALK_DISTANCE_METERS,
+                    "walk_duration_seconds": MAX_WALK_DURATION_SECONDS,
+                },
+                "detected_directed_walk_triggers": [
+                    {
+                        "origin_place_id": item.origin_place_id,
+                        "destination_place_id": item.destination_place_id,
+                        "trigger": item.trigger.value,
+                        "walk_distance_meters": item.walk_distance_meters,
+                        "walk_duration_seconds": item.walk_duration_seconds,
+                    }
+                    for item in directed_triggers
+                ],
+                "collapsed_logical_pairs": [
+                    item.model_dump(mode="json") for item in logical_pairs
+                ],
+                "selected_logical_pairs": [
+                    item.model_dump(mode="json") for item in selected
+                ],
+                "budget_truncated_logical_pairs": [
+                    item.model_dump(mode="json") for item in truncated
+                ],
+                "canonical_directions": [
+                    {
+                        "origin_place_id": item.place_id_a,
+                        "destination_place_id": item.place_id_b,
+                    }
+                    for item in selected
+                ],
+                "representative_departure_time": departure_time,
+                "budget": self._route_budget_summary(),
+            },
+        )
+
+    def _route_budget_summary(self) -> dict[str, dict[str, int]]:
+        summary = self._budget.summary()
+        return {
+            key.value: summary[key.value]
+            for key in (
+                ToolBudgetKey.ROUTE_MATRIX_ELEMENTS,
+                ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS,
+                ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS,
+            )
+        }

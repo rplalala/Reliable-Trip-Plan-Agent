@@ -23,6 +23,26 @@ def test_tool_budget_rejects_work_before_exceeding_hard_limit() -> None:
     assert budget.summary()["place_search_calls"] == {"used": 1, "limit": 1}
 
 
+def test_tool_budget_reserves_related_route_counters_atomically() -> None:
+    budget = ToolBudget(
+        ToolBudgetLimits(
+            max_alternative_route_pairs=2,
+            max_alternative_route_matrix_calls=0,
+        )
+    )
+
+    with pytest.raises(ToolBudgetExceededError):
+        budget.consume_many(
+            (
+                (ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS, 1),
+                (ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS, 1),
+            )
+        )
+
+    assert budget.summary()["alternative_route_pairs"]["used"] == 0
+    assert budget.summary()["alternative_route_matrix_calls"]["used"] == 0
+
+
 def test_request_cache_deduplicates_success_and_unavailable_values() -> None:
     cache = RequestCache()
     calls = 0

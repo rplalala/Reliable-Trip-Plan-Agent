@@ -11,6 +11,7 @@ from backend.app.evidence.models import (
     PlaceEvidence,
     RouteElementEvidence,
     RouteEvidence,
+    RouteEvidencePurpose,
     WeatherDayEvidence,
     WeatherEvidence,
 )
@@ -309,6 +310,7 @@ def normalize_routes(
     *,
     request: RouteMatrixRequest,
     mode_reason: str,
+    purpose: RouteEvidencePurpose = RouteEvidencePurpose.BASELINE,
 ) -> RouteEvidence:
     """Map matrix indexes back to stable Place IDs and retain failures explicitly."""
 
@@ -355,7 +357,9 @@ def normalize_routes(
     return RouteEvidence(
         travel_mode=request.travel_mode,
         mode_reason=mode_reason,
+        purpose=purpose,
         routing_preference=request.routing_preference,
+        representative_departure_time=request.departure_time,
         availability=availability,
         elements=elements,
         unavailable_reason=("No route matrix elements were available" if not elements else None),
@@ -369,11 +373,14 @@ def unavailable_routes(
     *,
     mode_reason: str,
     reason: str,
+    purpose: RouteEvidencePurpose = RouteEvidencePurpose.BASELINE,
 ) -> RouteEvidence:
     return RouteEvidence(
         travel_mode=request.travel_mode,
         mode_reason=mode_reason,
+        purpose=purpose,
         routing_preference=request.routing_preference,
+        representative_departure_time=request.departure_time,
         availability=EvidenceAvailability.UNAVAILABLE,
         unavailable_reason=reason,
         retrieved_at=datetime.now(UTC),

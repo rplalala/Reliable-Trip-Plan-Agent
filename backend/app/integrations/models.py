@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 
 
 class IntegrationModel(BaseModel):
@@ -87,6 +87,7 @@ class RouteMatrixRequest(IntegrationModel):
     destinations: list[RouteWaypoint] = Field(min_length=1)
     travel_mode: str = Field(min_length=1)
     routing_preference: str | None = None
+    departure_time: AwareDatetime | None = None
     field_mask: str = Field(min_length=1)
 
 
