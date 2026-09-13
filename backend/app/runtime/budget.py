@@ -30,8 +30,8 @@ class ToolBudgetLimits(BaseModel):
     max_review_enriched_places: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.REVIEW_ENRICHED_PLACES)
     )
-    max_web_search_queries: StrictInt = Field(
-        default_factory=lambda: _configured_default(ToolBudgetKey.WEB_SEARCH_QUERIES)
+    max_web_evidence_tasks: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.WEB_EVIDENCE_TASKS)
     )
     max_page_fetches: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.PAGE_FETCHES)
@@ -62,13 +62,11 @@ class ToolBudgetLimits(BaseModel):
             ToolBudgetKey.PLACE_SEARCH_CALLS: self.max_place_search_calls,
             ToolBudgetKey.PLACE_DETAIL_CALLS: self.max_place_detail_calls,
             ToolBudgetKey.REVIEW_ENRICHED_PLACES: self.max_review_enriched_places,
-            ToolBudgetKey.WEB_SEARCH_QUERIES: self.max_web_search_queries,
+            ToolBudgetKey.WEB_EVIDENCE_TASKS: self.max_web_evidence_tasks,
             ToolBudgetKey.PAGE_FETCHES: self.max_page_fetches,
             ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: self.max_route_matrix_elements,
             ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: self.max_alternative_route_pairs,
-            ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: (
-                self.max_alternative_route_matrix_calls
-            ),
+            ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: (self.max_alternative_route_matrix_calls),
             ToolBudgetKey.WEATHER_CALLS: self.max_weather_calls,
         }
 

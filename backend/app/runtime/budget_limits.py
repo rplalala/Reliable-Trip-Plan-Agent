@@ -11,7 +11,7 @@ class ToolBudgetKey(StrEnum):
     PLACE_SEARCH_CALLS = "place_search_calls"
     PLACE_DETAIL_CALLS = "place_detail_calls"
     REVIEW_ENRICHED_PLACES = "review_enriched_places"
-    WEB_SEARCH_QUERIES = "web_search_queries"
+    WEB_EVIDENCE_TASKS = "web_evidence_tasks"
     PAGE_FETCHES = "page_fetches"
     ROUTE_MATRIX_ELEMENTS = "route_matrix_elements"
     ALTERNATIVE_ROUTE_PAIRS = "alternative_route_pairs"
@@ -30,7 +30,7 @@ TOOL_BUDGET_HARD_LIMITS: dict[ToolBudgetKey, BudgetHardLimit] = {
     ToolBudgetKey.PLACE_SEARCH_CALLS: BudgetHardLimit(1, 12),
     ToolBudgetKey.PLACE_DETAIL_CALLS: BudgetHardLimit(1, 20),
     ToolBudgetKey.REVIEW_ENRICHED_PLACES: BudgetHardLimit(0, 8),
-    ToolBudgetKey.WEB_SEARCH_QUERIES: BudgetHardLimit(0, 20),
+    ToolBudgetKey.WEB_EVIDENCE_TASKS: BudgetHardLimit(0, 20),
     ToolBudgetKey.PAGE_FETCHES: BudgetHardLimit(0, 20),
     ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: BudgetHardLimit(1, 100),
     ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: BudgetHardLimit(0, 16),

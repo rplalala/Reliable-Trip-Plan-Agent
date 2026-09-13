@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 3
 
 app:
   time_zone: Australia/Sydney
@@ -15,10 +15,29 @@ budget:
     alternative_pairs: 8
     alternative_matrix_calls: 8
   web:
-    search_queries: 6
+    evidence_tasks: 6
     page_fetches: 6
   experience:
     review_enriched_places: 3
+
+web_evidence:
+  reasoning_effort: low
+  max_tool_calls: 2
+  search_context_size: low
+  timeout_seconds: 20
+  authority_domain_overrides: []
+  page_retrieval:
+    max_targets_per_need: 2
+    max_redirects: 2
+    timeout_seconds: 10
+    max_response_bytes: 262144
+    max_text_chars: 20000
+  claim_extraction:
+    max_native_sources: 3
+    max_native_snippet_chars: 1200
+    max_candidates_per_call: 3
+    max_calls_per_need: 3
+    max_extraction_output_units: 1200
 
 logging:
   level: INFO

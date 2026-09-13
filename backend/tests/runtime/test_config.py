@@ -37,14 +37,17 @@ def test_committed_yaml_preserves_v1_budget_and_trace_defaults() -> None:
     assert limits.max_alternative_route_pairs == 8
     assert limits.max_alternative_route_matrix_calls == 8
     assert limits.max_weather_calls == 2
+    assert config.schema_version == 3
+    assert limits.max_web_evidence_tasks == 6
+    assert config.web_evidence.max_tool_calls == 2
+    assert config.web_evidence.page_retrieval.timeout_seconds == 10
+    assert config.web_evidence.page_retrieval.max_response_bytes == 262144
     assert config.trace.enabled is True
     assert config.trace.payload_level.value == "metadata"
     assert config.trace.raw_provider_payloads is False
 
 
-def test_config_path_and_trace_directory_ignore_working_directory(
-    tmp_path, monkeypatch
-) -> None:
+def test_config_path_and_trace_directory_ignore_working_directory(tmp_path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
 
     assert load_runtime_config().app.time_zone == "Australia/Sydney"
@@ -75,12 +78,61 @@ def test_yaml_rejects_unknown_keys_bad_types_and_malformed_syntax(tmp_path) -> N
         load_runtime_config_file(path)
 
 
+def test_web_budget_migration_rejects_old_schema_old_key_and_dual_keys(tmp_path) -> None:
+    data = load_runtime_config().model_dump(mode="json")
+    path = tmp_path / "runtime.yaml"
+    data["schema_version"] = 1
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+    data["schema_version"] = 2
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+    data["schema_version"] = 3
+    data["budget"]["web"]["search_queries"] = data["budget"]["web"].pop("evidence_tasks")
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+    data["budget"]["web"]["evidence_tasks"] = 6
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+
+def test_invalid_authority_domain_override_fails_config_validation(tmp_path) -> None:
+    data = load_runtime_config().model_dump(mode="json")
+    data["web_evidence"]["authority_domain_overrides"] = [
+        {
+            "place_id": "alpha",
+            "information_needs": ["date_specific_operational_exception"],
+            "domains": ["localhost"],
+        }
+    ]
+    path = tmp_path / "runtime.yaml"
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+
+def test_page_retrieval_safety_defaults_are_strict(tmp_path) -> None:
+    data = load_runtime_config().model_dump(mode="json")
+    data["web_evidence"]["page_retrieval"]["max_response_bytes"] = 524288
+    path = tmp_path / "runtime.yaml"
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+
 _BUDGET_PATHS = {
     ToolBudgetKey.CANDIDATES: ("candidates",),
     ToolBudgetKey.PLACE_SEARCH_CALLS: ("places", "search_calls"),
     ToolBudgetKey.PLACE_DETAIL_CALLS: ("places", "detail_calls"),
     ToolBudgetKey.REVIEW_ENRICHED_PLACES: ("experience", "review_enriched_places"),
-    ToolBudgetKey.WEB_SEARCH_QUERIES: ("web", "search_queries"),
+    ToolBudgetKey.WEB_EVIDENCE_TASKS: ("web", "evidence_tasks"),
     ToolBudgetKey.PAGE_FETCHES: ("web", "page_fetches"),
     ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: ("routes", "matrix_elements"),
     ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: ("routes", "alternative_pairs"),
@@ -137,6 +189,8 @@ def test_config_snapshot_is_stable_and_contains_only_policy() -> None:
 
     assert snapshot["trace"]["directory"] == "logs"
     assert snapshot["effective_tool_budget"]["alternative_route_pairs"] == 8
+    assert snapshot["effective_tool_budget"]["web_evidence_tasks"] == 6
+    assert "web_search_queries" not in json.dumps(snapshot)
     assert (snapshot, digest) == runtime_config_snapshot(
         config,
         effective_budget={key.value: value for key, value in config.budget.as_key_limits().items()},
@@ -161,9 +215,13 @@ def test_logging_policy_controls_owned_console_handler() -> None:
 
 def test_console_log_filter_redacts_provider_query_credentials() -> None:
     record = logging.LogRecord(
-        "httpx", logging.INFO, __file__, 1,
+        "httpx",
+        logging.INFO,
+        __file__,
+        1,
         "HTTP Request: GET https://weather.example.test/forecast?key=live-secret&days=10",
-        (), None,
+        (),
+        None,
     )
 
     assert _RedactingLogFilter().filter(record) is True
