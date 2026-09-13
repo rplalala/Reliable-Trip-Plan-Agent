@@ -1,0 +1,543 @@
+"""Offline Phase 2 state-machine, cache-independent page budget, and outcome checks."""
+
+import asyncio
+from datetime import UTC, date, datetime
+from uuid import UUID
+
+from backend.app.evidence.models import EvidenceAvailability, PlaceEvidence
+from backend.app.evidence.official_models import (
+    EvidenceReasonerAssessment,
+    OfficialClaimCandidate,
+    OfficialClaimKind,
+    OfficialGapStatus,
+    SourceKind,
+    SubjectScope,
+    TemporalBasis,
+)
+from backend.app.evidence.web_models import (
+    OfficialInformationNeed,
+    RequestedFacet,
+    WebEvidenceTask,
+    WebTaskOutcome,
+    WebTaskStatus,
+    WebTriggerReason,
+)
+from backend.app.integrations.web.models import WebSearchHit, WebSearchObservation
+from backend.app.integrations.web.page_models import PageFetchResult, PageFetchStatus
+from backend.app.observability.run_trace import NullRunTracer
+from backend.app.runtime.budget import ToolBudget, ToolBudgetKey, ToolBudgetLimits
+from backend.app.runtime.config_loader import load_runtime_config
+from backend.app.services.official_web_grounding import (
+    OfficialWebGroundingService,
+    _eligible_targets,
+)
+
+URL = "https://alpha.example.org/admission"
+TEXT = "Alpha Zoo offers free general admission."
+DAY = date(2026, 12, 25)
+
+
+def _place():
+    return PlaceEvidence(
+        place_id="alpha",
+        name="Alpha Zoo",
+        latitude=-33.8,
+        longitude=151.2,
+        business_status="OPERATIONAL",
+        availability=EvidenceAvailability.AVAILABLE,
+        website_uri="https://alpha.example.org",
+        source_ref="google_places:alpha",
+        retrieved_at=datetime(2026, 12, 20, tzinfo=UTC),
+    )
+
+
+def _task(need=OfficialInformationNeed.ADMISSION_TICKET):
+    return WebEvidenceTask(
+        task_id="task-1",
+        place_id="alpha",
+        place_name="Alpha Zoo",
+        information_need=need,
+        applicable_start_date=DAY,
+        applicable_end_date=DAY,
+        allowed_domains=("alpha.example.org",),
+        trigger_reasons=(WebTriggerReason.RESIDUAL_MISSING,),
+        priority_group=2,
+        shortlist_index=0,
+    )
+
+
+def _outcome(*, snippet=TEXT, urls=(URL,), need=OfficialInformationNeed.ADMISSION_TICKET):
+    hits = tuple(
+        WebSearchHit(
+            url=url,
+            source_domain="alpha.example.org",
+            title=None,
+            snippet=snippet,
+            action_index=0,
+            result_index=index,
+            allowed_domain=True,
+        )
+        for index, url in enumerate(urls)
+    )
+    return WebTaskOutcome(
+        task=_task(need),
+        status=WebTaskStatus.COMPLETED_WITH_SOURCES,
+        observation=WebSearchObservation(provider_status="completed", hits=hits),
+    )
+
+
+def _admission(source_kind, source_url=URL, *, final_url=None, text=TEXT):
+    return OfficialClaimCandidate(
+        place_id="alpha",
+        place_name="Alpha Zoo",
+        information_need=OfficialInformationNeed.ADMISSION_TICKET,
+        claim_kind=OfficialClaimKind.FREE_GENERAL_ADMISSION,
+        value_text="free general admission",
+        source_kind=source_kind,
+        source_url=source_url,
+        final_url=final_url,
+        supporting_excerpt=text,
+    )
+
+
+class FakeReasoner:
+    def __init__(self, answer):
+        self.answer = answer
+        self.calls = []
+
+    async def reason(self, task, sources, baseline):
+        self.calls.append(sources)
+        assessments = []
+        for candidate in self.answer(sources):
+            source = next(
+                (
+                    item
+                    for item in sources
+                    if item.source_url == candidate.source_url
+                    and item.source_kind is candidate.source_kind
+                ),
+                sources[0],
+            )
+            excerpt = candidate.supporting_excerpt
+            predicate = excerpt.split("Alpha Zoo", 1)[-1].strip().rstrip(".")
+            updates = {
+                "source_key": source.source_key,
+                "subject_scope": SubjectScope.WHOLE_VENUE,
+                "subject_text": "Alpha Zoo",
+                "predicate_text": predicate,
+                "temporal_basis": (
+                    TemporalBasis.EXPLICIT_DATE_OR_RANGE
+                    if candidate.date_text
+                    else TemporalBasis.CURRENT_GENERAL_POLICY
+                    if candidate.claim_kind
+                    in {
+                        OfficialClaimKind.FREE_GENERAL_ADMISSION,
+                        OfficialClaimKind.PAID_ADMISSION,
+                        OfficialClaimKind.RESERVATION_NOT_REQUIRED,
+                    }
+                    else TemporalBasis.UNSPECIFIED
+                ),
+                "time_text": candidate.value_text
+                if candidate.opens_at or candidate.closes_at
+                else None,
+                "amount_text": candidate.value_text if candidate.amount else None,
+            }
+            hydrated = candidate.model_copy(update=updates)
+            assessments.append(
+                EvidenceReasonerAssessment(
+                    relevant=True,
+                    supports_information_need=True,
+                    candidate=hydrated,
+                )
+            )
+        return tuple(assessments)
+
+
+class FakeRetriever:
+    def __init__(self, status=PageFetchStatus.FETCHED, text=TEXT):
+        self.status = status
+        self.text = text
+        self.calls = []
+
+    async def fetch(self, request):
+        self.calls.append(request)
+        return PageFetchResult(
+            task_id=request.task_id,
+            observed_url=request.observed_url,
+            status=self.status,
+            final_url=request.observed_url,
+            authorized_domain="alpha.example.org",
+            text=self.text if self.status is PageFetchStatus.FETCHED else None,
+            body_sha256="abc" if self.status is PageFetchStatus.FETCHED else None,
+            http_request_count=3,
+            reason=None,
+        )
+
+
+class TraceCollector:
+    def __init__(self):
+        self.events = []
+
+    def event(self, name, payload=None):
+        self.events.append((name, payload))
+
+
+def _service(reasoner, retriever, *, page_limit=6, tracer=None):
+    budget = ToolBudget(ToolBudgetLimits(max_page_fetches=page_limit))
+    service = OfficialWebGroundingService(
+        page_retriever=retriever,
+        reasoner=reasoner,
+        budget=budget,
+        tracer=tracer or NullRunTracer(UUID("00000000-0000-0000-0000-000000000018")),
+        config=load_runtime_config().web_evidence,
+    )
+    return service, budget
+
+
+def test_native_snippet_sufficient_stops_without_page_retrieval() -> None:
+    extractor = FakeReasoner(lambda sources: (_admission(SourceKind.NATIVE_SNIPPET),))
+    retriever = FakeRetriever()
+    service, budget = _service(extractor, retriever)
+    result = asyncio.run(service.ground(_outcome(), _place()))
+    assert result.status is OfficialGapStatus.AVAILABLE
+    assert "trip_date_applicability_unverified" not in result.reason_codes
+    assert len(result.accepted_evidence) == len(result.meaningful_evidence) == 1
+    assert result.extraction_calls == 1
+    assert result.page_target_attempts == 0
+    assert retriever.calls == []
+    assert budget.summary()[ToolBudgetKey.PAGE_FETCHES.value]["used"] == 0
+
+
+def test_related_direct_claim_is_retained_without_satisfying_requested_fee() -> None:
+    text = "Alpha Zoo tickets are required."
+
+    class RelatedReasoner:
+        async def reason(self, task, sources, baseline):
+            source = sources[0]
+            return (
+                EvidenceReasonerAssessment(
+                    relevant=True,
+                    supports_information_need=False,
+                    candidate=OfficialClaimCandidate(
+                        source_key=source.source_key,
+                        place_id="alpha",
+                        place_name="Alpha Zoo",
+                        information_need=OfficialInformationNeed.ADMISSION_TICKET,
+                        claim_kind=OfficialClaimKind.TICKET_REQUIRED,
+                        value_text="tickets are required",
+                        source_kind=SourceKind.NATIVE_SNIPPET,
+                        source_url=URL,
+                        supporting_excerpt=text,
+                        subject_scope=SubjectScope.WHOLE_VENUE,
+                        subject_text="Alpha Zoo",
+                        predicate_text="tickets are required",
+                        temporal_basis=TemporalBasis.CURRENT_GENERAL_POLICY,
+                    ),
+                ),
+            )
+
+    retriever = FakeRetriever()
+    service, budget = _service(RelatedReasoner(), retriever, page_limit=0)
+    outcome = _outcome(snippet=text).model_copy(
+        update={
+            "task": _task().model_copy(update={"requested_facets": (RequestedFacet.ADMISSION_FEE,)})
+        }
+    )
+    result = asyncio.run(service.ground(outcome, _place()))
+    assert result.status is OfficialGapStatus.PARTIAL
+    assert len(result.accepted_evidence) == len(result.meaningful_evidence) == 1
+    assert result.accepted_evidence[0].claim_kind is OfficialClaimKind.TICKET_REQUIRED
+    assert "facet_scope_insufficient" in result.reason_codes
+    assert retriever.calls == []
+    assert budget.summary()[ToolBudgetKey.PAGE_FETCHES.value]["used"] == 0
+
+
+def test_undated_reservation_policy_is_available_without_inventing_a_date() -> None:
+    text = "Alpha Zoo booking is not required."
+    extractor = FakeReasoner(
+        lambda sources: (
+            OfficialClaimCandidate(
+                place_id="alpha",
+                place_name="Alpha Zoo",
+                information_need=OfficialInformationNeed.RESERVATION_REQUIREMENT,
+                claim_kind=OfficialClaimKind.RESERVATION_NOT_REQUIRED,
+                value_text="booking is not required",
+                source_kind=SourceKind.NATIVE_SNIPPET,
+                source_url=URL,
+                supporting_excerpt=text,
+            ),
+        )
+    )
+    retriever = FakeRetriever()
+    service, budget = _service(extractor, retriever)
+    result = asyncio.run(
+        service.ground(
+            _outcome(snippet=text, need=OfficialInformationNeed.RESERVATION_REQUIREMENT),
+            _place(),
+        )
+    )
+    assert result.status is OfficialGapStatus.AVAILABLE
+    assert len(result.accepted_evidence) == 1
+    assert result.accepted_evidence[0].applicable_start_date is None
+    assert "trip_date_applicability_unverified" not in result.reason_codes
+    assert retriever.calls == []
+    assert budget.summary()[ToolBudgetKey.PAGE_FETCHES.value]["used"] == 0
+
+
+def test_task_date_cannot_support_undated_operational_closure() -> None:
+    source_url = "https://alpha.example.org/notice.pdf"
+    text = "Alpha Zoo is closed for maintenance."
+    extractor = FakeReasoner(
+        lambda sources: (
+            OfficialClaimCandidate(
+                place_id="alpha",
+                place_name="Alpha Zoo",
+                information_need=OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
+                claim_kind=OfficialClaimKind.MAINTENANCE_CLOSURE,
+                value_text="closed for maintenance",
+                source_kind=SourceKind.NATIVE_SNIPPET,
+                source_url=source_url,
+                supporting_excerpt=text,
+                applicable_start_date=DAY,
+                applicable_end_date=DAY,
+            ),
+        )
+    )
+    retriever = FakeRetriever()
+    service, _ = _service(extractor, retriever)
+    result = asyncio.run(
+        service.ground(
+            _outcome(
+                snippet=text,
+                urls=(source_url,),
+                need=OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
+            ),
+            _place(),
+        )
+    )
+    assert result.status is OfficialGapStatus.UNKNOWN
+    assert result.accepted_evidence == ()
+    assert "unsupported_date_scope" in result.reason_codes
+    assert retriever.calls == []
+
+
+def test_source_dated_closure_can_cover_the_requested_date_without_page_fetch() -> None:
+    text = "Alpha Zoo is closed for maintenance on 25 December 2026."
+    extractor = FakeReasoner(
+        lambda sources: (
+            OfficialClaimCandidate(
+                place_id="alpha",
+                place_name="Alpha Zoo",
+                information_need=OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
+                claim_kind=OfficialClaimKind.MAINTENANCE_CLOSURE,
+                value_text="closed for maintenance",
+                source_kind=SourceKind.NATIVE_SNIPPET,
+                source_url=URL,
+                supporting_excerpt=text,
+                date_text="25 December 2026",
+                applicable_start_date=DAY,
+                applicable_end_date=DAY,
+            ),
+        )
+    )
+    retriever = FakeRetriever()
+    service, budget = _service(extractor, retriever)
+    result = asyncio.run(
+        service.ground(
+            _outcome(
+                snippet=text,
+                need=OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
+            ),
+            _place(),
+        )
+    )
+    assert result.status is OfficialGapStatus.AVAILABLE
+    assert len(result.accepted_evidence) == 1
+    assert result.page_target_attempts == 0
+    assert budget.summary()[ToolBudgetKey.PAGE_FETCHES.value]["used"] == 0
+
+
+def test_zero_candidate_extraction_emits_explicit_trace_event() -> None:
+    tracer = TraceCollector()
+    extractor = FakeReasoner(lambda sources: ())
+    retriever = FakeRetriever(status=PageFetchStatus.BLOCKED)
+    service, _ = _service(extractor, retriever, tracer=tracer)
+    asyncio.run(service.ground(_outcome(), _place()))
+    completions = [
+        payload for name, payload in tracer.events if name == "official_extraction_completed"
+    ]
+    assert completions == [
+        {
+            "task_id": "task-1",
+            "source_kind": "native_snippet",
+            "source_count": 1,
+            "candidate_count": 0,
+            "status": "success",
+        }
+    ]
+    reasoner_events = [
+        payload for name, payload in tracer.events if name == "official_reasoner_completed"
+    ]
+    assert reasoner_events[0]["assessment_count"] == 0
+    assert reasoner_events[0]["status"] == "success"
+
+
+def test_failed_extraction_emits_failure_status_without_raw_output() -> None:
+    class FailingReasoner:
+        async def reason(self, task, sources, baseline):
+            raise RuntimeError("provider response unavailable")
+
+    tracer = TraceCollector()
+    service, _ = _service(
+        FailingReasoner(), FakeRetriever(status=PageFetchStatus.BLOCKED), tracer=tracer
+    )
+    asyncio.run(service.ground(_outcome(), _place()))
+    completions = [
+        payload for name, payload in tracer.events if name == "official_extraction_completed"
+    ]
+    assert completions == [
+        {
+            "task_id": "task-1",
+            "source_kind": "native_snippet",
+            "source_count": 1,
+            "candidate_count": 0,
+            "status": "failure",
+        }
+    ]
+    assert "provider response unavailable" not in str(tracer.events)
+
+
+def test_insufficient_native_snippet_uses_one_observed_page_and_one_budget_unit() -> None:
+    extractor = FakeReasoner(
+        lambda sources: (
+            (
+                _admission(SourceKind.FETCHED_HTML, final_url=URL)
+                if sources[0].source_kind is SourceKind.FETCHED_HTML
+                else None,
+            )
+            if sources[0].source_kind is SourceKind.FETCHED_HTML
+            else ()
+        )
+    )
+    retriever = FakeRetriever()
+    service, budget = _service(extractor, retriever)
+    result = asyncio.run(
+        service.ground(
+            _outcome(
+                snippet="Alpha Zoo visitor information.",
+                urls=(URL, "https://alpha.example.org/second"),
+            ),
+            _place(),
+        )
+    )
+    assert result.status is OfficialGapStatus.AVAILABLE
+    assert "trip_date_applicability_unverified" not in result.reason_codes
+    assert result.extraction_calls == 2
+    assert result.page_target_attempts == 1
+    assert len(retriever.calls) == 1
+    assert retriever.calls[0].observed_url == URL
+    assert budget.summary()[ToolBudgetKey.PAGE_FETCHES.value]["used"] == 1
+    assert len(result.meaningful_evidence) == 1
+
+
+def test_unobserved_model_url_is_rejected_and_never_selected_for_fetch() -> None:
+    invented = "https://evil.example.net/invented"
+    extractor = FakeReasoner(
+        lambda sources: (
+            (_admission(SourceKind.NATIVE_SNIPPET, invented),)
+            if sources[0].source_kind is SourceKind.NATIVE_SNIPPET
+            else ()
+        )
+    )
+    retriever = FakeRetriever(status=PageFetchStatus.BLOCKED)
+    service, _ = _service(extractor, retriever)
+    result = asyncio.run(service.ground(_outcome(), _place()))
+    assert "unobserved_source_url" in result.reason_codes
+    assert all(call.observed_url == URL for call in retriever.calls)
+    assert all(invented not in call.observed_urls for call in retriever.calls)
+
+
+def test_page_budget_exhaustion_prevents_fetch_without_changing_web_task_budget() -> None:
+    extractor = FakeReasoner(lambda sources: ())
+    retriever = FakeRetriever()
+    service, budget = _service(extractor, retriever, page_limit=0)
+    result = asyncio.run(
+        service.ground(_outcome(snippet="Alpha Zoo visitor information."), _place())
+    )
+    assert result.status is OfficialGapStatus.UNAVAILABLE
+    assert "page_budget_not_attempted" in result.reason_codes
+    assert result.page_target_attempts == 0
+    assert retriever.calls == []
+    assert budget.summary()[ToolBudgetKey.PAGE_FETCHES.value]["used"] == 0
+
+
+def test_at_most_two_target_pages_and_three_extraction_calls() -> None:
+    second = "https://alpha.example.org/visit"
+    third = "https://alpha.example.org/other"
+    extractor = FakeReasoner(lambda sources: ())
+    retriever = FakeRetriever(text="Alpha Zoo visit information.")
+    service, budget = _service(extractor, retriever)
+    result = asyncio.run(
+        service.ground(
+            _outcome(snippet="Alpha Zoo visitor information.", urls=(URL, second, third)), _place()
+        )
+    )
+    assert result.page_target_attempts == 2
+    assert result.extraction_calls == 3
+    assert len(retriever.calls) == 2
+    assert budget.summary()[ToolBudgetKey.PAGE_FETCHES.value]["used"] == 2
+
+
+def test_target_order_is_deterministic_place_then_need_then_observed_rank() -> None:
+    first = "https://alpha.example.org/first"
+    second = "https://alpha.example.org/alpha-zoo-admission"
+    outcome = _outcome(snippet="Generic information.", urls=(first, second))
+    assert _eligible_targets(outcome, _place(), load_runtime_config().web_evidence)[0] == second
+
+
+def test_proactive_no_source_is_unknown_not_confirmed_open() -> None:
+    task = _task(OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION)
+    outcome = WebTaskOutcome(
+        task=task,
+        status=WebTaskStatus.COMPLETED_NO_SOURCES,
+        observation=WebSearchObservation(provider_status="completed"),
+    )
+    extractor = FakeReasoner(lambda sources: ())
+    retriever = FakeRetriever()
+    service, _ = _service(extractor, retriever)
+    result = asyncio.run(service.ground(outcome, _place()))
+    assert result.status is OfficialGapStatus.UNKNOWN
+    assert result.accepted_evidence == ()
+    assert result.bounded_check_completed is True
+    assert retriever.calls == extractor.calls == []
+
+
+def test_conflicting_accepted_claims_preserve_both_sources_without_winner() -> None:
+    free = "Alpha Zoo offers free general admission."
+    paid = "Alpha Zoo admission costs AUD 20."
+    extractor = FakeReasoner(
+        lambda sources: (
+            _admission(SourceKind.NATIVE_SNIPPET, text=free),
+            OfficialClaimCandidate(
+                place_id="alpha",
+                place_name="Alpha Zoo",
+                information_need=OfficialInformationNeed.ADMISSION_TICKET,
+                claim_kind=OfficialClaimKind.PAID_ADMISSION,
+                value_text="AUD 20",
+                source_kind=SourceKind.NATIVE_SNIPPET,
+                source_url=URL,
+                supporting_excerpt=paid,
+                amount="20",
+                currency="AUD",
+            ),
+        )
+    )
+    retriever = FakeRetriever()
+    service, budget = _service(extractor, retriever)
+    result = asyncio.run(service.ground(_outcome(snippet=f"{free} {paid}"), _place()))
+    assert result.status is OfficialGapStatus.PARTIAL
+    assert len(result.accepted_evidence) == 2
+    assert len(result.conflict_source_refs) == 2
+    assert result.meaningful_evidence == ()
+    assert "conflicting_official_claims" in result.reason_codes
+    assert budget.summary()[ToolBudgetKey.PAGE_FETCHES.value]["used"] == 1
