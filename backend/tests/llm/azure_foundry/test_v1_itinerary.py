@@ -13,8 +13,8 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryItineraryDTO,
     FoundryMoneyDTO,
 )
+from backend.app.llm.azure_foundry.itinerary_cost_projection import map_foundry_v1_itinerary
 from backend.app.llm.azure_foundry.mapping import FoundryMappingError, map_foundry_itinerary
-from backend.app.llm.azure_foundry.v1_itinerary import map_foundry_v1_itinerary
 
 
 def _datetime(time: str) -> FoundryDateTimeDTO:

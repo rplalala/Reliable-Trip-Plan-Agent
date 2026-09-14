@@ -17,6 +17,7 @@ from backend.app.integrations.models import (
     WeatherRequest,
 )
 from backend.app.schemas.itinerary import Activity, ItineraryDay
+from backend.app.schemas.itinerary_projection import V1Itinerary
 from backend.app.schemas.named_place_intent import NamedPlaceIntent
 from backend.app.schemas.request import TravelRequirements
 from backend.app.schemas.trip_intent import (
@@ -26,7 +27,6 @@ from backend.app.schemas.trip_intent import (
     TransportPreferenceIntent,
     TripIntentExtractionResult,
 )
-from backend.app.schemas.v1_itinerary import V1Itinerary
 
 
 def _candidate(place_id: str, rank: int, latitude: float, longitude: float) -> PlaceCandidateDTO:

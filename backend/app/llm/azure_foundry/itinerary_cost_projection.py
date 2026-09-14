@@ -7,11 +7,11 @@ from pydantic import ValidationError
 
 from backend.app.llm.azure_foundry.dto import FoundryItineraryDTO, FoundryMoneyDTO
 from backend.app.llm.azure_foundry.mapping import map_foundry_itinerary
-from backend.app.schemas.request import Money
-from backend.app.schemas.v1_itinerary import (
+from backend.app.schemas.itinerary_projection import (
     EstimatedCostProjectionDiagnostic,
     V1Itinerary,
 )
+from backend.app.schemas.request import Money
 
 _RANGE_PATTERN = re.compile(
     r"(?P<lower>[0-9]+(?:\.[0-9]+)?)[ \t]*-[ \t]*(?P<upper>[0-9]+(?:\.[0-9]+)?)\Z"

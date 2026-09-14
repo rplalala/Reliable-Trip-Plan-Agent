@@ -16,6 +16,7 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryTravelRequirementsDTO,
     FoundryTripIntentExtractionDTO,
 )
+from backend.app.llm.azure_foundry.itinerary_cost_projection import map_foundry_v1_itinerary
 from backend.app.llm.azure_foundry.mapping import (
     FoundryMappingError,
     map_foundry_itinerary,
@@ -23,13 +24,12 @@ from backend.app.llm.azure_foundry.mapping import (
     map_foundry_requirements_with_named_places,
     map_foundry_trip_intents,
 )
-from backend.app.llm.azure_foundry.v1_itinerary import map_foundry_v1_itinerary
 from backend.app.llm.client import StructuredModelT, StructuredOutputError
 from backend.app.schemas.itinerary import Itinerary
+from backend.app.schemas.itinerary_projection import V1Itinerary
 from backend.app.schemas.named_place_intent import RequirementsWithNamedPlaceIntents
 from backend.app.schemas.request import TravelRequirements
 from backend.app.schemas.trip_intent import TripIntentExtractionResult
-from backend.app.schemas.v1_itinerary import V1Itinerary
 
 
 @dataclass(frozen=True)

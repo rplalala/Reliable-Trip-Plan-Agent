@@ -34,6 +34,7 @@ from backend.app.policies.trip_dates import create_trip_date_window
 from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
 from backend.app.schemas.itinerary import ItineraryDay
+from backend.app.schemas.itinerary_projection import EstimatedCostProjectionDiagnostic, V1Itinerary
 from backend.app.schemas.named_place_intent import (
     NamedPlaceInclusion,
     NamedPlaceIntent,
@@ -44,7 +45,6 @@ from backend.app.schemas.trip_intent import (
     ExperiencePreferenceIntent,
     TripIntentExtractionResult,
 )
-from backend.app.schemas.v1_itinerary import EstimatedCostProjectionDiagnostic, V1Itinerary
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
 from backend.app.versions.v1.graph import build_v1_graph, project_selected_places
 from backend.app.versions.v1.runner import run_v1

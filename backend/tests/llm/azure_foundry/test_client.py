@@ -25,13 +25,13 @@ from backend.app.llm.azure_foundry.dto import (
 )
 from backend.app.llm.client import StructuredOutputError
 from backend.app.schemas.itinerary import Itinerary
+from backend.app.schemas.itinerary_projection import V1Itinerary
 from backend.app.schemas.named_place_intent import (
     NamedPlaceInclusion,
     RequirementsWithNamedPlaceIntents,
 )
 from backend.app.schemas.request import TravelRequirements
 from backend.app.schemas.trip_intent import TripIntentExtractionResult
-from backend.app.schemas.v1_itinerary import V1Itinerary
 
 
 class FakeStructuredModel:

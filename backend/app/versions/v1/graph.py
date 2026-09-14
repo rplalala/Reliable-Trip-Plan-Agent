@@ -26,9 +26,9 @@ from backend.app.policies.trip_dates import (
 )
 from backend.app.policies.trip_intent import TripIntentContractError, validate_trip_intents
 from backend.app.schemas.itinerary import Itinerary
+from backend.app.schemas.itinerary_projection import V1Itinerary
 from backend.app.schemas.request import TravelRequirements
 from backend.app.schemas.trip_intent import TripIntentExtractionResult
-from backend.app.schemas.v1_itinerary import V1Itinerary
 from backend.app.services.evidence_acquisition import (
     CandidateFunnelResult,
     NoViableCandidatesError,
