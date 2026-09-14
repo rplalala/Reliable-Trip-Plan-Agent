@@ -111,7 +111,9 @@ def _candidate(
     return OfficialClaimCandidate(**data)
 
 
-def _gate(candidate, source, *, task=None, place=None, observation=None, sources=None):
+def _gate(
+    candidate, source, *, task=None, place=None, observation=None, sources=None, diagnostics=None
+):
     observation = observation or WebSearchObservation(
         provider_status="completed",
         hits=(
@@ -133,6 +135,7 @@ def _gate(candidate, source, *, task=None, place=None, observation=None, sources
         place=place or _place(),
         config=load_runtime_config().web_evidence,
         retrieved_at=datetime(2026, 12, 20, tzinfo=UTC),
+        diagnostics=diagnostics,
     )
 
 
@@ -631,6 +634,32 @@ def test_task_date_and_unsupported_source_fields_are_rejected() -> None:
         ]
         == "source_span_not_in_excerpt"
     )
+
+
+def test_binding_diagnostics_do_not_change_gate_acceptance_or_rejection() -> None:
+    source = _source("Alpha Zoo entry is complimentary.")
+    candidate = _candidate(
+        source,
+        need=OfficialInformationNeed.ADMISSION_TICKET,
+        kind=OfficialClaimKind.FREE_GENERAL_ADMISSION,
+        value="complimentary",
+        temporal=TemporalBasis.CURRENT_GENERAL_POLICY,
+        date_text=None,
+        start=None,
+        end=None,
+    )
+    accepted_without = _gate(candidate, source)
+    accepted_diagnostics = {}
+    accepted_with = _gate(candidate, source, diagnostics=accepted_diagnostics)
+    assert accepted_with == accepted_without
+    assert accepted_diagnostics["local_binding_condition"] == "bound"
+
+    rejected = candidate.model_copy(update={"amount": "0"})
+    rejected_without = _gate(rejected, source)
+    rejected_diagnostics = {}
+    rejected_with = _gate(rejected, source, diagnostics=rejected_diagnostics)
+    assert rejected_with == rejected_without == (None, "unsupported_price_field")
+    assert rejected_diagnostics["local_binding_condition"] == "bound"
 
 
 def test_wrong_source_key_excerpt_url_and_authority_are_rejected() -> None:

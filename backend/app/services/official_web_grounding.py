@@ -1,17 +1,22 @@
 """Bounded Phase 2 grounding after one completed Phase 1 Web task."""
 
+import json
 from datetime import UTC, datetime
+from decimal import Decimal, InvalidOperation
 from urllib.parse import urlsplit
+
+from pydantic import ValidationError
 
 from backend.app.evidence.models import PlaceEvidence
 from backend.app.evidence.official_models import (
     EvidenceSourceBlock,
+    OfficialClaimCandidate,
     OfficialCurrentEvidence,
     OfficialGapOutcome,
     OfficialGapStatus,
     SourceKind,
 )
-from backend.app.evidence.web_models import WebTaskOutcome, WebTaskStatus
+from backend.app.evidence.web_models import WebEvidenceTask, WebTaskOutcome, WebTaskStatus
 from backend.app.integrations.web.extraction_protocols import OfficialEvidenceReasoner
 from backend.app.integrations.web.page_models import PageFetchRequest, PageFetchStatus
 from backend.app.integrations.web.protocols import PageRetriever
@@ -64,6 +69,131 @@ def _eligible_targets(
         need = int(any(word in tokens for word in _NEED_WORDS[outcome.task.information_need.value]))
         scored.append((-subject, -need, index, hit.url))
     return tuple(item[3] for item in sorted(scored))
+
+
+def _safe_trace_url(url: str | None) -> str | None:
+    """Retain only source URL identity, excluding query, fragment, and userinfo."""
+
+    if url is None:
+        return None
+    try:
+        parts = urlsplit(url)
+        if parts.scheme.casefold() != "https" or not parts.hostname:
+            return None
+        host = parts.hostname
+        port = f":{parts.port}" if parts.port is not None else ""
+        return f"https://{host}{port}{parts.path}"
+    except ValueError:
+        return None
+
+
+def _source_trace_identity(source: EvidenceSourceBlock) -> dict[str, str | None]:
+    """Identify a failed source without logging its text or URL query."""
+
+    return {
+        "source_key": source.source_key,
+        "source_kind": source.source_kind.value,
+        "page_url": _safe_trace_url(source.final_url or source.source_url),
+    }
+
+
+def _candidate_trace_metadata(
+    candidate: OfficialClaimCandidate,
+    task: WebEvidenceTask,
+    sources: tuple[EvidenceSourceBlock, ...],
+    reason: str,
+    binding: dict[str, object],
+) -> dict[str, object]:
+    """Expose typed candidate shape and available page structure without source prose."""
+
+    source = next(
+        (
+            item
+            for item in sources
+            if item.source_key == candidate.source_key
+            and item.source_url == candidate.source_url
+            and item.source_kind is candidate.source_kind
+        ),
+        None,
+    )
+    text_fields = ("subject_text", "predicate_text", "value_text", "scope_text")
+    price_fields = ("amount", "currency", "amount_text")
+
+    def amount_class() -> str:
+        if candidate.amount is None:
+            return "absent"
+        try:
+            amount = Decimal(candidate.amount)
+            if not amount.is_finite():
+                return "nonfinite"
+            if amount == 0:
+                return "zero"
+            return "positive" if amount > 0 else "negative"
+        except InvalidOperation:
+            return "unparseable"
+
+    details: dict[str, object] = {
+        "place_id": task.place_id,
+        "requested_information_need": task.information_need.value,
+        "requested_facets": [facet.value for facet in task.requested_facets],
+        "requested_subject_scope": task.requested_subject_scope.value,
+        "requested_scope_text_present": task.requested_scope_text is not None,
+        "requested_scope_text_length": len(task.requested_scope_text or ""),
+        "source_key": candidate.source_key,
+        "source_kind": candidate.source_kind.value,
+        "source_url": _safe_trace_url(candidate.source_url),
+        "final_url": _safe_trace_url(candidate.final_url),
+        "source_block_matched": source is not None,
+        "claim_kind": candidate.claim_kind.value,
+        "candidate_information_need": candidate.information_need.value,
+        "temporal_basis": candidate.temporal_basis.value,
+        "subject_scope": candidate.subject_scope.value,
+        "schedule_scope": candidate.schedule_scope.value if candidate.schedule_scope else None,
+        "supporting_excerpt_length": len(candidate.supporting_excerpt),
+        "price_fields_present": [
+            field for field in price_fields if getattr(candidate, field) is not None
+        ],
+        "price_field_invariant": (
+            "non_paid_claim_requires_no_price_fields"
+            if reason == "unsupported_price_field"
+            else None
+        ),
+        "amount_field_type": "string" if candidate.amount is not None else None,
+        "amount_numeric_class": amount_class(),
+        "page_title_available": bool(source.page_title) if source else None,
+        # The PageContentBlock contract retains paths, not heading levels or a distinct h1.
+        "main_heading_available": None,
+        "page_content_block_count": len(source.content_blocks) if source else None,
+        "source_heading_path_available": (
+            any(block.section_headings for block in source.content_blocks) if source else None
+        ),
+        "local_binding_condition": binding.get("local_binding_condition"),
+        "page_binding_condition": binding.get("page_binding_condition"),
+        "page_level_venue_subject_verified": binding.get("page_level_venue_subject_verified"),
+        "local_body_block_index": binding.get("local_body_block_index"),
+        "heading_path_available": binding.get("heading_path_available"),
+        "heading_path_depth": binding.get("heading_path_depth"),
+        "local_scope_metadata_available": binding.get("local_scope_metadata_available"),
+    }
+    for field in text_fields:
+        value = getattr(candidate, field)
+        details[f"{field}_present"] = value is not None
+        details[f"{field}_length"] = len(value or "")
+    for field in (
+        *price_fields,
+        "date_text",
+        "applicable_start_date",
+        "applicable_end_date",
+        "updated_at",
+        "updated_at_text",
+        "time_text",
+        "opens_at",
+        "closes_at",
+        "schedule_scope",
+        "schedule_text",
+    ):
+        details[f"{field}_present"] = getattr(candidate, field) is not None
+    return details
 
 
 class OfficialWebGroundingService:
@@ -186,6 +316,39 @@ class OfficialWebGroundingService:
                 assessments = await self._reasoner.reason(task, sources, place)
             except Exception as exc:
                 reasons.append("reasoner_failed")
+                validation_details: dict[str, object] = {}
+                if isinstance(exc, ValidationError):
+                    validation_details = {
+                        "validation_errors": [
+                            {
+                                "path": [
+                                    part
+                                    if isinstance(part, int)
+                                    or (
+                                        isinstance(part, str)
+                                        and len(part) <= 64
+                                        and part.isidentifier()
+                                    )
+                                    else "<dynamic>"
+                                    for part in error["loc"][:8]
+                                ],
+                                "code": error["type"],
+                            }
+                            for error in exc.errors(include_input=False, include_url=False)[:8]
+                        ],
+                        "sources": [_source_trace_identity(source) for source in sources],
+                    }
+                parse_details: dict[str, object] = {}
+                if isinstance(exc, json.JSONDecodeError):
+                    parse_details = {
+                        "parser_stage": "json.loads",
+                        "json_error_message": exc.msg[:120],
+                        "json_error_position": exc.pos,
+                        "json_error_line": exc.lineno,
+                        "json_error_column": exc.colno,
+                        "sources": [_source_trace_identity(source) for source in sources],
+                        **getattr(exc, "_official_reasoner_parse_diagnostics", {}),
+                    }
                 self._tracer.event(
                     "official_reasoner_completed",
                     {
@@ -211,7 +374,12 @@ class OfficialWebGroundingService:
                     "official_extraction_failed",
                     {
                         "task_id": task.task_id,
+                        "place_id": task.place_id,
+                        "requested_information_need": task.information_need.value,
+                        "requested_facets": [item.value for item in task.requested_facets],
                         "error_type": type(exc).__name__,
+                        **validation_details,
+                        **parse_details,
                     },
                 )
                 return
@@ -264,6 +432,7 @@ class OfficialWebGroundingService:
                 candidate = assessment.candidate
                 if candidate is None or not assessment.relevant:
                     continue
+                binding_diagnostics: dict[str, object] = {}
                 evidence, reason = accept_official_candidate(
                     candidate,
                     task=task,
@@ -272,15 +441,22 @@ class OfficialWebGroundingService:
                     place=place,
                     config=self._config,
                     retrieved_at=datetime.now(UTC),
+                    diagnostics=binding_diagnostics,
                 )
+                try:
+                    candidate_metadata = _candidate_trace_metadata(
+                        candidate, task, sources, reason, binding_diagnostics
+                    )
+                except Exception:
+                    candidate_metadata = {"diagnostic_status": "unavailable"}
                 self._tracer.event(
                     "official_candidate_gate",
                     {
                         "task_id": task.task_id,
-                        "source_url": candidate.source_url,
                         "accepted": evidence is not None,
                         "reason": reason,
                         "supports_information_need_advisory": assessment.supports_information_need,
+                        **candidate_metadata,
                     },
                 )
                 if evidence is None:
@@ -346,6 +522,12 @@ class OfficialWebGroundingService:
                     "final_url": result.final_url,
                     "http_request_count": result.http_request_count,
                     "reason": result.reason,
+                    "page_title_available": bool(result.page_title),
+                    "page_content_block_count": len(result.content_blocks),
+                    "heading_path_available": any(
+                        block.section_headings for block in result.content_blocks
+                    ),
+                    "main_heading_available": None,
                 },
             )
             if result.task_id != task.task_id or result.observed_url != target:

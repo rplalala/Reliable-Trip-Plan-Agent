@@ -145,6 +145,58 @@ def _response_text(raw: object) -> str:
     raise ValueError("EvidenceReasoner returned no visible structured text")
 
 
+def _response_parse_metadata(
+    raw: object, text: str, exc: json.JSONDecodeError
+) -> dict[str, object]:
+    """Capture only bounded response shape and parser metadata, never response text."""
+
+    if hasattr(raw, "model_dump"):
+        raw = raw.model_dump(mode="json")
+    response = raw if isinstance(raw, dict) else {}
+
+    def token(value: object) -> str | None:
+        return (
+            value
+            if isinstance(value, str)
+            and 0 < len(value) <= 64
+            and value.replace("_", "").replace("-", "").isalnum()
+            else None
+        )
+
+    items = response.get("output")
+    items = items if isinstance(items, list) else []
+    details = response.get("incomplete_details")
+    details = details if isinstance(details, dict) else {}
+    status = token(response.get("status"))
+    finish_reason = token(details.get("reason") or response.get("finish_reason"))
+    return {
+        "parser_stage": "json.loads",
+        "response_item_types": [
+            token(item.get("type")) if isinstance(item, dict) else None for item in items[:8]
+        ],
+        "response_item_statuses": [
+            token(item.get("status")) if isinstance(item, dict) else None for item in items[:8]
+        ],
+        "response_item_count": len(items),
+        "textual_content_existed": bool(text),
+        "textual_content_length": len(text),
+        "provider_status": status,
+        "provider_finish_reason": finish_reason,
+        "output_appeared_empty": not text,
+        "output_appeared_truncated": (
+            True
+            if status == "incomplete" or finish_reason == "max_output_tokens"
+            else False
+            if status == "completed"
+            else None
+        ),
+        "json_error_message": exc.msg[:120],
+        "json_error_position": exc.pos,
+        "json_error_line": exc.lineno,
+        "json_error_column": exc.colno,
+    }
+
+
 def _baseline_context(place: PlaceEvidence, need: OfficialInformationNeed) -> dict[str, object]:
     context: dict[str, object] = {"source_ref": place.source_ref}
     if need in {
@@ -242,7 +294,18 @@ class AzureFoundryEvidenceReasoner:
             reasoning={"effort": self._config.reasoning_effort},
             max_output_tokens=self._config.claim_extraction.max_extraction_output_units,
         )
-        parsed = json.loads(_response_text(raw))
+        response_text = _response_text(raw)
+        try:
+            parsed = json.loads(response_text)
+        except json.JSONDecodeError as exc:
+            try:
+                exc._official_reasoner_parse_diagnostics = _response_parse_metadata(
+                    raw, response_text, exc
+                )
+            except Exception:
+                # Diagnostics cannot replace the original parse failure.
+                pass
+            raise
         if not isinstance(parsed, dict) or not isinstance(parsed.get("assessments"), list):
             raise ValueError("EvidenceReasoner output is not an assessment list")
         if len(parsed["assessments"]) > limit:

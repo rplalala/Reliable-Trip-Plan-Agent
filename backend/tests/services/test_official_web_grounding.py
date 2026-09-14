@@ -22,8 +22,13 @@ from backend.app.evidence.web_models import (
     WebTaskStatus,
     WebTriggerReason,
 )
+from backend.app.integrations.azure_foundry.evidence_reasoner import AzureFoundryEvidenceReasoner
 from backend.app.integrations.web.models import WebSearchHit, WebSearchObservation
-from backend.app.integrations.web.page_models import PageFetchResult, PageFetchStatus
+from backend.app.integrations.web.page_models import (
+    PageContentBlock,
+    PageFetchResult,
+    PageFetchStatus,
+)
 from backend.app.observability.run_trace import NullRunTracer
 from backend.app.runtime.budget import ToolBudget, ToolBudgetKey, ToolBudgetLimits
 from backend.app.runtime.config_loader import load_runtime_config
@@ -405,6 +410,219 @@ def test_failed_extraction_emits_failure_status_without_raw_output() -> None:
         }
     ]
     assert "provider response unavailable" not in str(tracer.events)
+
+
+def test_validation_failure_traces_bounded_field_path_and_source_identity_only() -> None:
+    class InvalidReasoner:
+        async def reason(self, task, sources, baseline):
+            EvidenceReasonerAssessment.model_validate(
+                {
+                    "relevant": "untrusted raw model output",
+                    "supports_information_need": False,
+                    "candidate": None,
+                }
+            )
+
+    tracer = TraceCollector()
+    service, _ = _service(InvalidReasoner(), FakeRetriever(), tracer=tracer)
+    asyncio.run(service.ground(_outcome(), _place()))
+    failures = [payload for name, payload in tracer.events if name == "official_extraction_failed"]
+    assert failures[0]["error_type"] == "ValidationError"
+    assert failures[0]["validation_errors"] == [{"path": ["relevant"], "code": "bool_parsing"}]
+    assert len(failures[0]["sources"][0]["source_key"]) == 24
+    assert failures[0]["sources"][0]["source_kind"] == "native_snippet"
+    assert failures[0]["sources"][0]["page_url"] == URL
+    assert failures[1]["sources"][0]["source_kind"] == "fetched_html"
+    assert failures[1]["sources"][0]["page_url"] == URL
+    assert "untrusted raw model output" not in str(tracer.events)
+    assert TEXT not in str(tracer.events)
+
+
+def test_price_rejection_traces_typed_shape_without_source_prose() -> None:
+    text = "Alpha Zoo admission costs AUD 0 and is free general entry."
+
+    class PriceReasoner:
+        async def reason(self, task, sources, baseline):
+            source = sources[0]
+            return (
+                (
+                    EvidenceReasonerAssessment(
+                        relevant=True,
+                        supports_information_need=True,
+                        candidate=OfficialClaimCandidate(
+                            source_key=source.source_key,
+                            place_id=task.place_id,
+                            place_name=task.place_name,
+                            information_need=task.information_need,
+                            claim_kind=OfficialClaimKind.FREE_GENERAL_ADMISSION,
+                            value_text="free general entry",
+                            source_kind=source.source_kind,
+                            source_url=source.source_url,
+                            final_url=source.final_url,
+                            supporting_excerpt=text,
+                            subject_scope=SubjectScope.WHOLE_VENUE,
+                            subject_text="Alpha Zoo",
+                            predicate_text="admission costs AUD 0 and is free general entry",
+                            temporal_basis=TemporalBasis.CURRENT_GENERAL_POLICY,
+                            amount="0",
+                            amount_text="AUD 0",
+                            currency="AUD",
+                        ),
+                    ),
+                )
+                if source.source_kind is SourceKind.NATIVE_SNIPPET
+                else ()
+            )
+
+    tracer = TraceCollector()
+    service, _ = _service(
+        PriceReasoner(), FakeRetriever(status=PageFetchStatus.BLOCKED), tracer=tracer
+    )
+    task = _task().model_copy(update={"requested_facets": (RequestedFacet.ADMISSION_FEE,)})
+    outcome = _outcome(snippet=text).model_copy(update={"task": task})
+    result = asyncio.run(service.ground(outcome, _place()))
+    rejected = [
+        payload
+        for name, payload in tracer.events
+        if name == "official_candidate_gate" and not payload["accepted"]
+    ]
+    assert result.accepted_evidence == ()
+    assert len(rejected) == 1
+    assert rejected[0]["reason"] == "unsupported_price_field"
+    assert rejected[0]["claim_kind"] == "free_general_admission"
+    assert rejected[0]["requested_facets"] == ["admission_fee"]
+    assert rejected[0]["price_fields_present"] == ["amount", "currency", "amount_text"]
+    assert rejected[0]["price_field_invariant"] == "non_paid_claim_requires_no_price_fields"
+    assert rejected[0]["amount_field_type"] == "string"
+    assert rejected[0]["amount_numeric_class"] == "zero"
+    assert rejected[0]["subject_text_present"] is True
+    assert rejected[0]["subject_text_length"] == len("Alpha Zoo")
+    assert rejected[0]["local_binding_condition"] == "bound"
+    assert text not in str(tracer.events)
+    assert "AUD 0" not in str(tracer.events)
+
+
+def test_scope_rejection_traces_available_page_binding_structure() -> None:
+    body = "Alpha Zoo Special Exhibition has FREE general entry."
+    page_text = "Admission - Alpha Zoo\nTickets\n" + body
+
+    class PageReasoner:
+        async def reason(self, task, sources, baseline):
+            source = sources[0]
+            if source.source_kind is SourceKind.NATIVE_SNIPPET:
+                return ()
+            return (
+                EvidenceReasonerAssessment(
+                    relevant=True,
+                    supports_information_need=True,
+                    candidate=OfficialClaimCandidate(
+                        source_key=source.source_key,
+                        place_id=task.place_id,
+                        place_name=task.place_name,
+                        information_need=task.information_need,
+                        claim_kind=OfficialClaimKind.FREE_GENERAL_ADMISSION,
+                        value_text="FREE general entry",
+                        source_kind=SourceKind.FETCHED_HTML,
+                        source_url=URL,
+                        final_url=URL,
+                        supporting_excerpt=body,
+                        subject_scope=SubjectScope.WHOLE_VENUE,
+                        subject_text="Alpha Zoo",
+                        predicate_text="has",
+                        temporal_basis=TemporalBasis.CURRENT_GENERAL_POLICY,
+                    ),
+                ),
+            )
+
+    class StructuredRetriever(FakeRetriever):
+        async def fetch(self, request):
+            self.calls.append(request)
+            return PageFetchResult(
+                task_id=request.task_id,
+                observed_url=request.observed_url,
+                status=PageFetchStatus.FETCHED,
+                final_url=URL,
+                authorized_domain="alpha.example.org",
+                text=page_text,
+                body_sha256="abc",
+                page_title="Admission - Alpha Zoo",
+                content_blocks=(
+                    PageContentBlock(text=body, section_headings=("Admission", "Tickets")),
+                ),
+                http_request_count=1,
+            )
+
+    tracer = TraceCollector()
+    service, _ = _service(PageReasoner(), StructuredRetriever(), tracer=tracer)
+    result = asyncio.run(service.ground(_outcome(snippet="Visitor information."), _place()))
+    rejected = [
+        payload
+        for name, payload in tracer.events
+        if name == "official_candidate_gate" and not payload["accepted"]
+    ]
+    assert result.accepted_evidence == ()
+    assert len(rejected) == 1
+    assert rejected[0]["reason"] == "subject_scope_not_bound"
+    assert rejected[0]["claim_kind"] == "free_general_admission"
+    assert rejected[0]["subject_scope"] == "whole_venue"
+    assert rejected[0]["local_binding_condition"] == "whole_venue_prefix_subentity"
+    assert rejected[0]["page_level_venue_subject_verified"] is True
+    assert rejected[0]["page_binding_condition"] == "local_heading_or_requested_scope_mismatch"
+    assert rejected[0]["page_title_available"] is True
+    assert rejected[0]["main_heading_available"] is None
+    assert rejected[0]["source_heading_path_available"] is True
+    assert rejected[0]["heading_path_available"] is True
+    assert rejected[0]["heading_path_depth"] == 2
+    assert rejected[0]["local_body_block_index"] == 0
+    assert rejected[0]["local_scope_metadata_available"] is True
+    page_attempt = next(
+        payload for name, payload in tracer.events if name == "official_page_attempt"
+    )
+    assert page_attempt["page_content_block_count"] == 1
+    assert page_attempt["heading_path_available"] is True
+    assert page_attempt["main_heading_available"] is None
+    assert body not in str(tracer.events)
+    assert page_text not in str(tracer.events)
+
+
+def test_json_failure_traces_parser_shape_without_raw_output() -> None:
+    raw_output = '{"RAW_REASONER_SECRET": "unfinished'
+
+    class InvalidResponses:
+        async def create(self, **kwargs):
+            return {
+                "status": "incomplete",
+                "incomplete_details": {"reason": "max_output_tokens"},
+                "output_text": raw_output,
+                "output": [{"type": "reasoning"}, {"type": "message"}],
+            }
+
+    reasoner = AzureFoundryEvidenceReasoner(
+        endpoint="https://example.test/openai/v1",
+        deployment="gpt-5.6-luna",
+        api_key="unused-test-value",
+        config=load_runtime_config().web_evidence,
+        responses_client=InvalidResponses(),
+    )
+    tracer = TraceCollector()
+    service, _ = _service(reasoner, FakeRetriever(status=PageFetchStatus.BLOCKED), tracer=tracer)
+    asyncio.run(service.ground(_outcome(), _place()))
+    failures = [payload for name, payload in tracer.events if name == "official_extraction_failed"]
+    assert failures[0]["error_type"] == "JSONDecodeError"
+    assert failures[0]["task_id"] == "task-1"
+    assert failures[0]["requested_information_need"] == "admission_ticket"
+    assert failures[0]["parser_stage"] == "json.loads"
+    assert failures[0]["response_item_types"] == ["reasoning", "message"]
+    assert failures[0]["textual_content_existed"] is True
+    assert failures[0]["textual_content_length"] == len(raw_output)
+    assert failures[0]["provider_status"] == "incomplete"
+    assert failures[0]["provider_finish_reason"] == "max_output_tokens"
+    assert failures[0]["output_appeared_truncated"] is True
+    assert failures[0]["json_error_position"] >= 0
+    assert failures[0]["sources"][0]["page_url"] == URL
+    assert raw_output not in str(tracer.events)
+    assert "RAW_REASONER_SECRET" not in str(tracer.events)
+    assert TEXT not in str(tracer.events)
 
 
 def test_insufficient_native_snippet_uses_one_observed_page_and_one_budget_unit() -> None:

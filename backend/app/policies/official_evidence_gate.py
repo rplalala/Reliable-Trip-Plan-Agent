@@ -105,38 +105,57 @@ def _authority_basis(
     return None
 
 
-def _subject_bound(candidate: OfficialClaimCandidate, place_name: str) -> bool:
+def _subject_bound(
+    candidate: OfficialClaimCandidate,
+    place_name: str,
+    diagnostics: dict[str, object] | None = None,
+) -> bool:
     """Require a visible venue anchor without a fixed predicate vocabulary."""
+
+    def failed(condition: str) -> bool:
+        if diagnostics is not None:
+            diagnostics["local_binding_condition"] = condition
+        return False
 
     subject = candidate.subject_text
     predicate = candidate.predicate_text
-    if not subject or not predicate or candidate.subject_scope is SubjectScope.UNKNOWN:
-        return False
+    if not subject:
+        return failed("subject_text_missing")
+    if not predicate:
+        return failed("predicate_text_missing")
+    if candidate.subject_scope is SubjectScope.UNKNOWN:
+        return failed("subject_scope_unknown")
     excerpt = candidate.supporting_excerpt
     subject_at = excerpt.find(subject)
     predicate_at = excerpt.find(predicate)
-    if subject_at < 0 or predicate_at < subject_at + len(subject):
-        return False
+    if subject_at < 0:
+        return failed("subject_not_in_excerpt")
+    if predicate_at < subject_at + len(subject):
+        return failed("predicate_not_after_subject")
     bridge = excerpt[subject_at + len(subject) : predicate_at]
-    if len(bridge) > 250 or any(mark in bridge for mark in ".!?;"):
-        return False
+    if len(bridge) > 250:
+        return failed("subject_predicate_bridge_too_long")
+    if any(mark in bridge for mark in ".!?;"):
+        return failed("subject_predicate_bridge_has_sentence_boundary")
     normalized_subject = normalize_phrase(subject)
     normalized_place = normalize_phrase(place_name)
     if normalized_subject.startswith("the "):
         normalized_subject = normalized_subject[4:]
     if candidate.subject_scope is SubjectScope.WHOLE_VENUE:
         if normalized_subject != normalized_place:
-            return False
+            return failed("whole_venue_subject_mismatch")
         # Do not allow a venue-name prefix to stand for a named sub-entity.
         if "\n" not in bridge and re.match(r"\s+[A-Z][a-z]+\b", bridge):
-            return False
+            return failed("whole_venue_prefix_subentity")
     else:
         if normalized_place not in normalized_subject and normalized_place not in normalize_phrase(
             candidate.scope_text or ""
         ):
-            return False
+            return failed("scoped_subject_not_bound_to_place")
         if not candidate.scope_text:
-            return False
+            return failed("scope_text_missing")
+    if diagnostics is not None:
+        diagnostics["local_binding_condition"] = "bound"
     return True
 
 
@@ -145,29 +164,49 @@ def _page_subject_bound(
     source: EvidenceSourceBlock,
     task: WebEvidenceTask,
     authority_basis: str,
+    diagnostics: dict[str, object] | None = None,
 ) -> tuple[bool, str | None]:
     """Use a first-party page title and one primary-body section as source anchors."""
 
-    if (
-        authority_basis != "places_first_party_website"
-        or source.source_kind is not SourceKind.FETCHED_HTML
-        or not source.page_title
-        or source.page_title not in source.text
-    ):
+    def failed(condition: str) -> tuple[bool, None]:
+        if diagnostics is not None:
+            diagnostics["page_binding_condition"] = condition
         return False, None
+
+    if diagnostics is not None:
+        diagnostics["page_level_venue_subject_verified"] = False
+        diagnostics["local_body_block_index"] = None
+        diagnostics["heading_path_available"] = False
+        diagnostics["heading_path_depth"] = 0
+        diagnostics["local_scope_metadata_available"] = False
+    if authority_basis != "places_first_party_website":
+        return failed("not_places_first_party_website")
+    if source.source_kind is not SourceKind.FETCHED_HTML:
+        return failed("not_fetched_html")
+    if not source.page_title:
+        return failed("page_title_missing")
+    if source.page_title not in source.text:
+        return failed("page_title_not_in_source_text")
     place = normalize_phrase(task.place_name)
     title = normalize_phrase(source.page_title)
     if f" {place} " not in f" {title} ":
-        return False, None
+        return failed("page_title_place_mismatch")
+    if diagnostics is not None:
+        diagnostics["page_level_venue_subject_verified"] = True
     subject = normalize_phrase(candidate.subject_text or "")
-    if not subject or not candidate.predicate_text:
-        return False, None
+    if not subject:
+        return failed("subject_text_missing")
+    if not candidate.predicate_text:
+        return failed("predicate_text_missing")
     if candidate.subject_scope is SubjectScope.WHOLE_VENUE:
         if candidate.scope_text is not None:
-            return False, None
-    elif not candidate.scope_text or candidate.scope_text not in candidate.supporting_excerpt:
-        return False, None
-    for content in source.content_blocks:
+            return failed("whole_venue_scope_text_present")
+    elif not candidate.scope_text:
+        return failed("scope_text_missing")
+    elif candidate.scope_text not in candidate.supporting_excerpt:
+        return failed("scope_text_not_in_excerpt")
+    eligible_block = False
+    for index, content in enumerate(source.content_blocks):
         if (
             not content.section_headings
             or any(heading not in source.text for heading in content.section_headings)
@@ -182,9 +221,17 @@ def _page_subject_bound(
             )
         ):
             continue
+        eligible_block = True
+        if diagnostics is not None:
+            diagnostics["local_body_block_index"] = index
+            diagnostics["heading_path_available"] = True
+            diagnostics["heading_path_depth"] = len(content.section_headings)
+            diagnostics["local_scope_metadata_available"] = True
         local_heading = normalize_phrase(content.section_headings[-1])
         local_scope = normalize_phrase(candidate.scope_text or "")
         if subject in {local_heading, local_scope}:
+            if diagnostics is not None:
+                diagnostics["page_binding_condition"] = "bound_by_local_heading_or_scope"
             return True, None
         if (
             candidate.subject_scope is task.requested_subject_scope
@@ -193,8 +240,14 @@ def _page_subject_bound(
         ):
             # The model supplied a source-visible local subject and a secondary qualifier.
             # Keep the subject span as the canonical scope used by the Resolver.
+            if diagnostics is not None:
+                diagnostics["page_binding_condition"] = "bound_by_requested_scope"
             return True, candidate.subject_text
-    return False, None
+    return failed(
+        "local_heading_or_requested_scope_mismatch"
+        if eligible_block
+        else "no_matching_local_body_block"
+    )
 
 
 def _narrow_contradiction(candidate: OfficialClaimCandidate) -> bool:
@@ -223,6 +276,7 @@ def accept_official_candidate(
     place: PlaceEvidence,
     config: WebEvidenceConfig,
     retrieved_at: datetime | None = None,
+    diagnostics: dict[str, object] | None = None,
 ) -> tuple[OfficialCurrentEvidence | None, str]:
     """Accept a semantic proposal only when its cited source and fields are grounded."""
 
@@ -286,9 +340,11 @@ def accept_official_candidate(
     )
     if any(span is not None and span not in excerpt for span in spans):
         return None, "source_span_not_in_excerpt"
-    local_bound = _subject_bound(candidate, task.place_name)
+    local_bound = _subject_bound(candidate, task.place_name, diagnostics)
     page_bound, page_scope_text = (
-        (False, None) if local_bound else _page_subject_bound(candidate, block, task, basis)
+        (False, None)
+        if local_bound
+        else _page_subject_bound(candidate, block, task, basis, diagnostics)
     )
     if not (local_bound or page_bound):
         return None, "subject_scope_not_bound"
