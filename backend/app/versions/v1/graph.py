@@ -1,4 +1,4 @@
-"""Explicit non-agentic LangGraph workflow for V1-A external evidence."""
+"""Explicit non-agentic LangGraph workflow for V1 external evidence."""
 
 from collections.abc import Sequence
 
@@ -32,9 +32,12 @@ from backend.app.services.evidence_acquisition import (
     NoViableCandidatesError,
     V1EvidenceAcquisitionService,
 )
+from backend.app.services.official_web_integration import OfficialWebIntegrationService
 from backend.app.services.review_selection import ReviewAwareSelectionResult
 from backend.app.versions.v0.graph import MissingRequiredFieldsError
 from backend.app.versions.v0.prompts import build_requirement_extraction_prompt
+from backend.app.versions.v1.official_planner import build_official_planner_evidence
+from backend.app.versions.v1.official_web import project_official_web_inputs
 from backend.app.versions.v1.prompts import (
     ITINERARY_GENERATION_SYSTEM_PROMPT,
     V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT,
@@ -91,8 +94,9 @@ def build_v1_graph(
     tracer: RunTracer,
     *,
     llm_config_identity: str = "run_scoped_llm",
+    official_web_service: OfficialWebIntegrationService | None = None,
 ) -> CompiledStateGraph:
-    """Build the fixed V1-A graph with no free-form tool loop."""
+    """Build the fixed V1 graph with one bounded official-Web step."""
 
     async def extract_requirements(state: V1State) -> dict[str, object]:
         tracer.event("requirement_extraction_started")
@@ -371,6 +375,72 @@ def build_v1_graph(
         )
         return {"transport_mode": mode, "route_evidence": routes}
 
+    async def acquire_and_resolve_official_web(state: V1State) -> dict[str, object]:
+        if official_web_service is None:
+            tracer.event("official_web_disabled")
+            return {"official_web_result": None}
+        try:
+            projection = project_official_web_inputs(
+                funnel=state["candidate_funnel"],
+                selection=state["review_selection"],
+                candidates=state["selected_candidates"],
+                places=state["place_evidence"],
+            )
+            result = await official_web_service.run(
+                request=state["request"],
+                requirements=state["requirements"],
+                projection=projection,
+            )
+        except Exception as exc:
+            tracer.event("official_web_integration_failed", {"error_type": type(exc).__name__})
+            raise V1StageError("official_web") from exc
+        planner_evidence = build_official_planner_evidence(result)
+        tracer.event(
+            "official_planner_evidence_prepared",
+            {
+                "places": [
+                    {
+                        "place_id": item["place_id"],
+                        "accepted_facts": [
+                            {
+                                key: fact[key]
+                                for key in (
+                                    "dimension",
+                                    "subject_scope",
+                                    "scope_text",
+                                    "date",
+                                    "applicable_start_date",
+                                    "applicable_end_date",
+                                    "value_kind",
+                                    "value_text",
+                                    "relation",
+                                    "source_refs",
+                                )
+                            }
+                            for fact in item["accepted_effective_facts"]
+                        ],
+                        "operational_days": item["operational_days"],
+                        "need_statuses": item["need_statuses"],
+                        "conflict_source_refs": item["unresolved_conflict_source_refs"],
+                        "task_statuses": [
+                            {
+                                "information_need": task["information_need"],
+                                "acquisition_status": task["acquisition_status"],
+                                "evidence_status": task["evidence_status"],
+                                "facet_statuses": task["facet_statuses"],
+                            }
+                            for task in item["tasks"]
+                        ],
+                    }
+                    for item in planner_evidence
+                ],
+            },
+        )
+        return {
+            "official_web_result": result,
+            "official_planner_evidence": planner_evidence,
+        }
+
     async def generate_evidence_informed_itinerary(
         state: V1State,
     ) -> dict[str, Itinerary]:
@@ -414,6 +484,7 @@ def build_v1_graph(
             weather=state["weather_evidence"],
             routes=state["route_evidence"],
             requirement_conflicts=state["selection_conflicts"],
+            official_evidence=state.get("official_planner_evidence"),
         )
         tracer.payload(
             "llm",
@@ -460,6 +531,7 @@ def build_v1_graph(
     graph_builder.add_node("select_review_aware_pois", select_review_aware_pois)
     graph_builder.add_node("acquire_weather", acquire_weather)
     graph_builder.add_node("acquire_routes", acquire_routes)
+    graph_builder.add_node("acquire_and_resolve_official_web", acquire_and_resolve_official_web)
     graph_builder.add_node(
         "generate_evidence_informed_itinerary", generate_evidence_informed_itinerary
     )
@@ -471,7 +543,10 @@ def build_v1_graph(
     graph_builder.add_edge("acquire_candidate_funnel", "select_review_aware_pois")
     graph_builder.add_edge("select_review_aware_pois", "acquire_weather")
     graph_builder.add_edge("acquire_weather", "acquire_routes")
-    graph_builder.add_edge("acquire_routes", "generate_evidence_informed_itinerary")
+    graph_builder.add_edge("acquire_routes", "acquire_and_resolve_official_web")
+    graph_builder.add_edge(
+        "acquire_and_resolve_official_web", "generate_evidence_informed_itinerary"
+    )
     graph_builder.add_edge("generate_evidence_informed_itinerary", "validate_itinerary_dates")
     graph_builder.add_edge("validate_itinerary_dates", END)
     return graph_builder.compile(name="v1")

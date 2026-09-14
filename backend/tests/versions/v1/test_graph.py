@@ -65,13 +65,15 @@ def test_v1_graph_has_explicit_non_agentic_topology() -> None:
         "select_review_aware_pois",
         "acquire_weather",
         "acquire_routes",
+        "acquire_and_resolve_official_web",
         "generate_evidence_informed_itinerary",
         "validate_itinerary_dates",
         "__end__",
     }
     assert {(edge.source, edge.target) for edge in graph.edges} == {
         ("__start__", "extract_requirements"),
-        ("acquire_routes", "generate_evidence_informed_itinerary"),
+        ("acquire_routes", "acquire_and_resolve_official_web"),
+        ("acquire_and_resolve_official_web", "generate_evidence_informed_itinerary"),
         ("acquire_weather", "acquire_routes"),
         ("select_review_aware_pois", "acquire_weather"),
         ("extract_requirements", "validate_trip_dates"),
@@ -134,6 +136,8 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert "Never reuse another pair's measurement" in " ".join(generation_system_prompt.split())
     assert "forecastDays" not in generation_prompt
     assert "currentOpeningHours" not in generation_prompt
+    assert '"rating"' not in generation_prompt
+    assert "<official_current_evidence>" not in generation_prompt
 
 
 def test_v1_weather_failure_is_explicit_and_does_not_block_generation() -> None:

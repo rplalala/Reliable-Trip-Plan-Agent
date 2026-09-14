@@ -1,4 +1,4 @@
-"""Public runner and command-line behavior for V1-A."""
+"""Public runner and command-line behavior for V1."""
 
 import argparse
 import asyncio
@@ -8,6 +8,8 @@ from collections.abc import Sequence
 from datetime import UTC, date, datetime
 from uuid import uuid4
 
+from backend.app.integrations.azure_foundry.evidence_reasoner import AzureFoundryEvidenceReasoner
+from backend.app.integrations.azure_foundry.web_search import AzureFoundryWebEvidenceProvider
 from backend.app.integrations.google import (
     GooglePlacesProvider,
     GoogleRoutesProvider,
@@ -15,6 +17,9 @@ from backend.app.integrations.google import (
 )
 from backend.app.integrations.http import HttpxJSONTransport
 from backend.app.integrations.protocols import PlacesProvider, RoutesProvider, WeatherProvider
+from backend.app.integrations.web.extraction_protocols import OfficialEvidenceReasoner
+from backend.app.integrations.web.http_page_retriever import SafeHTMLPageRetriever
+from backend.app.integrations.web.protocols import PageRetriever, WebEvidenceProvider
 from backend.app.llm.client import StructuredLLMClient
 from backend.app.observability.run_trace import (
     NullRunTracer,
@@ -35,6 +40,7 @@ from backend.app.runtime.config_loader import (
     resolve_trace_directory,
     runtime_config_snapshot,
 )
+from backend.app.runtime.config_models import WebEvidenceConfig
 from backend.app.runtime.logging_config import configure_logging
 from backend.app.runtime.settings import RuntimeSettings
 from backend.app.schemas.planning import PlanningResult, SystemVersion
@@ -43,6 +49,9 @@ from backend.app.services.evidence_acquisition import (
     NoViableCandidatesError,
     V1EvidenceAcquisitionService,
 )
+from backend.app.services.official_web_grounding import OfficialWebGroundingService
+from backend.app.services.official_web_integration import OfficialWebIntegrationService
+from backend.app.services.web_evidence_acquisition import WebEvidenceAcquisitionService
 from backend.app.versions.v0.graph import MissingRequiredFieldsError
 from backend.app.versions.v0.runner import create_foundry_client, parse_reference_date
 from backend.app.versions.v1.config import V1Settings
@@ -61,8 +70,12 @@ async def run_v1(
     budget_limits: ToolBudgetLimits | None = None,
     tracer: RunTracer | None = None,
     llm_config_identity: str | None = None,
+    web_provider: WebEvidenceProvider | None = None,
+    page_retriever: PageRetriever | None = None,
+    official_reasoner: OfficialEvidenceReasoner | None = None,
+    web_evidence_config: WebEvidenceConfig | None = None,
 ) -> PlanningResult:
-    """Run V1-A with one fixed date, budget, cache, tracer, and explicit graph."""
+    """Run V1 with one fixed date, shared budget, cache, tracer, and explicit graph."""
 
     if reference_date is not None and date_provider is not None:
         raise ValueError("reference_date and date_provider cannot both be supplied")
@@ -71,14 +84,43 @@ async def run_v1(
     date_window = create_trip_date_window(effective_reference_date)
     effective_tracer = tracer or NullRunTracer(uuid4())
     budget = ToolBudget(budget_limits)
+    cache = RequestCache()
     evidence_service = V1EvidenceAcquisitionService(
         places_provider=places_provider,
         weather_provider=weather_provider,
         routes_provider=routes_provider,
         budget=budget,
-        cache=RequestCache(),
+        cache=cache,
         tracer=effective_tracer,
     )
+    web_dependencies = (web_provider, page_retriever, official_reasoner)
+    if any(item is not None for item in web_dependencies) and not all(
+        item is not None for item in web_dependencies
+    ):
+        raise ValueError(
+            "Official-Web provider, page retriever, and reasoner must be supplied together"
+        )
+    official_web_service = None
+    if web_provider is not None and page_retriever is not None and official_reasoner is not None:
+        web_config = web_evidence_config or load_runtime_config().web_evidence
+        official_web_service = OfficialWebIntegrationService(
+            acquisition=WebEvidenceAcquisitionService(
+                provider=web_provider,
+                budget=budget,
+                cache=cache,
+                tracer=effective_tracer,
+                config=web_config,
+            ),
+            grounding=OfficialWebGroundingService(
+                page_retriever=page_retriever,
+                reasoner=official_reasoner,
+                budget=budget,
+                tracer=effective_tracer,
+                config=web_config,
+            ),
+            budget=budget,
+            tracer=effective_tracer,
+        )
     graph = build_v1_graph(
         llm_client,
         evidence_service,
@@ -86,6 +128,7 @@ async def run_v1(
         llm_config_identity=(
             llm_config_identity or f"{type(llm_client).__module__}.{type(llm_client).__qualname__}"
         ),
+        official_web_service=official_web_service,
     )
     effective_tracer.event(
         "run_started",
@@ -169,6 +212,24 @@ def _create_google_providers(
     )
 
 
+def _create_official_web_providers(
+    settings: V1Settings,
+    config: WebEvidenceConfig,
+) -> tuple[WebEvidenceProvider, PageRetriever, OfficialEvidenceReasoner]:
+    endpoint = str(settings.azure_openai_endpoint)
+    deployment = settings.azure_openai_deployment
+    api_key = settings.azure_openai_api_key.get_secret_value()
+    return (
+        AzureFoundryWebEvidenceProvider(
+            endpoint=endpoint, deployment=deployment, api_key=api_key, config=config
+        ),
+        SafeHTMLPageRetriever(config.page_retrieval),
+        AzureFoundryEvidenceReasoner(
+            endpoint=endpoint, deployment=deployment, api_key=api_key, config=config
+        ),
+    )
+
+
 def main(
     argv: Sequence[str] | None = None,
     *,
@@ -179,6 +240,9 @@ def main(
     tracer: RunTracer | None = None,
     budget_limits: ToolBudgetLimits | None = None,
     date_provider: DateProvider | None = None,
+    web_provider: WebEvidenceProvider | None = None,
+    page_retriever: PageRetriever | None = None,
+    official_reasoner: OfficialEvidenceReasoner | None = None,
 ) -> int:
     """Execute the V1 CLI and return a process exit code."""
 
@@ -253,6 +317,12 @@ def main(
             places_provider = places_provider or default_places
             weather_provider = weather_provider or default_weather
             routes_provider = routes_provider or default_routes
+            default_web, default_pages, default_reasoner = _create_official_web_providers(
+                settings, runtime_config.web_evidence
+            )
+            web_provider = web_provider or default_web
+            page_retriever = page_retriever or default_pages
+            official_reasoner = official_reasoner or default_reasoner
 
         if (
             llm_client is None
@@ -275,6 +345,10 @@ def main(
                 llm_config_identity=(
                     settings.azure_openai_deployment if settings is not None else None
                 ),
+                web_provider=web_provider,
+                page_retriever=page_retriever,
+                official_reasoner=official_reasoner,
+                web_evidence_config=runtime_config.web_evidence,
             )
         )
     except MissingRequiredFieldsError as exc:

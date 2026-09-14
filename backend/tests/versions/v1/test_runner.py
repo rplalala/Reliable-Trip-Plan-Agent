@@ -18,6 +18,25 @@ from backend.tests.versions.v1.fakes import (
 )
 
 
+class _NoSourceWeb:
+    cache_identity = "offline-no-sources"
+
+    async def search(self, request):
+        from backend.app.integrations.web.models import WebSearchObservation
+
+        return WebSearchObservation(provider_status="completed")
+
+
+class _UnusedPageRetriever:
+    async def fetch(self, request):
+        raise AssertionError("No visible Web source should trigger page retrieval")
+
+
+class _UnusedReasoner:
+    async def reason(self, task, sources, baseline):
+        raise AssertionError("No visible Web source should trigger reasoning")
+
+
 def test_v1_settings_reuse_v0_foundry_config_and_add_bounded_google_config(
     monkeypatch,
 ) -> None:
@@ -78,6 +97,14 @@ def test_v1_cli_trace_records_effective_config_without_live_providers(
             FakePlacesProvider(),
             FakeWeatherProvider(),
             FakeRoutesProvider(),
+        ),
+    )
+    monkeypatch.setattr(
+        "backend.app.versions.v1.runner._create_official_web_providers",
+        lambda settings, web_config: (
+            _NoSourceWeb(),
+            _UnusedPageRetriever(),
+            _UnusedReasoner(),
         ),
     )
 

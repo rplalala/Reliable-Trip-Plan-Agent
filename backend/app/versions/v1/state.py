@@ -16,6 +16,7 @@ from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.named_place_intent import NamedPlaceIntent
 from backend.app.schemas.request import TravelRequest, TravelRequirements
 from backend.app.services.evidence_acquisition import CandidateFunnelResult
+from backend.app.services.official_web_integration import OfficialWebIntegrationResult
 from backend.app.services.review_selection import ReviewAwareSelectionResult
 
 
@@ -35,4 +36,6 @@ class V1State(TypedDict):
     weather_evidence: NotRequired[WeatherEvidence]
     transport_mode: NotRequired[TransportModeDecision]
     route_evidence: NotRequired[RouteEvidenceBundle]
+    official_web_result: NotRequired[OfficialWebIntegrationResult | None]
+    official_planner_evidence: NotRequired[list[dict[str, object]]]
     itinerary: NotRequired[Itinerary]
