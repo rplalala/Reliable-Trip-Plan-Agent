@@ -18,15 +18,17 @@ from backend.app.policies.named_place_intent import (
     validate_named_place_intents,
 )
 from backend.app.policies.poi_selection import SelectionConflict
-from backend.app.policies.transport import select_transport_mode
+from backend.app.policies.transport import select_transport_mode_from_intent
 from backend.app.policies.trip_dates import (
     create_trip_date_window,
     validate_itinerary_dates,
     validate_requested_trip_dates,
 )
+from backend.app.policies.trip_intent import TripIntentContractError, validate_trip_intents
 from backend.app.schemas.itinerary import Itinerary
-from backend.app.schemas.named_place_intent import RequirementsWithNamedPlaceIntents
 from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.trip_intent import TripIntentExtractionResult
+from backend.app.schemas.v1_itinerary import V1Itinerary
 from backend.app.services.evidence_acquisition import (
     CandidateFunnelResult,
     NoViableCandidatesError,
@@ -107,7 +109,7 @@ def build_v1_graph(
             {
                 "system_prompt": V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT,
                 "user_prompt": user_prompt,
-                "response_schema": "RequirementsWithNamedPlaceIntents",
+                "response_schema": "TripIntentExtractionResult",
             },
             minimum_mode=TracePayloadMode.RAW,
         )
@@ -115,7 +117,7 @@ def build_v1_graph(
             extraction = await llm_client.generate_structured(
                 system_prompt=V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT,
                 user_prompt=user_prompt,
-                response_schema=RequirementsWithNamedPlaceIntents,
+                response_schema=TripIntentExtractionResult,
             )
         except Exception as exc:
             tracer.event("requirement_extraction_failed", {"error": type(exc).__name__})
@@ -129,6 +131,32 @@ def build_v1_graph(
         except NamedPlaceIntentContractError as exc:
             tracer.event("named_place_intents_validation_failed", {"reason": exc.code})
             raise V1StageError("extract_requirements") from exc
+        try:
+            validate_trip_intents(extraction, state["request"].request_text)
+        except TripIntentContractError as exc:
+            tracer.event("trip_intents_validation_failed", {"reason": exc.code})
+            raise V1StageError("extract_requirements") from exc
+        tracer.event(
+            "trip_intents_validated",
+            {
+                "information_need_count": len(extraction.requested_place_information),
+                "experience_preference_count": len(extraction.experience_preferences),
+                "poi_interest_count": len(extraction.poi_interests),
+                "explicit_transport": extraction.transport_preference is not None,
+                "requested_information": [
+                    {
+                        "target_surface": item.target_surface,
+                        "facet": item.requested_facet.value if item.requested_facet else None,
+                        "operational_need": (
+                            item.operational_need.value if item.operational_need else None
+                        ),
+                        "subject_scope": item.subject_scope.value,
+                        "temporal_scope": item.temporal_scope.value,
+                    }
+                    for item in extraction.requested_place_information
+                ],
+            },
+        )
         tracer.event(
             "named_place_intents_validated",
             {
@@ -165,7 +193,14 @@ def build_v1_graph(
         )
         tracer.set_requirements(requirements)
         tracer.event("requirements_extracted", requirements.model_dump(mode="json"))
-        return {"requirements": requirements, "named_place_intents": named_place_intents}
+        return {
+            "requirements": requirements,
+            "named_place_intents": named_place_intents,
+            "requested_place_information": extraction.requested_place_information,
+            "experience_preferences": extraction.experience_preferences,
+            "transport_preference": extraction.transport_preference,
+            "poi_interests": extraction.poi_interests,
+        }
 
     async def validate_trip_dates(state: V1State) -> dict[str, object]:
         requirements = state["requirements"]
@@ -206,6 +241,7 @@ def build_v1_graph(
             destination=state["destination_context"],
             window=create_trip_date_window(state["reference_date"]),
             named_place_intents=named_place_intents,
+            poi_interests=state["poi_interests"],
         )
         tracer.event(
             "candidate_funnel_completed",
@@ -254,6 +290,7 @@ def build_v1_graph(
             window=create_trip_date_window(state["reference_date"]),
             llm_client=llm_client,
             llm_config_identity=llm_config_identity,
+            experience_preferences=state["experience_preferences"],
         )
         candidates, places = project_selected_places(funnel, selection)
         conflicts: tuple[SelectionConflict, ...] = tuple(
@@ -338,7 +375,7 @@ def build_v1_graph(
         return {"weather_evidence": weather}
 
     async def acquire_routes(state: V1State) -> dict[str, object]:
-        mode = select_transport_mode(state["request"], state["requirements"])
+        mode = select_transport_mode_from_intent(state["transport_preference"])
         tracer.event("route_matrix_started", mode.model_dump(mode="json"))
         routes = await evidence_service.acquire_routes(
             places=state["place_evidence"],
@@ -387,9 +424,9 @@ def build_v1_graph(
                 places=state["place_evidence"],
             )
             result = await official_web_service.run(
-                request=state["request"],
                 requirements=state["requirements"],
                 projection=projection,
+                requested_information=state["requested_place_information"],
             )
         except Exception as exc:
             tracer.event("official_web_integration_failed", {"error_type": type(exc).__name__})
@@ -492,7 +529,7 @@ def build_v1_graph(
             {
                 "system_prompt": ITINERARY_GENERATION_SYSTEM_PROMPT,
                 "user_prompt": user_prompt,
-                "response_schema": "Itinerary",
+                "response_schema": "V1Itinerary",
             },
             minimum_mode=TracePayloadMode.RAW,
         )
@@ -500,11 +537,14 @@ def build_v1_graph(
             itinerary = await llm_client.generate_structured(
                 system_prompt=ITINERARY_GENERATION_SYSTEM_PROMPT,
                 user_prompt=user_prompt,
-                response_schema=Itinerary,
+                response_schema=V1Itinerary,
             )
         except Exception as exc:
             tracer.event("generation_failed", {"error": type(exc).__name__})
             raise V1StageError("generate_itinerary") from exc
+        if isinstance(itinerary, V1Itinerary):
+            for projection in itinerary.cost_projections:
+                tracer.event("estimated_cost_projected", projection.as_trace_payload())
         tracer.payload(
             "llm",
             "itinerary_generation_response",

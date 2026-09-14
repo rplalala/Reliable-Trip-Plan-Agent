@@ -39,10 +39,20 @@ def _pair(place_id: str) -> tuple[PlaceCandidate, PlaceEvidence]:
 def _context():
     return SimpleNamespace(
         named_place_resolutions=(
-            SimpleNamespace(resolved_place_id="b"),
-            SimpleNamespace(resolved_place_id="a"),
-            SimpleNamespace(resolved_place_id=None),
-            SimpleNamespace(resolved_place_id="not_selected"),
+            SimpleNamespace(
+                resolved_place_id="b", named_place_intent=SimpleNamespace(place_text="Place b")
+            ),
+            SimpleNamespace(
+                resolved_place_id="a", named_place_intent=SimpleNamespace(place_text="Place a")
+            ),
+            SimpleNamespace(
+                resolved_place_id=None,
+                named_place_intent=SimpleNamespace(place_text="Unresolved Place"),
+            ),
+            SimpleNamespace(
+                resolved_place_id="not_selected",
+                named_place_intent=SimpleNamespace(place_text="Other Place"),
+            ),
         ),
         must_visit_place_ids=frozenset({"b", "not_selected"}),
         enriched_candidates=tuple(
@@ -78,6 +88,7 @@ def test_projection_keeps_final_order_and_only_resolved_selected_intents() -> No
     assert [item.place_id for item in projection.places] == ["b", "a"]
     assert projection.named_place_ids == frozenset({"b", "a"})
     assert projection.must_visit_place_ids == frozenset({"b"})
+    assert projection.named_surface_place_ids == {"place b": "b", "place a": "a"}
     assert [item.rating for item in projection.places] == [None, None]
     assert b_place.rating == 4.7
     assert projection.places[0].website_uri == b_place.website_uri

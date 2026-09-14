@@ -6,6 +6,7 @@ from datetime import date
 
 from backend.app.evidence.models import PlaceCandidate, PlaceEvidence
 from backend.app.evidence.selection_models import PlaceOpeningDate
+from backend.app.policies.poi_funnel import normalize_exact_name
 from backend.app.services.evidence_acquisition import CandidateFunnelResult
 from backend.app.services.review_selection import ReviewAwareSelectionResult
 
@@ -16,6 +17,7 @@ class OfficialWebProjection:
     places: list[PlaceEvidence]
     named_place_ids: frozenset[str]
     must_visit_place_ids: frozenset[str]
+    named_surface_place_ids: dict[str, str] = field(default_factory=dict)
     opening_date_conflicts: dict[str, tuple[date | None, ...]] = field(default_factory=dict)
 
 
@@ -79,5 +81,10 @@ def project_official_web_inputs(
         places=[item.model_copy(update={"rating": None}) for item in places],
         named_place_ids=named_ids,
         must_visit_place_ids=required_ids,
+        named_surface_place_ids={
+            normalize_exact_name(item.named_place_intent.place_text): item.resolved_place_id
+            for item in funnel.named_place_resolutions
+            if item.resolved_place_id in selected_ids
+        },
         opening_date_conflicts=opening_date_conflicts,
     )

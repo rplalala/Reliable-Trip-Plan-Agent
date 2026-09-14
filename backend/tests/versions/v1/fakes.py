@@ -16,12 +16,17 @@ from backend.app.integrations.models import (
     WeatherForecastDTO,
     WeatherRequest,
 )
-from backend.app.schemas.itinerary import Activity, Itinerary, ItineraryDay
-from backend.app.schemas.named_place_intent import (
-    NamedPlaceIntent,
-    RequirementsWithNamedPlaceIntents,
-)
+from backend.app.schemas.itinerary import Activity, ItineraryDay
+from backend.app.schemas.named_place_intent import NamedPlaceIntent
 from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.trip_intent import (
+    ExperiencePreferenceIntent,
+    PoiInterest,
+    RequestedPlaceInformation,
+    TransportPreferenceIntent,
+    TripIntentExtractionResult,
+)
+from backend.app.schemas.v1_itinerary import V1Itinerary
 
 
 def _candidate(place_id: str, rank: int, latitude: float, longitude: float) -> PlaceCandidateDTO:
@@ -182,15 +187,23 @@ def make_extraction(
     requirements: TravelRequirements | None = None,
     *,
     intents: tuple[NamedPlaceIntent, ...] = (),
-) -> RequirementsWithNamedPlaceIntents:
-    return RequirementsWithNamedPlaceIntents(
+    information: tuple[RequestedPlaceInformation, ...] = (),
+    experience: tuple[ExperiencePreferenceIntent, ...] = (),
+    transport: TransportPreferenceIntent | None = None,
+    poi_interests: tuple[PoiInterest, ...] = (),
+) -> TripIntentExtractionResult:
+    return TripIntentExtractionResult(
         requirements=requirements or make_requirements(),
         named_place_intents=intents,
+        requested_place_information=information,
+        experience_preferences=experience,
+        transport_preference=transport,
+        poi_interests=poi_interests,
     )
 
 
-def make_itinerary() -> Itinerary:
-    return Itinerary(
+def make_itinerary() -> V1Itinerary:
+    return V1Itinerary(
         destination="Sydney",
         start_date=date(2026, 9, 12),
         end_date=date(2026, 9, 13),

@@ -14,6 +14,7 @@ from backend.app.evidence.selection_models import (
 )
 from backend.app.schemas.named_place_intent import NamedPlaceInclusion, NamedPlaceIntent
 from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.trip_intent import PoiInterest
 
 GENERIC_SEARCH_TERMS = (
     "top attractions",
@@ -82,6 +83,7 @@ def build_place_search_intents(
     *,
     max_queries: int | None = None,
     named_place_intents: Sequence[NamedPlaceIntent] = (),
+    poi_interests: Sequence[PoiInterest] | None = None,
 ) -> tuple[PlaceSearchIntent, ...]:
     """Prioritize typed names while retaining distinct activity/category queries."""
 
@@ -94,11 +96,16 @@ def build_place_search_intents(
     )
     if any(is_generic_category_surface(item.place_text) for item in named_place_intents):
         raise ValueError("Generic categories cannot be named-place search intents")
-    required = [
-        cleaned
-        for value in requirements.required_activities
-        if (cleaned := _clean_term(value)) and not _duplicates_named_activity(value, named_surfaces)
-    ]
+    required = (
+        [
+            cleaned
+            for value in requirements.required_activities
+            if (cleaned := _clean_term(value))
+            and not _duplicates_named_activity(value, named_surfaces)
+        ]
+        if poi_interests is None
+        else []
+    )
 
     terms: list[tuple[str, SearchIntentKind, NamedPlaceIntent | None]] = []
     seen: set[str] = set()
@@ -114,14 +121,24 @@ def build_place_search_intents(
     for named in named_place_intents:
         if named.inclusion is NamedPlaceInclusion.REQUIRED:
             add(named.place_text, SearchIntentKind.EXPLICIT_REQUIREMENT, named)
-    for value in required:
-        add(value, SearchIntentKind.EXPLICIT_REQUIREMENT)
+    if poi_interests is None:
+        for value in required:
+            add(value, SearchIntentKind.EXPLICIT_REQUIREMENT)
+    else:
+        for interest in poi_interests:
+            if interest.importance is SearchIntentKind.EXPLICIT_REQUIREMENT:
+                add(interest.surface, interest.importance)
     for named in named_place_intents:
         if named.inclusion is NamedPlaceInclusion.OPTIONAL:
             add(named.place_text, SearchIntentKind.NORMAL_PREFERENCE, named)
-    for value in requirements.preferences:
-        if not any(marker in value.casefold() for marker in EXPERIENCE_PREFERENCE_MARKERS):
-            add(value, SearchIntentKind.NORMAL_PREFERENCE)
+    if poi_interests is None:
+        for value in requirements.preferences:
+            if not any(marker in value.casefold() for marker in EXPERIENCE_PREFERENCE_MARKERS):
+                add(value, SearchIntentKind.NORMAL_PREFERENCE)
+    else:
+        for interest in poi_interests:
+            if interest.importance is SearchIntentKind.NORMAL_PREFERENCE:
+                add(interest.surface, interest.importance)
     for value in GENERIC_SEARCH_TERMS:
         if len(terms) >= max(3, max_queries or 0):
             break

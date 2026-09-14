@@ -18,8 +18,10 @@ from backend.app.evidence.web_models import (
     canonical_facets,
 )
 from backend.app.integrations.web.models import WebEvidenceSearchRequest
+from backend.app.policies.poi_funnel import normalize_exact_name
 from backend.app.runtime.config_models import WebEvidenceConfig
 from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.trip_intent import RequestedPlaceInformation
 
 WEB_TASK_TEMPLATE_VERSION = "official_web_v2"
 LEXICAL_TRIGGER_VERSION = "official_needs_en_v1"
@@ -293,6 +295,9 @@ def build_task_instruction(task: WebEvidenceTask) -> str:
             OfficialInformationNeed.CURRENT_OPERATIONAL_STATUS: (
                 "Find the current official operational status because structured status "
                 "is incomplete."
+                if task.requested_subject_scope is SubjectScope.WHOLE_VENUE
+                else "Find the current official operational status of the requested subject "
+                "because whole-venue structured status does not answer its sub-scope."
             ),
             OfficialInformationNeed.SPECIAL_DATE_HOURS: (
                 "Find official special or holiday opening hours for the requested dates only."
@@ -337,7 +342,7 @@ def build_search_request(task: WebEvidenceTask) -> WebEvidenceSearchRequest:
 
 
 def plan_official_web_tasks(
-    request: TravelRequest,
+    request: TravelRequest | None,
     requirements: TravelRequirements,
     shortlist: Sequence[PlaceCandidate],
     places: Sequence[PlaceEvidence],
@@ -346,6 +351,8 @@ def plan_official_web_tasks(
     named_place_ids: frozenset[str] | None = None,
     must_visit_place_ids: frozenset[str] | None = None,
     opening_date_conflicts: Mapping[str, tuple[date | None, ...]] | None = None,
+    requested_information: Sequence[RequestedPlaceInformation] | None = None,
+    named_surface_place_ids: Mapping[str, str] | None = None,
 ) -> tuple[list[WebEvidenceTask], list[InformationGap], list[dict[str, object]]]:
     """Build all eligible tasks before any request-level budget truncation."""
 
@@ -364,9 +371,28 @@ def plan_official_web_tasks(
         raise ValueError("Explicit named and must-visit Place IDs must belong to the shortlist")
     if opening_date_conflicts is not None and not opening_date_conflicts.keys() <= selected_ids:
         raise ValueError("Opening-date conflicts must belong to the shortlist")
+    if requested_information is not None and (
+        named_place_ids is None or named_surface_place_ids is None
+    ):
+        raise ValueError("Typed user information requires resolved named-place identities")
+    if requested_information is None and request is None:
+        raise ValueError("Legacy text planning requires an explicit user request")
+    if (
+        named_surface_place_ids is not None
+        and not set(named_surface_place_ids.values()) <= selected_ids
+    ):
+        raise ValueError("Resolved information targets must belong to the shortlist")
 
-    sentences = _sentences(request.request_text)
-    whole = normalize_phrase(request.request_text)
+    sentences = (
+        _sentences(request.request_text)
+        if request is not None and requested_information is None
+        else []
+    )
+    whole = (
+        normalize_phrase(request.request_text)
+        if request is not None and requested_information is None
+        else ""
+    )
     named_ids = (
         named_place_ids
         if named_place_ids is not None
@@ -377,6 +403,21 @@ def plan_official_web_tasks(
     ] = {}
     gaps: list[InformationGap] = []
     assessments: list[dict[str, object]] = []
+    information_by_place: dict[str, list[RequestedPlaceInformation]] = {}
+    if requested_information is not None:
+        for item in requested_information:
+            place_id = (named_surface_place_ids or {}).get(
+                normalize_exact_name(item.target_surface)
+            )
+            if place_id is None:
+                assessments.append(
+                    {
+                        "target_surface": item.target_surface,
+                        "decision": "target_not_selected_or_unresolved",
+                    }
+                )
+                continue
+            information_by_place.setdefault(place_id, []).append(item)
 
     def add_task(
         place: PlaceEvidence,
@@ -390,7 +431,11 @@ def plan_official_web_tasks(
         subject_scope: SubjectScope = SubjectScope.WHOLE_VENUE,
         scope_text: str | None = None,
         additional_reasons: tuple[WebTriggerReason, ...] = (),
+        requested_start: date | None = None,
+        requested_end: date | None = None,
     ) -> None:
+        task_start = requested_start or start
+        task_end = requested_end or end
         if gap:
             gaps.append(
                 InformationGap(
@@ -400,13 +445,20 @@ def plan_official_web_tasks(
                     requested_facets=facets,
                     requested_subject_scope=subject_scope,
                     requested_scope_text=scope_text,
-                    applicable_start_date=start,
-                    applicable_end_date=end,
+                    applicable_start_date=task_start,
+                    applicable_end_date=task_end,
                     reason=reason,
                     source_refs=(place.source_ref,),
                 )
             )
-        key = (place.place_id, need, start, end, subject_scope, normalize_phrase(scope_text or ""))
+        key = (
+            place.place_id,
+            need,
+            task_start,
+            task_end,
+            subject_scope,
+            normalize_phrase(scope_text or ""),
+        )
         old = tasks.get(key)
         all_reasons = (
             (*old.trigger_reasons, reason, *additional_reasons)
@@ -417,7 +469,7 @@ def plan_official_web_tasks(
         merged_facets = canonical_facets((*old.requested_facets, *facets) if old else facets)
         task = WebEvidenceTask(
             task_id=_task_id(
-                place.place_id, need, start, end, subject_scope, scope_text, merged_facets
+                place.place_id, need, task_start, task_end, subject_scope, scope_text, merged_facets
             ),
             place_id=place.place_id,
             place_name=place.name,
@@ -425,8 +477,8 @@ def plan_official_web_tasks(
             requested_facets=merged_facets,
             requested_subject_scope=subject_scope,
             requested_scope_text=scope_text,
-            applicable_start_date=start,
-            applicable_end_date=end,
+            applicable_start_date=task_start,
+            applicable_end_date=task_end,
             allowed_domains=authorized_domains(place, need, config),
             trigger_reasons=reasons,
             priority_group=min(priority_group, old.priority_group) if old else priority_group,
@@ -451,9 +503,17 @@ def plan_official_web_tasks(
             raise ValueError("Shortlist and Place Evidence IDs must align")
         name = normalize_phrase(candidate.name)
         named = candidate.place_id in named_ids
-        target_sentences = [item for item in sentences if _has_phrase(item, name)]
+        target_sentences = (
+            [item for item in sentences if _has_phrase(item, name)]
+            if requested_information is None
+            else []
+        )
         target_text = " ".join(target_sentences)
-        required_text = " ".join(normalize_phrase(x) for x in requirements.required_activities)
+        required_text = (
+            " ".join(normalize_phrase(x) for x in requirements.required_activities)
+            if requested_information is None
+            else ""
+        )
         required = (
             candidate.place_id in must_visit_place_ids
             if must_visit_place_ids is not None
@@ -471,19 +531,38 @@ def plan_official_web_tasks(
         date_conflict = _opening_date_conflict_affects_trip(
             (opening_date_conflicts or {}).get(place.place_id), start
         )
-        date_scoped = _date_context(target_text, start, end) if named else False
-        closure = named and _has_any(target_text, EXPLICIT_NEED_PHRASES["date_closure"])
-        current_status_intent = named and (
-            _has_any(target_text, EXPLICIT_NEED_PHRASES["current_status"])
-            or _has_named_current_status(target_text, name)
-        )
-        special = named and (
-            _has_any(target_text, ("holiday hours", "special hours"))
-            or (_has_any(target_text, ("open on", "hours on")) and date_scoped)
-        )
-        dated_operational_intent = bool(
-            date_scoped and (closure or current_status_intent) and not special
-        )
+        if requested_information is None:
+            date_scoped = _date_context(target_text, start, end) if named else False
+            closure = named and _has_any(target_text, EXPLICIT_NEED_PHRASES["date_closure"])
+            current_status_intent = named and (
+                _has_any(target_text, EXPLICIT_NEED_PHRASES["current_status"])
+                or _has_named_current_status(target_text, name)
+            )
+            special = named and (
+                _has_any(target_text, ("holiday hours", "special hours"))
+                or (_has_any(target_text, ("open on", "hours on")) and date_scoped)
+            )
+            dated_operational_intent = bool(
+                date_scoped and (closure or current_status_intent) and not special
+            )
+        else:
+            explicit_items = information_by_place.get(candidate.place_id, ())
+            current_status_intent = any(
+                item.operational_need is OfficialInformationNeed.CURRENT_OPERATIONAL_STATUS
+                and item.subject_scope is SubjectScope.WHOLE_VENUE
+                for item in explicit_items
+            )
+            dated_operational_intent = any(
+                item.operational_need is OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION
+                and item.subject_scope is SubjectScope.WHOLE_VENUE
+                for item in explicit_items
+            )
+            special = any(
+                item.operational_need is OfficialInformationNeed.SPECIAL_DATE_HOURS
+                and item.subject_scope is SubjectScope.WHOLE_VENUE
+                for item in explicit_items
+            )
+            closure = dated_operational_intent
         specific_intent = dated_operational_intent or special
         if targeted and current_status_intent and status_reason is not None and not specific_intent:
             add_task(
@@ -518,7 +597,7 @@ def plan_official_web_tasks(
                 }
             )
 
-        if named:
+        if named and requested_information is None:
             # Specific date/trip-scoped intent wins over the overlapping generic "is it open".
             if dated_operational_intent:
                 if not closure and _specific_hours_sufficient(place, start, end):
@@ -619,6 +698,74 @@ def plan_official_web_tasks(
                     facets=(RequestedFacet.RESERVATION_REQUIREMENT,),
                     subject_scope=requested_scope[0],
                     scope_text=requested_scope[1],
+                )
+
+        if named and requested_information is not None:
+            seen_explicit: set[
+                tuple[
+                    OfficialInformationNeed,
+                    RequestedFacet | None,
+                    SubjectScope,
+                    str,
+                    date | None,
+                    date | None,
+                ]
+            ] = set()
+            for item in information_by_place.get(candidate.place_id, ()):
+                need = item.operational_need or (
+                    OfficialInformationNeed.RESERVATION_REQUIREMENT
+                    if item.requested_facet is RequestedFacet.RESERVATION_REQUIREMENT
+                    else OfficialInformationNeed.ADMISSION_TICKET
+                )
+                key = (
+                    need,
+                    item.requested_facet,
+                    item.subject_scope,
+                    normalize_phrase(item.scope_text or ""),
+                    item.requested_start_date,
+                    item.requested_end_date,
+                )
+                if key in seen_explicit:
+                    continue
+                seen_explicit.add(key)
+                if need is OfficialInformationNeed.CURRENT_OPERATIONAL_STATUS:
+                    if item.subject_scope is SubjectScope.WHOLE_VENUE:
+                        continue  # The structured status check above handles this need.
+                    reason = WebTriggerReason.EXPLICIT_USER_NEED
+                elif need is OfficialInformationNeed.SPECIAL_DATE_HOURS:
+                    if (
+                        item.subject_scope is SubjectScope.WHOLE_VENUE
+                        and _specific_hours_sufficient(
+                            place,
+                            item.requested_start_date or start,
+                            item.requested_end_date or end,
+                        )
+                    ):
+                        assessments.append(
+                            {
+                                "place_id": place.place_id,
+                                "information_need": need.value,
+                                "decision": "sufficient",
+                            }
+                        )
+                        continue
+                    reason = WebTriggerReason.EXPLICIT_DATE_QUESTION
+                elif need is OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION:
+                    reason = WebTriggerReason.EXPLICIT_DATE_QUESTION
+                else:
+                    reason = WebTriggerReason.EXPLICIT_USER_NEED
+                add_task(
+                    place,
+                    need,
+                    reason,
+                    residual_group,
+                    index,
+                    gap=True,
+                    facets=(item.requested_facet,) if item.requested_facet is not None else (),
+                    subject_scope=item.subject_scope,
+                    scope_text=item.scope_text,
+                    requested_start=item.requested_start_date,
+                    requested_end=item.requested_end_date,
                 )
 
         if "CLOSED_TEMPORARILY" in structured_statuses:

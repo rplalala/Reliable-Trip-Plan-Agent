@@ -46,6 +46,69 @@ class FoundryRequirementsWithNamedPlaceIntentsDTO(FoundryTravelRequirementsDTO):
     named_place_intents: list[FoundryNamedPlaceIntentDTO]
 
 
+class FoundryRequestedPlaceInformationDTO(FoundryTransportDTO):
+    target_surface: str
+    target_source_text: str
+    source_text: str
+    requested_facet: (
+        Literal[
+            "general_admission_policy",
+            "admission_fee",
+            "ticket_requirement",
+            "advance_ticket_purchase_requirement",
+            "reservation_requirement",
+        ]
+        | None
+    )
+    operational_need: (
+        Literal[
+            "current_operational_status",
+            "date_specific_operational_exception",
+            "special_date_hours",
+        ]
+        | None
+    )
+    subject_scope: Literal["whole_venue", "sub_area", "exhibition", "ticket_product"]
+    scope_text: str | None
+    temporal_scope: Literal["GENERAL", "CURRENT", "TRIP_DATES", "EXPLICIT_DATE"]
+    date_source_text: str | None
+    requested_start_date: str | None
+    requested_end_date: str | None
+
+
+class FoundryExperiencePreferenceIntentDTO(FoundryTransportDTO):
+    preference: Literal[
+        "AVOID_CROWDS",
+        "PREFER_LESS_WALKING",
+        "PREFER_ACCESSIBLE",
+        "PREFER_FAMILY_FRIENDLY",
+        "PREFER_SHORT_VISIT",
+        "PREFER_LONG_VISIT",
+    ]
+    importance: Literal["explicit_requirement", "normal_preference"]
+    source_text: str
+
+
+class FoundryTransportPreferenceIntentDTO(FoundryTransportDTO):
+    mode: Literal["DRIVE", "WALK", "BICYCLE", "TRANSIT"]
+    source_text: str
+
+
+class FoundryPoiInterestDTO(FoundryTransportDTO):
+    surface: str
+    importance: Literal["explicit_requirement", "normal_preference"]
+    source_text: str
+
+
+class FoundryTripIntentExtractionDTO(FoundryRequirementsWithNamedPlaceIntentsDTO):
+    """One V1 provider response for all bounded user-semantic capabilities."""
+
+    requested_place_information: list[FoundryRequestedPlaceInformationDTO]
+    experience_preferences: list[FoundryExperiencePreferenceIntentDTO]
+    transport_preference: FoundryTransportPreferenceIntentDTO | None
+    poi_interests: list[FoundryPoiInterestDTO]
+
+
 class FoundryDateTimeDTO(FoundryTransportDTO):
     """Transport datetime split into explicit, independently required components."""
 

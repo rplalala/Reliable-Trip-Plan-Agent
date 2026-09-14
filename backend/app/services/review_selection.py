@@ -22,6 +22,7 @@ from backend.app.policies.experience_profile import preprocess_reviews, validate
 from backend.app.policies.experience_selection import (
     ExperienceNeedExtraction,
     ExperienceScoreResult,
+    experience_needs_from_intents,
     experience_score_map,
     extract_experience_needs,
     score_experience,
@@ -36,6 +37,7 @@ from backend.app.policies.trip_dates import TripDateWindow
 from backend.app.runtime.budget import ToolBudget, ToolBudgetExceededError, ToolBudgetKey
 from backend.app.runtime.cache import RequestCache
 from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.trip_intent import ExperiencePreferenceIntent
 from backend.app.services.evidence_acquisition import CandidateFunnelResult
 
 PROFILE_PROMPT_VERSION = "v1a_review_profile_1"
@@ -231,10 +233,15 @@ class ReviewSelectionService:
         funnel: CandidateFunnelResult,
         requirements: TravelRequirements,
         window: TripDateWindow,
+        experience_preferences: Sequence[ExperiencePreferenceIntent] | None = None,
     ) -> ReviewAwareSelectionResult:
         if requirements.start_date is None or requirements.end_date is None:
             raise ValueError("Complete trip dates are required for review-aware selection")
-        needs = extract_experience_needs(requirements)
+        needs = (
+            experience_needs_from_intents(experience_preferences)
+            if experience_preferences is not None
+            else extract_experience_needs(requirements)
+        )
         context = ReviewSelectionContext(
             start_date=requirements.start_date,
             end_date=requirements.end_date,

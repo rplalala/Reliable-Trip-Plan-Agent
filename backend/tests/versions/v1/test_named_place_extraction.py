@@ -6,15 +6,13 @@ from uuid import UUID
 
 import pytest
 
+from backend.app.evidence.web_models import RequestedFacet
 from backend.app.observability.run_trace import NullRunTracer
 from backend.app.runtime.budget import ToolBudget
 from backend.app.runtime.cache import RequestCache
-from backend.app.schemas.named_place_intent import (
-    NamedPlaceInclusion,
-    NamedPlaceIntent,
-    RequirementsWithNamedPlaceIntents,
-)
+from backend.app.schemas.named_place_intent import NamedPlaceInclusion, NamedPlaceIntent
 from backend.app.schemas.request import TravelRequest
+from backend.app.schemas.trip_intent import RequestedPlaceInformation, TripIntentExtractionResult
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
 from backend.app.versions.v1.graph import V1StageError, build_v1_graph
 from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
@@ -39,7 +37,7 @@ class RecordingTracer(NullRunTracer):
         self.events.append((event_type, payload))
 
 
-def _run(request_text: str, extraction: RequirementsWithNamedPlaceIntents):
+def _run(request_text: str, extraction: TripIntentExtractionResult):
     llm = FakeStructuredLLMClient([extraction, make_itinerary()])
     places = FakePlacesProvider()
     tracer = RecordingTracer()
@@ -96,9 +94,9 @@ def test_mocked_named_place_inclusion_is_retained_separately(
 
     assert state["requirements"] == base
     assert state["named_place_intents"] == (intent,)
-    assert llm.calls[0].response_schema is RequirementsWithNamedPlaceIntents
+    assert llm.calls[0].response_schema is TripIntentExtractionResult
     assert len(llm.calls) == 2
-    assert len(places.search_requests) == 5
+    assert len(places.search_requests) == 4
     assert any(name == "named_place_intents_validated" for name, _ in tracer.events)
 
 
@@ -175,4 +173,76 @@ def test_invalid_intent_fails_extraction_before_provider_calls() -> None:
     assert (
         "named_place_intents_validation_failed",
         {"reason": "source_not_in_request"},
+    ) in tracer.events
+
+
+def test_typed_information_is_kept_in_v1_state_without_another_extraction_call() -> None:
+    text = "Sydney Opera House. How much is admission?"
+    intent = NamedPlaceIntent(
+        place_text="Sydney Opera House",
+        inclusion=NamedPlaceInclusion.OPTIONAL,
+        source_text="Sydney Opera House",
+    )
+    information = RequestedPlaceInformation(
+        target_surface="Sydney Opera House",
+        target_source_text="Sydney Opera House",
+        source_text="How much is admission?",
+        requested_facet=RequestedFacet.ADMISSION_FEE,
+        operational_need=None,
+    )
+
+    state, llm, _, tracer = _run(
+        text,
+        make_extraction(intents=(intent,), information=(information,)),
+    )
+
+    assert state["requested_place_information"] == (information,)
+    assert llm.calls[0].response_schema is TripIntentExtractionResult
+    assert len(llm.calls) == 2  # Requirements extraction and itinerary generation only.
+    validated = next(payload for name, payload in tracer.events if name == "trip_intents_validated")
+    assert validated["requested_information"][0]["facet"] == "admission_fee"
+
+
+def test_invalid_information_provenance_stops_before_provider_calls() -> None:
+    intent = NamedPlaceIntent(
+        place_text="Sydney Opera House",
+        inclusion=NamedPlaceInclusion.OPTIONAL,
+        source_text="Sydney Opera House",
+    )
+    information = RequestedPlaceInformation(
+        target_surface="Sydney Opera House",
+        target_source_text="Sydney Opera House",
+        source_text="Unsupported admission question",
+        requested_facet=RequestedFacet.ADMISSION_FEE,
+        operational_need=None,
+    )
+    llm = FakeStructuredLLMClient([make_extraction(intents=(intent,), information=(information,))])
+    places = FakePlacesProvider()
+    tracer = RecordingTracer()
+    graph = build_v1_graph(
+        llm,
+        V1EvidenceAcquisitionService(
+            places_provider=places,
+            weather_provider=FakeWeatherProvider(),
+            routes_provider=FakeRoutesProvider(),
+            budget=ToolBudget(),
+            cache=RequestCache(),
+            tracer=tracer,
+        ),
+        tracer,
+    )
+
+    with pytest.raises(V1StageError, match="extract_requirements"):
+        asyncio.run(
+            graph.ainvoke(
+                {
+                    "request": TravelRequest(request_text="Sydney Opera House."),
+                    "reference_date": date(2026, 9, 11),
+                }
+            )
+        )
+    assert places.search_requests == []
+    assert (
+        "trip_intents_validation_failed",
+        {"reason": "information_source_not_in_request"},
     ) in tracer.events

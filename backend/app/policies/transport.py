@@ -2,7 +2,6 @@
 
 import re
 from dataclasses import dataclass
-from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict
 
@@ -12,16 +11,10 @@ from backend.app.evidence.models import (
     RouteEvidence,
 )
 from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.trip_intent import TransportPreferenceIntent, TravelMode
 
 MAX_WALK_DISTANCE_METERS = 3_000
 MAX_WALK_DURATION_SECONDS = 2_700
-
-
-class TravelMode(StrEnum):
-    DRIVE = "DRIVE"
-    WALK = "WALK"
-    BICYCLE = "BICYCLE"
-    TRANSIT = "TRANSIT"
 
 
 class TransportModeDecision(BaseModel):
@@ -117,6 +110,23 @@ def select_transport_mode(
     return TransportModeDecision(
         travel_mode=TravelMode.WALK,
         reason="default_pedestrian_transfer_for_poi_grouping",
+    )
+
+
+def select_transport_mode_from_intent(
+    intent: TransportPreferenceIntent | None,
+) -> TransportModeDecision:
+    """Apply the existing routing default to one validated typed user intent."""
+
+    if intent is None:
+        return TransportModeDecision(
+            travel_mode=TravelMode.WALK,
+            reason="default_pedestrian_transfer_for_poi_grouping",
+        )
+    return TransportModeDecision(
+        travel_mode=intent.mode,
+        reason="explicit_mode_in_user_request",
+        routing_preference="TRAFFIC_UNAWARE" if intent.mode is TravelMode.DRIVE else None,
     )
 
 

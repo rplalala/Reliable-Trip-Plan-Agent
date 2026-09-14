@@ -99,6 +99,7 @@ from backend.app.runtime.budget import ToolBudget, ToolBudgetExceededError, Tool
 from backend.app.runtime.cache import RequestCache
 from backend.app.schemas.named_place_intent import NamedPlaceInclusion, NamedPlaceIntent
 from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.trip_intent import ExperiencePreferenceIntent, PoiInterest
 
 ValueT = TypeVar("ValueT")
 
@@ -500,6 +501,7 @@ class V1EvidenceAcquisitionService:
         destination: DestinationContext,
         window: TripDateWindow,
         named_place_intents: Sequence[NamedPlaceIntent] = (),
+        poi_interests: Sequence[PoiInterest] | None = None,
         excluded_place_ids: frozenset[str] = frozenset(),
     ) -> CandidateFunnelResult:
         """Build the structured/rating funnel before review-aware final selection."""
@@ -513,6 +515,7 @@ class V1EvidenceAcquisitionService:
         intents = build_place_search_intents(
             requirements,
             named_place_intents=named_place_intents,
+            poi_interests=poi_interests,
         )
         self._tracer.event(
             "candidate_search_intents_generated",
@@ -758,6 +761,7 @@ class V1EvidenceAcquisitionService:
         window: TripDateWindow,
         llm_client: StructuredLLMClient,
         llm_config_identity: str,
+        experience_preferences: Sequence[ExperiencePreferenceIntent] | None = None,
     ) -> "ReviewAwareSelectionResult":
         """Refine the funnel with bounded review evidence for the active V1 graph."""
 
@@ -773,7 +777,12 @@ class V1EvidenceAcquisitionService:
             cache=self._cache,
             tracer=self._tracer,
         )
-        result = await service.run(funnel=funnel, requirements=requirements, window=window)
+        result = await service.run(
+            funnel=funnel,
+            requirements=requirements,
+            window=window,
+            experience_preferences=experience_preferences,
+        )
         self._budget.consume(ToolBudgetKey.FINAL_POIS, len(result.selected_place_ids))
         return result
 

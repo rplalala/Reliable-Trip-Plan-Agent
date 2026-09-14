@@ -25,6 +25,7 @@ from backend.app.runtime.budget import ToolBudget, ToolBudgetExceededError, Tool
 from backend.app.runtime.cache import RequestCache
 from backend.app.runtime.config_models import WebEvidenceConfig
 from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.trip_intent import RequestedPlaceInformation
 
 
 @dataclass(frozen=True)
@@ -86,7 +87,7 @@ class WebEvidenceAcquisitionService:
 
     def plan_tasks(
         self,
-        request: TravelRequest,
+        request: TravelRequest | None,
         requirements: TravelRequirements,
         shortlist: list[PlaceCandidate],
         places: list[PlaceEvidence],
@@ -94,6 +95,8 @@ class WebEvidenceAcquisitionService:
         named_place_ids: frozenset[str] | None = None,
         must_visit_place_ids: frozenset[str] | None = None,
         opening_date_conflicts: Mapping[str, tuple[date | None, ...]] | None = None,
+        requested_information: tuple[RequestedPlaceInformation, ...] | None = None,
+        named_surface_place_ids: Mapping[str, str] | None = None,
     ) -> tuple[list[WebEvidenceTask], list[InformationGap]]:
         tasks, gaps, assessments = plan_official_web_tasks(
             request,
@@ -104,6 +107,8 @@ class WebEvidenceAcquisitionService:
             named_place_ids=named_place_ids,
             must_visit_place_ids=must_visit_place_ids,
             opening_date_conflicts=opening_date_conflicts,
+            requested_information=requested_information,
+            named_surface_place_ids=named_surface_place_ids,
         )
         for assessment in assessments:
             self._tracer.event("official_gap_assessed", assessment)

@@ -15,9 +15,9 @@ from backend.app.observability.run_trace import NullRunTracer
 from backend.app.policies.transport import select_transport_mode
 from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
-from backend.app.schemas.named_place_intent import RequirementsWithNamedPlaceIntents
 from backend.app.schemas.planning import SystemVersion
 from backend.app.schemas.request import TravelRequest
+from backend.app.schemas.trip_intent import TripIntentExtractionResult
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
 from backend.app.versions.v1.graph import build_v1_graph
 from backend.app.versions.v1.prompts import V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
@@ -103,7 +103,7 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert result.system_version is SystemVersion.V1
     assert len(llm.calls) == 2
     assert llm.calls[0].system_prompt == V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
-    assert llm.calls[0].response_schema is RequirementsWithNamedPlaceIntents
+    assert llm.calls[0].response_schema is TripIntentExtractionResult
     assert places.search_requests[0].field_mask == PLACES_DESTINATION_FIELD_MASK
     assert places.search_requests[0].include_future_opening_businesses is False
     assert all(

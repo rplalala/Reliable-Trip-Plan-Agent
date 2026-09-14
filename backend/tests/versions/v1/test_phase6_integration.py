@@ -15,6 +15,7 @@ from backend.app.evidence.experience_models import (
     ExperienceValue,
 )
 from backend.app.evidence.models import RouteElementEvidenceType
+from backend.app.evidence.selection_models import SearchIntentKind
 from backend.app.integrations.models import (
     LatLng,
     PlaceCandidateDTO,
@@ -32,13 +33,18 @@ from backend.app.observability.run_trace import (
 from backend.app.policies.trip_dates import create_trip_date_window
 from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
-from backend.app.schemas.itinerary import Itinerary, ItineraryDay
+from backend.app.schemas.itinerary import ItineraryDay
 from backend.app.schemas.named_place_intent import (
     NamedPlaceInclusion,
     NamedPlaceIntent,
-    RequirementsWithNamedPlaceIntents,
 )
 from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.trip_intent import (
+    ExperiencePreference,
+    ExperiencePreferenceIntent,
+    TripIntentExtractionResult,
+)
+from backend.app.schemas.v1_itinerary import EstimatedCostProjectionDiagnostic, V1Itinerary
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
 from backend.app.versions.v1.graph import build_v1_graph, project_selected_places
 from backend.app.versions.v1.runner import run_v1
@@ -174,9 +180,9 @@ def requirements(
     )
 
 
-def itinerary_for(req: TravelRequirements) -> Itinerary:
+def itinerary_for(req: TravelRequirements) -> V1Itinerary:
     days = (req.end_date - req.start_date).days + 1
-    return Itinerary(
+    return V1Itinerary(
         destination="Sydney",
         start_date=req.start_date,
         end_date=req.end_date,
@@ -222,11 +228,39 @@ def run_graph(
     )
     request = TravelRequest(
         request_text="Plan Sydney walking-only. "
+        + " ".join(req.preferences)
+        + " "
         + " ".join(item.source_text for item in named_place_intents)
     )
     graph = build_v1_graph(client, service, tracer)
     state = asyncio.run(graph.ainvoke({"request": request, "reference_date": REFERENCE_DATE}))
     return state, client, places, weather, routes, budget, tracer
+
+
+def test_v1_planner_records_bounded_cost_projection_without_another_llm_call() -> None:
+    req = requirements(1)
+    itinerary = itinerary_for(req)
+    itinerary.set_cost_projections(
+        (
+            EstimatedCostProjectionDiagnostic(
+                field_path="days[0].activities[0].estimated_cost",
+                projection="midpoint_from_range",
+                currency="SGD",
+                lower_bound="1.00",
+                upper_bound="10.00",
+                midpoint="5.50",
+            ),
+        )
+    )
+    llm = FakeStructuredLLMClient([make_extraction(req), itinerary])
+
+    state, _, _, _, _, _, tracer = run_graph(req, per_query=1, llm=llm)
+
+    assert state["itinerary"].start_date == req.start_date
+    assert len(llm.calls) == 2
+    diagnostics = [payload for name, payload in tracer.events if name == "estimated_cost_projected"]
+    assert diagnostics == [itinerary.cost_projections[0].as_trace_payload()]
+    assert "itinerary_dates_validated" in [name for name, _ in tracer.events]
 
 
 @pytest.mark.parametrize(
@@ -406,8 +440,17 @@ class ReviewProfileLLM:
 
     async def generate_structured(self, *, system_prompt, user_prompt, response_schema):
         self.calls.append((response_schema, user_prompt))
-        if response_schema is RequirementsWithNamedPlaceIntents:
-            return make_extraction(self.req)
+        if response_schema is TripIntentExtractionResult:
+            return make_extraction(
+                self.req,
+                experience=(
+                    ExperiencePreferenceIntent(
+                        preference=ExperiencePreference.AVOID_CROWDS,
+                        importance=SearchIntentKind.NORMAL_PREFERENCE,
+                        source_text="avoid crowds",
+                    ),
+                ),
+            )
         if response_schema is ExperienceProfileDraft:
             place_id = json.loads(user_prompt)["place_id"]
             crowded = place_id == "poi-0-0"
@@ -426,7 +469,7 @@ class ReviewProfileLLM:
                 ],
                 review_count_used=2,
             )
-        if response_schema is Itinerary:
+        if response_schema is V1Itinerary:
             return itinerary_for(self.req)
         raise AssertionError("Unexpected response schema")
 
@@ -451,7 +494,7 @@ def test_review_aware_selection_is_active_but_profile_stays_out_of_planner() -> 
     assert budget.summary()["review_enriched_places"]["used"] == 1
     assert budget.summary()["review_detail_calls"]["used"] == 1
     assert budget.summary()["experience_profile_llm_calls"]["used"] == 1
-    generation_prompt = next(prompt for schema, prompt in llm.calls if schema is Itinerary)
+    generation_prompt = next(prompt for schema, prompt in llm.calls if schema is V1Itinerary)
     for forbidden in (
         REVIEW_SENTINEL,
         "Visitors report crowds.",
@@ -512,7 +555,9 @@ def _file_tracer(root: Path, request: TravelRequest) -> FileRunTracer:
 
 def test_active_file_trace_excludes_review_inputs_and_redacts_secrets(tmp_path: Path) -> None:
     req = requirements(1, required=["museums", "beaches"], preferences=["avoid crowds"])
-    request = TravelRequest(request_text="Plan Sydney walking-only. api_key=hidden-example-secret")
+    request = TravelRequest(
+        request_text="Plan Sydney walking-only. avoid crowds. api_key=hidden-example-secret"
+    )
     tracer = _file_tracer(tmp_path, request)
     llm = ReviewProfileLLM(req)
     places = ManyPlacesProvider(per_query=1, with_reviews=True)

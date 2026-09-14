@@ -12,6 +12,7 @@ from backend.app.observability.run_trace import RunTracer
 from backend.app.policies.official_evidence_resolver import resolve_effective_evidence
 from backend.app.runtime.budget import ToolBudget, ToolBudgetKey
 from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.trip_intent import RequestedPlaceInformation
 from backend.app.services.official_web_grounding import OfficialWebGroundingService
 from backend.app.services.web_evidence_acquisition import WebEvidenceAcquisitionService
 
@@ -50,9 +51,10 @@ class OfficialWebIntegrationService:
     async def run(
         self,
         *,
-        request: TravelRequest,
+        request: TravelRequest | None = None,
         requirements: TravelRequirements,
         projection: OfficialWebProjection,
+        requested_information: tuple[RequestedPlaceInformation, ...] | None = None,
     ) -> OfficialWebIntegrationResult:
         if requirements.start_date is None or requirements.end_date is None:
             raise ValueError("Complete trip dates are required for official-Web integration")
@@ -74,6 +76,8 @@ class OfficialWebIntegrationService:
             named_place_ids=projection.named_place_ids,
             must_visit_place_ids=projection.must_visit_place_ids,
             opening_date_conflicts=projection.opening_date_conflicts,
+            requested_information=requested_information,
+            named_surface_place_ids=projection.named_surface_place_ids,
         )
         acquired = await self._acquisition.acquire(tasks)
         places_by_id = {place.place_id: place for place in projection.places}

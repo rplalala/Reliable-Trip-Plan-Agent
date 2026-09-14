@@ -4,7 +4,6 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from decimal import Decimal
-from enum import StrEnum
 from itertools import product
 
 from backend.app.evidence.experience_models import (
@@ -16,16 +15,7 @@ from backend.app.evidence.experience_models import (
 from backend.app.evidence.models import EvidenceAvailability
 from backend.app.evidence.selection_models import SearchIntentKind
 from backend.app.schemas.request import TravelRequirements
-
-
-class ExperiencePreference(StrEnum):
-    AVOID_CROWDS = "AVOID_CROWDS"
-    PREFER_LESS_WALKING = "PREFER_LESS_WALKING"
-    PREFER_ACCESSIBLE = "PREFER_ACCESSIBLE"
-    PREFER_FAMILY_FRIENDLY = "PREFER_FAMILY_FRIENDLY"
-    PREFER_SHORT_VISIT = "PREFER_SHORT_VISIT"
-    PREFER_LONG_VISIT = "PREFER_LONG_VISIT"
-
+from backend.app.schemas.trip_intent import ExperiencePreference, ExperiencePreferenceIntent
 
 PREFERENCE_DIMENSION: dict[ExperiencePreference, ExperienceDimension] = {
     ExperiencePreference.AVOID_CROWDS: ExperienceDimension.CROWDING,
@@ -151,6 +141,33 @@ def extract_experience_needs(requirements: TravelRequirements) -> ExperienceNeed
                     source_kind=kind,
                     source_text=text,
                 )
+    ambiguities: tuple[str, ...] = ()
+    if {
+        ExperiencePreference.PREFER_SHORT_VISIT,
+        ExperiencePreference.PREFER_LONG_VISIT,
+    } <= found.keys():
+        found.pop(ExperiencePreference.PREFER_SHORT_VISIT)
+        found.pop(ExperiencePreference.PREFER_LONG_VISIT)
+        ambiguities = ("contradictory_visit_duration_preferences",)
+    return ExperienceNeedExtraction(tuple(found.values()), ambiguities)
+
+
+def experience_needs_from_intents(
+    intents: Sequence[ExperiencePreferenceIntent],
+) -> ExperienceNeedExtraction:
+    """Map typed user preferences to the unchanged deterministic score inputs."""
+
+    found: dict[ExperiencePreference, ExplicitExperienceNeed] = {}
+    for intent in sorted(intents, key=lambda item: -item.importance.weight):
+        found.setdefault(
+            intent.preference,
+            ExplicitExperienceNeed(
+                preference=intent.preference,
+                dimension=PREFERENCE_DIMENSION[intent.preference],
+                source_kind=intent.importance,
+                source_text=intent.source_text,
+            ),
+        )
     ambiguities: tuple[str, ...] = ()
     if {
         ExperiencePreference.PREFER_SHORT_VISIT,
