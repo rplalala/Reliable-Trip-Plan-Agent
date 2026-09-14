@@ -14,13 +14,13 @@ from backend.app.runtime.cache import RequestCache
 
 
 def test_tool_budget_rejects_work_before_exceeding_hard_limit() -> None:
-    budget = ToolBudget(ToolBudgetLimits(max_place_search_calls=1))
-    budget.consume(ToolBudgetKey.PLACE_SEARCH_CALLS)
+    budget = ToolBudget(ToolBudgetLimits(max_candidate_search_calls=1))
+    budget.consume(ToolBudgetKey.CANDIDATE_SEARCH_CALLS)
 
     with pytest.raises(ToolBudgetExceededError):
-        budget.consume(ToolBudgetKey.PLACE_SEARCH_CALLS)
+        budget.consume(ToolBudgetKey.CANDIDATE_SEARCH_CALLS)
 
-    assert budget.summary()["place_search_calls"] == {"used": 1, "limit": 1}
+    assert budget.summary()["candidate_search_calls"] == {"used": 1, "limit": 1}
 
 
 def test_tool_budget_reserves_related_route_counters_atomically() -> None:

@@ -15,7 +15,11 @@ from pydantic import (
 )
 
 from backend.app.observability.run_trace import TracePayloadMode
-from backend.app.runtime.budget_limits import ToolBudgetKey, validate_budget_values
+from backend.app.runtime.budget_limits import (
+    ToolBudgetKey,
+    validate_baseline_per_request_elements,
+    validate_budget_values,
+)
 
 
 class _ConfigModel(BaseModel):
@@ -36,8 +40,10 @@ class AppConfig(_ConfigModel):
 
 
 class PlacesBudgetConfig(_ConfigModel):
-    search_calls: StrictInt
+    destination_search_calls: StrictInt
+    candidate_search_calls: StrictInt
     detail_calls: StrictInt
+    review_detail_calls: StrictInt
 
 
 class WeatherBudgetConfig(_ConfigModel):
@@ -45,7 +51,11 @@ class WeatherBudgetConfig(_ConfigModel):
 
 
 class RoutesBudgetConfig(_ConfigModel):
+    # Legacy single-matrix limit remains in use by the current V1 graph.
     matrix_elements: StrictInt
+    baseline_elements_per_request: StrictInt
+    baseline_elements_per_run: StrictInt
+    baseline_calls: StrictInt
     alternative_pairs: StrictInt
     alternative_matrix_calls: StrictInt
 
@@ -112,10 +122,12 @@ class WebEvidenceConfig(_ConfigModel):
 
 class ExperienceBudgetConfig(_ConfigModel):
     review_enriched_places: StrictInt
+    profile_llm_calls: StrictInt
 
 
 class BudgetConfig(_ConfigModel):
     candidates: StrictInt
+    final_pois: StrictInt
     places: PlacesBudgetConfig
     weather: WeatherBudgetConfig
     routes: RoutesBudgetConfig
@@ -125,12 +137,18 @@ class BudgetConfig(_ConfigModel):
     def as_key_limits(self) -> dict[ToolBudgetKey, int]:
         return {
             ToolBudgetKey.CANDIDATES: self.candidates,
-            ToolBudgetKey.PLACE_SEARCH_CALLS: self.places.search_calls,
+            ToolBudgetKey.DESTINATION_SEARCH_CALLS: self.places.destination_search_calls,
+            ToolBudgetKey.CANDIDATE_SEARCH_CALLS: self.places.candidate_search_calls,
             ToolBudgetKey.PLACE_DETAIL_CALLS: self.places.detail_calls,
+            ToolBudgetKey.REVIEW_DETAIL_CALLS: self.places.review_detail_calls,
             ToolBudgetKey.REVIEW_ENRICHED_PLACES: self.experience.review_enriched_places,
+            ToolBudgetKey.EXPERIENCE_PROFILE_LLM_CALLS: self.experience.profile_llm_calls,
+            ToolBudgetKey.FINAL_POIS: self.final_pois,
             ToolBudgetKey.WEB_EVIDENCE_TASKS: self.web.evidence_tasks,
             ToolBudgetKey.PAGE_FETCHES: self.web.page_fetches,
             ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: self.routes.matrix_elements,
+            ToolBudgetKey.BASELINE_ROUTE_MATRIX_ELEMENTS: self.routes.baseline_elements_per_run,
+            ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS: self.routes.baseline_calls,
             ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: self.routes.alternative_pairs,
             ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: self.routes.alternative_matrix_calls,
             ToolBudgetKey.WEATHER_CALLS: self.weather.calls,
@@ -139,6 +157,15 @@ class BudgetConfig(_ConfigModel):
     @model_validator(mode="after")
     def within_hard_limits(self) -> "BudgetConfig":
         validate_budget_values(self.as_key_limits())
+        validate_baseline_per_request_elements(self.routes.baseline_elements_per_request)
+        if self.routes.baseline_elements_per_request > self.routes.baseline_elements_per_run:
+            raise ValueError(
+                "baseline_elements_per_request cannot exceed baseline_elements_per_run"
+            )
+        if self.places.review_detail_calls < self.experience.review_enriched_places:
+            raise ValueError("review_detail_calls must cover review_enriched_places")
+        if self.experience.profile_llm_calls < self.experience.review_enriched_places:
+            raise ValueError("profile_llm_calls must cover review_enriched_places")
         return self
 
 
@@ -173,7 +200,7 @@ class TraceConfig(_ConfigModel):
 
 
 class RuntimeConfig(_ConfigModel):
-    schema_version: Literal[3]
+    schema_version: Literal[5]
     app: AppConfig
     budget: BudgetConfig
     web_evidence: WebEvidenceConfig
@@ -183,6 +210,6 @@ class RuntimeConfig(_ConfigModel):
     @field_validator("schema_version")
     @classmethod
     def supported_schema(cls, value: int) -> int:
-        if value != 3:
+        if value != 5:
             raise ValueError("Unsupported runtime configuration schema version")
         return value

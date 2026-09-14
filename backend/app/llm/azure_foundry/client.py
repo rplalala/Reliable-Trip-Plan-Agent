@@ -8,17 +8,22 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, ValidationError
 
+from backend.app.evidence.experience_models import ExperienceProfileDraft
 from backend.app.llm.azure_foundry.dto import (
+    FoundryExperienceProfileDTO,
     FoundryItineraryDTO,
+    FoundryRequirementsWithNamedPlaceIntentsDTO,
     FoundryTravelRequirementsDTO,
 )
 from backend.app.llm.azure_foundry.mapping import (
     FoundryMappingError,
     map_foundry_itinerary,
     map_foundry_requirements,
+    map_foundry_requirements_with_named_places,
 )
 from backend.app.llm.client import StructuredModelT, StructuredOutputError
 from backend.app.schemas.itinerary import Itinerary
+from backend.app.schemas.named_place_intent import RequirementsWithNamedPlaceIntents
 from backend.app.schemas.request import TravelRequirements
 
 
@@ -33,9 +38,19 @@ def _map_requirements(value: BaseModel) -> TravelRequirements:
     return map_foundry_requirements(dto)
 
 
+def _map_requirements_with_named_places(value: BaseModel) -> RequirementsWithNamedPlaceIntents:
+    dto = FoundryRequirementsWithNamedPlaceIntentsDTO.model_validate(value)
+    return map_foundry_requirements_with_named_places(dto)
+
+
 def _map_itinerary(value: BaseModel) -> Itinerary:
     dto = FoundryItineraryDTO.model_validate(value)
     return map_foundry_itinerary(dto)
+
+
+def _map_experience_profile(value: BaseModel) -> ExperienceProfileDraft:
+    dto = FoundryExperienceProfileDTO.model_validate(value)
+    return ExperienceProfileDraft.model_validate(dto.model_dump())
 
 
 _FOUNDRY_BINDINGS: dict[type[BaseModel], _FoundryBinding] = {
@@ -43,9 +58,17 @@ _FOUNDRY_BINDINGS: dict[type[BaseModel], _FoundryBinding] = {
         transport_schema=FoundryTravelRequirementsDTO,
         to_domain=_map_requirements,
     ),
+    RequirementsWithNamedPlaceIntents: _FoundryBinding(
+        transport_schema=FoundryRequirementsWithNamedPlaceIntentsDTO,
+        to_domain=_map_requirements_with_named_places,
+    ),
     Itinerary: _FoundryBinding(
         transport_schema=FoundryItineraryDTO,
         to_domain=_map_itinerary,
+    ),
+    ExperienceProfileDraft: _FoundryBinding(
+        transport_schema=FoundryExperienceProfileDTO,
+        to_domain=_map_experience_profile,
     ),
 }
 

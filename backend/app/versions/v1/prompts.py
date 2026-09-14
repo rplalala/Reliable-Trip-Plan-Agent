@@ -1,10 +1,39 @@
 """Evidence-informed V1 prompts while preserving the V0 planning objective."""
 
 import json
+from collections.abc import Sequence
 from datetime import date
 
 from backend.app.evidence.models import PlaceEvidence, RouteEvidenceBundle, WeatherEvidence
+from backend.app.evidence.opening_hours import planning_opening_hours
+from backend.app.policies.poi_selection import SelectionConflict
 from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.versions.v0.prompts import REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
+
+V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT = (
+    REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
+    + """
+
+For this version, keep all base TravelRequirements fields under the same extraction
+rules. Additionally extract named_place_intents only for specific identifiable places
+mentioned by the user, never generic categories such as museums, parks, beaches,
+viewpoints, or cultural attractions. For each, copy place_text as the user's actual
+place surface without action words such as Visit, Go to, or See. Copy source_text as
+a short exact contiguous span of the original user request supporting the intent.
+Do not expand aliases, infer provider names, or invent a place from world knowledge.
+
+Set inclusion to REQUIRED when the user expects that specific place in the final trip,
+including wants, hopes, or requests to visit, go to, see, or include it. Set OPTIONAL
+for a mere mention, suggestion, interest, or conditional possibility. An explicit
+condition such as "if there is time" or "if convenient" makes it OPTIONAL even when
+the sentence also expresses desire. Interpret the intended trip outcome, not keyword
+strength. A single conditional statement yields one OPTIONAL intent, not both labels.
+For repeated references to one place, use one intent unless the request contains
+genuinely conflicting inclusion instructions; then preserve both supported assertions
+for explicit ambiguity reporting. Return an empty array when no named place is stated.
+Do not resolve Place IDs, score places, select POIs, or call tools.
+"""
+).strip()
 
 ITINERARY_GENERATION_SYSTEM_PROMPT = """
 You are the itinerary-generation stage of a travel planner.
@@ -30,10 +59,15 @@ for that transfer. Never reuse another pair's measurement; omit numbers without 
 
 Use Place evidence only for its identified place. Do not infer missing facts, present
 unavailable or partial evidence as confirmed, or claim checks outside supplied evidence.
+For routes, not_observed means no usable measurement, not a confirmed impossible route;
+provider-observed ROUTE_NOT_FOUND is distinct. Do not fabricate a duration for either.
 When supplied opening hours apply to the planned date, schedule the entire visit within
 them; do not excuse an early start or late finish in a note. If hours are unknown, do not
 claim they were verified. Note material uncertainty in activity notes. Do not search, call
 tools, validate an earlier itinerary, or repair an earlier itinerary.
+Opening-hours entries are selected per trip date: current_date_window is applicable
+current evidence, regular_weekly_baseline is only a typical weekly schedule and not
+a guarantee against date-specific exceptions, and unknown provides no verified hours.
 """.strip()
 
 
@@ -45,14 +79,32 @@ def build_itinerary_generation_prompt(
     places: list[PlaceEvidence],
     weather: WeatherEvidence,
     routes: RouteEvidenceBundle,
+    requirement_conflicts: Sequence[SelectionConflict] = (),
 ) -> str:
     """Build one bounded prompt containing normalized evidence only."""
 
+    if requirements.start_date is None or requirements.end_date is None:
+        raise ValueError("Complete trip dates are required for opening-hours planning evidence")
+    planning_places: list[dict[str, object]] = []
+    for item in places:
+        place_data = item.model_dump(
+            mode="json",
+            exclude={"opening_hours", "current_opening_hours", "regular_opening_hours"},
+        )
+        place_data["opening_hours_by_date"] = [
+            day.model_dump(mode="json")
+            for day in planning_opening_hours(item, requirements.start_date, requirements.end_date)
+        ]
+        planning_places.append(place_data)
     evidence = {
-        "places": [item.model_dump(mode="json") for item in places],
+        "places": planning_places,
         "weather": weather.model_dump(mode="json"),
         "routes": routes.model_dump(mode="json"),
     }
+    conflicts = [
+        {"place_id_or_name": item.place_id_or_name, "reason": item.reason}
+        for item in requirement_conflicts
+    ]
     return (
         f"Reference date: {reference_date.isoformat()}\n\n"
         "Original user request:\n"
@@ -63,6 +115,10 @@ def build_itinerary_generation_prompt(
         "<travel_requirements>\n"
         f"{requirements.model_dump_json(indent=2)}\n"
         "</travel_requirements>\n\n"
+        "Unresolved or unsatisfied must-visits; other selected POIs do not satisfy them:\n"
+        "<requirement_conflicts>\n"
+        f"{json.dumps(conflicts, ensure_ascii=True)}\n"
+        "</requirement_conflicts>\n\n"
         "Normalized V1-A external evidence:\n"
         "<external_evidence>\n"
         f"{json.dumps(evidence, indent=2, ensure_ascii=True)}\n"

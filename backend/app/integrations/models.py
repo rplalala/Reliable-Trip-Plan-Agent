@@ -1,8 +1,9 @@
 """Provider-bound request and response DTOs for V1-A integrations."""
 
 from datetime import date
+from typing import Self
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
 
 class IntegrationModel(BaseModel):
@@ -16,12 +17,27 @@ class LatLng(IntegrationModel):
     longitude: float = Field(ge=-180, le=180)
 
 
+class PlaceOpeningDateDTO(IntegrationModel):
+    """Google Places calendar parts without inventing missing precision."""
+
+    year: int | None = Field(default=None, ge=1, le=9999)
+    month: int | None = Field(default=None, ge=1, le=12)
+    day: int | None = Field(default=None, ge=1, le=31)
+
+    @model_validator(mode="after")
+    def valid_full_date(self) -> "PlaceOpeningDateDTO":
+        if self.year is not None and self.month is not None and self.day is not None:
+            date(self.year, self.month, self.day)
+        return self
+
+
 class PlaceSearchRequest(IntegrationModel):
     text_query: str = Field(min_length=1)
     page_size: int = Field(ge=1, le=20)
     field_mask: str = Field(min_length=1)
     location_bias: LatLng | None = None
     language_code: str = "en"
+    include_future_opening_businesses: bool = False
 
 
 class PlaceCandidateDTO(IntegrationModel):
@@ -31,12 +47,20 @@ class PlaceCandidateDTO(IntegrationModel):
     formatted_address: str | None = None
     primary_type: str | None = None
     business_status: str | None = None
+    opening_date: PlaceOpeningDateDTO | None = None
     provider_rank: int = Field(ge=0)
 
 
 class PlaceSearchResponse(IntegrationModel):
     candidates: list[PlaceCandidateDTO] = Field(default_factory=list)
+    actual_result_count: int = Field(ge=0)
     retrieved_at: str
+
+    @model_validator(mode="after")
+    def ranks_match_raw_count(self) -> Self:
+        if any(item.provider_rank >= self.actual_result_count for item in self.candidates):
+            raise ValueError("Candidate provider rank exceeds raw result count")
+        return self
 
 
 class PlaceDetailsRequest(IntegrationModel):
@@ -52,15 +76,37 @@ class PlaceDetailsDTO(IntegrationModel):
     formatted_address: str | None = None
     primary_type: str | None = None
     business_status: str | None = None
+    opening_date: PlaceOpeningDateDTO | None = None
     time_zone: str | None = None
     current_opening_hours: dict[str, object] | None = None
     regular_opening_hours: dict[str, object] | None = None
-    rating: float | None = None
-    user_rating_count: int | None = None
+    rating: float | None = Field(default=None, ge=0, le=5)
     website_uri: str | None = None
     price_level: str | None = None
     price_range: dict[str, object] | None = None
     accessibility_options: dict[str, bool] | None = None
+    requested_at: str | None = None
+    retrieved_at: str
+
+
+class PlaceReviewsRequest(IntegrationModel):
+    place_id: str = Field(min_length=1)
+    field_mask: str = Field(min_length=1)
+    language_code: str = "en"
+
+
+class PlaceReviewDTO(IntegrationModel):
+    """Provider review fields retained for later bounded evidence processing."""
+
+    resource_name: str | None = None
+    text: str | None = None
+    publish_time: AwareDatetime | None = None
+    google_maps_uri: str | None = None
+
+
+class PlaceReviewsDTO(IntegrationModel):
+    place_id: str = Field(min_length=1)
+    reviews: list[PlaceReviewDTO] = Field(default_factory=list)
     retrieved_at: str
 
 

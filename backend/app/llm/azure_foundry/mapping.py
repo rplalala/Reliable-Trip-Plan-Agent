@@ -9,9 +9,14 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
     FoundryMoneyDTO,
+    FoundryRequirementsWithNamedPlaceIntentsDTO,
     FoundryTravelRequirementsDTO,
 )
 from backend.app.schemas.itinerary import Activity, Itinerary, ItineraryDay
+from backend.app.schemas.named_place_intent import (
+    NamedPlaceIntent,
+    RequirementsWithNamedPlaceIntents,
+)
 from backend.app.schemas.request import Money, TravelRequirements
 
 _DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
@@ -91,6 +96,24 @@ def map_foundry_requirements(value: FoundryTravelRequirementsDTO) -> TravelRequi
         excluded_activities=value.excluded_activities,
         preferences=value.preferences,
         unresolved_fields=value.unresolved_fields,
+    )
+
+
+def map_foundry_requirements_with_named_places(
+    value: FoundryRequirementsWithNamedPlaceIntentsDTO,
+) -> RequirementsWithNamedPlaceIntents:
+    """Map the unchanged base fields and keep V1+ intents separate."""
+
+    return RequirementsWithNamedPlaceIntents(
+        requirements=map_foundry_requirements(value),
+        named_place_intents=tuple(
+            NamedPlaceIntent(
+                place_text=item.place_text,
+                inclusion=item.inclusion,
+                source_text=item.source_text,
+            )
+            for item in value.named_place_intents
+        ),
     )
 
 

@@ -1,5 +1,7 @@
 """Strict transport DTOs for Microsoft Foundry structured output."""
 
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -28,6 +30,20 @@ class FoundryTravelRequirementsDTO(FoundryTransportDTO):
     excluded_activities: list[str]
     preferences: list[str]
     unresolved_fields: list[str]
+
+
+class FoundryNamedPlaceIntentDTO(FoundryTransportDTO):
+    """A copied user place surface and controlled inclusion decision."""
+
+    place_text: str
+    inclusion: Literal["REQUIRED", "OPTIONAL"]
+    source_text: str
+
+
+class FoundryRequirementsWithNamedPlaceIntentsDTO(FoundryTravelRequirementsDTO):
+    """V1+ extraction preserves every base field and adds one intent array."""
+
+    named_place_intents: list[FoundryNamedPlaceIntentDTO]
 
 
 class FoundryDateTimeDTO(FoundryTransportDTO):
@@ -65,3 +81,32 @@ class FoundryItineraryDTO(FoundryTransportDTO):
     start_date: str
     end_date: str
     days: list[FoundryItineraryDayDTO]
+
+
+class FoundryExperienceSignalDTO(FoundryTransportDTO):
+    dimension: Literal[
+        "crowding", "walking_intensity", "accessibility", "family_friendliness", "visit_duration"
+    ]
+    value: Literal[
+        "LOW",
+        "MODERATE",
+        "HIGH",
+        "LIGHT",
+        "ACCESSIBLE",
+        "MIXED",
+        "LIMITED",
+        "FAMILY_FRIENDLY",
+        "NOT_FAMILY_FRIENDLY",
+        "SHORT",
+        "MEDIUM",
+        "LONG",
+    ]
+    review_refs: list[str]
+
+
+class FoundryExperienceProfileDTO(FoundryTransportDTO):
+    place_id: str
+    summary: str | None
+    summary_review_refs: list[str]
+    signals: list[FoundryExperienceSignalDTO]
+    review_count_used: int

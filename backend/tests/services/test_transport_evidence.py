@@ -167,7 +167,9 @@ def test_default_walk_uses_sparse_transit_with_separate_bounded_budget_and_trace
         for request in routes.requests[1:]
     )
     summary = budget.summary()
-    assert summary["route_matrix_elements"]["used"] == 25
+    assert summary["baseline_route_matrix_elements"]["used"] == 25
+    assert summary["baseline_route_matrix_calls"]["used"] == 1
+    assert summary["route_matrix_elements"]["used"] == 0
     assert summary["alternative_route_pairs"]["used"] == 6
     assert summary["alternative_route_matrix_calls"]["used"] == 2
     trigger_payload = next(
@@ -231,9 +233,7 @@ def test_symmetric_walk_triggers_use_one_canonical_element_and_mirrored_reverse(
     assert budget.summary()["alternative_route_pairs"]["used"] == 1
     assert budget.summary()["alternative_route_matrix_calls"]["used"] == 1
     completed = next(
-        payload
-        for event, payload in tracer.events
-        if event == "route_alternative_completed"
+        payload for event, payload in tracer.events if event == "route_alternative_completed"
     )
     assert completed["provider_observed_element_count"] == 1
     assert completed["mirrored_reverse_estimate_count"] == 1
@@ -252,9 +252,7 @@ def test_symmetric_walk_triggers_use_one_canonical_element_and_mirrored_reverse(
 def test_explicit_supported_mode_uses_one_matrix_without_fan_out(
     request_text: str, expected_mode: str
 ) -> None:
-    routes = PolicyRoutesProvider(
-        walk_values={("a", "b"): (9000, 9000, "ROUTE_EXISTS")}
-    )
+    routes = PolicyRoutesProvider(walk_values={("a", "b"): (9000, 9000, "ROUTE_EXISTS")})
     service, budget = _service(routes)
     mode = select_transport_mode(TravelRequest(request_text=request_text), _requirements())
 
@@ -308,9 +306,7 @@ def test_alternative_element_budget_reduces_sparse_transit_selection() -> None:
 
 
 def test_missing_timezone_marks_alternative_unavailable_without_provider_now() -> None:
-    routes = PolicyRoutesProvider(
-        walk_values={("a", "b"): (4000, 100, "ROUTE_EXISTS")}
-    )
+    routes = PolicyRoutesProvider(walk_values={("a", "b"): (4000, 100, "ROUTE_EXISTS")})
     tracer = RecordingTracer()
     service, budget = _service(routes, tracer=tracer)
 
@@ -330,9 +326,7 @@ def test_missing_timezone_marks_alternative_unavailable_without_provider_now() -
     assert budget.summary()["alternative_route_pairs"]["used"] == 0
     assert budget.summary()["alternative_route_matrix_calls"]["used"] == 0
     completed = [
-        payload
-        for event, payload in tracer.events
-        if event == "route_alternative_completed"
+        payload for event, payload in tracer.events if event == "route_alternative_completed"
     ]
     assert completed[0]["availability"] == "unavailable"
 
@@ -374,11 +368,7 @@ def test_partial_or_unavailable_transit_is_preserved(fail_transit: bool) -> None
         )
     )
 
-    expected = (
-        EvidenceAvailability.UNAVAILABLE
-        if fail_transit
-        else EvidenceAvailability.PARTIAL
-    )
+    expected = EvidenceAvailability.UNAVAILABLE if fail_transit else EvidenceAvailability.PARTIAL
     assert bundle.alternatives[0].availability is expected
     if fail_transit:
         assert bundle.alternatives[0].elements == []
@@ -393,8 +383,7 @@ def test_partial_or_unavailable_transit_is_preserved(fail_transit: bool) -> None
         mirrored = [
             item
             for item in elements
-            if item.evidence_type
-            is RouteElementEvidenceType.MIRRORED_REVERSE_ESTIMATE
+            if item.evidence_type is RouteElementEvidenceType.MIRRORED_REVERSE_ESTIMATE
         ]
         assert len(observed) == 2
         assert len(mirrored) == 1
@@ -409,9 +398,7 @@ def test_partial_or_unavailable_transit_is_preserved(fail_transit: bool) -> None
 
 
 def test_route_cache_deduplicates_same_departure_time_and_separates_new_date() -> None:
-    routes = PolicyRoutesProvider(
-        walk_values={("a", "b"): (4000, 100, "ROUTE_EXISTS")}
-    )
+    routes = PolicyRoutesProvider(walk_values={("a", "b"): (4000, 100, "ROUTE_EXISTS")})
     service, budget = _service(routes)
 
     async def scenario() -> None:
@@ -430,6 +417,7 @@ def test_route_cache_deduplicates_same_departure_time_and_separates_new_date() -
         "TRANSIT",
     ]
     assert routes.requests[1].departure_time != routes.requests[2].departure_time
-    assert budget.summary()["route_matrix_elements"]["used"] == 4
+    assert budget.summary()["baseline_route_matrix_elements"]["used"] == 4
+    assert budget.summary()["baseline_route_matrix_calls"]["used"] == 1
     assert budget.summary()["alternative_route_pairs"]["used"] == 2
     assert budget.summary()["alternative_route_matrix_calls"]["used"] == 2

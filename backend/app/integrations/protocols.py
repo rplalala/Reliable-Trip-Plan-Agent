@@ -5,6 +5,8 @@ from typing import Protocol, runtime_checkable
 from backend.app.integrations.models import (
     PlaceDetailsDTO,
     PlaceDetailsRequest,
+    PlaceReviewsDTO,
+    PlaceReviewsRequest,
     PlaceSearchRequest,
     PlaceSearchResponse,
     RouteMatrixDTO,
@@ -22,7 +24,12 @@ class PlacesProvider(Protocol):
         ...
 
     async def get_place_details(self, request: PlaceDetailsRequest) -> PlaceDetailsDTO:
-        """Return rich details for one shortlisted Place ID."""
+        """Return structured details and rating for one Place ID."""
+
+        ...
+
+    async def get_place_reviews(self, request: PlaceReviewsRequest) -> PlaceReviewsDTO:
+        """Return bounded provider reviews without unrelated structured details."""
 
         ...
 

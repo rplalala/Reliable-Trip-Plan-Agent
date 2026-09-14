@@ -7,6 +7,8 @@ from backend.app.integrations.models import (
     PlaceCandidateDTO,
     PlaceDetailsDTO,
     PlaceDetailsRequest,
+    PlaceReviewsDTO,
+    PlaceReviewsRequest,
     PlaceSearchRequest,
     PlaceSearchResponse,
     RouteMatrixDTO,
@@ -15,6 +17,10 @@ from backend.app.integrations.models import (
     WeatherRequest,
 )
 from backend.app.schemas.itinerary import Activity, Itinerary, ItineraryDay
+from backend.app.schemas.named_place_intent import (
+    NamedPlaceIntent,
+    RequirementsWithNamedPlaceIntents,
+)
 from backend.app.schemas.request import TravelRequirements
 
 
@@ -36,6 +42,7 @@ class FakePlacesProvider:
     def __init__(self, *, details_failure_ids: set[str] | None = None) -> None:
         self.search_requests: list[PlaceSearchRequest] = []
         self.details_requests: list[PlaceDetailsRequest] = []
+        self.reviews_requests: list[PlaceReviewsRequest] = []
         self.details_failure_ids = details_failure_ids or set()
         self._candidate_call = 0
 
@@ -57,6 +64,7 @@ class FakePlacesProvider:
             ]
         return PlaceSearchResponse(
             candidates=candidates,
+            actual_result_count=len(candidates),
             retrieved_at="2026-09-11T00:00:00+00:00",
         )
 
@@ -80,10 +88,17 @@ class FakePlacesProvider:
                 "weekdayDescriptions": ["Monday: 9:00 AM - 5:00 PM"]
             },
             rating=4.5,
-            user_rating_count=100,
             website_uri=f"https://example.test/{request.place_id}",
             price_level="PRICE_LEVEL_MODERATE",
             accessibility_options={"wheelchairAccessibleEntrance": True},
+            retrieved_at="2026-09-11T00:00:00+00:00",
+        )
+
+    async def get_place_reviews(self, request: PlaceReviewsRequest) -> PlaceReviewsDTO:
+        self.reviews_requests.append(request)
+        return PlaceReviewsDTO(
+            place_id=request.place_id,
+            reviews=[],
             retrieved_at="2026-09-11T00:00:00+00:00",
         )
 
@@ -160,6 +175,17 @@ def make_requirements() -> TravelRequirements:
         traveler_count=2,
         required_activities=["museums", "coastal views", "local food"],
         preferences=["less crowded", "not too much walking"],
+    )
+
+
+def make_extraction(
+    requirements: TravelRequirements | None = None,
+    *,
+    intents: tuple[NamedPlaceIntent, ...] = (),
+) -> RequirementsWithNamedPlaceIntents:
+    return RequirementsWithNamedPlaceIntents(
+        requirements=requirements or make_requirements(),
+        named_place_intents=intents,
     )
 
 

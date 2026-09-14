@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 from enum import StrEnum
-from typing import Self
+from typing import Literal, Self
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
@@ -50,6 +50,9 @@ class OpeningHoursEvidence(EvidenceModel):
     """Compact opening information with explicit temporal applicability."""
 
     applicability: str = Field(min_length=1)
+    valid_from: date | None = None
+    valid_through: date | None = None
+    source_dated_days: list[date] = Field(default_factory=list)
     weekday_descriptions: list[str] = Field(default_factory=list)
     open_now: bool | None = None
     next_open_time: datetime | None = None
@@ -68,8 +71,9 @@ class PlaceEvidence(EvidenceModel):
     business_status: str | None = None
     timezone_id: str | None = None
     opening_hours: OpeningHoursEvidence | None = None
+    current_opening_hours: OpeningHoursEvidence | None = None
+    regular_opening_hours: OpeningHoursEvidence | None = None
     rating: float | None = Field(default=None, ge=0, le=5)
-    user_rating_count: int | None = Field(default=None, ge=0)
     price_level: str | None = None
     price_range: str | None = None
     accessibility_options: dict[str, bool] | None = None
@@ -78,6 +82,16 @@ class PlaceEvidence(EvidenceModel):
     unavailable_reason: str | None = None
     retrieved_at: datetime
     source_ref: str = Field(min_length=1)
+
+
+class OpeningHoursPlanningDay(EvidenceModel):
+    """One trip-date view, without upgrading regular hours to a date-specific guarantee."""
+
+    date: date
+    basis: Literal["current_date_window", "regular_weekly_baseline", "unknown"]
+    weekday_description: str | None = None
+    source_window_start: date | None = None
+    source_window_end: date | None = None
 
 
 class WeatherDayEvidence(EvidenceModel):
@@ -109,6 +123,7 @@ class RouteElementEvidenceType(StrEnum):
 
     PROVIDER_OBSERVED = "provider_observed"
     MIRRORED_REVERSE_ESTIMATE = "mirrored_reverse_estimate"
+    NOT_OBSERVED = "not_observed"
 
 
 class RouteElementEvidence(EvidenceModel):
@@ -124,6 +139,7 @@ class RouteElementEvidence(EvidenceModel):
     distance_meters: int | None = Field(default=None, ge=0)
     duration_seconds: int | None = Field(default=None, ge=0)
     availability: EvidenceAvailability
+    unavailable_reason: str | None = None
 
 
 class RouteEvidencePurpose(StrEnum):

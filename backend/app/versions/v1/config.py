@@ -14,12 +14,19 @@ class V1Settings(V0Settings):
         min_length=1,
         validation_alias="GOOGLE_MAPS_API_KEY",
     )
+
     def tool_budget_limits(self) -> ToolBudgetLimits:
         """Build request limits from the one validated global YAML policy."""
 
+        runtime_budget = load_runtime_config().budget
         return ToolBudgetLimits.model_validate(
             {
-                f"max_{key.value}": value
-                for key, value in load_runtime_config().budget.as_key_limits().items()
+                **{
+                    f"max_{key.value}": value
+                    for key, value in runtime_budget.as_key_limits().items()
+                },
+                "max_baseline_route_matrix_elements_per_request": (
+                    runtime_budget.routes.baseline_elements_per_request
+                ),
             }
         )

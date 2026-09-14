@@ -1,8 +1,9 @@
 """Deterministic conversion from provider DTOs to planner evidence."""
 
-from collections.abc import Mapping
-from datetime import UTC, date, datetime
+from collections.abc import Mapping, Sequence
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from backend.app.evidence.models import (
     EvidenceAvailability,
@@ -10,6 +11,7 @@ from backend.app.evidence.models import (
     PlaceCandidate,
     PlaceEvidence,
     RouteElementEvidence,
+    RouteElementEvidenceType,
     RouteEvidence,
     RouteEvidencePurpose,
     WeatherDayEvidence,
@@ -20,6 +22,7 @@ from backend.app.integrations.models import (
     PlaceDetailsDTO,
     RouteMatrixDTO,
     RouteMatrixRequest,
+    RouteWaypoint,
     WeatherForecastDTO,
     WeatherRequest,
 )
@@ -61,18 +64,50 @@ def normalize_place_candidate(
     )
 
 
-def _opening_hours(details: PlaceDetailsDTO) -> OpeningHoursEvidence | None:
-    source = details.current_opening_hours
-    applicability = "provider_current_window"
-    if source is None:
-        source = details.regular_opening_hours
-        applicability = "regular_weekly_pattern"
+def _source_dates(source: Mapping[str, object]) -> list[date]:
+    dates: set[date] = set()
+    for raw_period in source.get("periods", []) if isinstance(source.get("periods"), list) else []:
+        if isinstance(raw_period, Mapping):
+            for endpoint in ("open", "close"):
+                point = raw_period.get(endpoint)
+                if isinstance(point, Mapping) and (parsed := _display_date(point.get("date"))):
+                    dates.add(parsed)
+    raw_special_days = source.get("specialDays", [])
+    for special in raw_special_days if isinstance(raw_special_days, list) else []:
+        if isinstance(special, Mapping) and (parsed := _display_date(special.get("date"))):
+            dates.add(parsed)
+    return sorted(dates)
+
+
+def _current_window(details: PlaceDetailsDTO) -> tuple[date, date] | None:
+    if details.time_zone is None:
+        return None
+    try:
+        zone = ZoneInfo(details.time_zone)
+        requested_at = _parse_datetime(details.requested_at or details.retrieved_at)
+    except ZoneInfoNotFoundError:
+        return None
+    if requested_at is None:
+        return None
+    local_date = requested_at.astimezone(zone).date()
+    return local_date, local_date + timedelta(days=6)
+
+
+def _opening_hours(
+    source: dict[str, object] | None,
+    *,
+    applicability: str,
+    valid_window: tuple[date, date] | None = None,
+) -> OpeningHoursEvidence | None:
     if source is None:
         return None
 
     descriptions = source.get("weekdayDescriptions", [])
     return OpeningHoursEvidence(
         applicability=applicability,
+        valid_from=valid_window[0] if valid_window else None,
+        valid_through=valid_window[1] if valid_window else None,
+        source_dated_days=_source_dates(source),
         weekday_descriptions=(
             [item for item in descriptions if isinstance(item, str)]
             if isinstance(descriptions, list)
@@ -116,6 +151,15 @@ def normalize_place_details(
 ) -> PlaceEvidence:
     """Keep only planning-relevant Place Details fields."""
 
+    current_hours = _opening_hours(
+        details.current_opening_hours,
+        applicability="provider_current_window",
+        valid_window=_current_window(details),
+    )
+    regular_hours = _opening_hours(
+        details.regular_opening_hours,
+        applicability="regular_weekly_pattern",
+    )
     return PlaceEvidence(
         place_id=details.place_id,
         name=details.display_name,
@@ -125,9 +169,10 @@ def normalize_place_details(
         primary_type=details.primary_type or candidate.primary_type,
         business_status=details.business_status or candidate.business_status,
         timezone_id=details.time_zone,
-        opening_hours=_opening_hours(details),
+        opening_hours=current_hours or regular_hours,
+        current_opening_hours=current_hours,
+        regular_opening_hours=regular_hours,
         rating=details.rating,
-        user_rating_count=details.user_rating_count,
         price_level=details.price_level,
         price_range=_price_range_text(details.price_range),
         accessibility_options=details.accessibility_options,
@@ -318,7 +363,12 @@ def normalize_routes(
     for raw in dto.elements:
         origin_index = raw.get("originIndex")
         destination_index = raw.get("destinationIndex")
-        if not isinstance(origin_index, int) or not isinstance(destination_index, int):
+        if (
+            not isinstance(origin_index, int)
+            or isinstance(origin_index, bool)
+            or not isinstance(destination_index, int)
+            or isinstance(destination_index, bool)
+        ):
             continue
         if not 0 <= origin_index < len(request.origins):
             continue
@@ -335,19 +385,16 @@ def normalize_routes(
                 distance_meters=(
                     int(raw["distanceMeters"])
                     if isinstance(raw.get("distanceMeters"), int)
+                    and not isinstance(raw.get("distanceMeters"), bool)
                     else None
                 ),
                 duration_seconds=_duration_seconds(raw.get("duration")),
                 availability=(
-                    EvidenceAvailability.AVAILABLE
-                    if exists
-                    else EvidenceAvailability.UNAVAILABLE
+                    EvidenceAvailability.AVAILABLE if exists else EvidenceAvailability.UNAVAILABLE
                 ),
             )
         )
-    available_count = sum(
-        item.availability is EvidenceAvailability.AVAILABLE for item in elements
-    )
+    available_count = sum(item.availability is EvidenceAvailability.AVAILABLE for item in elements)
     if not elements or available_count == 0:
         availability = EvidenceAvailability.UNAVAILABLE
     elif available_count < len(elements):
@@ -364,6 +411,106 @@ def normalize_routes(
         elements=elements,
         unavailable_reason=("No route matrix elements were available" if not elements else None),
         retrieved_at=_retrieved_at(dto.retrieved_at),
+        source_ref="google_routes:compute_route_matrix",
+    )
+
+
+def merge_baseline_route_chunks(
+    waypoints: Sequence[RouteWaypoint],
+    chunks: Sequence[tuple[RouteMatrixRequest, RouteEvidence]],
+    *,
+    travel_mode: str,
+    mode_reason: str,
+    routing_preference: str | None,
+    departure_time: datetime | None,
+    fallback_reason: str | None = None,
+) -> RouteEvidence:
+    """Merge local-index results into one stable, complete directed Place-ID grid."""
+
+    place_ids = tuple(item.place_id for item in waypoints)
+    if len(set(place_ids)) != len(place_ids):
+        raise ValueError("Baseline Route Matrix requires unique selected Place IDs")
+    merged: dict[tuple[str, str], RouteElementEvidence] = {}
+    assigned_origins: set[str] = set()
+    for request, evidence in chunks:
+        if tuple(item.place_id for item in request.destinations) != place_ids:
+            raise ValueError("Baseline chunk destinations must match selected POI order")
+        if request.travel_mode != travel_mode:
+            raise ValueError("Baseline chunk mode must match the selected transport mode")
+        raw_pairs: dict[tuple[str, str], list[RouteElementEvidence]] = {}
+        for item in evidence.elements:
+            raw_pairs.setdefault((item.origin_place_id, item.destination_place_id), []).append(item)
+        for origin in request.origins:
+            if origin.place_id in assigned_origins:
+                raise ValueError("A baseline origin appears in more than one chunk")
+            assigned_origins.add(origin.place_id)
+            for destination in request.destinations:
+                pair = (origin.place_id, destination.place_id)
+                rows = raw_pairs.get(pair, [])
+                if len(rows) == 1:
+                    element = rows[0]
+                    if element.availability is EvidenceAvailability.UNAVAILABLE:
+                        element = element.model_copy(
+                            update={
+                                "unavailable_reason": (
+                                    element.condition
+                                    or element.status
+                                    or "provider_route_unavailable"
+                                )
+                            }
+                        )
+                else:
+                    reason = (
+                        "duplicate_provider_indices"
+                        if len(rows) > 1
+                        else evidence.unavailable_reason or "missing_provider_element"
+                    )
+                    element = RouteElementEvidence(
+                        origin_place_id=origin.place_id,
+                        destination_place_id=destination.place_id,
+                        evidence_type=RouteElementEvidenceType.NOT_OBSERVED,
+                        availability=EvidenceAvailability.UNAVAILABLE,
+                        unavailable_reason=reason,
+                    )
+                merged[pair] = element
+    elements = [
+        merged.get((origin, destination))
+        or RouteElementEvidence(
+            origin_place_id=origin,
+            destination_place_id=destination,
+            evidence_type=RouteElementEvidenceType.NOT_OBSERVED,
+            availability=EvidenceAvailability.UNAVAILABLE,
+            unavailable_reason=fallback_reason or "baseline_chunk_not_attempted",
+        )
+        for origin in place_ids
+        for destination in place_ids
+    ]
+    available_count = sum(item.availability is EvidenceAvailability.AVAILABLE for item in elements)
+    availability = (
+        EvidenceAvailability.AVAILABLE
+        if available_count == len(elements) and elements
+        else EvidenceAvailability.PARTIAL
+        if available_count
+        else EvidenceAvailability.UNAVAILABLE
+    )
+    return RouteEvidence(
+        travel_mode=travel_mode,
+        mode_reason=mode_reason,
+        purpose=RouteEvidencePurpose.BASELINE,
+        routing_preference=routing_preference,
+        representative_departure_time=departure_time,
+        availability=availability,
+        elements=elements,
+        unavailable_reason=(
+            fallback_reason or "No baseline route elements were available"
+            if availability is EvidenceAvailability.UNAVAILABLE
+            else "Some baseline route elements were unavailable"
+            if availability is EvidenceAvailability.PARTIAL
+            else None
+        ),
+        retrieved_at=max(
+            (evidence.retrieved_at for _, evidence in chunks), default=datetime.now(UTC)
+        ),
         source_ref="google_routes:compute_route_matrix",
     )
 

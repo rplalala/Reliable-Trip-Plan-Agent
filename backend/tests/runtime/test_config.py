@@ -9,8 +9,12 @@ import pytest
 import yaml
 from pydantic import ValidationError
 
-from backend.app.runtime.budget import ToolBudgetLimits
-from backend.app.runtime.budget_limits import TOOL_BUDGET_HARD_LIMITS, ToolBudgetKey
+from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
+from backend.app.runtime.budget_limits import (
+    BASELINE_ROUTE_MATRIX_PER_REQUEST_HARD_LIMIT,
+    TOOL_BUDGET_HARD_LIMITS,
+    ToolBudgetKey,
+)
 from backend.app.runtime.config_loader import (
     PROJECT_ROOT,
     load_runtime_config,
@@ -30,14 +34,22 @@ def test_committed_yaml_preserves_v1_budget_and_trace_defaults() -> None:
     limits = ToolBudgetLimits()
 
     assert config.app.time_zone == "Australia/Sydney"
-    assert limits.max_candidates == 20
-    assert limits.max_place_search_calls == 4
-    assert limits.max_place_detail_calls == 8
+    assert limits.max_candidates == 36
+    assert limits.max_final_pois == 16
+    assert limits.max_destination_search_calls == 1
+    assert limits.max_candidate_search_calls == 12
+    assert limits.max_place_detail_calls == 18
+    assert limits.max_review_detail_calls == 6
+    assert limits.max_review_enriched_places == 6
+    assert limits.max_experience_profile_llm_calls == 6
     assert limits.max_route_matrix_elements == 64
+    assert limits.max_baseline_route_matrix_elements_per_request == 64
+    assert limits.max_baseline_route_matrix_elements == 256
+    assert limits.max_baseline_route_matrix_calls == 4
     assert limits.max_alternative_route_pairs == 8
     assert limits.max_alternative_route_matrix_calls == 8
     assert limits.max_weather_calls == 2
-    assert config.schema_version == 3
+    assert config.schema_version == 5
     assert limits.max_web_evidence_tasks == 6
     assert config.web_evidence.max_tool_calls == 2
     assert config.web_evidence.page_retrieval.timeout_seconds == 10
@@ -64,7 +76,7 @@ def test_yaml_rejects_unknown_keys_bad_types_and_malformed_syntax(tmp_path) -> N
         load_runtime_config_file(path)
 
     del data["unexpected"]
-    data["budget"]["places"]["search_calls"] = "4"
+    data["budget"]["places"]["candidate_search_calls"] = "12"
     _write_config(path, data)
     with pytest.raises(ValidationError):
         load_runtime_config_file(path)
@@ -91,13 +103,34 @@ def test_web_budget_migration_rejects_old_schema_old_key_and_dual_keys(tmp_path)
     with pytest.raises(ValidationError):
         load_runtime_config_file(path)
 
-    data["schema_version"] = 3
+    data["schema_version"] = 5
     data["budget"]["web"]["search_queries"] = data["budget"]["web"].pop("evidence_tasks")
     _write_config(path, data)
     with pytest.raises(ValidationError):
         load_runtime_config_file(path)
 
     data["budget"]["web"]["evidence_tasks"] = 6
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+
+def test_search_budget_migration_rejects_old_shared_key_and_schema(tmp_path) -> None:
+    data = load_runtime_config().model_dump(mode="json")
+    path = tmp_path / "runtime.yaml"
+    data["schema_version"] = 4
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+    data["schema_version"] = 5
+    places = data["budget"]["places"]
+    places["search_calls"] = places.pop("candidate_search_calls")
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+    places["candidate_search_calls"] = 12
     _write_config(path, data)
     with pytest.raises(ValidationError):
         load_runtime_config_file(path)
@@ -129,12 +162,18 @@ def test_page_retrieval_safety_defaults_are_strict(tmp_path) -> None:
 
 _BUDGET_PATHS = {
     ToolBudgetKey.CANDIDATES: ("candidates",),
-    ToolBudgetKey.PLACE_SEARCH_CALLS: ("places", "search_calls"),
+    ToolBudgetKey.FINAL_POIS: ("final_pois",),
+    ToolBudgetKey.DESTINATION_SEARCH_CALLS: ("places", "destination_search_calls"),
+    ToolBudgetKey.CANDIDATE_SEARCH_CALLS: ("places", "candidate_search_calls"),
     ToolBudgetKey.PLACE_DETAIL_CALLS: ("places", "detail_calls"),
+    ToolBudgetKey.REVIEW_DETAIL_CALLS: ("places", "review_detail_calls"),
     ToolBudgetKey.REVIEW_ENRICHED_PLACES: ("experience", "review_enriched_places"),
+    ToolBudgetKey.EXPERIENCE_PROFILE_LLM_CALLS: ("experience", "profile_llm_calls"),
     ToolBudgetKey.WEB_EVIDENCE_TASKS: ("web", "evidence_tasks"),
     ToolBudgetKey.PAGE_FETCHES: ("web", "page_fetches"),
     ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: ("routes", "matrix_elements"),
+    ToolBudgetKey.BASELINE_ROUTE_MATRIX_ELEMENTS: ("routes", "baseline_elements_per_run"),
+    ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS: ("routes", "baseline_calls"),
     ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: ("routes", "alternative_pairs"),
     ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: ("routes", "alternative_matrix_calls"),
     ToolBudgetKey.WEATHER_CALLS: ("weather", "calls"),
@@ -158,6 +197,54 @@ def test_every_yaml_budget_has_one_enforced_hard_limit(tmp_path, key) -> None:
     _write_config(config_path, data)
     with pytest.raises(ValidationError):
         load_runtime_config_file(config_path)
+
+
+def test_baseline_route_request_run_and_call_limits_are_independent(tmp_path) -> None:
+    data = load_runtime_config().model_dump(mode="json")
+    routes = data["budget"]["routes"]
+    assert routes["matrix_elements"] == 64  # Current V1 graph compatibility bridge.
+    assert routes["baseline_elements_per_request"] == 64
+    assert routes["baseline_elements_per_run"] == 256
+    assert routes["baseline_calls"] == 4
+    assert BASELINE_ROUTE_MATRIX_PER_REQUEST_HARD_LIMIT.maximum == 64
+
+    path = tmp_path / "runtime.yaml"
+    routes["baseline_elements_per_request"] = 65
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+    with pytest.raises(ValidationError):
+        ToolBudgetLimits(max_baseline_route_matrix_elements_per_request=65)
+
+    budget = ToolBudget()
+    budget.consume(ToolBudgetKey.BASELINE_ROUTE_MATRIX_ELEMENTS, 36)
+    budget.consume(ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS)
+    summary = budget.summary()
+    assert summary["baseline_route_matrix_elements"]["used"] == 36
+    assert summary["baseline_route_matrix_calls"]["used"] == 1
+    assert summary["route_matrix_elements"]["used"] == 0
+
+    routes["baseline_elements_per_request"] = 32
+    routes["baseline_elements_per_run"] = 31
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
+
+
+@pytest.mark.parametrize(
+    ("section", "field"),
+    [("places", "review_detail_calls"), ("experience", "profile_llm_calls")],
+)
+def test_review_attempt_budget_cannot_be_lower_than_review_poi_budget(
+    tmp_path, section: str, field: str
+) -> None:
+    data = load_runtime_config().model_dump(mode="json")
+    data["budget"][section][field] = 5
+    path = tmp_path / "runtime.yaml"
+    _write_config(path, data)
+    with pytest.raises(ValidationError):
+        load_runtime_config_file(path)
 
 
 def test_env_cannot_override_yaml_policy(monkeypatch) -> None:

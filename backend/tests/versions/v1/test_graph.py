@@ -8,23 +8,26 @@ import pytest
 
 from backend.app.integrations.google.places import (
     PLACES_CANDIDATE_FIELD_MASK,
+    PLACES_DESTINATION_FIELD_MASK,
     PLACES_DETAILS_FIELD_MASK,
 )
 from backend.app.observability.run_trace import NullRunTracer
 from backend.app.policies.transport import select_transport_mode
 from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
+from backend.app.schemas.named_place_intent import RequirementsWithNamedPlaceIntents
 from backend.app.schemas.planning import SystemVersion
 from backend.app.schemas.request import TravelRequest
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
-from backend.app.versions.v0.prompts import REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
 from backend.app.versions.v1.graph import build_v1_graph
+from backend.app.versions.v1.prompts import V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
 from backend.app.versions.v1.runner import run_v1
 from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
 from backend.tests.versions.v1.fakes import (
     FakePlacesProvider,
     FakeRoutesProvider,
     FakeWeatherProvider,
+    make_extraction,
     make_itinerary,
     make_requirements,
 )
@@ -33,7 +36,7 @@ RUN_ID = UUID("00000000-0000-0000-0000-000000000001")
 
 
 def _dependencies():
-    llm = FakeStructuredLLMClient([make_requirements(), make_itinerary()])
+    llm = FakeStructuredLLMClient([make_extraction(), make_itinerary()])
     places = FakePlacesProvider()
     weather = FakeWeatherProvider()
     routes = FakeRoutesProvider()
@@ -58,9 +61,8 @@ def test_v1_graph_has_explicit_non_agentic_topology() -> None:
         "extract_requirements",
         "validate_trip_dates",
         "resolve_destination",
-        "search_place_candidates",
-        "shortlist_places",
-        "enrich_place_details",
+        "acquire_candidate_funnel",
+        "select_review_aware_pois",
         "acquire_weather",
         "acquire_routes",
         "generate_evidence_informed_itinerary",
@@ -71,12 +73,11 @@ def test_v1_graph_has_explicit_non_agentic_topology() -> None:
         ("__start__", "extract_requirements"),
         ("acquire_routes", "generate_evidence_informed_itinerary"),
         ("acquire_weather", "acquire_routes"),
-        ("enrich_place_details", "acquire_weather"),
+        ("select_review_aware_pois", "acquire_weather"),
         ("extract_requirements", "validate_trip_dates"),
         ("generate_evidence_informed_itinerary", "validate_itinerary_dates"),
-        ("resolve_destination", "search_place_candidates"),
-        ("search_place_candidates", "shortlist_places"),
-        ("shortlist_places", "enrich_place_details"),
+        ("resolve_destination", "acquire_candidate_funnel"),
+        ("acquire_candidate_funnel", "select_review_aware_pois"),
         ("validate_itinerary_dates", "__end__"),
         ("validate_trip_dates", "resolve_destination"),
     }
@@ -99,21 +100,24 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
 
     assert result.system_version is SystemVersion.V1
     assert len(llm.calls) == 2
-    assert llm.calls[0].system_prompt == REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
+    assert llm.calls[0].system_prompt == V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
+    assert llm.calls[0].response_schema is RequirementsWithNamedPlaceIntents
+    assert places.search_requests[0].field_mask == PLACES_DESTINATION_FIELD_MASK
+    assert places.search_requests[0].include_future_opening_businesses is False
     assert all(
         request.field_mask == PLACES_CANDIDATE_FIELD_MASK
-        for request in places.search_requests
+        and request.include_future_opening_businesses
+        for request in places.search_requests[1:]
     )
     assert all(
-        request.field_mask == PLACES_DETAILS_FIELD_MASK
-        for request in places.details_requests
+        request.field_mask == PLACES_DETAILS_FIELD_MASK for request in places.details_requests
     )
     assert len(places.search_requests) == 4
-    assert len(places.details_requests) == 8
+    assert len(places.details_requests) == 9
     assert len(weather.requests) == 1
     assert weather.requests[0].horizon_days == 10
     assert len(routes.requests) == 1
-    assert len(routes.requests[0].origins) == 8
+    assert len(routes.requests[0].origins) == 6
     assert routes.requests[0].travel_mode == "WALK"
     assert routes.requests[0].routing_preference is None
     generation_prompt = llm.calls[1].user_prompt
@@ -126,18 +130,14 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert '"non_walkable_pairs": []' in generation_prompt
     assert "provider_observed" in generation_system_prompt
     assert "mirrored_reverse_estimate" in generation_system_prompt
-    assert "schedule the entire visit within them" in " ".join(
-        generation_system_prompt.split()
-    )
-    assert "Never reuse another pair's measurement" in " ".join(
-        generation_system_prompt.split()
-    )
+    assert "schedule the entire visit within them" in " ".join(generation_system_prompt.split())
+    assert "Never reuse another pair's measurement" in " ".join(generation_system_prompt.split())
     assert "forecastDays" not in generation_prompt
     assert "currentOpeningHours" not in generation_prompt
 
 
 def test_v1_weather_failure_is_explicit_and_does_not_block_generation() -> None:
-    llm = FakeStructuredLLMClient([make_requirements(), make_itinerary()])
+    llm = FakeStructuredLLMClient([make_extraction(), make_itinerary()])
     places = FakePlacesProvider()
     weather = FakeWeatherProvider(failure=True)
     routes = FakeRoutesProvider()
@@ -159,8 +159,8 @@ def test_v1_weather_failure_is_explicit_and_does_not_block_generation() -> None:
     assert "Weather unavailable" in llm.calls[1].user_prompt
 
 
-def test_v1_hard_route_matrix_budget_bounds_shortlist() -> None:
-    llm = FakeStructuredLLMClient([make_requirements(), make_itinerary()])
+def test_v1_legacy_route_matrix_budget_does_not_bound_active_selection() -> None:
+    llm = FakeStructuredLLMClient([make_extraction(), make_itinerary()])
     places = FakePlacesProvider()
     weather = FakeWeatherProvider()
     routes = FakeRoutesProvider()
@@ -178,9 +178,9 @@ def test_v1_hard_route_matrix_budget_bounds_shortlist() -> None:
         )
     )
 
-    assert len(places.details_requests) == 4
-    assert len(routes.requests[0].origins) == 4
-    assert len(routes.requests[0].origins) * len(routes.requests[0].destinations) == 16
+    assert len(places.details_requests) == 9
+    assert len(routes.requests[0].origins) == 6
+    assert len(routes.requests[0].origins) * len(routes.requests[0].destinations) == 36
 
 
 def test_v1_captures_reference_date_once_across_midnight() -> None:
@@ -216,7 +216,7 @@ def test_v1_rejects_trip_outside_shared_window_before_any_provider_call() -> Non
     requirements = make_requirements().model_copy(
         update={"start_date": date(2026, 9, 21), "end_date": date(2026, 9, 21)}
     )
-    llm = FakeStructuredLLMClient([requirements])
+    llm = FakeStructuredLLMClient([make_extraction(requirements)])
     places = FakePlacesProvider()
 
     with pytest.raises(ValueError):
@@ -237,7 +237,7 @@ def test_v1_rejects_trip_outside_shared_window_before_any_provider_call() -> Non
 
 def test_v1_rejects_final_itinerary_dates_outside_requested_range() -> None:
     itinerary = make_itinerary().model_copy(update={"end_date": date(2026, 9, 14)})
-    llm = FakeStructuredLLMClient([make_requirements(), itinerary])
+    llm = FakeStructuredLLMClient([make_extraction(), itinerary])
 
     with pytest.raises(ValueError):
         asyncio.run(
@@ -256,7 +256,7 @@ def test_v1_rejects_final_itinerary_dates_outside_requested_range() -> None:
 
 
 def test_individual_place_details_failure_continues_with_partial_evidence() -> None:
-    llm = FakeStructuredLLMClient([make_requirements(), make_itinerary()])
+    llm = FakeStructuredLLMClient([make_extraction(), make_itinerary()])
     places = FakePlacesProvider(details_failure_ids={"poi-0-0"})
 
     result = asyncio.run(
@@ -272,7 +272,8 @@ def test_individual_place_details_failure_continues_with_partial_evidence() -> N
     )
 
     assert result.system_version is SystemVersion.V1
-    assert "Place Details unavailable" in llm.calls[1].user_prompt
+    assert "poi-0-0" not in llm.calls[1].user_prompt
+    assert "Place Details unavailable" not in llm.calls[1].user_prompt
 
 
 def test_request_scoped_cache_deduplicates_details_weather_and_routes() -> None:
@@ -307,9 +308,7 @@ def test_request_scoped_cache_deduplicates_details_weather_and_routes() -> None:
             destination=destination,
             reference_date=date(2026, 9, 11),
         )
-        mode = select_transport_mode(
-            TravelRequest(request_text="Plan Sydney."), requirements
-        )
+        mode = select_transport_mode(TravelRequest(request_text="Plan Sydney."), requirements)
         first_routes = await service.acquire_routes(
             places=first_places,
             mode=mode,
@@ -343,6 +342,7 @@ def test_request_scoped_cache_deduplicates_details_weather_and_routes() -> None:
     assert len(routes.requests) == 1
     assert budget.summary()["place_detail_calls"]["used"] == 2
     assert budget.summary()["weather_calls"]["used"] == 1
-    assert budget.summary()["route_matrix_elements"]["used"] == 4
+    assert budget.summary()["baseline_route_matrix_elements"]["used"] == 4
+    assert budget.summary()["baseline_route_matrix_calls"]["used"] == 1
     assert budget.summary()["alternative_route_pairs"]["used"] == 0
     assert budget.summary()["alternative_route_matrix_calls"]["used"] == 0

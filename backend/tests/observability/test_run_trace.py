@@ -22,8 +22,8 @@ from backend.tests.versions.v1.fakes import (
     FakePlacesProvider,
     FakeRoutesProvider,
     FakeWeatherProvider,
+    make_extraction,
     make_itinerary,
-    make_requirements,
 )
 
 RUN_ID = UUID("00000000-0000-0000-0000-000000000001")
@@ -42,9 +42,7 @@ def _context() -> RunTraceContext:
 
 
 def test_raw_run_trace_writes_structure_and_redacts_secrets(tmp_path) -> None:
-    tracer = FileRunTracer(
-        _context(), root=tmp_path, payload_mode=TracePayloadMode.RAW
-    )
+    tracer = FileRunTracer(_context(), root=tmp_path, payload_mode=TracePayloadMode.RAW)
     tracer.event("run_started", {"Authorization": "Bearer top-secret"})
     tracer.payload(
         "tools",
@@ -70,17 +68,14 @@ def test_raw_run_trace_writes_structure_and_redacts_secrets(tmp_path) -> None:
     assert (tracer.run_directory / "evidence").is_dir()
     assert (tracer.run_directory / "error.json").is_file()
     combined = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in tracer.run_directory.rglob("*.json*")
+        path.read_text(encoding="utf-8") for path in tracer.run_directory.rglob("*.json*")
     )
     assert "top-secret" not in combined
     assert "google-secret" not in combined
     assert "query-secret" not in combined
     assert "azure-secret" not in combined
     assert "[REDACTED]" in combined
-    event_lines = (tracer.run_directory / "events.jsonl").read_text(
-        encoding="utf-8"
-    ).splitlines()
+    event_lines = (tracer.run_directory / "events.jsonl").read_text(encoding="utf-8").splitlines()
     assert len(event_lines) == 1
     assert json.loads(event_lines[0])["event"] == "run_started"
 
@@ -117,26 +112,20 @@ def test_trace_records_effective_config_and_gates_optional_categories(tmp_path) 
 
 
 def test_metadata_mode_does_not_write_optional_payloads(tmp_path) -> None:
-    tracer = FileRunTracer(
-        _context(), root=tmp_path, payload_mode=TracePayloadMode.METADATA
-    )
+    tracer = FileRunTracer(_context(), root=tmp_path, payload_mode=TracePayloadMode.METADATA)
 
-    tracer.payload(
-        "tools", "raw", {"value": "hidden"}, minimum_mode=TracePayloadMode.RAW
-    )
+    tracer.payload("tools", "raw", {"value": "hidden"}, minimum_mode=TracePayloadMode.RAW)
 
     assert list((tracer.run_directory / "tools").iterdir()) == []
 
 
 def test_completed_v1_run_finalizes_trace_metadata_and_normalized_evidence(tmp_path) -> None:
-    tracer = FileRunTracer(
-        _context(), root=tmp_path, payload_mode=TracePayloadMode.NORMALIZED
-    )
+    tracer = FileRunTracer(_context(), root=tmp_path, payload_mode=TracePayloadMode.NORMALIZED)
 
     result = asyncio.run(
         run_v1(
             TravelRequest(request_text="Plan Sydney."),
-            FakeStructuredLLMClient([make_requirements(), make_itinerary()]),
+            FakeStructuredLLMClient([make_extraction(), make_itinerary()]),
             FakePlacesProvider(),
             FakeWeatherProvider(),
             FakeRoutesProvider(),
@@ -144,9 +133,7 @@ def test_completed_v1_run_finalizes_trace_metadata_and_normalized_evidence(tmp_p
             tracer=tracer,
         )
     )
-    run_metadata = json.loads(
-        (tracer.run_directory / "run.json").read_text(encoding="utf-8")
-    )
+    run_metadata = json.loads((tracer.run_directory / "run.json").read_text(encoding="utf-8"))
 
     assert result.system_version.value == "v1"
     assert run_metadata["run_id"] == str(RUN_ID)
@@ -156,7 +143,8 @@ def test_completed_v1_run_finalizes_trace_metadata_and_normalized_evidence(tmp_p
         "start": "2026-09-12",
         "end": "2026-09-13",
     }
-    assert run_metadata["tool_usage"]["place_search_calls"]["used"] == 4
+    assert run_metadata["tool_usage"]["destination_search_calls"]["used"] == 1
+    assert run_metadata["tool_usage"]["candidate_search_calls"]["used"] == 3
     assert run_metadata["final_outcome"]["system_version"] == "v1"
     assert len(list((tracer.run_directory / "evidence").glob("*.json"))) == 3
     assert not (tracer.run_directory / "error.json").exists()
@@ -183,9 +171,7 @@ def test_disabled_or_failed_trace_creation_returns_null_tracer(tmp_path) -> None
 
 
 def test_trace_write_failure_does_not_change_planning_semantics(tmp_path, monkeypatch) -> None:
-    tracer = FileRunTracer(
-        _context(), root=tmp_path, payload_mode=TracePayloadMode.METADATA
-    )
+    tracer = FileRunTracer(_context(), root=tmp_path, payload_mode=TracePayloadMode.METADATA)
 
     def fail_open(self, *args, **kwargs):
         raise OSError("simulated trace failure")
@@ -195,7 +181,7 @@ def test_trace_write_failure_does_not_change_planning_semantics(tmp_path, monkey
     result = asyncio.run(
         run_v1(
             TravelRequest(request_text="Plan two days in Sydney."),
-            FakeStructuredLLMClient([make_requirements(), make_itinerary()]),
+            FakeStructuredLLMClient([make_extraction(), make_itinerary()]),
             FakePlacesProvider(),
             FakeWeatherProvider(),
             FakeRoutesProvider(),

@@ -13,8 +13,8 @@ from backend.tests.versions.v1.fakes import (
     FakePlacesProvider,
     FakeRoutesProvider,
     FakeWeatherProvider,
+    make_extraction,
     make_itinerary,
-    make_requirements,
 )
 
 
@@ -34,6 +34,9 @@ def test_v1_settings_reuse_v0_foundry_config_and_add_bounded_google_config(
     assert settings.google_maps_api_key.get_secret_value() == "google-key"
     assert settings.app_time_zone == "Australia/Sydney"
     assert settings.tool_budget_limits().max_route_matrix_elements == 64
+    assert settings.tool_budget_limits().max_baseline_route_matrix_elements_per_request == 64
+    assert settings.tool_budget_limits().max_baseline_route_matrix_elements == 256
+    assert settings.tool_budget_limits().max_baseline_route_matrix_calls == 4
     assert settings.tool_budget_limits().max_alternative_route_pairs == 8
     assert settings.tool_budget_limits().max_alternative_route_matrix_calls == 8
 
@@ -41,7 +44,7 @@ def test_v1_settings_reuse_v0_foundry_config_and_add_bounded_google_config(
 def test_v1_cli_outputs_shared_planning_result_with_offline_injections(capsys) -> None:
     exit_code = main(
         ["--request", "Plan two days in Sydney.", "--reference-date", "2026-09-11"],
-        llm_client=FakeStructuredLLMClient([make_requirements(), make_itinerary()]),
+        llm_client=FakeStructuredLLMClient([make_extraction(), make_itinerary()]),
         places_provider=FakePlacesProvider(),
         weather_provider=FakeWeatherProvider(),
         routes_provider=FakeRoutesProvider(),
@@ -80,7 +83,7 @@ def test_v1_cli_trace_records_effective_config_without_live_providers(
 
     exit_code = main(
         ["--request", "Plan Sydney.", "--reference-date", "2026-09-11"],
-        llm_client=FakeStructuredLLMClient([make_requirements(), make_itinerary()]),
+        llm_client=FakeStructuredLLMClient([make_extraction(), make_itinerary()]),
     )
     capsys.readouterr()
     run_files = list(tmp_path.glob("*/run.json"))
@@ -90,6 +93,10 @@ def test_v1_cli_trace_records_effective_config_without_live_providers(
     run = json.loads(run_files[0].read_text(encoding="utf-8"))
     assert run["runtime_config"]["trace"]["directory"] == str(tmp_path)
     assert run["runtime_config"]["effective_tool_budget"]["alternative_route_pairs"] == 8
+    assert (
+        run["runtime_config"]["effective_tool_budget"]["baseline_route_matrix_elements_per_request"]
+        == 64
+    )
     assert len(run["runtime_config_sha256"]) == 64
     assert "test-foundry-secret" not in run_files[0].read_text(encoding="utf-8")
     assert "test-google-secret" not in run_files[0].read_text(encoding="utf-8")

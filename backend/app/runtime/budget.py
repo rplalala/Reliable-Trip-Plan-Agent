@@ -4,13 +4,23 @@ from collections import Counter
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, model_validator
 
-from backend.app.runtime.budget_limits import ToolBudgetKey, validate_budget_values
+from backend.app.runtime.budget_limits import (
+    ToolBudgetKey,
+    validate_baseline_per_request_elements,
+    validate_budget_values,
+)
 
 
 def _configured_default(key: ToolBudgetKey) -> int:
     from backend.app.runtime.config_loader import load_runtime_config
 
     return load_runtime_config().budget.as_key_limits()[key]
+
+
+def _configured_baseline_per_request_default() -> int:
+    from backend.app.runtime.config_loader import load_runtime_config
+
+    return load_runtime_config().budget.routes.baseline_elements_per_request
 
 
 class ToolBudgetLimits(BaseModel):
@@ -21,14 +31,26 @@ class ToolBudgetLimits(BaseModel):
     max_candidates: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.CANDIDATES)
     )
-    max_place_search_calls: StrictInt = Field(
-        default_factory=lambda: _configured_default(ToolBudgetKey.PLACE_SEARCH_CALLS)
+    max_destination_search_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.DESTINATION_SEARCH_CALLS)
+    )
+    max_candidate_search_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.CANDIDATE_SEARCH_CALLS)
     )
     max_place_detail_calls: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.PLACE_DETAIL_CALLS)
     )
+    max_review_detail_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.REVIEW_DETAIL_CALLS)
+    )
     max_review_enriched_places: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.REVIEW_ENRICHED_PLACES)
+    )
+    max_experience_profile_llm_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.EXPERIENCE_PROFILE_LLM_CALLS)
+    )
+    max_final_pois: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.FINAL_POIS)
     )
     max_web_evidence_tasks: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.WEB_EVIDENCE_TASKS)
@@ -38,6 +60,15 @@ class ToolBudgetLimits(BaseModel):
     )
     max_route_matrix_elements: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.ROUTE_MATRIX_ELEMENTS)
+    )
+    max_baseline_route_matrix_elements_per_request: StrictInt = Field(
+        default_factory=_configured_baseline_per_request_default
+    )
+    max_baseline_route_matrix_elements: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.BASELINE_ROUTE_MATRIX_ELEMENTS)
+    )
+    max_baseline_route_matrix_calls: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS)
     )
     max_alternative_route_pairs: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS)
@@ -52,6 +83,18 @@ class ToolBudgetLimits(BaseModel):
     @model_validator(mode="after")
     def within_hard_limits(self) -> "ToolBudgetLimits":
         validate_budget_values(self.as_key_limits())
+        validate_baseline_per_request_elements(self.max_baseline_route_matrix_elements_per_request)
+        if (
+            self.max_baseline_route_matrix_elements_per_request
+            > self.max_baseline_route_matrix_elements
+        ):
+            raise ValueError(
+                "baseline_route_matrix_elements_per_request must not exceed the per-run limit"
+            )
+        if self.max_review_detail_calls < self.max_review_enriched_places:
+            raise ValueError("review_detail_calls must cover review_enriched_places")
+        if self.max_experience_profile_llm_calls < self.max_review_enriched_places:
+            raise ValueError("experience_profile_llm_calls must cover review_enriched_places")
         return self
 
     def as_key_limits(self) -> dict[ToolBudgetKey, int]:
@@ -59,12 +102,18 @@ class ToolBudgetLimits(BaseModel):
 
         return {
             ToolBudgetKey.CANDIDATES: self.max_candidates,
-            ToolBudgetKey.PLACE_SEARCH_CALLS: self.max_place_search_calls,
+            ToolBudgetKey.DESTINATION_SEARCH_CALLS: self.max_destination_search_calls,
+            ToolBudgetKey.CANDIDATE_SEARCH_CALLS: self.max_candidate_search_calls,
             ToolBudgetKey.PLACE_DETAIL_CALLS: self.max_place_detail_calls,
+            ToolBudgetKey.REVIEW_DETAIL_CALLS: self.max_review_detail_calls,
             ToolBudgetKey.REVIEW_ENRICHED_PLACES: self.max_review_enriched_places,
+            ToolBudgetKey.EXPERIENCE_PROFILE_LLM_CALLS: self.max_experience_profile_llm_calls,
+            ToolBudgetKey.FINAL_POIS: self.max_final_pois,
             ToolBudgetKey.WEB_EVIDENCE_TASKS: self.max_web_evidence_tasks,
             ToolBudgetKey.PAGE_FETCHES: self.max_page_fetches,
             ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: self.max_route_matrix_elements,
+            ToolBudgetKey.BASELINE_ROUTE_MATRIX_ELEMENTS: (self.max_baseline_route_matrix_elements),
+            ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS: self.max_baseline_route_matrix_calls,
             ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: self.max_alternative_route_pairs,
             ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: (self.max_alternative_route_matrix_calls),
             ToolBudgetKey.WEATHER_CALLS: self.max_weather_calls,

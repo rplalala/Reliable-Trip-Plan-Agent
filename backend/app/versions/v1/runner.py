@@ -60,15 +60,14 @@ async def run_v1(
     date_provider: DateProvider | None = None,
     budget_limits: ToolBudgetLimits | None = None,
     tracer: RunTracer | None = None,
+    llm_config_identity: str | None = None,
 ) -> PlanningResult:
     """Run V1-A with one fixed date, budget, cache, tracer, and explicit graph."""
 
     if reference_date is not None and date_provider is not None:
         raise ValueError("reference_date and date_provider cannot both be supplied")
 
-    effective_reference_date = (
-        reference_date or (date_provider or SystemDateProvider()).today()
-    )
+    effective_reference_date = reference_date or (date_provider or SystemDateProvider()).today()
     date_window = create_trip_date_window(effective_reference_date)
     effective_tracer = tracer or NullRunTracer(uuid4())
     budget = ToolBudget(budget_limits)
@@ -80,7 +79,14 @@ async def run_v1(
         cache=RequestCache(),
         tracer=effective_tracer,
     )
-    graph = build_v1_graph(llm_client, evidence_service, effective_tracer)
+    graph = build_v1_graph(
+        llm_client,
+        evidence_service,
+        effective_tracer,
+        llm_config_identity=(
+            llm_config_identity or f"{type(llm_client).__module__}.{type(llm_client).__qualname__}"
+        ),
+    )
     effective_tracer.event(
         "run_started",
         {
@@ -134,9 +140,7 @@ async def run_v1(
 def build_argument_parser() -> argparse.ArgumentParser:
     """Build the independent V1 command-line parser."""
 
-    parser = argparse.ArgumentParser(
-        description="Run the V1-A evidence-informed travel planner."
-    )
+    parser = argparse.ArgumentParser(description="Run the V1-A evidence-informed travel planner.")
     parser.add_argument("--request", required=True, help="Natural-language travel request.")
     parser.add_argument(
         "--reference-date",
@@ -198,15 +202,19 @@ def main(
 
         if args.reference_date is not None and date_provider is not None:
             raise ValueError("reference_date and date_provider cannot both be supplied")
-        effective_reference_date = args.reference_date or (
-            date_provider or SystemDateProvider(runtime_settings.app_time_zone)
-        ).today()
+        effective_reference_date = (
+            args.reference_date
+            or (date_provider or SystemDateProvider(runtime_settings.app_time_zone)).today()
+        )
         run_id = uuid4()
         started_at = datetime.now(UTC)
         config_snapshot, config_hash = runtime_config_snapshot(
             runtime_config,
             effective_budget={
-                key.value: value for key, value in budget_limits.as_key_limits().items()
+                **{key.value: value for key, value in budget_limits.as_key_limits().items()},
+                "baseline_route_matrix_elements_per_request": (
+                    budget_limits.max_baseline_route_matrix_elements_per_request
+                ),
             },
         )
         context = RunTraceContext(
@@ -264,6 +272,9 @@ def main(
                 reference_date=effective_reference_date,
                 budget_limits=budget_limits,
                 tracer=effective_tracer,
+                llm_config_identity=(
+                    settings.azure_openai_deployment if settings is not None else None
+                ),
             )
         )
     except MissingRequiredFieldsError as exc:
