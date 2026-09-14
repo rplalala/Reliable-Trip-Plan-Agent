@@ -14,6 +14,7 @@ from backend.app.services.planning import (
     PlanningService,
     build_canonical_request_text,
 )
+from backend.tests.fakes import FixedDateProvider
 from backend.tests.versions.v0.fakes import (
     FakeStructuredLLMClient,
     make_itinerary,
@@ -92,17 +93,16 @@ def test_canonical_request_is_deterministic_for_the_same_validated_values() -> N
 
 def test_product_service_returns_programmatic_v0_result_from_canonical_request() -> None:
     client = FakeStructuredLLMClient([make_requirements(), make_itinerary()])
-    service = PlanningService(client)
+    service = PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
 
     result = asyncio.run(
         service.plan(
             destination="Kyoto",
-            start_date=date(2026, 10, 1),
-            end_date=date(2026, 10, 1),
+            start_date=date(2026, 9, 12),
+            end_date=date(2026, 9, 12),
             traveler_count=1,
             budget=None,
             additional_preferences=None,
-            reference_date=date(2026, 9, 11),
         )
     )
 
@@ -110,7 +110,7 @@ def test_product_service_returns_programmatic_v0_result_from_canonical_request()
     assert result.itinerary.destination == "Kyoto"
     assert len(client.calls) == 2
     assert (
-        "Plan a trip to Kyoto from 2026-10-01 to 2026-10-01 for 1 traveler."
+        "Plan a trip to Kyoto from 2026-09-12 to 2026-09-12 for 1 traveler."
         in client.calls[0].user_prompt
     )
 
@@ -118,18 +118,17 @@ def test_product_service_returns_programmatic_v0_result_from_canonical_request()
 def test_product_service_maps_missing_requirements_without_generation() -> None:
     requirements = TravelRequirements(destination="Kyoto")
     client = FakeStructuredLLMClient([requirements])
-    service = PlanningService(client)
+    service = PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
 
     with pytest.raises(PlanningNeedsClarificationError) as captured:
         asyncio.run(
             service.plan(
                 destination="Kyoto",
-                start_date=date(2026, 10, 1),
-                end_date=date(2026, 10, 3),
+                start_date=date(2026, 9, 12),
+                end_date=date(2026, 9, 14),
                 traveler_count=1,
                 budget=None,
                 additional_preferences=None,
-                reference_date=date(2026, 9, 11),
             )
         )
 
@@ -139,18 +138,17 @@ def test_product_service_maps_missing_requirements_without_generation() -> None:
 
 def test_product_service_hides_v0_stage_failure() -> None:
     client = FakeStructuredLLMClient([RuntimeError("provider secret")])
-    service = PlanningService(client)
+    service = PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
 
     with pytest.raises(PlanningFailedError, match="active planner failed") as captured:
         asyncio.run(
             service.plan(
                 destination="Kyoto",
-                start_date=date(2026, 10, 1),
-                end_date=date(2026, 10, 1),
+                start_date=date(2026, 9, 12),
+                end_date=date(2026, 9, 12),
                 traveler_count=1,
                 budget=None,
                 additional_preferences=None,
-                reference_date=date(2026, 9, 11),
             )
         )
 
@@ -170,3 +168,22 @@ def test_developer_service_preserves_v0_programmatic_result() -> None:
 
     assert result.system_version is SystemVersion.V0
     assert len(client.calls) == 2
+
+
+def test_product_service_rejects_a_short_trip_next_year_before_llm_calls() -> None:
+    client = FakeStructuredLLMClient([])
+    service = PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
+
+    with pytest.raises(ValueError, match="end_date must be on or before 2026-09-20"):
+        asyncio.run(
+            service.plan(
+                destination="Kyoto",
+                start_date=date(2027, 1, 1),
+                end_date=date(2027, 1, 3),
+                traveler_count=1,
+                budget=None,
+                additional_preferences=None,
+            )
+        )
+
+    assert client.calls == []

@@ -1,6 +1,7 @@
 """HTTP contract tests for the local developer planner."""
 
 import asyncio
+from datetime import date
 
 from httpx import ASGITransport, AsyncClient
 
@@ -101,3 +102,28 @@ def test_developer_planning_exposes_v0_stage_for_debugging() -> None:
             "message": "provider unavailable",
         }
     }
+
+
+def test_developer_planning_uses_trusted_reference_date_for_window_validation() -> None:
+    requirements = make_requirements().model_copy(
+        update={
+            "start_date": date(2026, 9, 21),
+            "end_date": date(2026, 9, 21),
+        }
+    )
+    client = FakeStructuredLLMClient([requirements])
+    service = DeveloperPlanningService(client)
+
+    status_code, body = post_developer_planning(
+        service,
+        {
+            "version": "v0",
+            "request_text": "Plan one day in Kyoto.",
+            "reference_date": "2026-09-11",
+        },
+    )
+
+    assert status_code == 422
+    assert body["detail"]["system_version"] == "v0"
+    assert body["detail"]["code"] == "trip_date_after_window"
+    assert len(client.calls) == 1

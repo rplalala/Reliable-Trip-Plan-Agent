@@ -1,6 +1,6 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { submitPlanningRequest } from "../../features/planning/api";
 import type { ProductPlanningResponse } from "../../features/planning/types";
@@ -16,8 +16,8 @@ const completedResult: ProductPlanningResponse = {
   status: "completed",
   requirements: {
     destination: "Kyoto",
-    start_date: "2026-10-01",
-    end_date: "2026-10-01",
+    start_date: "2026-09-12",
+    end_date: "2026-09-12",
     traveler_count: 1,
     budget: null,
     required_activities: [],
@@ -27,19 +27,19 @@ const completedResult: ProductPlanningResponse = {
   },
   itinerary: {
     destination: "Kyoto",
-    start_date: "2026-10-01",
-    end_date: "2026-10-01",
+    start_date: "2026-09-12",
+    end_date: "2026-09-12",
     days: [
       {
-        date: "2026-10-01",
+        date: "2026-09-12",
         activities: [
           {
             activity_id: "activity-1",
             title: "Visit Fushimi Inari Shrine",
             place_name: "Fushimi Inari Taisha",
             location: "Kyoto",
-            start_time: "2026-10-01T09:00:00+09:00",
-            end_time: "2026-10-01T11:00:00+09:00",
+            start_time: "2026-09-12T09:00:00+09:00",
+            end_time: "2026-09-12T11:00:00+09:00",
             estimated_cost: null,
             notes: null,
           },
@@ -53,14 +53,20 @@ type TestUser = ReturnType<typeof userEvent.setup>;
 
 async function fillRequiredFields(user: TestUser) {
   await user.type(screen.getByLabelText("Destination"), "Kyoto");
-  await user.type(screen.getByLabelText("Start date"), "2026-10-01");
-  await user.type(screen.getByLabelText("End date"), "2026-10-01");
+  await user.type(screen.getByLabelText("Start date"), "2026-09-12");
+  await user.type(screen.getByLabelText("End date"), "2026-09-12");
   await user.type(screen.getByLabelText("Travelers"), "1");
 }
 
 describe("PlanTripPage", () => {
   beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 8, 11, 12));
     submitPlanningMock.mockReset();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("requires structured trip fields before enabling submission", async () => {
@@ -80,11 +86,39 @@ describe("PlanTripPage", () => {
     render(<PlanTripPage />);
 
     await user.type(screen.getByLabelText("Destination"), "Kyoto");
-    await user.type(screen.getByLabelText("Start date"), "2026-10-03");
-    await user.type(screen.getByLabelText("End date"), "2026-10-01");
+    await user.type(screen.getByLabelText("Start date"), "2026-09-14");
+    await user.type(screen.getByLabelText("End date"), "2026-09-12");
     await user.type(screen.getByLabelText("Travelers"), "1");
 
     expect(screen.getByText("End date must be on or after the start date.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
+  });
+
+  it("limits both date pickers to the browser-local ten-day window", () => {
+    render(<PlanTripPage />);
+
+    expect(screen.getByLabelText("Start date")).toHaveAttribute("min", "2026-09-11");
+    expect(screen.getByLabelText("Start date")).toHaveAttribute("max", "2026-09-20");
+    expect(screen.getByLabelText("End date")).toHaveAttribute("min", "2026-09-11");
+    expect(screen.getByLabelText("End date")).toHaveAttribute("max", "2026-09-20");
+  });
+
+  it("blocks a date outside the browser-local ten-day window", async () => {
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+
+    await user.type(screen.getByLabelText("Destination"), "Kyoto");
+    fireEvent.change(screen.getByLabelText("Start date"), {
+      target: { value: "2026-09-21" },
+    });
+    fireEvent.change(screen.getByLabelText("End date"), {
+      target: { value: "2026-09-21" },
+    });
+    await user.type(screen.getByLabelText("Travelers"), "1");
+
+    expect(
+      screen.getByText("Travel dates must be between 2026-09-11 and 2026-09-20."),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
   });
 
@@ -137,8 +171,8 @@ describe("PlanTripPage", () => {
 
     expect(submitPlanningMock).toHaveBeenCalledWith({
       destination: "Kyoto",
-      start_date: "2026-10-01",
-      end_date: "2026-10-01",
+      start_date: "2026-09-12",
+      end_date: "2026-09-12",
       traveler_count: 1,
       budget: { amount: "2000", currency: "AUD" },
       additional_preferences: "Local food and quiet mornings.",
@@ -160,8 +194,8 @@ describe("PlanTripPage", () => {
 
     expect(submitPlanningMock).toHaveBeenCalledWith({
       destination: "Kyoto",
-      start_date: "2026-10-01",
-      end_date: "2026-10-01",
+      start_date: "2026-09-12",
+      end_date: "2026-09-12",
       traveler_count: 1,
     });
   });

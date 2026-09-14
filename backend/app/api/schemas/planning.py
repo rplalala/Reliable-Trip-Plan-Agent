@@ -20,7 +20,6 @@ class ProductPlanningRequest(BaseModel):
     traveler_count: int = Field(ge=1)
     budget: Money | None = None
     additional_preferences: str | None = Field(default=None, min_length=1)
-    reference_date: date | None = None
 
     @model_validator(mode="after")
     def validate_date_range(self) -> "ProductPlanningRequest":

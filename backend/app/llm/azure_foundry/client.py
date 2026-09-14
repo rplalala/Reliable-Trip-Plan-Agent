@@ -8,18 +8,28 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, ValidationError
 
+from backend.app.evidence.experience_models import ExperienceProfileDraft
 from backend.app.llm.azure_foundry.dto import (
+    FoundryExperienceProfileDTO,
     FoundryItineraryDTO,
+    FoundryRequirementsWithNamedPlaceIntentsDTO,
     FoundryTravelRequirementsDTO,
+    FoundryTripIntentExtractionDTO,
 )
+from backend.app.llm.azure_foundry.itinerary_cost_projection import map_foundry_v1_itinerary
 from backend.app.llm.azure_foundry.mapping import (
     FoundryMappingError,
     map_foundry_itinerary,
     map_foundry_requirements,
+    map_foundry_requirements_with_named_places,
+    map_foundry_trip_intents,
 )
 from backend.app.llm.client import StructuredModelT, StructuredOutputError
 from backend.app.schemas.itinerary import Itinerary
+from backend.app.schemas.itinerary_projection import V1Itinerary
+from backend.app.schemas.named_place_intent import RequirementsWithNamedPlaceIntents
 from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.trip_intent import TripIntentExtractionResult
 
 
 @dataclass(frozen=True)
@@ -33,9 +43,29 @@ def _map_requirements(value: BaseModel) -> TravelRequirements:
     return map_foundry_requirements(dto)
 
 
+def _map_requirements_with_named_places(value: BaseModel) -> RequirementsWithNamedPlaceIntents:
+    dto = FoundryRequirementsWithNamedPlaceIntentsDTO.model_validate(value)
+    return map_foundry_requirements_with_named_places(dto)
+
+
+def _map_trip_intents(value: BaseModel) -> TripIntentExtractionResult:
+    dto = FoundryTripIntentExtractionDTO.model_validate(value)
+    return map_foundry_trip_intents(dto)
+
+
 def _map_itinerary(value: BaseModel) -> Itinerary:
     dto = FoundryItineraryDTO.model_validate(value)
     return map_foundry_itinerary(dto)
+
+
+def _map_v1_itinerary(value: BaseModel) -> V1Itinerary:
+    dto = FoundryItineraryDTO.model_validate(value)
+    return map_foundry_v1_itinerary(dto)
+
+
+def _map_experience_profile(value: BaseModel) -> ExperienceProfileDraft:
+    dto = FoundryExperienceProfileDTO.model_validate(value)
+    return ExperienceProfileDraft.model_validate(dto.model_dump())
 
 
 _FOUNDRY_BINDINGS: dict[type[BaseModel], _FoundryBinding] = {
@@ -43,9 +73,25 @@ _FOUNDRY_BINDINGS: dict[type[BaseModel], _FoundryBinding] = {
         transport_schema=FoundryTravelRequirementsDTO,
         to_domain=_map_requirements,
     ),
+    RequirementsWithNamedPlaceIntents: _FoundryBinding(
+        transport_schema=FoundryRequirementsWithNamedPlaceIntentsDTO,
+        to_domain=_map_requirements_with_named_places,
+    ),
+    TripIntentExtractionResult: _FoundryBinding(
+        transport_schema=FoundryTripIntentExtractionDTO,
+        to_domain=_map_trip_intents,
+    ),
     Itinerary: _FoundryBinding(
         transport_schema=FoundryItineraryDTO,
         to_domain=_map_itinerary,
+    ),
+    V1Itinerary: _FoundryBinding(
+        transport_schema=FoundryItineraryDTO,
+        to_domain=_map_v1_itinerary,
+    ),
+    ExperienceProfileDraft: _FoundryBinding(
+        transport_schema=FoundryExperienceProfileDTO,
+        to_domain=_map_experience_profile,
     ),
 }
 

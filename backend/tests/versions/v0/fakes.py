@@ -54,8 +54,8 @@ def make_requirements() -> TravelRequirements:
 
     return TravelRequirements(
         destination="Kyoto",
-        start_date=date(2026, 10, 1),
-        end_date=date(2026, 10, 1),
+        start_date=date(2026, 9, 12),
+        end_date=date(2026, 9, 12),
         traveler_count=1,
     )
 
@@ -65,17 +65,17 @@ def make_itinerary() -> Itinerary:
 
     return Itinerary(
         destination="Kyoto",
-        start_date=date(2026, 10, 1),
-        end_date=date(2026, 10, 1),
+        start_date=date(2026, 9, 12),
+        end_date=date(2026, 9, 12),
         days=[
             ItineraryDay(
-                date=date(2026, 10, 1),
+                date=date(2026, 9, 12),
                 activities=[
                     Activity(
                         activity_id="activity-1",
                         title="Visit Fushimi Inari Shrine",
-                        start_time=datetime.fromisoformat("2026-10-01T09:00:00+09:00"),
-                        end_time=datetime.fromisoformat("2026-10-01T11:00:00+09:00"),
+                        start_time=datetime.fromisoformat("2026-09-12T09:00:00+09:00"),
+                        end_time=datetime.fromisoformat("2026-09-12T11:00:00+09:00"),
                     )
                 ],
             )

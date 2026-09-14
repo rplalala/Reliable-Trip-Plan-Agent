@@ -1,23 +1,37 @@
 """Tests for the Microsoft Foundry structured-output client."""
 
 import asyncio
+from decimal import Decimal
 from typing import Any
 
 import pytest
 from pydantic import BaseModel
 
+from backend.app.evidence.experience_models import ExperienceProfileDraft
 from backend.app.llm.azure_foundry import client as client_module
 from backend.app.llm.azure_foundry.client import AzureFoundryStructuredLLMClient
 from backend.app.llm.azure_foundry.dto import (
     FoundryActivityDTO,
     FoundryDateTimeDTO,
+    FoundryExperienceProfileDTO,
+    FoundryExperienceSignalDTO,
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
+    FoundryMoneyDTO,
+    FoundryNamedPlaceIntentDTO,
+    FoundryRequirementsWithNamedPlaceIntentsDTO,
     FoundryTravelRequirementsDTO,
+    FoundryTripIntentExtractionDTO,
 )
 from backend.app.llm.client import StructuredOutputError
 from backend.app.schemas.itinerary import Itinerary
+from backend.app.schemas.itinerary_projection import V1Itinerary
+from backend.app.schemas.named_place_intent import (
+    NamedPlaceInclusion,
+    RequirementsWithNamedPlaceIntents,
+)
 from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.trip_intent import TripIntentExtractionResult
 
 
 class FakeStructuredModel:
@@ -135,6 +149,127 @@ def test_client_uses_requirements_dto_and_returns_domain_model(
     assert len(FakeChatOpenAI.structured_model.messages) == 2
 
 
+def test_client_maps_v1_named_intents_without_changing_base_requirements(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    FakeChatOpenAI.response = FoundryRequirementsWithNamedPlaceIntentsDTO(
+        destination="Sydney",
+        start_date="2026-09-15",
+        end_date="2026-09-15",
+        traveler_count=1,
+        budget=None,
+        required_activities=["Visit the Sydney Opera House"],
+        excluded_activities=[],
+        preferences=["avoid crowds"],
+        unresolved_fields=[],
+        named_place_intents=[
+            FoundryNamedPlaceIntentDTO(
+                place_text="Sydney Opera House",
+                inclusion="REQUIRED",
+                source_text="Sydney Opera House is a must-visit",
+            )
+        ],
+    )
+    client = make_client(monkeypatch)
+
+    result = generate(client, RequirementsWithNamedPlaceIntents)
+
+    assert FakeChatOpenAI.schema is FoundryRequirementsWithNamedPlaceIntentsDTO
+    assert FakeChatOpenAI.structured_model.invocation_count == 1
+    assert result.requirements.required_activities == ["Visit the Sydney Opera House"]
+    assert result.requirements.destination == "Sydney"
+    assert result.named_place_intents[0].place_text == "Sydney Opera House"
+    assert result.named_place_intents[0].inclusion is NamedPlaceInclusion.REQUIRED
+    assert result.named_place_intents[0].source_text == "Sydney Opera House is a must-visit"
+
+
+def test_v1_requirements_dto_requires_named_place_array(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    FakeChatOpenAI.response = FoundryTravelRequirementsDTO(
+        destination="Sydney",
+        start_date="2026-09-15",
+        end_date="2026-09-15",
+        traveler_count=1,
+        budget=None,
+        required_activities=[],
+        excluded_activities=[],
+        preferences=[],
+        unresolved_fields=[],
+    )
+    client = make_client(monkeypatch)
+
+    with pytest.raises(StructuredOutputError):
+        generate(client, RequirementsWithNamedPlaceIntents)
+
+
+def test_client_maps_all_v1_semantic_intents_in_one_structured_call(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    FakeChatOpenAI.response = FoundryTripIntentExtractionDTO.model_validate(
+        {
+            "destination": "Melbourne",
+            "start_date": "2026-09-15",
+            "end_date": "2026-09-15",
+            "traveler_count": 1,
+            "budget": None,
+            "required_activities": [],
+            "excluded_activities": [],
+            "preferences": ["less walking"],
+            "unresolved_fields": [],
+            "named_place_intents": [
+                {
+                    "place_text": "Melbourne Museum",
+                    "inclusion": "OPTIONAL",
+                    "source_text": "Melbourne Museum",
+                }
+            ],
+            "requested_place_information": [
+                {
+                    "target_surface": "Melbourne Museum",
+                    "target_source_text": "Melbourne Museum",
+                    "source_text": "How much is admission?",
+                    "requested_facet": "admission_fee",
+                    "operational_need": None,
+                    "subject_scope": "whole_venue",
+                    "scope_text": None,
+                    "temporal_scope": "GENERAL",
+                    "date_source_text": None,
+                    "requested_start_date": None,
+                    "requested_end_date": None,
+                }
+            ],
+            "experience_preferences": [
+                {
+                    "preference": "PREFER_LESS_WALKING",
+                    "importance": "normal_preference",
+                    "source_text": "less walking",
+                }
+            ],
+            "transport_preference": {"mode": "TRANSIT", "source_text": "use the tram"},
+            "poi_interests": [
+                {
+                    "surface": "museums",
+                    "importance": "normal_preference",
+                    "source_text": "I like museums",
+                }
+            ],
+        }
+    )
+    client = make_client(monkeypatch)
+
+    result = generate(client, TripIntentExtractionResult)
+
+    assert FakeChatOpenAI.schema is FoundryTripIntentExtractionDTO
+    assert FakeChatOpenAI.structured_model.invocation_count == 1
+    assert result.requirements.destination == "Melbourne"
+    assert result.named_place_intents[0].place_text == "Melbourne Museum"
+    assert result.requested_place_information[0].requested_facet.value == "admission_fee"
+    assert result.experience_preferences[0].preference.value == "PREFER_LESS_WALKING"
+    assert result.transport_preference.mode.value == "TRANSIT"
+    assert result.poi_interests[0].surface == "museums"
+
+
 def test_client_uses_itinerary_dto_and_returns_domain_model(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -155,9 +290,77 @@ def test_client_uses_itinerary_dto_and_returns_domain_model(
 
     assert isinstance(result, Itinerary)
     assert FakeChatOpenAI.schema is FoundryItineraryDTO
-    assert result.days[0].activities[0].end_time.isoformat() == (
-        "2026-10-01T11:00:00+09:00"
+    assert result.days[0].activities[0].end_time.isoformat() == ("2026-10-01T11:00:00+09:00")
+    assert FakeChatOpenAI.structured_model.invocation_count == 1
+
+
+def test_client_v1_projects_range_cost_in_one_call_without_changing_v0_binding(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    activity = make_activity().model_copy(
+        update={"estimated_cost": FoundryMoneyDTO(amount="1.00-10.00", currency="SGD")}
     )
+    FakeChatOpenAI.response = FoundryItineraryDTO(
+        destination="Kyoto",
+        start_date="2026-10-01",
+        end_date="2026-10-01",
+        days=[FoundryItineraryDayDTO(date="2026-10-01", activities=[activity])],
+    )
+    client = make_client(monkeypatch)
+
+    result = generate(client, V1Itinerary)
+
+    assert isinstance(result, V1Itinerary)
+    assert result.days[0].activities[0].estimated_cost is not None
+    assert result.days[0].activities[0].estimated_cost.amount == Decimal("5.50")
+    assert result.cost_projections[0].projection == "midpoint_from_range"
+    assert FakeChatOpenAI.schema is FoundryItineraryDTO
+    assert FakeChatOpenAI.structured_model.invocation_count == 1
+    with pytest.raises(StructuredOutputError):
+        generate(client, Itinerary)
+    assert FakeChatOpenAI.structured_output_count == 2
+
+
+def test_client_uses_experience_profile_dto_without_confidence_output(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    FakeChatOpenAI.response = FoundryExperienceProfileDTO(
+        place_id="place-a",
+        summary="Visitors describe heavy crowds.",
+        summary_review_refs=["review_1"],
+        signals=[
+            FoundryExperienceSignalDTO(dimension="crowding", value="HIGH", review_refs=["review_1"])
+        ],
+        review_count_used=1,
+    )
+    client = make_client(monkeypatch)
+
+    result = generate(client, ExperienceProfileDraft)
+
+    assert result.place_id == "place-a"
+    assert result.signals[0].value.value == "HIGH"
+    assert FakeChatOpenAI.schema is FoundryExperienceProfileDTO
+    assert "confidence" not in FoundryExperienceProfileDTO.model_json_schema()["properties"]
+    assert FakeChatOpenAI.structured_model.invocation_count == 1
+
+
+def test_client_rejects_invalid_experience_dimension_value_without_retry(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    FakeChatOpenAI.response = FoundryExperienceProfileDTO(
+        place_id="place-a",
+        summary=None,
+        summary_review_refs=[],
+        signals=[
+            FoundryExperienceSignalDTO(
+                dimension="crowding", value="ACCESSIBLE", review_refs=["review_1"]
+            )
+        ],
+        review_count_used=1,
+    )
+    client = make_client(monkeypatch)
+    with pytest.raises(StructuredOutputError):
+        generate(client, ExperienceProfileDraft)
     assert FakeChatOpenAI.structured_model.invocation_count == 1
 
 

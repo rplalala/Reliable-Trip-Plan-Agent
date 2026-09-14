@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import {
+  getBrowserLocalTripDateWindow,
+  isDateWithinTripWindow,
+} from "../datePolicy";
 import type { ProductPlanningInput } from "../types";
 
 interface PlanningFormProps {
@@ -8,6 +12,7 @@ interface PlanningFormProps {
 }
 
 export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
+  const dateWindow = getBrowserLocalTripDateWindow();
   const [destination, setDestination] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -24,6 +29,9 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
     Number.isInteger(parsedTravelerCount) &&
     parsedTravelerCount >= 1;
   const hasValidDateRange = !startDate || !endDate || endDate >= startDate;
+  const hasValidDateWindow =
+    (!startDate || isDateWithinTripWindow(startDate, dateWindow)) &&
+    (!endDate || isDateWithinTripWindow(endDate, dateWindow));
   const hasBudgetAmount = budgetAmount.trim().length > 0;
   const hasBudgetCurrency = budgetCurrency.trim().length > 0;
   const hasBudget = hasBudgetAmount || hasBudgetCurrency;
@@ -34,7 +42,12 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
       Number.isFinite(Number(budgetAmount)) &&
       Number(budgetAmount) >= 0 &&
       /^[A-Z]{3}$/.test(budgetCurrency));
-  const canSubmit = hasRequiredFields && hasValidDateRange && hasValidBudget && !isSubmitting;
+  const canSubmit =
+    hasRequiredFields &&
+    hasValidDateRange &&
+    hasValidDateWindow &&
+    hasValidBudget &&
+    !isSubmitting;
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -79,8 +92,11 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
           <input
             type="date"
             value={startDate}
+            min={dateWindow.allowedStart}
+            max={dateWindow.allowedEnd}
             required
             disabled={isSubmitting}
+            aria-describedby={!hasValidDateWindow ? "date-window-error" : undefined}
             onChange={(event) => setStartDate(event.target.value)}
           />
         </label>
@@ -89,13 +105,25 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
           <input
             type="date"
             value={endDate}
-            min={startDate || undefined}
+            min={startDate || dateWindow.allowedStart}
+            max={dateWindow.allowedEnd}
             required
             disabled={isSubmitting}
-            aria-describedby={!hasValidDateRange ? "date-range-error" : undefined}
+            aria-describedby={
+              !hasValidDateWindow
+                ? "date-window-error"
+                : !hasValidDateRange
+                  ? "date-range-error"
+                  : undefined
+            }
             onChange={(event) => setEndDate(event.target.value)}
           />
         </label>
+        {!hasValidDateWindow && (
+          <p className="field-error field-wide" id="date-window-error">
+            Travel dates must be between {dateWindow.allowedStart} and {dateWindow.allowedEnd}.
+          </p>
+        )}
         {!hasValidDateRange && (
           <p className="field-error field-wide" id="date-range-error">
             End date must be on or after the start date.

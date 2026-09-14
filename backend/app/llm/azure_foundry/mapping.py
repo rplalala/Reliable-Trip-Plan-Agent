@@ -9,10 +9,17 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
     FoundryMoneyDTO,
+    FoundryRequirementsWithNamedPlaceIntentsDTO,
     FoundryTravelRequirementsDTO,
+    FoundryTripIntentExtractionDTO,
 )
 from backend.app.schemas.itinerary import Activity, Itinerary, ItineraryDay
+from backend.app.schemas.named_place_intent import (
+    NamedPlaceIntent,
+    RequirementsWithNamedPlaceIntents,
+)
 from backend.app.schemas.request import Money, TravelRequirements
+from backend.app.schemas.trip_intent import TripIntentExtractionResult
 
 _DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 _TIME_PATTERN = re.compile(r"(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\Z")
@@ -91,6 +98,48 @@ def map_foundry_requirements(value: FoundryTravelRequirementsDTO) -> TravelRequi
         excluded_activities=value.excluded_activities,
         preferences=value.preferences,
         unresolved_fields=value.unresolved_fields,
+    )
+
+
+def map_foundry_requirements_with_named_places(
+    value: FoundryRequirementsWithNamedPlaceIntentsDTO,
+) -> RequirementsWithNamedPlaceIntents:
+    """Map the unchanged base fields and keep V1+ intents separate."""
+
+    return RequirementsWithNamedPlaceIntents(
+        requirements=map_foundry_requirements(value),
+        named_place_intents=tuple(
+            NamedPlaceIntent(
+                place_text=item.place_text,
+                inclusion=item.inclusion,
+                source_text=item.source_text,
+            )
+            for item in value.named_place_intents
+        ),
+    )
+
+
+def map_foundry_trip_intents(value: FoundryTripIntentExtractionDTO) -> TripIntentExtractionResult:
+    """Keep base requirements intact and validate separate semantic contracts."""
+
+    return TripIntentExtractionResult(
+        requirements=map_foundry_requirements(value),
+        named_place_intents=tuple(
+            NamedPlaceIntent(
+                place_text=item.place_text,
+                inclusion=item.inclusion,
+                source_text=item.source_text,
+            )
+            for item in value.named_place_intents
+        ),
+        requested_place_information=tuple(
+            item.model_dump() for item in value.requested_place_information
+        ),
+        experience_preferences=tuple(item.model_dump() for item in value.experience_preferences),
+        transport_preference=(
+            value.transport_preference.model_dump() if value.transport_preference else None
+        ),
+        poi_interests=tuple(item.model_dump() for item in value.poi_interests),
     )
 
 

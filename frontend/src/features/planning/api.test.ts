@@ -1,23 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getBrowserLocalDate, submitPlanningRequest } from "./api";
+import { submitPlanningRequest } from "./api";
 
 describe("product planning API", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
-  });
-
-  it("builds the reference date from browser-local calendar fields", () => {
-    const localDate = {
-      getFullYear: () => 2026,
-      getMonth: () => 8,
-      getDate: () => 7,
-      toISOString: () => {
-        throw new Error("UTC conversion must not be used");
-      },
-    } as unknown as Date;
-
-    expect(getBrowserLocalDate(localDate)).toBe("2026-09-07");
   });
 
   it("submits a version-agnostic product payload", async () => {
@@ -34,8 +21,8 @@ describe("product planning API", () => {
 
     await submitPlanningRequest({
       destination: "Beijing",
-      start_date: "2026-10-01",
-      end_date: "2026-10-03",
+      start_date: "2026-09-12",
+      end_date: "2026-09-14",
       traveler_count: 2,
       budget: { amount: "2000", currency: "AUD" },
       additional_preferences: "Local food and quiet mornings.",
@@ -46,12 +33,12 @@ describe("product planning API", () => {
     const payload = JSON.parse(String(init.body)) as Record<string, unknown>;
     expect(url).toBe("/api/planning");
     expect(payload.destination).toBe("Beijing");
-    expect(payload.start_date).toBe("2026-10-01");
-    expect(payload.end_date).toBe("2026-10-03");
+    expect(payload.start_date).toBe("2026-09-12");
+    expect(payload.end_date).toBe("2026-09-14");
     expect(payload.traveler_count).toBe(2);
     expect(payload.budget).toEqual({ amount: "2000", currency: "AUD" });
     expect(payload.additional_preferences).toBe("Local food and quiet mornings.");
-    expect(payload.reference_date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(payload).not.toHaveProperty("reference_date");
     expect(payload).not.toHaveProperty("request_text");
     expect(payload).not.toHaveProperty("version");
   });
@@ -66,8 +53,8 @@ describe("product planning API", () => {
 
     await submitPlanningRequest({
       destination: "Beijing",
-      start_date: "2026-10-01",
-      end_date: "2026-10-03",
+      start_date: "2026-09-12",
+      end_date: "2026-09-14",
       traveler_count: 2,
     });
 

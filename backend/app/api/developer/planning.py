@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from backend.app.api.dependencies import get_developer_planning_service
 from backend.app.api.schemas.planning import DeveloperPlanningRequest
+from backend.app.policies.trip_dates import TripDatePolicyError
 from backend.app.schemas.planning import PlanningResult
 from backend.app.schemas.request import TravelRequest
 from backend.app.services.planning import DeveloperPlanningService
@@ -36,6 +37,14 @@ async def create_developer_planning_result(
                 "code": "missing_required_fields",
                 "system_version": body.version,
                 "requirements": exc.requirements.model_dump(mode="json"),
+            },
+        ) from exc
+    except TripDatePolicyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail={
+                "system_version": body.version,
+                **exc.as_detail(),
             },
         ) from exc
     except V0StageError as exc:

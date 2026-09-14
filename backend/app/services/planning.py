@@ -3,6 +3,12 @@
 from datetime import date
 
 from backend.app.llm.client import StructuredLLMClient
+from backend.app.policies.trip_dates import (
+    DateProvider,
+    SystemDateProvider,
+    create_trip_date_window,
+    validate_requested_trip_dates,
+)
 from backend.app.schemas.planning import PlanningResult
 from backend.app.schemas.request import Money, TravelRequest, TravelRequirements
 from backend.app.versions.v0.graph import MissingRequiredFieldsError, V0StageError
@@ -48,8 +54,13 @@ def build_canonical_request_text(
 class PlanningService:
     """Run the active planner behind a version-agnostic product boundary."""
 
-    def __init__(self, llm_client: StructuredLLMClient) -> None:
+    def __init__(
+        self,
+        llm_client: StructuredLLMClient,
+        date_provider: DateProvider | None = None,
+    ) -> None:
         self._llm_client = llm_client
+        self._date_provider = date_provider or SystemDateProvider()
 
     async def plan(
         self,
@@ -60,10 +71,15 @@ class PlanningService:
         traveler_count: int,
         budget: Money | None,
         additional_preferences: str | None,
-        reference_date: date | None = None,
     ) -> PlanningResult:
         """Run the current product planner using its programmatic entry point."""
 
+        reference_date = self._date_provider.today()
+        validate_requested_trip_dates(
+            start_date,
+            end_date,
+            create_trip_date_window(reference_date),
+        )
         request_text = build_canonical_request_text(
             destination=destination,
             start_date=start_date,
@@ -87,8 +103,13 @@ class PlanningService:
 class DeveloperPlanningService:
     """Run currently implemented research planners for local inspection."""
 
-    def __init__(self, llm_client: StructuredLLMClient) -> None:
+    def __init__(
+        self,
+        llm_client: StructuredLLMClient,
+        date_provider: DateProvider | None = None,
+    ) -> None:
         self._llm_client = llm_client
+        self._date_provider = date_provider or SystemDateProvider()
 
     async def plan_v0(
         self,
@@ -98,8 +119,9 @@ class DeveloperPlanningService:
     ) -> PlanningResult:
         """Run V0 directly while preserving its research-facing behavior."""
 
+        effective_reference_date = reference_date or self._date_provider.today()
         return await run_v0(
             request,
             self._llm_client,
-            reference_date=reference_date,
+            reference_date=effective_reference_date,
         )
