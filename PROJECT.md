@@ -54,22 +54,26 @@ V1 is **one research version** with two active implementation milestones:
 
 | Milestone | Purpose | Status |
 | --- | --- | --- |
-| V1-A | Google-backed travel evidence and POI selection | Revised implementation complete and offline-tested; final live re-validation and re-freeze approval pending |
-| V1-B | Official and current Web evidence for final selected POIs | Phase 1/2 accepted; Phase 3 graph/planner integration pending |
+| V1-A | Google-backed travel evidence and POI selection | Revised implementation live-validated and explicitly re-frozen on 2026-09-14 |
+| V1-B | Official and current Web evidence for final selected POIs | Phase 1/2 and Phase 3 implemented and development-live-validated |
 
-V1 overall is not yet complete.
+**Complete V1 is frozen as of 2026-09-15** following final offline checks and cross-country development live validation. The original V1-A 2026-09-12 freeze and revised V1-A 2026-09-14 re-freeze remain separate historical checkpoints.
 
 V1-A discovers and selects POIs using Google Places evidence, alongside Google Weather and Routes. The revised selection flow is cheap candidate discovery, structured narrowing, selective Place Details plus rating, further narrowing, selective reviews, review-derived `ExperienceProfile`, and final POI selection. Rating and reviews inform selection; neither is required for every candidate. Do not use or display `userRatingCount`.
 
-V1-A was originally frozen on 2026-09-12, then intentionally reopened for rating/review-aware POI selection. The original freeze remains a separate historical checkpoint; the revised implementation has not been re-frozen. The former V1-C milestone is retired from the active architecture; Places review evidence now belongs to V1-A.
+V1-A was originally frozen on 2026-09-12, then intentionally reopened for rating/review-aware POI selection and explicitly re-frozen on 2026-09-14. The original freeze remains a separate historical checkpoint. The former V1-C milestone is retired from the active architecture; Places review evidence now belongs to V1-A.
 
-V1-B should address information gaps that structured providers cannot reliably answer, such as temporary closures, special opening hours, tickets, reservations, and recent disruptions. It remains bounded, provenance-aware, and separate from validation or repair.
+After the revised V1-A checkpoint, V1 migrated free-form user semantics into one V1 requirements LLM call returning unchanged `TravelRequirements` plus bounded `NamedPlaceIntent`, `RequestedPlaceInformation`, `ExperiencePreferenceIntent`, transport preference, and `PoiInterest`. Application code validates source spans and typed values, reconciles Place IDs, and deterministically executes selection, routing, and evidence acquisition. The active V1 graph does not use raw-text keyword/regex fallback to reinterpret these meanings. V0's requirements contract and execution path remain unchanged.
 
-V1-B supplements only the final selected POIs with current first-party official evidence. Its accepted Phase 1/2 subsystem includes bounded retrieval, an EvidenceReasoner, deterministic Grounding / Provenance checks, and a claim-scoped EvidenceResolver. These are pre-planning evidence controls; they are not V3 itinerary-feasibility validation. Phase 3 must connect the revised final-shortlist output while preserving stable place identity and the structured Places information that V1-B uses.
+V1-B addresses decision-relevant official/current information gaps that structured providers cannot reliably answer, such as temporary closures, special opening hours, admission, tickets, and reservations. It does not broadly re-check every selected POI or facts already sufficiently answered by structured evidence.
+
+V1-B supplements only final selected POIs with current first-party official evidence. Its integrated path projects stable selected Place IDs and structured facts, plans targeted Web tasks for explicit residual needs or concrete operational/date risks, acquires bounded Luna Web and optional official pages, then runs EvidenceReasoner, a deterministic Grounding / Provenance Gate, and a claim-scoped EvidenceResolver. Accepted/effective facts and explicit uncertainty reach the planner; raw search observations and rejected claims do not. Normal Web/Page budgets are 6/6. These are pre-planning evidence controls, not V3 itinerary-feasibility validation.
 
 Rating remains a quantitative Places signal. `ExperienceProfile` represents retrieved-review evidence for deterministic POI selection; unsupported signals remain unknown. The LLM does not select the final POI set, and reviews/Profile are not passed to the itinerary prompt. Neither rating nor reviews may override an official date-specific closure. Any future frontend rating/review display must use actually acquired evidence for itinerary POIs; frontend work is not implemented.
 
 V1 may instruct the generator to use supplied evidence carefully—for example, not to plan a clearly non-walkable transfer as an ordinary walk or invent unsupported transit details. This is still **evidence-informed generation**, not general post-generation feasibility validation. An itinerary may therefore violate supplied evidence even when that evidence was acquired correctly.
+
+V1 retains point-valued shared `Money` and optional activity `estimated_cost`. At its Foundry mapping boundary, V1 preserves valid points, converts a clear finite same-currency two-endpoint numeric range to a Decimal midpoint, and sets unsupported optional costs to `null`. This uses no LLM repair call and does not turn a derived activity estimate into accepted official admission evidence or alter V0.
 
 V1 does not implement RAG, a free-form agentic tool loop, general violation detection, targeted repair, or re-validation.
 

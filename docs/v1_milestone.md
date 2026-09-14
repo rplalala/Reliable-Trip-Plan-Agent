@@ -1,19 +1,20 @@
-# V1-A Milestones: Original Freeze and Revised Implementation
+# V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze
 
 ## Current Status and Historical Scope
 
 **Original V1-A freeze: explicitly approved on 2026-09-12.**
-**Revised V1-A: implemented and offline regression tested; final identical Smoke A
-live re-validation and explicit re-freeze approval are pending.**
-**Full V1: unfinished and not frozen; V1-B Phase 3 is pending.**
+**Revised V1-A: implemented, development-live-validated, and explicitly re-frozen
+on 2026-09-14.**
+**Complete V1: explicitly FROZEN on 2026-09-15 after final offline and
+cross-country development live validation.**
 
 The sections below beginning with "Historical Execution Flow and Comparability"
 record the 2026-09-12 as-built checkpoint and its acceptance history. Their
 shortlist-first flow, masks, budgets, test counts, and limitations are historical
 facts, not the revised selection design or current V1-B completion status.
-The revised implementation status is recorded separately below. Actual code remains
-authoritative for implemented behavior; `docs/v1_design.md` describes the
-current architecture and future V1-B boundary.
+The revised implementation and final V1 status are recorded separately below.
+Actual code remains authoritative for implemented behavior; `docs/v1_design.md`
+describes the current architecture.
 
 After the original freeze, V1-A was intentionally reopened for Google-backed
 rating/review evidence and POI-selection realignment. The revised implementation
@@ -26,13 +27,14 @@ below is a record of the original implementation, not current behavior.
 The former V1-C milestone is retired. Its Places-review responsibility is folded
 into V1-A because it affects POI selection. Reddit/TripAdvisor acquisition is not
 part of the current approved rating/review direction. V1-B supplements final
-selected POIs with official/current evidence; its Phase 1/2 implementation remains
-the accepted baseline and is not yet integrated into the graph/planner.
+selected POIs with official/current evidence. Its accepted Phase 1/2 subsystem
+and Phase 3 graph/planner integration are now implemented.
 
-The code-based V1-B compatibility assessment in `docs/v1_design.md` identifies
-integration-only impact (category B), with no required redesign of the accepted
-Web evidence engine. The revised implementation does not authorize V1-B Phase 3,
-frontend rating/review display, or a full V1 freeze.
+The earlier code-based V1-B compatibility assessment in `docs/v1_design.md`
+identified integration-only impact (category B); Phase 3 subsequently supplied
+the needed projection and graph/planner wiring. Frontend rating/review display
+is still not implemented. Later typed semantic extraction and V1 cost projection
+are recorded as post-checkpoint changes below.
 
 At the original checkpoint, V1-A asked whether normalized live Places, Weather,
 and Routes evidence improved the otherwise comparable V0 planner. It implemented
@@ -40,11 +42,11 @@ neither Places review enrichment nor official Web Evidence. It included no RAG,
 general feasibility-validation/repair loop, or persistent evidence database. The
 following record is implementation history, not a formal research conclusion.
 
-## Revised V1-A Implementation Status (2026-09-14)
+## Revised V1-A Implementation and Re-Freeze (2026-09-14)
 
 ### Implemented Flow and Selection Contract
 
-The current independent V1 graph executes:
+At the 2026-09-14 revised V1-A checkpoint, the independent V1 graph executed:
 
 ```text
 requirements extraction (TravelRequirements + typed NamedPlaceIntent)
@@ -61,9 +63,10 @@ requirements extraction (TravelRequirements + typed NamedPlaceIntent)
 
 The LLM extracts requirements and interprets retrieved review text into a bounded
 Profile, but does not choose the final POI set. Reviews and Profile influence
-selection only; neither is passed to the current itinerary prompt. The selected
-Place IDs are projected in final order into aligned `PlaceCandidate[]` and
-`PlaceEvidence[]` for current planning and future V1-B Phase 3 input.
+selection only; neither is passed to the itinerary prompt. The selected Place
+IDs are projected in final order into aligned `PlaceCandidate[]` and
+`PlaceEvidence[]` for V1-B Phase 3. This Web stage was added after the revised
+V1-A re-freeze; the V1-A live checks in this section predate that integration.
 
 The inclusive trip duration `D` determines algorithmic maxima:
 
@@ -123,8 +126,8 @@ Current and regular opening hours remain separate. For each requested date,
 planning uses applicable current/date-sensitive hours within their supported
 window; otherwise it uses regular weekly hours as a baseline; otherwise hours
 are `unknown`. Regular hours are not a guarantee against a holiday or
-special-date exception. Official/date-specific verification belongs to future
-V1-B integration.
+special-date exception. Targeted V1-B official evidence may address a remaining
+date-specific need or concrete operational risk.
 
 ### Weather, Routes, and Evidence Boundary
 
@@ -147,13 +150,13 @@ described as provider-measured, and canonical unavailability creates no
 fabricated reverse duration. These are representative transport signals, not
 line, station, fare, or timetable evidence.
 
-The V1-B Phase 1/2 Official Web Evidence subsystem exists independently but is
-**not integrated** into the active V1 graph or itinerary prompt. Phase 3 can
-consume the final aligned candidate/structured-evidence projection; it must not
-receive Profile objects just because selection used them. Official Web evidence
-does not currently affect itinerary generation. The former V1-C is retired.
+The V1-B Phase 1/2 Official Web Evidence subsystem was independent at the
+V1-A re-freeze checkpoint. Later Phase 3 integration consumes the final aligned
+candidate/structured-evidence projection; Profile objects do not enter the Web
+engine or itinerary prompt. Accepted/effective official evidence can now affect
+itinerary generation. The former V1-C is retired.
 
-### Development Validation and Pending Re-validation
+### Development Validation and Re-Freeze
 
 These live runs checked integration behavior; they are **not formal benchmarks**
 or statistical reliability results.
@@ -161,8 +164,8 @@ or statistical reliability results.
 - Smoke A first selected Sydney Opera House while its required named identity
   remained unresolved. Typed `NamedPlaceIntent` and exact Place-ID
   reconciliation were implemented and covered offline. The identical Smoke A
-  live re-validation after this correction remains pending in the current
-  acceptance flow.
+  live re-validation then resolved one Opera House Place ID, set `must_visit=true`,
+  and removed the `required_place_unresolved` conflict.
 - Initial Smoke B showed that a shared three-call candidate search budget left
   six explicit interests out of Q/C metadata. The N=16 chunked Routes path
   succeeded and the planner accepted that large integrated request.
@@ -170,17 +173,17 @@ or statistical reliability results.
   and candidate search **9/12**: all nine supported explicit intents were
   generated and executed. It recorded 123 raw search observations and 85
   unique Place IDs before `C_raw`; effective pools were `C_raw=36/36`,
-  `R_pool=18/18`, final POIs `16/16`, and review/Profile `6/6`. Routes used
+  `R_pool=18/18`, final POIs `16/16`, and review/Profile `6/6`. Retrieved review
+  evidence changed one final POI membership. Routes used
   four 4 x 16 WALK baseline chunks (256 elements); structured itinerary
   generation and final date validation succeeded.
 
-The latest backend offline regression after the revised corrections passed
-**507 tests**; Ruff lint also passed. Standalone V0 and V1-B Phase 1/2
-compatibility checks passed; none of these claims implies V1-B graph/planner
-integration. The recorded Smoke B runs checked bounded live integration, but
-the pending identical Smoke A re-validation prevents a final live-acceptance
-claim. No revised V1-A re-freeze has been approved. These checks do not prove
-that generated itineraries always obey every supplied feasibility fact.
+The revised V1-A checkpoint passed **507 backend tests** and Ruff lint.
+Standalone V0 and V1-B Phase 1/2 compatibility checks passed. The identical
+Smoke A and revised Smoke B live checks supported the user's explicit
+2026-09-14 V1-A re-freeze. These checks do not prove that generated
+itineraries always obey every supplied feasibility fact. The later full-V1
+regression and Web integration are recorded in the next section.
 
 ### Known Limits and Pending Work
 
@@ -192,13 +195,203 @@ are only a baseline, and some POIs have unknown hours. Selective TRANSIT covers
 only bounded logical pairs. The generator may still imperfectly follow route,
 hours, or other supplied evidence. V1 does not perform post-generation general
 feasibility validation, targeted repair, or re-validation; that mechanism
-belongs to V3, not an unfinished V1-A loop.
+belongs to V3, not a V1-A loop.
 
 Frontend rating/review presentation remains future work: for a final-itinerary
 POI, a future Product UI may show only an actually acquired Places rating and,
 when available, one concise retrieved-review-derived Profile summary. It must
-not invent either or display `userRatingCount`. Full V1 remains unfinished and
-unfrozen until separately approved V1-B Phase 3 integration and later validation.
+not invent either or display `userRatingCount`. Full V1 was still unfinished at
+this V1-A checkpoint; later V1-B completion is recorded below.
+
+## Final V1-B Integration and Development Validation (2026-09-14)
+
+### Implemented Boundary
+
+Phase 3 integrates the accepted Phase 1/2 official-evidence subsystem after
+final V1-A selection, Weather, and Routes. It projects final selected Place IDs
+and aligned structured Places evidence, preserving typed named/must-visit IDs
+and trip-relevant opening-date conflicts. Rating is removed from the official
+Web projection; raw reviews and `ExperienceProfile` remain selection-only.
+
+The deterministic trigger creates Web tasks for explicit unresolved official
+information needs or concrete decision-relevant operational/date risks. It no
+longer creates a proactive exception check for every selected POI. Required
+explicit gaps rank first, followed by other named explicit gaps, then concrete
+risks for required, other named, and remaining selected POIs. Task identity and
+trace reasons are retained, with a normal budget of six Web tasks and six
+logical page fetches. Sufficient structured facts do not receive parallel Web
+re-verification; weather and routes are never re-checked through this path.
+
+Luna native search exposes bounded observations. Optional PageRetriever fetches
+observed official pages when native evidence is insufficient. EvidenceReasoner
+proposes scoped candidates from supplied source text; the deterministic Gate
+checks authority, source support, subject/scope, and applicability before
+creating `OfficialCurrentEvidence`. Resolver composes accepted evidence with
+structured facts by date and requested facet. The planner receives only
+accepted/effective facts, source references, statuses, and explicit uncertainty,
+not raw search URLs/snippets or rejected claims. Absence of a discovered
+exception does not establish that no exception exists.
+
+### Live Validation Observations
+
+The identical Sydney Opera House must-visit re-test corrected the earlier
+selected-but-unresolved contradiction: one resolved Place ID carried
+`must_visit=true` and no unresolved-required conflict. A larger revised V1-A
+case acquired real reviews/Profiles; this evidence changed one final POI
+membership. The final set naturally reached 16 POIs. Four 4 x 16 directed WALK
+chunks requested 256 baseline Route Matrix elements, and a structured nine-day
+itinerary passed final date validation. These V1-A observations preceded Phase 3.
+
+An initial full-V1 Web smoke exposed the cost of broad proactive checking:
+16 selected POIs generated 16 exception tasks, consumed Web 6/6 and Page 6/6,
+and produced zero accepted official claims. With no-negative-inference, the
+effective Web state remained `UNKNOWN`. After the targeted trigger revision,
+a comparable nine-day case still selected 16 POIs but generated zero Web tasks,
+used Web 0/6 and Page 0/6, and completed itinerary generation and date
+validation. This is an integration observation, not a formal efficiency study.
+
+The targeted Australian Museum one-day case explicitly asked about admission,
+fees, ticketing, advance purchase, and reservations. It generated two Group-1
+Web tasks, retrieved first-party `australian.museum` sources, and produced two
+Gate-accepted `OfficialCurrentEvidence` claims. Resolver marked
+`general_admission_policy=AVAILABLE` and `admission_fee=AVAILABLE/free/0` for
+general entry. `ticket_requirement`, `advance_ticket_purchase_requirement`,
+and `reservation_requirement` remained `UNKNOWN`; a major-exhibition scoped
+claim was not broadened to general entry. Accepted facts and references reached
+the planner, while rejected candidates did not. The final one-day itinerary
+passed date validation without cross-facet negative inference.
+
+The Phase 3 checkpoint offline regression passed **545 backend tests**. Ruff lint
+and `git diff --check` passed; formatting passed for the checked files except
+an unchanged existing warning in `backend/tests/versions/v1/test_runner.py`.
+No suite was rerun solely for commit grouping or documentation.
+These live runs are development-time validation, not a formal benchmark or
+statistical comparison with V0.
+
+### Known Limits and Freeze Boundary
+
+Aliases such as `MCA` are not fuzzily expanded. Weather and Routes guide
+scheduling but do not cause V1 POI re-selection. A selected POI is not
+necessarily scheduled by the LLM unless the request or current contract
+requires it. The planner can still imperfectly apply supplied hours or route
+facts because V1 has no general itinerary validation/repair loop.
+
+One targeted Reasoner response was `incomplete` due to `max_output_tokens`;
+truncated JSON caused that source assessment to fail safely while other
+sources/tasks continued. Subject binding is deliberately conservative and can
+reject plausible claims. Bounded Web/Page acquisition and facet-specific
+sufficiency can leave an information need `UNKNOWN`. The earlier
+`unsupported_price_field` rejection lacks recoverable cause; a later free
+general-admission claim succeeded and Resolver derived fee 0 without changing
+the Gate contract. No retry, repair, relaxed parsing, or Gate bypass was added.
+
+At this Phase 3 checkpoint, full V1 implementation and targeted live validation
+were complete, but freeze still awaited the later semantic and cross-country
+checks. The final complete-V1 freeze is recorded in the next section.
+
+## Complete V1 Freeze (2026-09-15)
+
+### Final Implemented Boundary
+
+One V1 requirements LLM call now returns unchanged base `TravelRequirements`
+plus bounded `NamedPlaceIntent`, `RequestedPlaceInformation`,
+`ExperiencePreferenceIntent`, typed transport preference, and `PoiInterest`.
+The LLM interprets the user's natural-language meaning; deterministic code
+validates schemas, enums, copied source spans, and Place identity before using
+the typed contracts. The active V1 graph has no raw-text keyword/regex semantic
+fallback for these meanings. V0 retains its original requirements contract and
+independent execution path. EvidenceReasoner separately interprets what acquired
+official source text actually says; it does not reinterpret the user request.
+
+The final V1-A path performs multi-intent Places discovery, dynamic
+`C_raw → R_pool → K_final` narrowing, structured Details/rating enrichment,
+selective decision-sensitive reviews and retrieved-review-only
+`ExperienceProfile`, then deterministic `Q_rel + C_cov + G_geo + R_rating + E_exp`
+selection. `CLOSED_PERMANENTLY` is excluded; `CLOSED_TEMPORARILY` and uncertain
+`FUTURE_OPENING` retain explicit date risks where eligible. Current hours apply
+only within their supported window; regular hours are a baseline, not proof of
+special-date availability. Weather informs scheduling but not POI reselection.
+Routes acquire the complete directed baseline for final POIs, chunked to at most
+N=16 and 256 baseline elements, plus bounded selective TRANSIT. Measured routes
+remain distinct from mirrored-reverse duration estimates, and `not_observed`
+remains distinct from an observed `ROUTE_NOT_FOUND`.
+
+After selection, the V1-B trigger uses explicit unresolved **typed** information
+needs, structured residual gaps, and concrete operational/date risks. It does
+not broadly Web-check all selected places or repeat sufficient structured,
+Weather, or Routes evidence. The bounded path is Luna native Web acquisition →
+optional PageRetriever when support is insufficient → EvidenceReasoner →
+deterministic Grounding / Evidence Acceptance Gate → claim-scoped Resolver →
+accepted/effective evidence and explicit uncertainty in the planner. Raw Web
+observations and rejected claims do not become planner facts. No found exception
+never means that no exception exists.
+
+Shared `Money` remains point-valued and `Activity.estimated_cost` remains
+optional. The V1-only Foundry mapping preserves valid points, projects a clear
+finite same-currency two-endpoint numeric range to its Decimal arithmetic
+midpoint, and sets unsupported optional costs to `null`. It adds no planner LLM
+repair call and does not change V0. The midpoint is an itinerary estimate, not
+accepted official admission-price evidence.
+
+### Final Development-Time Validation
+
+The earlier named-place live failure and identical re-test established that
+typed `NamedPlaceIntent` preserves a required Sydney Opera House Place ID and
+`must_visit=true`. A separate revised V1-A live run observed review/Profile
+evidence change one selected-POI membership and complete the natural N=16
+case with four 4 x 16 directed Routes chunks, 256 baseline elements, and a
+valid nine-day itinerary. The broad full-V1 Sydney Web smoke spent Web/Page
+budgets 6/6 and 6/6 with no accepted claim; a comparable case under the
+targeted trigger produced zero unnecessary Web tasks. The Australian Museum
+case accepted official general/free-admission evidence into the planner while
+ticket, advance-purchase, and reservation facets stayed `UNKNOWN`.
+
+The subsequent Melbourne request exposed loss of `ADMISSION_FEE` and
+`TICKET_REQUIREMENT` in a raw-text phrase classifier before Web planning. The
+one-call typed semantic migration preserved all four explicit requested facets
+through task planning in an identical live re-test. Its inaccessible official
+pages left those facts `UNKNOWN`; this was not claim-acceptance validation.
+
+In the first Singapore cross-country full-V1 smoke
+(`ca93496f-53dc-467c-8a28-975fb65f7828`), upstream semantics, Places/reviews,
+Weather, Routes, and targeted Web completed, but planner output contained
+`Money.amount="1.00-10.00"`. The Foundry DTO permitted a string while shared
+domain `Money` required a point-valued non-negative Decimal; domain validation
+lost the entire itinerary before final date validation. This was a narrow
+output-contract issue, not a semantic, provider-evidence, Resolver, or transient
+failure. The identical request with reference date 2026-09-15 succeeded after
+V1-only hardening (`d69ddaeb-d5cd-4154-ab29-3c0fda1c9404`). The same range
+reappeared at `days[0].activities[2].estimated_cost` as `1.00-10.00 SGD` and
+became `Decimal("5.50") SGD`. Its valid itinerary had four days, 11 activities,
+and nine distinct selected POIs scheduled; National Gallery Singapore and
+Gardens by the Bay were both required and scheduled. Final date validation
+passed. National Gallery whole-venue facets remained `UNKNOWN`; the derived
+activity estimate did not change official evidence or Resolver state.
+
+The final offline regression passed **605 backend tests** and Ruff. Diff
+whitespace checks passed; 25 affected files passed the whole-file format check.
+Five formatting suggestions in three other affected files were confirmed as
+unchanged pre-existing lines and left intact. These live cases are
+development-time integration observations, not formal benchmarks, statistical
+accuracy estimates, universal generalization, or a V0/V1 superiority claim.
+
+### Frozen Scope and Known Limits
+
+Provider search relevance does not guarantee visitor suitability: the Melbourne
+architecture interest yielded professional-service firms. V1 has no explicit
+tourism-suitability validator or post-selection repair. Named-place alias
+resolution stays conservative without broad fuzzy expansion. Weather and Routes
+guide scheduling, not POI reselection. A selected POI need not be scheduled
+unless required by the current contract. Official Web facets can legitimately
+remain `UNKNOWN`; PageRetriever may encounter inaccessible pages, Reasoner
+structured output may truncate and safely degrade, and conservative
+subject/scope binding can reject plausible claims. V1 has no V3-style explicit
+feasibility validation, targeted repair, or re-validation. V2 RAG and V3
+validation remain future directions, not implemented solutions to these limits.
+
+The user explicitly approved the **complete V1 milestone freeze on 2026-09-15**.
+This does not rewrite the original 2026-09-12 V1-A freeze or the revised
+2026-09-14 V1-A re-freeze. V2 has not started.
 
 ## Historical Execution Flow and Comparability
 
@@ -492,6 +685,6 @@ prompt-only follow-ups; no additional full live flow is claimed afterward.
 The 2026-09-12 freeze did not authorize subsequent V1-B or former V1-C work,
 a commit, a push, a merge, or a formal benchmark. V0 and V1 remained independently
 runnable; V2/V3 were not implemented or frozen at this checkpoint. Later
-reopening, implementation, and partial live validation are recorded separately
-above and must not be read back into this original checkpoint. The revised
-V1-A is not yet re-frozen.
+reopening, implementation, re-freeze, and full-V1 development validation are
+recorded separately above and must not be read back into this original
+checkpoint.
