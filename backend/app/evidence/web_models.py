@@ -43,7 +43,11 @@ class WebTriggerReason(StrEnum):
     RESIDUAL_MISSING = "residual_missing"
     RESIDUAL_FAILED_OR_PARTIAL = "residual_failed_or_partial"
     RESIDUAL_CONFLICT = "residual_conflict"
+    EXPLICIT_USER_NEED = "explicit_user_need"
     EXPLICIT_DATE_QUESTION = "explicit_date_question"
+    CLOSED_TEMPORARILY = "closed_temporarily"
+    FUTURE_OPENING_UNCERTAIN = "future_opening_uncertain"
+    OPENING_DATE_CONFLICT = "opening_date_conflict"
     PROACTIVE_CRITICAL_CURRENT = "proactive_critical_current"
 
 

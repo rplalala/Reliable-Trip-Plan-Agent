@@ -2,7 +2,9 @@
 
 import asyncio
 import unicodedata
+from collections.abc import Mapping
 from dataclasses import dataclass
+from datetime import date
 
 from backend.app.evidence.models import PlaceCandidate, PlaceEvidence
 from backend.app.evidence.web_models import (
@@ -88,9 +90,20 @@ class WebEvidenceAcquisitionService:
         requirements: TravelRequirements,
         shortlist: list[PlaceCandidate],
         places: list[PlaceEvidence],
+        *,
+        named_place_ids: frozenset[str] | None = None,
+        must_visit_place_ids: frozenset[str] | None = None,
+        opening_date_conflicts: Mapping[str, tuple[date | None, ...]] | None = None,
     ) -> tuple[list[WebEvidenceTask], list[InformationGap]]:
         tasks, gaps, assessments = plan_official_web_tasks(
-            request, requirements, shortlist, places, self._config
+            request,
+            requirements,
+            shortlist,
+            places,
+            self._config,
+            named_place_ids=named_place_ids,
+            must_visit_place_ids=must_visit_place_ids,
+            opening_date_conflicts=opening_date_conflicts,
         )
         for assessment in assessments:
             self._tracer.event("official_gap_assessed", assessment)

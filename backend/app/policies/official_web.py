@@ -1,9 +1,9 @@
-"""Deterministic V1-B gap and critical-current task policy."""
+"""Deterministic V1-B residual-need and operational-risk task policy."""
 
 import hashlib
 import re
 import unicodedata
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import date
 from urllib.parse import urlsplit
 
@@ -186,6 +186,17 @@ def _status_gap_reason(place: PlaceEvidence, candidate: PlaceCandidate) -> WebTr
     return None
 
 
+def _opening_date_conflict_affects_trip(
+    latest_possible_openings: tuple[date | None, ...] | None, trip_start: date
+) -> bool:
+    """Ignore a date conflict only when every supported date is before the trip."""
+
+    return latest_possible_openings is not None and (
+        not latest_possible_openings
+        or any(value is None or value >= trip_start for value in latest_possible_openings)
+    )
+
+
 def _task_id(
     place_id: str,
     need: OfficialInformationNeed,
@@ -331,6 +342,10 @@ def plan_official_web_tasks(
     shortlist: Sequence[PlaceCandidate],
     places: Sequence[PlaceEvidence],
     config: WebEvidenceConfig,
+    *,
+    named_place_ids: frozenset[str] | None = None,
+    must_visit_place_ids: frozenset[str] | None = None,
+    opening_date_conflicts: Mapping[str, tuple[date | None, ...]] | None = None,
 ) -> tuple[list[WebEvidenceTask], list[InformationGap], list[dict[str, object]]]:
     """Build all eligible tasks before any request-level budget truncation."""
 
@@ -340,11 +355,23 @@ def plan_official_web_tasks(
     if len(shortlist) != len(places):
         raise ValueError("Shortlist and Place Evidence must have matching lengths")
 
+    if (named_place_ids is None) != (must_visit_place_ids is None):
+        raise ValueError("Explicit named and must-visit Place IDs must be supplied together")
+    selected_ids = {candidate.place_id for candidate in shortlist}
+    if named_place_ids is not None and (
+        not named_place_ids <= selected_ids or not must_visit_place_ids <= named_place_ids
+    ):
+        raise ValueError("Explicit named and must-visit Place IDs must belong to the shortlist")
+    if opening_date_conflicts is not None and not opening_date_conflicts.keys() <= selected_ids:
+        raise ValueError("Opening-date conflicts must belong to the shortlist")
+
     sentences = _sentences(request.request_text)
     whole = normalize_phrase(request.request_text)
-    named_ids = {
-        candidate.place_id for candidate in shortlist if _has_phrase(whole, candidate.name)
-    }
+    named_ids = (
+        named_place_ids
+        if named_place_ids is not None
+        else {candidate.place_id for candidate in shortlist if _has_phrase(whole, candidate.name)}
+    )
     tasks: dict[
         tuple[str, OfficialInformationNeed, date, date, SubjectScope, str], WebEvidenceTask
     ] = {}
@@ -362,6 +389,7 @@ def plan_official_web_tasks(
         facets: tuple[RequestedFacet, ...] = (),
         subject_scope: SubjectScope = SubjectScope.WHOLE_VENUE,
         scope_text: str | None = None,
+        additional_reasons: tuple[WebTriggerReason, ...] = (),
     ) -> None:
         if gap:
             gaps.append(
@@ -380,7 +408,12 @@ def plan_official_web_tasks(
             )
         key = (place.place_id, need, start, end, subject_scope, normalize_phrase(scope_text or ""))
         old = tasks.get(key)
-        reasons = tuple(sorted(set((*old.trigger_reasons, reason)) if old else {reason}))
+        all_reasons = (
+            (*old.trigger_reasons, reason, *additional_reasons)
+            if old
+            else (reason, *additional_reasons)
+        )
+        reasons = tuple(sorted(set(all_reasons)))
         merged_facets = canonical_facets((*old.requested_facets, *facets) if old else facets)
         task = WebEvidenceTask(
             task_id=_task_id(
@@ -409,6 +442,7 @@ def plan_official_web_tasks(
                 "requested_scope_text": scope_text,
                 "decision": "merged" if old else "task_created",
                 "reason": reason.value,
+                "trigger_reasons": [item.value for item in reasons],
             }
         )
 
@@ -420,14 +454,23 @@ def plan_official_web_tasks(
         target_sentences = [item for item in sentences if _has_phrase(item, name)]
         target_text = " ".join(target_sentences)
         required_text = " ".join(normalize_phrase(x) for x in requirements.required_activities)
-        required = _has_phrase(required_text, name) or (
-            named and any(_has_any(item, MUST_VISIT_PHRASES) for item in target_sentences)
+        required = (
+            candidate.place_id in must_visit_place_ids
+            if must_visit_place_ids is not None
+            else _has_phrase(required_text, name)
+            or (named and any(_has_any(item, MUST_VISIT_PHRASES) for item in target_sentences))
         )
         targeted = named or required
         residual_group = 1 if required else 2
-        proactive_group = 3 if required else (4 if named else 5)
+        risk_group = 3 if required else (4 if named else 5)
+        before_place_tasks = len(tasks)
 
         status_reason = _status_gap_reason(place, candidate)
+        structured_statuses = {candidate.business_status, place.business_status}
+        date_risk_status = bool(structured_statuses & {"CLOSED_TEMPORARILY", "FUTURE_OPENING"})
+        date_conflict = _opening_date_conflict_affects_trip(
+            (opening_date_conflicts or {}).get(place.place_id), start
+        )
         date_scoped = _date_context(target_text, start, end) if named else False
         closure = named and _has_any(target_text, EXPLICIT_NEED_PHRASES["date_closure"])
         current_status_intent = named and (
@@ -442,12 +485,21 @@ def plan_official_web_tasks(
             date_scoped and (closure or current_status_intent) and not special
         )
         specific_intent = dated_operational_intent or special
-        if targeted and status_reason is not None and not specific_intent:
+        if targeted and current_status_intent and status_reason is not None and not specific_intent:
             add_task(
                 place,
                 OfficialInformationNeed.CURRENT_OPERATIONAL_STATUS,
                 status_reason,
                 residual_group,
+                index,
+                gap=True,
+            )
+        elif status_reason is not None and not specific_intent and not date_risk_status:
+            add_task(
+                place,
+                OfficialInformationNeed.CURRENT_OPERATIONAL_STATUS,
+                status_reason,
+                risk_group,
                 index,
                 gap=True,
             )
@@ -459,7 +511,9 @@ def plan_official_web_tasks(
                     "decision": (
                         "superseded_by_specific_need"
                         if specific_intent
-                        else ("sufficient" if status_reason is None else "not_targeted")
+                        else (
+                            "sufficient" if status_reason is None else "date_risk_takes_precedence"
+                        )
                     ),
                 }
             )
@@ -467,14 +521,25 @@ def plan_official_web_tasks(
         if named:
             # Specific date/trip-scoped intent wins over the overlapping generic "is it open".
             if dated_operational_intent:
-                add_task(
-                    place,
-                    OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
-                    WebTriggerReason.EXPLICIT_DATE_QUESTION,
-                    residual_group,
-                    index,
-                    gap=True,
-                )
+                if not closure and _specific_hours_sufficient(place, start, end):
+                    assessments.append(
+                        {
+                            "place_id": place.place_id,
+                            "information_need": (
+                                OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION.value
+                            ),
+                            "decision": "sufficient",
+                        }
+                    )
+                else:
+                    add_task(
+                        place,
+                        OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
+                        WebTriggerReason.EXPLICIT_DATE_QUESTION,
+                        residual_group,
+                        index,
+                        gap=True,
+                    )
             elif special:
                 if not _specific_hours_sufficient(place, start, end):
                     add_task(
@@ -521,7 +586,7 @@ def plan_official_web_tasks(
                 add_task(
                     place,
                     OfficialInformationNeed.ADMISSION_TICKET,
-                    WebTriggerReason.RESIDUAL_MISSING,
+                    WebTriggerReason.EXPLICIT_USER_NEED,
                     residual_group,
                     index,
                     gap=True,
@@ -547,7 +612,7 @@ def plan_official_web_tasks(
                 add_task(
                     place,
                     OfficialInformationNeed.RESERVATION_REQUIREMENT,
-                    WebTriggerReason.RESIDUAL_MISSING,
+                    WebTriggerReason.EXPLICIT_USER_NEED,
                     residual_group,
                     index,
                     gap=True,
@@ -556,14 +621,44 @@ def plan_official_web_tasks(
                     scope_text=requested_scope[1],
                 )
 
-        add_task(
-            place,
-            OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
-            WebTriggerReason.PROACTIVE_CRITICAL_CURRENT,
-            proactive_group,
-            index,
-            gap=False,
-        )
+        if "CLOSED_TEMPORARILY" in structured_statuses:
+            risk_reason = WebTriggerReason.CLOSED_TEMPORARILY
+        elif "FUTURE_OPENING" in structured_statuses:
+            risk_reason = WebTriggerReason.FUTURE_OPENING_UNCERTAIN
+        else:
+            risk_reason = None
+        if risk_reason is not None:
+            add_task(
+                place,
+                OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
+                risk_reason,
+                risk_group,
+                index,
+                gap=not dated_operational_intent,
+                additional_reasons=(
+                    (status_reason,) if status_reason is WebTriggerReason.RESIDUAL_CONFLICT else ()
+                ),
+            )
+        if date_conflict:
+            add_task(
+                place,
+                OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION,
+                WebTriggerReason.OPENING_DATE_CONFLICT,
+                risk_group,
+                index,
+                gap=not dated_operational_intent and risk_reason is None,
+            )
+        if len(tasks) == before_place_tasks:
+            assessments.append(
+                {
+                    "place_id": place.place_id,
+                    "information_need": (
+                        OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION.value
+                    ),
+                    "decision": "no_task",
+                    "reason": "no_decision_relevant_uncertainty",
+                }
+            )
 
     ordered = sorted(
         tasks.values(),

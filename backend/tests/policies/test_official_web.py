@@ -1,6 +1,8 @@
-"""Offline checks for V1-B residual gaps and proactive task ordering."""
+"""Offline checks for decision-relevant V1-B Web triggers and ordering."""
 
 from datetime import UTC, date, datetime
+
+import pytest
 
 from backend.app.evidence.models import (
     EvidenceAvailability,
@@ -56,7 +58,13 @@ def _pair(
     return candidate, place
 
 
-def _plan(text: str, pairs: list[tuple[PlaceCandidate, PlaceEvidence]], required=()):
+def _plan(
+    text: str,
+    pairs: list[tuple[PlaceCandidate, PlaceEvidence]],
+    required=(),
+    *,
+    opening_date_conflicts: dict[str, tuple[date | None, ...]] | None = None,
+):
     return plan_official_web_tasks(
         TravelRequest(request_text=text),
         TravelRequirements(
@@ -68,16 +76,99 @@ def _plan(text: str, pairs: list[tuple[PlaceCandidate, PlaceEvidence]], required
         [candidate for candidate, _ in pairs],
         [place for _, place in pairs],
         load_runtime_config().web_evidence,
+        opening_date_conflicts=opening_date_conflicts,
     )
 
 
 def test_sufficient_current_status_creates_no_residual_gap() -> None:
     tasks, gaps, assessments = _plan("Is Alpha Zoo open now?", [_pair("alpha", "Alpha Zoo")])
     assert gaps == []
-    assert [task.information_need for task in tasks] == [
-        OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION
-    ]
+    assert tasks == []
     assert any(item["decision"] == "sufficient" for item in assessments)
+
+
+def test_named_and_must_visit_labels_alone_do_not_generate_web_tasks() -> None:
+    pairs = [_pair("optional", "Optional Zoo"), _pair("required", "Required Museum")]
+    request = TravelRequest(request_text="Must visit Optional Zoo. Visit Required Museum.")
+    requirements = TravelRequirements(destination="Sydney", start_date=START, end_date=START)
+    tasks, _, _ = plan_official_web_tasks(
+        request,
+        requirements,
+        [item[0] for item in pairs],
+        [item[1] for item in pairs],
+        load_runtime_config().web_evidence,
+        named_place_ids=frozenset({"optional", "required"}),
+        must_visit_place_ids=frozenset({"required"}),
+    )
+    assert tasks == []
+
+
+def test_unnamed_selected_places_without_risk_generate_no_tasks() -> None:
+    pairs = [_pair("third", "Third Place"), _pair("first", "First Place")]
+    tasks, _, _ = plan_official_web_tasks(
+        TravelRequest(request_text="A day in Sydney."),
+        TravelRequirements(destination="Sydney", start_date=START, end_date=START),
+        [item[0] for item in pairs],
+        [item[1] for item in pairs],
+        load_runtime_config().web_evidence,
+        named_place_ids=frozenset(),
+        must_visit_place_ids=frozenset(),
+    )
+    assert tasks == []
+
+
+def test_current_window_label_does_not_suppress_specific_date_question() -> None:
+    hours = OpeningHoursEvidence(
+        applicability="provider_current_window",
+        valid_from=START,
+        valid_through=START,
+        weekday_descriptions=["Friday: 09:00-17:00"],
+    )
+    _, gaps, _ = _plan(
+        "Is Alpha Zoo open on Christmas?", [_pair("alpha", "Alpha Zoo", hours=hours)]
+    )
+    assert [item.information_need for item in gaps] == [OfficialInformationNeed.SPECIAL_DATE_HOURS]
+
+
+def test_exact_verified_date_and_times_suppress_duplicate_special_hours_search() -> None:
+    hours = OpeningHoursEvidence(
+        applicability="date_specific_verified",
+        next_open_time=datetime(2026, 12, 25, 9, tzinfo=UTC),
+        next_close_time=datetime(2026, 12, 25, 17, tzinfo=UTC),
+    )
+    tasks, gaps, _ = _plan(
+        "Is Alpha Zoo open on Christmas?", [_pair("alpha", "Alpha Zoo", hours=hours)]
+    )
+    assert gaps == []
+    assert all(
+        item.information_need is not OfficialInformationNeed.SPECIAL_DATE_HOURS for item in tasks
+    )
+
+
+def test_verified_date_hours_answer_generic_trip_scoped_open_question() -> None:
+    hours = OpeningHoursEvidence(
+        applicability="date_specific_verified",
+        next_open_time=datetime(2026, 12, 25, 9, tzinfo=UTC),
+        next_close_time=datetime(2026, 12, 25, 17, tzinfo=UTC),
+    )
+    tasks, gaps, _ = _plan(
+        "Is Alpha Zoo open during my trip?", [_pair("alpha", "Alpha Zoo", hours=hours)]
+    )
+    assert tasks == gaps == []
+
+
+def test_verified_date_hours_do_not_answer_maintenance_question() -> None:
+    hours = OpeningHoursEvidence(
+        applicability="date_specific_verified",
+        next_open_time=datetime(2026, 12, 25, 9, tzinfo=UTC),
+        next_close_time=datetime(2026, 12, 25, 17, tzinfo=UTC),
+    )
+    tasks, gaps, _ = _plan(
+        "Will Alpha Zoo be closed for maintenance on 2026-12-25?",
+        [_pair("alpha", "Alpha Zoo", hours=hours)],
+    )
+    assert len(tasks) == len(gaps) == 1
+    assert tasks[0].information_need is OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION
 
 
 def test_missing_partial_and_conflicting_status_are_residual_gaps() -> None:
@@ -88,7 +179,7 @@ def test_missing_partial_and_conflicting_status_are_residual_gaps() -> None:
             WebTriggerReason.RESIDUAL_FAILED_OR_PARTIAL,
         ),
         (
-            _pair("alpha", "Alpha Zoo", evidence_status="FUTURE_OPENING"),
+            _pair("alpha", "Alpha Zoo", evidence_status="CLOSED_PERMANENTLY"),
             WebTriggerReason.RESIDUAL_CONFLICT,
         ),
     ):
@@ -96,9 +187,11 @@ def test_missing_partial_and_conflicting_status_are_residual_gaps() -> None:
         assert len(gaps) == 1
         assert gaps[0].information_need is OfficialInformationNeed.CURRENT_OPERATIONAL_STATUS
         assert gaps[0].reason is reason
+        tasks, _, _ = _plan("Visit Alpha Zoo.", [pair])
+        assert tasks[0].priority_group == 4
 
 
-def test_future_maintenance_gap_merges_with_proactive_despite_operational_status() -> None:
+def test_future_maintenance_gap_does_not_gain_a_default_proactive_reason() -> None:
     tasks, gaps, _ = _plan(
         "Must visit Alpha Zoo. Will Alpha Zoo be closed for maintenance on 2026-12-25?",
         [_pair("alpha", "Alpha Zoo")],
@@ -106,10 +199,7 @@ def test_future_maintenance_gap_merges_with_proactive_despite_operational_status
     )
     assert len(gaps) == len(tasks) == 1
     assert tasks[0].priority_group == 1
-    assert set(tasks[0].trigger_reasons) == {
-        WebTriggerReason.EXPLICIT_DATE_QUESTION,
-        WebTriggerReason.PROACTIVE_CRITICAL_CURRENT,
-    }
+    assert tasks[0].trigger_reasons == (WebTriggerReason.EXPLICIT_DATE_QUESTION,)
 
 
 def test_specific_open_on_phrase_suppresses_overlapping_current_status_gap() -> None:
@@ -253,22 +343,34 @@ def test_applicable_date_specific_opening_evidence_does_not_make_duplicate_gap()
 
 
 def test_missing_website_and_no_override_is_observable_without_search_domain() -> None:
-    candidate, place = _pair("alpha", "Alpha Zoo")
+    candidate, place = _pair("alpha", "Alpha Zoo", evidence_status=None)
     place = place.model_copy(update={"website_uri": None})
     tasks, _, _ = _plan("Visit Alpha Zoo.", [(candidate, place)])
     assert len(tasks) == 1
     assert tasks[0].allowed_domains == ()
 
 
-def test_five_priority_groups_and_unnamed_shortlist_order_have_no_extra_cap() -> None:
+def test_five_priority_groups_only_include_residual_needs_and_real_risks() -> None:
     pairs = [
-        _pair(x, name)
-        for x, name in (
-            ("alpha", "Alpha Zoo"),
-            ("beta", "Beta Museum"),
-            ("gamma", "Gamma Park"),
-            ("delta", "Delta Gallery"),
-        )
+        _pair(
+            "alpha",
+            "Alpha Zoo",
+            candidate_status="CLOSED_TEMPORARILY",
+            evidence_status="CLOSED_TEMPORARILY",
+        ),
+        _pair(
+            "beta",
+            "Beta Museum",
+            candidate_status="FUTURE_OPENING",
+            evidence_status="FUTURE_OPENING",
+        ),
+        _pair(
+            "gamma",
+            "Gamma Park",
+            candidate_status="CLOSED_TEMPORARILY",
+            evidence_status="CLOSED_TEMPORARILY",
+        ),
+        _pair("delta", "Delta Gallery"),
     ]
     tasks, _, _ = _plan(
         "Must visit Alpha Zoo. Alpha Zoo admission? Beta Museum admission?",
@@ -281,7 +383,6 @@ def test_five_priority_groups_and_unnamed_shortlist_order_have_no_extra_cap() ->
         (3, "alpha"),
         (4, "beta"),
         (5, "gamma"),
-        (5, "delta"),
     ]
 
 
@@ -292,9 +393,7 @@ def test_exact_required_activity_prioritizes_place_without_raw_name_match() -> N
         required=("Alpha Zoo",),
     )
     assert [(task.priority_group, task.place_id) for task in tasks] == [
-        (1, "alpha"),
         (3, "alpha"),
-        (5, "beta"),
     ]
     assert [gap.place_id for gap in gaps] == ["alpha"]
 
@@ -302,8 +401,7 @@ def test_exact_required_activity_prioritizes_place_without_raw_name_match() -> N
 def test_non_english_explicit_wording_does_not_create_lexical_residual_gap() -> None:
     tasks, gaps, _ = _plan("去 Alpha Zoo 要买门票吗？", [_pair("alpha", "Alpha Zoo")])
     assert gaps == []
-    assert len(tasks) == 1
-    assert tasks[0].information_need is OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION
+    assert tasks == []
 
 
 def test_ordinary_weekday_wording_and_negated_include_do_not_create_extra_gaps() -> None:
@@ -312,5 +410,109 @@ def test_ordinary_weekday_wording_and_negated_include_do_not_create_extra_gaps()
         [_pair("alpha", "Alpha Zoo")],
     )
     assert gaps == []
+    assert tasks == []
+
+
+@pytest.mark.parametrize(
+    ("status", "reason"),
+    [
+        ("CLOSED_TEMPORARILY", WebTriggerReason.CLOSED_TEMPORARILY),
+        ("FUTURE_OPENING", WebTriggerReason.FUTURE_OPENING_UNCERTAIN),
+    ],
+)
+def test_structured_date_risk_triggers_only_for_selected_place(
+    status: str, reason: WebTriggerReason
+) -> None:
+    tasks, gaps, _ = _plan(
+        "A day in Sydney.",
+        [_pair("alpha", "Alpha Zoo", candidate_status=status, evidence_status=status)],
+    )
+    assert len(tasks) == len(gaps) == 1
+    assert tasks[0].information_need is OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION
+    assert tasks[0].priority_group == 5
+    assert tasks[0].trigger_reasons == (reason,)
+
+
+def test_future_status_conflict_is_one_date_task_with_both_reasons() -> None:
+    tasks, _, _ = _plan(
+        "Visit Alpha Zoo.", [_pair("alpha", "Alpha Zoo", evidence_status="FUTURE_OPENING")]
+    )
     assert len(tasks) == 1
     assert tasks[0].priority_group == 4
+    assert tasks[0].information_need is OfficialInformationNeed.DATE_SPECIFIC_OPERATIONAL_EXCEPTION
+    assert set(tasks[0].trigger_reasons) == {
+        WebTriggerReason.FUTURE_OPENING_UNCERTAIN,
+        WebTriggerReason.RESIDUAL_CONFLICT,
+    }
+
+
+@pytest.mark.parametrize(
+    ("latest_dates", "expected"),
+    [
+        ((date(2026, 12, 1), date(2026, 12, 10)), False),
+        ((date(2026, 12, 1), START), True),
+        ((None, date(2026, 12, 1)), True),
+        ((), True),
+    ],
+)
+def test_opening_date_conflict_only_triggers_when_trip_applicability_is_uncertain(
+    latest_dates: tuple[date | None, ...], expected: bool
+) -> None:
+    tasks, _, _ = _plan(
+        "A day in Sydney.",
+        [_pair("alpha", "Alpha Zoo")],
+        opening_date_conflicts={"alpha": latest_dates},
+    )
+    assert bool(tasks) is expected
+    if expected:
+        assert tasks[0].trigger_reasons == (WebTriggerReason.OPENING_DATE_CONFLICT,)
+        assert tasks[0].priority_group == 5
+
+
+def test_unnamed_risks_follow_final_selection_order_without_extra_cap() -> None:
+    pairs = [
+        _pair(place_id, name, candidate_status=status, evidence_status=status)
+        for place_id, name, status in (
+            ("third", "Third Place", "CLOSED_TEMPORARILY"),
+            ("first", "First Place", "FUTURE_OPENING"),
+            ("normal", "Normal Place", "OPERATIONAL"),
+            ("second", "Second Place", "CLOSED_TEMPORARILY"),
+        )
+    ]
+    tasks, _, _ = _plan("A day in Sydney.", pairs)
+    assert [(task.place_id, task.priority_group, task.shortlist_index) for task in tasks] == [
+        ("third", 5, 0),
+        ("first", 5, 1),
+        ("second", 5, 3),
+    ]
+
+
+def test_explicit_date_need_precedes_and_merges_same_structured_risk() -> None:
+    tasks, gaps, _ = _plan(
+        "Must visit Alpha Zoo. Will Alpha Zoo be closed on 2026-12-25?",
+        [
+            _pair(
+                "alpha",
+                "Alpha Zoo",
+                candidate_status="CLOSED_TEMPORARILY",
+                evidence_status="CLOSED_TEMPORARILY",
+            )
+        ],
+        required=("Alpha Zoo",),
+    )
+    assert len(tasks) == len(gaps) == 1
+    assert tasks[0].priority_group == 1
+    assert set(tasks[0].trigger_reasons) == {
+        WebTriggerReason.EXPLICIT_DATE_QUESTION,
+        WebTriggerReason.CLOSED_TEMPORARILY,
+    }
+
+
+def test_unnamed_partial_structured_status_is_a_group_five_risk() -> None:
+    tasks, _, _ = _plan(
+        "A future trip to Sydney.",
+        [_pair("alpha", "Alpha Zoo", availability=EvidenceAvailability.PARTIAL)],
+    )
+    assert len(tasks) == 1
+    assert tasks[0].priority_group == 5
+    assert tasks[0].trigger_reasons == (WebTriggerReason.RESIDUAL_FAILED_OR_PARTIAL,)
