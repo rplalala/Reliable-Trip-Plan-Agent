@@ -1,0 +1,17 @@
+{
+  "query_version": "tripworld-semantic-spike-v1",
+  "queries": [
+    {"intent": "culture", "en": "museums and cultural attractions", "zh": "博物馆和文化景点"},
+    {"intent": "quiet_indoor", "en": "quiet peaceful indoor places", "zh": "安静平和的室内场所"},
+    {"intent": "gardens", "en": "relaxing gardens and green spaces", "zh": "放松身心的花园和绿地"},
+    {"intent": "viewpoints", "en": "scenic viewpoints", "zh": "风景优美的观景点"},
+    {"intent": "nature", "en": "nature and outdoor sightseeing", "zh": "自然风光和户外观光"},
+    {"intent": "art", "en": "art and creative spaces", "zh": "艺术和创意空间"},
+    {"intent": "food", "en": "cafes and casual food", "zh": "咖啡馆和休闲美食"},
+    {"intent": "markets", "en": "local markets", "zh": "当地市场"},
+    {"intent": "nightlife", "en": "nightlife and energetic evening activities", "zh": "夜生活和热闹的晚间活动"},
+    {"intent": "family_outdoor", "en": "family-oriented outdoor attractions", "zh": "适合家庭的户外景点"},
+    {"intent": "heritage", "en": "historical and cultural places", "zh": "历史和文化场所"},
+    {"intent": "less_touristy", "en": "less touristy sightseeing", "zh": "游客较少的观光地点"}
+  ]
+}
