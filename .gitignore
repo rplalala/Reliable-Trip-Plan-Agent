@@ -29,3 +29,10 @@ Thumbs.db
 /logs/
 
 /thesis_notes/
+
+# Local TripWorld source data and generated artifacts
+/data/tripworld/raw/
+/data/tripworld/processed/
+/data/tripworld/artifacts/
+/data/tripworld/reports/
+/data/tripworld/tokenizer_cache/
