@@ -83,7 +83,17 @@ V2 adds retrieval grounding to V1. The planned offline knowledge sources are Tri
 
 RAG should help identify relevant places, areas, combinations, and typical visit patterns; it should not replace live verification. Dynamic facts such as current opening status, disruptions, weather, route duration, and ticket changes should come from current sources.
 
-The exact corpus, retrieval design, and storage needs belong to V2 design and should not be implemented early.
+TripWorld Phase 1-4 data preparation, deterministic global RetrievalEntity construction,
+and the isolated OpenAI embedding spike have been accepted as complete. Phase 5 is
+also explicitly accepted as complete; Phases 1-5 form the frozen technical baseline
+as of 2026-09-18, except for concrete bug fixes. Phase 5 implemented and validated a
+persistent PostgreSQL + pgvector retrieval layer using ENRICHED
+text and OpenAI `text-embedding-3-small` at 1536 dimensions. See
+`docs/tripworld_phase4.md` and `docs/tripworld_phase5.md` for implementation status and
+validation evidence. This retrieval service remains separate from the V1/V2 candidate
+funnel; no V1 selection or itinerary-generation behavior changes are authorized here.
+The complete V2 planning version is not implemented or frozen. Phase 6 is design-only;
+`docs/tripworld_phase6_proposal.md` requires separate approval before implementation.
 
 ## V3 — Validation, Targeted Repair, and Re-validation
 
