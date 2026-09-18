@@ -95,6 +95,12 @@ funnel; no V1 selection or itinerary-generation behavior changes are authorized 
 The complete V2 planning version is not implemented or frozen. Phase 6 is design-only;
 `docs/tripworld_phase6_proposal.md` requires separate approval before implementation.
 
+Future Google usage must be demand-driven: resolve only the ranked TripWorld candidates
+needed for a trip, trying an existing Google Place ID first and name/location fallback
+when needed. Drop unresolved candidates and continue within request budgets. Do not
+prevalidate the global corpus. The Google resolution bridge and candidate merge belong
+to a separately approved Phase 6.
+
 ## V3 — Validation, Targeted Repair, and Re-validation
 
 V3 adds explicit feasibility checking after evidence-informed generation:
