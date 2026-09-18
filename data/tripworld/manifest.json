@@ -1,0 +1,31 @@
+{
+  "manifest_version": 1,
+  "dataset": {
+    "repository": "CRUISEResearchGroup/TripWorld",
+    "repository_type": "dataset",
+    "source_path": "metadata/metadata_all.parquet",
+    "revision": "421bc1dc63068bb398055b1ce987265fe22415db",
+    "sha256": "bd94d73c8443a18b5c7d31c0bd0b855cd141763b63841ee90646be1d73f9345e",
+    "size_bytes": 155531767,
+    "row_count": 687173
+  },
+  "selected_schema_version": "tripworld-selected-fields-v1",
+  "selected_fields": [
+    {"name": "fsq_place_id", "logical_type": "string"},
+    {"name": "fsq_name", "logical_type": "string"},
+    {"name": "fsq_latitude", "logical_type": "float64"},
+    {"name": "fsq_longitude", "logical_type": "float64"},
+    {"name": "fsq_locality", "logical_type": "string"},
+    {"name": "fsq_region", "logical_type": "string"},
+    {"name": "fsq_country", "logical_type": "string"},
+    {"name": "fsq_category_labels", "logical_type": "list<string>"},
+    {"name": "google_name", "logical_type": "string"},
+    {"name": "google_categories", "logical_type": "list<string>"},
+    {"name": "google_place_id", "logical_type": "string"}
+  ],
+  "preprocessing_version": "tripworld-preprocessing-v1",
+  "semantic_mapping_version": "tripworld-category-semantics-v1",
+  "retrieval_description_version": "tripworld-retrieval-description-v1",
+  "retrieval_text_template_version": "tripworld-retrieval-text-v1",
+  "artifact_version": "tripworld-retrieval-corpus-v1"
+}
