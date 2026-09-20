@@ -1,6 +1,31 @@
 """Mechanical output identity boundaries, without semantic judgments or repair."""
 
+from dataclasses import replace
+
 from pydantic import BaseModel, ConfigDict
+
+from backend.app.schemas.itinerary_projection import V1Itinerary
+
+
+def normalize_activity_order(itinerary):
+    """Stable per-day ordering only; preserve fields and diagnostic attribution."""
+    paths = {}
+    days = []
+    for day_index, day in enumerate(itinerary.days):
+        ordered = sorted(enumerate(day.activities), key=lambda item: item[1].start_time)
+        for new_index, (old_index, _) in enumerate(ordered):
+            prefix = f"days[{day_index}].activities"
+            paths[f"{prefix}[{old_index}].estimated_cost"] = (
+                f"{prefix}[{new_index}].estimated_cost"
+            )
+        days.append(day.model_copy(update={"activities": [a for _, a in ordered]}))
+    result = itinerary.model_copy(update={"days": days})
+    if isinstance(result, V1Itinerary):
+        result.set_cost_projections(tuple(
+            replace(item, field_path=paths.get(item.field_path, item.field_path))
+            for item in itinerary.cost_projections
+        ))
+    return result
 
 
 class OutputRoleSummary(BaseModel):
@@ -48,7 +73,7 @@ def validate_output_sources(itinerary, *, places=None, supplied_ids=()):
             r.source_place_id is not None for r in references
         ):
             raise ValueError("V0 cannot author external place identities")
-        return itinerary
+        return normalize_activity_order(itinerary)
     if references:
         raise ValueError("V1 model references are not allowed; use post-itinerary discovery")
     ledger = {p.place_id: p for p in places if p.place_id in supplied_ids}
@@ -81,4 +106,4 @@ def validate_output_sources(itinerary, *, places=None, supplied_ids=()):
     ]
     result = itinerary.model_copy(update={"days": days})
     type(result).model_validate(result.model_dump())
-    return result
+    return normalize_activity_order(result)
