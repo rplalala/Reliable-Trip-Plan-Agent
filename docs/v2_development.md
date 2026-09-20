@@ -3771,3 +3771,19 @@ Normal RAG and RAG-only downstream use are demonstrated; exact-search variance r
 work. No storage migration, re-embedding, permanent freeze or V3 implementation follows implicitly.
 The [reproducibility audit](v2_tripworld_retrieval.md#clean-environment-reproducibility-audit-2026-09-20)
 separates a functional rebuild from restoring exact local vector values.
+
+## Shared first-generation extension - 2026-09-20
+
+The shared coverage/role/diagnostic/K20 extension is implemented and checked offline;
+no fresh live result is claimed. Acquisition goals remain unchanged and no repair loop
+exists. The single [development event](development_record.md#first-generation-coverage-20260920)
+owns sizing, first failures and subsequent targeted test results. Historical live and
+full-suite records above retain their original configuration and outcome.
+
+### Connection tolerance change
+
+London connection establishment exhausted2 seconds before SQL/embedding. Approved change:
+connect10 seconds only; SQL60, RAG360, explicit outer600 unchanged. Mocked adapter checks
+verify the effective timeout, not actual connectivity improvement. No SQL/storage/vector
+change or live retry was performed. Longer connection waiting does not solve exact-search
+I/O variability. See the shared event for the original capture and precise limitation.

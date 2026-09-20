@@ -108,3 +108,23 @@ not implemented. Proposed horizon is today through today+14 inclusive, independe
 10 travel days; current code still uses today through today+9. Same-day remaining-hour planning
 is unsupported. No provider, budget, prompt, default engine or database change is part of acceptance.
 Exact historical vectors require retained local artifacts; a clean clone is not an exact DB backup.
+
+## Authorized first-generation baseline extension (2026-09-20)
+
+Shared generation now targets the entire requested date range and normally 2-5 distinct
+main POIs per normal full day, subject to explicit pace/rest, long REQUIRED visits and
+evidence limits. New model output declares activity roles; historical missing roles are
+unknown. Read-only daily diagnostics distinguish default misses from execution failure.
+No refill, second generation or repair is implemented. V0 uses name proxies; V1/V2 use
+validated canonical supply IDs. Nearby cannot inflate counts.
+
+Nine/ten-day supply supports 18/20 places with C64/G32/send40/P8 unchanged. Baseline
+Routes supports 400 directed elements/seven requests, 64 per request; alternatives remain
+unchanged. The primary input/output limits remain 160000/16384. PostgreSQL connection
+establishment tolerance is 10 seconds; SQL60/RAG360 and the explicit development600
+boundary remain unchanged. This is not a SQL performance fix or new live acceptance.
+
+V3 is documented as explicit post-generation feasibility validation, structured findings,
+targeted repair and re-validation. Its runtime, schemas, repair loops and runner are not
+implemented. Shared baseline fixes are not V3 contributions. Future evaluation must use
+matched shared checkpoints; historical Tokyo, Sydney and London captures are unchanged.

@@ -52,3 +52,18 @@ Dated records below preserve original scope, status and evidence; they are not c
 ## Earlier accepted foundations and functional checks
 
 The Phase 4/5 records preserve their dataset, space, configuration, checks and freeze scope. Phase 6 offline and initial Google-only degradation preceded successful normal RAG. See [Phase 4](v2_development.md#m-e7b06f4ead1b), [Phase 5](v2_development.md#m-0045d5920358) and [60/180 functional checkpoint](v2_development.md#m-6d53b29b6f5c). Storage optimization remains unresolved; the shadow-table proposal is paused. Melbourne REQUIRED ambiguity remains outside normal-path RAG acceptance.
+
+## Later shared first-draft checkpoint - 2026-09-20
+
+The prior accepted implementation and bounded-live checkpoints remain valid for their
+recorded scope. Later shared full-range generation guidance, declared roles, diagnostics
+and K20/400-element Routes support were implemented with offline checks only. The new
+prompt has not been live-validated. The single [shared event](development_record.md#first-generation-coverage-20260920)
+records the full run859 passed/9 skipped/2 failed and45-pass targeted correction; the
+full run is not retrospectively green. No re-freeze or benchmark is claimed.
+
+V2 acceptance does not establish feasible outputs: below-default/empty days, repeats,
+redundancy, opening/transition conflicts, visitor-access and cost UNKNOWN and factual
+contradictions remain possible. [V3 design](v3_design.md) records their future validation
+and targeted-repair boundary, not implemented capability. K20/default targets/sorting
+and connection tolerance are shared/V2 baseline work, not V3 research contributions.

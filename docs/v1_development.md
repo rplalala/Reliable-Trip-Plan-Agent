@@ -1591,3 +1591,11 @@ quality comparison.
 ## Shared changes and latest joint acceptance
 
 The complete shared input, output and joint quality events live in [development_record](development_record.md). Latest V1 conclusions are indexed by [milestones](v1_milestone.md); no complete joint run is duplicated here.
+
+## Shared first-generation extension - 2026-09-20
+
+The shared coverage/role/diagnostic/K20 extension is implemented and checked offline;
+no fresh live result is claimed. Acquisition goals remain unchanged and no repair loop
+exists. The single [development event](development_record.md#first-generation-coverage-20260920)
+owns sizing, first failures and subsequent targeted test results. Historical live and
+full-suite records above retain their original configuration and outcome.

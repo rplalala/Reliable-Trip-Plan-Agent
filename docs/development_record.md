@@ -8251,3 +8251,85 @@ Committed build/database tooling closes the former clean-clone source gap. Funct
 is now repository-supported, not freshly demonstrated here. A complete immutable distributable
 artifact bundle remains missing, and exact historical vectors/database state cannot be recovered
 from Git alone. Existing local evidence remains necessary and is not backed up by these commits.
+
+<a id="first-generation-coverage-20260920"></a>
+## Shared first-generation coverage checkpoint - 2026-09-20
+
+Status: authorized implementation and offline checks; no new live acceptance, benchmark
+or re-freeze. Parent Git checkpoint: c8be30650ab7a66c9671770b9ab166f9edcf49a3.
+
+### Motivation and preserved observations
+
+Sydney's earlier ten-day outputs above remain unchanged. London run
+bd3ba5e6-e380-44d6-b359-4d8f9c3415d7 completed at 2026-09-20T10:12:11.748730+00:00
+in 51.2645 seconds, with four main visits on September 21-24 and empty September 25-27.
+Its capture is logs/london_seven_day_smoke_20260920T101120Z/ (manifest.json, result.json,
+retrieval.json, assessment.json, execution.json and traces/calls). Request hash:
+40e27714f8093320bf482653a1041b53fbbf73ba34ac8b52c8ac4ac3ed6b48fe.
+The request was London, September 21-27, three travelers, total4200GBP, with hiking,
+zoo and amusement-park preferences. 44 admitted ->32 compared ->16 supplied ->4 scheduled;
+three Nearby references were separate. Model output itself contained the empty dates.
+This does not reveal the model's internal reason or prove the unused supply was unsuitable.
+
+RAG stopped in connection establishment at about2.00035 seconds (prepare2.00125), before
+embedding or SQL. RAG total2.08767 seconds did not exhaust360 seconds. TimeoutError had
+no SQLSTATE. This is not a60-second SQL timeout. Connection tolerance is a separate
+engineering change; no new database/provider calls were made to verify it here.
+
+### Decision and implemented scope
+
+The approved minimum extension uses K=max(min(16,max(8,2D+6)),2D), rather than a larger
+buffer. D1-10 K:8,10,12,14,16,16,16,16,18,20. Acquisition uses the prior basis: long-trip
+C64/G32/send40/P8. REQUIRED expansion remains <=16 and cannot silently extend upstream
+work from K20. Baseline Routes400 elements/seven sends/64 per request; alternatives
+unchanged. Shared prompts require full-range first-draft attention and a default2-5 main
+visits, not mandatory daily compliance. Explicit roles and observational diagnostics
+separate main visits, name proxies, canonical counts and non-main activities. No new
+post-generation tools/model calls, repair or itinerary mutation were added.
+
+An offline comparison in the preceding proposal considered K16/20/24: complete matrices
+require256/400/576 elements and4/7/12 calls. K24 long synthetic input exceeded160k in that
+proposal. These were diagnostic scenarios, not production capacities or measured live
+quality. The selected K20 provides no spare unique supply above2D for a ten-day request;
+shortfalls still return a legal observable draft.
+
+### New-schema offline sizing and checks
+
+Actual updated prompt/DTO serialization with local tokenizer, no network: K20 ten-day
+normal input106111 tokens; long input131969, leaving28031 below160000. Both include400
+baseline route elements,16 measured alternative elements plus16 mirrored estimates,
+eight Profiles and48 synthetic accepted dated Web facts. Output cap remains16384 including
+reasoning. These synthetic fixtures are not London/Sydney facts, worst-case bounds or
+proof that a feasible schedule exists. Over-limit inputs still fail explicitly without
+truncation, reduction, summary or regeneration.
+
+Artifacts (ignored/local): artifacts/first_generation_coverage/payload_sizing.json,
+focused.txt, focused_recheck.txt, focused_recheck_final.txt, full_backend.txt,
+full_backend.xml, full_execution.json and post_full_recheck.txt.
+
+- First focused run:426 passed,4 failed in31.19s. Old result-field/route-message assertions
+  needed the approved new contract. First recheck54 passed,1 failed in4.74s exposed an
+  edit-induced Unicode fixture encoding change; restored the original Unicode sample.
+- Affected focused recheck:55 passed in3.72s, exit0.
+- One full backend execution:870 collected,859 passed,9 skipped,2 failed in31.40s,
+  exit1 (wrapper33.953s). Failures were API/shared-result exact-field assertions missing
+  generation_diagnostics, not a hanging process. Preserve this run as failed.
+- Corrected those assertions and added runner diagnostic assertions; affected recheck:
+  45 passed in3.83s, exit0. No second full run; do not relabel the first run all-green.
+- Existing mocked runtime tests cover SQL/cancellation/cleanup; added effective connection
+  timeout check observes10 seconds for connect,60 for compatibility and60000ms server
+  statement_timeout, with phase360 unchanged. No real waiting or database connection.
+
+### Evaluation and future responsibility
+
+This changes the shared prompt/DTO/output and capacity checkpoint. Do not attribute its
+first-draft changes to RAG or V3; future comparisons require the same baseline and impact
+review for any completed evaluation. There is no new live evidence of improved density.
+[V3 design](v3_design.md) now records validation inputs, findings, eight categories,
+targeted repair, finite work, UNKNOWN and re-validation plus16 future TODOs. It remains
+unimplemented. Required/excluded protection and Nearby boundaries are preserved.
+
+Final static checks for this package: Ruff (backend/tools) passed; git diff --check
+passed; 22 introduced Markdown links/anchors checked with no errors. Local thesis note
+V2-07 preserves this baseline-versus-V3 distinction and remains ignored. No live, API,
+SQL query, vector/database rebuild, frontend change or push was performed.

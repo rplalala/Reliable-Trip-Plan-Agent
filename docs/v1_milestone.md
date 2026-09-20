@@ -429,3 +429,18 @@ runnable; V2/V3 were not implemented or frozen at this checkpoint. Later
 reopening, implementation, re-freeze, and full-V1 development validation are
 recorded separately above and must not be read back into this original
 checkpoint.
+
+## Later shared first-draft checkpoint - 2026-09-20
+
+The prior accepted implementation and bounded-live checkpoints remain valid for their
+recorded scope. Later shared full-range generation guidance, declared roles, diagnostics
+and K20/400-element Routes support were implemented with offline checks only. The new
+prompt has not been live-validated. The single [shared event](development_record.md#first-generation-coverage-20260920)
+records the full run859 passed/9 skipped/2 failed and45-pass targeted correction; the
+full run is not retrospectively green. No re-freeze or benchmark is claimed.
+
+V2 acceptance does not establish feasible outputs: below-default/empty days, repeats,
+redundancy, opening/transition conflicts, visitor-access and cost UNKNOWN and factual
+contradictions remain possible. [V3 design](v3_design.md) records their future validation
+and targeted-repair boundary, not implemented capability. K20/default targets/sorting
+and connection tolerance are shared/V2 baseline work, not V3 research contributions.

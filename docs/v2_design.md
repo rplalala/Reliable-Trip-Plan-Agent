@@ -57,3 +57,13 @@ services/tripworld_discovery.py resolves/merges; tripworld/retrieval/runtime.py 
 [Supply](shared_poi_supply.md), [output](shared_itinerary_output.md) and [V1 tool/Nearby design](v1_development.md)
 are reused. Space and persistence are in [retrieval](v2_tripworld_retrieval.md); historical SQL
 failures and measured waiting allowances belong to [V2 development](v2_development.md).
+
+## Shared first-draft checkpoint
+
+Shared generation guidance, explicit activity roles and observational daily diagnostics
+apply before Nearby. Long-trip supply is K18/K20 for nine/ten days; acquisition is still
+bounded at C64/G32/send40/P8. Full baseline Routes support 400 directed elements in at
+most seven requests. Alternatives and all discovery/enrichment budgets are unchanged.
+This does not guarantee daily coverage or introduce post-generation refill/repair.
+See [shared output](shared_itinerary_output.md#first-generation-roles-and-diagnostics)
+and [shared supply](shared_poi_supply.md) for the single detailed contract.

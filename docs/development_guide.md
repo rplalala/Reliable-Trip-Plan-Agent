@@ -67,7 +67,7 @@ ordinary Details120s.600s is applied only by an explicit CLI/Python development 
 the config ceiling alone does not wrap every product request in600s.
 Effective-config SHA-256 from acceptance manifest:
 `aec5fb5d2b07dffb486b0d8211ae4b339bf6006af980a2cd1ede47f85746d722`.
-Current YAML file-byte SHA-256:
+Historical pre-coverage YAML file-byte SHA-256:
 `416320cf286241cd1f00f84cc73e62ec388e03a7f41188456c0bb6fd652b84a0`.
 These are different hash domains; CLI trace hashes may also include effective budget metadata.
 
@@ -131,7 +131,7 @@ Paths below are relative to the repository root. Historical selector tools are r
 | `tools/validation/retrieval_validation.py` | Database/retrieval validation | Explicit database work |
 | `tools/diagnostics/retrieval_performance.py` | Bounded SQL timing/plans | Read-only DB queries require authorization |
 | `tools/diagnostics/retrieval_service.py` | Standalone retrieval comparison adapter | Explicit query embedding and SQL |
-| `tools/diagnostics/itinerary_payload.py` | Real serializer plus synthetic K12/K16 sizing | Offline |
+| `tools/diagnostics/itinerary_payload.py` | Real serializer plus synthetic K12/K20 sizing | Offline |
 | `tools/diagnostics/candidate_supply.py` | Saved-capture Details/gate and capacity analysis | Offline, explicit input paths |
 
 `services/candidate_acquisition.py` owns current shared acquisition. The supply service delegates
@@ -210,3 +210,12 @@ contains actual relocated commands, inputs/outputs, environment, expected counts
 between rebuilding a functional corpus and restoring identical vectors. In particular the old broad
 `validate` command depends on local historical query artifacts and performs maintenance ANALYZE;
 it is not the default clean-clone read-only verification step. Instructions do not authorize execution.
+
+## First-generation checkpoint configuration
+
+Current YAML byte SHA-256: `e2d749fedb3f68698c5de7f88f1b6f0fb750fbc9edb00bfbd8c3133567a7cb40`.
+Current effective RuntimeConfig SHA-256: `862d694487bdd1313ec1fc62856abca2cb5d0d56c0beb75a6dc771be7630eb36`.
+Earlier acceptance hashes above are historical. Current shared final supply ceiling20,
+baseline Routes400 elements/seven calls, connection10 seconds. SQL60/RAG360/ordinary
+Details120 and input160000/output16384 remain unchanged; outer600 stays an explicit
+development invocation. Existing CLI flags and default engine are unchanged.

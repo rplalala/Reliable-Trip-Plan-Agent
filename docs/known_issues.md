@@ -136,3 +136,28 @@ and related documentation. The existing D<=10 C/G/send/K/P and route-matrix capa
 remains sufficient; a later start is not a longer trip. Same-day remaining-hour planning remains
 unsupported. No Weather rewrite, capacity redesign, V3 implementation or new validation run is
 part of this checkpoint task.
+
+<a id="first-draft-and-v3-boundary"></a>
+## First-draft and V3 boundary - 2026-09-20
+
+The later shared baseline adds full-date-range guidance, a normal full-day 2-5 distinct
+main-POI target, declared roles, read-only diagnostics, K18/K20 for nine/ten days and
+corresponding Routes capacity. These are implemented first-draft capabilities, not proof
+that the historical Sydney/London outputs have improved. The target is not a schema rule.
+
+| Remaining issue | Current status / responsibility | Future design |
+| --- | --- | --- |
+| Below-target or empty dates / early concentration | Still possible; diagnostics observe, no refill. Rest/pace and long REQUIRED visits may justify fewer visits. | [V3-1/T04](v3_design.md#violation-and-uncertainty-categories) |
+| Repeated IDs / redundant subvenues | Repetition is visible, not automatically invalid; different IDs need not mean distinct experiences. | V3-2/T05 |
+| Opening/time or generated-evidence contradictions | Date-specific evidence must support a conflict; notes alone are not verified hours. | V3-3/V3-8/T06 |
+| Route transitions / overlaps | Array sorting and full matrices do not validate temporal feasibility. | V3-4/V3-5/T07 |
+| Visitor access uncertainty | OPERATIONAL/service type does not prove public access or inaccessibility. | V3-6/T09 |
+| Cost/budget uncertainty | Null is unknown, not zero; insufficient coverage cannot certify budget feasibility. | V3-7/T08 |
+| London connection timeout | Tolerance changed 2 -> 10 seconds; effectiveness untested live, root cause unproven. SQL60/RAG360 unchanged. | Shared/V2 engineering, not V3 |
+| SQL read variability, Weather coverage, Web sufficiency, identity ambiguity | Existing separate issues remain; none is solved by K20 or a longer connection wait. | Shared/V2 engineering/evidence |
+| Same-day remaining hours | Diagnostics explicitly not_assessable; no remaining-hours planner was added. | Separate shared product capability |
+
+[The V3 roadmap](v3_design.md) owns the concrete future design and TODO. Accepted V2
+implementation does not mean all itinerary outputs are feasible. Repair, re-validation
+and additional post-draft acquisition remain unimplemented. The prior issue triage and
+its evidence retain their original checkpoint scope.

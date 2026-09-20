@@ -29,6 +29,7 @@ records have one responsibility owner instead of being copied into the entry doc
 | [v2_tripworld_retrieval](v2_tripworld_retrieval.md) | Space, persistence, exact search and runtime diagnostics |
 | [v2_development](v2_development.md) | V2-only retrieval/performance events and superseded proposals |
 | [v2_milestone](v2_milestone.md) | Foundation/integration/limited-live acceptance scope |
+| [v3_design](v3_design.md) | Future validation, targeted repair, re-validation and TODO; no runtime |
 | [development_record](development_record.md) | Cross-version evolution index and complete shared/joint events |
 | [frontend_design](frontend_design.md) | Actual UI/API boundaries and outstanding alignment |
 | [frontend_milestone](frontend_milestone.md) | Original frontend acceptance and dated changes |
@@ -39,7 +40,7 @@ Designs describe current behavior with short rationale, not test/token/timing di
 records own full events. Milestones summarize implementation/configuration, offline/live scope,
 limitations, acceptance and freeze status, linking the full event. A joint run is recorded once.
 Old configuration and proposals stay explicitly dated/superseded. Similar attempts with different
-inputs or settings are not duplicates; overlapping tests are not summed. No V3 placeholder exists.
+inputs or settings are not duplicates; overlapping tests are not summed. The V3 design roadmap is substantive future scope, not implemented runtime.
 
 Original section headings and context remain inspectable through stable m-/b- anchors. Exact repeated
 passages may share a destination. The migration ledger recorded original occurrences, hashes,
