@@ -9,6 +9,22 @@ from _pytest.monkeypatch import MonkeyPatch
 
 
 @pytest.fixture(autouse=True)
+def offline_semantic_tokenizer(monkeypatch):
+    """Unit tests mock tokenization; real offline sizing uses the dedicated script.
+
+    This keeps a clean checkout independent of downloaded tokenizer assets. The fake
+    tests structural/call-limit behavior only and is not a payload measurement.
+    """
+    from backend.app.runtime import token_counting
+
+    class FakeEncoding:
+        def encode_ordinary(self, text):
+            return range((len(text.encode("utf-8")) + 3) // 4)
+
+    monkeypatch.setattr(token_counting, "tokenizer", lambda: FakeEncoding())
+
+
+@pytest.fixture(autouse=True)
 def block_network_access(monkeypatch: MonkeyPatch) -> Generator[None]:
     """Fail every unit test that attempts to open a network connection."""
 

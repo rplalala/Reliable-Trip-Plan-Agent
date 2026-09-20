@@ -15,6 +15,7 @@ from backend.app.integrations.models import (
     PlaceCandidateDTO,
     PlaceDetailsDTO,
     PlaceDetailsRequest,
+    PlaceNearbySearchRequest,
     PlaceOpeningDateDTO,
     PlaceReviewDTO,
     PlaceReviewsDTO,
@@ -36,6 +37,10 @@ PLACES_DESTINATION_FIELD_MASK = ",".join(PLACES_DESTINATION_FIELDS)
 
 PLACES_CANDIDATE_FIELDS = (*PLACES_DESTINATION_FIELDS, "places.openingDate")
 PLACES_CANDIDATE_FIELD_MASK = ",".join(PLACES_CANDIDATE_FIELDS)
+
+PLACES_NEARBY_FIELD_MASK = ",".join(
+    (*PLACES_DESTINATION_FIELDS, "places.types", "places.attributions")
+)
 
 PLACES_DETAILS_FIELDS = (
     "id",
@@ -133,6 +138,10 @@ class GooglePlacesProvider:
         self._tracer = tracer
         self._base_url = base_url.rstrip("/")
 
+    @property
+    def observes_send_boundary(self):
+        return getattr(self._transport, "observes_send_boundary", False)
+
     async def search_text(self, request: PlaceSearchRequest) -> PlaceSearchResponse:
         body: dict[str, object] = {
             "textQuery": request.text_query,
@@ -192,6 +201,71 @@ class GooglePlacesProvider:
                     business_status=_optional_string(raw_place.get("businessStatus")),
                     opening_date=_opening_date(raw_place.get("openingDate")),
                     provider_rank=rank,
+                )
+            )
+        return PlaceSearchResponse(
+            candidates=candidates,
+            actual_result_count=len(raw_places),
+            retrieved_at=datetime.now(UTC).isoformat(),
+        )
+
+    async def search_nearby(self, request: PlaceNearbySearchRequest) -> PlaceSearchResponse:
+        body = {
+            "locationRestriction": {
+                "circle": {"center": request.center.model_dump(), "radius": request.radius_metres}
+            },
+            "includedTypes": list(request.included_types),
+            "maxResultCount": request.max_result_count,
+            "rankPreference": request.rank_preference,
+            "languageCode": request.language_code,
+            "includeFutureOpeningBusinesses": False,
+        }
+        headers = {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": self._api_key,
+            "X-Goog-FieldMask": request.field_mask,
+        }
+        response = await self._transport.request_json(
+            "POST", f"{self._base_url}/places:searchNearby", headers=headers, json_body=body
+        )
+        trace_exchange(
+            self._tracer,
+            name="google_places_search_nearby",
+            request={"headers": headers, "body": body},
+            response=response,
+        )
+        payload = require_mapping(response, context="Places Nearby Search response")
+        raw_places = payload.get("places", [])
+        if not isinstance(raw_places, list):
+            raise ProviderResponseError("Places Nearby Search places must be an array")
+        candidates = []
+        for rank, raw in enumerate(raw_places[: request.max_result_count]):
+            if not isinstance(raw, Mapping):
+                continue
+            pid, name = _optional_string(raw.get("id")), _localized_text(raw.get("displayName"))
+            if pid is None or name is None:
+                continue
+            try:
+                location = _lat_lng(raw.get("location"), context="Nearby location")
+            except ProviderResponseError:
+                continue
+            types = raw.get("types", [])
+            attributions = raw.get("attributions", [])
+            candidates.append(
+                PlaceCandidateDTO(
+                    place_id=pid,
+                    display_name=name,
+                    location=location,
+                    provider_rank=rank,
+                    formatted_address=_optional_string(raw.get("formattedAddress")),
+                    primary_type=_optional_string(raw.get("primaryType")),
+                    business_status=_optional_string(raw.get("businessStatus")),
+                    types=tuple(t for t in types if isinstance(t, str))
+                    if isinstance(types, list)
+                    else (),
+                    attributions=tuple(dict(a) for a in attributions if isinstance(a, Mapping))
+                    if isinstance(attributions, list)
+                    else (),
                 )
             )
         return PlaceSearchResponse(

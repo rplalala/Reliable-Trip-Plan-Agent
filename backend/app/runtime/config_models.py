@@ -20,6 +20,7 @@ from backend.app.runtime.budget_limits import (
     validate_baseline_per_request_elements,
     validate_budget_values,
 )
+from backend.app.versions.v2.config import RAGConfig
 
 
 class _ConfigModel(BaseModel):
@@ -58,6 +59,7 @@ class RoutesBudgetConfig(_ConfigModel):
     baseline_calls: StrictInt
     alternative_pairs: StrictInt
     alternative_matrix_calls: StrictInt
+    alternative_elements: StrictInt = 16
 
 
 class WebBudgetConfig(_ConfigModel):
@@ -149,6 +151,7 @@ class BudgetConfig(_ConfigModel):
             ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: self.routes.matrix_elements,
             ToolBudgetKey.BASELINE_ROUTE_MATRIX_ELEMENTS: self.routes.baseline_elements_per_run,
             ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS: self.routes.baseline_calls,
+            ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS: self.routes.alternative_elements,
             ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: self.routes.alternative_pairs,
             ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: self.routes.alternative_matrix_calls,
             ToolBudgetKey.WEATHER_CALLS: self.weather.calls,
@@ -199,17 +202,86 @@ class TraceConfig(_ConfigModel):
         return value
 
 
+
+
+class ReferenceDiscoveryConfig(_ConfigModel):
+    policy_version: Literal["nearby_references_1"] = "nearby_references_1"
+    max_requests: int = Field(default=3, ge=0, le=3)
+    max_result_count: int = Field(default=10, ge=1, le=10)
+    radius_metres: float = Field(default=800, gt=0, le=800)
+    anchor_reuse_metres: float = Field(default=300, ge=0, le=300)
+    deadline_seconds: float = Field(default=10, gt=0, le=10)
+    request_timeout_seconds: float = Field(default=4, gt=0, le=4)
+    retries: Literal[0] = 0
+    max_references: int = Field(default=3, ge=0, le=3)
+    rank_preference: Literal["DISTANCE"] = "DISTANCE"
+    included_types: tuple[str, ...] = ("restaurant", "cafe", "park", "museum")
+
+    @field_validator("included_types")
+    @classmethod
+    def approved_types(cls, value: tuple[str, ...]) -> tuple[str, ...]:
+        if value != ("restaurant", "cafe", "park", "museum"):
+            raise ValueError("Reference types require a policy version change")
+        return value
+
+
+class AcquisitionConfig(_ConfigModel):
+    policy_id: Literal["conservative_1", "quality_first_1"] = "conservative_1"
+    details_deadline_seconds: float = Field(default=120, gt=0, le=120)
+    details_timeout_seconds: float = Field(default=20, gt=0, le=20)
+
+
+class MainGenerationConfig(_ConfigModel):
+    enabled: bool = False
+    input_tokens: int = Field(default=96000, ge=1, le=160000)
+    output_tokens: int = Field(default=16384, ge=1, le=16384)
+    framing_tokens: int = Field(default=2048, ge=2048, le=2048)
+
+
 class RuntimeConfig(_ConfigModel):
-    schema_version: Literal[5]
+    acquisition: AcquisitionConfig = Field(default_factory=AcquisitionConfig)
+    main_generation: MainGenerationConfig = Field(default_factory=MainGenerationConfig)
+    development_timeout_seconds: int = Field(default=600, ge=1, le=600)
+    schema_version: Literal[6]
     app: AppConfig
     budget: BudgetConfig
     web_evidence: WebEvidenceConfig
+    reference_discovery: ReferenceDiscoveryConfig = Field(default_factory=ReferenceDiscoveryConfig)
+    tripworld_discovery: RAGConfig = Field(default_factory=RAGConfig)
     logging: LoggingConfig
     trace: TraceConfig
+
+    @model_validator(mode="after")
+    def coordinated_policy(self):
+        if self.budget.routes.alternative_elements < self.budget.routes.alternative_pairs:
+            raise ValueError("Alternative element allowance must cover selected pairs")
+        if self.acquisition.policy_id == "quality_first_1":
+            b = self.budget
+            if (
+                b.candidates < 64
+                or b.places.detail_calls < 40
+                or b.final_pois != 16
+                or min(
+                    b.places.review_detail_calls,
+                    b.experience.review_enriched_places,
+                    b.experience.profile_llm_calls,
+                )
+                < 8
+            ):
+                raise ValueError("Quality-first envelope must support every supported duration")
+            if (
+                b.routes.baseline_elements_per_run < 256
+                or b.routes.baseline_calls < 4
+                or b.routes.baseline_elements_per_request < 64
+            ):
+                raise ValueError("Quality-first supply needs a complete 16-place route matrix")
+            if not self.main_generation.enabled:
+                raise ValueError("Quality-first requires primary generation resource protection")
+        return self
 
     @field_validator("schema_version")
     @classmethod
     def supported_schema(cls, value: int) -> int:
-        if value != 5:
+        if value != 6:
             raise ValueError("Unsupported runtime configuration schema version")
         return value

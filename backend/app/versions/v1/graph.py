@@ -1,9 +1,10 @@
 """Explicit non-agentic LangGraph workflow for V1 external evidence."""
 
-from collections.abc import Sequence
+import json
 
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
+from pydantic import ValidationError
 
 from backend.app.evidence.models import (
     PlaceCandidate,
@@ -13,41 +14,40 @@ from backend.app.evidence.models import (
 from backend.app.evidence.opening_hours import planning_opening_hours
 from backend.app.llm.client import StructuredLLMClient
 from backend.app.observability.run_trace import RunTracer, TracePayloadMode
-from backend.app.policies.named_place_intent import (
-    NamedPlaceIntentContractError,
-    validate_named_place_intents,
-)
-from backend.app.policies.poi_selection import SelectionConflict
+from backend.app.policies.itinerary_output import output_role_summary, validate_output_sources
 from backend.app.policies.transport import select_transport_mode_from_intent
 from backend.app.policies.trip_dates import (
+    TripDatePolicyError,
     create_trip_date_window,
     validate_itinerary_dates,
     validate_requested_trip_dates,
 )
-from backend.app.policies.trip_intent import TripIntentContractError, validate_trip_intents
+from backend.app.schemas.interpreted_requirements import ClarificationRequired
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.itinerary_projection import V1Itinerary
-from backend.app.schemas.request import TravelRequirements
-from backend.app.schemas.trip_intent import TripIntentExtractionResult
+from backend.app.schemas.requirement_boundary import RequirementBoundaryError
+from backend.app.services.candidate_acquisition import (
+    CandidatePool,
+)
 from backend.app.services.evidence_acquisition import (
-    CandidateFunnelResult,
     NoViableCandidatesError,
     V1EvidenceAcquisitionService,
 )
 from backend.app.services.official_web_integration import OfficialWebIntegrationService
-from backend.app.services.review_selection import ReviewAwareSelectionResult
-from backend.app.versions.v0.graph import MissingRequiredFieldsError
-from backend.app.versions.v0.prompts import build_requirement_extraction_prompt
+from backend.app.services.planning_supply_pipeline import (
+    PlanningCandidateSupplyPipeline,
+    PlanningSupplySelection,
+    planner_supply_projection,
+)
+from backend.app.services.preference_interpretation import interpret_preferences
+from backend.app.services.reference_discovery import ReferenceDiscoveryService
 from backend.app.versions.v1.official_planner import build_official_planner_evidence
 from backend.app.versions.v1.official_web import project_official_web_inputs
 from backend.app.versions.v1.prompts import (
     ITINERARY_GENERATION_SYSTEM_PROMPT,
-    V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT,
     build_itinerary_generation_prompt,
 )
 from backend.app.versions.v1.state import V1State
-
-REQUIRED_REQUIREMENT_FIELDS = ("destination", "start_date", "end_date")
 
 
 class V1StageError(RuntimeError):
@@ -58,17 +58,9 @@ class V1StageError(RuntimeError):
         super().__init__(f"V1 stage failed: {stage}")
 
 
-def _missing_fields(requirements: TravelRequirements) -> Sequence[str]:
-    return [
-        field_name
-        for field_name in REQUIRED_REQUIREMENT_FIELDS
-        if getattr(requirements, field_name) is None
-    ]
-
-
 def project_selected_places(
-    funnel: CandidateFunnelResult,
-    selection: ReviewAwareSelectionResult,
+    funnel: CandidatePool,
+    selection: PlanningSupplySelection,
 ) -> tuple[list[PlaceCandidate], list[PlaceEvidence]]:
     """Project the stable selected order into aligned downstream Places contracts."""
 
@@ -90,116 +82,38 @@ def project_selected_places(
     return candidates, evidence
 
 
-def build_v1_graph(
+def build_tools_graph(
     llm_client: StructuredLLMClient,
     evidence_service: V1EvidenceAcquisitionService,
     tracer: RunTracer,
     *,
     llm_config_identity: str = "run_scoped_llm",
     official_web_service: OfficialWebIntegrationService | None = None,
+    reference_service: ReferenceDiscoveryService | None = None,
+    discovery_extension=None,
+    runtime_config=None,
 ) -> CompiledStateGraph:
     """Build the fixed V1 graph with one bounded official-Web step."""
 
     async def extract_requirements(state: V1State) -> dict[str, object]:
-        tracer.event("requirement_extraction_started")
-        user_prompt = build_requirement_extraction_prompt(state["request"], state["reference_date"])
-        tracer.payload(
-            "llm",
-            "requirement_extraction_request",
-            {
-                "system_prompt": V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT,
-                "user_prompt": user_prompt,
-                "response_schema": "TripIntentExtractionResult",
-            },
-            minimum_mode=TracePayloadMode.RAW,
-        )
         try:
-            extraction = await llm_client.generate_structured(
-                system_prompt=V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT,
-                user_prompt=user_prompt,
-                response_schema=TripIntentExtractionResult,
+            contract = await interpret_preferences(
+                state["request"], state["reference_date"], llm_client, tracer
             )
+        except (
+            ClarificationRequired,
+            RequirementBoundaryError,
+            ValidationError,
+            TripDatePolicyError,
+        ):
+            raise
         except Exception as exc:
-            tracer.event("requirement_extraction_failed", {"error": type(exc).__name__})
             raise V1StageError("extract_requirements") from exc
-
-        requirements = extraction.requirements
-        try:
-            named_place_intents = validate_named_place_intents(
-                extraction.named_place_intents, state["request"].request_text
-            )
-        except NamedPlaceIntentContractError as exc:
-            tracer.event("named_place_intents_validation_failed", {"reason": exc.code})
-            raise V1StageError("extract_requirements") from exc
-        try:
-            validate_trip_intents(extraction, state["request"].request_text)
-        except TripIntentContractError as exc:
-            tracer.event("trip_intents_validation_failed", {"reason": exc.code})
-            raise V1StageError("extract_requirements") from exc
-        tracer.event(
-            "trip_intents_validated",
-            {
-                "information_need_count": len(extraction.requested_place_information),
-                "experience_preference_count": len(extraction.experience_preferences),
-                "poi_interest_count": len(extraction.poi_interests),
-                "explicit_transport": extraction.transport_preference is not None,
-                "requested_information": [
-                    {
-                        "target_surface": item.target_surface,
-                        "facet": item.requested_facet.value if item.requested_facet else None,
-                        "operational_need": (
-                            item.operational_need.value if item.operational_need else None
-                        ),
-                        "subject_scope": item.subject_scope.value,
-                        "temporal_scope": item.temporal_scope.value,
-                    }
-                    for item in extraction.requested_place_information
-                ],
-            },
-        )
-        tracer.event(
-            "named_place_intents_validated",
-            {
-                "count": len(named_place_intents),
-                "duplicate_count": len(extraction.named_place_intents) - len(named_place_intents),
-                "intents": [
-                    {
-                        "place_text": item.place_text,
-                        "inclusion": item.inclusion.value,
-                        "source_text": item.source_text,
-                        "additional_source_texts": item.additional_source_texts,
-                    }
-                    for item in named_place_intents
-                ],
-            },
-        )
-
-        missing_fields = _missing_fields(requirements)
-        if missing_fields:
-            unresolved_fields = list(
-                dict.fromkeys([*requirements.unresolved_fields, *missing_fields])
-            )
-            requirements = requirements.model_copy(update={"unresolved_fields": unresolved_fields})
-            tracer.event("requirements_incomplete", {"fields": list(missing_fields)})
-            raise MissingRequiredFieldsError(
-                unresolved_fields=missing_fields,
-                requirements=requirements,
-            )
-        tracer.payload(
-            "llm",
-            "requirement_extraction_response",
-            extraction,
-            minimum_mode=TracePayloadMode.RAW,
-        )
-        tracer.set_requirements(requirements)
-        tracer.event("requirements_extracted", requirements.model_dump(mode="json"))
         return {
-            "requirements": requirements,
-            "named_place_intents": named_place_intents,
-            "requested_place_information": extraction.requested_place_information,
-            "experience_preferences": extraction.experience_preferences,
-            "transport_preference": extraction.transport_preference,
-            "poi_interests": extraction.poi_interests,
+            "requirements": contract.requirements,
+            "interpreted_requirements": contract,
+            "requested_place_information": contract.requested_place_information,
+            "transport_preference": contract.transport_preference,
         }
 
     async def validate_trip_dates(state: V1State) -> dict[str, object]:
@@ -224,144 +138,26 @@ def build_v1_graph(
         tracer.event("destination_resolved", destination.model_dump(mode="json"))
         return {"destination_context": destination}
 
-    async def acquire_candidate_funnel(state: V1State) -> dict[str, CandidateFunnelResult]:
-        requirements = state["requirements"]
-        named_place_intents = state["named_place_intents"]
-        tracer.event(
-            "candidate_funnel_started",
-            {
-                "named_place_intents": [
-                    {"place_text": item.place_text, "inclusion": item.inclusion.value}
-                    for item in named_place_intents
-                ]
-            },
+    async def acquire_candidate_funnel(state: V1State) -> dict[str, object]:
+        pipeline = PlanningCandidateSupplyPipeline(
+            evidence_service, llm_client, tracer, llm_config_identity
         )
-        funnel = await evidence_service.run_candidate_funnel(
-            requirements=requirements,
-            destination=state["destination_context"],
-            window=create_trip_date_window(state["reference_date"]),
-            named_place_intents=named_place_intents,
-            poi_interests=state["poi_interests"],
-        )
-        tracer.event(
-            "candidate_funnel_completed",
-            {
-                "search_intents": [
-                    {"intent_id": item.intent_id, "kind": item.kind.value}
-                    for item in funnel.search_intents
-                ],
-                "raw_observation_count": len(funnel.observations),
-                "merged_place_ids": [item.candidate.place_id for item in funnel.merged.places],
-                "c_raw": funnel.capacities.c_raw,
-                "r_pool": funnel.capacities.r_pool,
-                "k_final": funnel.capacities.k_final,
-                "c_raw_place_ids": funnel.c_raw_selection.selected_place_ids,
-                "r_pool_place_ids": funnel.r_pool_selection.selected_place_ids,
-                "unresolved_required_names": funnel.unresolved_required_names,
-            },
-        )
-        eligibility = {item.place_id: item for item in funnel.no_review_selection.eligibility}
-        attempted = set(funnel.rating_contenders)
-        tracer.event(
-            "candidate_details_rating_recorded",
-            {
-                "places": [
-                    {
-                        "place_id": item.candidate.place_id,
-                        "attempted": item.candidate.place_id in attempted,
-                        "rating_state": item.rating_state.value,
-                        "rating_present": item.rating is not None,
-                        "structured_available": item.structured_evidence is not None,
-                        "business_status": item.candidate.business_status,
-                        "date_risk": eligibility[item.candidate.place_id].date_risk.value,
-                    }
-                    for item in funnel.enriched_candidates
-                ],
-                "details_failures": funnel.details_failures,
-            },
-        )
-        return {"candidate_funnel": funnel}
-
-    async def select_review_aware_pois(state: V1State) -> dict[str, object]:
-        funnel = state["candidate_funnel"]
-        selection = await evidence_service.run_review_aware_selection(
-            funnel=funnel,
-            requirements=state["requirements"],
-            window=create_trip_date_window(state["reference_date"]),
-            llm_client=llm_client,
-            llm_config_identity=llm_config_identity,
-            experience_preferences=state["experience_preferences"],
+        pipeline.discovery_extension = discovery_extension
+        funnel, selection = await pipeline.run(
+            state["interpreted_requirements"],
+            state["destination_context"],
+            create_trip_date_window(state["reference_date"]),
         )
         candidates, places = project_selected_places(funnel, selection)
-        conflicts: tuple[SelectionConflict, ...] = tuple(
-            dict.fromkeys((*funnel.conflicts, *selection.final_selection.conflicts))
-        )
-        tracer.event(
-            "final_poi_selection_completed",
-            {
-                "selected_place_ids": selection.selected_place_ids,
-                "selected_count": len(candidates),
-                "unresolved_required_names": funnel.unresolved_required_names,
-                "conflicts": [
-                    {"place_id_or_name": item.place_id_or_name, "reason": item.reason}
-                    for item in conflicts
-                ],
-                "selected_scores": [
-                    {
-                        "place_id": item.place_id,
-                        "must_visit": item.must_visit,
-                        "q_rel": str(item.score.q_rel) if item.score else None,
-                        "c_cov": str(item.score.c_cov) if item.score else None,
-                        "g_geo": str(item.score.g_geo) if item.score else None,
-                        "r_rating": str(item.score.r_rating) if item.score else None,
-                        "e_exp": str(item.score.e_exp) if item.score else None,
-                        "total": str(item.score.total) if item.score else None,
-                    }
-                    for item in selection.final_selection.selected
-                ],
-                "review_attempts": [
-                    {
-                        "place_id": item.place_id,
-                        "status": item.status,
-                        "profile_availability": item.profile_availability,
-                    }
-                    for item in selection.attempts
-                ],
-                "experience_scores": [
-                    {"place_id": place_id, "e_exp": str(score.total)}
-                    for place_id, score in selection.experience_scores
-                ],
-                "review_stop_reason": selection.stop_reason,
-            },
-        )
-        tracer.event(
-            "named_place_final_selection_completed",
-            {
-                "places": [
-                    {
-                        "place_text": item.named_place_intent.place_text,
-                        "inclusion": item.named_place_intent.inclusion.value,
-                        "resolved_place_id": item.resolved_place_id,
-                        "final_selected": item.resolved_place_id in selection.selected_place_ids,
-                        "must_visit": item.resolved_place_id in funnel.must_visit_place_ids
-                        if item.resolved_place_id is not None
-                        else False,
-                    }
-                    for item in funnel.named_place_resolutions
-                ]
-            },
-        )
         tracer.payload(
-            "evidence",
-            "selected_place_evidence",
-            places,
-            minimum_mode=TracePayloadMode.NORMALIZED,
+            "evidence", "selected_place_evidence", places, minimum_mode=TracePayloadMode.NORMALIZED
         )
         return {
+            "candidate_funnel": funnel,
             "review_selection": selection,
             "selected_candidates": candidates,
             "place_evidence": places,
-            "selection_conflicts": conflicts,
+            "selection_conflicts": (),
         }
 
     async def acquire_weather(state: V1State) -> dict[str, object]:
@@ -523,6 +319,10 @@ def build_v1_graph(
             requirement_conflicts=state["selection_conflicts"],
             official_evidence=state.get("official_planner_evidence"),
         )
+        user_prompt += "\nPlanning candidate supply contract:\n" + json.dumps(
+            planner_supply_projection(state["review_selection"], state["interpreted_requirements"]),
+            ensure_ascii=True,
+        )
         tracer.payload(
             "llm",
             "itinerary_generation_request",
@@ -533,11 +333,34 @@ def build_v1_graph(
             },
             minimum_mode=TracePayloadMode.RAW,
         )
+        from backend.app.services.generation_resources import check_primary_input
+
+        generation_config = runtime_config.main_generation if runtime_config else None
+        if generation_config and generation_config.enabled:
+            sizing = check_primary_input(
+                ITINERARY_GENERATION_SYSTEM_PROMPT, user_prompt, generation_config
+            )
+            tracer.event("primary_generation_resources", sizing)
+        generate = llm_client.generate_structured
+        generation_kwargs = {}
+        if (
+            generation_config
+            and generation_config.enabled
+            and hasattr(llm_client, "generate_primary_structured")
+        ):
+            generate = llm_client.generate_primary_structured
+            generation_kwargs["generation_config"] = generation_config
         try:
-            itinerary = await llm_client.generate_structured(
+            itinerary = await generate(
+                **generation_kwargs,
                 system_prompt=ITINERARY_GENERATION_SYSTEM_PROMPT,
                 user_prompt=user_prompt,
                 response_schema=V1Itinerary,
+            )
+            itinerary = validate_output_sources(
+                itinerary,
+                places=state["place_evidence"],
+                supplied_ids=state["review_selection"].policy_result.selected_place_ids,
             )
         except Exception as exc:
             tracer.event("generation_failed", {"error": type(exc).__name__})
@@ -563,12 +386,52 @@ def build_v1_graph(
         tracer.event("itinerary_dates_validated")
         return {}
 
+    async def discover_reference_recommendations(state: V1State) -> dict[str, object]:
+        itinerary = state["itinerary"]
+        selection = state["review_selection"].policy_result
+        updates = {}
+        if reference_service is not None:
+            funnel = state["candidate_funnel"]
+            result = await reference_service.discover(
+                itinerary,
+                state["place_evidence"],
+                selection.selected_place_ids,
+                funnel.excluded_place_ids,
+                tuple(
+                    item.structured_evidence
+                    for item in funnel.enriched_candidates
+                    if item.structured_evidence is not None
+                ),
+            )
+            itinerary = result.itinerary
+            tracer.event("reference_discovery_completed", result.diagnostics)
+            tracer.payload(
+                "evidence",
+                "nearby_reference_ledger",
+                {pid: entry.model_dump(mode="json") for pid, entry in result.ledger.items()},
+                minimum_mode=TracePayloadMode.NORMALIZED,
+            )
+            updates.update(reference_discovery=result)
+        summary = output_role_summary(itinerary, selection)
+        tracer.event("itinerary_output_roles", summary.model_dump())
+        tracer.event(
+            "reference_supply_relationship",
+            {
+                "supply_not_scheduled_ids": sorted(
+                    set(selection.selected_place_ids) - set(summary.scheduled_place_ids)
+                ),
+                "references_outside_supply_ids": sorted(
+                    set(summary.reference_place_ids) - set(selection.selected_place_ids)
+                ),
+            },
+        )
+        return {"itinerary": itinerary, **updates}
+
     graph_builder = StateGraph(V1State)
     graph_builder.add_node("extract_requirements", extract_requirements)
     graph_builder.add_node("validate_trip_dates", validate_trip_dates)
     graph_builder.add_node("resolve_destination", resolve_destination)
     graph_builder.add_node("acquire_candidate_funnel", acquire_candidate_funnel)
-    graph_builder.add_node("select_review_aware_pois", select_review_aware_pois)
     graph_builder.add_node("acquire_weather", acquire_weather)
     graph_builder.add_node("acquire_routes", acquire_routes)
     graph_builder.add_node("acquire_and_resolve_official_web", acquire_and_resolve_official_web)
@@ -576,17 +439,25 @@ def build_v1_graph(
         "generate_evidence_informed_itinerary", generate_evidence_informed_itinerary
     )
     graph_builder.add_node("validate_itinerary_dates", validate_itinerary_date_node)
+    graph_builder.add_node("discover_reference_recommendations", discover_reference_recommendations)
     graph_builder.add_edge(START, "extract_requirements")
     graph_builder.add_edge("extract_requirements", "validate_trip_dates")
     graph_builder.add_edge("validate_trip_dates", "resolve_destination")
     graph_builder.add_edge("resolve_destination", "acquire_candidate_funnel")
-    graph_builder.add_edge("acquire_candidate_funnel", "select_review_aware_pois")
-    graph_builder.add_edge("select_review_aware_pois", "acquire_weather")
+    graph_builder.add_edge("acquire_candidate_funnel", "acquire_weather")
     graph_builder.add_edge("acquire_weather", "acquire_routes")
     graph_builder.add_edge("acquire_routes", "acquire_and_resolve_official_web")
     graph_builder.add_edge(
         "acquire_and_resolve_official_web", "generate_evidence_informed_itinerary"
     )
     graph_builder.add_edge("generate_evidence_informed_itinerary", "validate_itinerary_dates")
-    graph_builder.add_edge("validate_itinerary_dates", END)
+    graph_builder.add_edge("validate_itinerary_dates", "discover_reference_recommendations")
+    graph_builder.add_edge("discover_reference_recommendations", END)
     return graph_builder.compile(name="v1")
+
+
+def build_v1_graph(llm_client, evidence_service, tracer, **kwargs):
+    """V1 explicitly omits retrieval dependencies and uses the common tools graph."""
+    if kwargs.get("discovery_extension") is not None:
+        raise ValueError("Use the V2 entry point for retrieval discovery")
+    return build_tools_graph(llm_client, evidence_service, tracer, **kwargs)

@@ -1,7 +1,7 @@
 """Provider-bound request and response DTOs for V1-A integrations."""
 
 from datetime import date
-from typing import Self
+from typing import Literal, Self
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
@@ -40,12 +40,25 @@ class PlaceSearchRequest(IntegrationModel):
     include_future_opening_businesses: bool = False
 
 
+class PlaceNearbySearchRequest(IntegrationModel):
+    center: LatLng
+    radius_metres: float = Field(gt=0, le=50000)
+    max_result_count: int = Field(ge=1, le=20)
+    included_types: tuple[str, ...]
+    rank_preference: Literal["DISTANCE"] = "DISTANCE"
+    language_code: str = "en"
+    field_mask: str = Field(min_length=1)
+    include_future_opening_businesses: Literal[False] = False
+
+
 class PlaceCandidateDTO(IntegrationModel):
     place_id: str = Field(min_length=1)
     display_name: str = Field(min_length=1)
     location: LatLng
     formatted_address: str | None = None
     primary_type: str | None = None
+    types: tuple[str, ...] = ()
+    attributions: tuple[dict[str, object], ...] = ()
     business_status: str | None = None
     opening_date: PlaceOpeningDateDTO | None = None
     provider_rank: int = Field(ge=0)

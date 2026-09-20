@@ -1,6 +1,7 @@
 """Provider-independent structured itinerary schemas."""
 
 from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -15,6 +16,7 @@ class Activity(BaseModel):
     activity_id: str = Field(min_length=1)
     title: str = Field(min_length=1)
     place_name: str | None = Field(default=None, min_length=1)
+    source_place_id: str | None = Field(default=None, min_length=1, max_length=256)
     location: str | None = Field(default=None, min_length=1)
     start_time: datetime
     end_time: datetime
@@ -28,6 +30,20 @@ class Activity(BaseModel):
         if self.end_time <= self.start_time:
             raise ValueError("end_time must be after start_time")
         return self
+
+
+class ReferenceRecommendation(BaseModel):
+    """An optional unscheduled place, never a booking or committed expense."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    place_name: str = Field(min_length=1, max_length=200)
+    source_place_id: str | None = Field(default=None, min_length=1, max_length=256)
+    reason: str = Field(min_length=1, max_length=240)
+    associated_day: date | None = None
+    area: str | None = Field(default=None, min_length=1, max_length=160)
+    uncertainty: str | None = Field(default=None, min_length=1, max_length=240)
+    source_ref: str | None = Field(default=None, min_length=1, max_length=256)
 
 
 class ItineraryDay(BaseModel):
@@ -44,6 +60,11 @@ class Itinerary(BaseModel):
 
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
+    # Missing version marks historical input, not newly generated wire output.
+    output_version: Literal["itinerary_1", "itinerary_2"] = "itinerary_1"
+    reference_recommendations: list[ReferenceRecommendation] = Field(
+        default_factory=list, max_length=3
+    )
     destination: str = Field(min_length=1)
     start_date: date
     end_date: date
@@ -64,10 +85,40 @@ class Itinerary(BaseModel):
         if any(day_date < self.start_date or day_date > self.end_date for day_date in day_dates):
             raise ValueError("itinerary days must be within the trip date range")
 
-        activity_ids = [
-            activity.activity_id for day in self.days for activity in day.activities
-        ]
+        activity_ids = [activity.activity_id for day in self.days for activity in day.activities]
         if len(activity_ids) != len(set(activity_ids)):
             raise ValueError("activity_id values must be unique within an itinerary")
+
+        references = self.reference_recommendations
+        if any(
+            r.associated_day is not None
+            and not self.start_date <= r.associated_day <= self.end_date
+            for r in references
+        ):
+            raise ValueError("Recommendation associated_day must be within the trip")
+        keys = [r.source_place_id or r.place_name.casefold() for r in references]
+        if len(keys) != len(set(keys)):
+            raise ValueError("Duplicate reference recommendations")
+        scheduled_ids = {
+            a.source_place_id
+            for d in self.days
+            for a in d.activities
+            if a.source_place_id is not None
+        }
+        scheduled_names = {
+            a.place_name.casefold()
+            for d in self.days
+            for a in d.activities
+            if a.place_name is not None
+        }
+        if any(
+            (
+                r.source_place_id in scheduled_ids
+                if r.source_place_id
+                else r.place_name.casefold() in scheduled_names
+            )
+            for r in references
+        ):
+            raise ValueError("Scheduled venues cannot also be reference recommendations")
 
         return self

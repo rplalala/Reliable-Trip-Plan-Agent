@@ -18,34 +18,6 @@ class FoundryMoneyDTO(FoundryTransportDTO):
     currency: str
 
 
-class FoundryTravelRequirementsDTO(FoundryTransportDTO):
-    """Transport representation of extracted travel requirements."""
-
-    destination: str | None
-    start_date: str | None
-    end_date: str | None
-    traveler_count: int | None
-    budget: FoundryMoneyDTO | None
-    required_activities: list[str]
-    excluded_activities: list[str]
-    preferences: list[str]
-    unresolved_fields: list[str]
-
-
-class FoundryNamedPlaceIntentDTO(FoundryTransportDTO):
-    """A copied user place surface and controlled inclusion decision."""
-
-    place_text: str
-    inclusion: Literal["REQUIRED", "OPTIONAL"]
-    source_text: str
-
-
-class FoundryRequirementsWithNamedPlaceIntentsDTO(FoundryTravelRequirementsDTO):
-    """V1+ extraction preserves every base field and adds one intent array."""
-
-    named_place_intents: list[FoundryNamedPlaceIntentDTO]
-
-
 class FoundryRequestedPlaceInformationDTO(FoundryTransportDTO):
     target_surface: str
     target_source_text: str
@@ -76,37 +48,124 @@ class FoundryRequestedPlaceInformationDTO(FoundryTransportDTO):
     requested_end_date: str | None
 
 
-class FoundryExperiencePreferenceIntentDTO(FoundryTransportDTO):
-    preference: Literal[
-        "AVOID_CROWDS",
-        "PREFER_LESS_WALKING",
-        "PREFER_ACCESSIBLE",
-        "PREFER_FAMILY_FRIENDLY",
-        "PREFER_SHORT_VISIT",
-        "PREFER_LONG_VISIT",
-    ]
-    importance: Literal["explicit_requirement", "normal_preference"]
-    source_text: str
-
-
 class FoundryTransportPreferenceIntentDTO(FoundryTransportDTO):
     mode: Literal["DRIVE", "WALK", "BICYCLE", "TRANSIT"]
     source_text: str
 
 
-class FoundryPoiInterestDTO(FoundryTransportDTO):
-    surface: str
-    importance: Literal["explicit_requirement", "normal_preference"]
-    source_text: str
+class FoundrySourceQuoteDTO(FoundryTransportDTO):
+    quote: str
+    occurrence: int
 
 
-class FoundryTripIntentExtractionDTO(FoundryRequirementsWithNamedPlaceIntentsDTO):
-    """One V1 provider response for all bounded user-semantic capabilities."""
+class FoundrySubjectDTO(FoundryTransportDTO):
+    local_key: str
+    label: str
+    source_refs: list[FoundrySourceQuoteDTO]
 
+
+class FoundryPartyTargetDTO(FoundryTransportDTO):
+    kind: Literal["party"]
+
+
+class FoundrySpecifiedTargetDTO(FoundryTransportDTO):
+    kind: Literal["specified"]
+    first_ref: str
+    additional_refs: list[str]
+
+
+class FoundryUnresolvedTargetDTO(FoundryTransportDTO):
+    kind: Literal["unresolved"]
+    reason: str
+
+
+class FoundrySemanticDTO(FoundryTransportDTO):
+    local_key: str
+    normalized_text: str
+    kind: Literal["preference", "constraint", "goal"]
+    polarity: Literal["favor", "avoid"]
+    strength: Literal["low", "medium", "high", "hard"]
+    scope: Literal[
+        "individual_poi", "selected_poi_set", "whole_trip", "itinerary_style", "transport"
+    ]
+    subject_target: FoundryPartyTargetDTO | FoundrySpecifiedTargetDTO | FoundryUnresolvedTargetDTO
+    source_refs: list[FoundrySourceQuoteDTO]
+
+
+class FoundryNamedRequirementDTO(FoundryTransportDTO):
+    place_text: str
+    inclusion: Literal["REQUIRED", "OPTIONAL", "EXCLUDED"]
+    source_refs: list[FoundrySourceQuoteDTO]
+
+
+class FoundryDiscoveryDTO(FoundryTransportDTO):
+    requirement_refs: list[str]
+    purpose: Literal["activity_or_category", "semantic_discovery"]
+    query_text: str
+
+
+class FoundryEvidenceRequestDTO(FoundryTransportDTO):
+    requirement_ref: str
+    dimension: Literal[
+        "crowding", "walking_intensity", "accessibility", "family_friendliness", "visit_duration"
+    ]
+    preferred_values: list[
+        Literal[
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "LIGHT",
+            "ACCESSIBLE",
+            "MIXED",
+            "LIMITED",
+            "FAMILY_FRIENDLY",
+            "NOT_FAMILY_FRIENDLY",
+            "SHORT",
+            "MEDIUM",
+            "LONG",
+        ]
+    ]
+    avoided_values: list[
+        Literal[
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "LIGHT",
+            "ACCESSIBLE",
+            "MIXED",
+            "LIMITED",
+            "FAMILY_FRIENDLY",
+            "NOT_FAMILY_FRIENDLY",
+            "SHORT",
+            "MEDIUM",
+            "LONG",
+        ]
+    ]
+
+
+class FoundryOperationalConflictDTO(FoundryTransportDTO):
+    field: Literal[
+        "destination",
+        "start_date",
+        "end_date",
+        "traveler_count",
+        "budget.amount",
+        "budget.currency",
+    ]
+    source_refs: list[FoundrySourceQuoteDTO]
+
+
+class FoundryInterpretationDTO(FoundryTransportDTO):
+    operational_conflicts: list[FoundryOperationalConflictDTO]
+    named_places: list[FoundryNamedRequirementDTO]
     requested_place_information: list[FoundryRequestedPlaceInformationDTO]
-    experience_preferences: list[FoundryExperiencePreferenceIntentDTO]
     transport_preference: FoundryTransportPreferenceIntentDTO | None
-    poi_interests: list[FoundryPoiInterestDTO]
+    semantic_requirements: list[FoundrySemanticDTO]
+    subjects: list[FoundrySubjectDTO]
+    discovery_intents: list[FoundryDiscoveryDTO]
+    experience_evidence_requests: list[FoundryEvidenceRequestDTO]
+    extraction_issues: list[str]
+    overflow: bool
 
 
 class FoundryDateTimeDTO(FoundryTransportDTO):
@@ -122,6 +181,7 @@ class FoundryActivityDTO(FoundryTransportDTO):
 
     activity_id: str
     title: str
+    source_place_id: str | None
     place_name: str | None
     location: str | None
     start_time: FoundryDateTimeDTO
@@ -137,13 +197,31 @@ class FoundryItineraryDayDTO(FoundryTransportDTO):
     activities: list[FoundryActivityDTO]
 
 
-class FoundryItineraryDTO(FoundryTransportDTO):
-    """Transport representation of a complete itinerary."""
+class FoundryReferenceRecommendationDTO(FoundryTransportDTO):
+    """Model-authored reference content; provenance is assigned by the application."""
 
+    place_name: str
+    source_place_id: str | None
+    reason: str
+    associated_day: str | None
+    area: str | None
+    uncertainty: str | None
+
+
+class FoundryPrimaryItineraryDTO(FoundryTransportDTO):
+    """V1 model output contains only the primary itinerary."""
+
+    output_version: Literal["itinerary_2"]
     destination: str
     start_date: str
     end_date: str
     days: list[FoundryItineraryDayDTO]
+
+
+class FoundryItineraryDTO(FoundryPrimaryItineraryDTO):
+    """V0 model output includes subordinate model-knowledge references."""
+
+    reference_recommendations: list[FoundryReferenceRecommendationDTO]
 
 
 class FoundryExperienceSignalDTO(FoundryTransportDTO):

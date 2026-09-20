@@ -7,13 +7,11 @@ from httpx import ASGITransport, AsyncClient
 
 from backend.app.api.dependencies import get_planning_service
 from backend.app.main import app
-from backend.app.schemas.request import TravelRequirements
 from backend.app.services.planning import PlanningService
 from backend.tests.fakes import FixedDateProvider
 from backend.tests.versions.v0.fakes import (
     FakeStructuredLLMClient,
     make_itinerary,
-    make_requirements,
 )
 
 
@@ -42,6 +40,7 @@ def make_product_payload() -> dict[str, object]:
         "start_date": "2026-09-12",
         "end_date": "2026-09-12",
         "traveler_count": 1,
+        "budget": {"amount": "1800", "currency": "AUD"},
     }
 
 
@@ -51,7 +50,7 @@ def make_planning_service(client: FakeStructuredLLMClient) -> PlanningService:
 
 def test_product_planning_returns_completed_contract_without_version() -> None:
     service = make_planning_service(
-        FakeStructuredLLMClient([make_requirements(), make_itinerary()])
+        FakeStructuredLLMClient([make_itinerary()])
     )
 
     status_code, body = post_product_planning(
@@ -66,19 +65,13 @@ def test_product_planning_returns_completed_contract_without_version() -> None:
     assert "system_version" not in body
 
 
-def test_product_planning_maps_missing_fields_to_clarification() -> None:
-    service = make_planning_service(
-        FakeStructuredLLMClient([TravelRequirements(destination="Kyoto")])
-    )
-
-    status_code, body = post_product_planning(service, make_product_payload())
-
-    assert status_code == 200
-    assert body["status"] == "needs_clarification"
-    assert body["requirements"]["unresolved_fields"] == ["start_date", "end_date"]
-    assert "unresolved_fields" not in body
-    assert "itinerary" not in body
-    assert "system_version" not in body
+def test_product_planning_missing_budget_is_input_failure():
+    client = FakeStructuredLLMClient([])
+    payload = make_product_payload()
+    del payload["budget"]
+    status_code, body = post_product_planning(make_planning_service(client), payload)
+    assert status_code == 422
+    assert not client.calls
 
 
 def test_product_planning_rejects_version_field() -> None:

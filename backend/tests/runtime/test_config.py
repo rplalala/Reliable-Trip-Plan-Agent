@@ -29,28 +29,33 @@ def _write_config(path: Path, data: dict[str, object]) -> None:
     path.write_text(yaml.safe_dump(data), encoding="utf-8")
 
 
-def test_committed_yaml_preserves_v1_budget_and_trace_defaults() -> None:
+def test_committed_yaml_selects_quality_first_budget_and_trace_defaults() -> None:
     config = load_runtime_config()
     limits = ToolBudgetLimits()
 
     assert config.app.time_zone == "Australia/Sydney"
-    assert limits.max_candidates == 36
+    assert limits.max_candidates == 64
     assert limits.max_final_pois == 16
     assert limits.max_destination_search_calls == 1
     assert limits.max_candidate_search_calls == 12
-    assert limits.max_place_detail_calls == 18
-    assert limits.max_review_detail_calls == 6
-    assert limits.max_review_enriched_places == 6
-    assert limits.max_experience_profile_llm_calls == 6
+    assert limits.max_place_detail_calls == 40
+    assert limits.max_review_detail_calls == 8
+    assert limits.max_review_enriched_places == 8
+    assert limits.max_experience_profile_llm_calls == 8
     assert limits.max_route_matrix_elements == 64
     assert limits.max_baseline_route_matrix_elements_per_request == 64
     assert limits.max_baseline_route_matrix_elements == 256
     assert limits.max_baseline_route_matrix_calls == 4
-    assert limits.max_alternative_route_pairs == 8
-    assert limits.max_alternative_route_matrix_calls == 8
+    assert limits.max_alternative_route_pairs == 16
+    assert limits.max_alternative_route_matrix_calls == 16
     assert limits.max_weather_calls == 2
-    assert config.schema_version == 5
-    assert limits.max_web_evidence_tasks == 6
+    assert config.acquisition.policy_id == "quality_first_1"
+    assert config.tripworld_discovery.sql_timeout == 60
+    assert config.tripworld_discovery.deadline_seconds == 360
+    assert config.main_generation.input_tokens == 160000
+    assert config.main_generation.output_tokens == 16384
+    assert config.schema_version == 6
+    assert limits.max_web_evidence_tasks == 8
     assert config.web_evidence.max_tool_calls == 2
     assert config.web_evidence.page_retrieval.timeout_seconds == 10
     assert config.web_evidence.page_retrieval.max_response_bytes == 262144
@@ -103,7 +108,7 @@ def test_web_budget_migration_rejects_old_schema_old_key_and_dual_keys(tmp_path)
     with pytest.raises(ValidationError):
         load_runtime_config_file(path)
 
-    data["schema_version"] = 5
+    data["schema_version"] = 6
     data["budget"]["web"]["search_queries"] = data["budget"]["web"].pop("evidence_tasks")
     _write_config(path, data)
     with pytest.raises(ValidationError):
@@ -123,7 +128,7 @@ def test_search_budget_migration_rejects_old_shared_key_and_schema(tmp_path) -> 
     with pytest.raises(ValidationError):
         load_runtime_config_file(path)
 
-    data["schema_version"] = 5
+    data["schema_version"] = 6
     places = data["budget"]["places"]
     places["search_calls"] = places.pop("candidate_search_calls")
     _write_config(path, data)
@@ -161,6 +166,7 @@ def test_page_retrieval_safety_defaults_are_strict(tmp_path) -> None:
 
 
 _BUDGET_PATHS = {
+    ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS: ("routes", "alternative_elements"),
     ToolBudgetKey.CANDIDATES: ("candidates",),
     ToolBudgetKey.FINAL_POIS: ("final_pois",),
     ToolBudgetKey.DESTINATION_SEARCH_CALLS: ("places", "destination_search_calls"),
@@ -189,6 +195,9 @@ def test_every_yaml_budget_has_one_enforced_hard_limit(tmp_path, key) -> None:
     for segment in path[:-1]:
         target = target[segment]
     config_path = tmp_path / "runtime.yaml"
+    if key is ToolBudgetKey.REVIEW_ENRICHED_PLACES:
+        data["budget"]["places"]["review_detail_calls"] = limit.maximum
+        data["budget"]["experience"]["profile_llm_calls"] = limit.maximum
     target[path[-1]] = limit.maximum
     _write_config(config_path, data)
     assert load_runtime_config_file(config_path).budget.as_key_limits()[key] == limit.maximum
@@ -252,7 +261,7 @@ def test_env_cannot_override_yaml_policy(monkeypatch) -> None:
     monkeypatch.setenv("V1_TRACE_ENABLED", "false")
     monkeypatch.setenv("APP_TIME_ZONE", "Pacific/Auckland")
 
-    assert ToolBudgetLimits().max_alternative_route_pairs == 8
+    assert ToolBudgetLimits().max_alternative_route_pairs == 16
     assert load_runtime_config().trace.enabled is True
     assert load_runtime_config().app.time_zone == "Australia/Sydney"
 
@@ -275,8 +284,8 @@ def test_config_snapshot_is_stable_and_contains_only_policy() -> None:
     )
 
     assert snapshot["trace"]["directory"] == "logs"
-    assert snapshot["effective_tool_budget"]["alternative_route_pairs"] == 8
-    assert snapshot["effective_tool_budget"]["web_evidence_tasks"] == 6
+    assert snapshot["effective_tool_budget"]["alternative_route_pairs"] == 16
+    assert snapshot["effective_tool_budget"]["web_evidence_tasks"] == 8
     assert "web_search_queries" not in json.dumps(snapshot)
     assert (snapshot, digest) == runtime_config_snapshot(
         config,
@@ -314,3 +323,20 @@ def test_console_log_filter_redacts_provider_query_credentials() -> None:
     assert _RedactingLogFilter().filter(record) is True
     assert "live-secret" not in record.getMessage()
     assert "key=%5BREDACTED%5D" in record.getMessage()
+
+
+
+
+
+
+
+def test_rag_time_and_work_bounds_remain_finite():
+    from backend.app.versions.v2.config import RAGConfig
+
+    effective = load_runtime_config().tripworld_discovery
+    for values in (
+        {"sql_timeout": 0}, {"sql_timeout": 61}, {"deadline_seconds": 361},
+        {"top_k": 21}, {"max_queries": 5}, {"retries": 1},
+    ):
+        with pytest.raises(ValidationError):
+            RAGConfig.model_validate({**effective.model_dump(), **values})

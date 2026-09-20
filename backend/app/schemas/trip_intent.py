@@ -6,19 +6,7 @@ from enum import StrEnum
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from backend.app.evidence.scope_models import SubjectScope
-from backend.app.evidence.selection_models import SearchIntentKind
 from backend.app.evidence.web_models import OfficialInformationNeed, RequestedFacet
-from backend.app.schemas.named_place_intent import NamedPlaceIntent
-from backend.app.schemas.request import TravelRequirements
-
-
-class ExperiencePreference(StrEnum):
-    AVOID_CROWDS = "AVOID_CROWDS"
-    PREFER_LESS_WALKING = "PREFER_LESS_WALKING"
-    PREFER_ACCESSIBLE = "PREFER_ACCESSIBLE"
-    PREFER_FAMILY_FRIENDLY = "PREFER_FAMILY_FRIENDLY"
-    PREFER_SHORT_VISIT = "PREFER_SHORT_VISIT"
-    PREFER_LONG_VISIT = "PREFER_LONG_VISIT"
 
 
 class TravelMode(StrEnum):
@@ -96,41 +84,6 @@ class RequestedPlaceInformation(SemanticIntentModel):
         return self
 
 
-class ExperiencePreferenceIntent(SemanticIntentModel):
-    preference: ExperiencePreference
-    importance: SearchIntentKind
-    source_text: str = Field(min_length=1, max_length=320)
-
-    @model_validator(mode="after")
-    def explicit_importance(self) -> "ExperiencePreferenceIntent":
-        if self.importance is SearchIntentKind.FALLBACK:
-            raise ValueError("User experience preference cannot be fallback discovery")
-        return self
-
-
 class TransportPreferenceIntent(SemanticIntentModel):
     mode: TravelMode
     source_text: str = Field(min_length=1, max_length=320)
-
-
-class PoiInterest(SemanticIntentModel):
-    surface: str = Field(min_length=1, max_length=160)
-    importance: SearchIntentKind
-    source_text: str = Field(min_length=1, max_length=320)
-
-    @model_validator(mode="after")
-    def explicit_importance(self) -> "PoiInterest":
-        if self.importance is SearchIntentKind.FALLBACK:
-            raise ValueError("User POI interest cannot be fallback discovery")
-        return self
-
-
-class TripIntentExtractionResult(SemanticIntentModel):
-    """One bounded requirements extraction with separate semantic capabilities."""
-
-    requirements: TravelRequirements
-    named_place_intents: tuple[NamedPlaceIntent, ...] = Field(max_length=24)
-    requested_place_information: tuple[RequestedPlaceInformation, ...] = Field(max_length=32)
-    experience_preferences: tuple[ExperiencePreferenceIntent, ...] = Field(max_length=16)
-    transport_preference: TransportPreferenceIntent | None
-    poi_interests: tuple[PoiInterest, ...] = Field(max_length=24)

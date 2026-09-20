@@ -1,20 +1,20 @@
-"""Tests for product and developer planning service boundaries."""
+"""Structured product/service migration; old prose extraction is intentionally replaced."""
 
 import asyncio
 from datetime import date
+from decimal import Decimal
 
 import pytest
 
-from backend.app.schemas.planning import SystemVersion
-from backend.app.schemas.request import Money, TravelRequest, TravelRequirements
 from backend.app.services.planning import (
     DeveloperPlanningService,
     PlanningFailedError,
     PlanningNeedsClarificationError,
     PlanningService,
-    build_canonical_request_text,
 )
+from backend.app.services.preference_interpretation import empty_preference_draft
 from backend.tests.fakes import FixedDateProvider
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v0.fakes import (
     FakeStructuredLLMClient,
     make_itinerary,
@@ -22,168 +22,54 @@ from backend.tests.versions.v0.fakes import (
 )
 
 
-def test_canonical_request_contains_only_required_values() -> None:
-    request_text = build_canonical_request_text(
-        destination="Beijing",
-        start_date=date(2026, 10, 1),
-        end_date=date(2026, 10, 3),
-        traveler_count=2,
-        budget=None,
-        additional_preferences=None,
+def test_product_default_remains_v0_and_budget_is_total():
+    request = make_request(
+        requirements=make_requirements(), budget={"amount": "1234.50", "currency": "NZD"}
     )
-
-    assert request_text == (
-        "Plan a trip to Beijing from 2026-10-01 to 2026-10-03 for 2 travelers."
-    )
-
-
-def test_canonical_request_preserves_explicit_budget_without_conversion() -> None:
-    request_text = build_canonical_request_text(
-        destination="Wellington",
-        start_date=date(2026, 11, 4),
-        end_date=date(2026, 11, 4),
-        traveler_count=1,
-        budget=Money(amount="1234.50", currency="NZD"),
-        additional_preferences=None,
-    )
-
-    assert request_text == (
-        "Plan a trip to Wellington from 2026-11-04 to 2026-11-04 for 1 traveler "
-        "with a total budget of 1234.50 NZD."
-    )
-
-
-def test_canonical_request_preserves_preference_text_exactly() -> None:
-    preference = "Keep Museum names AS entered; no nightlife, please!"
-
-    request_text = build_canonical_request_text(
-        destination="Berlin",
-        start_date=date(2027, 1, 8),
-        end_date=date(2027, 1, 10),
-        traveler_count=3,
-        budget=None,
-        additional_preferences=preference,
-    )
-
-    assert request_text == (
-        "Plan a trip to Berlin from 2027-01-08 to 2027-01-10 for 3 travelers. "
-        "Additional preferences: Keep Museum names AS entered; no nightlife, please!"
-    )
-
-
-def test_canonical_request_is_deterministic_for_the_same_validated_values() -> None:
-    values = {
-        "destination": "Beijing",
-        "start_date": date(2026, 10, 1),
-        "end_date": date(2026, 10, 3),
-        "traveler_count": 2,
-        "budget": Money(amount="2000", currency="AUD"),
-        "additional_preferences": "Local food and quiet mornings.",
-    }
-
-    first = build_canonical_request_text(**values)
-    second = build_canonical_request_text(**values)
-
-    assert first == second
-    assert first == (
-        "Plan a trip to Beijing from 2026-10-01 to 2026-10-03 for 2 travelers "
-        "with a total budget of 2000 AUD. Additional preferences: Local food and quiet mornings."
-    )
-
-
-def test_product_service_returns_programmatic_v0_result_from_canonical_request() -> None:
-    client = FakeStructuredLLMClient([make_requirements(), make_itinerary()])
-    service = PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
-
+    client = FakeStructuredLLMClient([make_itinerary()])
     result = asyncio.run(
-        service.plan(
-            destination="Kyoto",
-            start_date=date(2026, 9, 12),
-            end_date=date(2026, 9, 12),
-            traveler_count=1,
-            budget=None,
-            additional_preferences=None,
-        )
+        PlanningService(client, FixedDateProvider(date(2026, 9, 11))).plan(request)
     )
-
-    assert result.system_version is SystemVersion.V0
-    assert result.itinerary.destination == "Kyoto"
-    assert len(client.calls) == 2
-    assert (
-        "Plan a trip to Kyoto from 2026-09-12 to 2026-09-12 for 1 traveler."
-        in client.calls[0].user_prompt
-    )
+    assert result.system_version == "v0"
+    assert result.requirements.budget.amount == Decimal("1234.50")
+    assert result.requirements.budget.currency == "NZD"
+    assert len(client.calls) == 1
+    assert "1234.50" in client.calls[0].user_prompt
 
 
-def test_product_service_maps_missing_requirements_without_generation() -> None:
-    requirements = TravelRequirements(destination="Kyoto")
-    client = FakeStructuredLLMClient([requirements])
-    service = PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
-
-    with pytest.raises(PlanningNeedsClarificationError) as captured:
+def test_product_service_hides_provider_failure():
+    client = FakeStructuredLLMClient([RuntimeError("provider secret")])
+    with pytest.raises(PlanningFailedError) as exc:
         asyncio.run(
-            service.plan(
-                destination="Kyoto",
-                start_date=date(2026, 9, 12),
-                end_date=date(2026, 9, 14),
-                traveler_count=1,
-                budget=None,
-                additional_preferences=None,
-            )
+            PlanningService(client, FixedDateProvider(date(2026, 9, 11))).plan(make_request())
         )
+    assert "provider secret" not in str(exc.value)
 
-    assert captured.value.requirements.unresolved_fields == ["start_date", "end_date"]
+
+def test_product_service_preserves_form_on_semantic_issue():
+    request = make_request("Unclear preference")
+    draft = empty_preference_draft().model_copy(update={"extraction_issues": ("ambiguous",)})
+    client = FakeStructuredLLMClient([draft])
+    with pytest.raises(PlanningNeedsClarificationError) as exc:
+        asyncio.run(PlanningService(client, FixedDateProvider(date(2026, 9, 11))).plan(request))
+    assert exc.value.requirements == request.trip_requirements()
+    assert exc.value.issues["code"] == "extraction_ambiguity"
     assert len(client.calls) == 1
 
 
-def test_product_service_hides_v0_stage_failure() -> None:
-    client = FakeStructuredLLMClient([RuntimeError("provider secret")])
-    service = PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
-
-    with pytest.raises(PlanningFailedError, match="active planner failed") as captured:
-        asyncio.run(
-            service.plan(
-                destination="Kyoto",
-                start_date=date(2026, 9, 12),
-                end_date=date(2026, 9, 12),
-                traveler_count=1,
-                budget=None,
-                additional_preferences=None,
-            )
-        )
-
-    assert "provider secret" not in str(captured.value)
-
-
-def test_developer_service_preserves_v0_programmatic_result() -> None:
-    client = FakeStructuredLLMClient([make_requirements(), make_itinerary()])
-    service = DeveloperPlanningService(client)
-
+def test_developer_service_reuses_shared_v0_contract():
+    request = make_request(requirements=make_requirements())
+    client = FakeStructuredLLMClient([make_itinerary()])
     result = asyncio.run(
-        service.plan_v0(
-            TravelRequest(request_text="Plan one day in Kyoto."),
-            reference_date=date(2026, 9, 11),
-        )
+        DeveloperPlanningService(client).plan_v0(request, reference_date=date(2026, 9, 11))
     )
+    assert result.requirements == request.trip_requirements()
+    assert len(client.calls) == 1
 
-    assert result.system_version is SystemVersion.V0
-    assert len(client.calls) == 2
 
-
-def test_product_service_rejects_a_short_trip_next_year_before_llm_calls() -> None:
+def test_product_service_rejects_future_dates_before_model():
+    request = make_request(start_date="2027-01-01", end_date="2027-01-03")
     client = FakeStructuredLLMClient([])
-    service = PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
-
-    with pytest.raises(ValueError, match="end_date must be on or before 2026-09-20"):
-        asyncio.run(
-            service.plan(
-                destination="Kyoto",
-                start_date=date(2027, 1, 1),
-                end_date=date(2027, 1, 3),
-                traveler_count=1,
-                budget=None,
-                additional_preferences=None,
-            )
-        )
-
-    assert client.calls == []
+    with pytest.raises(ValueError, match="end_date must be on or before"):
+        asyncio.run(PlanningService(client, FixedDateProvider(date(2026, 9, 11))).plan(request))
+    assert not client.calls

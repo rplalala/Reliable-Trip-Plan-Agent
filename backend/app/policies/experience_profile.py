@@ -98,6 +98,7 @@ def validate_profile_draft(
         place_id=place_id,
         availability=availability,
         summary=draft.summary,
+        summary_truncated=draft.summary_truncated,
         summary_review_refs=summary_refs,
         signals=tuple(signals),
         review_count_used=len(reviews),

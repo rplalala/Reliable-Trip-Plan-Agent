@@ -16,6 +16,7 @@ dependencies = [
     "tzdata>=2025.2",
     "uvicorn>=0.35,<1.0",
     "pyarrow>=18,<24",
+    "tiktoken>=0.9,<1",
 ]
 
 [dependency-groups]
@@ -28,7 +29,6 @@ retrieval = [
     "numpy>=2,<3",
     "pgvector>=0.4,<1",
     "psycopg[binary]>=3.2,<4",
-    "tiktoken>=0.9,<1",
 ]
 
 [tool.uv]

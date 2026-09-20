@@ -12,14 +12,12 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
     FoundryMoneyDTO,
-    FoundryTravelRequirementsDTO,
 )
 from backend.app.llm.azure_foundry.mapping import (
     FoundryMappingError,
     map_foundry_datetime,
     map_foundry_itinerary,
     map_foundry_money,
-    map_foundry_requirements,
 )
 
 
@@ -42,6 +40,7 @@ def make_activity(
     end_time: FoundryDateTimeDTO | None = None,
 ) -> FoundryActivityDTO:
     return FoundryActivityDTO(
+        source_place_id=None,
         activity_id="activity-1",
         title="Visit Fushimi Inari Shrine",
         place_name="Fushimi Inari Taisha",
@@ -55,6 +54,8 @@ def make_activity(
 
 def make_itinerary(*, activity: FoundryActivityDTO | None = None) -> FoundryItineraryDTO:
     return FoundryItineraryDTO(
+        output_version="itinerary_2",
+        reference_recommendations=[],
         destination="Kyoto",
         start_date="2026-10-01",
         end_date="2026-10-01",
@@ -108,43 +109,6 @@ def test_datetime_mapping_rejects_non_exact_components(
         )
 
 
-def test_requirements_mapping_preserves_missing_values() -> None:
-    dto = FoundryTravelRequirementsDTO(
-        destination="Kyoto",
-        start_date=None,
-        end_date=None,
-        traveler_count=None,
-        budget=None,
-        required_activities=[],
-        excluded_activities=[],
-        preferences=[],
-        unresolved_fields=["start_date", "end_date"],
-    )
-
-    mapped = map_foundry_requirements(dto)
-
-    assert mapped.start_date is None
-    assert mapped.end_date is None
-    assert mapped.unresolved_fields == ["start_date", "end_date"]
-
-
-def test_requirements_mapping_rejects_non_iso_date_without_normalizing() -> None:
-    dto = FoundryTravelRequirementsDTO(
-        destination="Kyoto",
-        start_date="2026/10/01",
-        end_date="2026-10-01",
-        traveler_count=1,
-        budget=None,
-        required_activities=[],
-        excluded_activities=[],
-        preferences=[],
-        unresolved_fields=[],
-    )
-
-    with pytest.raises(FoundryMappingError, match="start_date must use exactly YYYY-MM-DD"):
-        map_foundry_requirements(dto)
-
-
 def test_money_mapping_preserves_domain_validation() -> None:
     with pytest.raises(ValidationError):
         map_foundry_money(FoundryMoneyDTO(amount="-1", currency="jpy"))
@@ -155,9 +119,7 @@ def test_itinerary_mapping_returns_existing_domain_model() -> None:
 
     assert mapped.destination == "Kyoto"
     assert mapped.start_date == date(2026, 10, 1)
-    assert mapped.days[0].activities[0].start_time.isoformat() == (
-        "2026-10-01T09:00:00+09:00"
-    )
+    assert mapped.days[0].activities[0].start_time.isoformat() == ("2026-10-01T09:00:00+09:00")
 
 
 def test_itinerary_mapping_does_not_infer_missing_activity_date() -> None:

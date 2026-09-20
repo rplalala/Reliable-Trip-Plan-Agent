@@ -18,7 +18,8 @@ from backend.app.evidence.web_models import (
 )
 from backend.app.policies.official_web import plan_official_web_tasks
 from backend.app.runtime.config_loader import load_runtime_config
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import TravelRequirements
+from backend.tests.request_fixtures import make_request
 
 START = date(2026, 12, 25)
 
@@ -66,7 +67,7 @@ def _plan(
     opening_date_conflicts: dict[str, tuple[date | None, ...]] | None = None,
 ):
     return plan_official_web_tasks(
-        TravelRequest(request_text=text),
+        make_request(additional_preferences=text),
         TravelRequirements(
             destination="Sydney",
             start_date=START,
@@ -89,7 +90,7 @@ def test_sufficient_current_status_creates_no_residual_gap() -> None:
 
 def test_named_and_must_visit_labels_alone_do_not_generate_web_tasks() -> None:
     pairs = [_pair("optional", "Optional Zoo"), _pair("required", "Required Museum")]
-    request = TravelRequest(request_text="Must visit Optional Zoo. Visit Required Museum.")
+    request = make_request(additional_preferences="Must visit Optional Zoo. Visit Required Museum.")
     requirements = TravelRequirements(destination="Sydney", start_date=START, end_date=START)
     tasks, _, _ = plan_official_web_tasks(
         request,
@@ -106,7 +107,7 @@ def test_named_and_must_visit_labels_alone_do_not_generate_web_tasks() -> None:
 def test_unnamed_selected_places_without_risk_generate_no_tasks() -> None:
     pairs = [_pair("third", "Third Place"), _pair("first", "First Place")]
     tasks, _, _ = plan_official_web_tasks(
-        TravelRequest(request_text="A day in Sydney."),
+        make_request(additional_preferences="A day in Sydney."),
         TravelRequirements(destination="Sydney", start_date=START, end_date=START),
         [item[0] for item in pairs],
         [item[1] for item in pairs],

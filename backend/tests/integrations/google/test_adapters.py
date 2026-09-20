@@ -36,7 +36,7 @@ from backend.app.observability.run_trace import (
     TracePayloadMode,
 )
 from backend.app.policies.trip_dates import create_trip_date_window
-from backend.app.schemas.request import TravelRequest
+from backend.tests.request_fixtures import make_request
 
 
 @dataclass
@@ -261,7 +261,7 @@ def test_places_raw_trace_records_review_count_not_review_text(tmp_path: Path) -
             system_version="v1",
             reference_date=date(2026, 9, 11),
             date_window=create_trip_date_window(date(2026, 9, 11)),
-            request=TravelRequest(request_text="Plan Sydney."),
+            request=make_request(additional_preferences="Plan Sydney."),
             started_at=datetime(2026, 9, 11, tzinfo=UTC),
         ),
         root=tmp_path,

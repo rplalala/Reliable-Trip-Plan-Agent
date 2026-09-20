@@ -8,21 +8,31 @@ import pytest
 
 from backend.app.evidence.web_models import RequestedFacet
 from backend.app.observability.run_trace import NullRunTracer
+from backend.app.policies.interpreted_requirements import canonicalize_requirements
 from backend.app.runtime.budget import ToolBudget
 from backend.app.runtime.cache import RequestCache
+from backend.app.schemas.interpreted_requirements import (
+    ClarificationRequired,
+)
+from backend.app.schemas.interpreted_requirements import (
+    InterpretationDraft as TripIntentExtractionResult,
+)
 from backend.app.schemas.named_place_intent import NamedPlaceInclusion, NamedPlaceIntent
-from backend.app.schemas.request import TravelRequest
-from backend.app.schemas.trip_intent import RequestedPlaceInformation, TripIntentExtractionResult
+from backend.app.schemas.requirement_boundary import RequirementBoundaryError
+from backend.app.schemas.trip_intent import RequestedPlaceInformation
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
-from backend.app.versions.v1.graph import V1StageError, build_v1_graph
-from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+from backend.app.versions.v1.graph import build_v1_graph
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v1.fakes import (
     FakePlacesProvider,
     FakeRoutesProvider,
     FakeWeatherProvider,
-    make_extraction,
     make_itinerary,
     make_requirements,
+)
+from backend.tests.versions.v1.fakes import RevisedFakeLLM as FakeStructuredLLMClient
+from backend.tests.versions.v1.fakes import (
+    make_revised_extraction as make_extraction,
 )
 
 RUN_ID = UUID("00000000-0000-0000-0000-000000000026")
@@ -54,7 +64,7 @@ def _run(request_text: str, extraction: TripIntentExtractionResult):
         asyncio.run(
             graph.ainvoke(
                 {
-                    "request": TravelRequest(request_text=request_text),
+                    "request": make_request(additional_preferences=request_text),
                     "reference_date": date(2026, 9, 11),
                 }
             )
@@ -90,24 +100,22 @@ def test_mocked_named_place_inclusion_is_retained_separately(
         source_text=source_text,
     )
 
-    state, llm, places, tracer = _run(source_text, make_extraction(base, intents=(intent,)))
-
-    assert state["requirements"] == base
-    assert state["named_place_intents"] == (intent,)
-    assert llm.calls[0].response_schema is TripIntentExtractionResult
-    assert len(llm.calls) == 2
-    assert len(places.search_requests) == 4
-    assert any(name == "named_place_intents_validated" for name, _ in tracer.events)
+    draft = make_extraction(base, intents=(intent,))
+    contract = canonicalize_requirements(draft, make_request(source_text))
+    assert contract.named_places[0].place_text == intent.place_text
+    assert contract.named_places[0].inclusion == inclusion.value
+    assert contract.named_places[0].source_refs[0].quote == source_text
+    assert not contract.semantic_requirements
 
 
 @pytest.mark.parametrize("category", ["museums", "parks", "beaches"])
-def test_generic_category_remains_base_requirement_without_named_intent(category: str) -> None:
+def test_legacy_arrays_are_not_a_second_requirement_authority(category: str) -> None:
     base = make_requirements().model_copy(update={"required_activities": [category]})
 
     state, _, _, _ = _run(f"I want to visit {category}.", make_extraction(base))
 
-    assert state["requirements"].required_activities == [category]
-    assert state["named_place_intents"] == ()
+    assert state["requirements"].required_activities == []
+    assert state["interpreted_requirements"].named_places == ()
 
 
 def test_typed_intent_replaces_free_text_named_place_identity_in_funnel() -> None:
@@ -120,18 +128,8 @@ def test_typed_intent_replaces_free_text_named_place_identity_in_funnel() -> Non
         source_text="Sydney Opera House is a must-visit",
     )
 
-    state, _, places, _ = _run(
-        "Sydney Opera House is a must-visit", make_extraction(base, intents=(intent,))
-    )
-
-    assert state["named_place_intents"] == (intent,)
-    assert state["candidate_funnel"].unresolved_required_names == ("Sydney Opera House",)
-    assert [item.term for item in state["candidate_funnel"].search_intents].count(
-        "Sydney Opera House"
-    ) == 1
-    assert "Visit the Sydney Opera House in Sydney" not in [
-        request.text_query for request in places.search_requests
-    ]
+    with pytest.raises(ClarificationRequired, match="unresolved_named_identity"):
+        _run("Sydney Opera House is a must-visit", make_extraction(base, intents=(intent,)))
 
 
 def test_invalid_intent_fails_extraction_before_provider_calls() -> None:
@@ -160,20 +158,16 @@ def test_invalid_intent_fails_extraction_before_provider_calls() -> None:
         tracer,
     )
 
-    with pytest.raises(V1StageError, match="extract_requirements"):
+    with pytest.raises(RequirementBoundaryError):
         asyncio.run(
             graph.ainvoke(
                 {
-                    "request": TravelRequest(request_text="Plan Sydney."),
+                    "request": make_request(additional_preferences="Plan Sydney."),
                     "reference_date": date(2026, 9, 11),
                 }
             )
         )
     assert places.search_requests == []
-    assert (
-        "named_place_intents_validation_failed",
-        {"reason": "source_not_in_request"},
-    ) in tracer.events
 
 
 def test_typed_information_is_kept_in_v1_state_without_another_extraction_call() -> None:
@@ -198,9 +192,10 @@ def test_typed_information_is_kept_in_v1_state_without_another_extraction_call()
 
     assert state["requested_place_information"] == (information,)
     assert llm.calls[0].response_schema is TripIntentExtractionResult
-    assert len(llm.calls) == 2  # Requirements extraction and itinerary generation only.
-    validated = next(payload for name, payload in tracer.events if name == "trip_intents_validated")
-    assert validated["requested_information"][0]["facet"] == "admission_fee"
+    assert (
+        len(llm.calls) == 2
+    )  # Requirements extraction and itinerary generation only.
+    assert any(name == "interpreted_requirements_validated" for name, _ in tracer.events)
 
 
 def test_invalid_information_provenance_stops_before_provider_calls() -> None:
@@ -232,17 +227,13 @@ def test_invalid_information_provenance_stops_before_provider_calls() -> None:
         tracer,
     )
 
-    with pytest.raises(V1StageError, match="extract_requirements"):
+    with pytest.raises(RequirementBoundaryError):
         asyncio.run(
             graph.ainvoke(
                 {
-                    "request": TravelRequest(request_text="Sydney Opera House."),
+                    "request": make_request(additional_preferences="Sydney Opera House."),
                     "reference_date": date(2026, 9, 11),
                 }
             )
         )
     assert places.search_requests == []
-    assert (
-        "trip_intents_validation_failed",
-        {"reason": "information_source_not_in_request"},
-    ) in tracer.events

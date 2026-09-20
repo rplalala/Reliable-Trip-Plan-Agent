@@ -4,8 +4,6 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from backend.app.schemas.request import TravelRequirements
-
 
 class NamedPlaceInclusion(StrEnum):
     """Whether the user expects one named place in the final itinerary."""
@@ -30,12 +28,3 @@ class NamedPlaceIntent(BaseModel):
         if not value.strip():
             raise ValueError("Named-place text must not be blank")
         return value
-
-
-class RequirementsWithNamedPlaceIntents(BaseModel):
-    """One extraction result with unchanged base requirements and separate intents."""
-
-    model_config = ConfigDict(extra="forbid", frozen=True)
-
-    requirements: TravelRequirements
-    named_place_intents: tuple[NamedPlaceIntent, ...]

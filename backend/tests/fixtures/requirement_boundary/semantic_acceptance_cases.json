@@ -1,0 +1,120 @@
+{
+  "version": "semantic_acceptance_1",
+  "semantic_policy_version": "requirement_semantics_1",
+  "reference_date": "2026-09-19",
+  "review_method": "Qualitative development/model-assisted inspection, not an independently human-annotated benchmark.",
+  "cases": [
+    {
+      "case_id": "destination_scope_zh",
+      "language": "zh",
+      "contrast_pair": "destination_role",
+      "request": "\u8bf7\u4e3a\u4e24\u4f4d\u6210\u5e74\u4eba\u5b89\u63922026\u5e749\u670821\u65e5\u81f323\u65e5\u7684\u65c5\u884c\uff0c\u884c\u7a0b\u8303\u56f4\u662f\u53f0\u5317\u3002",
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Destination is Taipei; two adults and exact dates.",
+        "Destination scope alone creates no named REQUIRED visit."
+      ]
+    },
+    {
+      "case_id": "area_visit_zh",
+      "language": "zh",
+      "contrast_pair": "destination_role",
+      "request": "\u8bf7\u4e3a\u4e24\u4f4d\u6210\u5e74\u4eba\u5b89\u63922026\u5e749\u670821\u65e5\u81f323\u65e5\u7684\u65c5\u884c\uff0c\u884c\u7a0b\u8303\u56f4\u662f\u53f0\u5317\u3002\u8bf7\u628a\u5927\u7a3b\u57d5\u5b89\u6392\u4e3a\u5b9e\u9645\u6e38\u89c8\u7684\u4e00\u7ad9\u3002",
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Taipei remains destination, not a duplicate required stop.",
+        "Dadaocheng is a REQUIRED area visit; use the original Chinese surface."
+      ]
+    },
+    {
+      "case_id": "avoidance_soft_es",
+      "language": "es",
+      "contrast_pair": "strength",
+      "request": "Somos dos adultos y viajaremos a Valencia del 21 al 23 de septiembre de 2026. Preferimos evitar atracciones excesivamente comerciales, pero podemos aceptar alguna.",
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Commercial-attraction avoidance is tradeable, not HARD.",
+        "No invented named visit or supported evidence dimension."
+      ]
+    },
+    {
+      "case_id": "prohibition_hard_es",
+      "language": "es",
+      "contrast_pair": "strength",
+      "request": "Somos dos adultos y viajaremos a Valencia del 21 al 23 de septiembre de 2026. No aceptamos ninguna atraccion excesivamente comercial; es una condicion no negociable.",
+      "expected_outcome": "unsupported_hard_clarification",
+      "checks": [
+        "Preserve non-negotiable commercial-attraction exclusion as HARD.",
+        "Existing unsupported-HARD policy clarifies; never soften to achieve release."
+      ]
+    },
+    {
+      "case_id": "pronoun_clear_en",
+      "language": "en",
+      "contrast_pair": "subject",
+      "request": "Plan Edinburgh for 2026-09-21 to 2026-09-23 for exactly two travelers: my sister and her female friend. My sister says she prefers museums.",
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "The sister owns the museum preference; clear pronoun can resolve.",
+        "Two travelers explicitly known; no party-wide substitution."
+      ]
+    },
+    {
+      "case_id": "pronoun_ambiguous_en",
+      "language": "en",
+      "contrast_pair": "subject",
+      "request": "Plan Edinburgh for 2026-09-21 to 2026-09-23 for exactly two travelers: my sister and her female friend. She prefers museums.",
+      "expected_outcome": "genuine_clarification",
+      "checks": [
+        "Two plausible antecedents; unresolved target or extraction issue requires clarification.",
+        "Two travelers remain explicit; do not choose sister, friend or party for preference."
+      ]
+    },
+    {
+      "case_id": "count_complete_zh",
+      "language": "zh",
+      "contrast_pair": "count",
+      "request": "\u8bf7\u5b89\u63922026\u5e749\u670821\u65e5\u81f323\u65e5\u7684\u6210\u90fd\u65c5\u884c\u3002\u540c\u884c\u8005\u53ea\u6709\u6211\u3001\u59d0\u59d0\u548c\u5f1f\u5f1f\u3002",
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Complete exclusive participant list supports total three.",
+        "No invented destination named visit or preferences."
+      ]
+    },
+    {
+      "case_id": "count_incomplete_zh",
+      "language": "zh",
+      "contrast_pair": "count",
+      "request": "\u8bf7\u5b89\u63922026\u5e749\u670821\u65e5\u81f323\u65e5\u7684\u6210\u90fd\u65c5\u884c\u3002\u540c\u884c\u8005\u5305\u62ec\u6211\u3001\u59d0\u59d0\u548c\u5f1f\u5f1f\uff0c\u8fd8\u53ef\u80fd\u6709\u5176\u4ed6\u4eba\u3002",
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Partial participant list does not establish total; traveler_count remains null.",
+        "Unknown count alone does not block under current mandatory destination/date policy."
+      ]
+    },
+    {
+      "case_id": "whole_party",
+      "language": "en",
+      "contrast_pair": null,
+      "request": "All four of us will visit Paris from 2026-09-21 to 2026-09-23. We all prefer parks to shopping malls. Budget EUR 1200.",
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Whole-party preference uses kind=party; no party definition in subjects.",
+        "Comparison survives normalization; four travelers remain operational metadata."
+      ]
+    },
+    {
+      "case_id": "combined_heldout_de",
+      "language": "de",
+      "contrast_pair": null,
+      "request": "Wir sind zwei Erwachsene und reisen vom 21. bis 23. September 2026 nach Hamburg. Ich hoffe, das Miniatur Wunderland zu besuchen. Die Reeperbahn moechte ich ausdruecklich nicht besuchen. Wir bevorzugen ruhige Orte, aber Ruhe ist keine zwingende Bedingung.",
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Hamburg is destination only; Miniatur Wunderland is an expected REQUIRED visit despite hope.",
+        "Reeperbahn is EXCLUDED; no duplicate semantic rewards for named meanings.",
+        "Quiet preference belongs to party and is soft; do not equate quiet with crowding.",
+        "Explicit traveler count two and dates; no inferred demographic attributes."
+      ]
+    }
+  ]
+}

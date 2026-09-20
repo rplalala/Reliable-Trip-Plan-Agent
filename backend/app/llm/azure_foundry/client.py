@@ -1,9 +1,12 @@
 """Microsoft Foundry implementation of the structured LLM client interface."""
 
+import json
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import cast
+from uuid import uuid4
 
+import openai
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, ValidationError
@@ -11,25 +14,55 @@ from pydantic import BaseModel, ValidationError
 from backend.app.evidence.experience_models import ExperienceProfileDraft
 from backend.app.llm.azure_foundry.dto import (
     FoundryExperienceProfileDTO,
+    FoundryInterpretationDTO,
     FoundryItineraryDTO,
-    FoundryRequirementsWithNamedPlaceIntentsDTO,
-    FoundryTravelRequirementsDTO,
-    FoundryTripIntentExtractionDTO,
+    FoundryPrimaryItineraryDTO,
 )
 from backend.app.llm.azure_foundry.itinerary_cost_projection import map_foundry_v1_itinerary
 from backend.app.llm.azure_foundry.mapping import (
     FoundryMappingError,
     map_foundry_itinerary,
-    map_foundry_requirements,
-    map_foundry_requirements_with_named_places,
-    map_foundry_trip_intents,
 )
 from backend.app.llm.client import StructuredModelT, StructuredOutputError
+from backend.app.runtime.fingerprints import digest
+from backend.app.schemas.interpreted_requirements import InterpretationDraft
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.itinerary_projection import V1Itinerary
-from backend.app.schemas.named_place_intent import RequirementsWithNamedPlaceIntents
-from backend.app.schemas.request import TravelRequirements
-from backend.app.schemas.trip_intent import TripIntentExtractionResult
+from backend.app.schemas.requirement_boundary import RequirementBoundaryError
+
+
+def requirement_wire_format():
+    """Static DTO schema using the documented Azure Responses subset."""
+    schema = FoundryInterpretationDTO.model_json_schema()
+
+    def enums(node):
+        if isinstance(node, dict):
+            if "const" in node:
+                node["enum"] = [node.pop("const")]
+            for value in node.values():
+                enums(value)
+        elif isinstance(node, list):
+            for value in node:
+                enums(value)
+
+    enums(schema)
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "PreferenceDraftV3",
+            "strict": True,
+            "schema": schema,
+        },
+    }
+
+
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise RequirementBoundaryError("duplicate_json_key", stage="json")
+        result[key] = value
+    return result
 
 
 @dataclass(frozen=True)
@@ -38,28 +71,13 @@ class _FoundryBinding:
     to_domain: Callable[[BaseModel], BaseModel]
 
 
-def _map_requirements(value: BaseModel) -> TravelRequirements:
-    dto = FoundryTravelRequirementsDTO.model_validate(value)
-    return map_foundry_requirements(dto)
-
-
-def _map_requirements_with_named_places(value: BaseModel) -> RequirementsWithNamedPlaceIntents:
-    dto = FoundryRequirementsWithNamedPlaceIntentsDTO.model_validate(value)
-    return map_foundry_requirements_with_named_places(dto)
-
-
-def _map_trip_intents(value: BaseModel) -> TripIntentExtractionResult:
-    dto = FoundryTripIntentExtractionDTO.model_validate(value)
-    return map_foundry_trip_intents(dto)
-
-
 def _map_itinerary(value: BaseModel) -> Itinerary:
     dto = FoundryItineraryDTO.model_validate(value)
     return map_foundry_itinerary(dto)
 
 
 def _map_v1_itinerary(value: BaseModel) -> V1Itinerary:
-    dto = FoundryItineraryDTO.model_validate(value)
+    dto = FoundryPrimaryItineraryDTO.model_validate(value)
     return map_foundry_v1_itinerary(dto)
 
 
@@ -69,24 +87,16 @@ def _map_experience_profile(value: BaseModel) -> ExperienceProfileDraft:
 
 
 _FOUNDRY_BINDINGS: dict[type[BaseModel], _FoundryBinding] = {
-    TravelRequirements: _FoundryBinding(
-        transport_schema=FoundryTravelRequirementsDTO,
-        to_domain=_map_requirements,
-    ),
-    RequirementsWithNamedPlaceIntents: _FoundryBinding(
-        transport_schema=FoundryRequirementsWithNamedPlaceIntentsDTO,
-        to_domain=_map_requirements_with_named_places,
-    ),
-    TripIntentExtractionResult: _FoundryBinding(
-        transport_schema=FoundryTripIntentExtractionDTO,
-        to_domain=_map_trip_intents,
+    InterpretationDraft: _FoundryBinding(
+        transport_schema=FoundryInterpretationDTO,
+        to_domain=lambda dto: InterpretationDraft.model_validate(dto.model_dump()),
     ),
     Itinerary: _FoundryBinding(
         transport_schema=FoundryItineraryDTO,
         to_domain=_map_itinerary,
     ),
     V1Itinerary: _FoundryBinding(
-        transport_schema=FoundryItineraryDTO,
+        transport_schema=FoundryPrimaryItineraryDTO,
         to_domain=_map_v1_itinerary,
     ),
     ExperienceProfileDraft: _FoundryBinding(
@@ -99,7 +109,18 @@ _FOUNDRY_BINDINGS: dict[type[BaseModel], _FoundryBinding] = {
 class AzureFoundryStructuredLLMClient:
     """Use strict transport DTOs through a Microsoft Foundry v1 endpoint."""
 
-    def __init__(self, *, endpoint: str, deployment: str, api_key: str) -> None:
+    def __init__(
+        self, *, endpoint: str, deployment: str, api_key: str, requirement_capture=None
+    ) -> None:
+        self.requirement_capture = requirement_capture
+        self._capture_secrets = (api_key,)
+        self._requirement_config = {
+            "version": "requirement_execution_1",
+            "deployment": deployment,
+            "api": "responses/v1",
+            "max_retries": 0,
+            "contract": "requirement_draft_2",
+        }
         self._chat_model = ChatOpenAI(
             model=deployment,
             base_url=endpoint,
@@ -108,14 +129,138 @@ class AzureFoundryStructuredLLMClient:
             max_retries=0,
         )
 
+    def capture_requirement_outcome(self, draft, error=None):
+        call_id = draft._diagnostic_call_id
+        if self.requirement_capture and call_id:
+            detail = (
+                error.as_dict()
+                if hasattr(error, "as_dict")
+                else {
+                    "status": "validated" if error is None else type(error).__name__,
+                }
+            )
+            self.requirement_capture.record(
+                call_id, "canonicalization", detail, secrets=self._capture_secrets
+            )
+
+    async def _interpret(self, system_prompt, user_prompt):
+        call_id = uuid4().hex
+        wire = requirement_wire_format()
+        base = {
+            "request_id": digest(user_prompt),
+            "prompt_hash": digest(system_prompt),
+            "schema_hash": digest(wire),
+            "config_hash": digest(self._requirement_config),
+            "prompt_version": "preference_prompt_5",
+            "schema_version": "preference_draft_3",
+            "config": self._requirement_config,
+        }
+        self.last_call_metadata = {"call_id": call_id, **base}
+
+        def capture(stage, payload):
+            if self.requirement_capture:
+                self.requirement_capture.record(
+                    call_id, stage, {**base, **payload}, secrets=self._capture_secrets
+                )
+
+        stage = "transport"
+        try:
+            # A dictionary schema selects SDK responses.create, not eager Pydantic parse.
+            # Capture completed content BEFORE JSON/DTO/domain validation can discard it.
+            raw = await self._chat_model.bind(response_format=wire).ainvoke(
+                [
+                    SystemMessage(content=system_prompt),
+                    HumanMessage(content=user_prompt),
+                ]
+            )
+            metadata = getattr(raw, "response_metadata", {})
+            content = raw.content
+            usage = getattr(raw, "usage_metadata", None)
+            self.last_call_metadata.update(
+                usage=usage,
+                model_name=metadata.get("model_name"),
+                response_id=getattr(raw, "id", None),
+            )
+            blocks = [{"type": "text", "text": content}] if isinstance(content, str) else content
+            refusal = any(b.get("type") == "refusal" for b in blocks if isinstance(b, dict))
+            capture(
+                "response_received",
+                {
+                    "content": content,
+                    "response_hash": digest(content),
+                    "usage": usage,
+                    "response_id": getattr(raw, "id", None),
+                    "status": metadata.get("status"),
+                    "finish_reason": metadata.get("finish_reason"),
+                    "refusal": refusal,
+                    "incomplete_details": metadata.get("incomplete_details"),
+                },
+            )
+            if refusal:
+                raise RequirementBoundaryError(
+                    "requirement_refused", stage="provider", category="provider_refusal"
+                )
+            if metadata.get("status") != "completed" or metadata.get("incomplete_details"):
+                raise RequirementBoundaryError(
+                    "requirement_incomplete", stage="provider", category="provider_incomplete"
+                )
+            text = "".join(
+                b.get("text", "") for b in blocks if isinstance(b, dict) and b.get("type") == "text"
+            )
+            if len(text) > 250000:
+                raise RequirementBoundaryError("response_resource_overflow", stage="json")
+            stage = "json"
+            payload = json.loads(text, object_pairs_hook=_unique_object)
+            stage = "transport_dto"
+            dto = FoundryInterpretationDTO.model_validate(payload)
+            stage = "draft_domain"
+            draft = _FOUNDRY_BINDINGS[InterpretationDraft].to_domain(dto)
+            draft._diagnostic_call_id = call_id
+            capture("draft_validated", {"status": "validated"})
+            return draft
+        except RequirementBoundaryError as exc:
+            capture(exc.stage, exc.as_dict())
+            raise
+        except (ValidationError, FoundryMappingError, json.JSONDecodeError) as exc:
+            errors = (
+                tuple({"loc": e["loc"], "type": e["type"]} for e in exc.errors())
+                if isinstance(exc, ValidationError)
+                else ()
+            )
+            error = RequirementBoundaryError(
+                "invalid_requirement_response", stage=stage, errors=errors
+            )
+            capture(stage, error.as_dict())
+            raise error from exc
+        except Exception as exc:
+            category = (
+                "configuration_failure"
+                if isinstance(
+                    exc,
+                    (
+                        openai.BadRequestError,
+                        openai.AuthenticationError,
+                        openai.PermissionDeniedError,
+                    ),
+                )
+                else "transport_failure"
+            )
+            error = RequirementBoundaryError(type(exc).__name__, stage=stage, category=category)
+            capture(stage, error.as_dict())
+            raise error from exc
+
     async def generate_structured(
         self,
         *,
         system_prompt: str,
         user_prompt: str,
         response_schema: type[StructuredModelT],
+        _generation_config=None,
     ) -> StructuredModelT:
         """Make exactly one DTO-backed structured invocation for a domain schema."""
+
+        if response_schema is InterpretationDraft:
+            return await self._interpret(system_prompt, user_prompt)
 
         binding = _FOUNDRY_BINDINGS.get(response_schema)
         if binding is None:
@@ -123,10 +268,14 @@ class AzureFoundryStructuredLLMClient:
                 f"Microsoft Foundry has no transport DTO for {response_schema.__name__}"
             )
 
+        options = {"method": "json_schema", "strict": True}
+        if _generation_config is not None:
+            if response_schema is not V1Itinerary:
+                raise ValueError("Primary generation limits apply only to V1/V2 main output")
+            options["max_output_tokens"] = _generation_config.output_tokens
         structured_model = self._chat_model.with_structured_output(
             binding.transport_schema,
-            method="json_schema",
-            strict=True,
+            **options,
         )
         try:
             raw_result = await structured_model.ainvoke(
@@ -143,3 +292,7 @@ class AzureFoundryStructuredLLMClient:
             ) from exc
 
         return cast(StructuredModelT, domain_result)
+
+    async def generate_primary_structured(self, *, generation_config, **kwargs):
+        """Per-call settings, without mutating a shared client or other tasks."""
+        return await self.generate_structured(**kwargs, _generation_config=generation_config)

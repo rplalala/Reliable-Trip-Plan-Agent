@@ -83,9 +83,18 @@ class ExperienceSignalDraft(ExperienceModel):
 class ExperienceProfileDraft(ExperienceModel):
     place_id: str = Field(min_length=1)
     summary: str | None = Field(default=None, max_length=240)
+    summary_truncated: bool = False
     summary_review_refs: list[str] = Field(default_factory=list)
     signals: list[ExperienceSignalDraft] = Field(default_factory=list)
     review_count_used: int = Field(ge=0, le=5)
+
+    @model_validator(mode="before")
+    @classmethod
+    def bound_diagnostic_summary(cls, value):
+        if isinstance(value, dict) and isinstance(value.get("summary"), str):
+            if len(value["summary"]) > 240:
+                return {**value, "summary": value["summary"][:240], "summary_truncated": True}
+        return value
 
     @model_validator(mode="after")
     def one_value_per_dimension(self) -> Self:
@@ -121,6 +130,7 @@ class ExperienceProfile(ExperienceModel):
     place_id: str = Field(min_length=1)
     availability: EvidenceAvailability
     summary: str | None = None
+    summary_truncated: bool = False
     summary_review_refs: tuple[str, ...] = ()
     signals: tuple[ExperienceSignal, ...] = ()
     review_count_used: int = Field(default=0, ge=0, le=5)

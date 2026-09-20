@@ -4,17 +4,22 @@ import json
 from pathlib import Path
 from uuid import UUID
 
+import pytest
+
 from backend.app.observability.run_trace import NullRunTracer
 from backend.app.runtime.config_loader import load_runtime_config
 from backend.app.versions.v1.config import V1Settings
 from backend.app.versions.v1.runner import main
-from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v1.fakes import (
     FakePlacesProvider,
     FakeRoutesProvider,
     FakeWeatherProvider,
-    make_extraction,
     make_itinerary,
+)
+from backend.tests.versions.v1.fakes import RevisedFakeLLM as FakeStructuredLLMClient
+from backend.tests.versions.v1.fakes import (
+    make_revised_extraction as make_extraction,
 )
 
 
@@ -37,12 +42,17 @@ class _UnusedReasoner:
         raise AssertionError("No visible Web source should trigger reasoning")
 
 
+@pytest.fixture(autouse=True)
+def input_json_file(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    request = make_request("Plan a trip.", requirements=None)
+    (tmp_path / "request.json").write_text(request.model_dump_json(), encoding="utf-8")
+
+
 def test_v1_settings_reuse_v0_foundry_config_and_add_bounded_google_config(
     monkeypatch,
 ) -> None:
-    monkeypatch.setenv(
-        "AZURE_OPENAI_ENDPOINT", "https://example.services.ai.azure.com/openai/v1"
-    )
+    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.services.ai.azure.com/openai/v1")
     monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT", "same-deployment")
     monkeypatch.setenv("AZURE_OPENAI_API_KEY", "foundry-key")
     monkeypatch.setenv("GOOGLE_MAPS_API_KEY", "google-key")
@@ -56,13 +66,13 @@ def test_v1_settings_reuse_v0_foundry_config_and_add_bounded_google_config(
     assert settings.tool_budget_limits().max_baseline_route_matrix_elements_per_request == 64
     assert settings.tool_budget_limits().max_baseline_route_matrix_elements == 256
     assert settings.tool_budget_limits().max_baseline_route_matrix_calls == 4
-    assert settings.tool_budget_limits().max_alternative_route_pairs == 8
-    assert settings.tool_budget_limits().max_alternative_route_matrix_calls == 8
+    assert settings.tool_budget_limits().max_alternative_route_pairs == 16
+    assert settings.tool_budget_limits().max_alternative_route_matrix_calls == 16
 
 
 def test_v1_cli_outputs_shared_planning_result_with_offline_injections(capsys) -> None:
     exit_code = main(
-        ["--request", "Plan two days in Sydney.", "--reference-date", "2026-09-11"],
+        ["--input-json", "request.json", "--reference-date", "2026-09-11"],
         llm_client=FakeStructuredLLMClient([make_extraction(), make_itinerary()]),
         places_provider=FakePlacesProvider(),
         weather_provider=FakeWeatherProvider(),
@@ -75,7 +85,20 @@ def test_v1_cli_outputs_shared_planning_result_with_offline_injections(capsys) -
     assert exit_code == 0
     assert captured.err == ""
     assert output["system_version"] == "v1"
-    assert set(output) == {"system_version", "requirements", "itinerary"}
+    assert set(output) == {
+        "system_version",
+        "requirements",
+        "itinerary",
+        "interpreted_requirements",
+        "selection_status",
+        "selection_contract_version",
+        "planning_supply",
+        "output_role_summary",
+    }
+    assert output["selection_status"] == "degraded_selection"
+    assert output["planning_supply"]["shortfall"] == 1
+    assert len(output["planning_supply"]["selected_place_ids"]) == 9
+    assert output["planning_supply"]["evaluator_calls"] == 0
 
 
 def test_v1_cli_trace_records_effective_config_without_live_providers(
@@ -109,7 +132,7 @@ def test_v1_cli_trace_records_effective_config_without_live_providers(
     )
 
     exit_code = main(
-        ["--request", "Plan Sydney.", "--reference-date", "2026-09-11"],
+        ["--input-json", "request.json", "--reference-date", "2026-09-11"],
         llm_client=FakeStructuredLLMClient([make_extraction(), make_itinerary()]),
     )
     capsys.readouterr()
@@ -119,7 +142,7 @@ def test_v1_cli_trace_records_effective_config_without_live_providers(
     assert len(run_files) == 1
     run = json.loads(run_files[0].read_text(encoding="utf-8"))
     assert run["runtime_config"]["trace"]["directory"] == str(tmp_path)
-    assert run["runtime_config"]["effective_tool_budget"]["alternative_route_pairs"] == 8
+    assert run["runtime_config"]["effective_tool_budget"]["alternative_route_pairs"] == 16
     assert (
         run["runtime_config"]["effective_tool_budget"]["baseline_route_matrix_elements_per_request"]
         == 64

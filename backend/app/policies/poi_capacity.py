@@ -81,3 +81,19 @@ def apply_poi_operating_budgets(
         review_pool_cap=review_pool_cap,
         limiting_budgets=tuple(name for name, actual, maximum in reductions if actual < maximum),
     )
+
+
+def quality_capacities(start_date, end_date, window, required=0):
+    """Quality-first effective goals, independently of the user's monetary budget."""
+    validate_requested_trip_dates(start_date, end_date, window)
+    if required > 16:
+        from backend.app.schemas.interpreted_requirements import ClarificationRequired
+
+        raise ClarificationRequired("required_capacity_conflict")
+    days = (end_date - start_date).days + 1
+    normal = min(16, max(8, 2 * days + 6))
+    k = max(normal, required)
+    values = POICapacities(days, max(48, 4 * k), 2 * k, k, min(8, (k + 1) // 2))
+    return EffectivePOICapacities(
+        values, values.c_raw, values.r_pool, k, values.review_pool_cap, ()
+    )

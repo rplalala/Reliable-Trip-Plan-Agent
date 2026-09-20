@@ -29,21 +29,14 @@ async def create_planning_result(
     """Generate a product itinerary through the active research planner."""
 
     try:
-        result = await planning_service.plan(
-            destination=body.destination,
-            start_date=body.start_date,
-            end_date=body.end_date,
-            traveler_count=body.traveler_count,
-            budget=body.budget,
-            additional_preferences=body.additional_preferences,
-        )
+        result = await planning_service.plan(body)
     except TripDatePolicyError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=exc.as_detail(),
         ) from exc
     except PlanningNeedsClarificationError as exc:
-        return NeedsClarificationResponse(requirements=exc.requirements)
+        return NeedsClarificationResponse(requirements=exc.requirements, issues=exc.issues)
     except PlanningFailedError as exc:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,

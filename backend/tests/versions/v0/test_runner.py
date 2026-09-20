@@ -5,18 +5,29 @@ import json
 import sys
 from datetime import date
 
+import pytest
+
 from backend.app.llm.azure_foundry import AzureFoundryStructuredLLMClient
+from backend.app.services.preference_interpretation import empty_preference_draft
 from backend.app.versions.v0.config import V0Settings
 from backend.app.versions.v0.runner import (
     create_foundry_client,
     main,
     parse_reference_date,
 )
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v0.fakes import (
     FakeStructuredLLMClient,
     make_itinerary,
     make_requirements,
 )
+
+
+@pytest.fixture(autouse=True)
+def input_json_file(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    request = make_request("Plan a trip.", requirements=make_requirements())
+    (tmp_path / "request.json").write_text(request.model_dump_json(), encoding="utf-8")
 
 
 def test_v0_settings_use_deployment_for_foundry(
@@ -63,12 +74,11 @@ def test_reference_date_parser_accepts_iso_date() -> None:
 
 
 def test_v0_cli_outputs_planning_result_json(capsys) -> None:
-    client = FakeStructuredLLMClient([make_requirements(), make_itinerary()])
+    client = FakeStructuredLLMClient([empty_preference_draft(), make_itinerary()])
 
     exit_code = main(
         [
-            "--request",
-            "Plan one day in Kyoto.",
+            "--input-json", "request.json",
             "--reference-date",
             "2026-09-11",
         ],
@@ -92,7 +102,7 @@ def test_v0_cli_preserves_unicode_through_cp936_safe_json(
     )
     day = itinerary.days[0].model_copy(update={"activities": [activity]})
     itinerary = itinerary.model_copy(update={"days": [day]})
-    client = FakeStructuredLLMClient([make_requirements(), itinerary])
+    client = FakeStructuredLLMClient([empty_preference_draft(), itinerary])
 
     output_buffer = io.BytesIO()
     cp936_stdout = io.TextIOWrapper(output_buffer, encoding="cp936", errors="strict")
@@ -100,8 +110,7 @@ def test_v0_cli_preserves_unicode_through_cp936_safe_json(
 
     exit_code = main(
         [
-            "--request",
-            "Plan one day in Kyoto.",
+            "--input-json", "request.json",
             "--reference-date",
             "2026-09-11",
         ],
@@ -118,29 +127,19 @@ def test_v0_cli_preserves_unicode_through_cp936_safe_json(
     )
 
 
-def test_v0_cli_reports_unresolved_fields(capsys) -> None:
-    client = FakeStructuredLLMClient([make_requirements().model_copy(update={"end_date": None})])
-
-    exit_code = main(
-        ["--request", "Plan a trip to Kyoto."],
-        llm_client=client,
-    )
-
-    captured = capsys.readouterr()
-    error = json.loads(captured.err)
-    assert exit_code == 2
-    assert captured.out == ""
-    assert error == {
-        "error": "missing_required_fields",
-        "unresolved_fields": ["end_date"],
-    }
+def test_v0_cli_reports_invalid_input_without_model(capsys, tmp_path):
+    (tmp_path / "request.json").write_text('{"destination":"Kyoto"}', encoding="utf-8")
+    client = FakeStructuredLLMClient([])
+    assert main(["--input-json", "request.json"], llm_client=client) == 2
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_planning_input"
+    assert not client.calls
 
 
 def test_v0_cli_reports_provider_failure_without_retry(capsys) -> None:
     client = FakeStructuredLLMClient([RuntimeError("provider unavailable")])
 
     exit_code = main(
-        ["--request", "Plan one day in Kyoto on 2026-10-01."],
+        ["--input-json", "request.json", "--reference-date", "2026-09-11"],
         llm_client=client,
     )
 

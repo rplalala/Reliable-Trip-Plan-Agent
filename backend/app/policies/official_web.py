@@ -20,7 +20,7 @@ from backend.app.evidence.web_models import (
 from backend.app.integrations.web.models import WebEvidenceSearchRequest
 from backend.app.policies.poi_funnel import normalize_exact_name
 from backend.app.runtime.config_models import WebEvidenceConfig
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import PlanningRequest, TravelRequirements
 from backend.app.schemas.trip_intent import RequestedPlaceInformation
 
 WEB_TASK_TEMPLATE_VERSION = "official_web_v2"
@@ -342,7 +342,7 @@ def build_search_request(task: WebEvidenceTask) -> WebEvidenceSearchRequest:
 
 
 def plan_official_web_tasks(
-    request: TravelRequest | None,
+    request: PlanningRequest | None,
     requirements: TravelRequirements,
     shortlist: Sequence[PlaceCandidate],
     places: Sequence[PlaceEvidence],
@@ -384,12 +384,12 @@ def plan_official_web_tasks(
         raise ValueError("Resolved information targets must belong to the shortlist")
 
     sentences = (
-        _sentences(request.request_text)
+        _sentences(request.additional_preferences)
         if request is not None and requested_information is None
         else []
     )
     whole = (
-        normalize_phrase(request.request_text)
+        normalize_phrase(request.additional_preferences)
         if request is not None and requested_information is None
         else ""
     )

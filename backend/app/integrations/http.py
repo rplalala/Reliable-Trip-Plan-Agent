@@ -4,6 +4,8 @@ from typing import Protocol, runtime_checkable
 
 import httpx
 
+from backend.app.integrations.dispatch import mark_provider_send
+
 
 class ProviderHTTPError(RuntimeError):
     """Provider request failed or returned a non-JSON response."""
@@ -28,6 +30,8 @@ class AsyncJSONTransport(Protocol):
 class HttpxJSONTransport:
     """HTTPX implementation with provider retries intentionally disabled."""
 
+    observes_send_boundary = True
+
     def __init__(self, *, timeout_seconds: float = 20.0) -> None:
         self._timeout_seconds = timeout_seconds
 
@@ -42,13 +46,15 @@ class HttpxJSONTransport:
     ) -> object:
         try:
             async with httpx.AsyncClient(timeout=self._timeout_seconds) as client:
-                response = await client.request(
+                request = client.build_request(
                     method,
                     url,
                     headers=headers,
                     params=params,
                     json=json_body,
                 )
+                mark_provider_send()
+                response = await client.send(request)
                 response.raise_for_status()
                 return response.json()
         except (httpx.HTTPError, ValueError) as exc:

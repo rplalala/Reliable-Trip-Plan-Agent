@@ -7,13 +7,17 @@ from httpx import ASGITransport, AsyncClient
 
 from backend.app.api.dependencies import get_developer_planning_service
 from backend.app.main import app
-from backend.app.schemas.request import TravelRequirements
 from backend.app.services.planning import DeveloperPlanningService
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v0.fakes import (
     FakeStructuredLLMClient,
     make_itinerary,
     make_requirements,
 )
+
+
+def structured_input():
+    return make_request(requirements=make_requirements()).model_dump(mode="json")
 
 
 def post_developer_planning(
@@ -34,15 +38,13 @@ def post_developer_planning(
 
 
 def test_developer_planning_returns_raw_v0_result() -> None:
-    service = DeveloperPlanningService(
-        FakeStructuredLLMClient([make_requirements(), make_itinerary()])
-    )
+    service = DeveloperPlanningService(FakeStructuredLLMClient([make_itinerary()]))
 
     status_code, body = post_developer_planning(
         service,
         {
             "version": "v0",
-            "request_text": "Plan one day in Kyoto.",
+            "request": structured_input(),
             "reference_date": "2026-09-11",
         },
     )
@@ -57,30 +59,20 @@ def test_developer_planning_rejects_unimplemented_version() -> None:
 
     status_code, body = post_developer_planning(
         service,
-        {"version": "v1", "request_text": "Plan one day in Kyoto."},
+        {"version": "v1", "request": structured_input(), "reference_date": "2026-09-11"},
     )
 
     assert status_code == 422
     assert body["detail"][0]["type"] == "literal_error"
 
 
-def test_developer_planning_returns_missing_requirements_debug_details() -> None:
-    service = DeveloperPlanningService(
-        FakeStructuredLLMClient([TravelRequirements(destination="Kyoto")])
+def test_developer_planning_missing_form_fields_are_validation_errors():
+    client = FakeStructuredLLMClient([])
+    status, body = post_developer_planning(
+        DeveloperPlanningService(client), {"version": "v0", "request": {"destination": "Kyoto"}}
     )
-
-    status_code, body = post_developer_planning(
-        service,
-        {"version": "v0", "request_text": "Plan a trip to Kyoto."},
-    )
-
-    assert status_code == 422
-    assert body["detail"]["code"] == "missing_required_fields"
-    assert body["detail"]["system_version"] == "v0"
-    assert body["detail"]["requirements"]["unresolved_fields"] == [
-        "start_date",
-        "end_date",
-    ]
+    assert status == 422
+    assert not client.calls
 
 
 def test_developer_planning_exposes_v0_stage_for_debugging() -> None:
@@ -90,7 +82,7 @@ def test_developer_planning_exposes_v0_stage_for_debugging() -> None:
 
     status_code, body = post_developer_planning(
         service,
-        {"version": "v0", "request_text": "Plan one day in Kyoto."},
+        {"version": "v0", "request": structured_input(), "reference_date": "2026-09-11"},
     )
 
     assert status_code == 502
@@ -98,7 +90,7 @@ def test_developer_planning_exposes_v0_stage_for_debugging() -> None:
         "detail": {
             "code": "v0_stage_failed",
             "system_version": "v0",
-            "stage": "extract_requirements",
+            "stage": "generate_itinerary",
             "message": "provider unavailable",
         }
     }
@@ -118,7 +110,7 @@ def test_developer_planning_uses_trusted_reference_date_for_window_validation() 
         service,
         {
             "version": "v0",
-            "request_text": "Plan one day in Kyoto.",
+            "request": make_request(requirements=requirements).model_dump(mode="json"),
             "reference_date": "2026-09-11",
         },
     )
@@ -126,4 +118,4 @@ def test_developer_planning_uses_trusted_reference_date_for_window_validation() 
     assert status_code == 422
     assert body["detail"]["system_version"] == "v0"
     assert body["detail"]["code"] == "trip_date_after_window"
-    assert len(client.calls) == 1
+    assert len(client.calls) == 0

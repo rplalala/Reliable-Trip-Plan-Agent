@@ -15,15 +15,17 @@ from backend.app.observability.run_trace import (
 )
 from backend.app.policies.trip_dates import create_trip_date_window
 from backend.app.runtime.config_loader import load_runtime_config, runtime_config_snapshot
-from backend.app.schemas.request import TravelRequest
 from backend.app.versions.v1.runner import run_v1
-from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v1.fakes import (
     FakePlacesProvider,
     FakeRoutesProvider,
     FakeWeatherProvider,
-    make_extraction,
     make_itinerary,
+)
+from backend.tests.versions.v1.fakes import RevisedFakeLLM as FakeStructuredLLMClient
+from backend.tests.versions.v1.fakes import (
+    make_revised_extraction as make_extraction,
 )
 
 RUN_ID = UUID("00000000-0000-0000-0000-000000000001")
@@ -36,7 +38,7 @@ def _context() -> RunTraceContext:
         system_version="v1",
         reference_date=reference_date,
         date_window=create_trip_date_window(reference_date),
-        request=TravelRequest(request_text="Plan Sydney."),
+        request=make_request(additional_preferences="Plan Sydney."),
         started_at=datetime(2026, 9, 11, tzinfo=UTC),
     )
 
@@ -124,7 +126,7 @@ def test_completed_v1_run_finalizes_trace_metadata_and_normalized_evidence(tmp_p
 
     result = asyncio.run(
         run_v1(
-            TravelRequest(request_text="Plan Sydney."),
+            make_request(additional_preferences="Plan Sydney."),
             FakeStructuredLLMClient([make_extraction(), make_itinerary()]),
             FakePlacesProvider(),
             FakeWeatherProvider(),
@@ -146,7 +148,8 @@ def test_completed_v1_run_finalizes_trace_metadata_and_normalized_evidence(tmp_p
     assert run_metadata["tool_usage"]["destination_search_calls"]["used"] == 1
     assert run_metadata["tool_usage"]["candidate_search_calls"]["used"] == 3
     assert run_metadata["final_outcome"]["system_version"] == "v1"
-    assert len(list((tracer.run_directory / "evidence").glob("*.json"))) == 3
+    assert len(list((tracer.run_directory / "evidence").glob("*.json"))) == 4
+    assert list((tracer.run_directory / "evidence").glob("*nearby_reference_ledger.json"))
     assert not (tracer.run_directory / "error.json").exists()
 
 
@@ -180,7 +183,7 @@ def test_trace_write_failure_does_not_change_planning_semantics(tmp_path, monkey
 
     result = asyncio.run(
         run_v1(
-            TravelRequest(request_text="Plan two days in Sydney."),
+            make_request(additional_preferences="Plan two days in Sydney."),
             FakeStructuredLLMClient([make_extraction(), make_itinerary()]),
             FakePlacesProvider(),
             FakeWeatherProvider(),
@@ -191,3 +194,23 @@ def test_trace_write_failure_does_not_change_planning_semantics(tmp_path, monkey
     )
 
     assert result.system_version.value == "v1"
+
+
+def test_quality_token_counters_remain_numeric_but_credentials_stay_redacted():
+    from backend.app.observability.run_trace import redact_secrets
+
+    fields = (
+        "framing_tokens",
+        "total_query_tokens",
+        "system_tokens",
+        "user_tokens",
+        "schema_tokens",
+    )
+    assert redact_secrets(dict.fromkeys(fields, 2048)) == dict.fromkeys(fields, 2048)
+    assert redact_secrets(dict.fromkeys(fields, "credential")) == dict.fromkeys(
+        fields, "[REDACTED]"
+    )
+    assert redact_secrets({"api_key": "secret", "access_token": 123}) == {
+        "api_key": "[REDACTED]",
+        "access_token": "[REDACTED]",
+    }

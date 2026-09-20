@@ -5,19 +5,19 @@ from datetime import date
 import pytest
 from pydantic import ValidationError
 
-from backend.app.schemas.request import Money, TravelRequest, TravelRequirements
+from backend.app.schemas.request import Money, TravelRequirements
+from backend.tests.request_fixtures import make_request
 
 
-def test_travel_request_strips_surrounding_whitespace() -> None:
-    request = TravelRequest(request_text="  Plan a trip to Kyoto.  ")
+def test_planning_request_preserves_nonblank_preference_whitespace() -> None:
+    request = make_request(additional_preferences="  Plan a trip to Kyoto.  ")
 
-    assert request.request_text == "Plan a trip to Kyoto."
+    assert request.additional_preferences == "  Plan a trip to Kyoto.  "
     assert request.request_id is None
 
 
-def test_travel_request_rejects_blank_text() -> None:
-    with pytest.raises(ValidationError):
-        TravelRequest(request_text="   ")
+def test_planning_request_accepts_blank_preferences() -> None:
+    assert make_request(additional_preferences="   ").additional_preferences == ""
 
 
 def test_requirements_accept_partial_information() -> None:
@@ -45,4 +45,4 @@ def test_requirements_reject_reversed_date_range() -> None:
 
 def test_shared_request_schema_rejects_unknown_fields() -> None:
     with pytest.raises(ValidationError):
-        TravelRequest(request_text="Plan a trip.", provider_payload={})
+        make_request(additional_preferences="Plan a trip.", provider_payload={})

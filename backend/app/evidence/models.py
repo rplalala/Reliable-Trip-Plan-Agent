@@ -43,7 +43,7 @@ class PlaceCandidate(EvidenceModel):
     business_status: str | None = None
     source_query: str = Field(min_length=1)
     category: str = Field(min_length=1)
-    provider_rank: int = Field(ge=0)
+    provider_rank: int | None = Field(default=None, ge=0)
 
 
 class OpeningHoursEvidence(EvidenceModel):

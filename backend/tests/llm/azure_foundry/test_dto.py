@@ -8,10 +8,10 @@ from pydantic import ValidationError
 from backend.app.llm.azure_foundry.dto import (
     FoundryActivityDTO,
     FoundryDateTimeDTO,
+    FoundryInterpretationDTO,
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
     FoundryMoneyDTO,
-    FoundryTravelRequirementsDTO,
 )
 
 UNSUPPORTED_KEYWORDS = {
@@ -39,9 +39,9 @@ UNSUPPORTED_KEYWORDS = {
 
 DTO_TYPES = (
     FoundryMoneyDTO,
-    FoundryTravelRequirementsDTO,
     FoundryDateTimeDTO,
     FoundryActivityDTO,
+    FoundryInterpretationDTO,
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
 )

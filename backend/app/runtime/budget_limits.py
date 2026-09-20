@@ -20,6 +20,7 @@ class ToolBudgetKey(StrEnum):
     ROUTE_MATRIX_ELEMENTS = "route_matrix_elements"
     BASELINE_ROUTE_MATRIX_ELEMENTS = "baseline_route_matrix_elements"
     BASELINE_ROUTE_MATRIX_CALLS = "baseline_route_matrix_calls"
+    ALTERNATIVE_ROUTE_ELEMENTS = "alternative_route_elements"
     ALTERNATIVE_ROUTE_PAIRS = "alternative_route_pairs"
     ALTERNATIVE_ROUTE_MATRIX_CALLS = "alternative_route_matrix_calls"
     WEATHER_CALLS = "weather_calls"
@@ -35,13 +36,13 @@ BASELINE_ROUTE_MATRIX_PER_REQUEST_HARD_LIMIT = BudgetHardLimit(1, 64)
 
 
 TOOL_BUDGET_HARD_LIMITS: dict[ToolBudgetKey, BudgetHardLimit] = {
-    ToolBudgetKey.CANDIDATES: BudgetHardLimit(1, 40),
+    ToolBudgetKey.CANDIDATES: BudgetHardLimit(1, 64),
     ToolBudgetKey.DESTINATION_SEARCH_CALLS: BudgetHardLimit(1, 1),
     ToolBudgetKey.CANDIDATE_SEARCH_CALLS: BudgetHardLimit(1, 12),
-    ToolBudgetKey.PLACE_DETAIL_CALLS: BudgetHardLimit(1, 20),
-    ToolBudgetKey.REVIEW_DETAIL_CALLS: BudgetHardLimit(0, 6),
-    ToolBudgetKey.REVIEW_ENRICHED_PLACES: BudgetHardLimit(0, 6),
-    ToolBudgetKey.EXPERIENCE_PROFILE_LLM_CALLS: BudgetHardLimit(0, 6),
+    ToolBudgetKey.PLACE_DETAIL_CALLS: BudgetHardLimit(1, 40),
+    ToolBudgetKey.REVIEW_DETAIL_CALLS: BudgetHardLimit(0, 8),
+    ToolBudgetKey.REVIEW_ENRICHED_PLACES: BudgetHardLimit(0, 8),
+    ToolBudgetKey.EXPERIENCE_PROFILE_LLM_CALLS: BudgetHardLimit(0, 8),
     ToolBudgetKey.FINAL_POIS: BudgetHardLimit(1, 16),
     ToolBudgetKey.WEB_EVIDENCE_TASKS: BudgetHardLimit(0, 20),
     ToolBudgetKey.PAGE_FETCHES: BudgetHardLimit(0, 20),
@@ -49,8 +50,9 @@ TOOL_BUDGET_HARD_LIMITS: dict[ToolBudgetKey, BudgetHardLimit] = {
     ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: BudgetHardLimit(1, 100),
     ToolBudgetKey.BASELINE_ROUTE_MATRIX_ELEMENTS: BudgetHardLimit(1, 256),
     ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS: BudgetHardLimit(1, 4),
+    ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS: BudgetHardLimit(0, 32),
     ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: BudgetHardLimit(0, 16),
-    ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: BudgetHardLimit(0, 8),
+    ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: BudgetHardLimit(0, 16),
     ToolBudgetKey.WEATHER_CALLS: BudgetHardLimit(0, 3),
 }
 

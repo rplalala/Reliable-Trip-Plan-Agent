@@ -698,6 +698,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "pyyaml" },
+    { name = "tiktoken" },
     { name = "tzdata" },
     { name = "uvicorn" },
 ]
@@ -709,13 +710,11 @@ dev = [
     { name = "psycopg", extra = ["binary"] },
     { name = "pytest" },
     { name = "ruff" },
-    { name = "tiktoken" },
 ]
 retrieval = [
     { name = "numpy" },
     { name = "pgvector" },
     { name = "psycopg", extra = ["binary"] },
-    { name = "tiktoken" },
 ]
 
 [package.metadata]
@@ -729,6 +728,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.11,<3.0" },
     { name = "pydantic-settings", specifier = ">=2.10,<3.0" },
     { name = "pyyaml", specifier = ">=6.0,<7.0" },
+    { name = "tiktoken", specifier = ">=0.9,<1" },
     { name = "tzdata", specifier = ">=2025.2" },
     { name = "uvicorn", specifier = ">=0.35,<1.0" },
 ]
@@ -740,13 +740,11 @@ dev = [
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2,<4" },
     { name = "pytest", specifier = ">=8.4,<9.0" },
     { name = "ruff", specifier = ">=0.12,<1.0" },
-    { name = "tiktoken", specifier = ">=0.9,<1" },
 ]
 retrieval = [
     { name = "numpy", specifier = ">=2,<3" },
     { name = "pgvector", specifier = ">=0.4,<1" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2,<4" },
-    { name = "tiktoken", specifier = ">=0.9,<1" },
 ]
 
 [[package]]

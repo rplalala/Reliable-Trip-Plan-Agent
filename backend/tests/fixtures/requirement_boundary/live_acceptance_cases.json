@@ -1,0 +1,100 @@
+{
+  "status": "prepared_not_executed",
+  "reference_date": "2026-09-19",
+  "version": "requirement_acceptance_1",
+  "execution_limit": "Proposed: one Requirement call per case, nine total; no retries, Google, Reviews, Routes, Web or itinerary calls. Requires separate explicit approval.",
+  "global_checks": [
+    "Validate final wire schema, DTO, source spans and canonical links.",
+    "Compare meaning and attribution, not exact wording or temporary handles.",
+    "Capture sanitized failed response only with explicit development opt-in.",
+    "No automatic semantic repair or requirement dropping."
+  ],
+  "cases": [
+    {
+      "case_id": "solo_requester",
+      "language": "en",
+      "request": "I am travelling alone to Kyoto from 2026-09-21 to 2026-09-23. I enjoy small craft workshops rather than crowded shopping streets. Budget JPY 60000.",
+      "expected_semantic_checks": [
+        "One traveler; requester attribution is source-grounded.",
+        "Keep craft interest and shopping/crowding avoidance; no invented companions."
+      ]
+    },
+    {
+      "case_id": "whole_party",
+      "language": "en",
+      "request": "All four of us will visit Paris from 2026-09-21 to 2026-09-23. We all prefer parks to shopping malls. Budget EUR 1200.",
+      "expected_semantic_checks": [
+        "Whole-party preference uses kind=party; no party definition in subjects.",
+        "Comparison survives normalization; four travelers remain operational metadata."
+      ]
+    },
+    {
+      "case_id": "contrasting_people",
+      "language": "en",
+      "request": "Plan Barcelona for three adults from 2026-09-21 to 2026-09-23. My mother prefers quiet places; my father loves architecture. I enjoy contemporary art.",
+      "expected_semantic_checks": [
+        "Mother, father and requester remain distinct, with correct preference links.",
+        "Quiet is not automatically a crowding evidence request.",
+        "Open architecture/art meanings remain available to discovery."
+      ]
+    },
+    {
+      "case_id": "subgroup",
+      "language": "en",
+      "request": "Our group of five will visit Tokyo from 2026-09-22 to 2026-09-24. The two friends travelling with us want evening food markets. The rest of us prefer early evenings.",
+      "expected_semantic_checks": [
+        "Two friends are a subgroup, not the whole party.",
+        "Other stated subgroup keeps its contrasting style preference.",
+        "Do not invent which named individuals belong to an unspecified group."
+      ]
+    },
+    {
+      "case_id": "shared_subjects",
+      "language": "en",
+      "request": "Visit Vienna from 2026-09-21 to 2026-09-23: my mother, my father and me. My mother and I both enjoy art galleries. My father prefers gardens.",
+      "expected_semantic_checks": [
+        "Shared art preference links requester and mother; first_ref order is not priority.",
+        "Father garden preference stays separate."
+      ]
+    },
+    {
+      "case_id": "conditional_negation",
+      "language": "es",
+      "request": "Somos dos adultos. Queremos visitar Lisboa del 21 al 23 de septiembre de 2026. Preferimos sitios locales, no atracciones artificiales. Aceptamos viajar mas lejos solo si el lugar es realmente singular.",
+      "expected_semantic_checks": [
+        "Preserve local versus artificial attraction comparison.",
+        "Farther travel remains conditional on distinctiveness, not an unconditional distance goal.",
+        "Source quotes remain exact Spanish; normalized semantics may be English."
+      ]
+    },
+    {
+      "case_id": "named_identities",
+      "language": "de",
+      "request": "Wir sind zwei Erwachsene und besuchen Berlin vom 21. bis 23. September 2026. Wir wollen unbedingt das Brandenburger Tor besuchen, aber nicht den Fernsehturm.",
+      "expected_semantic_checks": [
+        "Named Brandenburger Tor is REQUIRED; Fernsehturm is EXCLUDED.",
+        "Copy source-supported place surfaces; do not generate Place IDs or duplicate semantic rewards."
+      ]
+    },
+    {
+      "case_id": "missing_information",
+      "language": "en",
+      "request": "My sister and her friend discussed a trip. She prefers museums. Can you plan it?",
+      "expected_semantic_checks": [
+        "Do not invent destination or dates.",
+        "If pronoun attribution is ambiguous, mark unresolved rather than assigning party.",
+        "Missing required trip information or unresolved attribution requires clarification."
+      ]
+    },
+    {
+      "case_id": "unsupported_hard",
+      "language": "en",
+      "request": "Plan Sydney for two adults from 2026-09-21 to 2026-09-23. Absolutely no stairs anywhere. I definitely want to visit the Sydney Opera House.",
+      "expected_semantic_checks": [
+        "Keep no-stairs HARD; do not soften it or equate accessible with stair-free.",
+        "Opera House stays operational REQUIRED.",
+        "Existing unsupported-HARD policy must clarify, with no downstream provider spending."
+      ]
+    }
+  ]
+}

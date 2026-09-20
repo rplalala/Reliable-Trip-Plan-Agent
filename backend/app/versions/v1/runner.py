@@ -6,7 +6,10 @@ import json
 import sys
 from collections.abc import Sequence
 from datetime import UTC, date, datetime
+from pathlib import Path
 from uuid import uuid4
+
+from pydantic import ValidationError
 
 from backend.app.integrations.azure_foundry.evidence_reasoner import AzureFoundryEvidenceReasoner
 from backend.app.integrations.azure_foundry.web_search import AzureFoundryWebEvidenceProvider
@@ -16,7 +19,12 @@ from backend.app.integrations.google import (
     GoogleWeatherProvider,
 )
 from backend.app.integrations.http import HttpxJSONTransport
-from backend.app.integrations.protocols import PlacesProvider, RoutesProvider, WeatherProvider
+from backend.app.integrations.protocols import (
+    NearbyPlacesProvider,
+    PlacesProvider,
+    RoutesProvider,
+    WeatherProvider,
+)
 from backend.app.integrations.web.extraction_protocols import OfficialEvidenceReasoner
 from backend.app.integrations.web.http_page_retriever import SafeHTMLPageRetriever
 from backend.app.integrations.web.protocols import PageRetriever, WebEvidenceProvider
@@ -27,6 +35,7 @@ from backend.app.observability.run_trace import (
     RunTracer,
     create_run_tracer,
 )
+from backend.app.policies.itinerary_output import output_role_summary
 from backend.app.policies.trip_dates import (
     DateProvider,
     SystemDateProvider,
@@ -37,29 +46,37 @@ from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
 from backend.app.runtime.config_loader import (
     load_runtime_config,
+    load_runtime_config_file,
     resolve_trace_directory,
     runtime_config_snapshot,
+    tool_limits,
 )
-from backend.app.runtime.config_models import WebEvidenceConfig
+from backend.app.runtime.config_models import ReferenceDiscoveryConfig, WebEvidenceConfig
 from backend.app.runtime.logging_config import configure_logging
-from backend.app.runtime.settings import RuntimeSettings
+from backend.app.schemas.interpreted_requirements import ClarificationRequired
 from backend.app.schemas.planning import PlanningResult, SystemVersion
-from backend.app.schemas.request import TravelRequest
+from backend.app.schemas.planning_supply_result import PlanningSupplyPlanningResult
+from backend.app.schemas.request import PlanningRequest
+from backend.app.schemas.requirement_boundary import RequirementBoundaryError
 from backend.app.services.evidence_acquisition import (
     NoViableCandidatesError,
     V1EvidenceAcquisitionService,
 )
 from backend.app.services.official_web_grounding import OfficialWebGroundingService
 from backend.app.services.official_web_integration import OfficialWebIntegrationService
+from backend.app.services.preference_interpretation import (
+    read_planning_request,
+    validate_planning_request,
+)
+from backend.app.services.reference_discovery import ReferenceDiscoveryService
 from backend.app.services.web_evidence_acquisition import WebEvidenceAcquisitionService
-from backend.app.versions.v0.graph import MissingRequiredFieldsError
 from backend.app.versions.v0.runner import create_foundry_client, parse_reference_date
 from backend.app.versions.v1.config import V1Settings
 from backend.app.versions.v1.graph import V1StageError, build_v1_graph
 
 
-async def run_v1(
-    request: TravelRequest,
+async def run_tools_planner(
+    request: PlanningRequest,
     llm_client: StructuredLLMClient,
     places_provider: PlacesProvider,
     weather_provider: WeatherProvider,
@@ -74,16 +91,43 @@ async def run_v1(
     page_retriever: PageRetriever | None = None,
     official_reasoner: OfficialEvidenceReasoner | None = None,
     web_evidence_config: WebEvidenceConfig | None = None,
+    reference_discovery_config: ReferenceDiscoveryConfig | None = None,
+    runtime_config=None,
+    runtime_config_path=None,
+    development_timeout_seconds=None,
+    system_version=SystemVersion.V1,
+    graph_factory=None,
+    discovery_factory=None,
+    result_factory=PlanningSupplyPlanningResult,
 ) -> PlanningResult:
     """Run V1 with one fixed date, shared budget, cache, tracer, and explicit graph."""
 
     if reference_date is not None and date_provider is not None:
         raise ValueError("reference_date and date_provider cannot both be supplied")
 
-    effective_reference_date = reference_date or (date_provider or SystemDateProvider()).today()
+    runtime_config = runtime_config or load_runtime_config()
+    if runtime_config.acquisition.policy_id == "quality_first_1":
+        if (
+            web_evidence_config is not None and web_evidence_config != runtime_config.web_evidence
+        ) or (
+            reference_discovery_config is not None
+            and reference_discovery_config != runtime_config.reference_discovery
+        ):
+            raise ValueError("Conflicting quality-first component configuration")
+    effective_reference_date = (
+        reference_date
+        or (date_provider or SystemDateProvider(runtime_config.app.time_zone)).today()
+    )
+    request = validate_planning_request(request, effective_reference_date)
     date_window = create_trip_date_window(effective_reference_date)
     effective_tracer = tracer or NullRunTracer(uuid4())
-    budget = ToolBudget(budget_limits)
+    if (
+        runtime_config.acquisition.policy_id == "quality_first_1"
+        and budget_limits is not None
+        and budget_limits != tool_limits(runtime_config)
+    ):
+        raise ValueError("Conflicting explicit quality-first budget override")
+    budget = ToolBudget(budget_limits or tool_limits(runtime_config))
     cache = RequestCache()
     evidence_service = V1EvidenceAcquisitionService(
         places_provider=places_provider,
@@ -92,6 +136,7 @@ async def run_v1(
         budget=budget,
         cache=cache,
         tracer=effective_tracer,
+        runtime_config=runtime_config,
     )
     web_dependencies = (web_provider, page_retriever, official_reasoner)
     if any(item is not None for item in web_dependencies) and not all(
@@ -102,7 +147,7 @@ async def run_v1(
         )
     official_web_service = None
     if web_provider is not None and page_retriever is not None and official_reasoner is not None:
-        web_config = web_evidence_config or load_runtime_config().web_evidence
+        web_config = web_evidence_config or runtime_config.web_evidence
         official_web_service = OfficialWebIntegrationService(
             acquisition=WebEvidenceAcquisitionService(
                 provider=web_provider,
@@ -121,20 +166,32 @@ async def run_v1(
             budget=budget,
             tracer=effective_tracer,
         )
-    graph = build_v1_graph(
+    extension = discovery_factory(evidence_service) if discovery_factory else None
+    graph_kwargs = {"discovery_extension": extension} if extension is not None else {}
+    graph = (graph_factory or build_v1_graph)(
         llm_client,
         evidence_service,
         effective_tracer,
         llm_config_identity=(
             llm_config_identity or f"{type(llm_client).__module__}.{type(llm_client).__qualname__}"
         ),
+        **graph_kwargs,
+        runtime_config=runtime_config,
         official_web_service=official_web_service,
+        reference_service=ReferenceDiscoveryService(
+            places_provider if isinstance(places_provider, NearbyPlacesProvider) else None,
+            cache,
+            reference_discovery_config or runtime_config.reference_discovery,
+        ),
     )
     effective_tracer.event(
         "run_started",
         {
+            "runtime_config": runtime_config_snapshot(runtime_config)[0],
+            "runtime_config_hash": runtime_config_snapshot(runtime_config)[1],
+            "runtime_config_path": str(runtime_config_path) if runtime_config_path else None,
             "run_id": effective_tracer.run_id,
-            "system_version": SystemVersion.V1.value,
+            "system_version": system_version.value,
             "request": request,
             "runtime_reference_date": effective_reference_date,
             "allowed_date_window": {
@@ -144,17 +201,34 @@ async def run_v1(
         },
     )
     try:
-        final_state = await graph.ainvoke(
-            {"request": request, "reference_date": effective_reference_date}
-        )
+        if development_timeout_seconds is not None:
+            if not 0 < development_timeout_seconds <= runtime_config.development_timeout_seconds:
+                raise ValueError("Invalid development whole-request timeout")
+            async with asyncio.timeout(development_timeout_seconds):
+                final_state = await graph.ainvoke(
+                    {"request": request, "reference_date": effective_reference_date}
+                )
+        else:
+            final_state = await graph.ainvoke(
+                {"request": request, "reference_date": effective_reference_date}
+            )
         requirements = final_state.get("requirements")
         itinerary = final_state.get("itinerary")
         if requirements is None or itinerary is None:
             raise RuntimeError("V1 graph completed without a planning result")
-        result = PlanningResult(
-            system_version=SystemVersion.V1,
+        selection = final_state["review_selection"]
+        extra = {"rag_discovery": extension.finalize(final_state)} if extension else {}
+        result = result_factory(
+            **extra,
+            system_version=system_version,
             requirements=requirements,
             itinerary=itinerary,
+            interpreted_requirements=final_state["interpreted_requirements"],
+            selection_status="degraded_selection"
+            if selection.policy_result.shortfall
+            else "selected",
+            planning_supply=selection.policy_result,
+            output_role_summary=output_role_summary(itinerary, selection.policy_result),
         )
     except Exception as exc:
         effective_tracer.event(
@@ -180,15 +254,34 @@ async def run_v1(
     return result
 
 
+async def run_v1(request, llm_client, places_provider, weather_provider, routes_provider, **kwargs):
+    """Independent Google-only entry; no retrieval clients or database initialization."""
+    if {"system_version", "graph_factory", "discovery_factory", "result_factory"} & kwargs.keys():
+        raise ValueError("Version dependencies belong to the explicit version runner")
+    return await run_tools_planner(
+        request, llm_client, places_provider, weather_provider, routes_provider, **kwargs
+    )
+
+
 def build_argument_parser() -> argparse.ArgumentParser:
     """Build the independent V1 command-line parser."""
 
     parser = argparse.ArgumentParser(description="Run the V1-A evidence-informed travel planner.")
-    parser.add_argument("--request", required=True, help="Natural-language travel request.")
+    parser.add_argument(
+        "--input-json", required=True, help="Path to a shared PlanningRequest JSON file."
+    )
     parser.add_argument(
         "--reference-date",
         type=parse_reference_date,
         help="Trusted research reference date in YYYY-MM-DD format.",
+    )
+    parser.add_argument(
+        "--runtime-config", type=Path, help="Explicit immutable runtime YAML policy"
+    )
+    parser.add_argument(
+        "--development-timeout-seconds",
+        type=float,
+        help="Explicit bounded whole-run development wait",
     )
     return parser
 
@@ -243,33 +336,39 @@ def main(
     web_provider: WebEvidenceProvider | None = None,
     page_retriever: PageRetriever | None = None,
     official_reasoner: OfficialEvidenceReasoner | None = None,
+    planner_runner=None,
+    system_version=SystemVersion.V1,
+    loop_factory=None,
 ) -> int:
     """Execute the V1 CLI and return a process exit code."""
 
-    args = build_argument_parser().parse_args(argv)
+    parser = build_argument_parser()
+    parser.description = f"Run the {system_version.value.upper()} tools travel planner."
+    args = parser.parse_args(argv)
     all_clients_injected = all(
         item is not None
         for item in (llm_client, places_provider, weather_provider, routes_provider)
     )
     settings: V1Settings | None = None
     try:
-        runtime_config = load_runtime_config()
-        configure_logging(runtime_config.logging)
-        if all_clients_injected:
-            runtime_settings = RuntimeSettings()
-        else:
-            settings = V1Settings()
-            runtime_settings = settings
-        budget_limits = budget_limits or (
-            settings.tool_budget_limits() if settings is not None else ToolBudgetLimits()
+        request = read_planning_request(args.input_json)
+        runtime_config = (
+            load_runtime_config_file(args.runtime_config)
+            if args.runtime_config
+            else load_runtime_config()
         )
+        configure_logging(runtime_config.logging)
+        if not all_clients_injected:
+            settings = V1Settings()
+        budget_limits = budget_limits or (tool_limits(runtime_config))
 
         if args.reference_date is not None and date_provider is not None:
             raise ValueError("reference_date and date_provider cannot both be supplied")
         effective_reference_date = (
             args.reference_date
-            or (date_provider or SystemDateProvider(runtime_settings.app_time_zone)).today()
+            or (date_provider or SystemDateProvider(runtime_config.app.time_zone)).today()
         )
+        request = validate_planning_request(request, effective_reference_date)
         run_id = uuid4()
         started_at = datetime.now(UTC)
         config_snapshot, config_hash = runtime_config_snapshot(
@@ -283,10 +382,10 @@ def main(
         )
         context = RunTraceContext(
             run_id=run_id,
-            system_version=SystemVersion.V1.value,
+            system_version=system_version.value,
             reference_date=effective_reference_date,
             date_window=create_trip_date_window(effective_reference_date),
-            request=TravelRequest(request_text=args.request),
+            request=request,
             started_at=started_at,
             runtime_config=config_snapshot,
             runtime_config_sha256=config_hash,
@@ -333,8 +432,8 @@ def main(
             raise RuntimeError("V1 providers were not configured")
 
         result = asyncio.run(
-            run_v1(
-                TravelRequest(request_text=args.request),
+            (planner_runner or run_v1)(
+                request,
                 llm_client,
                 places_provider,
                 weather_provider,
@@ -349,14 +448,20 @@ def main(
                 page_retriever=page_retriever,
                 official_reasoner=official_reasoner,
                 web_evidence_config=runtime_config.web_evidence,
-            )
+                runtime_config=runtime_config,
+                runtime_config_path=args.runtime_config,
+                development_timeout_seconds=args.development_timeout_seconds,
+            ),
+            loop_factory=loop_factory,
         )
-    except MissingRequiredFieldsError as exc:
-        error = {
-            "error": "missing_required_fields",
-            "unresolved_fields": list(exc.unresolved_fields),
-        }
-        print(json.dumps(error), file=sys.stderr)
+    except RequirementBoundaryError as exc:
+        print(json.dumps(exc.as_dict()), file=sys.stderr)
+        return 1
+    except ClarificationRequired as exc:
+        print(json.dumps(exc.as_dict()), file=sys.stderr)
+        return 2
+    except (ValidationError, OSError) as exc:
+        print(json.dumps({"error": "invalid_planning_input", "message": str(exc)}), file=sys.stderr)
         return 2
     except TripDatePolicyError as exc:
         print(json.dumps(exc.as_detail()), file=sys.stderr)
@@ -370,14 +475,14 @@ def main(
     except V1StageError as exc:
         cause = exc.__cause__
         error = {
-            "error": "v1_stage_failed",
+            "error": f"{system_version.value}_stage_failed",
             "stage": exc.stage,
             "message": str(cause) if cause is not None else str(exc),
         }
         print(json.dumps(error), file=sys.stderr)
         return 1
     except Exception as exc:
-        error = {"error": "v1_execution_failed", "message": str(exc)}
+        error = {"error": f"{system_version.value}_execution_failed", "message": str(exc)}
         print(json.dumps(error), file=sys.stderr)
         return 1
 

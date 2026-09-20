@@ -15,7 +15,6 @@ from backend.app.evidence.experience_models import (
     ExperienceValue,
 )
 from backend.app.evidence.models import RouteElementEvidenceType
-from backend.app.evidence.selection_models import SearchIntentKind
 from backend.app.integrations.models import (
     LatLng,
     PlaceCandidateDTO,
@@ -33,23 +32,24 @@ from backend.app.observability.run_trace import (
 from backend.app.policies.trip_dates import create_trip_date_window
 from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
+from backend.app.schemas.interpreted_requirements import ClarificationRequired
+from backend.app.schemas.interpreted_requirements import (
+    InterpretationDraft as TripIntentExtractionResult,
+)
 from backend.app.schemas.itinerary import ItineraryDay
 from backend.app.schemas.itinerary_projection import EstimatedCostProjectionDiagnostic, V1Itinerary
 from backend.app.schemas.named_place_intent import (
     NamedPlaceInclusion,
     NamedPlaceIntent,
 )
-from backend.app.schemas.request import TravelRequest, TravelRequirements
-from backend.app.schemas.trip_intent import (
-    ExperiencePreference,
-    ExperiencePreferenceIntent,
-    TripIntentExtractionResult,
-)
+from backend.app.schemas.request import PlanningRequest, TravelRequirements
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
 from backend.app.versions.v1.graph import build_v1_graph, project_selected_places
 from backend.app.versions.v1.runner import run_v1
-from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
-from backend.tests.versions.v1.fakes import FakePlacesProvider, FakeWeatherProvider, make_extraction
+from backend.tests.request_fixtures import make_request
+from backend.tests.versions.v1.fakes import FakePlacesProvider, FakeWeatherProvider
+from backend.tests.versions.v1.fakes import RevisedFakeLLM as FakeStructuredLLMClient
+from backend.tests.versions.v1.fakes import make_revised_extraction as make_extraction
 
 REFERENCE_DATE = date(2026, 9, 11)
 RUN_ID = UUID("00000000-0000-0000-0000-000000000016")
@@ -226,11 +226,12 @@ def run_graph(
         cache=RequestCache(),
         tracer=tracer,
     )
-    request = TravelRequest(
-        request_text="Plan Sydney walking-only. "
+    request = make_request(
+        requirements=req,
+        additional_preferences="Plan Sydney walking-only. "
         + " ".join(req.preferences)
         + " "
-        + " ".join(item.source_text for item in named_place_intents)
+        + " ".join(item.source_text for item in named_place_intents),
     )
     graph = build_v1_graph(client, service, tracer)
     state = asyncio.run(graph.ainvoke({"request": request, "reference_date": REFERENCE_DATE}))
@@ -280,8 +281,8 @@ def test_active_selection_routes_and_planner_preserve_final_order(
     selection = state["review_selection"]
     expected_ids = selection.selected_place_ids
     assert len(expected_ids) == final_pois
-    assert selection.stop_reason == "no_sensitive_candidates"
-    assert expected_ids == funnel.no_review_selection.selected_place_ids
+    assert not selection.profiles
+    assert set(expected_ids) <= {p.candidate.place_id for p in funnel.enriched_candidates}
     assert [item.place_id for item in state["selected_candidates"]] == list(expected_ids)
     assert [item.place_id for item in state["place_evidence"]] == list(expected_ids)
     assert project_selected_places(funnel, selection) == (
@@ -304,7 +305,7 @@ def test_active_selection_routes_and_planner_preserve_final_order(
         (origin, destination) for origin in expected_ids for destination in expected_ids
     ]
     assert len(llm.calls) == 2
-    prompt = llm.calls[1].user_prompt
+    prompt = llm.calls[-1].user_prompt
     assert prompt.index(expected_ids[0]) < prompt.index(expected_ids[1])
     assert "PRIVATE_RAW_REVIEW_TEXT" not in prompt
     assert "<requirement_conflicts>\n[]\n</requirement_conflicts>" in prompt
@@ -316,17 +317,15 @@ def test_active_selection_routes_and_planner_preserve_final_order(
     assert summary["review_detail_calls"]["used"] == 0
     assert not places.reviews_requests
     names = [name for name, _ in tracer.events]
-    assert names.index("requirements_extracted") < names.index("date_window_validated")
+    assert names.index("interpreted_requirements_validated") < names.index("date_window_validated")
     assert names.index("date_window_validated") < names.index("destination_resolved")
-    assert names.index("destination_resolved") < names.index("candidate_funnel_completed")
-    assert names.index("candidate_funnel_completed") < names.index("final_poi_selection_completed")
-    assert names.index("final_poi_selection_completed") < names.index("weather_completed")
+    assert names.index("destination_resolved") < names.index("planning_supply_completed")
+    assert names.index("planning_supply_completed") < names.index("weather_completed")
     assert names.index("weather_completed") < names.index("route_matrix_completed")
     assert names.index("route_matrix_completed") < names.index("generation_completed")
     assert names.index("generation_completed") < names.index("itinerary_dates_validated")
     assert names.count("route_baseline_chunk_completed") == expected_calls
-    assert "candidate_search_observations_recorded" in names
-    assert "candidate_details_rating_recorded" in names
+    assert "semantic_candidate_admission" in names
     hours_events = [
         payload for name, payload in tracer.events if name == "opening_hours_planning_views_created"
     ]
@@ -347,34 +346,23 @@ def test_active_selection_routes_and_planner_preserve_final_order(
     assert all(item["outcome"] == "success" and not item["cache_hit"] for item in route_lookups)
 
 
-def test_unresolved_and_unsatisfied_named_must_visits_reach_planner_without_substitution() -> None:
+def test_unresolved_and_unsatisfied_named_must_visits_block_generation() -> None:
     req = requirements(1, required=["Australian Museum", "museums"])
     named = NamedPlaceIntent(
         place_text="Australian Museum",
         inclusion=NamedPlaceInclusion.REQUIRED,
         source_text="Visit Australian Museum",
     )
-    state, llm, _, _, _, _, _ = run_graph(req, per_query=3, named_place_intents=(named,))
-    assert "Australian Museum" in state["candidate_funnel"].unresolved_required_names
-    assert any(
-        item.place_id_or_name == "Australian Museum" and item.reason == "required_place_unresolved"
-        for item in state["selection_conflicts"]
-    )
-    assert all(item.name != "Australian Museum" for item in state["selected_candidates"])
-    assert "Australian Museum" in llm.calls[-1].user_prompt
-    assert "required_place_unresolved" in llm.calls[-1].user_prompt
-    assert "other selected POIs do not satisfy them" in llm.calls[-1].user_prompt
-
-    state, llm, _, _, _, _, _ = run_graph(
-        req,
-        per_query=3,
-        named_first="Australian Museum",
-        details_failure_ids={"poi-0-0"},
-        named_place_intents=(named,),
-    )
-    assert "poi-0-0" not in state["review_selection"].selected_place_ids
-    assert any(item.place_id_or_name == "poi-0-0" for item in state["selection_conflicts"])
-    assert "poi-0-0" in llm.calls[-1].user_prompt
+    with pytest.raises(ClarificationRequired, match="unresolved_named_identity"):
+        run_graph(req, per_query=3, named_place_intents=(named,))
+    with pytest.raises(ClarificationRequired, match="required_place_details_unusable"):
+        run_graph(
+            req,
+            per_query=3,
+            named_first="Australian Museum",
+            details_failure_ids={"poi-0-0"},
+            named_place_intents=(named,),
+        )
 
 
 def test_typed_required_place_survives_active_final_selection_and_trace() -> None:
@@ -400,37 +388,19 @@ def test_typed_required_place_survives_active_final_selection_and_trace() -> Non
         request.text_query == "Visit the Sydney Opera House in Sydney"
         for request in places.search_requests
     )
-    observations = next(
-        payload
-        for name, payload in tracer.events
-        if name == "candidate_search_observations_recorded"
+    completed = next(
+        payload for name, payload in tracer.events if name == "planning_supply_completed"
     )
-    assert any(
-        item["place_id"] == "poi-0-0" and item["place_name"] == "Sydney Opera House"
-        for item in observations["observations"]
-    )
-    event_names = [name for name, _ in tracer.events]
-    assert (
-        event_names.index("named_place_search_intents_created")
-        < event_names.index("candidate_search_observations_recorded")
-        < event_names.index("named_place_identities_reconciled")
-        < event_names.index("named_place_must_visit_propagated")
-        < event_names.index("named_place_final_selection_completed")
-    )
-    final_event = next(
-        payload
-        for name, payload in tracer.events
-        if name == "named_place_final_selection_completed"
-    )
-    assert final_event["places"] == [
-        {
-            "place_text": "Sydney Opera House",
-            "inclusion": "REQUIRED",
-            "resolved_place_id": "poi-0-0",
-            "final_selected": True,
-            "must_visit": True,
-        }
-    ]
+    assert "poi-0-0" in completed["selected_ids"]
+    from backend.app.services.planning_supply_pipeline import planner_supply_projection
+
+    view = planner_supply_projection(state["review_selection"], state["interpreted_requirements"])
+    assert view["required_canonical_ids"] == ("poi-0-0",)
+    assert "poi-0-0" not in view["optional_canonical_ids"]
+    assert view["optional_canonical_ids"]
+    assert "suitable subset" in view["instructions"]
+    # The fake itinerary deliberately schedules no options; V1 does not repair it.
+    assert all(not day.activities for day in state["itinerary"].days)
 
 
 class ReviewProfileLLM:
@@ -443,13 +413,7 @@ class ReviewProfileLLM:
         if response_schema is TripIntentExtractionResult:
             return make_extraction(
                 self.req,
-                experience=(
-                    ExperiencePreferenceIntent(
-                        preference=ExperiencePreference.AVOID_CROWDS,
-                        importance=SearchIntentKind.NORMAL_PREFERENCE,
-                        source_text="avoid crowds",
-                    ),
-                ),
+                experience=(("avoid crowds", "crowding"),),
             )
         if response_schema is ExperienceProfileDraft:
             place_id = json.loads(user_prompt)["place_id"]
@@ -474,7 +438,7 @@ class ReviewProfileLLM:
         raise AssertionError("Unexpected response schema")
 
 
-def test_review_aware_selection_is_active_but_profile_stays_out_of_planner() -> None:
+def test_review_relations_are_available_but_raw_reviews_stay_out_of_planner() -> None:
     req = requirements(1, required=["museums", "beaches"], preferences=["avoid crowds"])
     llm = ReviewProfileLLM(req)
     limits = ToolBudgetLimits(
@@ -486,9 +450,10 @@ def test_review_aware_selection_is_active_but_profile_stays_out_of_planner() -> 
     state, _, places, _, _, budget, tracer = run_graph(
         req, per_query=1, limits=limits, llm=llm, with_reviews=True
     )
-    assert state["candidate_funnel"].no_review_selection.selected_place_ids != (
-        state["review_selection"].selected_place_ids
-    )
+    assert state["review_selection"].evaluator_calls == 0
+    assert {schema for schema, _ in llm.calls} <= {
+        TripIntentExtractionResult, ExperienceProfileDraft, V1Itinerary
+    }
     assert len(places.reviews_requests) == 1
     assert len(state["review_selection"].profiles) == 1
     assert budget.summary()["review_enriched_places"]["used"] == 1
@@ -499,7 +464,6 @@ def test_review_aware_selection_is_active_but_profile_stays_out_of_planner() -> 
         REVIEW_SENTINEL,
         "Visitors report crowds.",
         "Visitors report calm conditions.",
-        "review_1",
         "summary_review_refs",
         "minimum_flip_magnitude",
         "q_rel",
@@ -511,7 +475,16 @@ def test_review_aware_selection_is_active_but_profile_stays_out_of_planner() -> 
         assert forbidden not in generation_prompt
     assert REVIEW_SENTINEL not in repr(tracer.events)
     assert REVIEW_SENTINEL not in repr(tracer.payloads)
-    assert any(name == "final_poi_selection_completed" for name, _ in tracer.events)
+    assert any(name == "planning_supply_completed" for name, _ in tracer.events)
+
+
+def test_active_supply_has_no_additional_selection_model_call():
+    req = requirements(3)
+    state, llm, *_ = run_graph(req, per_query=4)
+    selection = state["review_selection"]
+    assert len(selection.selected_place_ids) == 8
+    assert selection.subset_enumerator_calls == selection.evaluator_calls == 0
+    assert len(llm.calls) == 2
 
 
 def test_missing_route_observation_is_not_provider_confirmed_route_not_found() -> None:
@@ -537,7 +510,7 @@ def test_missing_route_observation_is_not_provider_confirmed_route_not_found() -
     assert route_event["provider_route_not_found_count"] == len(confirmed)
 
 
-def _file_tracer(root: Path, request: TravelRequest) -> FileRunTracer:
+def _file_tracer(root: Path, request: PlanningRequest) -> FileRunTracer:
     return FileRunTracer(
         RunTraceContext(
             run_id=RUN_ID,
@@ -554,9 +527,15 @@ def _file_tracer(root: Path, request: TravelRequest) -> FileRunTracer:
 
 
 def test_active_file_trace_excludes_review_inputs_and_redacts_secrets(tmp_path: Path) -> None:
+    from backend.app.runtime.config_loader import load_runtime_config
+    from backend.app.runtime.config_models import AcquisitionConfig
+
     req = requirements(1, required=["museums", "beaches"], preferences=["avoid crowds"])
-    request = TravelRequest(
-        request_text="Plan Sydney walking-only. avoid crowds. api_key=hidden-example-secret"
+    request = make_request(
+        requirements=req,
+        additional_preferences=(
+            "Plan Sydney walking-only. avoid crowds. api_key=hidden-example-secret"
+        ),
     )
     tracer = _file_tracer(tmp_path, request)
     llm = ReviewProfileLLM(req)
@@ -575,6 +554,9 @@ def test_active_file_trace_excludes_review_inputs_and_redacts_secrets(tmp_path: 
             FakeWeatherProvider(),
             MappingRoutesProvider(),
             reference_date=REFERENCE_DATE,
+            runtime_config=load_runtime_config().model_copy(
+                update={"acquisition": AcquisitionConfig(policy_id="conservative_1")}
+            ),
             budget_limits=limits,
             tracer=tracer,
         )
@@ -586,8 +568,8 @@ def test_active_file_trace_excludes_review_inputs_and_redacts_secrets(tmp_path: 
     )
     assert result.itinerary == itinerary_for(req)
     assert len(places.reviews_requests) == 1
-    assert "candidate_funnel_completed" in trace_text
-    assert "final_poi_selection_completed" in trace_text
+    assert "semantic_candidate_admission" in trace_text
+    assert "planning_supply_completed" in trace_text
     assert "route_baseline_chunk_completed" in trace_text
     assert REVIEW_SENTINEL not in trace_text
     assert "hidden-example-secret" not in trace_text
@@ -596,7 +578,7 @@ def test_active_file_trace_excludes_review_inputs_and_redacts_secrets(tmp_path: 
 
 def test_trace_write_failure_does_not_change_active_planning_result(tmp_path: Path) -> None:
     req = requirements(1)
-    request = TravelRequest(request_text="Plan Sydney walking-only.")
+    request = make_request(additional_preferences="Plan Sydney walking-only.", requirements=req)
     baseline = asyncio.run(
         run_v1(
             request,
@@ -621,4 +603,12 @@ def test_trace_write_failure_does_not_change_active_planning_result(tmp_path: Pa
             tracer=tracer,
         )
     )
-    assert with_failed_trace == baseline
+    # Wall-clock telemetry is not part of the deterministic planning result.
+    exclude = {
+        "planning_supply": {
+            "elapsed_seconds": True,
+            "cpu_seconds": True,
+            "acquisition_diagnostics": {"elapsed_seconds"},
+        }
+    }
+    assert with_failed_trace.model_dump(exclude=exclude) == baseline.model_dump(exclude=exclude)
