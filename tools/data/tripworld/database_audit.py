@@ -6,8 +6,8 @@ from pathlib import Path
 
 import numpy as np
 
-from backend.app.tripworld.artifacts import write_json_if_changed
 from backend.app.tripworld.database.vectors import SPACE_ID
+from tools.data.tripworld.artifact_persistence import write_json_if_changed
 
 
 def audit(conn, root: Path) -> dict:

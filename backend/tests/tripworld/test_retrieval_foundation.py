@@ -8,32 +8,23 @@ import pyarrow.parquet as pq
 import pytest
 from pydantic import ValidationError
 
-from backend.app.tripworld.artifacts import write_json_if_changed
-from backend.app.tripworld.corpus import build_corpus
-from backend.app.tripworld.preprocessing import project_source
-from backend.app.tripworld.retrieval.embedding import (
-    EmbeddingConfig,
-    EncodedBatch,
-    build_embeddings,
-    embedding_inputs,
-    load_embeddings,
-    validate_vectors,
-)
-from backend.app.tripworld.retrieval.entities import (
-    RetrievalEntity,
-    build_entities,
-    merge_entity,
-    stable_union,
-)
+from backend.app.tripworld.hashing import sha256_file
+from backend.app.tripworld.retrieval.embedding import validate_vectors
+from backend.app.tripworld.retrieval.entities import RetrievalEntity
 from backend.app.tripworld.retrieval.geography import (
     GeographicScope,
     haversine_km,
     in_bounding_box,
     in_radius,
 )
-from backend.app.tripworld.retrieval.sampling import geographic_mask
-from backend.app.tripworld.retrieval.search import DiscoveryIntent, ExactIndex
-from backend.app.tripworld.source import sha256_file
+from tools.data.tripworld.artifact_persistence import write_json_if_changed
+from tools.data.tripworld.corpus import build_corpus
+from tools.data.tripworld.embedding_build import build_embeddings, embedding_inputs, load_embeddings
+from tools.data.tripworld.embedding_config import EmbeddingConfig, EncodedBatch
+from tools.data.tripworld.entity_builder import build_entities, merge_entity, stable_union
+from tools.data.tripworld.preprocessing import project_source
+from tools.data.tripworld.sampling import geographic_mask
+from tools.data.tripworld.search import DiscoveryIntent, ExactIndex
 
 
 def source_row(fsq: str, google: str | None = "g", **overrides) -> dict:

@@ -9,12 +9,9 @@ import numpy as np
 import pytest
 from openai import OpenAI
 
-from backend.app.tripworld.retrieval.embedding import (
-    EmbeddingConfig,
-    EncodedBatch,
-    encode_resumable,
-)
-from backend.app.tripworld.retrieval.openai_adapter import (
+from tools.data.tripworld.embedding_build import encode_resumable
+from tools.data.tripworld.embedding_config import EmbeddingConfig, EncodedBatch
+from tools.data.tripworld.openai_adapter import (
     OpenAIEmbeddingAdapter,
     OpenAIEmbeddingError,
 )
@@ -24,7 +21,7 @@ from backend.app.tripworld.retrieval.openai_adapter import (
 def fake_tokenizer(monkeypatch):
     # Network-independent unit test tokenizer; real cl100k is used in the live spike.
     monkeypatch.setattr(
-        "backend.app.tripworld.retrieval.estimation.tokenizer",
+        "tools.data.tripworld.estimation.tokenizer",
         lambda: SimpleNamespace(encode_ordinary=lambda text: list(text.encode())),
     )
 

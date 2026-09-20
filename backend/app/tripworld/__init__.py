@@ -1,4 +1,4 @@
-"""Deterministic offline TripWorld data preparation."""
+"""Shared TripWorld contracts and runtime retrieval infrastructure."""
 
 from backend.app.tripworld.manifest import TripWorldManifest, load_manifest
 

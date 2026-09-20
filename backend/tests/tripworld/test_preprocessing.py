@@ -5,7 +5,7 @@ from pathlib import Path
 import pyarrow.parquet as pq
 
 from backend.app.tripworld.manifest import SELECTED_FIELD_NAMES, TripWorldManifest
-from backend.app.tripworld.preprocessing import project_source, validate_projected_file
+from tools.data.tripworld.preprocessing import project_source, validate_projected_file
 
 
 def test_projection_keeps_only_fixed_fields_and_is_idempotent(

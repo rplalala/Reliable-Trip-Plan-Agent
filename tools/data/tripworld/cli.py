@@ -6,12 +6,12 @@ from collections.abc import Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 
-from backend.app.tripworld.corpus import build_corpus
 from backend.app.tripworld.manifest import load_manifest
-from backend.app.tripworld.preprocessing import project_source
-from backend.app.tripworld.profiling import write_profile_outputs
-from backend.app.tripworld.semantics import load_semantic_mapping
-from backend.app.tripworld.source import download_source
+from tools.data.tripworld.corpus import build_corpus
+from tools.data.tripworld.preprocessing import project_source
+from tools.data.tripworld.profiling import write_profile_outputs
+from tools.data.tripworld.semantics import load_semantic_mapping
+from tools.data.tripworld.source import download_source
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_MANIFEST = REPOSITORY_ROOT / "data" / "tripworld" / "manifest.json"

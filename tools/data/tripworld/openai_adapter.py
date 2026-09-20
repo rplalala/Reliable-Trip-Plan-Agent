@@ -9,11 +9,8 @@ from collections.abc import Callable, Sequence
 import numpy as np
 from openai import APIConnectionError, APIStatusError, OpenAI
 
-from backend.app.tripworld.retrieval.embedding import (
-    EmbeddingConfig,
-    EncodedBatch,
-    validate_vectors,
-)
+from backend.app.tripworld.retrieval.embedding import validate_vectors
+from tools.data.tripworld.embedding_config import EmbeddingConfig, EncodedBatch
 
 
 class OpenAIEmbeddingError(RuntimeError):
@@ -49,7 +46,7 @@ class OpenAIEmbeddingAdapter:
         self.client.close()
 
     def encode(self, texts: Sequence[str], *, query: bool = False) -> EncodedBatch:
-        from backend.app.tripworld.retrieval.estimation import tokenizer
+        from tools.data.tripworld.estimation import tokenizer
 
         config = self.config
         if not texts or len(texts) > config.max_batch_inputs or any(not t.strip() for t in texts):

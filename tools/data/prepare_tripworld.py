@@ -3,7 +3,7 @@
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -11,7 +11,7 @@ if str(PROJECT_ROOT) not in sys.path:
 def run() -> int:
     """Load and execute the TripWorld preparation CLI from the repository root."""
 
-    from backend.app.tripworld.cli import main
+    from tools.data.tripworld.cli import main
 
     return main()
 

@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
+from backend.app.tripworld.hashing import sha256_file
 from backend.app.tripworld.manifest import TripWorldManifest, load_manifest
-from backend.app.tripworld.semantics import CategorySemanticMapping, load_semantic_mapping
-from backend.app.tripworld.source import sha256_file
+from tools.data.tripworld.semantics import CategorySemanticMapping, load_semantic_mapping
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 TINY_SOURCE = (

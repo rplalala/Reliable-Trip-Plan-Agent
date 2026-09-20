@@ -9,18 +9,20 @@ import pyarrow.parquet as pq
 import pytest
 from psycopg.types.json import Jsonb
 
-from backend.app.tripworld.artifacts import load_json_object, write_json_if_changed
-from backend.app.tripworld.corpus import build_corpus
-from backend.app.tripworld.database.connection import TripWorldDatabaseError, connection, migrate
-from backend.app.tripworld.database.ingestion import ingest, validate_artifact
+from backend.app.tripworld.artifacts import load_json_object
 from backend.app.tripworld.database.policy import exclusion_reasons, normalized_name, text_hash
 from backend.app.tripworld.database.search import PostgresSearch, geographic_sql, search_query
-from backend.app.tripworld.database.vectors import SPACE_ID, prepare_space, store_vectors
-from backend.app.tripworld.preprocessing import project_source
-from backend.app.tripworld.retrieval.entities import build_entities, merge_entity
+from backend.app.tripworld.database.vectors import SPACE_ID
+from backend.app.tripworld.hashing import sha256_file
 from backend.app.tripworld.retrieval.geography import GeographicScope
-from backend.app.tripworld.source import sha256_file
 from backend.tests.tripworld.test_retrieval_foundation import source_row
+from tools.data.tripworld.artifact_persistence import write_json_if_changed
+from tools.data.tripworld.corpus import build_corpus
+from tools.data.tripworld.database_connection import TripWorldDatabaseError, connection, migrate
+from tools.data.tripworld.database_ingestion import ingest, validate_artifact
+from tools.data.tripworld.entity_builder import build_entities, merge_entity
+from tools.data.tripworld.preprocessing import project_source
+from tools.data.tripworld.vector_store import prepare_space, store_vectors
 
 
 def test_production_policy_keeps_unknown_and_exact_threshold(tiny_manifest):
@@ -80,7 +82,7 @@ def test_database_errors_sanitized(monkeypatch):
 
 
 def test_locked_progress_report_does_not_abort_paid_build(monkeypatch, tmp_path):
-    from backend.app.tripworld.database import build as production
+    from tools.data.tripworld import database_build as production
 
     def locked(*args):
         raise PermissionError("report is being read")
@@ -214,7 +216,7 @@ def test_real_stale_policy_rejected(db, entity_artifact):
 
 
 def test_real_readonly_search_and_missing_space_before_api(db, entity_artifact, tmp_path):
-    from backend.app.tripworld.database.service import RetrievalService
+    from tools.diagnostics.retrieval_service import RetrievalService
 
     ingest(db, entity_artifact)
     scope = GeographicScope(latitude=0, longitude=0, radius_km=10)
@@ -265,8 +267,8 @@ def test_real_build_resume_and_no_api_for_unchanged_text(
 ):
     from types import SimpleNamespace
 
-    from backend.app.tripworld.database import build as production
-    from backend.app.tripworld.retrieval.embedding import EmbeddingConfig, EncodedBatch
+    from tools.data.tripworld import database_build as production
+    from tools.data.tripworld.embedding_config import EmbeddingConfig, EncodedBatch
 
     ingest(db, entity_artifact)
     monkeypatch.setattr(

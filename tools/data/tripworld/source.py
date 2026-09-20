@@ -1,6 +1,5 @@
 """Pinned TripWorld source download and validation."""
 
-import hashlib
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -9,7 +8,9 @@ import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from backend.app.tripworld.manifest import TripWorldManifest, validate_source_schema
+from backend.app.tripworld.hashing import sha256_file
+from backend.app.tripworld.manifest import TripWorldManifest
+from tools.data.tripworld.source_schema import validate_source_schema
 
 
 class SourceValidationError(ValueError):
@@ -34,12 +35,6 @@ class DownloadResult:
     downloaded: bool
 
 
-def sha256_file(path: Path, *, chunk_size: int = 1024 * 1024) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        while chunk := handle.read(chunk_size):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def validate_source_file(path: Path, manifest: TripWorldManifest) -> SourceValidation:

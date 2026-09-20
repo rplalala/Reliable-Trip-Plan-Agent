@@ -5,15 +5,15 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import pytest
 
-from backend.app.tripworld.corpus import DERIVED_FIELDS, build_corpus
 from backend.app.tripworld.manifest import SELECTED_FIELD_NAMES, TripWorldManifest
-from backend.app.tripworld.preprocessing import project_source
-from backend.app.tripworld.profiling import (
+from tools.data.tripworld.corpus import DERIVED_FIELDS, build_corpus
+from tools.data.tripworld.preprocessing import project_source
+from tools.data.tripworld.profiling import (
     build_profile,
     render_profile_markdown,
     write_profile_outputs,
 )
-from backend.app.tripworld.semantics import CategorySemanticMapping
+from tools.data.tripworld.semantics import CategorySemanticMapping
 
 
 def _project_fixture(

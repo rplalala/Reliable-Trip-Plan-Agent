@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -30,27 +30,27 @@ def run():
         from dotenv import load_dotenv
 
         load_dotenv(args.env_file, override=False)
-    from backend.app.tripworld.artifacts import write_json_if_changed
-    from backend.app.tripworld.database.connection import connection, migrate
+    from tools.data.tripworld.artifact_persistence import write_json_if_changed
+    from tools.data.tripworld.database_connection import connection, migrate
 
     with connection() as conn:
         if args.command == "migrate":
             result = {"applied": migrate(conn)}
         elif args.command == "ingest":
-            from backend.app.tripworld.database.ingestion import ingest
+            from tools.data.tripworld.database_ingestion import ingest
 
             result = ingest(conn, args.root / "artifacts/retrieval_entities.parquet")
             write_json_if_changed(args.root / "reports/phase5_ingestion.json", result)
         elif args.command == "preflight":
-            from backend.app.tripworld.database.build import preflight
+            from tools.data.tripworld.database_build import preflight
 
             result = preflight(conn, args.root)
         elif args.command == "embed":
-            from backend.app.tripworld.database.build import build
+            from tools.data.tripworld.database_build import build
 
             result = build(conn, args.root)
         elif args.command == "audit":
-            from backend.app.tripworld.database.audit import audit
+            from tools.data.tripworld.database_audit import audit
 
             result = audit(conn, args.root)
         elif args.command == "status":
@@ -70,12 +70,12 @@ def run():
                 ).fetchone()["n"],
             }
         elif args.command == "validate":
-            from backend.app.tripworld.database.validation import validate_database
+            from tools.validation.retrieval_validation import validate_database
 
             result = validate_database(conn, args.root)
         else:
-            from backend.app.tripworld.database.service import RetrievalService
             from backend.app.tripworld.retrieval.geography import GeographicScope
+            from tools.diagnostics.retrieval_service import RetrievalService
 
             service = RetrievalService(conn, args.root)
             result = service.retrieve(

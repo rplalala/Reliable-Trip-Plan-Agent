@@ -1,6 +1,6 @@
 """Tests for category normalization and retrieval-document semantics."""
 
-from backend.app.tripworld.semantics import (
+from tools.data.tripworld.semantics import (
     CategorySemanticMapping,
     enrich_row,
     normalize_fsq_categories,

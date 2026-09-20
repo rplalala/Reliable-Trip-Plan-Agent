@@ -8,11 +8,11 @@ import numpy as np
 import pyarrow.parquet as pq
 import tiktoken
 
-from backend.app.tripworld.artifacts import write_json_if_changed
-from backend.app.tripworld.retrieval.embedding import EmbeddingConfig
-from backend.app.tripworld.source import sha256_file
+from backend.app.tripworld.hashing import sha256_file
+from tools.data.tripworld.artifact_persistence import write_json_if_changed
+from tools.data.tripworld.embedding_config import EmbeddingConfig
 
-ROOT = Path(__file__).resolve().parents[4] / "data" / "tripworld"
+ROOT = Path(__file__).resolve().parents[3] / "data" / "tripworld"
 
 
 def tokenizer() -> tiktoken.Encoding:

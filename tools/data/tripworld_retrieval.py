@@ -5,17 +5,17 @@ import json
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 
 def run() -> int:
     from backend.app.tripworld.manifest import load_manifest
-    from backend.app.tripworld.retrieval.entities import build_entities
     from backend.app.tripworld.retrieval.geography import GeographicScope
-    from backend.app.tripworld.retrieval.sampling import select_destinations
-    from backend.app.tripworld.retrieval.spike import query_spike, run_spike
+    from tools.data.tripworld.entity_builder import build_entities
+    from tools.data.tripworld.sampling import select_destinations
+    from tools.data.tripworld.spike import query_spike, run_spike
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=PROJECT_ROOT / "data" / "tripworld")
@@ -45,8 +45,8 @@ def run() -> int:
             load_manifest(root / "manifest.json"),
         )
     elif args.command == "estimate":
-        from backend.app.tripworld.retrieval.embedding import EmbeddingConfig
-        from backend.app.tripworld.retrieval.estimation import estimate_embeddings
+        from tools.data.tripworld.embedding_config import EmbeddingConfig
+        from tools.data.tripworld.estimation import estimate_embeddings
 
         config = EmbeddingConfig.model_validate_json((root / "embedding_model.v1.json").read_text())
         result = estimate_embeddings(

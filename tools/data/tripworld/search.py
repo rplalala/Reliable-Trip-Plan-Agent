@@ -7,10 +7,10 @@ from typing import Protocol
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field
 
-from backend.app.tripworld.retrieval.embedding import Variant
 from backend.app.tripworld.retrieval.entities import RetrievalEntity
 from backend.app.tripworld.retrieval.geography import GeographicScope, haversine_km
-from backend.app.tripworld.retrieval.sampling import geographic_mask
+from tools.data.tripworld.embedding_config import Variant
+from tools.data.tripworld.sampling import geographic_mask
 
 
 class DiscoveryIntent(BaseModel):

@@ -7,17 +7,9 @@ import pyarrow as pa
 import pytest
 from pydantic import ValidationError
 
-from backend.app.tripworld.manifest import (
-    SELECTED_FIELD_NAMES,
-    SourceSchemaError,
-    TripWorldManifest,
-    validate_source_schema,
-)
-from backend.app.tripworld.source import (
-    SourceValidationError,
-    download_source,
-    validate_source_file,
-)
+from backend.app.tripworld.manifest import SELECTED_FIELD_NAMES, TripWorldManifest
+from tools.data.tripworld.source import SourceValidationError, download_source, validate_source_file
+from tools.data.tripworld.source_schema import SourceSchemaError, validate_source_schema
 
 
 def test_manifest_pins_source_and_exact_field_contract(

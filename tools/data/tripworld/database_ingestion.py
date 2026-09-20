@@ -9,8 +9,8 @@ from psycopg.types.json import Jsonb
 from backend.app.tripworld.artifacts import load_json_object
 from backend.app.tripworld.database.policy import POLICY_VERSION, exclusion_reasons, normalized_name
 from backend.app.tripworld.database.policy import text_hash as hash_text
+from backend.app.tripworld.hashing import sha256_file
 from backend.app.tripworld.retrieval.entities import ENTITY_VERSION, TEXT_VERSION, RetrievalEntity
-from backend.app.tripworld.source import sha256_file
 
 COLS = (
     "retrieval_entity_id,google_place_id,preferred_name,normalized_names,latitude,longitude,"
