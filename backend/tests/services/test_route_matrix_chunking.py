@@ -27,7 +27,7 @@ def _places(count: int):
     return [_place(chr(ord("a") + index)) for index in range(count)]
 
 
-@pytest.mark.parametrize("count", range(1, 17))
+@pytest.mark.parametrize("count", range(1, 21))
 def test_every_supported_size_has_complete_stable_directed_grid(count: int) -> None:
     provider = PolicyRoutesProvider()
     service, budget = _service(provider)
@@ -64,7 +64,12 @@ def test_every_supported_size_has_complete_stable_directed_grid(count: int) -> N
 
 @pytest.mark.parametrize(
     ("count", "expected_origins", "expected_elements"),
-    [(8, [8], [64]), (9, [7, 2], [63, 18]), (16, [4, 4, 4, 4], [64, 64, 64, 64])],
+    [
+        (8, [8], [64]),
+        (9, [7, 2], [63, 18]),
+        (16, [4, 4, 4, 4], [64, 64, 64, 64]),
+        (20, [3] * 6 + [2], [60] * 6 + [40]),
+    ],
 )
 def test_representative_chunk_shapes(
     count: int, expected_origins: list[int], expected_elements: list[int]

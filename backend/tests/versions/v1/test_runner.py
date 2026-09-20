@@ -64,8 +64,8 @@ def test_v1_settings_reuse_v0_foundry_config_and_add_bounded_google_config(
     assert settings.app_time_zone == "Australia/Sydney"
     assert settings.tool_budget_limits().max_route_matrix_elements == 64
     assert settings.tool_budget_limits().max_baseline_route_matrix_elements_per_request == 64
-    assert settings.tool_budget_limits().max_baseline_route_matrix_elements == 256
-    assert settings.tool_budget_limits().max_baseline_route_matrix_calls == 4
+    assert settings.tool_budget_limits().max_baseline_route_matrix_elements == 400
+    assert settings.tool_budget_limits().max_baseline_route_matrix_calls == 7
     assert settings.tool_budget_limits().max_alternative_route_pairs == 16
     assert settings.tool_budget_limits().max_alternative_route_matrix_calls == 16
 
@@ -86,6 +86,7 @@ def test_v1_cli_outputs_shared_planning_result_with_offline_injections(capsys) -
     assert captured.err == ""
     assert output["system_version"] == "v1"
     assert set(output) == {
+        "generation_diagnostics",
         "system_version",
         "requirements",
         "itinerary",

@@ -35,7 +35,7 @@ def test_committed_yaml_selects_quality_first_budget_and_trace_defaults() -> Non
 
     assert config.app.time_zone == "Australia/Sydney"
     assert limits.max_candidates == 64
-    assert limits.max_final_pois == 16
+    assert limits.max_final_pois == 20
     assert limits.max_destination_search_calls == 1
     assert limits.max_candidate_search_calls == 12
     assert limits.max_place_detail_calls == 40
@@ -44,8 +44,8 @@ def test_committed_yaml_selects_quality_first_budget_and_trace_defaults() -> Non
     assert limits.max_experience_profile_llm_calls == 8
     assert limits.max_route_matrix_elements == 64
     assert limits.max_baseline_route_matrix_elements_per_request == 64
-    assert limits.max_baseline_route_matrix_elements == 256
-    assert limits.max_baseline_route_matrix_calls == 4
+    assert limits.max_baseline_route_matrix_elements == 400
+    assert limits.max_baseline_route_matrix_calls == 7
     assert limits.max_alternative_route_pairs == 16
     assert limits.max_alternative_route_matrix_calls == 16
     assert limits.max_weather_calls == 2
@@ -213,8 +213,8 @@ def test_baseline_route_request_run_and_call_limits_are_independent(tmp_path) ->
     routes = data["budget"]["routes"]
     assert routes["matrix_elements"] == 64  # Current V1 graph compatibility bridge.
     assert routes["baseline_elements_per_request"] == 64
-    assert routes["baseline_elements_per_run"] == 256
-    assert routes["baseline_calls"] == 4
+    assert routes["baseline_elements_per_run"] == 400
+    assert routes["baseline_calls"] == 7
     assert BASELINE_ROUTE_MATRIX_PER_REQUEST_HARD_LIMIT.maximum == 64
 
     path = tmp_path / "runtime.yaml"

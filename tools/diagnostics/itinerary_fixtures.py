@@ -19,7 +19,7 @@ START = date(2026, 9, 12)
 END = START + timedelta(days=9)
 RETRIEVED = datetime(2026, 9, 11, tzinfo=UTC)
 
-def _places() -> tuple[list[PlaceCandidate], list[PlaceEvidence]]:
+def _places(count=16) -> tuple[list[PlaceCandidate], list[PlaceEvidence]]:
     candidates = []
     places = []
     current = OpeningHoursEvidence(
@@ -54,7 +54,7 @@ def _places() -> tuple[list[PlaceCandidate], list[PlaceEvidence]]:
             )
         ],
     )
-    for index in range(16):
+    for index in range(count):
         place_id = f"poi-{index:02d}"
         name = f"Museum {index:02d}"
         candidates.append(

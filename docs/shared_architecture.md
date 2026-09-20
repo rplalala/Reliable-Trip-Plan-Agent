@@ -40,3 +40,14 @@ Future V3 adds explicit post-generation validation, structured violations, targe
 re-validation. It is not another POI selector. The [current issue triage](known_issues.md#current-checkpoint-triage-2026-09-20)
 separates missing evidence from repairable plan contradictions. Neither V3 nor acceptance makes
 UNKNOWN facts verified. No formal evaluation or V3 implementation is started by this record.
+
+## First-draft baseline extension
+
+All V0/V1/V2 use shared first-generation coverage guidance and model-declared activity
+roles. V0 observes normalized name proxies after generation/date checks; V1/V2 observe
+validated supply IDs before independent Nearby discovery. Diagnostics never call tools,
+change activities or trigger generation. Long-trip supply can now reach K20 while
+ordinary acquisition remains C64/G32/send40/P8. See the responsibility-owned
+[output contract](shared_itinerary_output.md#first-generation-roles-and-diagnostics)
+and [supply policy](shared_poi_supply.md). This changes the shared evaluation checkpoint;
+prior smoke outputs remain historical evidence, not validation of this new prompt.

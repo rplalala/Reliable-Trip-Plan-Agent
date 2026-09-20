@@ -70,3 +70,12 @@ case is eight days. A future-start ten-day case is incompatible with the current
 do not silently extend the window or falsify reference_date. The Sydney ten-day run remains a
 maximum-window development smoke, not an eligible formal-evaluation sample under this rule.
 No production date policy or prompt changes are introduced here.
+
+## Default generation objective versus user requirements
+
+The shared 2-5 main-POI/full-day objective is application generation guidance, not a new
+user HARD requirement or semantic extraction rule. Explicit pace/rest and long REQUIRED
+visits may justify fewer visits. Diagnostics preserve linked semantic requirement IDs
+without interpreting raw words or converting target misses into clarification or failure.
+Same-day remaining-hour feasibility is still unsupported. Named and HARD boundaries
+are unchanged; REQUIRED count above 16 still reports a capacity conflict.

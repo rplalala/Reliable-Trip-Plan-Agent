@@ -179,6 +179,7 @@ class FoundryDateTimeDTO(FoundryTransportDTO):
 class FoundryActivityDTO(FoundryTransportDTO):
     """Transport representation of one itinerary activity."""
 
+    activity_kind: Literal["main_poi", "generic_activity", "transport", "free_time", "unknown"]
     activity_id: str
     title: str
     source_place_id: str | None

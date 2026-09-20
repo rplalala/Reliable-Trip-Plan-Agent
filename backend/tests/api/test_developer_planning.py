@@ -51,7 +51,8 @@ def test_developer_planning_returns_raw_v0_result() -> None:
 
     assert status_code == 200
     assert body["system_version"] == "v0"
-    assert set(body) == {"system_version", "requirements", "itinerary"}
+    assert set(body) == {"system_version", "requirements", "itinerary", "generation_diagnostics"}
+    assert body["generation_diagnostics"]["days"][0]["count_basis"] == "name_proxy"
 
 
 def test_developer_planning_rejects_unimplemented_version() -> None:

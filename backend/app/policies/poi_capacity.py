@@ -92,8 +92,12 @@ def quality_capacities(start_date, end_date, window, required=0):
         raise ClarificationRequired("required_capacity_conflict")
     days = (end_date - start_date).days + 1
     normal = min(16, max(8, 2 * days + 6))
-    k = max(normal, required)
-    values = POICapacities(days, max(48, 4 * k), 2 * k, k, min(8, (k + 1) // 2))
+    acquisition_k = max(normal, required)
+    k = max(acquisition_k, 2 * days)
+    values = POICapacities(
+        days, max(48, 4 * acquisition_k), 2 * acquisition_k, k,
+        min(8, (acquisition_k + 1) // 2),
+    )
     return EffectivePOICapacities(
         values, values.c_raw, values.r_pool, k, values.review_pool_cap, ()
     )

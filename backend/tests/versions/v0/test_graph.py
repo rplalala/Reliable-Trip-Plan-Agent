@@ -60,6 +60,7 @@ def test_v0_runs_exactly_the_two_intended_structured_stages() -> None:
     assert "Kyoto" in client.calls[1].user_prompt
     assert result.system_version is SystemVersion.V0
     assert set(result.model_dump(mode="json")) == {
+        "generation_diagnostics",
         "system_version",
         "requirements",
         "itinerary",

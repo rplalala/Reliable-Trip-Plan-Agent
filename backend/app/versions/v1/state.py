@@ -12,6 +12,7 @@ from backend.app.evidence.models import (
 )
 from backend.app.policies.poi_selection import SelectionConflict
 from backend.app.policies.transport import TransportModeDecision
+from backend.app.schemas.generation_diagnostics import GenerationDiagnostics
 from backend.app.schemas.interpreted_requirements import InterpretedTripRequirements
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.request import PlanningRequest, TravelRequirements
@@ -45,5 +46,6 @@ class V1State(TypedDict):
     route_evidence: NotRequired[RouteEvidenceBundle]
     official_web_result: NotRequired[OfficialWebIntegrationResult | None]
     official_planner_evidence: NotRequired[list[dict[str, object]]]
+    generation_diagnostics: NotRequired[GenerationDiagnostics]
     itinerary: NotRequired[Itinerary]
     reference_discovery: NotRequired[ReferenceDiscoveryResult]

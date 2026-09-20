@@ -35,14 +35,14 @@ def test_all_duration_values_and_required_expansion(days):
     assert (c.c_raw, c.r_pool, c.k_final, c.review_pool_cap) == (
         max(48, 4 * k),
         2 * k,
-        k,
+        max(k, 2 * days),
         (k + 1) // 2,
     )
     expanded = quality_capacities(start, end, window, 16)
     assert (expanded.c_raw, expanded.r_pool, expanded.k_final, expanded.review_pool_cap) == (
         64,
         32,
-        16,
+        max(16, 2 * days),
         8,
     )
     with pytest.raises(ClarificationRequired):
@@ -422,8 +422,8 @@ def test_payload_fixtures_validate_under_explicit_160k_guard():
 
     for d, k, long, overflow in [
         (3, 12, False, False),
-        (10, 16, False, False),
-        (10, 16, True, False),
+        (10, 20, False, False),
+        (10, 20, True, False),
     ]:
         prompt, meta = fixtures(d, k, long)
         measured = measure(
@@ -431,7 +431,7 @@ def test_payload_fixtures_validate_under_explicit_160k_guard():
         )
         assert measured["overflow"] == overflow
         assert measured["baseline_elements"] == k * k
-        assert measured["P"] == k // 2
+        assert measured["P"] == min(8, k // 2)
 
 
 def test_v1_quality_runner_injects_one_config_without_rag(monkeypatch):
@@ -474,6 +474,9 @@ def test_v1_quality_runner_injects_one_config_without_rag(monkeypatch):
         )
         policy = next(p for e, p in tracer.events if e == "effective_acquisition_policy")
         started = next(p for e, p in tracer.events if e == "run_started")
+        assert result.generation_diagnostics.days[0].count_basis == "canonical_id"
+        diagnostics_events = [p for e, p in tracer.events if e == "generation_diagnostics"]
+        assert diagnostics_events == [result.generation_diagnostics.model_dump(mode="json")]
         assert policy["policy_id"] == "quality_first_1"
         assert started["runtime_config"]["tripworld_discovery"]["deadline_seconds"] == 360
         assert result.system_version.value == "v1"
@@ -517,6 +520,7 @@ def test_v2_quality_runtime_receives_same_config_and_cache_reuse():
         assert result.rag_discovery["details_sends"] == 1
         assert result.planning_supply.acquisition_diagnostics["cache_qualified"] == 1
         assert len([r for r in places.details_requests if r.place_id == "aaa-rag"]) == 1
+        assert result.generation_diagnostics.days[0].count_basis == "canonical_id"
         assert result.rag_discovery["retrieval_queries"] == 1
         assert len(llm.calls) == 1
 
@@ -545,7 +549,7 @@ def test_quality_rejects_incoherent_matrix():
 
     document = config().model_dump()
     document["budget"]["routes"]["baseline_elements_per_request"] = 32
-    with pytest.raises(ValueError, match="complete 16-place"):
+    with pytest.raises(ValueError, match="complete 20-place"):
         RuntimeConfig.model_validate(document)
 
 

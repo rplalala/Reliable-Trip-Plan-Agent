@@ -40,6 +40,7 @@ def make_activity(
     end_time: FoundryDateTimeDTO | None = None,
 ) -> FoundryActivityDTO:
     return FoundryActivityDTO(
+        activity_kind="main_poi",
         source_place_id=None,
         activity_id="activity-1",
         title="Visit Fushimi Inari Shrine",

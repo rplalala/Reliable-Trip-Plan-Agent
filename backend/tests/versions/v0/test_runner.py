@@ -90,7 +90,7 @@ def test_v0_cli_outputs_planning_result_json(capsys) -> None:
     assert exit_code == 0
     assert captured.err == ""
     assert output["system_version"] == "v0"
-    assert set(output) == {"system_version", "requirements", "itinerary"}
+    assert set(output) == {"system_version", "requirements", "itinerary", "generation_diagnostics"}
 
 
 def test_v0_cli_preserves_unicode_through_cp936_safe_json(

@@ -7,12 +7,15 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from backend.app.schemas.request import Money
 
+ActivityKind = Literal["main_poi", "generic_activity", "transport", "free_time", "unknown"]
+
 
 class Activity(BaseModel):
     """A scheduled itinerary activity."""
 
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
+    activity_kind: ActivityKind = "unknown"
     activity_id: str = Field(min_length=1)
     title: str = Field(min_length=1)
     place_name: str | None = Field(default=None, min_length=1)

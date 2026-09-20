@@ -13,3 +13,11 @@ Google identity is invented. scripts/run_v0.py remains independent; both APIs cu
 
 [Requirements](shared_requirements.md) and [output](shared_itinerary_output.md) define common contracts.
 [Milestones](v0_milestone.md) preserve original free-text freeze and later authorized changes.
+
+## Shared first-draft objective
+
+V0 uses the same full-date-range and default 2-5 main-visit guidance as V1/V2. New model
+activities declare their role; historical missing roles remain unknown. Runner diagnostics
+use name_proxy rather than canonical identity and never perform external lookup, additional
+model calls or repair. Supply metrics are not applicable. Details are maintained in
+[shared output](shared_itinerary_output.md#first-generation-roles-and-diagnostics).

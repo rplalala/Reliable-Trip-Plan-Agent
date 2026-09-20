@@ -11,6 +11,7 @@ from pydantic import ValidationError
 
 from backend.app.llm.azure_foundry import AzureFoundryStructuredLLMClient
 from backend.app.llm.client import StructuredLLMClient
+from backend.app.policies.generation_diagnostics import observe_generation
 from backend.app.policies.trip_dates import (
     DateProvider,
     SystemDateProvider,
@@ -67,6 +68,15 @@ async def run_v0(
     validate_itinerary_dates(requirements, itinerary, date_window)
 
     return PlanningResult(
+        generation_diagnostics=observe_generation(
+            itinerary,
+            requirements,
+            reference_date=effective_reference_date,
+            related_requirement_ids=tuple(
+                r.requirement_id
+                for r in final_state["interpreted_requirements"].semantic_requirements
+            ),
+        ),
         system_version=SystemVersion.V0,
         requirements=requirements,
         itinerary=itinerary,

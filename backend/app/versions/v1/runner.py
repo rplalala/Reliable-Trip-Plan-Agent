@@ -220,6 +220,7 @@ async def run_tools_planner(
         extra = {"rag_discovery": extension.finalize(final_state)} if extension else {}
         result = result_factory(
             **extra,
+            generation_diagnostics=final_state["generation_diagnostics"],
             system_version=system_version,
             requirements=requirements,
             itinerary=itinerary,

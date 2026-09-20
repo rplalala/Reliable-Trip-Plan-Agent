@@ -5,8 +5,10 @@
 <a id="b-03703c8677d9-0"></a>
 
 The default policy is a shared V1/V2 acquisition change, not just larger budget numbers.
-For trip duration D, K = min(16, max(8, 2D + 6)), C = max(48, 4K), G = 2K,
-ordinary Details sends = G + 8, and P = min(8, ceil(K / 2)).
+For trip duration D, let A = min(16, max(8, 2D + 6)). Final normal supply
+K = max(A, 2D), while acquisition stays C = max(48, 4A), G = 2A,
+ordinary Details sends = G + 8 and P = min(8, ceil(A / 2)). K is a supply
+capacity, not an obligation to schedule all candidates or a feasibility guarantee.
 
 <a id="b-03703c8677d9-1"></a>
 
@@ -16,13 +18,16 @@ ordinary Details sends = G + 8, and P = min(8, ceil(K / 2)).
 | 2 | 48 | 20 | 28 | 10 | 5 |
 | 3 | 48 | 24 | 32 | 12 | 6 |
 | 4 | 56 | 28 | 36 | 14 | 7 |
-| 5-10 | 64 | 32 | 40 | 16 | 8 |
+| 5-8 | 64 | 32 | 40 | 16 | 8 |
+| 9 | 64 | 32 | 40 | 18 | 8 |
+| 10 | 64 | 32 | 40 | 20 | 8 |
 
 <a id="b-03703c8677d9-2"></a>
 
 Reliably resolved feasible REQUIRED places occupy shared capacity. Up to 16 REQUIRED may
-expand K to max(normal K, REQUIRED count), with dependent values recalculated. Above the hard
-limit is an explicit capacity conflict. Ordinary shortfall does not invent places or demand
+expand the acquisition basis to max(A, REQUIRED count), and K to max(normal K, REQUIRED count).
+C/G/send/P derive from that acquisition basis, never from the new 2D supply floor.
+More than 16 REQUIRED remains an explicit capacity conflict even though final supply can hold 20. Ordinary shortfall does not invent places or demand
 clarification just to fill a target. Configuration and absolute safety ceilings remain distinct.
 These values now load from the single runtime.yaml. Historical conservative policy remains
 only as an explicitly constructed compatibility/test case, not a second active config file.
@@ -82,7 +87,7 @@ owner are independent. Nearby references have their own accounting and do not in
 Active files: `backend/app/policies/poi_capacity.py`, `acquisition_opportunities.py`,
 `planning_supply.py`; `backend/app/services/planning_supply_pipeline.py`,
 `candidate_acquisition.py`, `evidence_acquisition.py`; `backend/app/runtime/cache.py`.
-The older-named semantic pipeline still supplies active acquisition logic.
+CandidateAcquisition owns active acquisition; no retired semantic-selector framework is imported.
 
 <a id="b-12daf1778bd7-2"></a>
 

@@ -41,7 +41,7 @@ def fixtures(days, count, long_text=False):
     """Local fabricated evidence only; no provider clients or acquisition."""
     start = date(2026, 9, 12)
     end = start + timedelta(days=days - 1)
-    candidates, places = _places()
+    candidates, places = _places(count)
     candidates, places = candidates[:count], places[:count]
     ids = [p.place_id for p in places]
     n = 24 if long_text else 5
@@ -328,7 +328,7 @@ def main():
             },
         )
     ]
-    for days, k, long in [(3, 12, False), (10, 16, False), (10, 16, True)]:
+    for days, k, long in [(3, 12, False), (10, 20, False), (10, 20, True)]:
         user, metadata = fixtures(days, k, long)
         rows.append(
             measure(ITINERARY_GENERATION_SYSTEM_PROMPT, user, config.main_generation, metadata)

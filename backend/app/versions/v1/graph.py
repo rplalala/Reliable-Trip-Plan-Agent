@@ -14,6 +14,7 @@ from backend.app.evidence.models import (
 from backend.app.evidence.opening_hours import planning_opening_hours
 from backend.app.llm.client import StructuredLLMClient
 from backend.app.observability.run_trace import RunTracer, TracePayloadMode
+from backend.app.policies.generation_diagnostics import observe_generation
 from backend.app.policies.itinerary_output import output_role_summary, validate_output_sources
 from backend.app.policies.transport import select_transport_mode_from_intent
 from backend.app.policies.trip_dates import (
@@ -384,7 +385,17 @@ def build_tools_graph(
             create_trip_date_window(state["reference_date"]),
         )
         tracer.event("itinerary_dates_validated")
-        return {}
+        diagnostics = observe_generation(
+            state["itinerary"], state["requirements"],
+            reference_date=state["reference_date"],
+            supplied_ids=state["review_selection"].policy_result.selected_place_ids,
+            related_requirement_ids=tuple(
+                r.requirement_id
+                for r in state["interpreted_requirements"].semantic_requirements
+            ),
+        )
+        tracer.event("generation_diagnostics", diagnostics.model_dump(mode="json"))
+        return {"generation_diagnostics": diagnostics}
 
     async def discover_reference_recommendations(state: V1State) -> dict[str, object]:
         itinerary = state["itinerary"]

@@ -78,11 +78,13 @@ evidence when a decision-relevant date-specific need or concrete risk remains.
 <a id="b-58f6e0026185-0"></a>
 
 Routes support grouping and transfer feasibility, not POI discovery. The final
-POI count is at most 16. The baseline is a complete **directed** N x N Route
+POI count is at most 20. The baseline is a complete **directed** N x N Route
 Matrix, including same-place cells. Instead of truncating POIs to fit one
 request, V1 partitions consecutive origins deterministically while each chunk
 retains all destinations. The normal baseline budget is 64 elements per request,
-256 elements per run, and at most four calls. Thus N=16 uses four 4 x 16 chunks.
+400 elements per run, and at most seven calls. N=16 still uses four 4 x 16 chunks;
+N=20 uses six 3 x 20 chunks plus one 2 x 20 chunk. This preserves every directed pair
+without changing the 64-element per-request limit or alternative-route allowance.
 Provider status/condition, distance, and duration are normalized with explicit
 partial or unavailable elements; a failed element is never a measured route.
 `not_observed` means no provider result was observed for that directed element;
@@ -227,3 +229,13 @@ No new recommendation model, full Details, Profile, Routes or Web stage is added
 attribution. Search failure, timeout, no anchors, exhaustion or invalid attachment returns primary
 with partial/empty references and status. User cancellation propagates. Main fields remain unchanged;
 [output](shared_itinerary_output.md) owns the three ledgers. Nearby cannot repair sparse main plans.
+
+## Shared first-draft checkpoint
+
+Shared generation guidance, explicit activity roles and observational daily diagnostics
+apply before Nearby. Long-trip supply is K18/K20 for nine/ten days; acquisition is still
+bounded at C64/G32/send40/P8. Full baseline Routes support 400 directed elements in at
+most seven requests. Alternatives and all discovery/enrichment budgets are unchanged.
+This does not guarantee daily coverage or introduce post-generation refill/repair.
+See [shared output](shared_itinerary_output.md#first-generation-roles-and-diagnostics)
+and [shared supply](shared_poi_supply.md) for the single detailed contract.

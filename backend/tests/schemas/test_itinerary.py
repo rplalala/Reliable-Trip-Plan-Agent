@@ -43,6 +43,7 @@ def test_planning_result_has_only_shared_output_fields() -> None:
     )
 
     assert set(result.model_dump(mode="json")) == {
+        "generation_diagnostics",
         "system_version",
         "requirements",
         "itinerary",

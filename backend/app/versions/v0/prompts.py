@@ -2,6 +2,7 @@
 
 from datetime import date
 
+from backend.app.policies.generation_policy import FIRST_GENERATION_POLICY
 from backend.app.schemas.request import PlanningRequest, TravelRequirements
 
 ITINERARY_GENERATION_SYSTEM_PROMPT = """
@@ -28,7 +29,8 @@ and zero to three reference_recommendations for the WHOLE trip. References are o
 unscheduled suggestions, not bookings, committed costs or REQUIRED visit satisfaction.
 Keep primary activity times required. References have no visit times or costs. Return []
 when no suitable extra option exists. Do not fill the whole day, require meals/hotel returns,
-nightlife or filler, or use a fixed visits-per-day quota. Consider the user's pace and purpose;
+nightlife or filler, or treat the default daily target as a mandatory quota.
+Consider the user's pace and purpose;
 an early finish is not automatically good or bad. Do not force three references or use every
 option. Place type does not assign role: a REQUIRED cafe belongs in scheduled visits when
 feasible. Preserve exclusions in BOTH sections. Do not duplicate scheduled venues as references.
@@ -39,7 +41,7 @@ not live-verified. Do not invent external IDs, confirmed hours, prices or reserv
 Complete the primary itinerary first. References should supplement its actual planned places;
 do not sacrifice primary activities to fill references. Do not claim measured nearby distances
 or walking times. References remain model-knowledge suggestions, not live nearby search results.
-""".strip()
+""".strip() + "\n\n" + FIRST_GENERATION_POLICY
 
 
 def build_itinerary_generation_prompt(

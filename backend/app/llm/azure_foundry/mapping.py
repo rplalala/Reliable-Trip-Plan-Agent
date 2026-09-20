@@ -75,6 +75,7 @@ def map_foundry_activity(value: FoundryActivityDTO, *, field_path: str) -> Activ
 
     return Activity(
         activity_id=value.activity_id,
+        activity_kind=value.activity_kind,
         source_place_id=value.source_place_id,
         title=value.title,
         place_name=value.place_name,

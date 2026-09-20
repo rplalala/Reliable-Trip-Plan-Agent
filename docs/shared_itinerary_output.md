@@ -26,8 +26,8 @@ reference identities; do not silently delete invalid model items to manufacture 
 Post-primary work changes only references and related sources/role diagnostics, never primary
 dates, times, order, identity, costs/cost diagnostics or REQUIRED decisions. Ordinary reference
 failure preserves primary success; cancellation propagates. Search mechanics belong to
-[V1 design](v1_development.md). A supplied place need not be scheduled; no fixed daily
-count or full-day filling is required. Unknown prices remain unknown. Date/identity checks are
+[V1 design](v1_design.md). A supplied place need not be scheduled; the default daily
+target below is not an unconditional quota or a requirement to fill every hour. Unknown prices remain unknown. Date/identity checks are
 not V3 feasibility validation. Straight-line proximity is not measured walking or accessibility.
 
 
@@ -92,3 +92,45 @@ change scope and impacted versions/cases, then explicitly decide which evaluatio
 V3's added mechanism remains explicit post-generation validation, targeted repair and re-validation;
 ordinary shared maintenance is not a V3 capability. This task does not declare a formal re-freeze
 or complete evaluation acceptance.
+
+## First-generation roles and diagnostics
+
+All three generators share the default objective: cover the full requested date range,
+normally 2-5 distinct main POIs per normal full day, without concentrating all visits
+at the start. Explicit rest/pace, long REQUIRED visits and evidence availability take
+precedence over quota filling. No fabricated places, filler or repeats to inflate counts.
+
+New model DTOs require activity_kind: main_poi, generic_activity, transport, free_time,
+or unknown. Historical domain inputs without the field default to unknown. The role
+is model-declared, not verified place suitability; no keyword inference or fuzzy matching.
+A REQUIRED cafe may be a main visit. Nearby is never counted as a scheduled main visit.
+
+PlanningResult.generation_diagnostics is application-owned and optional for historical
+results. V0 computes it after existing date validation; the shared V1/V2 graph computes
+it after identity/date checks and before Nearby, which cannot change it or the draft.
+It records every requested date, including absent days. Per-day fields are date,
+day_present, applicability, count_basis, main_activity_count, distinct_main_poi_count,
+repeated_main_poi_count, generic_activity_count, transport_activity_count,
+free_time_activity_count, unclassified_activity_count, target_status and empty_day.
+
+V1/V2 count only declared main_poi visits with IDs in the validated supply. V0 uses only
+NFKC Unicode, whitespace and case normalization of main place names (name_proxy), not
+canonical identity. Missing roles/identities are unclassified, never inferred. The
+same-day remaining-hours case is not_assessable. Other days are measured against the
+default target; this does not certify full-day availability or adjudicate pace exceptions.
+Any unclassified activity makes that day's target status not_assessable; partial known
+counts remain visible. Zero known main POIs does not prove zero real visits when roles
+are unknown. Empty means no activities, which is distinct from zero counted main POIs.
+
+Trip fields summarize within/below/above/unassessable days, empty days, zero-known-main
+days, scheduled_unique_supply, unused_supply and cross_day_repeated_visits. Supply
+counts use distinct counted main IDs; V0 supply counts are null (not applicable), not
+zero. Within-day repeated count is counted visits minus distinct IDs/names; cross-day
+repeated count counts a distinct key once per subsequent day, independent of same-day
+multiplicity. The existing output_role_summary continues reporting all linked activities;
+these two metrics deliberately have different denominators. Related semantic requirement
+IDs remain available for traceability; no new language interpretation is performed.
+
+Diagnostics only observe. A below-target result can still be a successful legal draft.
+No search, refill, second generation, repair or activity mutation follows these counters.
+The 160000 engineering input guard and 16384 output-token allowance remain unchanged.

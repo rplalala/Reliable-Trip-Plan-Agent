@@ -260,7 +260,7 @@ class RuntimeConfig(_ConfigModel):
             if (
                 b.candidates < 64
                 or b.places.detail_calls < 40
-                or b.final_pois != 16
+                or b.final_pois != 20
                 or min(
                     b.places.review_detail_calls,
                     b.experience.review_enriched_places,
@@ -270,11 +270,11 @@ class RuntimeConfig(_ConfigModel):
             ):
                 raise ValueError("Quality-first envelope must support every supported duration")
             if (
-                b.routes.baseline_elements_per_run < 256
-                or b.routes.baseline_calls < 4
+                b.routes.baseline_elements_per_run < 400
+                or b.routes.baseline_calls < 7
                 or b.routes.baseline_elements_per_request < 64
             ):
-                raise ValueError("Quality-first supply needs a complete 16-place route matrix")
+                raise ValueError("Quality-first supply needs a complete 20-place route matrix")
             if not self.main_generation.enabled:
                 raise ValueError("Quality-first requires primary generation resource protection")
         return self

@@ -37,6 +37,7 @@ def _itinerary(
                 date="2026-09-18",
                 activities=[
                     FoundryActivityDTO(
+                        activity_kind="main_poi",
                         source_place_id=None,
                         activity_id=f"activity-{index}",
                         title=f"Visit place {index}",
