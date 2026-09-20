@@ -46,7 +46,7 @@ post-primary and uses actual scheduled anchors with unchanged independent budget
 
 ## Runtime ownership, timeouts and failure handling
 
-Default quality_first_1 has SQL60s and RAG360s, embedding/connect/Google8/2/4s, zero retries;
+Default quality_first_1 has SQL60s and RAG360s, embedding/connect/Google8/10/4s, zero retries;
 SQL time is constrained by remaining phase time. Historical SQL3/RAG30 and60/180 are preserved in development records and explicit test fixtures;
 they are not separate active configuration files. Deadlines stop new work; cleanup is awaited and user
 cancellation propagates. Ordinary failures retain Google and already resolved RAG results in

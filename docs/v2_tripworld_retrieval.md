@@ -205,3 +205,12 @@ That is more portable/auditable than a Docker volume image. A logical pg_dump ca
 and exact values for faster restoration, at the cost of extension/version and artifact-size
 coupling; it still needs checksum/version/restore verification and secret review. Neither release
 nor dump exists as an audited recovery guarantee in this task. Do not create a new snapshot here.
+
+## Connection establishment tolerance checkpoint
+
+The approved connection timeout is now 10 seconds (previously 2); SQL remains 60 seconds
+and the RAG phase 360 seconds. London stopped at connection establishment near two
+seconds before embedding or SQL. This motivates a bounded tolerance change, not proof
+of the underlying cause or that ten seconds will succeed. No SQL, storage, schema,
+vector or retry change accompanies it. The outer 600-second development bound remains
+explicit. Existing cancellation, awaited cleanup and Google-only degradation apply.

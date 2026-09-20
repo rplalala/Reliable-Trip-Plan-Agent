@@ -384,3 +384,31 @@ def test_httpx2_embedding_timeout_and_cancel_close_owned_client(tmp_path, monkey
     assert runtime.http_attempts[0]["status_code"] is None
     assert runtime.client.is_closed()
     assert runtime.diagnostics[0]["status"] == ("cancelled" if cancel else "failed")
+
+
+def test_connection_tolerance_uses_effective_config_without_changing_sql(tmp_path, monkeypatch):
+    from contextlib import asynccontextmanager
+    from pathlib import Path
+
+    from backend.app.runtime.config_loader import load_runtime_config_file
+
+    runtime, conn, captured = configured(tmp_path, monkeypatch, lambda _: None)
+    runtime.config = load_runtime_config_file(Path("config/runtime.yaml")).tripworld_discovery
+    observed = []
+
+    @asynccontextmanager
+    async def timeout(seconds):
+        observed.append(seconds)
+        yield
+
+    monkeypatch.setattr("backend.app.tripworld.retrieval.runtime.asyncio.timeout", timeout)
+
+    async def scenario():
+        async with runtime:
+            await runtime.prepare()
+
+    asyncio.run(scenario())
+    assert observed == [10, 60]
+    assert "statement_timeout=60000" in captured["options"]
+    assert runtime.config.deadline_seconds == 360
+    assert conn.closed

@@ -20,7 +20,7 @@ class RAGConfig(BaseModel):
     deadline_seconds: float = Field(default=30, gt=0, le=360)
     embedding_timeout: float = Field(default=8, gt=0, le=8)
     sql_timeout: float = Field(default=3, gt=0, le=60)
-    connect_timeout: float = Field(default=2, gt=0, le=2)
+    connect_timeout: float = Field(default=10, gt=0, le=10)
     google_timeout: float = Field(default=4, gt=0, le=4)
     retries: Literal[0] = 0
 

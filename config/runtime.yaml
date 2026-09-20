@@ -82,7 +82,7 @@ tripworld_discovery:
   deadline_seconds: 360
   embedding_timeout: 8
   sql_timeout: 60
-  connect_timeout: 2
+  connect_timeout: 10
   google_timeout: 4
   retries: 0
   max_queries: 4
