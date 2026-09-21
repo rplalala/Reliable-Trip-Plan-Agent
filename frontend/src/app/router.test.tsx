@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { routes } from "./router";
 
@@ -25,3 +25,7 @@ describe("application route boundaries", () => {
     expect(screen.queryByLabelText("Main navigation")).not.toBeInTheDocument();
   });
 });
+
+vi.mock("../features/planning/api", () => ({
+  getTripDateWindow: vi.fn().mockResolvedValue({allowedStart:"2026-09-11", allowedEnd:"2026-09-24", maxTripDays:10}),
+}));

@@ -2,12 +2,13 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { submitPlanningRequest } from "../../features/planning/api";
+import { getTripDateWindow, submitPlanningRequest } from "../../features/planning/api";
 import type { ProductPlanningResponse } from "../../features/planning/types";
 import { PlanTripPage } from "./PlanTripPage";
 
 vi.mock("../../features/planning/api", () => ({
   submitPlanningRequest: vi.fn(),
+  getTripDateWindow: vi.fn(),
 }));
 
 const submitPlanningMock = vi.mocked(submitPlanningRequest);
@@ -63,6 +64,7 @@ describe("PlanTripPage", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date(2026, 8, 11, 12));
     submitPlanningMock.mockReset();
+    vi.mocked(getTripDateWindow).mockResolvedValue({allowedStart: "2026-09-11", allowedEnd: "2026-09-24", maxTripDays: 10});
   });
 
   afterEach(() => {
@@ -94,30 +96,32 @@ describe("PlanTripPage", () => {
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
   });
 
-  it("limits both date pickers to the browser-local ten-day window", () => {
+  it("limits both date pickers to the server-authoritative fourteen-date window", async () => {
     render(<PlanTripPage />);
 
+    await screen.findByText("Generate itinerary");
+    await act(async () => {});
     expect(screen.getByLabelText("Start date")).toHaveAttribute("min", "2026-09-11");
-    expect(screen.getByLabelText("Start date")).toHaveAttribute("max", "2026-09-20");
+    expect(screen.getByLabelText("Start date")).toHaveAttribute("max", "2026-09-24");
     expect(screen.getByLabelText("End date")).toHaveAttribute("min", "2026-09-11");
-    expect(screen.getByLabelText("End date")).toHaveAttribute("max", "2026-09-20");
+    expect(screen.getByLabelText("End date")).toHaveAttribute("max", "2026-09-24");
   });
 
-  it("blocks a date outside the browser-local ten-day window", async () => {
+  it("blocks a date outside the server-authoritative fourteen-date window", async () => {
     const user = userEvent.setup();
     render(<PlanTripPage />);
 
     await user.type(screen.getByLabelText("Destination"), "Kyoto");
     fireEvent.change(screen.getByLabelText("Start date"), {
-      target: { value: "2026-09-21" },
+      target: { value: "2026-09-26" },
     });
     fireEvent.change(screen.getByLabelText("End date"), {
-      target: { value: "2026-09-21" },
+      target: { value: "2026-09-26" },
     });
     await user.type(screen.getByLabelText("Travelers"), "1");
 
     expect(
-      screen.getByText("Travel dates must be between 2026-09-11 and 2026-09-20."),
+      screen.getByText("Travel dates must be between 2026-09-11 and 2026-09-24."),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
   });
@@ -258,3 +262,14 @@ describe("PlanTripPage", () => {
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeEnabled();
   });
 });
+
+ it("limits the selected trip to ten inclusive days", async () => {
+   vi.mocked(getTripDateWindow).mockResolvedValue({allowedStart: "2026-09-20", allowedEnd: "2026-10-03", maxTripDays: 10});
+   render(<PlanTripPage />);
+   await act(async () => {});
+   fireEvent.change(screen.getByLabelText("Start date"), {target:{value:"2026-09-20"}});
+   expect(screen.getByLabelText("End date")).toHaveAttribute("max", "2026-09-29");
+   fireEvent.change(screen.getByLabelText("End date"), {target:{value:"2026-09-30"}});
+   expect(screen.getByText(/Trips may last at most 10 days/)).toBeInTheDocument();
+   expect(screen.getByRole("button", {name:"Generate itinerary"})).toBeDisabled();
+ });

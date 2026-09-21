@@ -77,6 +77,11 @@ export function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
           ))}
         </section>
       )}
+      <p className="field-help">
+        Weather forecasts, when used, are provided by <a href="https://open-meteo.com/">Open-Meteo</a>
+        {" "}under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+        Forecasts may be incomplete and are not guarantees.
+      </p>
     </section>
   );
 }

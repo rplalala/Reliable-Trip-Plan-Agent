@@ -61,3 +61,7 @@ describe("DeveloperPlannerPage", () => {
     expect(screen.getByText(/"stage": "extract_requirements"/)).toBeInTheDocument();
   });
 });
+
+vi.mock("../../features/planning/api", () => ({
+  getTripDateWindow: vi.fn().mockResolvedValue({allowedStart:"2026-09-11", allowedEnd:"2026-09-24", maxTripDays:10}),
+}));
