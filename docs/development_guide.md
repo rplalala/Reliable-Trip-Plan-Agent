@@ -219,3 +219,13 @@ Earlier acceptance hashes above are historical. Current shared final supply ceil
 baseline Routes400 elements/seven calls, connection10 seconds. SQL60/RAG360/ordinary
 Details120 and input160000/output16384 remain unchanged; outer600 stays an explicit
 development invocation. Existing CLI flags and default engine are unchanged.
+
+## Weather/date execution boundary (2026-09-22)
+
+The current single runtime.yaml retains existing budgets and Australia/Sydney reference time zone.
+The shared policy now admits today..today+13, with inclusive duration at most10. No CLI override
+flag is required for this rule. V1/V2 instantiate OpenMeteoWeatherProvider through the shared tool
+factory; Places/Routes still require the existing Google key, Weather does not. No second-provider
+fallback exists. V0 has no Weather calls. API/form date limits come from /api/planning/date-window.
+Existing CLI/AcceptanceSession use the same shared validation; use the true reference date for live.
+A separately approved new test should freeze dates before calls; old dated captures are historical.

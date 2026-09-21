@@ -7,7 +7,9 @@ traveler count and whole-trip Money are mandatory. Money is a finite non-negativ
 explicit uppercase three-letter currency; boolean amounts are rejected. Empty/null/whitespace
 preferences become empty; nonblank text is preserved. Additional preferences are bounded at
 24,000 characters and 8,000 engineering tokens. request_id is optional. End cannot precede start.
-The inclusive ten-day window uses a trusted reference date and configured application time zone.
+The selectable window contains 14 calendar dates, from trusted today through today+13 inclusive.
+Trip duration is independently limited to 1-10 inclusive days. The trusted date uses the configured
+application time zone (currently Australia/Sydney), not the browser or destination clock.
 Product requests cannot supply the CLI's research reference-date override.
 
 ## One interpretation and canonical identity
@@ -59,17 +61,18 @@ services/preference_interpretation.py and the Foundry DTO/mapping. Migration evi
 
 ## Calendar support versus same-day remaining-time planning
 
-Current trip_dates policy admits the trusted execution date through execution date + 9 days,
-inclusive. PlanningRequest supplies calendar dates, not an earliest usable local hour. V0/V1/V2
-do not implement same-day remaining-time planning, although today's calendar date is accepted.
-This is a capability boundary, not an authorization to add dynamic scheduling or repair.
+Current trip_dates admits today through today+13, with end-start+1 <=10. The shared validator
+serves V0/V1/V2, CLI and development runners; capacity depends on duration, not departure offset.
+GET /api/planning/date-window publishes the server's bounds without initializing any model/provider.
+The frontend end-date maximum is min(start+9, allowedEnd); backend submission validation is authoritative.
+The developer page initializes its explicitly editable research reference date from the same endpoint.
+Unavailable date-policy loading disables product submission; no browser-local fallback is guessed.
 
-For future formal evaluation, require start_date >= trusted execution date + 2 days, while still
-respecting the existing end_date <= execution date + 9 days rule. Consequently the longest such
-case is eight days. A future-start ten-day case is incompatible with the current calendar window;
-do not silently extend the window or falsify reference_date. The Sydney ten-day run remains a
-maximum-window development smoke, not an eligible formal-evaluation sample under this rule.
-No production date policy or prompt changes are introduced here.
+Same-day remaining-hour planning remains unsupported. Accepting today's date does not claim that
+past hours will be avoided. The earlier proposal for future evaluation (start >= reference+2)
+was constrained to eight days under the old +9 window. That arithmetic is historical: delayed
+10-day trips now fit. No formal evaluation protocol is implemented or authorized by this extension.
+The historical Sydney ten-day smoke and its original checkpoint remain unchanged.
 
 ## Default generation objective versus user requirements
 

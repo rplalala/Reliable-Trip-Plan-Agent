@@ -118,7 +118,7 @@ access fact was found and ignored. Unknown prices remain nullable through DTO/ma
 there is no current verified whole-trip budget PASS. Future validation must distinguish lack of
 evidence from a contradiction, including generated notes, times, place use and budget claims.
 
-### Shared Weather and date-window TODO (not implemented)
+### Historical shared Weather/date proposal (superseded on 2026-09-22)
 
 The requested direction is Google Weather -> Open-Meteo in the shared Weather abstraction, not a
 V2-specific improvement and not a V2 acceptance blocker. Provider endpoint/coverage, licensing,
@@ -128,7 +128,7 @@ before implementation. This audit made no provider calls or claims about current
 Proposed selectable calendar window: [today, today + 14 days], inclusive (15 selectable dates).
 Separately enforce end - start + 1 <= 10 days. Example trusted date 2026-09-20: latest selectable
 date 2026-10-04; 2026-09-22 through 2026-10-01 is a valid ten-day example under the proposal.
-Current code still uses [today, today + 9]; the proposal has not changed code or configuration.
+At that proposal checkpoint, code used [today, today + 9]; this statement is historical.
 
 Expected scope: shared trip_dates policy and request validation; Weather adapter/factory/protocol
 and normalization/config/environment examples; V0/V1/V2 shared date tests; frontend date controls
@@ -161,3 +161,57 @@ that the historical Sydney/London outputs have improved. The target is not a sch
 implementation does not mean all itinerary outputs are feasible. Repair, re-validation
 and additional post-draft acquisition remain unimplemented. The prior issue triage and
 its evidence retain their original checkpoint scope.
+
+## Current shared Weather/date status (2026-09-22)
+
+The proposal above is implemented and offline-validated, not integrated-live-accepted. One direct
+Open-Meteo probe returned200 for10 delayed London dates; the last date had null requested fields.
+Availability must remain partial/unknown as appropriate. Forecast completeness and forecast accuracy
+are separate limitations. The free endpoint is for non-commercial use with attribution, not an
+unrestricted commercial deployment promise. Browser date boundaries now come from the backend;
+existing frontend budget/developer input/clarification gaps are deliberately unchanged.
+
+The latest London V2 draft had no empty dates but four below-target days, one repeated park and an
+unverified hiking-club activity. Prices and public/event access remain uncertain. These are not fixed
+by changing Weather. V3 validation/repair is still unimplemented. Same-day elapsed hours, SQL
+variation and Melbourne identity ambiguity remain open. Database reproduction is deferred.
+
+
+<a id="weather-window-14-20260922"></a>
+## Fourteen-date product policy adjustment (2026-09-22)
+
+The user superseded the15-date proposal with14 selectable dates including today:
+start >= today,end <= today+13,inclusive duration1..10. The prior London probe is unchanged.
+Its farthest requested day had null fields, motivating a conservative product choice, not a
+claim that Open-Meteo supports only14 days, that15 days always fail, or that14 guarantees coverage.
+Official maximum horizon, product admission and actual field coverage are distinct.
+
+Only the shared window constant, boundary tests and current wording change. The frontend still
+reads authoritative server limits. Duration, K20, budgets, Weather request/normalization, RAG,
+roles, diagnostics, Nearby and no-retry policy remain unchanged. The earlier Sydney live proposal
+is superseded by one frozen Tokyo ten-day request (today+4..today+13) for V0/V1/V2 sequentially,
+conditional on offline checks. Actual execution outcomes will be recorded separately below;
+this policy approval is not live acceptance. Same-day remaining hours remain unsupported.
+
+
+## Tokyo fourteen-date integrated follow-up (2026-09-22)
+
+V1 and the authorized V2 rerun obtained all5 fields on all10 dates Sep26-Oct5; raw/normalized/planner
+values matched. This closes the specific integrated-live coverage gap, not historical London nulls
+or Google404s, and guarantees no future completeness. Initial V2 had a capture-factory TypeError
+before DB initialization; the user-authorized rerun corrected only the invocation. Both are retained.
+See [execution evidence](development_record.md#tokyo-weather-window-live-20260922).
+
+Still open: V1/final V2 default-target misses on3/1 days,3/6 cross-day repetitions, unknown costs,
+visitor access and same-complex Nearby overlap. One Profile ValueError degraded locally in each.
+Web was not triggered and gained no new live coverage. SQL execute21.58/0.86s is not a controlled
+comparison. Cancellation, Weather partial/failure live and repair were not forced. No automatic
+budget change, rerun or V3 implementation follows these observations.
+
+The [Profile closeout review](development_record.md#weather-date-closeout-profile-20260922)
+resolved the cause classification: both models returned review_count_used=0 for one supplied
+review, while summary/signals were empty. Shared validation correctly rejected the count mismatch;
+unavailable was accurate and no valid returned Profile signal was lost. This is not an outstanding
+confirmed shared correctness defect. No retries, prompt changes or code changes were introduced.
+The user's clarification that the first V2 database was stopped is recorded separately from the
+observed pre-connection factory TypeError; no database repair task remains in this closeout.

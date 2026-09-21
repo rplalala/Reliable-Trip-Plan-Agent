@@ -18,15 +18,18 @@ V2 reuses these components without a second tool architecture.
 
 <a id="b-e1bc78c1062d-0"></a>
 
-V1-A uses Google Weather Daily Forecast only. It does not initially request current
-conditions, hourly forecast, history, or public alerts.
+Current V1/V2 use the shared Open-Meteo Weather Forecast adapter. Google Weather was retired
+on 2026-09-22; historical runs retain their original provider identity. No current/hourly/history,
+alerts, extra geocoding or second-provider fallback is introduced.
 Weather is supplied for itinerary scheduling and planning; V1 does not reselect
 the final POI set from weather observations.
 
 <a id="b-e1bc78c1062d-1"></a>
 
-One provider request covers the full supported ten-day forecast horizon.
-The normalizer then retains only records whose destination-local display dates satisfy:
+One request to https://api.open-meteo.com/v1/forecast uses explicit start_date/end_date,
+timezone=auto, temperature_unit=celsius and wind_speed_unit=kmh. It requests only the trip's dates,
+including delayed departures, rather than today's first D days. The provider-neutral DTO and
+normalizer retain only destination-local records satisfying:
 
 ```text
 requested_start <= weather_date <= requested_end
@@ -239,3 +242,37 @@ most seven requests. Alternatives and all discovery/enrichment budgets are uncha
 This does not guarantee daily coverage or introduce post-generation refill/repair.
 See [shared output](shared_itinerary_output.md#first-generation-roles-and-diagnostics)
 and [shared supply](shared_poi_supply.md) for the single detailed contract.
+
+## Open-Meteo mapping, uncertainty and terms
+
+Official references checked2026-09-22: [forecast](https://open-meteo.com/en/docs) and
+[terms](https://open-meteo.com/en/terms). Forecast documentation supports up to16 days; project
+selection remains14 dates with maximum10 travel days. This is not a completeness guarantee.
+
+| API daily field | Internal field | Meaning/unit |
+| --- | --- | --- |
+| weather_code | condition | Documented WMO description; unknown codes remain null |
+| temperature_2m_min/max | min/max_temperature_c | Daily extrema in Celsius |
+| precipitation_probability_max | precipitation_probability_percent | Daily maximum probability, percent; not precipitation amount or guaranteed rain |
+| wind_speed_10m_max | max_wind_speed_kph | Daily maximum in km/h |
+
+Units are checked, not assumed. Missing/nonfinite/unusable values remain null. Source is
+open_meteo:daily_forecast; evidence retains the returned IANA time zone, attribution and missing_dates.
+A present but entirely null date is missing usable coverage. Partial fields/dates give PARTIAL;
+no usable observations or provider failure gives UNAVAILABLE. Actual dates with partial fields remain
+inspectable; no adjacent-day copying occurs. Cache identity includes provider, coordinates, exact
+start/end, timezone and fixed metric/aggregation selection. Retries, cancellation and Weather budget
+are unchanged. The shared factory still uses the same Google Places/Routes clients and credentials.
+
+Free endpoint terms permit non-commercial public research/education with CC BY4.0 attribution;
+published limits include fewer than10000 calls/day,5000/hour and600/minute. Commercial deployment
+requires separate service eligibility review. Normalized data link Open-Meteo and retain attribution;
+UI includes conditional forecast attribution and the license link. No key is needed for this endpoint.
+Model forecasts are uncertain, especially at longer lead times; UNKNOWN is not good weather.
+
+Implemented with bounded Tokyo development-live evidence on2026-09-22. V1 and the separately
+authorized V2 rerun each returned all five fields for all ten requested dates; raw, normalized and
+planner projections matched. This is one request, not a general coverage guarantee. The earlier
+London direct probe and historical Google404 results retain their original outcomes. Detailed
+execution, the initial V2 capture-factory failure and limitations are in the
+[shared development record](development_record.md#tokyo-weather-window-live-20260922).

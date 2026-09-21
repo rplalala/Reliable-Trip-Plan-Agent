@@ -1,6 +1,6 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-09-20.
+Current source of truth. Updated 2026-09-22.
 
 ## Purpose and implemented scope
 
@@ -103,10 +103,11 @@ public visitor-access evidence remain unknown; V3 cannot manufacture them. SQL v
 retrieval engineering work, not a V3 capability. Sydney's two no-domain Web tasks had no website
 in supplied evidence; no propagation defect was established for those tasks.
 
-A future shared Weather provider change to Open-Meteo and a 15-selectable-date horizon is a TODO,
-not implemented. Proposed horizon is today through today+14 inclusive, independently capped at
-10 travel days; current code still uses today through today+9. Same-day remaining-hour planning
-is unsupported. No provider, budget, prompt, default engine or database change is part of acceptance.
+The 2026-09-22 shared Weather/date extension replaces Google Weather with Open-Meteo daily
+forecasts and admits today through today+13 inclusive, independently capped at 10 travel days.
+It is implemented and offline-validated; the isolated provider probe succeeded with a null final
+date, while integrated planner live validation is still pending. Earlier acceptance used the old
+Google Weather/date checkpoint. Same-day remaining-hour planning is still unsupported.
 Exact historical vectors require retained local artifacts; a clean clone is not an exact DB backup.
 
 ## Authorized first-generation baseline extension (2026-09-20)
@@ -128,3 +129,41 @@ V3 is documented as explicit post-generation feasibility validation, structured 
 targeted repair and re-validation. Its runtime, schemas, repair loops and runner are not
 implemented. Shared baseline fixes are not V3 contributions. Future evaluation must use
 matched shared checkpoints; historical Tokyo, Sydney and London captures are unchanged.
+
+## Shared Weather/date checkpoint (2026-09-22)
+
+Open-Meteo serves V1/V2 through the shared factory; V0 remains tool-free. Exact requested dates,
+metric daily aggregates, destination time zone, attribution and missing dates are retained in
+weather evidence. Unknown values are never filled with sunny/zero defaults. Google Places/Routes,
+quality_first_1 capacities, K20, activity roles, generation diagnostics, SQL60/RAG360/connect10,
+model limits and product V0 default are unchanged. The frontend obtains authoritative calendar
+bounds from GET /api/planning/date-window instead of its browser-local date; product/developer
+input gaps unrelated to dates remain. The latest London V2 smoke completed in75.86s with daily
+main counts1/1/2/3/2/1/1, no empty dates,10 distinct scheduled places and3 Nearby references.
+This does not establish universal date coverage or resolve the default-target misses/repetition.
+
+Offline full backend:899 collected,890 passed,9 skipped,0 failed,31.60s,exit0. Frontend corrected
+suite24 passed; lint/build and Ruff passed. First focused and frontend failures remain in the
+shared development record. The subsequent14-date adjustment passed96 focused backend tests and
+24 frontend tests without repeating that full suite. The product window is today..today+13
+inclusive; each trip remains at most10 days. This conservative choice followed a null farthest
+date in the prior London probe; it is not a claim about the API maximum or universal coverage.
+
+The Tokyo Sep26-Oct5 smoke returned V0/V1 itineraries. Initial V2 completed with Google-only
+degradation because the development capture factory had the wrong signature, before any database
+connection. A separately user-authorized V2 rerun corrected only that invocation and completed
+normal embedding, two SQL queries, resolution and RAG adoption. V1/V2 each had all50 requested
+weather values and exact evidence projection; no extra weather probe was executed. Default daily
+targets were met on9/7/9 days in V0/V1/final V2, with zero empty days; V1/V2 had3/6 repeated visits.
+Unknown costs, visitor access and scheduling quality remain unresolved. Nearby preserved the main
+itinerary and diagnostics. These are bounded development observations, not formal evaluation or
+re-freeze. No V3 runtime or database reproduction work has begun; export/restore remain deferred.
+
+Weather/date closeout review classified both Profile ValueErrors as correctly rejected model
+outputs: one supplied review but review_count_used=0, with no summary or signals. Raw responses
+and mapped drafts agree; no shared code fix or new test run was needed. The unavailable fallback
+retained the actual input count and invented no experience evidence. The user reports the database
+was initially stopped; that context does not change the recorded pre-connection factory error.
+No confirmed correctness blocker was found in this narrow review. The shared migration may close
+with bounded development-live evidence; current work is Git grouping approval, not another live
+or V3 implementation. Generation target counts are not itinerary-quality acceptance rates.

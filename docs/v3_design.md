@@ -141,3 +141,12 @@ generated contradictions remain possible. See [known issues](known_issues.md#fir
 The new baseline supplies better first-draft objectives/capacity/observability only.
 Record future shared changes and decide whether affected completed evaluations must
 be rerun; never fix a shared bug only in V3 to manufacture a version advantage.
+
+## Shared baseline update (2026-09-22)
+
+Open-Meteo Weather and the14-selectable-date/10-travel-day input boundary are shared V0/V1/V2
+baseline changes (V0 still fetches no weather). Offline checks passed; planner live for this
+checkpoint remains pending. Future V3 inherits these without treating them as its contribution.
+The latest London first-draft smoke and shared Weather transition are recorded in
+[development](development_record.md#shared-weather-date-20260922). Repair budgets/TODOs above
+remain unimplemented. No database reproduction/export work is included.

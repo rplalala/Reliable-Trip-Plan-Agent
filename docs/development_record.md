@@ -8333,3 +8333,336 @@ Final static checks for this package: Ruff (backend/tools) passed; git diff --ch
 passed; 22 introduced Markdown links/anchors checked with no errors. Local thesis note
 V2-07 preserves this baseline-versus-V3 distinction and remains ignored. No live, API,
 SQL query, vector/database rebuild, frontend change or push was performed.
+
+
+<a id="london-coverage-live-20260920"></a>
+## London seven-day V2 first-generation follow-up (2026-09-20)
+
+Recorded on2026-09-22 from the existing run artifacts; no new London execution was performed.
+Source: logs/london_coverage_smoke_20260920T112755Z/{manifest,result,session,retrieval,execution}.json
+and its trace. Run3d7d5ea7-e2f4-41a8-914c-06c40cca55aa used real run_v2, London September21-27,
+3 travelers,total4200GBP; English hiking/zoo/amusement-park preferences. One fresh run completed
+in75.8645s, with no pending tasks and closed recorded clients. This was the Google Weather baseline.
+
+Daily distinct main counts1/1/2/3/2/1/1: no empty or zero-main dates; three within default target,
+four below. Eleven visits represented10 distinct canonical places, including a repeated Camley
+Street Natural Park. Six free-time blocks and three Nearby references do not increase main counts.
+Shared pool55 admitted ->11 cached qualified RAG Details +32 ordinary successes ->43 comparison
+->16 supply ->10 unique scheduled. Three RAG-only scheduled identities were London Eye,
+SEA LIFE London Aquarium and The London Dungeon; seven scheduled were Google-only, zero mixed.
+
+RAG:3 queries/60 returned positions/53 entities,16 resolution attempts,13 resolved,11 admitted;
+37 entities not attempted under the cap. SQL durations2.212/0.037/0.035s; connect0.017s;
+RAG total15.12s. Ordinary Details13.79s, generation27.53s, Nearby1.719s. Weather returned200.
+Two model calls used77354 input/4062 output tokens;1042 reasoning tokens are included in output.
+Embedding1 batch/1 HTTP,12 tokens. Details32 ordinary+13 RAG; search8 including4 fallbacks;
+Routes12 requests; Nearby3. No Profile/Official Web acquisition was triggered.
+
+The user observed the absence of empty days as progress. This does not isolate prompt effects:
+retrieval/provider evidence also differed from the prior run. Remaining limitations include four
+below-target dates, repeated visits, club/event suitability and unknown prices. No repair/re-run,
+formal comparison or universal first-draft guarantee follows from this observation.
+
+<a id="shared-weather-date-20260922"></a>
+## Shared Open-Meteo and date-window transition (2026-09-22)
+
+Status: implemented and offline-validated; integrated planner live remains pending. The task's
+final instruction explicitly authorized a minimal direct provider probe before editing. No other
+live, model, Google, embedding or database operations were performed. Database reproduction was
+deferred: no dump, bundle, isolated restore or reproducibility tooling work.
+
+### Direct probe before implementation
+
+Official forecast/terms documentation was checked. Application reference date2026-09-22
+(Australia/Sydney), UTC request timestamp2026-09-21T16:19:05.814479Z. London coordinates51.5074,
+-0.1278; explicit September27-October6 inclusive dates exercise delayed departure and10-day length.
+Daily weather_code,min/max Celsius temperatures,maximum precipitation probability; timezone=auto.
+The initial sandbox attempt failed locally with WinError10013. A separately permission-enabled
+send returnedHTTP200 in1.437s,timezone Europe/London,10 date labels. October6 was null for all four
+requested fields; nine dates contained values. This is partial actual coverage, not ten valid
+forecasts. Wind was added to the final adapter from documented daily fields and tested offline;
+it was not part of the live probe. No retries inside either HTTP client.
+Evidence: logs/open_meteo_probe_20260921T161842Z/probe.json and network_probe.json.
+
+### Implemented shared boundary
+
+OpenMeteoWeatherProvider replaces Google Weather only. The shared tool factory still constructs
+Google Places/Routes unchanged. One exact-date daily request, no geocoding or provider fallback;
+neutral metric DTOs, documented WMO condition mapping, daily maximum precipitation probability
+and wind. Response units/time zone are checked. Missing/invalid values remain unknown; a null
+whole day is recorded in missing_dates, partial observations are retained, and failures degrade.
+Provider/date/coordinate/timezone/metric selection separate cache identities. Existing budgets,
+no-retry/cancellation semantics and request-local caching remain unchanged.
+
+The shared calendar window is today..today+14 inclusive, independent of maximum duration10.
+The previous capacity duration check no longer references the selectable-window constant.
+The product frontend reads the same server-owned date window through /api/planning/date-window;
+its end limit is min(start+9,allowedEnd). The developer page initializes its explicitly editable
+reference date from that endpoint too. This fixes browser-zone drift without a time-planning engine.
+Existing developer free-text/backend structured-request and optional-budget UI gaps remain out of scope.
+
+Open-Meteo free API is non-commercial with CC BY4.0 attribution and published request limits;
+public research/education are listed uses. Evidence and UI retain attribution. Forecast data may be
+incomplete or inaccurate. Commercial deployment conditions need separate review. No source identity
+or availability guarantee is inferred from a successful HTTP status.
+
+No acquisition/supply formula, K20, Routes capacity, config numbers, prompts, activity roles,
+generation diagnostics, RAG SQL/connection limits, engine default or database content changed.
+V0 shares dates but calls no Weather. V1/V2 share the new provider; future V3 inherits it.
+
+### Offline checks and exact first results
+
+- First focused run:420 passed,14 failed,8.17s. Ten new capacity cases imported a misspelled
+  function; four existing window tests retained old date boundaries/expected end. These were test
+  migration errors, not reasons to weaken the new date contract. Corrected affected modules:
+  56 passed,2.49s. Additional provider/cache/cancellation/runtime checks:82 passed,17.68s.
+- One complete backend run:899 collected,890 passed,9 existing optional DB skips,0 failed,
+  31.60s,exit0. No full-run repetition. External tests use fake providers/MockTransport.
+- Frontend initial attempt could not create Vite temporary config under sandbox permissions.
+  Permission-enabled first test execution:21 passed,3 failed (missed developer-page date-helper
+  consumer). Updated developer consumer and mocks:24 passed,10.82s. No skip/xfail added.
+- Frontend lint and TypeScript/Vite build passed. Ruff passed. Git diff check is recorded in
+  the final task report. Reports: artifacts/weather_date_transition/. Existing regression/smoke
+  checkpoints retain their original results and do not acquire this provider retrospectively.
+
+### Next live proposal, not executed
+
+At actual execution, freeze the same complete Sydney10-day request for V0/V1/V2 with
+start=trusted_today+5,end=trusted_today+14. Retain the existing complete structured fixture's
+non-date fields; no extra inducing preferences. At most one fresh run per version, separately
+approved. V0 checks shared date/role output with zero tools; V1 checks Open-Meteo and shared K20,
+Routes, diagnostics and Nearby; V2 additionally checks normal RAG. Record actual capacity/usage,
+partial Weather dates and all UNKNOWN fields; never require all20 candidates to be available or
+scheduled. No extra run for incomplete Weather, sparse output or RAG nonselection. The goal is
+wiring/contract validation, not perfect itineraries, universal quality or a benchmark.
+
+V3 validation/targeted repair/re-validation remains unimplemented. Shared fixes are not V3
+contributions. There is no final live-validated closure or re-freeze at this checkpoint.
+
+
+<a id="weather-window-14-20260922"></a>
+## Fourteen-date product policy adjustment (2026-09-22)
+
+The user superseded the15-date proposal with14 selectable dates including today:
+start >= today,end <= today+13,inclusive duration1..10. The prior London probe is unchanged.
+Its farthest requested day had null fields, motivating a conservative product choice, not a
+claim that Open-Meteo supports only14 days, that15 days always fail, or that14 guarantees coverage.
+Official maximum horizon, product admission and actual field coverage are distinct.
+
+Only the shared window constant, boundary tests and current wording change. The frontend still
+reads authoritative server limits. Duration, K20, budgets, Weather request/normalization, RAG,
+roles, diagnostics, Nearby and no-retry policy remain unchanged. The earlier Sydney live proposal
+is superseded by one frozen Tokyo ten-day request (today+4..today+13) for V0/V1/V2 sequentially,
+conditional on offline checks. Actual execution outcomes will be recorded separately below;
+this policy approval is not live acceptance. Same-day remaining hours remain unsupported.
+
+
+<a id="tokyo-weather-window-live-20260922"></a>
+## Fourteen-date Tokyo integrated smoke and authorized V2 rerun
+
+### Policy, offline checks and frozen input
+
+The user reduced the product window to today..today+13 inclusive (14 dates), retaining maximum
+inclusive duration10. The earlier London null farthest-day observation motivated a conservative
+product choice, not an API maximum or a guarantee of complete values inside the window.
+The original probe at ../logs/open_meteo_probe_20260921T161842Z/ remains unchanged.
+Focused backend96 passed in2.94s; frontend24 passed in10.59s; Ruff/diff passed.
+Artifacts: ../artifacts/weather_window_14/focused.txt and frontend.txt.
+The prior899-collected/890-passed/9-skipped full suite was not repeated or retroactively changed.
+
+Frozen planning_request_2: Tokyo, Japan;2026-09-26..2026-10-05;3 travelers;600000 JPY total budget.
+Preferences exactly: "I definitely want to visit Meiji Jingu. I prefer small museums and distinctive
+local architecture. I also prefer less crowded places when possible." The manifest retains the
+single-line original. Trusted reference date2026-09-22, Australia/Sydney; returned weather timezone
+Asia/Tokyo. Both clocks had the same calendar date; no implicit date shifting occurred.
+Request SHA-256:bcbce21449dcc5e4931c6e9e6ed614394007713dacce5146d8a639f2e877f322.
+Effective config SHA-256:862d694487bdd1313ec1fc62856abca2cb5d0d56c0beb75a6dc771be7630eb36.
+Current config/runtime.yaml, quality_first_1, gpt-5.6-luna, itinerary_2, explicit600s development
+ceiling. C64/G32/send40/K20/P8, SQL60/RAG360/connect10 and160000/16384 unchanged.
+Manifests hash implementation/prompt/schema files without copying source. Actual run_v0/run_v1/run_v2
+used AcceptanceSession and independent request-local caches. Model cached tokens are provider-side,
+not reuse of Google/Weather/Routes evidence across versions.
+
+### Original failure and separate authorization
+
+Original sequence: ../logs/tokyo_weather_window_smoke_20260921T170923Z/.
+V0 began17:09:24 UTC,V1 at17:10:18,initial V2 at17:12:29. All returned itineraries, but initial V2
+encountered TypeError before runtime construction: the assistant's capture factory accepted cfg,
+whereas TripWorldDiscovery invokes a zero-argument factory. This invocation error was NOT proof
+of database unavailability or a production retrieval failure. Embedding/SQL sends were zero.
+Its129.56s Google-only result, full paid workload and itinerary remain intact.
+
+The user then reported starting the database and explicitly authorized another V2 run.
+Only the capture factory invocation was corrected; production, prompts, config and input stayed
+unchanged. New run: ../logs/tokyo_weather_window_v2_authorized_retry_20260921T171522Z/,
+17:15:22..17:17:56 UTC. No evidence cache was copied. There were FOUR actual planner executions:
+V0 once,V1 once,V2 twice, the last separately authorized. No automatic retry or hidden replacement.
+The original assessment.json covers both sequences and labels the first V2 as initial_degraded.
+
+### Independent outcomes
+
+| Measure | V0 | V1 | Authorized final V2 |
+| --- | --- | --- | --- |
+| Total seconds including cleanup | 53.95 | 131.39 | 153.66 |
+| Main activity visits | 20 | 17 | 19 |
+| Distinct primary identities | 20 name proxies | 14 canonical | 13 canonical |
+| Days meeting default2-5 target | 9 | 7 | 9 |
+| Empty/missing dates | 0 | 0 | 0 |
+| Cross-day repeated visits | 0 name proxy | 3 | 6 |
+| Supply / unused | Not applicable | 20 / 6 | 20 / 7 |
+| References | 3 model knowledge | 3 Nearby | 3 Nearby |
+
+Daily counts: V0=2/3/2/2/1/2/2/2/2/2;V1=2/1/2/2/2/1/2/2/1/2;
+final V2=1/2/2/2/2/2/2/2/2/2. Meiji Jingu was scheduled in all three, by name only in V0.
+V1 had3 unlinked free_time activities; all main activities in V1/final V2 were supply-linked.
+All estimated_cost values remained null. Counts do not establish feasibility or visitor access.
+V0's raw modern-art museum title/place_name discrepancy remains in its original result.
+
+V1 and both V2 attempts each sent one independent Open-Meteo request forSep26..Oct5,timezone=auto,
+Celsius/kmh. Each returnedHTTP200,Asia/Tokyo,10 dates with any valid field and10 complete dates:
+all50 requested weather_code,temperature_2m_min/max,precipitation_probability_max,wind_speed_10m_max
+values were present. Zero all-null/partial/missing dates; normalized available. Every date/value
+matched the WMO/unit mapping and external_evidence.weather sent to generation. Evidence is each
+open_meteo_daily_forecast.json,weather_evidence.json,itinerary_generation_request.json, plus
+assessment.json. This single-case completeness is neither a future guarantee nor forecast truth.
+V0 made zero external tool calls. Null/zero and failure live branches were not deliberately forced.
+
+### RAG, acquisition and actual work
+
+V1:41 Google observations ->40 canonical/admitted ->32 ordinary successes/comparison ->20 supply.
+Final V2:41 Google observations ->56 union ->54 admitted ->13 cached qualified RAG Details plus32
+ordinary successes =45 comparison ->20 supply. Two resolved RAG places were ineligible, not blocked
+by C64. Both ordinary queues stopped at G32, not the40-send cap.
+
+Final V2 ran two user queries: "Distinctive local architecture in Tokyo" and "Small museums in Tokyo",
+linked to semantic_1/semantic_2. One embedding batch/HTTP200 attempt,10 tokens,2x1536 vectors in the
+existing text-embedding-3-small enriched space. Two exact queries returned20 each,40 unique entities.
+Execute21.5804/0.8584s; fetch/decode0.000327/0.000486s. Retrieval22.4402s; embedding3.8346s;
+resolution10.7976s; RAG37.2326s. Different queries/uncontrolled caches are not a cold/warm experiment.
+16 resolution attempts:15 direct-ID successes,1 non-unique fallback;15 Details,1 fallback search.
+Two known Google overlaps retained mixed sources;22 entities were unattempted at the entity cap.
+RAG partial reflects bounded processing, not SQL failure.
+
+| Stage | Google-only | RAG-only | Mixed |
+| --- | --- | --- | --- |
+| Admission | 39 | 13 | 2 |
+| Comparison | 30 | 13 | 2 |
+| Supply | 14 | 6 | 0 |
+| Scheduled unique | 10 | 3 | 0 |
+
+Scheduled RAG-only identities: Murabayashi Building,Tokyo Building TOKIA,Shibuya Duplex B's.
+Resolution does not convert discovery origin to Google; Nearby is not RAG adoption.
+Actual query vectors and text/space/vector hashes are in the final run's v2/query_vectors/
+query-49a038fa628445c9bdd22d15078a9720.npz. No corpus/vector rebuild occurred.
+
+| Actual workload | V0 | V1 | Final V2 |
+| --- | --- | --- | --- |
+| Interpretation / Profile / generation calls | 1/0/1 | 1/8/1 | 1/8/1 |
+| Text Search incl.destination/fallback | 0 | 4 | 5 |
+| Ordinary / RAG Details | 0/0 | 32/0 | 32/15 |
+| Review fetches | 0 | 8 | 8 |
+| Weather | 0 | 1 | 1 |
+| Baseline Routes requests/elements | 0/0 | 7/400 | 7/400 |
+| Alternative Routes requests/elements | 0/0 | 9/16 | 8/16 |
+| Nearby | 0 | 3 | 3 |
+| Web search/reasoner/page fetch | 0 | 0 | 0 |
+
+Initial degraded V2 additionally consumed1 interpretation,8 Profile,1 generation,4 searches,
+32 Details,8 Reviews,1 Weather,16 Routes requests/416 elements,3 Nearby. Its input/output tokens
+were121040/9214. This paid workload is not omitted; no complete invoice amount is inferred.
+
+| SDK tokens, counted once per response | V0 | V1 | Final V2 |
+| --- | --- | --- | --- |
+| Input | 6284 | 121023 | 120119 |
+| Output including reasoning | 6130 | 8247 | 7298 |
+| Reasoning subset | 1245 | 3392 | 2308 |
+| Cached input subset | 0 | 3943 | 9439 |
+
+V1/final V2 engineering primary inputs111500/110842, remaining48500/49158 below160000.
+Output cap16384 unchanged. Engineering and provider input counts use different framing conventions.
+V1/final V2 seconds: interpretation9.44/7.70; discovery including RAG3.32/41.47; ordinary Details
+21.40/24.08; Reviews/Profile/selection45.83/36.80; Weather1.34/1.25; Routes6.38/5.98;
+Web decision0.05/0.05(zero external Web); generation41.44/35.03; Nearby2.14/1.13.
+RAG is nested in discovery, not additive again. V0 provider timestamps give14s/38s for interpretation/
+generation at integer resolution; exact client stage latency was not captured.
+
+### Integrity, limits and stop
+
+Before/after Nearby main activity/date/order/identity/cost hashes match, as do generation diagnostics.
+Main IDs belong to supply and references to successful Nearby ledgers. References do not overlap
+scheduled IDs or count as visits/costs/REQUIRED. First-three-region bounds left11/10 V1/final-V2
+anchors uncovered. Same-complex references remain (Ueshima tea room,Anjin within T-SITE).
+A Profile ValueError occurred for ChIJA0JUXp6MGGARqD42zEq-4h8 in each V1/final V2; it degraded locally
+without retry. Crowd support, public access, costs, repetition and target misses remain limited.
+
+Both AcceptanceSessions closed owned model resources exactly once. Auxiliary clients closed;
+final V2 PostgreSQL/embedding clients closed. No capture errors or pending asyncio tasks;
+processes exited0. Runtime/config hashes were unchanged. This is observed cleanup health, not
+an exhaustive leak proof. The initial V2 had no retrieval resource to close.
+
+A: Shared14-date and independent runner wiring have bounded evidence; normal RAG only passed in
+the authorized rerun. B: Weather had all50 fields in these requests. C: Generation targets were
+not universally met. None implies the other, formal benchmark success, production readiness or
+re-freeze. No post-generation repair, database reproduction, commit or V3 work was performed.
+
+<a id="weather-date-closeout-profile-20260922"></a>
+## Weather/date closeout: saved Profile response classification
+
+This follow-up inspected existing captures and current code only. No production/tool code,
+prompt, configuration or test changed; no tests, live calls or database operations were run.
+The user accepts the bounded Weather/date/K20/Routes/input-protection and normal RAG evidence,
+not universal correctness, a quality benchmark or re-freeze.
+
+The user additionally reports that the database was not started during the first V2 attempt,
+and was started before the authorized rerun. This is retained as user-provided environment
+context, not a newly measured cause. The recorded invocation TypeError happened before database
+initialization, so the old attempt cannot establish a connection timeout. No connection investigation,
+timeout change or rerun follows this clarification.
+
+The capture factory issue belonged to the one-off invocation, not AcceptanceSession or a reusable
+validation entry. TripWorldDiscovery calls runtime_factory() without arguments. Its production
+default already closes over self.config. The successful development invocation likewise used a
+zero-argument factory returning RuntimeRetrieval(config.tripworld_discovery,
+capture_directory=case/"query_vectors"). No compatibility wrapper or production patch is required.
+The first paid Google-only result and separate authorized normal RAG result remain distinct above.
+
+### Two independently captured Profile failures
+
+| Run | Existing session.json | Call ID |
+| --- | --- | --- |
+| V1 | ../logs/tokyo_weather_window_smoke_20260921T170923Z/v1/session.json | 5052ccfb84864578a8a912404eb7ab7e |
+| Authorized V2 | ../logs/tokyo_weather_window_v2_authorized_retry_20260921T171522Z/v2/session.json | 8ce8f492ca2d4747b53d1bf123d39c84 |
+
+Both concern place ChIJA0JUXp6MGGARqD42zEq-4h8. Each model_input contains exactly one bounded
+review, review_1. Its content describes design/branding services, not the supported visitor-experience
+dimensions. The prompt explicitly requires review_count_used to equal the supplied usable count.
+Each raw SDK response independently contains summary=null, summary_review_refs=[], signals=[],
+review_count_used=0. Each domain_output preserves those values. Both HTTP responses completed;
+each used577 input/94 output tokens, including39 reasoning tokens. These are already included in
+the preceding run totals, not additional calls.
+
+Foundry DTO parsing and domain mapping succeeded. The next shared validation in
+policies/experience_profile.py::validate_profile_draft checks the matching Place ID, then rejects
+0 != len(reviews)==1. The identifying guard's message is
+"Profile review_count_used differs from bounded input". Historical trace saved only ValueError,
+not its message/stack; this exact branch is established from saved input/domain output and the
+current unchanged validation code, not claimed as an originally captured exception message.
+
+Classification: controlled model-output contract violation, correctly rejected; no shared mapping,
+configuration or provider-transport bug was found. Lack of supported experience evidence is a
+separate observation: an empty signals/summary response would be legitimate with count1, but the
+actual count0 violates the existing contract. The model's internal reason for choosing0 is unknown.
+
+Both completed-profile events accurately report unavailable, signal_count0, review_count_used1
+(the actual bounded input count) and profile_invalid_or_unavailable:ValueError. This is neither
+"no reviews retrieved" nor negative crowding evidence. No returned valid signal or cited summary
+was discarded: both were empty. The supplied review supports no defensible crowding/accessibility/
+walking/family/duration inference; unrelated business-description text is not fabricated into one.
+No retry, count rewriting, partial-response salvage or prompt change is warranted for these samples.
+
+The Weather/14-date migration can close as implemented with bounded development-live validation.
+This narrow review found no confirmed correctness blocker requiring repair before V3. Default-target
+misses, repeated visits, unknown costs/access and unvalidated opening/route feasibility remain;
+9/10 days meeting a count target is not9/10 days of validated itinerary quality. V0 name proxies
+remain distinct from V1/V2 canonical statistics. Future shared correctness bugs remain fixable in
+shared code; this closeout does not permanently freeze implementation.
