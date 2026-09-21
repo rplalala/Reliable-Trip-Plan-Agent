@@ -11,12 +11,10 @@ from backend.app.integrations.google.routes import (
     ROUTE_MATRIX_FIELD_MASK,
     GoogleRoutesProvider,
 )
-from backend.app.integrations.google.weather import GoogleWeatherProvider
 
 __all__ = [
     "GooglePlacesProvider",
     "GoogleRoutesProvider",
-    "GoogleWeatherProvider",
     "PLACES_CANDIDATE_FIELD_MASK",
     "PLACES_DESTINATION_FIELD_MASK",
     "PLACES_DETAILS_FIELD_MASK",

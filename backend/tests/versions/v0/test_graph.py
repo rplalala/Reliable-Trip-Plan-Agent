@@ -109,8 +109,8 @@ def test_v0_does_not_retry_or_repair_after_generation_failure() -> None:
 def test_v0_rejects_requested_dates_outside_shared_window_before_generation() -> None:
     requirements = make_requirements().model_copy(
         update={
-            "start_date": date(2026, 9, 21),
-            "end_date": date(2026, 9, 21),
+            "start_date": date(2026, 9, 26),
+            "end_date": date(2026, 9, 26),
         }
     )
     client = FakeStructuredLLMClient([])

@@ -210,64 +210,6 @@ def _display_date(value: object) -> date | None:
         return None
 
 
-def _nested_mapping(value: object, *keys: str) -> Mapping[str, object] | None:
-    current = value
-    for key in keys:
-        if not isinstance(current, Mapping):
-            return None
-        current = current.get(key)
-    return current if isinstance(current, Mapping) else None
-
-
-def _number(value: object) -> float | None:
-    if isinstance(value, int | float) and not isinstance(value, bool):
-        return float(value)
-    return None
-
-
-def _temperature(day: Mapping[str, object], field: str) -> float | None:
-    value = day.get(field)
-    if not isinstance(value, Mapping):
-        return None
-    degrees = _number(value.get("degrees"))
-    return degrees if degrees is not None else _number(value.get("value"))
-
-
-def _condition(day: Mapping[str, object]) -> str | None:
-    weather = _nested_mapping(day, "daytimeForecast", "weatherCondition")
-    if weather is None:
-        weather = _nested_mapping(day, "nighttimeForecast", "weatherCondition")
-    if weather is None:
-        return None
-    condition_type = weather.get("type")
-    if isinstance(condition_type, str):
-        return condition_type
-    description = weather.get("description")
-    if isinstance(description, Mapping) and isinstance(description.get("text"), str):
-        return str(description["text"])
-    return None
-
-
-def _precipitation(day: Mapping[str, object]) -> int | None:
-    values: list[int] = []
-    for period in ("daytimeForecast", "nighttimeForecast"):
-        probability = _nested_mapping(day, period, "precipitation", "probability")
-        if probability is not None and isinstance(probability.get("percent"), int):
-            values.append(int(probability["percent"]))
-    return max(values) if values else None
-
-
-def _wind(day: Mapping[str, object]) -> float | None:
-    values: list[float] = []
-    for period in ("daytimeForecast", "nighttimeForecast"):
-        speed = _nested_mapping(day, period, "wind", "speed")
-        if speed is not None:
-            value = _number(speed.get("value"))
-            if value is not None:
-                values.append(value)
-    return max(values) if values else None
-
-
 def normalize_weather(
     dto: WeatherForecastDTO,
     *,
@@ -276,56 +218,61 @@ def normalize_weather(
 ) -> WeatherEvidence:
     """Filter provider days strictly to the requested inclusive date range."""
 
-    normalized_days: list[WeatherDayEvidence] = []
-    for raw_day in dto.forecast_days:
-        display_date = _display_date(raw_day.get("displayDate"))
-        if display_date is None:
-            continue
-        if not request.requested_start <= display_date <= request.requested_end:
-            continue
-        normalized_days.append(
-            WeatherDayEvidence(
-                date=display_date,
-                condition=_condition(raw_day),
-                min_temperature_c=_temperature(raw_day, "minTemperature"),
-                max_temperature_c=_temperature(raw_day, "maxTemperature"),
-                precipitation_probability_percent=_precipitation(raw_day),
-                max_wind_speed_kph=_wind(raw_day),
-            )
-        )
-    normalized_days.sort(key=lambda item: item.date)
-    expected_count = (request.requested_end - request.requested_start).days + 1
-    if not normalized_days:
-        availability = EvidenceAvailability.UNAVAILABLE
-    elif len(normalized_days) < expected_count:
-        availability = EvidenceAvailability.PARTIAL
-    else:
-        availability = EvidenceAvailability.AVAILABLE
+    by_date = {
+        day.date: WeatherDayEvidence(**day.model_dump())
+        for day in dto.forecast_days
+        if request.requested_start <= day.date <= request.requested_end
+    }
+    normalized_days = sorted(by_date.values(), key=lambda day: day.date)
+    from datetime import timedelta
+
+    requested_dates = [
+        request.requested_start + timedelta(days=offset)
+        for offset in range((request.requested_end - request.requested_start).days + 1)
+    ]
+    fields = tuple(WeatherDayEvidence.model_fields.keys() - {"date"})
+    useful = [day for day in normalized_days if any(getattr(day, f) is not None for f in fields)]
+    missing_dates = [d for d in requested_dates if d not in {day.date for day in useful}]
+    incomplete = any(any(getattr(day, f) is None for f in fields) for day in normalized_days)
+    availability = (
+        EvidenceAvailability.UNAVAILABLE
+        if not useful
+        else EvidenceAvailability.PARTIAL
+        if missing_dates or incomplete
+        else EvidenceAvailability.AVAILABLE
+    )
     return WeatherEvidence(
         destination=destination,
         latitude=request.location.latitude,
         longitude=request.location.longitude,
         availability=availability,
         days=normalized_days,
-        unavailable_reason=(
-            "Provider returned no forecast days inside the requested trip range"
-            if not normalized_days
-            else None
-        ),
+        missing_dates=missing_dates,
+        unavailable_reason="Some requested weather data is unavailable"
+        if availability != EvidenceAvailability.AVAILABLE
+        else None,
         retrieved_at=_retrieved_at(dto.retrieved_at),
-        source_ref="google_weather:daily_forecast",
+        source_ref=dto.source_ref,
+        timezone=dto.timezone,
+        attribution=dto.attribution,
     )
 
 
 def unavailable_weather(request: WeatherRequest, destination: str, reason: str) -> WeatherEvidence:
+    from datetime import timedelta
+
     return WeatherEvidence(
         destination=destination,
         latitude=request.location.latitude,
         longitude=request.location.longitude,
         availability=EvidenceAvailability.UNAVAILABLE,
+        missing_dates=[
+            request.requested_start + timedelta(days=i)
+            for i in range((request.requested_end - request.requested_start).days + 1)
+        ],
         unavailable_reason=reason,
         retrieved_at=datetime.now(UTC),
-        source_ref="google_weather:daily_forecast",
+        source_ref=f"{request.provider}:daily_forecast",
     )
 
 

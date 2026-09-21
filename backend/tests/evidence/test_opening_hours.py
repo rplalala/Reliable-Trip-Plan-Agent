@@ -154,7 +154,7 @@ def test_planner_prompt_attaches_date_view_to_correct_place_id() -> None:
             longitude=151.2,
             availability=EvidenceAvailability.UNAVAILABLE,
             retrieved_at=datetime(2026, 9, 14, tzinfo=UTC),
-            source_ref="google_weather",
+            source_ref="open_meteo",
         ),
         routes=RouteEvidenceBundle(
             baseline=RouteEvidence(

@@ -158,7 +158,7 @@ def test_configured_upper_envelope_planner_prompt_size() -> None:
             for offset in range(10)
         ],
         retrieved_at=RETRIEVED,
-        source_ref="google_weather:sydney",
+        source_ref="open_meteo:sydney",
     )
     request = make_request(
         additional_preferences="Plan ten days in Sydney with these selected museums."

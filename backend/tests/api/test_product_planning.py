@@ -49,9 +49,7 @@ def make_planning_service(client: FakeStructuredLLMClient) -> PlanningService:
 
 
 def test_product_planning_returns_completed_contract_without_version() -> None:
-    service = make_planning_service(
-        FakeStructuredLLMClient([make_itinerary()])
-    )
+    service = make_planning_service(FakeStructuredLLMClient([make_itinerary()]))
 
     status_code, body = post_product_planning(
         service,
@@ -166,9 +164,7 @@ def test_product_planning_rejects_negative_budget() -> None:
 
 
 def test_product_planning_hides_provider_failure_details() -> None:
-    service = make_planning_service(
-        FakeStructuredLLMClient([RuntimeError("provider secret")])
-    )
+    service = make_planning_service(FakeStructuredLLMClient([RuntimeError("provider secret")]))
 
     status_code, body = post_product_planning(
         service,
@@ -209,5 +205,27 @@ def test_product_planning_rejects_direct_api_date_window_bypass() -> None:
     assert status_code == 422
     assert body["detail"]["code"] == "trip_date_after_window"
     assert body["detail"]["allowed_start"] == "2026-09-11"
-    assert body["detail"]["allowed_end"] == "2026-09-20"
+    assert body["detail"]["allowed_end"] == "2026-09-24"
     assert client.calls == []
+
+
+def test_date_window_uses_backend_date_without_model_initialization():
+    from backend.app.api.dependencies import get_date_provider
+
+    async def check():
+        app.dependency_overrides[get_date_provider] = lambda: FixedDateProvider(date(2026, 9, 20))
+        try:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                response = await client.get("/api/planning/date-window")
+            assert response.status_code == 200
+            assert response.json() == {
+                "allowedStart": "2026-09-20",
+                "allowedEnd": "2026-10-03",
+                "maxTripDays": 10,
+            }
+        finally:
+            app.dependency_overrides.pop(get_date_provider, None)
+
+    asyncio.run(check())

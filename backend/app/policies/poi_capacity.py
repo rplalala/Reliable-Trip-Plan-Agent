@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from backend.app.policies.trip_dates import (
-    TRIP_DATE_WINDOW_DAYS,
+    MAX_TRIP_DAYS,
     TripDateWindow,
     validate_requested_trip_dates,
 )
@@ -39,7 +39,7 @@ def derive_poi_capacities(
 
     validate_requested_trip_dates(start_date, end_date, window)
     days = (end_date - start_date).days + 1
-    if not 1 <= days <= TRIP_DATE_WINDOW_DAYS:
+    if not 1 <= days <= MAX_TRIP_DAYS:
         raise ValueError("trip duration must be inside the supported 1-10 day horizon")
     k_final = min(16, 2 * days + 2)
     r_pool = max(10, k_final + 2)

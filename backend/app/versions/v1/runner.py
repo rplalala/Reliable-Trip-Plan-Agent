@@ -16,9 +16,9 @@ from backend.app.integrations.azure_foundry.web_search import AzureFoundryWebEvi
 from backend.app.integrations.google import (
     GooglePlacesProvider,
     GoogleRoutesProvider,
-    GoogleWeatherProvider,
 )
 from backend.app.integrations.http import HttpxJSONTransport
+from backend.app.integrations.open_meteo import OpenMeteoWeatherProvider
 from backend.app.integrations.protocols import (
     NearbyPlacesProvider,
     PlacesProvider,
@@ -293,7 +293,7 @@ def serialize_planning_result(result: PlanningResult) -> str:
     return result.model_dump_json(indent=2, ensure_ascii=True)
 
 
-def _create_google_providers(
+def _create_tool_providers(
     settings: V1Settings,
     tracer: RunTracer,
 ) -> tuple[PlacesProvider, WeatherProvider, RoutesProvider]:
@@ -301,7 +301,7 @@ def _create_google_providers(
     transport = HttpxJSONTransport()
     return (
         GooglePlacesProvider(api_key=api_key, transport=transport, tracer=tracer),
-        GoogleWeatherProvider(api_key=api_key, transport=transport, tracer=tracer),
+        OpenMeteoWeatherProvider(transport=transport, tracer=tracer),
         GoogleRoutesProvider(api_key=api_key, transport=transport, tracer=tracer),
     )
 
@@ -410,7 +410,7 @@ def main(
             effective_tracer = tracer
 
         if settings is not None:
-            default_places, default_weather, default_routes = _create_google_providers(
+            default_places, default_weather, default_routes = _create_tool_providers(
                 settings, effective_tracer
             )
             llm_client = llm_client or create_foundry_client(settings)

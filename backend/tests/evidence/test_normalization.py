@@ -18,7 +18,6 @@ from backend.tests.versions.v1.fakes import _weather_day
 def test_weather_normalization_exposes_only_requested_dates() -> None:
     request = WeatherRequest(
         location=LatLng(latitude=-33.8, longitude=151.2),
-        horizon_days=4,
         requested_start=date(2026, 9, 12),
         requested_end=date(2026, 9, 13),
     )

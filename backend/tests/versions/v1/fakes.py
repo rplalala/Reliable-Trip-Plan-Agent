@@ -120,19 +120,11 @@ class FakeWeatherProvider:
 
 def _weather_day(value: date, precipitation: int) -> dict[str, object]:
     return {
-        "displayDate": {"year": value.year, "month": value.month, "day": value.day},
-        "minTemperature": {"degrees": 14},
-        "maxTemperature": {"degrees": 22},
-        "daytimeForecast": {
-            "weatherCondition": {"type": "RAIN" if precipitation > 50 else "CLEAR"},
-            "precipitation": {"probability": {"percent": precipitation}},
-            "wind": {"speed": {"value": 18, "unit": "KILOMETERS_PER_HOUR"}},
-        },
-        "nighttimeForecast": {
-            "precipitation": {"probability": {"percent": precipitation // 2}},
-            "wind": {"speed": {"value": 10, "unit": "KILOMETERS_PER_HOUR"}},
-        },
+        "date": value, "condition": "RAIN" if precipitation > 50 else "CLEAR",
+        "min_temperature_c": 14, "max_temperature_c": 22,
+        "precipitation_probability_percent": precipitation, "max_wind_speed_kph": 18,
     }
+
 
 
 class FakeRoutesProvider:

@@ -116,7 +116,7 @@ def test_v1_cli_trace_records_effective_config_without_live_providers(
         lambda: config.model_copy(update={"trace": trace}),
     )
     monkeypatch.setattr(
-        "backend.app.versions.v1.runner._create_google_providers",
+        "backend.app.versions.v1.runner._create_tool_providers",
         lambda settings, tracer: (
             FakePlacesProvider(),
             FakeWeatherProvider(),

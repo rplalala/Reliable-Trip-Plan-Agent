@@ -121,7 +121,8 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert len(places.search_requests) == 4
     assert len(places.details_requests) == 9
     assert len(weather.requests) == 1
-    assert weather.requests[0].horizon_days == 10
+    assert weather.requests[0].requested_start == date(2026, 9, 12)
+    assert weather.requests[0].requested_end == date(2026, 9, 13)
     baseline = [r for r in routes.requests if r.travel_mode == "WALK"]
     assert len(baseline) == 2
     assert sum(len(r.origins) * len(r.destinations) for r in baseline) == 81
@@ -230,7 +231,7 @@ def test_v1_captures_reference_date_once_across_midnight() -> None:
 
 def test_v1_rejects_trip_outside_shared_window_before_any_provider_call() -> None:
     requirements = make_requirements().model_copy(
-        update={"start_date": date(2026, 9, 21), "end_date": date(2026, 9, 21)}
+        update={"start_date": date(2026, 9, 26), "end_date": date(2026, 9, 26)}
     )
     llm = FakeStructuredLLMClient([make_extraction(requirements)])
     places = FakePlacesProvider()

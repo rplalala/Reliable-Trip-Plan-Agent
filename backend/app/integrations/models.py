@@ -125,15 +125,29 @@ class PlaceReviewsDTO(IntegrationModel):
 
 class WeatherRequest(IntegrationModel):
     location: LatLng
-    horizon_days: int = Field(ge=1, le=10)
     requested_start: date
     requested_end: date
-    language_code: str = "en"
+    timezone: str = "auto"
+    provider: Literal["open_meteo"] = "open_meteo"
+
+
+class WeatherDayDTO(IntegrationModel):
+    """Provider-independent metric daily aggregates; null means unknown."""
+
+    date: date
+    condition: str | None = None
+    min_temperature_c: float | None = None
+    max_temperature_c: float | None = None
+    precipitation_probability_percent: int | None = Field(default=None, ge=0, le=100)
+    max_wind_speed_kph: float | None = Field(default=None, ge=0)
 
 
 class WeatherForecastDTO(IntegrationModel):
-    forecast_days: list[dict[str, object]] = Field(default_factory=list)
+    forecast_days: list[WeatherDayDTO] = Field(default_factory=list)
     retrieved_at: str
+    timezone: str | None = None
+    source_ref: str = "open_meteo:daily_forecast"
+    attribution: str = "Weather data by Open-Meteo (CC BY 4.0): https://open-meteo.com/"
 
 
 class RouteWaypoint(IntegrationModel):

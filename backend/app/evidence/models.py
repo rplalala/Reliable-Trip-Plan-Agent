@@ -116,6 +116,9 @@ class WeatherEvidence(EvidenceModel):
     unavailable_reason: str | None = None
     retrieved_at: datetime
     source_ref: str = Field(min_length=1)
+    timezone: str | None = None
+    attribution: str | None = None
+    missing_dates: list[date] = Field(default_factory=list)
 
 
 class RouteElementEvidenceType(StrEnum):

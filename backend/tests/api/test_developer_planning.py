@@ -100,8 +100,8 @@ def test_developer_planning_exposes_v0_stage_for_debugging() -> None:
 def test_developer_planning_uses_trusted_reference_date_for_window_validation() -> None:
     requirements = make_requirements().model_copy(
         update={
-            "start_date": date(2026, 9, 21),
-            "end_date": date(2026, 9, 21),
+            "start_date": date(2026, 9, 26),
+            "end_date": date(2026, 9, 26),
         }
     )
     client = FakeStructuredLLMClient([requirements])

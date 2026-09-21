@@ -63,7 +63,6 @@ from backend.app.policies.transport import (
     find_directed_non_walkable_pairs,
     select_alternative_route_pairs,
 )
-from backend.app.policies.trip_dates import TRIP_DATE_WINDOW_DAYS
 from backend.app.runtime.budget import ToolBudget, ToolBudgetExceededError, ToolBudgetKey
 from backend.app.runtime.cache import RequestCache
 from backend.app.schemas.request import TravelRequirements
@@ -348,16 +347,11 @@ class V1EvidenceAcquisitionService:
 
         if requirements.start_date is None or requirements.end_date is None:
             raise ValueError("Complete trip dates are required for Weather")
-        # Weather starts from the provider's current destination-local forecast day,
-        # which can lag the application's fixed calendar date at day boundaries.
-        # Request the full allowed horizon once, then expose only requested dates.
-        horizon_days = TRIP_DATE_WINDOW_DAYS
         request = WeatherRequest(
             location=LatLng(
                 latitude=destination.latitude,
                 longitude=destination.longitude,
             ),
-            horizon_days=horizon_days,
             requested_start=requirements.start_date,
             requested_end=requirements.end_date,
         )
@@ -365,10 +359,11 @@ class V1EvidenceAcquisitionService:
             "weather_daily",
             request.location.latitude,
             request.location.longitude,
-            request.horizon_days,
+            request.provider,
+            request.timezone,
+            "metric_daily_wmo_max_probability_wind",
             request.requested_start,
             request.requested_end,
-            request.language_code,
         )
         result: _ProviderResult[WeatherForecastDTO] = await self._cached_provider_call(
             key=key,
