@@ -43,7 +43,7 @@ class PlaceCandidate(EvidenceModel):
     business_status: str | None = None
     source_query: str = Field(min_length=1)
     category: str = Field(min_length=1)
-    provider_rank: int = Field(ge=0)
+    provider_rank: int | None = Field(default=None, ge=0)
 
 
 class OpeningHoursEvidence(EvidenceModel):
@@ -116,6 +116,9 @@ class WeatherEvidence(EvidenceModel):
     unavailable_reason: str | None = None
     retrieved_at: datetime
     source_ref: str = Field(min_length=1)
+    timezone: str | None = None
+    attribution: str | None = None
+    missing_dates: list[date] = Field(default_factory=list)
 
 
 class RouteElementEvidenceType(StrEnum):

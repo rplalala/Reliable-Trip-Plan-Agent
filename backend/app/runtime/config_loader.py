@@ -61,3 +61,17 @@ def runtime_config_snapshot(
         snapshot["effective_tool_budget"] = effective_budget
     canonical = json.dumps(snapshot, sort_keys=True, separators=(",", ":"))
     return snapshot, hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def tool_limits(config):
+    """Build limits only from the explicitly selected immutable configuration."""
+    from backend.app.runtime.budget import ToolBudgetLimits
+
+    return ToolBudgetLimits.model_validate(
+        {
+            **{f"max_{key.value}": value for key, value in config.budget.as_key_limits().items()},
+            "max_baseline_route_matrix_elements_per_request": (
+                config.budget.routes.baseline_elements_per_request
+            ),
+        }
+    )

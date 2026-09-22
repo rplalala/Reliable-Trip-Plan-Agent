@@ -70,6 +70,9 @@ class ToolBudgetLimits(BaseModel):
     max_baseline_route_matrix_calls: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS)
     )
+    max_alternative_route_elements: StrictInt = Field(
+        default_factory=lambda: _configured_default(ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS)
+    )
     max_alternative_route_pairs: StrictInt = Field(
         default_factory=lambda: _configured_default(ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS)
     )
@@ -114,6 +117,7 @@ class ToolBudgetLimits(BaseModel):
             ToolBudgetKey.ROUTE_MATRIX_ELEMENTS: self.max_route_matrix_elements,
             ToolBudgetKey.BASELINE_ROUTE_MATRIX_ELEMENTS: (self.max_baseline_route_matrix_elements),
             ToolBudgetKey.BASELINE_ROUTE_MATRIX_CALLS: self.max_baseline_route_matrix_calls,
+            ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS: self.max_alternative_route_elements,
             ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS: self.max_alternative_route_pairs,
             ToolBudgetKey.ALTERNATIVE_ROUTE_MATRIX_CALLS: (self.max_alternative_route_matrix_calls),
             ToolBudgetKey.WEATHER_CALLS: self.max_weather_calls,
@@ -141,6 +145,15 @@ class ToolBudget:
         self.limits = limits or ToolBudgetLimits()
         self._limits = self.limits.as_key_limits()
         self._usage: Counter[ToolBudgetKey] = Counter()
+
+    def set_limits(self, limits):
+        """Replace effective ceilings without resetting consumed work."""
+        limits = ToolBudgetLimits.model_validate(limits.model_dump())
+        values = limits.as_key_limits()
+        if any(self._usage[key] > value for key, value in values.items()):
+            raise ValueError("Effective limits cannot erase consumed work")
+        self.limits = limits
+        self._limits = values
 
     def consume(self, key: ToolBudgetKey, amount: int = 1) -> None:
         """Reserve capacity deterministically before performing work."""

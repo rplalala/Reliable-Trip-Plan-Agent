@@ -1,0 +1,233 @@
+{
+  "mapping_version": "tripworld-category-semantics-v1",
+  "description_version": "tripworld-retrieval-description-v1",
+  "rules": [
+    {
+      "rule_id": "museum",
+      "match_terms": [
+        "Museum",
+        "Art Museum",
+        "History Museum",
+        "Science Museum",
+        "Modern art museum",
+        "Natural history museum",
+        "Local history museum",
+        "Heritage museum",
+        "National museum",
+        "Archaeological museum",
+        "Technology museum"
+      ],
+      "direct_semantics": ["museum collections and exhibitions"],
+      "inferred_semantics": ["cultural visit", "indoor activity", "rainy-day option"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "art_gallery",
+      "match_terms": ["Art Gallery"],
+      "direct_semantics": ["visual art exhibitions"],
+      "inferred_semantics": ["cultural visit", "indoor activity"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "library",
+      "match_terms": ["Library", "Public library", "National library", "University library"],
+      "direct_semantics": ["books, reading, and research spaces"],
+      "inferred_semantics": ["quiet indoor visit", "rainy-day option"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "park",
+      "match_terms": [
+        "Park",
+        "City park",
+        "National Park",
+        "Natural Park",
+        "State or Provincial Park",
+        "Urban Park"
+      ],
+      "direct_semantics": ["public green or natural outdoor space"],
+      "inferred_semantics": ["walking", "relaxing outdoors", "family-friendly outing"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "garden",
+      "match_terms": ["Garden", "Botanical Garden", "Sculpture Garden"],
+      "direct_semantics": ["landscaped garden or plant-focused outdoor space"],
+      "inferred_semantics": ["scenic walk", "relaxing outdoors", "photography"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "beach",
+      "match_terms": ["Beach", "Public beach"],
+      "direct_semantics": ["coastal recreation area"],
+      "inferred_semantics": ["waterfront visit", "outdoor recreation", "sunset viewing"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "zoo_aquarium",
+      "match_terms": ["Zoo", "Zoo Exhibit", "Aquarium"],
+      "direct_semantics": ["animal-focused visitor attraction"],
+      "inferred_semantics": ["family-friendly visit", "educational activity"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "heritage_landmark",
+      "match_terms": [
+        "Historic and Protected Site",
+        "Historical landmark",
+        "Historical place",
+        "Cultural landmark",
+        "Landmark"
+      ],
+      "direct_semantics": ["historic, protected, or culturally notable place"],
+      "inferred_semantics": ["sightseeing", "architecture", "photography"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "scenic_view",
+      "match_terms": ["Scenic Lookout", "Observation deck", "Scenic spot"],
+      "direct_semantics": ["elevated or scenic viewing place"],
+      "inferred_semantics": ["panoramic views", "photography", "sunset viewing"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "theater_cinema",
+      "match_terms": [
+        "Theater",
+        "Performing arts theater",
+        "Amphitheater",
+        "Movie Theater",
+        "IMAX theater",
+        "Indie Movie Theater"
+      ],
+      "direct_semantics": ["live performance or cinema venue"],
+      "inferred_semantics": ["evening activity", "indoor entertainment", "rainy-day option"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "live_music",
+      "match_terms": ["Music Venue", "Live music venue", "Music Festival"],
+      "direct_semantics": ["live music or festival venue"],
+      "inferred_semantics": ["evening activity", "local entertainment"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "cafe_coffee",
+      "match_terms": ["Café", "Cafe", "Coffee Shop"],
+      "direct_semantics": ["coffee, tea, or light refreshments"],
+      "inferred_semantics": ["casual break", "indoor stop"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "restaurant",
+      "match_terms": ["Restaurant"],
+      "direct_semantics": ["prepared meals and dining"],
+      "inferred_semantics": ["meal stop", "local food experience"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "bar_nightlife",
+      "match_terms": ["Bar", "Cocktail Bar", "Wine Bar", "Sports Bar", "Night Club"],
+      "direct_semantics": ["drinks or nightlife venue"],
+      "inferred_semantics": ["evening activity", "social visit"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "brewery_winery",
+      "match_terms": ["Brewery", "Winery", "Sake brewery"],
+      "direct_semantics": ["beverage production or tasting venue"],
+      "inferred_semantics": ["local food and drink experience", "adult-oriented visit"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "visitor_market",
+      "match_terms": [
+        "Market",
+        "Farmers Market",
+        "Flea Market",
+        "Night Market",
+        "Floating Market"
+      ],
+      "direct_semantics": ["multi-vendor market"],
+      "inferred_semantics": ["local shopping", "local food experience", "casual exploration"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "shopping_center",
+      "match_terms": ["Shopping Mall", "Shopping Plaza"],
+      "direct_semantics": ["concentrated retail and services"],
+      "inferred_semantics": ["shopping", "indoor activity", "rainy-day option"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "hotel",
+      "match_terms": ["Hotel", "Resort hotel", "Capsule hotel"],
+      "direct_semantics": ["visitor accommodation"],
+      "inferred_semantics": ["overnight stay", "traveler services"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "amusement_attraction",
+      "match_terms": ["Amusement Park", "Theme park", "Water Park"],
+      "direct_semantics": ["ticketed recreation or amusement attraction"],
+      "inferred_semantics": ["family-friendly outing", "extended activity"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "religious_site",
+      "match_terms": ["Church", "Temple", "Mosque", "Shrine"],
+      "direct_semantics": ["place of worship or religious significance"],
+      "inferred_semantics": ["cultural visit", "architecture", "quiet visit"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "nature_feature",
+      "match_terms": ["Mountain", "Lake", "Waterfall", "Nature Preserve", "Hiking Trail"],
+      "direct_semantics": ["natural landscape or outdoor route"],
+      "inferred_semantics": ["outdoor recreation", "scenic visit", "photography"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "spa",
+      "match_terms": ["Spa", "Day Spa"],
+      "direct_semantics": ["wellness or personal care services"],
+      "inferred_semantics": ["relaxation", "indoor activity"],
+      "eligibility_hint": "eligible"
+    },
+    {
+      "rule_id": "private_residential",
+      "match_terms": ["Home (private)", "Apartment or Condo", "Residential Building"],
+      "direct_semantics": ["private or residential property"],
+      "inferred_semantics": ["generally unsuitable for travel discovery without another public category"],
+      "eligibility_hint": "ineligible"
+    },
+    {
+      "rule_id": "workplace_industrial",
+      "match_terms": ["Office", "Corporate office", "Factory", "Warehouse", "Distribution Center"],
+      "direct_semantics": ["workplace, industrial, or logistics facility"],
+      "inferred_semantics": ["generally unsuitable for travel discovery without a visitor-facing category"],
+      "eligibility_hint": "ineligible"
+    },
+    {
+      "rule_id": "education_service",
+      "match_terms": ["School", "High School", "Elementary School", "Middle School"],
+      "direct_semantics": ["education service facility"],
+      "inferred_semantics": ["generally unsuitable for travel discovery without a visitor-facing category"],
+      "eligibility_hint": "ineligible"
+    },
+    {
+      "rule_id": "medical_service",
+      "match_terms": ["Hospital", "Dentist", "Doctor's Office"],
+      "direct_semantics": ["medical or health service facility"],
+      "inferred_semantics": ["practical service rather than a travel attraction"],
+      "eligibility_hint": "ineligible"
+    },
+    {
+      "rule_id": "government_public_safety",
+      "match_terms": ["Government Building", "Government office", "Police Station"],
+      "direct_semantics": ["government administration or public safety facility"],
+      "inferred_semantics": ["generally unsuitable for travel discovery without a civic or heritage role"],
+      "eligibility_hint": "ineligible"
+    }
+  ]
+}

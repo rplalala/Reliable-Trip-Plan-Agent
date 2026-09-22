@@ -10,7 +10,7 @@ from backend.app.evidence.models import (
     NonWalkableTrigger,
     RouteEvidence,
 )
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import PlanningRequest, TravelRequirements
 from backend.app.schemas.trip_intent import TransportPreferenceIntent, TravelMode
 
 MAX_WALK_DISTANCE_METERS = 3_000
@@ -76,12 +76,16 @@ _REQUEST_PATTERNS = {
 
 
 def select_transport_mode(
-    request: TravelRequest,
+    request: PlanningRequest,
     requirements: TravelRequirements,
 ) -> TransportModeDecision:
-    """Select exactly one explicit mode or a documented pedestrian fallback."""
+    """Historical test-only adapter for existing transport regression fixtures.
 
-    normalized_request = request.request_text.casefold()
+    The production V1 path uses select_transport_mode_from_intent instead.
+    This helper does not interpret requirements for any active planning version.
+    """
+
+    normalized_request = request.additional_preferences.casefold()
     matches: list[tuple[int, TravelMode]] = []
     for mode, patterns in _REQUEST_PATTERNS.items():
         for pattern in patterns:

@@ -1,0 +1,21 @@
+{
+  "provider": "openai",
+  "model_name": "text-embedding-3-small",
+  "dimension": 1536,
+  "dimensions_parameter": null,
+  "normalize": true,
+  "distance_metric": "cosine",
+  "query_prefix": "",
+  "document_prefix": "",
+  "tokenizer": "cl100k_base",
+  "max_input_tokens": 8191,
+  "max_batch_inputs": 64,
+  "max_batch_tokens": 20000,
+  "max_attempts": 3,
+  "timeout_seconds": 60,
+  "max_run_usd": 0.10,
+  "input_usd_per_million_tokens": 0.02,
+  "pricing_checked_on": "2026-09-18",
+  "dtype": "float32",
+  "embedding_version": "tripworld-openai-embedding-v1"
+}

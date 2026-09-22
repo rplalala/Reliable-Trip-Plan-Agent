@@ -17,6 +17,7 @@ export interface TravelRequirements {
 
 export interface Activity {
   activity_id: string;
+  source_place_id?: string | null;
   title: string;
   place_name: string | null;
   location: string | null;
@@ -31,7 +32,19 @@ export interface ItineraryDay {
   activities: Activity[];
 }
 
+export interface ReferenceRecommendation {
+  place_name: string;
+  source_place_id: string | null;
+  reason: string;
+  associated_day: string | null;
+  area: string | null;
+  uncertainty: string | null;
+  source_ref: string | null;
+}
+
 export interface Itinerary {
+  output_version?: "itinerary_1" | "itinerary_2";
+  reference_recommendations?: ReferenceRecommendation[];
   destination: string;
   start_date: string;
   end_date: string;

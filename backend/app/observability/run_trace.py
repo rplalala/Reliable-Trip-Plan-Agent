@@ -12,7 +12,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from uuid import UUID
 
 from backend.app.policies.trip_dates import TripDateWindow
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import PlanningRequest, TravelRequirements
 
 LOGGER = logging.getLogger(__name__)
 _SENSITIVE_KEY_PARTS = (
@@ -55,7 +55,7 @@ class RunTraceContext:
     system_version: str
     reference_date: date
     date_window: TripDateWindow
-    request: TravelRequest
+    request: PlanningRequest
     started_at: datetime
     runtime_config: dict[str, object] | None = None
     runtime_config_sha256: str | None = None
@@ -126,9 +126,7 @@ def _redact_url(value: str) -> str:
     query = [
         (
             key,
-            "[REDACTED]"
-            if _is_sensitive_key(key)
-            else item,
+            "[REDACTED]" if _is_sensitive_key(key) else item,
         )
         for key, item in parse_qsl(parts.query, keep_blank_values=True)
     ]
@@ -141,7 +139,28 @@ def redact_secrets(value: object) -> object:
     if isinstance(value, dict):
         redacted: dict[str, object] = {}
         for key, item in value.items():
-            if _is_sensitive_key(str(key)):
+            if (
+                str(key)
+                in {
+                    "max_output_tokens",
+                    "input_tokens",
+                    "output_tokens",
+                    "total_tokens",
+                    "reasoning_tokens",
+                    "input_tokens_estimated",
+                    "framing_tokens",
+                    "total_query_tokens",
+                    "system_tokens",
+                    "user_tokens",
+                    "schema_tokens",
+                    "cache_read",
+                    "reasoning",
+                }
+                and type(item) is int
+                and item >= 0
+            ):
+                redacted[str(key)] = item
+            elif _is_sensitive_key(str(key)):
                 redacted[str(key)] = "[REDACTED]"
             else:
                 redacted[str(key)] = redact_secrets(item)
@@ -156,9 +175,7 @@ def redact_secrets(value: object) -> object:
         return str(value)
     if isinstance(value, str):
         redacted = _SECRET_ASSIGNMENT_PATTERN.sub(r"\1=[REDACTED]", value)
-        redacted = _EMBEDDED_URL_PATTERN.sub(
-            lambda match: _redact_url(match.group(0)), redacted
-        )
+        redacted = _EMBEDDED_URL_PATTERN.sub(lambda match: _redact_url(match.group(0)), redacted)
         return _BEARER_PATTERN.sub("Bearer [REDACTED]", redacted)
     if hasattr(value, "model_dump"):
         return redact_secrets(value.model_dump(mode="json"))
@@ -295,9 +312,7 @@ class FileRunTracer:
             "final_outcome": None,
         }
         value.update(updates)
-        (self.run_directory / "run.json").write_text(
-            self._serialize(value), encoding="utf-8"
-        )
+        (self.run_directory / "run.json").write_text(self._serialize(value), encoding="utf-8")
 
     def event(self, event_type: str, payload: object | None = None) -> None:
         if self._failed:
@@ -334,8 +349,11 @@ class FileRunTracer:
         if (
             self._failed
             or not self._capture_categories.get(category, False)
-            or (category == "tools" and minimum_mode is TracePayloadMode.RAW
-                and not self._raw_provider_payloads)
+            or (
+                category == "tools"
+                and minimum_mode is TracePayloadMode.RAW
+                and not self._raw_provider_payloads
+            )
             or _PAYLOAD_LEVEL[self._payload_mode] < _PAYLOAD_LEVEL[minimum_mode]
         ):
             return

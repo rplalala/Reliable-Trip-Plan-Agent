@@ -18,15 +18,7 @@ from backend.app.integrations.models import (
 )
 from backend.app.schemas.itinerary import Activity, ItineraryDay
 from backend.app.schemas.itinerary_projection import V1Itinerary
-from backend.app.schemas.named_place_intent import NamedPlaceIntent
 from backend.app.schemas.request import TravelRequirements
-from backend.app.schemas.trip_intent import (
-    ExperiencePreferenceIntent,
-    PoiInterest,
-    RequestedPlaceInformation,
-    TransportPreferenceIntent,
-    TripIntentExtractionResult,
-)
 
 
 def _candidate(place_id: str, rank: int, latitude: float, longitude: float) -> PlaceCandidateDTO:
@@ -89,9 +81,7 @@ class FakePlacesProvider:
             primary_type="tourist_attraction",
             business_status="OPERATIONAL",
             time_zone="Australia/Sydney",
-            regular_opening_hours={
-                "weekdayDescriptions": ["Monday: 9:00 AM - 5:00 PM"]
-            },
+            regular_opening_hours={"weekdayDescriptions": ["Monday: 9:00 AM - 5:00 PM"]},
             rating=4.5,
             website_uri=f"https://example.test/{request.place_id}",
             price_level="PRICE_LEVEL_MODERATE",
@@ -130,19 +120,11 @@ class FakeWeatherProvider:
 
 def _weather_day(value: date, precipitation: int) -> dict[str, object]:
     return {
-        "displayDate": {"year": value.year, "month": value.month, "day": value.day},
-        "minTemperature": {"degrees": 14},
-        "maxTemperature": {"degrees": 22},
-        "daytimeForecast": {
-            "weatherCondition": {"type": "RAIN" if precipitation > 50 else "CLEAR"},
-            "precipitation": {"probability": {"percent": precipitation}},
-            "wind": {"speed": {"value": 18, "unit": "KILOMETERS_PER_HOUR"}},
-        },
-        "nighttimeForecast": {
-            "precipitation": {"probability": {"percent": precipitation // 2}},
-            "wind": {"speed": {"value": 10, "unit": "KILOMETERS_PER_HOUR"}},
-        },
+        "date": value, "condition": "RAIN" if precipitation > 50 else "CLEAR",
+        "min_temperature_c": 14, "max_temperature_c": 22,
+        "precipitation_probability_percent": precipitation, "max_wind_speed_kph": 18,
     }
+
 
 
 class FakeRoutesProvider:
@@ -183,25 +165,6 @@ def make_requirements() -> TravelRequirements:
     )
 
 
-def make_extraction(
-    requirements: TravelRequirements | None = None,
-    *,
-    intents: tuple[NamedPlaceIntent, ...] = (),
-    information: tuple[RequestedPlaceInformation, ...] = (),
-    experience: tuple[ExperiencePreferenceIntent, ...] = (),
-    transport: TransportPreferenceIntent | None = None,
-    poi_interests: tuple[PoiInterest, ...] = (),
-) -> TripIntentExtractionResult:
-    return TripIntentExtractionResult(
-        requirements=requirements or make_requirements(),
-        named_place_intents=intents,
-        requested_place_information=information,
-        experience_preferences=experience,
-        transport_preference=transport,
-        poi_interests=poi_interests,
-    )
-
-
 def make_itinerary() -> V1Itinerary:
     return V1Itinerary(
         destination="Sydney",
@@ -223,3 +186,73 @@ def make_itinerary() -> V1Itinerary:
             ItineraryDay(date=date(2026, 9, 13), activities=[]),
         ],
     )
+
+
+def make_revised_extraction(
+    requirements=None,
+    *,
+    intents=(),
+    information=(),
+    experience=(),
+    transport=None,
+):
+    """Explicit fixture migration; never used in production interpretation."""
+    from backend.app.schemas.interpreted_requirements import (
+        EvidenceRequestDraft,
+        InterpretationDraft,
+        NamedRequirementDraft,
+        SemanticDraft,
+        SourceQuote,
+    )
+
+    semantics = tuple(
+        SemanticDraft(
+            local_key=f"s{i}",
+            normalized_text=e[0],
+            kind="preference",
+            polarity="favor",
+            strength="medium",
+            scope="individual_poi",
+            subject_target={"kind": "party"},
+            source_refs=(SourceQuote(quote=e[0], occurrence=0),),
+        )
+        for i, e in enumerate(experience)
+    )
+    return InterpretationDraft(
+        named_places=tuple(
+            NamedRequirementDraft(
+                place_text=n.place_text,
+                inclusion=n.inclusion.value,
+                source_refs=(SourceQuote(quote=n.source_text, occurrence=0),),
+            )
+            for i, n in enumerate(intents)
+        ),
+        requested_place_information=information,
+        transport_preference=transport,
+        semantic_requirements=semantics,
+        subjects=(),
+        discovery_intents=(),
+        experience_evidence_requests=tuple(
+            EvidenceRequestDraft(requirement_ref=f"s{i}", dimension=e[1])
+            for i, e in enumerate(experience)
+        ),
+        extraction_issues=(),
+        overflow=False,
+    )
+
+
+class RevisedFakeLLM:
+    """Queued extraction/generation plus explicit deterministic selector test decisions."""
+
+    def __init__(self, responses):
+        from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+
+        self.delegate = FakeStructuredLLMClient(responses)
+        self.calls = self.delegate.calls
+
+    async def generate_structured(self, *, response_schema, user_prompt, system_prompt):
+
+
+        return await self.delegate.generate_structured(
+            response_schema=response_schema, user_prompt=user_prompt, system_prompt=system_prompt
+        )

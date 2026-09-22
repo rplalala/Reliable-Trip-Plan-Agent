@@ -13,8 +13,9 @@ from backend.app.evidence.models import (
 from backend.app.evidence.normalization import normalize_place_details
 from backend.app.evidence.opening_hours import opening_hours_for_date, planning_opening_hours
 from backend.app.integrations.models import LatLng, PlaceDetailsDTO
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import TravelRequirements
 from backend.app.versions.v1.prompts import build_itinerary_generation_prompt
+from backend.tests.request_fixtures import make_request
 
 
 def _place(
@@ -143,7 +144,7 @@ def test_planner_prompt_attaches_date_view_to_correct_place_id() -> None:
         end_date=date(2026, 9, 23),
     )
     prompt = build_itinerary_generation_prompt(
-        TravelRequest(request_text="Plan two days in Sydney"),
+        make_request(additional_preferences="Plan two days in Sydney"),
         requirements,
         date(2026, 9, 14),
         places=[museum, beach],
@@ -153,7 +154,7 @@ def test_planner_prompt_attaches_date_view_to_correct_place_id() -> None:
             longitude=151.2,
             availability=EvidenceAvailability.UNAVAILABLE,
             retrieved_at=datetime(2026, 9, 14, tzinfo=UTC),
-            source_ref="google_weather",
+            source_ref="open_meteo",
         ),
         routes=RouteEvidenceBundle(
             baseline=RouteEvidence(

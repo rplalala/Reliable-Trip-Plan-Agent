@@ -68,18 +68,20 @@ def make_itinerary(
     )
 
 
-def test_window_includes_reference_date_through_reference_date_plus_nine() -> None:
+def test_window_includes_reference_date_through_reference_date_plus_thirteen() -> None:
     window = create_trip_date_window(REFERENCE_DATE)
 
     assert window.allowed_start == date(2026, 9, 11)
-    assert window.allowed_end == date(2026, 9, 20)
+    assert window.allowed_end == date(2026, 9, 24)
 
 
 @pytest.mark.parametrize(
     ("start_date", "end_date"),
     [
         (date(2026, 9, 11), date(2026, 9, 11)),
-        (date(2026, 9, 20), date(2026, 9, 20)),
+        (date(2026, 9, 24), date(2026, 9, 24)),
+        (date(2026, 9, 11), date(2026, 9, 20)),
+        (date(2026, 9, 15), date(2026, 9, 24)),
         (date(2026, 9, 12), date(2026, 9, 14)),
     ],
 )
@@ -103,10 +105,12 @@ def test_requested_dates_accept_every_valid_boundary(
             TripDateErrorCode.BEFORE_WINDOW,
         ),
         (
-            date(2026, 9, 20),
-            date(2026, 9, 21),
+            date(2026, 9, 24),
+            date(2026, 9, 25),
             TripDateErrorCode.AFTER_WINDOW,
         ),
+        (date(2026, 9, 11), date(2026, 9, 21), TripDateErrorCode.TOO_LONG),
+        (date(2026, 9, 14), date(2026, 9, 24), TripDateErrorCode.TOO_LONG),
         (
             date(2027, 1, 1),
             date(2027, 1, 3),
@@ -190,6 +194,4 @@ def test_itinerary_rejects_an_activity_end_outside_requested_dates() -> None:
             create_trip_date_window(REFERENCE_DATE),
         )
 
-    assert captured.value.offending_fields == (
-        "itinerary.days[0].activities[0].end_time",
-    )
+    assert captured.value.offending_fields == ("itinerary.days[0].activities[0].end_time",)

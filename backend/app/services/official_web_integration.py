@@ -11,7 +11,7 @@ from backend.app.evidence.web_models import InformationGap, WebEvidenceTask, Web
 from backend.app.observability.run_trace import RunTracer
 from backend.app.policies.official_evidence_resolver import resolve_effective_evidence
 from backend.app.runtime.budget import ToolBudget, ToolBudgetKey
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import PlanningRequest, TravelRequirements
 from backend.app.schemas.trip_intent import RequestedPlaceInformation
 from backend.app.services.official_web_grounding import OfficialWebGroundingService
 from backend.app.services.web_evidence_acquisition import WebEvidenceAcquisitionService
@@ -51,7 +51,7 @@ class OfficialWebIntegrationService:
     async def run(
         self,
         *,
-        request: TravelRequest | None = None,
+        request: PlanningRequest | None = None,
         requirements: TravelRequirements,
         projection: OfficialWebProjection,
         requested_information: tuple[RequestedPlaceInformation, ...] | None = None,

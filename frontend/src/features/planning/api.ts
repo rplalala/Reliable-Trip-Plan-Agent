@@ -9,3 +9,7 @@ export function submitPlanningRequest(
     body: JSON.stringify(input),
   });
 }
+
+export function getTripDateWindow(): Promise<import("./datePolicy").TripDateWindow> {
+  return requestJson("/api/planning/date-window", { method: "GET", cache: "no-store" });
+}

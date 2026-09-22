@@ -57,7 +57,7 @@ export function DeveloperPlanningForm({
       <button
         className="button button-developer"
         type="submit"
-        disabled={isSubmitting || requestText.trim().length === 0}
+        disabled={isSubmitting || !referenceDate || requestText.trim().length === 0}
       >
         {isSubmitting ? "Running V0…" : "Run V0"}
       </button>

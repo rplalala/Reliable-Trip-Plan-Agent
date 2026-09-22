@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from backend.app.policies.trip_dates import (
-    TRIP_DATE_WINDOW_DAYS,
+    MAX_TRIP_DAYS,
     TripDateWindow,
     validate_requested_trip_dates,
 )
@@ -39,7 +39,7 @@ def derive_poi_capacities(
 
     validate_requested_trip_dates(start_date, end_date, window)
     days = (end_date - start_date).days + 1
-    if not 1 <= days <= TRIP_DATE_WINDOW_DAYS:
+    if not 1 <= days <= MAX_TRIP_DAYS:
         raise ValueError("trip duration must be inside the supported 1-10 day horizon")
     k_final = min(16, 2 * days + 2)
     r_pool = max(10, k_final + 2)
@@ -80,4 +80,24 @@ def apply_poi_operating_budgets(
         k_final=k_final,
         review_pool_cap=review_pool_cap,
         limiting_budgets=tuple(name for name, actual, maximum in reductions if actual < maximum),
+    )
+
+
+def quality_capacities(start_date, end_date, window, required=0):
+    """Quality-first effective goals, independently of the user's monetary budget."""
+    validate_requested_trip_dates(start_date, end_date, window)
+    if required > 16:
+        from backend.app.schemas.interpreted_requirements import ClarificationRequired
+
+        raise ClarificationRequired("required_capacity_conflict")
+    days = (end_date - start_date).days + 1
+    normal = min(16, max(8, 2 * days + 6))
+    acquisition_k = max(normal, required)
+    k = max(acquisition_k, 2 * days)
+    values = POICapacities(
+        days, max(48, 4 * acquisition_k), 2 * acquisition_k, k,
+        min(8, (acquisition_k + 1) // 2),
+    )
+    return EffectivePOICapacities(
+        values, values.c_raw, values.r_pool, k, values.review_pool_cap, ()
     )

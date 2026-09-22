@@ -1,7 +1,6 @@
 """Inputs for evidence-informed POI selection."""
 
 from datetime import date
-from decimal import Decimal
 from enum import StrEnum
 from typing import Self
 
@@ -9,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from backend.app.evidence.models import PlaceCandidate, PlaceEvidence
 from backend.app.schemas.named_place_intent import NamedPlaceInclusion, NamedPlaceIntent
+from backend.app.schemas.tripworld_discovery import TripWorldOrigin
 
 
 class PlaceSelectionModel(BaseModel):
@@ -22,17 +22,9 @@ class SearchIntentKind(StrEnum):
     NORMAL_PREFERENCE = "normal_preference"
     FALLBACK = "fallback"
 
-    @property
-    def weight(self) -> Decimal:
-        return {
-            SearchIntentKind.EXPLICIT_REQUIREMENT: Decimal("1.0"),
-            SearchIntentKind.NORMAL_PREFERENCE: Decimal("0.8"),
-            SearchIntentKind.FALLBACK: Decimal("0.4"),
-        }[self]
-
 
 class PlaceSearchIntent(PlaceSelectionModel):
-    """One bounded, application-classified Places query, never an LLM weight."""
+    """One bounded, application-classified Places query, not a semantic score."""
 
     intent_id: str = Field(min_length=1)
     term: str = Field(min_length=1)
@@ -50,12 +42,8 @@ class PlaceSearchIntent(PlaceSelectionModel):
             else SearchIntentKind.NORMAL_PREFERENCE
         )
         if self.kind is not expected:
-            raise ValueError("Named-place search weight must match its typed inclusion")
+            raise ValueError("Named-place search kind must match its typed inclusion")
         return self
-
-    @property
-    def weight(self) -> Decimal:
-        return self.kind.weight
 
 
 class QueryIntentHit(PlaceSelectionModel):
@@ -105,7 +93,8 @@ class PlaceSelectionInput(PlaceSelectionModel):
     """Keep search and rating state outside shared V1-B-facing place contracts."""
 
     candidate: PlaceCandidate
-    query_hits: list[QueryIntentHit] = Field(min_length=1)
+    query_hits: list[QueryIntentHit] = Field(default_factory=list)
+    discovery_origins: tuple[TripWorldOrigin, ...] = Field(default=(), max_length=80)
     search_opening_date: PlaceOpeningDate | None = None
     search_opening_date_observations: tuple[PlaceOpeningDate, ...] = ()
     details_opening_date: PlaceOpeningDate | None = None
@@ -117,6 +106,17 @@ class PlaceSelectionInput(PlaceSelectionModel):
 
     @model_validator(mode="after")
     def rating_matches_state(self) -> Self:
+        if not self.query_hits and not self.discovery_origins:
+            raise ValueError("Selection candidates need a real discovery origin")
         if (self.rating_state is RatingAcquisitionState.AVAILABLE) != (self.rating is not None):
             raise ValueError("rating is present exactly when rating_state is available")
         return self
+
+    @property
+    def discovery_intent_ids(self) -> tuple[str, ...]:
+        return tuple(
+            sorted(
+                {h.intent_id for h in self.query_hits}
+                | {i for o in self.discovery_origins for i in o.query.intent_ids}
+            )
+        )

@@ -35,20 +35,23 @@ from backend.app.runtime.budget import ToolBudget, ToolBudgetKey, ToolBudgetLimi
 from backend.app.runtime.cache import RequestCache
 from backend.app.runtime.config_loader import load_runtime_config
 from backend.app.schemas.planning import SystemVersion
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import TravelRequirements
 from backend.app.services.official_web_grounding import OfficialWebGroundingService
 from backend.app.services.official_web_integration import OfficialWebIntegrationService
 from backend.app.services.web_evidence_acquisition import WebEvidenceAcquisitionService
 from backend.app.versions.v1.official_planner import build_official_planner_evidence
 from backend.app.versions.v1.official_web import OfficialWebProjection
 from backend.app.versions.v1.runner import run_v1
-from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v1.fakes import (
     FakePlacesProvider,
     FakeRoutesProvider,
     FakeWeatherProvider,
-    make_extraction,
     make_itinerary,
+)
+from backend.tests.versions.v1.fakes import RevisedFakeLLM as FakeStructuredLLMClient
+from backend.tests.versions.v1.fakes import (
+    make_revised_extraction as make_extraction,
 )
 
 DAY = date(2026, 12, 25)
@@ -203,7 +206,7 @@ def _service(web, page=None, reasoner=None, *, web_limit=1, page_limit=1):
 def _run(service):
     return asyncio.run(
         service.run(
-            request=TravelRequest(request_text="How much is Alpha Zoo admission?"),
+            request=make_request(additional_preferences="How much is Alpha Zoo admission?"),
             requirements=TravelRequirements(destination="Sydney", start_date=DAY, end_date=DAY),
             projection=_projection(),
         )
@@ -244,7 +247,7 @@ def test_zero_justified_tasks_spend_no_budget_and_add_no_web_fact() -> None:
     service, budget, tracer = _service(web, page, reasoner)
     result = asyncio.run(
         service.run(
-            request=TravelRequest(request_text="Visit Alpha Zoo during my Sydney trip."),
+            request=make_request(additional_preferences="Visit Alpha Zoo during my Sydney trip."),
             requirements=TravelRequirements(destination="Sydney", start_date=DAY, end_date=DAY),
             projection=_projection(),
         )
@@ -267,7 +270,7 @@ def test_projected_opening_date_conflict_reaches_risk_task_and_trace() -> None:
     service, budget, tracer = _service(web)
     result = asyncio.run(
         service.run(
-            request=TravelRequest(request_text="Visit Alpha Zoo during my Sydney trip."),
+            request=make_request(additional_preferences="Visit Alpha Zoo during my Sydney trip."),
             requirements=TravelRequirements(destination="Sydney", start_date=DAY, end_date=DAY),
             projection=replace(_projection(), opening_date_conflicts={"alpha": (DAY,)}),
         )
@@ -335,7 +338,7 @@ def test_integrated_graph_orders_web_after_routes_and_before_generation() -> Non
     reasoner = FakeReasoner()
     result = asyncio.run(
         run_v1(
-            TravelRequest(request_text="Plan two days in Sydney."),
+            make_request(additional_preferences="Plan two days in Sydney."),
             llm,
             FakePlacesProvider(),
             FakeWeatherProvider(),
@@ -349,7 +352,7 @@ def test_integrated_graph_orders_web_after_routes_and_before_generation() -> Non
     )
     names = [name for name, _ in tracer.events]
     assert result.system_version is SystemVersion.V1
-    assert names.index("final_poi_selection_completed") < names.index("weather_completed")
+    assert names.index("planning_supply_completed") < names.index("weather_completed")
     assert names.index("weather_completed") < names.index("route_matrix_completed")
     assert names.index("route_matrix_completed") < names.index("official_web_projection_completed")
     assert names.index("official_web_integration_completed") < names.index("generation_started")
@@ -363,7 +366,7 @@ def test_integrated_graph_orders_web_after_routes_and_before_generation() -> Non
     planner_trace = next(
         payload for name, payload in tracer.events if name == "official_planner_evidence_prepared"
     )
-    assert len(planner_trace["places"]) == 6
+    assert len(planner_trace["places"]) == 9
     assert all(item["accepted_facts"] == [] for item in planner_trace["places"])
     prompt = llm.calls[-1].user_prompt
     assert "<official_current_evidence>" in prompt
@@ -498,7 +501,7 @@ def test_cross_task_resolver_preserves_date_scope_facet_and_conflict(conflict: b
             budget=ToolBudget(),
             tracer=RecordingTracer(),
         ).run(
-            request=TravelRequest(request_text="Alpha Zoo admission and closure."),
+            request=make_request(additional_preferences="Alpha Zoo admission and closure."),
             requirements=TravelRequirements(destination="Sydney", start_date=DAY, end_date=DAY),
             projection=_projection(),
         )

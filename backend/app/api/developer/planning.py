@@ -7,10 +7,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from backend.app.api.dependencies import get_developer_planning_service
 from backend.app.api.schemas.planning import DeveloperPlanningRequest
 from backend.app.policies.trip_dates import TripDatePolicyError
+from backend.app.schemas.interpreted_requirements import ClarificationRequired
 from backend.app.schemas.planning import PlanningResult
-from backend.app.schemas.request import TravelRequest
+from backend.app.schemas.requirement_boundary import RequirementBoundaryError
 from backend.app.services.planning import DeveloperPlanningService
-from backend.app.versions.v0.graph import MissingRequiredFieldsError, V0StageError
+from backend.app.versions.v0.graph import V0StageError
 
 router = APIRouter(prefix="/api/dev", tags=["developer-planning"])
 
@@ -27,18 +28,11 @@ async def create_developer_planning_result(
 
     try:
         return await planning_service.plan_v0(
-            TravelRequest(request_text=body.request_text),
+            body.request,
             reference_date=body.reference_date,
         )
-    except MissingRequiredFieldsError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail={
-                "code": "missing_required_fields",
-                "system_version": body.version,
-                "requirements": exc.requirements.model_dump(mode="json"),
-            },
-        ) from exc
+    except (ClarificationRequired, RequirementBoundaryError) as exc:
+        raise HTTPException(status_code=422, detail=exc.as_dict()) from exc
     except TripDatePolicyError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,

@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
-  getBrowserLocalTripDateWindow,
+  latestEndDate,
+  addCalendarDays,
+  type TripDateWindow,
   isDateWithinTripWindow,
 } from "../datePolicy";
+import { getTripDateWindow } from "../api";
 import type { ProductPlanningInput } from "../types";
 
 interface PlanningFormProps {
@@ -12,7 +15,16 @@ interface PlanningFormProps {
 }
 
 export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
-  const dateWindow = getBrowserLocalTripDateWindow();
+  const [dateWindow, setDateWindow] = useState<TripDateWindow | null>(null);
+  const [dateError, setDateError] = useState(false);
+  useEffect(() => {
+    let active = true;
+    getTripDateWindow().then(
+      (window) => { if (active) setDateWindow(window); },
+      () => { if (active) setDateError(true); },
+    );
+    return () => { active = false; };
+  }, []);
   const [destination, setDestination] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -29,7 +41,7 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
     Number.isInteger(parsedTravelerCount) &&
     parsedTravelerCount >= 1;
   const hasValidDateRange = !startDate || !endDate || endDate >= startDate;
-  const hasValidDateWindow =
+  const hasValidDateWindow = dateWindow !== null &&
     (!startDate || isDateWithinTripWindow(startDate, dateWindow)) &&
     (!endDate || isDateWithinTripWindow(endDate, dateWindow));
   const hasBudgetAmount = budgetAmount.trim().length > 0;
@@ -42,8 +54,10 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
       Number.isFinite(Number(budgetAmount)) &&
       Number(budgetAmount) >= 0 &&
       /^[A-Z]{3}$/.test(budgetCurrency));
+  const hasValidDuration = !startDate || !endDate || !dateWindow || endDate <= addCalendarDays(startDate, dateWindow.maxTripDays - 1);
   const canSubmit =
     hasRequiredFields &&
+    hasValidDuration &&
     hasValidDateRange &&
     hasValidDateWindow &&
     hasValidBudget &&
@@ -92,8 +106,8 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
           <input
             type="date"
             value={startDate}
-            min={dateWindow.allowedStart}
-            max={dateWindow.allowedEnd}
+            min={dateWindow?.allowedStart}
+            max={dateWindow?.allowedEnd}
             required
             disabled={isSubmitting}
             aria-describedby={!hasValidDateWindow ? "date-window-error" : undefined}
@@ -105,8 +119,8 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
           <input
             type="date"
             value={endDate}
-            min={startDate || dateWindow.allowedStart}
-            max={dateWindow.allowedEnd}
+            min={startDate || dateWindow?.allowedStart}
+            max={dateWindow ? latestEndDate(startDate, dateWindow) : undefined}
             required
             disabled={isSubmitting}
             aria-describedby={
@@ -119,9 +133,11 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
             onChange={(event) => setEndDate(event.target.value)}
           />
         </label>
-        {!hasValidDateWindow && (
+        {!dateWindow && <p>{dateError ? "Date limits could not be loaded. Reload to try again." : "Loading date limits…"}</p>}
+        {!hasValidDuration && <p className="field-error">Trips may last at most 10 days, including both dates.</p>}
+        {dateWindow && !hasValidDateWindow && (
           <p className="field-error field-wide" id="date-window-error">
-            Travel dates must be between {dateWindow.allowedStart} and {dateWindow.allowedEnd}.
+            Travel dates must be between {dateWindow?.allowedStart} and {dateWindow?.allowedEnd}.
           </p>
         )}
         {!hasValidDateRange && (

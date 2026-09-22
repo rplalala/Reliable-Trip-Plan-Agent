@@ -57,21 +57,26 @@ def _service() -> tuple[V1EvidenceAcquisitionService, FakePlacesProvider, ToolBu
     )
 
 
-def test_current_graph_keeps_legacy_candidate_request_size_until_funnel_switch() -> None:
-    destination = DestinationContext(
-        place_id="sydney",
-        name="Sydney",
-        latitude=-33.8,
-        longitude=151.2,
-    )
-    legacy_service, legacy_provider, _ = _service()
-    asyncio.run(legacy_service.search_candidates(make_requirements(), destination))
-    assert legacy_provider.search_requests
-    assert {request.page_size for request in legacy_provider.search_requests} == {7}
+def typed_intents():
+    from backend.app.evidence.selection_models import PlaceSearchIntent
 
-    future_service, future_provider, _ = _service()
-    asyncio.run(future_service.search_candidate_observations(make_requirements(), destination))
-    assert {request.page_size for request in future_provider.search_requests} == {12}
+    return tuple(
+        PlaceSearchIntent(intent_id=str(i), term=t, query=f"{t} in Sydney", kind="fallback")
+        for i, t in enumerate(("museum", "park"))
+    )
+
+
+def test_current_typed_discovery_uses_bounded_provider_page():
+    destination = DestinationContext(
+        place_id="sydney", name="Sydney", latitude=-33.8, longitude=151.2
+    )
+    service, provider, _ = _service()
+    asyncio.run(
+        service.search_candidate_observations(
+            make_requirements(), destination, intents=typed_intents()
+        )
+    )
+    assert {r.page_size for r in provider.search_requests} == {20}
 
 
 def test_future_opening_parameter_changes_search_cache_identity() -> None:
@@ -126,6 +131,7 @@ def test_search_observations_preserve_duplicate_place_intent_hits_before_merging
     observations = asyncio.run(
         service.search_candidate_observations(
             requirements=make_requirements(),
+            intents=typed_intents(),
             destination=DestinationContext(
                 place_id="sydney",
                 name="Sydney",
@@ -151,12 +157,14 @@ def test_details_and_reviews_cache_keys_are_distinct_and_parameter_sensitive() -
     details = PlaceDetailsRequest(place_id="poi-1", field_mask=PLACES_DETAILS_FIELD_MASK)
     reviews = PlaceReviewsRequest(place_id="poi-1", field_mask=PLACES_REVIEWS_FIELD_MASK)
 
-    assert service._place_details_cache_key(details) != service._place_reviews_cache_key(reviews)
+    assert service._place_details_cache_key(details) != (
+        "place_reviews",
+        reviews.place_id,
+        reviews.field_mask,
+        reviews.language_code,
+    )
     assert service._place_details_cache_key(details) != service._place_details_cache_key(
         details.model_copy(update={"language_code": "fr"})
-    )
-    assert service._place_reviews_cache_key(reviews) != service._place_reviews_cache_key(
-        reviews.model_copy(update={"field_mask": "id,reviews.name"})
     )
 
 

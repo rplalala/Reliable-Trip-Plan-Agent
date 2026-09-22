@@ -63,6 +63,7 @@ def normalize_place_details_for_selection(
     return PlaceSelectionInput(
         candidate=selection_input.candidate,
         query_hits=selection_input.query_hits,
+        discovery_origins=selection_input.discovery_origins,
         search_opening_date=selection_input.search_opening_date,
         search_opening_date_observations=selection_input.search_opening_date_observations,
         details_opening_date=(

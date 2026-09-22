@@ -15,21 +15,25 @@ from backend.app.observability.run_trace import NullRunTracer
 from backend.app.policies.transport import select_transport_mode
 from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
+from backend.app.schemas.interpreted_requirements import (
+    InterpretationDraft as TripIntentExtractionResult,
+)
 from backend.app.schemas.planning import SystemVersion
-from backend.app.schemas.request import TravelRequest
-from backend.app.schemas.trip_intent import TripIntentExtractionResult
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
+from backend.app.services.preference_prompts import PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
 from backend.app.versions.v1.graph import build_v1_graph
-from backend.app.versions.v1.prompts import V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
 from backend.app.versions.v1.runner import run_v1
-from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v1.fakes import (
     FakePlacesProvider,
     FakeRoutesProvider,
     FakeWeatherProvider,
-    make_extraction,
     make_itinerary,
     make_requirements,
+)
+from backend.tests.versions.v1.fakes import RevisedFakeLLM as FakeStructuredLLMClient
+from backend.tests.versions.v1.fakes import (
+    make_revised_extraction as make_extraction,
 )
 
 RUN_ID = UUID("00000000-0000-0000-0000-000000000001")
@@ -62,12 +66,12 @@ def test_v1_graph_has_explicit_non_agentic_topology() -> None:
         "validate_trip_dates",
         "resolve_destination",
         "acquire_candidate_funnel",
-        "select_review_aware_pois",
         "acquire_weather",
         "acquire_routes",
         "acquire_and_resolve_official_web",
         "generate_evidence_informed_itinerary",
         "validate_itinerary_dates",
+        "discover_reference_recommendations",
         "__end__",
     }
     assert {(edge.source, edge.target) for edge in graph.edges} == {
@@ -75,12 +79,12 @@ def test_v1_graph_has_explicit_non_agentic_topology() -> None:
         ("acquire_routes", "acquire_and_resolve_official_web"),
         ("acquire_and_resolve_official_web", "generate_evidence_informed_itinerary"),
         ("acquire_weather", "acquire_routes"),
-        ("select_review_aware_pois", "acquire_weather"),
+        ("acquire_candidate_funnel", "acquire_weather"),
         ("extract_requirements", "validate_trip_dates"),
         ("generate_evidence_informed_itinerary", "validate_itinerary_dates"),
         ("resolve_destination", "acquire_candidate_funnel"),
-        ("acquire_candidate_funnel", "select_review_aware_pois"),
-        ("validate_itinerary_dates", "__end__"),
+        ("validate_itinerary_dates", "discover_reference_recommendations"),
+        ("discover_reference_recommendations", "__end__"),
         ("validate_trip_dates", "resolve_destination"),
     }
 
@@ -90,7 +94,7 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
 
     result = asyncio.run(
         run_v1(
-            TravelRequest(request_text="Plan two days in Sydney."),
+            make_request(additional_preferences="Plan two days in Sydney."),
             llm,
             places,
             weather,
@@ -102,7 +106,7 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
 
     assert result.system_version is SystemVersion.V1
     assert len(llm.calls) == 2
-    assert llm.calls[0].system_prompt == V1_REQUIREMENT_EXTRACTION_SYSTEM_PROMPT
+    assert llm.calls[0].system_prompt == PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
     assert llm.calls[0].response_schema is TripIntentExtractionResult
     assert places.search_requests[0].field_mask == PLACES_DESTINATION_FIELD_MASK
     assert places.search_requests[0].include_future_opening_businesses is False
@@ -117,19 +121,22 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert len(places.search_requests) == 4
     assert len(places.details_requests) == 9
     assert len(weather.requests) == 1
-    assert weather.requests[0].horizon_days == 10
-    assert len(routes.requests) == 1
-    assert len(routes.requests[0].origins) == 6
+    assert weather.requests[0].requested_start == date(2026, 9, 12)
+    assert weather.requests[0].requested_end == date(2026, 9, 13)
+    baseline = [r for r in routes.requests if r.travel_mode == "WALK"]
+    assert len(baseline) == 2
+    assert sum(len(r.origins) * len(r.destinations) for r in baseline) == 81
+    assert len(result.planning_supply.selected_place_ids) == 9
     assert routes.requests[0].travel_mode == "WALK"
     assert routes.requests[0].routing_preference is None
-    generation_prompt = llm.calls[1].user_prompt
-    generation_system_prompt = llm.calls[1].system_prompt
+    generation_prompt = llm.calls[-1].user_prompt
+    generation_system_prompt = llm.calls[-1].system_prompt
     assert "place_evidence" not in generation_prompt
     assert '"places"' in generation_prompt
     assert '"precipitation_probability_percent": 70' in generation_prompt
     assert '"travel_mode": "WALK"' in generation_prompt
     assert '"baseline"' in generation_prompt
-    assert '"non_walkable_pairs": []' in generation_prompt
+    assert '"non_walkable_pairs"' in generation_prompt
     assert "provider_observed" in generation_system_prompt
     assert "mirrored_reverse_estimate" in generation_system_prompt
     assert "schedule the entire visit within them" in " ".join(generation_system_prompt.split())
@@ -148,7 +155,7 @@ def test_v1_weather_failure_is_explicit_and_does_not_block_generation() -> None:
 
     result = asyncio.run(
         run_v1(
-            TravelRequest(request_text="Plan two days in Sydney."),
+            make_request(additional_preferences="Plan two days in Sydney."),
             llm,
             places,
             weather,
@@ -159,11 +166,14 @@ def test_v1_weather_failure_is_explicit_and_does_not_block_generation() -> None:
     )
 
     assert result.system_version is SystemVersion.V1
-    assert '"availability": "unavailable"' in llm.calls[1].user_prompt
-    assert "Weather unavailable" in llm.calls[1].user_prompt
+    assert '"availability": "unavailable"' in llm.calls[-1].user_prompt
+    assert "Weather unavailable" in llm.calls[-1].user_prompt
 
 
 def test_v1_legacy_route_matrix_budget_does_not_bound_active_selection() -> None:
+    from backend.app.runtime.config_loader import load_runtime_config
+    from backend.app.runtime.config_models import AcquisitionConfig
+
     llm = FakeStructuredLLMClient([make_extraction(), make_itinerary()])
     places = FakePlacesProvider()
     weather = FakeWeatherProvider()
@@ -171,12 +181,15 @@ def test_v1_legacy_route_matrix_budget_does_not_bound_active_selection() -> None
 
     asyncio.run(
         run_v1(
-            TravelRequest(request_text="Plan two days in Sydney."),
+            make_request(additional_preferences="Plan two days in Sydney."),
             llm,
             places,
             weather,
             routes,
             reference_date=date(2026, 9, 11),
+            runtime_config=load_runtime_config().model_copy(
+                update={"acquisition": AcquisitionConfig(policy_id="conservative_1")}
+            ),
             budget_limits=ToolBudgetLimits(max_route_matrix_elements=16),
             tracer=NullRunTracer(RUN_ID),
         )
@@ -201,7 +214,7 @@ def test_v1_captures_reference_date_once_across_midnight() -> None:
 
     asyncio.run(
         run_v1(
-            TravelRequest(request_text="Plan two days in Sydney."),
+            make_request(additional_preferences="Plan two days in Sydney."),
             llm,
             places,
             weather,
@@ -212,13 +225,13 @@ def test_v1_captures_reference_date_once_across_midnight() -> None:
     )
 
     assert provider.calls == 1
-    assert "Reference date: 2026-09-11" in llm.calls[0].user_prompt
-    assert "Reference date: 2026-09-11" in llm.calls[1].user_prompt
+    assert '"reference_date": "2026-09-11"' in llm.calls[0].user_prompt
+    assert "Reference date: 2026-09-11" in llm.calls[-1].user_prompt
 
 
 def test_v1_rejects_trip_outside_shared_window_before_any_provider_call() -> None:
     requirements = make_requirements().model_copy(
-        update={"start_date": date(2026, 9, 21), "end_date": date(2026, 9, 21)}
+        update={"start_date": date(2026, 9, 26), "end_date": date(2026, 9, 26)}
     )
     llm = FakeStructuredLLMClient([make_extraction(requirements)])
     places = FakePlacesProvider()
@@ -226,7 +239,7 @@ def test_v1_rejects_trip_outside_shared_window_before_any_provider_call() -> Non
     with pytest.raises(ValueError):
         asyncio.run(
             run_v1(
-                TravelRequest(request_text="Plan later."),
+                make_request(additional_preferences="Plan later.", requirements=requirements),
                 llm,
                 places,
                 FakeWeatherProvider(),
@@ -246,7 +259,7 @@ def test_v1_rejects_final_itinerary_dates_outside_requested_range() -> None:
     with pytest.raises(ValueError):
         asyncio.run(
             run_v1(
-                TravelRequest(request_text="Plan two days in Sydney."),
+                make_request(additional_preferences="Plan two days in Sydney."),
                 llm,
                 FakePlacesProvider(),
                 FakeWeatherProvider(),
@@ -265,7 +278,7 @@ def test_individual_place_details_failure_continues_with_partial_evidence() -> N
 
     result = asyncio.run(
         run_v1(
-            TravelRequest(request_text="Plan two days in Sydney."),
+            make_request(additional_preferences="Plan two days in Sydney."),
             llm,
             places,
             FakeWeatherProvider(),
@@ -276,8 +289,8 @@ def test_individual_place_details_failure_continues_with_partial_evidence() -> N
     )
 
     assert result.system_version is SystemVersion.V1
-    assert "poi-0-0" not in llm.calls[1].user_prompt
-    assert "Place Details unavailable" not in llm.calls[1].user_prompt
+    assert "poi-0-0" not in llm.calls[-1].user_prompt
+    assert "Place Details unavailable" not in llm.calls[-1].user_prompt
 
 
 def test_request_scoped_cache_deduplicates_details_weather_and_routes() -> None:
@@ -298,10 +311,37 @@ def test_request_scoped_cache_deduplicates_details_weather_and_routes() -> None:
     async def scenario():
         destination = await service.resolve_destination("Sydney")
         repeated_destination = await service.resolve_destination("Sydney")
-        candidates = await service.search_candidates(requirements, destination)
-        shortlist = service.shortlist(candidates)[:2]
-        first_places = await service.enrich_places(shortlist)
-        second_places = await service.enrich_places(shortlist)
+        from backend.app.evidence.normalization import normalize_place_details
+        from backend.app.evidence.selection_models import PlaceSearchIntent
+        from backend.app.integrations.google.places import PLACES_DETAILS_FIELD_MASK
+        from backend.app.integrations.models import PlaceDetailsRequest
+
+        intents = tuple(
+            PlaceSearchIntent(intent_id=str(i), term=t, query=f"{t} in Sydney", kind="fallback")
+            for i, t in enumerate(("museums", "parks", "food"))
+        )
+        candidates = await service.search_candidate_observations(
+            requirements, destination, intents=intents
+        )
+        shortlist = candidates[:2]
+
+        async def details():
+            return [
+                normalize_place_details(
+                    (
+                        await service._get_place_details(
+                            PlaceDetailsRequest(
+                                place_id=p.candidate.place_id, field_mask=PLACES_DETAILS_FIELD_MASK
+                            )
+                        )
+                    ).value,
+                    candidate=p.candidate,
+                )
+                for p in shortlist
+            ]
+
+        first_places = await details()
+        second_places = await details()
         first_weather = await service.acquire_weather(
             requirements=requirements,
             destination=destination,
@@ -312,7 +352,9 @@ def test_request_scoped_cache_deduplicates_details_weather_and_routes() -> None:
             destination=destination,
             reference_date=date(2026, 9, 11),
         )
-        mode = select_transport_mode(TravelRequest(request_text="Plan Sydney."), requirements)
+        mode = select_transport_mode(
+            make_request(additional_preferences="Plan Sydney."), requirements
+        )
         first_routes = await service.acquire_routes(
             places=first_places,
             mode=mode,

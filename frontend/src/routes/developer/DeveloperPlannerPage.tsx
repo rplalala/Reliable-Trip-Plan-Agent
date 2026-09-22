@@ -1,22 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { submitDeveloperPlanningRequest } from "../../features/developer-planning/api";
 import { DeveloperPlanningForm } from "../../features/developer-planning/components/DeveloperPlanningForm";
 import { RawJsonView } from "../../features/developer-planning/components/RawJsonView";
 import type { DeveloperVersion } from "../../features/developer-planning/types";
-import { getBrowserLocalDate } from "../../features/planning/datePolicy";
+import { getTripDateWindow } from "../../features/planning/api";
 import { HttpError } from "../../shared/api/http";
 
 const IMPLEMENTED_VERSION: DeveloperVersion = "v0";
 
 export function DeveloperPlannerPage() {
   const [requestText, setRequestText] = useState("");
-  const [referenceDate, setReferenceDate] = useState(() => getBrowserLocalDate());
+  const [referenceDate, setReferenceDate] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [response, setResponse] = useState<unknown>(null);
 
+  useEffect(() => {
+    let active = true;
+    getTripDateWindow().then(
+      (window) => { if (active) setReferenceDate((value) => value || window.allowedStart); },
+      () => { if (active) setResponse({error: "date_window_unavailable"}); },
+    );
+    return () => { active = false; };
+  }, []);
+
   async function handleSubmit() {
-    if (!requestText.trim() || isSubmitting) {
+    if (!requestText.trim() || !referenceDate || isSubmitting) {
       return;
     }
 

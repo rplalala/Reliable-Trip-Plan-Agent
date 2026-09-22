@@ -79,3 +79,15 @@ def test_default_runtime_covers_algorithmic_maxima() -> None:
         16,
         6,
     )
+
+
+@pytest.mark.parametrize("days", range(1, 11))
+def test_departure_offset_does_not_increase_quality_capacity(days):
+    from backend.app.policies.poi_capacity import quality_capacities
+
+    base = quality_capacities(REFERENCE, REFERENCE + timedelta(days=days - 1), WINDOW)
+    delayed = quality_capacities(
+        REFERENCE + timedelta(days=4), REFERENCE + timedelta(days=days + 3), WINDOW
+    )
+    assert delayed == base
+    assert delayed.k_final <= 20

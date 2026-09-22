@@ -5,7 +5,7 @@ from decimal import Decimal, InvalidOperation, localcontext
 
 from pydantic import ValidationError
 
-from backend.app.llm.azure_foundry.dto import FoundryItineraryDTO, FoundryMoneyDTO
+from backend.app.llm.azure_foundry.dto import FoundryMoneyDTO, FoundryPrimaryItineraryDTO
 from backend.app.llm.azure_foundry.mapping import map_foundry_itinerary
 from backend.app.schemas.itinerary_projection import (
     EstimatedCostProjectionDiagnostic,
@@ -75,9 +75,10 @@ def project_v1_estimated_cost(
     )
 
 
-def map_foundry_v1_itinerary(value: FoundryItineraryDTO) -> V1Itinerary:
+def map_foundry_v1_itinerary(value: FoundryPrimaryItineraryDTO) -> V1Itinerary:
     """Change only optional costs, then reuse the strict shared itinerary mapping."""
 
+    value = FoundryPrimaryItineraryDTO.model_validate(value.model_dump())
     diagnostics: list[EstimatedCostProjectionDiagnostic] = []
     projected_days = []
     for day_index, day in enumerate(value.days):

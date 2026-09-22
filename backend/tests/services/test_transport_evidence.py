@@ -16,8 +16,9 @@ from backend.app.observability.run_trace import NullRunTracer
 from backend.app.policies.transport import select_transport_mode
 from backend.app.runtime.budget import ToolBudget, ToolBudgetLimits
 from backend.app.runtime.cache import RequestCache
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import TravelRequirements
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
+from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v1.fakes import FakePlacesProvider, FakeWeatherProvider
 
 RUN_ID = UUID("00000000-0000-0000-0000-000000000001")
@@ -126,7 +127,9 @@ def _service(
 
 
 def _default_mode():
-    return select_transport_mode(TravelRequest(request_text="Plan Sydney."), _requirements())
+    return select_transport_mode(
+        make_request(additional_preferences="Plan Sydney."), _requirements()
+    )
 
 
 def test_default_walk_uses_sparse_transit_with_separate_bounded_budget_and_trace() -> None:
@@ -254,7 +257,7 @@ def test_explicit_supported_mode_uses_one_matrix_without_fan_out(
 ) -> None:
     routes = PolicyRoutesProvider(walk_values={("a", "b"): (9000, 9000, "ROUTE_EXISTS")})
     service, budget = _service(routes)
-    mode = select_transport_mode(TravelRequest(request_text=request_text), _requirements())
+    mode = select_transport_mode(make_request(additional_preferences=request_text), _requirements())
 
     bundle = asyncio.run(
         service.acquire_routes(

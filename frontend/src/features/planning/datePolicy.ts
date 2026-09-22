@@ -1,35 +1,22 @@
-export const TRIP_DATE_WINDOW_DAYS = 10;
-
-export interface BrowserLocalTripDateWindow {
+export interface TripDateWindow {
   allowedStart: string;
   allowedEnd: string;
+  maxTripDays: number;
 }
 
-export function getBrowserLocalDate(date = new Date()): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+// ISO calendar arithmetic, independent of the browser's time zone and DST.
+export function addCalendarDays(value: string, days: number): string {
+  const date = new Date(`${value}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
-export function addBrowserLocalCalendarDays(date: Date, days: number): Date {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days, 12);
+export function latestEndDate(start: string, window: TripDateWindow): string {
+  if (!start) return window.allowedEnd;
+  const durationEnd = addCalendarDays(start, window.maxTripDays - 1);
+  return durationEnd < window.allowedEnd ? durationEnd : window.allowedEnd;
 }
 
-export function getBrowserLocalTripDateWindow(
-  referenceDate = new Date(),
-): BrowserLocalTripDateWindow {
-  return {
-    allowedStart: getBrowserLocalDate(referenceDate),
-    allowedEnd: getBrowserLocalDate(
-      addBrowserLocalCalendarDays(referenceDate, TRIP_DATE_WINDOW_DAYS - 1),
-    ),
-  };
-}
-
-export function isDateWithinTripWindow(
-  value: string,
-  window: BrowserLocalTripDateWindow,
-): boolean {
+export function isDateWithinTripWindow(value: string, window: TripDateWindow): boolean {
   return value >= window.allowedStart && value <= window.allowedEnd;
 }

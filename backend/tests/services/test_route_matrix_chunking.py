@@ -10,7 +10,7 @@ from backend.app.integrations.models import RouteMatrixDTO, RouteMatrixRequest
 from backend.app.policies.route_matrix_chunking import partition_baseline_origins
 from backend.app.policies.transport import select_transport_mode
 from backend.app.runtime.budget import ToolBudgetKey, ToolBudgetLimits
-from backend.app.schemas.request import TravelRequest
+from backend.tests.request_fixtures import make_request
 from backend.tests.services.test_transport_evidence import (
     PolicyRoutesProvider,
     _place,
@@ -20,14 +20,14 @@ from backend.tests.services.test_transport_evidence import (
 
 
 def _explicit_mode(text: str = "We will walk everywhere in Sydney."):
-    return select_transport_mode(TravelRequest(request_text=text), _requirements())
+    return select_transport_mode(make_request(additional_preferences=text), _requirements())
 
 
 def _places(count: int):
     return [_place(chr(ord("a") + index)) for index in range(count)]
 
 
-@pytest.mark.parametrize("count", range(1, 17))
+@pytest.mark.parametrize("count", range(1, 21))
 def test_every_supported_size_has_complete_stable_directed_grid(count: int) -> None:
     provider = PolicyRoutesProvider()
     service, budget = _service(provider)
@@ -64,7 +64,12 @@ def test_every_supported_size_has_complete_stable_directed_grid(count: int) -> N
 
 @pytest.mark.parametrize(
     ("count", "expected_origins", "expected_elements"),
-    [(8, [8], [64]), (9, [7, 2], [63, 18]), (16, [4, 4, 4, 4], [64, 64, 64, 64])],
+    [
+        (8, [8], [64]),
+        (9, [7, 2], [63, 18]),
+        (16, [4, 4, 4, 4], [64, 64, 64, 64]),
+        (20, [3] * 6 + [2], [60] * 6 + [40]),
+    ],
 )
 def test_representative_chunk_shapes(
     count: int, expected_origins: list[int], expected_elements: list[int]
@@ -355,7 +360,7 @@ def test_default_walk_transit_trigger_runs_after_merged_chunks() -> None:
     provider = PolicyRoutesProvider(walk_values={("h", "a"): (4000, 3000, "ROUTE_EXISTS")})
     service, budget = _service(provider)
     default_mode = select_transport_mode(
-        TravelRequest(request_text="Plan Sydney."), _requirements()
+        make_request(additional_preferences="Plan Sydney."), _requirements()
     )
     bundle = asyncio.run(
         service.acquire_routes(places=_places(9), mode=default_mode, requirements=_requirements())
@@ -380,7 +385,8 @@ def test_explicit_transit_uses_chunked_baseline_without_alternatives() -> None:
     provider = PolicyRoutesProvider()
     service, _ = _service(provider)
     mode = select_transport_mode(
-        TravelRequest(request_text="We will use public transit in Sydney."), _requirements()
+        make_request(additional_preferences="We will use public transit in Sydney."),
+        _requirements(),
     )
     bundle = asyncio.run(
         service.acquire_routes(

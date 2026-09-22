@@ -10,7 +10,8 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.request import TravelRequirements
 
-TRIP_DATE_WINDOW_DAYS = 10
+TRIP_DATE_WINDOW_DAYS = 14
+MAX_TRIP_DAYS = 10
 
 
 @runtime_checkable
@@ -60,6 +61,7 @@ class TripDateWindow:
 class TripDateErrorCode(StrEnum):
     """Stable reasons for rejecting requested or generated trip dates."""
 
+    TOO_LONG = "trip_duration_exceeded"
     RANGE_REVERSED = "trip_date_range_reversed"
     BEFORE_WINDOW = "trip_date_before_window"
     AFTER_WINDOW = "trip_date_after_window"
@@ -89,11 +91,11 @@ class TripDatePolicyError(ValueError):
         if self.code is TripDateErrorCode.RANGE_REVERSED:
             return "end_date must be on or after start_date"
         if self.code is TripDateErrorCode.BEFORE_WINDOW:
-            return (
-                f"start_date must be on or after {self.window.allowed_start.isoformat()}"
-            )
+            return f"start_date must be on or after {self.window.allowed_start.isoformat()}"
         if self.code is TripDateErrorCode.AFTER_WINDOW:
             return f"end_date must be on or before {self.window.allowed_end.isoformat()}"
+        if self.code is TripDateErrorCode.TOO_LONG:
+            return f"trip duration must be at most {MAX_TRIP_DAYS} inclusive days"
         fields = ", ".join(self.offending_fields)
         return f"final itinerary dates must stay within the requested trip dates: {fields}"
 
@@ -115,7 +117,7 @@ class TripDatePolicyError(ValueError):
 
 
 def create_trip_date_window(reference_date: date) -> TripDateWindow:
-    """Compute the inclusive ten-day window for one fixed reference date."""
+    """Compute the inclusive fourteen-date window for one fixed reference date."""
 
     return TripDateWindow(
         reference_date=reference_date,
@@ -148,6 +150,14 @@ def validate_requested_trip_dates(
     if end_date > window.allowed_end:
         raise TripDatePolicyError(
             code=TripDateErrorCode.AFTER_WINDOW,
+            window=window,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+    if (end_date - start_date).days + 1 > MAX_TRIP_DAYS:
+        raise TripDatePolicyError(
+            code=TripDateErrorCode.TOO_LONG,
             window=window,
             start_date=start_date,
             end_date=end_date,

@@ -1,203 +1,169 @@
 # Capstone Project Context
 
-## Title
-
-**An LLM-Based Travel Planning System for Feasible and Reliable Itinerary Generation**
-
-## Research Goal
-
-This project studies how to make LLM-generated travel itineraries more feasible and reliable. A practical motivation is that travelers may not know a destination well enough to recognize hidden errors in a plausible-looking plan.
-
-The system develops through four comparable research versions:
-
-```text
-V0  Plain LLM
-V1  V0 + external information and tools
-V2  V1 + RAG
-V3  V2 + explicit feasibility validation, targeted repair, and re-validation
-```
-
-The versions should differ mainly by their intended added mechanism. Preserving that distinction is essential for later evaluation.
-
-## Current Scope
-
-The current stage is system design and development: architecture, backend and necessary frontend implementation, provider integration, evidence normalization, runtime configuration, observability, and implementation testing.
-
-Formal benchmark design, cross-version evaluation, experiment analysis, thesis writing, and final research conclusions are deferred. Small pilot scenarios and live-provider runs may verify integrations and implementation behavior, but are not formal research results.
-
-Introduce infrastructure only when the current version has a concrete need for it. V0 and V1 do not require an application database.
-
-# Research Versions
-
-## V0 — Plain LLM
-
-```text
-User request → Requirement extraction → LLM generation → Structured itinerary
-```
-
-V0 is the plain-LLM baseline. It does not acquire external planning evidence, use RAG, or perform general feasibility validation and repair.
-
-V0 may still enforce shared project-level input and output contracts, including the trip-date policy below. For requests valid under those contracts, preserve its requirement extraction, model configuration, output schema, base planning objective, and general generation semantics where practical.
-
-## V1 — External Information and Tools
-
-V1 adds bounded, application-controlled external evidence to the otherwise comparable V0 planning flow:
-
-```text
-Requirement extraction
-→ External information acquisition
-→ Typed evidence normalization
-→ Evidence-informed itinerary generation
-```
-
-V1 is **one research version** with two active implementation milestones:
-
-| Milestone | Purpose | Status |
-| --- | --- | --- |
-| V1-A | Google-backed travel evidence and POI selection | Revised implementation live-validated and explicitly re-frozen on 2026-09-14 |
-| V1-B | Official and current Web evidence for final selected POIs | Phase 1/2 and Phase 3 implemented and development-live-validated |
-
-**Complete V1 is frozen as of 2026-09-15** following final offline checks and cross-country development live validation. The original V1-A 2026-09-12 freeze and revised V1-A 2026-09-14 re-freeze remain separate historical checkpoints.
-
-V1-A discovers and selects POIs using Google Places evidence, alongside Google Weather and Routes. The revised selection flow is cheap candidate discovery, structured narrowing, selective Place Details plus rating, further narrowing, selective reviews, review-derived `ExperienceProfile`, and final POI selection. Rating and reviews inform selection; neither is required for every candidate. Do not use or display `userRatingCount`.
-
-V1-A was originally frozen on 2026-09-12, then intentionally reopened for rating/review-aware POI selection and explicitly re-frozen on 2026-09-14. The original freeze remains a separate historical checkpoint. The former V1-C milestone is retired from the active architecture; Places review evidence now belongs to V1-A.
-
-After the revised V1-A checkpoint, V1 migrated free-form user semantics into one V1 requirements LLM call returning unchanged `TravelRequirements` plus bounded `NamedPlaceIntent`, `RequestedPlaceInformation`, `ExperiencePreferenceIntent`, transport preference, and `PoiInterest`. Application code validates source spans and typed values, reconciles Place IDs, and deterministically executes selection, routing, and evidence acquisition. The active V1 graph does not use raw-text keyword/regex fallback to reinterpret these meanings. V0's requirements contract and execution path remain unchanged.
-
-V1-B addresses decision-relevant official/current information gaps that structured providers cannot reliably answer, such as temporary closures, special opening hours, admission, tickets, and reservations. It does not broadly re-check every selected POI or facts already sufficiently answered by structured evidence.
-
-V1-B supplements only final selected POIs with current first-party official evidence. Its integrated path projects stable selected Place IDs and structured facts, plans targeted Web tasks for explicit residual needs or concrete operational/date risks, acquires bounded Luna Web and optional official pages, then runs EvidenceReasoner, a deterministic Grounding / Provenance Gate, and a claim-scoped EvidenceResolver. Accepted/effective facts and explicit uncertainty reach the planner; raw search observations and rejected claims do not. Normal Web/Page budgets are 6/6. These are pre-planning evidence controls, not V3 itinerary-feasibility validation.
-
-Rating remains a quantitative Places signal. `ExperienceProfile` represents retrieved-review evidence for deterministic POI selection; unsupported signals remain unknown. The LLM does not select the final POI set, and reviews/Profile are not passed to the itinerary prompt. Neither rating nor reviews may override an official date-specific closure. Any future frontend rating/review display must use actually acquired evidence for itinerary POIs; frontend work is not implemented.
-
-V1 may instruct the generator to use supplied evidence carefully—for example, not to plan a clearly non-walkable transfer as an ordinary walk or invent unsupported transit details. This is still **evidence-informed generation**, not general post-generation feasibility validation. An itinerary may therefore violate supplied evidence even when that evidence was acquired correctly.
-
-V1 retains point-valued shared `Money` and optional activity `estimated_cost`. At its Foundry mapping boundary, V1 preserves valid points, converts a clear finite same-currency two-endpoint numeric range to a Decimal midpoint, and sets unsupported optional costs to `null`. This uses no LLM repair call and does not turn a derived activity estimate into accepted official admission evidence or alter V0.
-
-V1 does not implement RAG, a free-form agentic tool loop, general violation detection, targeted repair, or re-validation.
-
-## V2 — RAG
-
-V2 adds retrieval grounding to V1. The planned offline knowledge sources are TripWorld for relatively stable destination, POI, and travel-pattern knowledge, with TP-RAG as a possible China-specific supplement.
-
-RAG should help identify relevant places, areas, combinations, and typical visit patterns; it should not replace live verification. Dynamic facts such as current opening status, disruptions, weather, route duration, and ticket changes should come from current sources.
-
-The exact corpus, retrieval design, and storage needs belong to V2 design and should not be implemented early.
-
-## V3 — Validation, Targeted Repair, and Re-validation
-
-V3 adds explicit feasibility checking after evidence-informed generation:
-
-```text
-Draft itinerary
-→ Feasibility validation
-→ Violation detection
-→ Targeted repair when needed
-→ Re-validation
-```
-
-Candidate checks include budget, opening hours, transfer time, weather suitability, activity density, required or excluded activities, and operationalized user preferences.
-
-Validation should be deterministic where practical. Repair should focus on affected itinerary components and preserve already-valid content rather than defaulting to full regeneration.
-
-Shared date input/output checks in V0–V3 are project-wide contracts. They are **not** the general feasibility-validation mechanism studied in V3.
-
-# Shared Trip-Date Policy
-
-Every version uses the same supported planning window. Fix the runtime reference date once at run start:
-
-```text
-reference_date <= start_date <= end_date <= reference_date + 9 days
-```
-
-The final itinerary may contain dates only within the requested trip range:
-
-```text
-Final itinerary dates
-⊆ Requested trip dates
-⊆ [reference_date, reference_date + 9 days]
-```
-
-The backend enforces this contract deterministically, including for direct API calls. Frontend date restrictions provide user guidance but are not the authority. Tests may inject a fixed date; production requests must not use arbitrary caller-supplied reference dates to bypass the real runtime window.
-
-# Engineering Architecture
-
-Use a modular monolith:
-
-```text
-React + TypeScript frontend
-          ↓ HTTP / JSON
-FastAPI backend
-          ├─ Version-specific planning graphs and entry points
-          ├─ Application services and evidence acquisition
-          ├─ Typed schemas, policies, and evidence normalization
-          ├─ LLM and external-provider integrations
-          ├─ Runtime configuration and Run Trace
-          └─ RAG, validation, repair, and persistence only when needed
-```
-
-Planning, orchestration, evidence acquisition, RAG, validation, and repair belong in the backend. The frontend collects requirements, calls the APIs, and presents results; it should not own research-critical planning logic.
-
-Keep V0, V1, V2, and V3 independently runnable through explicit version-specific graphs and entry points, such as `scripts/run_v0.py` through `scripts/run_v3.py`. Do not implement all versions as one large graph controlled mainly by version conditionals. Do not create future-version modules before they are required.
-
-## Provider and Evidence Boundaries
-
-LangGraph nodes should call internal services, not third-party APIs directly:
-
-```text
-Graph node → Acquisition service → Provider integration → External API
-```
-
-Provider integrations own authentication, API requests, provider DTOs, response mapping, and provider-specific errors. The evidence layer deterministically converts provider-facing models into typed internal planning evidence. Raw provider payloads should not be passed through the graph or directly into planner prompts.
-
-Use evidence types suited to their purpose rather than requiring one universal `Evidence` schema. Preserve source identity, retrieval time, availability, uncertainty, and provenance where relevant. Distinguish provider-observed information from derived estimates.
-
-Evidence authority depends on the claim. Official notices are usually strongest for official operational changes; structured route and weather providers are appropriate for their respective measurements; visitor accounts can support subjective experience. Do not silently promote uncertain or subjective evidence into confirmed factual claims.
-
-## Bounded Tool Use
-
-External acquisition is deterministic and application-controlled where practical. Use a request-level ToolBudget for candidate search, enrichment, weather, routes, web queries, and other provider work. Avoid hidden fan-out and unconstrained LLM-selected tool loops.
-
-Request-scoped caching may deduplicate identical operations within a run. Do not introduce persistent evidence caching solely for V1.
-
-# Runtime Configuration and Observability
-
-`config/runtime.yaml` is the global source for non-secret runtime policy, including normal ToolBudget limits, application time zone, logging, and Run Trace settings. One centralized code-level definition sets project-wide ToolBudget hard safety ceilings:
-
-```text
-Global hard limit → runtime.yaml limit → per-run usage
-```
-
-Changing a normal limit within its hard boundary should require only a YAML change. Policies should not introduce hidden secondary ToolBudget caps. Invalid, missing, malformed, or out-of-range runtime configuration must fail fast rather than silently fall back.
-
-Keep secrets and genuine deployment-specific values outside committed runtime policy, typically in `.env`. Never commit credentials, raw provider or LLM payloads, or runtime logs.
-
-Each development run should have a `run_id` and lightweight Run Trace sufficient to inspect its configuration, progression, evidence provenance, tool usage, failures, and outcome. Record a sanitized effective runtime configuration and stable hash for reproducibility. Payload capture should be configurable, and credentials must be redacted from traces and runtime logs.
-
-Trace and logging **write failures** should be best-effort and should not change planning semantics. This does not apply to configuration validation failures, which must fail fast.
-
-# Database Direction
-
-Do not introduce PostgreSQL, pgvector, or another persistence system merely because it is in the preferred stack. V0 and V1 can use per-run state, request-scoped cache/deduplication, and file-based Run Trace without an application database.
-
-Introduce persistence or vector storage only when a concrete capability—potentially V2 retrieval or later saved application data—requires it. Run Trace is observability, not an application evidence database.
-
-# Version Preservation and Development Rules
-
-Keep versions comparable by preserving, where practical, the shared input contract, requirement-extraction behavior, LLM model/configuration, output schema, and base planning objective. Later versions may reuse shared schemas, policies, services, and integrations, but must not silently redefine earlier research behavior.
-
-Implementation completion and freeze are separate. Passing tests or a live smoke run does not freeze a milestone; freeze requires explicit user approval and accurate documentation. Detailed V1 architecture and milestone history belong in `docs/v1_design.md` and `docs/v1_milestone.md`, not this project-level document.
-
-Development principles:
-
-- Add only the mechanism required by the current approved stage.
-- Preserve independently runnable and comparable V0–V3 paths.
-- Keep external evidence acquisition separate from general feasibility validation.
-- Use typed normalized evidence with explicit uncertainty and provenance.
-- Keep tool use bounded, observable, reproducible, and application-controlled.
-- Keep secrets separate from committed runtime policy.
-- Prefer focused tests with fake providers; use live runs for integration verification, not formal evaluation.
-- Avoid premature databases, microservices, future-version modules, and unnecessary frontend complexity.
-- Document meaningful post-freeze changes without rewriting historical milestones.
-- Do not begin formal research evaluation or thesis work until explicitly requested.
+Current source of truth. Updated 2026-09-22.
+
+## Purpose and implemented scope
+
+An LLM-Based Travel Planning System for Feasible and Reliable Itinerary Generation studies a
+sequence of independently runnable mechanisms: V0 plain LLM, V1 external information/tools,
+V2 RAG discovery, and future V3 validation/targeted repair/re-validation. V0/V1/V2 runners exist;
+V3 is not implemented. Current responsibility is engineering design, implementation and development
+validation, not formal benchmark comparison, thesis writing or final research conclusions.
+
+## Current accepted foundation
+
+planning_request_2 requires destination, supported dates, traveler count, whole-trip budget and
+currency. additional_preferences is optional. One shared interpreter handles nonempty preferences;
+empty preferences skip interpretation. Application-owned canonical requirements retain subject and
+source provenance. Current interpreted contract is interpreted_requirements_3. Unsupported HARD
+semantics and unresolved REQUIRED identity retain clarification boundaries.
+
+V1/V2 use deterministic admission/acquisition and planning-candidate supply, selective Reviews to
+ExperienceProfile, REQUIRED/OPTIONAL projection, current external evidence and primary generation.
+Retired B1/B2 evaluators and minimum-subset implementations have been removed. Shared
+candidate acquisition is independent of historical experiment frameworks.
+
+V2 adds bounded TripWorld query embedding, geographic exact retrieval, Google-backed resolution
+and canonical source merge before common admission. Existing ENRICHED 1536-dimensional OpenAI
+vectors and PostgreSQL/pgvector remain the retrieval foundation. No ANN, shadow table or vector
+rebuild has replaced it. Post-primary Nearby uses actual scheduled anchors and appends optional
+references; it does not modify primary activities or recover unused supply automatically.
+
+The shared final contract is itinerary_2. V0's references remain unverified model knowledge without
+travel tools; V1/V2 use application-owned Nearby evidence and a primary-only generation DTO.
+References do not satisfy REQUIRED, count as scheduled visits or enter planned costs.
+
+## Configuration, acceptance and limits
+
+V2 current implementation checkpoint accepted. Core RAG and shared downstream wiring have
+bounded Tokyo and Sydney end-to-end evidence. Primary V2 implementation/smoke work is complete;
+formal-evaluation preparation and Git checkpoint planning are next, subject to separate approval.
+This records experimental mechanism boundaries, not a permanent source freeze. Later shared
+correctness fixes must apply to all dependent versions and trigger checkpoint/impact review.
+
+Phase 6, post-itinerary Nearby and explicit quality_first_1 are implemented + bounded
+development-live-validated. This is neither production-ready nor all-branch/formal benchmark
+acceptance, and does not automatically re-freeze V1/V2. Original freezes retain their original
+contract/configuration scope; later authorized changes are separate checkpoints.
+
+The user approved quality_first_1 as the default V1/V2 runtime policy. config/runtime.yaml is now
+the sole configuration file in config/, byte-identical to the previously accepted quality YAML.
+The old dedicated quality YAML and historical60/180 JSON were removed, along with the unused
+RevisedV1PlanningResult B2 output contract. Retired evaluator experiments and their exclusive configuration/tests have now been removed.
+The 600-second whole-request ceiling requires an explicit development argument, not merely the YAML.
+Longer SQL waiting allowed functional validation, not completion of storage/performance optimization.
+
+Latest joint evidence supports normal V2 retrieval/resolution and shared two-pass Details/supply.
+It does not establish RAG superiority, universal preference satisfaction or complete tool coverage.
+Tokyo Weather coverage limitations (Sydney ten-day acquisition succeeded), Web accepted-fact/usage gaps, exact SQL variation, unknown costs, visitor suitability
+and duplicate experiences remain open. Melbourne named-identity ambiguity remains a separate
+conservative clarification limitation. Product/developer APIs remain V0-only; frontend budget,
+clarification and developer input/version selection need separate alignment.
+
+## Current work and next approval
+
+Repository responsibility cleanup is implemented and offline-validated. CandidateAcquisition now
+owns shared acquisition; PlanningCandidateSupplyPipeline invokes it without inheriting any retired
+selector framework. Semantic Evaluator, subset-selection implementation, exclusive DTO/configuration,
+measurement scripts and algorithm-only tests were removed. Current assertions were migrated.
+
+Planner scripts remain in scripts/. Offline data preparation is under tools/data; acceptance under
+tools/validation; current retrieval/candidate/payload diagnostics under tools/diagnostics. Runtime
+must not import those tools or tests. Contracts, prompts, active budgets, SQL, data/vectors and
+V0/V1/V2 behavior remain unchanged. Contract/policy/space version naming was deliberately excluded.
+
+Focused first execution: 593 passed, 9 skipped, 19 failed. The failures were one migrated Review
+service test hook and the moved acceptance module's self-hash path. Affected modules then passed
+62 tests; final dependency/tool/fixture checks passed 34 tests. The one complete backend run passed
+834 tests with 9 existing optional database skips. No live/API/DB execution occurred.
+
+Source/document/config recovery snapshots were permanently deleted, including the external
+phase6_source_snapshots directory. Real run logs remain; selected offline results moved to artifacts;
+tokenizer cache moved to .cache. Inaccessible capture directories were retained and enumerated.
+Logging console behavior, payload defaults, redaction and usage semantics were not changed.
+
+The cleanup task itself did not stage or commit. The subsequently approved seven-commit
+responsibility-based checkpoint now saves the intended source, tests, configuration and documentation.
+No push, re-freeze or V3 work is included. Historical experimental methods,
+results and limitations remain in documentation; deleted implementations are not replay entry points.
+
+
+## Latest bounded evidence and next-step boundaries
+
+The later completed cleanup regression collected 848: 839 passed, 9 skipped, zero failed, exit 0.
+The earlier 834-pass run above is a different checkpoint. Tokyo and Sydney cleanup smoke then
+completed V0/V1/V2. Sydney used ten days, C64/G32/send40/K16/P8 and exercised Weather, 256 baseline
+route elements, Reviews/Profile and V2 normal RAG. Later shared stable activity sorting passed
+78 focused tests offline; Sydney raw evidence remains unchanged. No new tests or live calls were
+performed during this acceptance/documentation task.
+
+Empty days, repeated experiences, hours/route conflicts and evidence-based budget validation
+motivate future V3 validation/targeted repair/re-validation. Missing prices, official domains or
+public visitor-access evidence remain unknown; V3 cannot manufacture them. SQL variability remains
+retrieval engineering work, not a V3 capability. Sydney's two no-domain Web tasks had no website
+in supplied evidence; no propagation defect was established for those tasks.
+
+The 2026-09-22 shared Weather/date extension replaces Google Weather with Open-Meteo daily
+forecasts and admits today through today+13 inclusive, independently capped at 10 travel days.
+It is implemented and offline-validated; the isolated provider probe succeeded with a null final
+date, while integrated planner live validation is still pending. Earlier acceptance used the old
+Google Weather/date checkpoint. Same-day remaining-hour planning is still unsupported.
+Exact historical vectors require retained local artifacts; a clean clone is not an exact DB backup.
+
+## Authorized first-generation baseline extension (2026-09-20)
+
+Shared generation now targets the entire requested date range and normally 2-5 distinct
+main POIs per normal full day, subject to explicit pace/rest, long REQUIRED visits and
+evidence limits. New model output declares activity roles; historical missing roles are
+unknown. Read-only daily diagnostics distinguish default misses from execution failure.
+No refill, second generation or repair is implemented. V0 uses name proxies; V1/V2 use
+validated canonical supply IDs. Nearby cannot inflate counts.
+
+Nine/ten-day supply supports 18/20 places with C64/G32/send40/P8 unchanged. Baseline
+Routes supports 400 directed elements/seven requests, 64 per request; alternatives remain
+unchanged. The primary input/output limits remain 160000/16384. PostgreSQL connection
+establishment tolerance is 10 seconds; SQL60/RAG360 and the explicit development600
+boundary remain unchanged. This is not a SQL performance fix or new live acceptance.
+
+V3 is documented as explicit post-generation feasibility validation, structured findings,
+targeted repair and re-validation. Its runtime, schemas, repair loops and runner are not
+implemented. Shared baseline fixes are not V3 contributions. Future evaluation must use
+matched shared checkpoints; historical Tokyo, Sydney and London captures are unchanged.
+
+## Shared Weather/date checkpoint (2026-09-22)
+
+Open-Meteo serves V1/V2 through the shared factory; V0 remains tool-free. Exact requested dates,
+metric daily aggregates, destination time zone, attribution and missing dates are retained in
+weather evidence. Unknown values are never filled with sunny/zero defaults. Google Places/Routes,
+quality_first_1 capacities, K20, activity roles, generation diagnostics, SQL60/RAG360/connect10,
+model limits and product V0 default are unchanged. The frontend obtains authoritative calendar
+bounds from GET /api/planning/date-window instead of its browser-local date; product/developer
+input gaps unrelated to dates remain. The latest London V2 smoke completed in75.86s with daily
+main counts1/1/2/3/2/1/1, no empty dates,10 distinct scheduled places and3 Nearby references.
+This does not establish universal date coverage or resolve the default-target misses/repetition.
+
+Offline full backend:899 collected,890 passed,9 skipped,0 failed,31.60s,exit0. Frontend corrected
+suite24 passed; lint/build and Ruff passed. First focused and frontend failures remain in the
+shared development record. The subsequent14-date adjustment passed96 focused backend tests and
+24 frontend tests without repeating that full suite. The product window is today..today+13
+inclusive; each trip remains at most10 days. This conservative choice followed a null farthest
+date in the prior London probe; it is not a claim about the API maximum or universal coverage.
+
+The Tokyo Sep26-Oct5 smoke returned V0/V1 itineraries. Initial V2 completed with Google-only
+degradation because the development capture factory had the wrong signature, before any database
+connection. A separately user-authorized V2 rerun corrected only that invocation and completed
+normal embedding, two SQL queries, resolution and RAG adoption. V1/V2 each had all50 requested
+weather values and exact evidence projection; no extra weather probe was executed. Default daily
+targets were met on9/7/9 days in V0/V1/final V2, with zero empty days; V1/V2 had3/6 repeated visits.
+Unknown costs, visitor access and scheduling quality remain unresolved. Nearby preserved the main
+itinerary and diagnostics. These are bounded development observations, not formal evaluation or
+re-freeze. No V3 runtime or database reproduction work has begun; export/restore remain deferred.
+
+Weather/date closeout review classified both Profile ValueErrors as correctly rejected model
+outputs: one supplied review but review_count_used=0, with no summary or signals. Raw responses
+and mapped drafts agree; no shared code fix or new test run was needed. The unavailable fallback
+retained the actual input count and invented no experience evidence. The user reports the database
+was initially stopped; that context does not change the recorded pre-connection factory error.
+No confirmed correctness blocker was found in this narrow review. The shared migration may close
+with bounded development-live evidence; current work is Git grouping approval, not another live
+or V3 implementation. Generation target counts are not itinerary-quality acceptance rates.

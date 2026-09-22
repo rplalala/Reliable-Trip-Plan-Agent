@@ -1,7 +1,7 @@
 """Provider-bound request and response DTOs for V1-A integrations."""
 
 from datetime import date
-from typing import Self
+from typing import Literal, Self
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
@@ -40,12 +40,25 @@ class PlaceSearchRequest(IntegrationModel):
     include_future_opening_businesses: bool = False
 
 
+class PlaceNearbySearchRequest(IntegrationModel):
+    center: LatLng
+    radius_metres: float = Field(gt=0, le=50000)
+    max_result_count: int = Field(ge=1, le=20)
+    included_types: tuple[str, ...]
+    rank_preference: Literal["DISTANCE"] = "DISTANCE"
+    language_code: str = "en"
+    field_mask: str = Field(min_length=1)
+    include_future_opening_businesses: Literal[False] = False
+
+
 class PlaceCandidateDTO(IntegrationModel):
     place_id: str = Field(min_length=1)
     display_name: str = Field(min_length=1)
     location: LatLng
     formatted_address: str | None = None
     primary_type: str | None = None
+    types: tuple[str, ...] = ()
+    attributions: tuple[dict[str, object], ...] = ()
     business_status: str | None = None
     opening_date: PlaceOpeningDateDTO | None = None
     provider_rank: int = Field(ge=0)
@@ -112,15 +125,29 @@ class PlaceReviewsDTO(IntegrationModel):
 
 class WeatherRequest(IntegrationModel):
     location: LatLng
-    horizon_days: int = Field(ge=1, le=10)
     requested_start: date
     requested_end: date
-    language_code: str = "en"
+    timezone: str = "auto"
+    provider: Literal["open_meteo"] = "open_meteo"
+
+
+class WeatherDayDTO(IntegrationModel):
+    """Provider-independent metric daily aggregates; null means unknown."""
+
+    date: date
+    condition: str | None = None
+    min_temperature_c: float | None = None
+    max_temperature_c: float | None = None
+    precipitation_probability_percent: int | None = Field(default=None, ge=0, le=100)
+    max_wind_speed_kph: float | None = Field(default=None, ge=0)
 
 
 class WeatherForecastDTO(IntegrationModel):
-    forecast_days: list[dict[str, object]] = Field(default_factory=list)
+    forecast_days: list[WeatherDayDTO] = Field(default_factory=list)
     retrieved_at: str
+    timezone: str | None = None
+    source_ref: str = "open_meteo:daily_forecast"
+    attribution: str = "Weather data by Open-Meteo (CC BY 4.0): https://open-meteo.com/"
 
 
 class RouteWaypoint(IntegrationModel):

@@ -7,8 +7,8 @@ from datetime import date
 from backend.app.evidence.models import PlaceCandidate, PlaceEvidence
 from backend.app.evidence.selection_models import PlaceOpeningDate
 from backend.app.policies.poi_funnel import normalize_exact_name
-from backend.app.services.evidence_acquisition import CandidateFunnelResult
-from backend.app.services.review_selection import ReviewAwareSelectionResult
+from backend.app.services.candidate_acquisition import CandidatePool
+from backend.app.services.planning_supply_pipeline import PlanningSupplySelection
 
 
 @dataclass(frozen=True)
@@ -36,8 +36,8 @@ def _latest_possible_opening(value: PlaceOpeningDate) -> date | None:
 
 def project_official_web_inputs(
     *,
-    funnel: CandidateFunnelResult,
-    selection: ReviewAwareSelectionResult,
+    funnel: CandidatePool,
+    selection: PlanningSupplySelection,
     candidates: list[PlaceCandidate],
     places: list[PlaceEvidence],
 ) -> OfficialWebProjection:

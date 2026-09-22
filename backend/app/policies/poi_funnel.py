@@ -10,25 +10,13 @@ from backend.app.evidence.selection_models import (
     PlaceOpeningDate,
     PlaceSearchIntent,
     PlaceSelectionInput,
-    SearchIntentKind,
 )
 from backend.app.schemas.named_place_intent import NamedPlaceInclusion, NamedPlaceIntent
-from backend.app.schemas.request import TravelRequirements
-from backend.app.schemas.trip_intent import PoiInterest
 
 GENERIC_SEARCH_TERMS = (
     "top attractions",
     "local food",
     "museums and cultural attractions",
-)
-EXPERIENCE_PREFERENCE_MARKERS = (
-    "accessib",
-    "crowd",
-    "family",
-    "quiet",
-    "queue",
-    "visit duration",
-    "walking",
 )
 _CATEGORY_TERMS = frozenset(
     {
@@ -62,102 +50,6 @@ def is_generic_category_surface(value: str) -> bool:
     """Guard only controlled complete category surfaces, not words inside names."""
 
     return normalize_exact_name(value) in _CATEGORY_TERMS | _OTHER_GENERIC_CATEGORIES
-
-
-def _clean_term(value: str) -> str:
-    return " ".join(value.split())[:80]
-
-
-def _duplicates_named_activity(activity: str, named_surfaces: frozenset[str]) -> bool:
-    """Recognize only a whole name or a bounded Visit/Visit the wrapper."""
-
-    normalized = normalize_exact_name(activity)
-    return any(
-        normalized in (surface, f"visit {surface}", f"visit the {surface}")
-        for surface in named_surfaces
-    )
-
-
-def build_place_search_intents(
-    requirements: TravelRequirements,
-    *,
-    max_queries: int | None = None,
-    named_place_intents: Sequence[NamedPlaceIntent] = (),
-    poi_interests: Sequence[PoiInterest] | None = None,
-) -> tuple[PlaceSearchIntent, ...]:
-    """Prioritize typed names while retaining distinct activity/category queries."""
-
-    if not requirements.destination:
-        raise ValueError("A destination is required for candidate search")
-    if max_queries is not None and max_queries < 0:
-        raise ValueError("max_queries cannot be negative")
-    named_surfaces = frozenset(
-        normalize_exact_name(item.place_text) for item in named_place_intents
-    )
-    if any(is_generic_category_surface(item.place_text) for item in named_place_intents):
-        raise ValueError("Generic categories cannot be named-place search intents")
-    required = (
-        [
-            cleaned
-            for value in requirements.required_activities
-            if (cleaned := _clean_term(value))
-            and not _duplicates_named_activity(value, named_surfaces)
-        ]
-        if poi_interests is None
-        else []
-    )
-
-    terms: list[tuple[str, SearchIntentKind, NamedPlaceIntent | None]] = []
-    seen: set[str] = set()
-
-    def add(value: str, kind: SearchIntentKind, named: NamedPlaceIntent | None = None) -> None:
-        cleaned = value if named is not None else _clean_term(value)
-        key = normalize_exact_name(cleaned)
-        if not cleaned or key in seen:
-            return
-        seen.add(key)
-        terms.append((cleaned, kind, named))
-
-    for named in named_place_intents:
-        if named.inclusion is NamedPlaceInclusion.REQUIRED:
-            add(named.place_text, SearchIntentKind.EXPLICIT_REQUIREMENT, named)
-    if poi_interests is None:
-        for value in required:
-            add(value, SearchIntentKind.EXPLICIT_REQUIREMENT)
-    else:
-        for interest in poi_interests:
-            if interest.importance is SearchIntentKind.EXPLICIT_REQUIREMENT:
-                add(interest.surface, interest.importance)
-    for named in named_place_intents:
-        if named.inclusion is NamedPlaceInclusion.OPTIONAL:
-            add(named.place_text, SearchIntentKind.NORMAL_PREFERENCE, named)
-    if poi_interests is None:
-        for value in requirements.preferences:
-            if not any(marker in value.casefold() for marker in EXPERIENCE_PREFERENCE_MARKERS):
-                add(value, SearchIntentKind.NORMAL_PREFERENCE)
-    else:
-        for interest in poi_interests:
-            if interest.importance is SearchIntentKind.NORMAL_PREFERENCE:
-                add(interest.surface, interest.importance)
-    for value in GENERIC_SEARCH_TERMS:
-        if len(terms) >= max(3, max_queries or 0):
-            break
-        add(value, SearchIntentKind.FALLBACK)
-
-    counts: dict[SearchIntentKind, int] = {}
-    intents: list[PlaceSearchIntent] = []
-    for term, kind, named in terms if max_queries is None else terms[:max_queries]:
-        counts[kind] = counts.get(kind, 0) + 1
-        intents.append(
-            PlaceSearchIntent(
-                intent_id=f"{kind.value}_{counts[kind]}",
-                term=term,
-                query=f"{term} in {requirements.destination}",
-                kind=kind,
-                named_place_intent=named,
-            )
-        )
-    return tuple(intents)
 
 
 def opening_dates_compatible(a: PlaceOpeningDate, b: PlaceOpeningDate) -> bool:

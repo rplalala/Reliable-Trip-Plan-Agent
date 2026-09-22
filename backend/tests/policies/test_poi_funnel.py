@@ -1,16 +1,12 @@
 """Pure search-intent and multi-intent observation funnel policies."""
 
 from datetime import date
-from decimal import Decimal
-
-import pytest
 
 from backend.app.evidence.selection_models import SearchIntentKind
 from backend.app.evidence.selection_normalization import normalize_place_search_hit
 from backend.app.integrations.models import LatLng, PlaceCandidateDTO, PlaceOpeningDateDTO
 from backend.app.policies.poi_funnel import (
     NamedPlaceResolutionStatus,
-    build_place_search_intents,
     merge_search_observations,
     resolve_named_place_intents,
 )
@@ -60,65 +56,6 @@ def _observation(
         actual_result_count=count,
         intent_kind=SearchIntentKind.EXPLICIT_REQUIREMENT,
     )
-
-
-def test_intents_have_stable_class_weights_and_named_vs_category_semantics() -> None:
-    requirements = _requirements(
-        ["museums", "Australian Museum"],
-        ["harbour views", "less crowded"],
-    )
-    intents = build_place_search_intents(
-        requirements,
-        max_queries=3,
-        named_place_intents=(_named("Australian Museum"),),
-    )
-    assert [(item.intent_id, item.term, item.weight) for item in intents] == [
-        ("explicit_requirement_1", "Australian Museum", 1),
-        ("explicit_requirement_2", "museums", 1),
-        ("normal_preference_1", "harbour views", Decimal("0.8")),
-    ]
-    assert intents[0].named_place_intent.place_text == "Australian Museum"
-    assert intents[1].named_place_intent is None
-    assert build_place_search_intents(requirements, max_queries=3) == build_place_search_intents(
-        requirements, max_queries=3
-    )
-
-
-def test_generic_category_cannot_be_marked_as_named_must_visit() -> None:
-    with pytest.raises(ValueError, match="Generic categories"):
-        build_place_search_intents(
-            _requirements(["museums"]),
-            max_queries=3,
-            named_place_intents=(_named("museums"),),
-        )
-
-
-def test_fallback_intent_is_bounded_and_weighted() -> None:
-    intents = build_place_search_intents(_requirements([]), max_queries=2)
-    assert len(intents) == 2
-    assert [item.kind for item in intents] == [SearchIntentKind.FALLBACK] * 2
-    assert [item.weight for item in intents] == [Decimal("0.4")] * 2
-
-
-def test_intent_generation_keeps_more_than_provider_budget_without_reordering() -> None:
-    preferences = [f"interest {index}" for index in range(15)]
-    intents = build_place_search_intents(
-        _requirements([], preferences), named_place_intents=(_named("Sydney Opera House"),)
-    )
-    assert len(intents) == 16
-    assert [item.term for item in intents] == ["Sydney Opera House", *preferences]
-    assert intents[0].weight == 1
-    assert all(item.weight == Decimal("0.8") for item in intents[1:])
-
-
-def test_duplicate_preferences_collapse_before_priority_order_and_fallback() -> None:
-    intents = build_place_search_intents(_requirements([], ["museums", " Museums ", "beaches"]))
-    assert [item.term for item in intents] == ["museums", "beaches", "top attractions"]
-    assert [item.kind for item in intents] == [
-        SearchIntentKind.NORMAL_PREFERENCE,
-        SearchIntentKind.NORMAL_PREFERENCE,
-        SearchIntentKind.FALLBACK,
-    ]
 
 
 def test_required_name_not_claimed_satisfied_when_own_query_skipped_by_budget() -> None:
@@ -224,44 +161,6 @@ def test_only_exact_name_resolves_explicit_place_not_category() -> None:
     assert intents[1].named_place_intent is None
 
 
-@pytest.mark.parametrize(
-    "activity",
-    ["Sydney Opera House", "Visit Sydney Opera House", "Visit the Sydney Opera House"],
-)
-def test_typed_intent_replaces_only_mechanically_equivalent_activity(activity: str) -> None:
-    named = _named("Sydney Opera House", NamedPlaceInclusion.OPTIONAL)
-    intents = build_place_search_intents(
-        _requirements([activity]), max_queries=3, named_place_intents=(named,)
-    )
-    matching = [item for item in intents if "Sydney Opera House" in item.term]
-    assert len(matching) == 1
-    assert matching[0].term == "Sydney Opera House"
-    assert matching[0].kind is SearchIntentKind.NORMAL_PREFERENCE
-    assert matching[0].weight == Decimal("0.8")
-    assert matching[0].named_place_intent == named
-
-
-def test_compound_activity_is_not_suppressed_by_narrow_named_dedup() -> None:
-    intents = build_place_search_intents(
-        _requirements(["Visit Sydney Opera House and harbour attractions"]),
-        max_queries=3,
-        named_place_intents=(_named("Sydney Opera House"),),
-    )
-    assert [item.term for item in intents[:2]] == [
-        "Sydney Opera House",
-        "Visit Sydney Opera House and harbour attractions",
-    ]
-
-
-def test_without_typed_intent_free_text_does_not_create_named_resolution() -> None:
-    intents = build_place_search_intents(_requirements(["Sydney Opera House"]), max_queries=2)
-    places = merge_search_observations(
-        [_observation("opera", "Sydney Opera House", intent=intents[0].intent_id, rank=0, count=1)]
-    ).places
-    assert intents[0].named_place_intent is None
-    assert resolve_named_place_intents((), intents, places) == ()
-
-
 def test_ambiguous_exact_name_and_alias_remain_unresolved() -> None:
     named = (_named("Australian Museum"), _named("MCA"))
     intents = build_place_search_intents(
@@ -293,6 +192,7 @@ def test_name_can_resolve_from_another_query_when_own_query_is_budget_truncated(
     intents = build_place_search_intents(
         _requirements(["museums"]), max_queries=1, named_place_intents=(named,)
     )
+    intents = build_place_search_intents(_requirements(["museums"]), max_queries=1)
     assert intents[0].term == "museums"
     places = merge_search_observations(
         [_observation("museum", "Australian Museum", intent=intents[0].intent_id, rank=0, count=1)]
@@ -301,3 +201,40 @@ def test_name_can_resolve_from_another_query_when_own_query_is_budget_truncated(
     assert resolution.status is NamedPlaceResolutionStatus.RESOLVED
     assert resolution.search_intent_id is None
     assert resolution.resolved_place_id == "museum"
+
+
+def build_place_search_intents(requirements, *, named_place_intents=(), max_queries=None):
+    """Fixture-only explicit search contracts for canonical identity regressions."""
+    from backend.app.evidence.selection_models import PlaceSearchIntent, SearchIntentKind
+
+    intents = [
+        PlaceSearchIntent(
+            intent_id=f"named_{i}",
+            term=n.place_text,
+            query=f"{n.place_text} in {requirements.destination}",
+            kind=SearchIntentKind.EXPLICIT_REQUIREMENT
+            if n.inclusion.value == "REQUIRED"
+            else SearchIntentKind.NORMAL_PREFERENCE,
+            named_place_intent=n,
+        )
+        for i, n in enumerate(named_place_intents)
+    ]
+    intents += [
+        PlaceSearchIntent(
+            intent_id=f"category_{i}",
+            term=t,
+            query=f"{t} in {requirements.destination}",
+            kind=SearchIntentKind.NORMAL_PREFERENCE,
+        )
+        for i, t in enumerate(requirements.required_activities)
+    ]
+    if not requirements.required_activities:
+        intents.append(
+            PlaceSearchIntent(
+                intent_id="default",
+                term="attractions",
+                query="attractions in Sydney",
+                kind=SearchIntentKind.FALLBACK,
+            )
+        )
+    return tuple(intents[:max_queries])

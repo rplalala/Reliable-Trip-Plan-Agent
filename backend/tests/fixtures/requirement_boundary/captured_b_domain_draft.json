@@ -1,0 +1,179 @@
+{
+  "provenance": {
+    "kind": "captured_parsed_domain_draft",
+    "source": "logs/deterministic_supply_20260919/B_model_calls.json",
+    "source_sha256": "69932d8865f4222cadbcc083039ffd83ab10b1937f49f0d1cb2ca24dd4499d60",
+    "limitation": "The saved parsed B draft is available; this is not exact raw provider JSON. Latest A full DTO was not captured."
+  },
+  "request": "Plan a three-day Sydney trip from 2026-09-21 to 2026-09-23 for two adults and one child, budget AUD 1800 total. Include the Sydney Opera House as a required stop. We prefer less walking, would like to avoid crowds, and prefer family-friendly places. I also enjoy unusual local cultural places rather than gimmicky attractions. Prefer public transport.",
+  "draft": {
+    "requirements": {
+      "destination": "Sydney",
+      "start_date": "2026-09-21",
+      "end_date": "2026-09-23",
+      "traveler_count": 3,
+      "budget": {
+        "amount": "1800",
+        "currency": "AUD"
+      },
+      "required_activities": [],
+      "excluded_activities": [],
+      "preferences": [],
+      "unresolved_fields": []
+    },
+    "named_places": [
+      {
+        "local_key": "sydney_opera_house",
+        "place_text": "Sydney Opera House",
+        "inclusion": "REQUIRED",
+        "source_refs": [
+          {
+            "quote": "Include the Sydney Opera House as a required stop.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "requested_place_information": [],
+    "transport_preference": {
+      "mode": "TRANSIT",
+      "source_text": "Prefer public transport."
+    },
+    "semantic_requirements": [
+      {
+        "local_key": "less_walking",
+        "normalized_text": "The party prefers less walking.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "itinerary_style",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "We prefer less walking",
+            "occurrence": 0
+          }
+        ]
+      },
+      {
+        "local_key": "avoid_crowds",
+        "normalized_text": "The party wants to avoid crowds.",
+        "kind": "preference",
+        "polarity": "avoid",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "would like to avoid crowds",
+            "occurrence": 0
+          }
+        ]
+      },
+      {
+        "local_key": "family_friendly_places",
+        "normalized_text": "The party prefers family-friendly places.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "prefer family-friendly places",
+            "occurrence": 0
+          }
+        ]
+      },
+      {
+        "local_key": "unusual_local_cultural_over_gimmicky",
+        "normalized_text": "The requesting traveler prefers unusual local cultural places rather than gimmicky attractions.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "requesting_traveler"
+        ],
+        "source_refs": [
+          {
+            "quote": "I also enjoy unusual local cultural places rather than gimmicky attractions.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "subjects": [
+      {
+        "subject_id": "party",
+        "label": "whole party",
+        "source_refs": [
+          {
+            "quote": "for two adults and one child",
+            "occurrence": 0
+          }
+        ]
+      },
+      {
+        "subject_id": "requesting_traveler",
+        "label": "requesting traveler",
+        "source_refs": [
+          {
+            "quote": "I also enjoy unusual local cultural places rather than gimmicky attractions.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "discovery_intents": [
+      {
+        "intent_id": "discover_local_cultural_places",
+        "requirement_refs": [
+          "unusual_local_cultural_over_gimmicky"
+        ],
+        "purpose": "semantic_discovery",
+        "query_text": "Unusual local cultural places in Sydney, avoiding gimmicky attractions"
+      }
+    ],
+    "experience_evidence_requests": [
+      {
+        "requirement_id": "less_walking",
+        "dimension": "walking_intensity",
+        "preferred_values": [
+          "LIGHT"
+        ],
+        "avoided_values": [
+          "HIGH"
+        ]
+      },
+      {
+        "requirement_id": "avoid_crowds",
+        "dimension": "crowding",
+        "preferred_values": [
+          "LOW"
+        ],
+        "avoided_values": [
+          "HIGH"
+        ]
+      },
+      {
+        "requirement_id": "family_friendly_places",
+        "dimension": "family_friendliness",
+        "preferred_values": [
+          "FAMILY_FRIENDLY"
+        ],
+        "avoided_values": [
+          "NOT_FAMILY_FRIENDLY"
+        ]
+      }
+    ],
+    "extraction_issues": [],
+    "overflow": false
+  }
+}

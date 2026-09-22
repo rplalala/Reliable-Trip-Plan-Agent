@@ -1,0 +1,319 @@
+"""Versioned open requirements; model drafts cannot author enforcement results."""
+
+from typing import Annotated, Literal
+
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, StringConstraints, model_validator
+
+from backend.app.evidence.experience_models import (
+    ALLOWED_VALUES,
+    ExperienceDimension,
+    ExperienceValue,
+)
+from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.trip_intent import RequestedPlaceInformation, TransportPreferenceIntent
+
+CONTRACT_VERSION = "interpreted_requirements_3"
+DRAFT_HANDLE_LIMIT = 256
+TemporaryHandle = Annotated[str, StringConstraints(min_length=1, max_length=DRAFT_HANDLE_LIMIT)]
+Strength = Literal["low", "medium", "high", "hard"]
+Scope = Literal["individual_poi", "selected_poi_set", "whole_trip", "itinerary_style", "transport"]
+
+
+class ContractModel(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+
+class SourceQuote(ContractModel):
+    quote: str = Field(min_length=1, max_length=320)
+    occurrence: int = Field(ge=0)
+
+
+class SourceReference(SourceQuote):
+    start: int
+    end: int
+    match_mode: Literal["exact", "casefold_equivalent"] = "exact"
+
+    @model_validator(mode="after")
+    def valid_offsets(self):
+        if self.start < 0 or self.end <= self.start or self.end - self.start != len(self.quote):
+            raise ValueError("Invalid source offsets")
+        return self
+
+
+class Subject(ContractModel):
+    local_key: TemporaryHandle
+    label: str = Field(min_length=1, max_length=100)
+    source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
+
+
+class CanonicalSubject(ContractModel):
+    subject_id: str = Field(min_length=1, max_length=40)
+    label: str = Field(min_length=1, max_length=100)
+    source_refs: tuple[SourceReference, ...] = Field(min_length=1, max_length=3)
+
+
+class PartyTarget(ContractModel):
+    kind: Literal["party"]
+
+
+class SpecifiedTarget(ContractModel):
+    kind: Literal["specified"]
+    first_ref: TemporaryHandle
+    additional_refs: tuple[TemporaryHandle, ...] = Field(max_length=7)
+
+
+class UnresolvedTarget(ContractModel):
+    kind: Literal["unresolved"]
+    reason: str = Field(min_length=1, max_length=320)
+
+
+SubjectTarget = PartyTarget | SpecifiedTarget | UnresolvedTarget
+
+
+class SemanticDraft(ContractModel):
+    local_key: TemporaryHandle
+    normalized_text: str = Field(min_length=1, max_length=320)
+    kind: Literal["preference", "constraint", "goal"]
+    polarity: Literal["favor", "avoid"]
+    strength: Strength
+    scope: Scope
+    subject_target: SubjectTarget
+    source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
+
+
+class SemanticRequirement(ContractModel):
+    requirement_id: str = Field(min_length=1, max_length=40)
+    normalized_text: str = Field(min_length=1, max_length=320)
+    kind: Literal["preference", "constraint", "goal"]
+    polarity: Literal["favor", "avoid"]
+    strength: Strength
+    scope: Scope
+    subject_refs: tuple[str, ...] = Field(min_length=1, max_length=9)
+    source_refs: tuple[SourceReference, ...] = Field(min_length=1, max_length=3)
+
+
+class NamedRequirementDraft(ContractModel):
+    place_text: str = Field(min_length=1, max_length=160)
+    inclusion: Literal["REQUIRED", "OPTIONAL", "EXCLUDED"]
+    source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
+
+
+class NamedRequirement(ContractModel):
+    requirement_id: str = Field(min_length=1, max_length=40)
+    place_text: str = Field(min_length=1, max_length=160)
+    inclusion: Literal["REQUIRED", "OPTIONAL", "EXCLUDED"]
+    source_refs: tuple[SourceReference, ...] = Field(min_length=1, max_length=3)
+
+
+class DiscoveryIntent(ContractModel):
+    intent_id: str = Field(min_length=1, max_length=40)
+    requirement_refs: tuple[str, ...] = Field(min_length=1, max_length=4)
+    purpose: Literal["activity_or_category", "semantic_discovery"]
+    query_text: str = Field(min_length=1, max_length=200)
+
+
+class DiscoveryDraft(ContractModel):
+    requirement_refs: tuple[TemporaryHandle, ...] = Field(min_length=1, max_length=4)
+    purpose: Literal["activity_or_category", "semantic_discovery"]
+    query_text: str = Field(min_length=1, max_length=200)
+
+
+class ExperienceEvidenceRequest(ContractModel):
+    requirement_id: str = Field(min_length=1, max_length=40)
+    dimension: ExperienceDimension
+    preferred_values: tuple[ExperienceValue, ...] = Field(default=(), max_length=3)
+    avoided_values: tuple[ExperienceValue, ...] = Field(default=(), max_length=3)
+
+    @model_validator(mode="after")
+    def valid_targets(self):
+        preferred, avoided = set(self.preferred_values), set(self.avoided_values)
+        if not (preferred | avoided) <= ALLOWED_VALUES[self.dimension]:
+            raise ValueError("Evidence targets must belong to the requested dimension")
+        if preferred & avoided:
+            raise ValueError("Evidence targets cannot be both preferred and avoided")
+        if len(preferred) != len(self.preferred_values) or len(avoided) != len(self.avoided_values):
+            raise ValueError("Evidence targets must be unique")
+        return self
+
+
+class EvidenceRequestDraft(ContractModel):
+    requirement_ref: TemporaryHandle
+    dimension: ExperienceDimension
+    preferred_values: tuple[ExperienceValue, ...] = Field(default=(), max_length=3)
+    avoided_values: tuple[ExperienceValue, ...] = Field(default=(), max_length=3)
+
+    @model_validator(mode="after")
+    def valid_targets(self):
+        ExperienceEvidenceRequest(
+            requirement_id="validation",
+            dimension=self.dimension,
+            preferred_values=self.preferred_values,
+            avoided_values=self.avoided_values,
+        )
+        return self
+
+
+class OperationalConflict(ContractModel):
+    field: Literal[
+        "destination",
+        "start_date",
+        "end_date",
+        "traveler_count",
+        "budget.amount",
+        "budget.currency",
+    ]
+    source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
+
+
+class InterpretationDraft(ContractModel):
+    """One interpreter result. Local links are replaced with application IDs."""
+
+    _diagnostic_call_id: str | None = PrivateAttr(default=None)
+
+    operational_conflicts: tuple[OperationalConflict, ...] = Field(default=(), max_length=6)
+    named_places: tuple[NamedRequirementDraft, ...] = Field(max_length=24)
+    requested_place_information: tuple[RequestedPlaceInformation, ...] = Field(max_length=32)
+    transport_preference: TransportPreferenceIntent | None
+    semantic_requirements: tuple[SemanticDraft, ...] = Field(max_length=24)
+    subjects: tuple[Subject, ...] = Field(max_length=8)
+    discovery_intents: tuple[DiscoveryDraft, ...] = Field(max_length=8)
+    experience_evidence_requests: tuple[EvidenceRequestDraft, ...] = Field(max_length=120)
+    extraction_issues: tuple[str, ...] = Field(max_length=8)
+    overflow: bool
+
+    @model_validator(mode="after")
+    def bounded_content(self) -> "InterpretationDraft":
+        if len(self.model_dump_json()) > 180000:
+            raise ValueError("draft_resource_overflow")
+        if sum(len(r.normalized_text) for r in self.semantic_requirements) > 6000:
+            raise ValueError("semantic_text_overflow")
+        sources = [
+            s
+            for group in (
+                self.semantic_requirements,
+                self.named_places,
+                self.subjects,
+                self.operational_conflicts,
+            )
+            for item in group
+            for s in item.source_refs
+        ]
+        information_sources = [
+            text
+            for i in self.requested_place_information
+            for text in (
+                i.source_text,
+                i.target_source_text,
+                i.date_source_text or "",
+                i.scope_text or "",
+            )
+        ]
+        transport_length = (
+            len(self.transport_preference.source_text) if self.transport_preference else 0
+        )
+        if (
+            sum(len(s.quote) for s in sources)
+            + sum(map(len, information_sources))
+            + transport_length
+        ) > 12000:
+            raise ValueError("source_text_overflow")
+        if sum(len(i.query_text) for i in self.discovery_intents) > 1200:
+            raise ValueError("discovery_text_overflow")
+        if any(len(i) > 320 for i in self.extraction_issues):
+            raise ValueError("extraction_issue_overflow")
+        if len({c.field for c in self.operational_conflicts}) != len(self.operational_conflicts):
+            raise ValueError("duplicate_operational_conflicts")
+        return self
+
+
+class InterpretedTripRequirements(ContractModel):
+    contract_version: Literal["interpreted_requirements_3"] = CONTRACT_VERSION
+    request_sha256: str
+    input_version: Literal["planning_request_2"] = "planning_request_2"
+    structured_input_sha256: str
+    structured_field_paths: tuple[str, ...] = (
+        "destination",
+        "start_date",
+        "end_date",
+        "traveler_count",
+        "budget.amount",
+        "budget.currency",
+    )
+    interpretation_origin: Literal["model", "skipped_empty"]
+    requirements: TravelRequirements
+    named_places: tuple[NamedRequirement, ...]
+    requested_place_information: tuple[RequestedPlaceInformation, ...]
+    transport_preference: TransportPreferenceIntent | None
+    semantic_requirements: tuple[SemanticRequirement, ...]
+    subjects: tuple[CanonicalSubject, ...]
+    discovery_intents: tuple[DiscoveryIntent, ...]
+    experience_evidence_requests: tuple[ExperienceEvidenceRequest, ...]
+    extraction_issues: tuple[str, ...]
+
+    @model_validator(mode="after")
+    def canonical_graph(self):
+        groups = (
+            (self.subjects, "subject_id", "subject", 8),
+            (self.semantic_requirements, "requirement_id", "semantic", 24),
+            (self.named_places, "requirement_id", "named", 24),
+            (self.discovery_intents, "intent_id", "discovery", 8),
+        )
+        for items, field, prefix, maximum in groups:
+            if len(items) > maximum:
+                raise ValueError("Canonical collection overflow")
+            if [getattr(i, field) for i in items] != [
+                f"{prefix}_{i + 1}" for i in range(len(items))
+            ]:
+                raise ValueError("Canonical IDs must be application allocated")
+        subjects = {s.subject_id for s in self.subjects} | {"party"}
+        semantics = {s.requirement_id for s in self.semantic_requirements}
+        if any(not set(r.subject_refs) <= subjects for r in self.semantic_requirements):
+            raise ValueError("Dangling canonical subject reference")
+        if any(not set(d.requirement_refs) <= semantics for d in self.discovery_intents):
+            raise ValueError("Dangling canonical discovery reference")
+        if any(r.requirement_id not in semantics for r in self.experience_evidence_requests):
+            raise ValueError("Dangling canonical evidence reference")
+        keys = [(r.requirement_id, r.dimension) for r in self.experience_evidence_requests]
+        if len(keys) != len(set(keys)) or len(keys) > 120:
+            raise ValueError("Duplicate or excessive canonical evidence requests")
+        if len(self.requested_place_information) > 32 or self.extraction_issues:
+            raise ValueError("Invalid canonical information or unresolved extraction issues")
+        if sum(len(r.normalized_text) for r in self.semantic_requirements) > 6000:
+            raise ValueError("Canonical semantic text overflow")
+        return self
+
+
+class RequirementAssessment(ContractModel):
+    """Application-owned only; not part of the interpreter/selector response schema."""
+
+    requirement_id: str
+    capability: Literal[
+        "registered_predicate", "evidence_assessment", "semantic_only", "unsupported"
+    ]
+    predicate_id: str | None = None
+    predicate_version: str | None = None
+    evaluation_scope: Scope
+    evidence_refs: tuple[str, ...] = ()
+    evidence_state: Literal["available", "partial", "missing", "conflicting", "not_acquired"]
+    check_result: Literal["pass", "fail", "unknown", "not_applicable"]
+    disposition: Literal["enforce", "advise", "acquire", "clarify"]
+
+
+class ClarificationRequired(ValueError):
+    """Typed non-success outcome; no accepted candidate set or itinerary exists."""
+
+    def __init__(
+        self, code: str, requirement_ids: tuple[str, ...] = (), *, conflicts: tuple[dict, ...] = ()
+    ) -> None:
+        self.conflicts = conflicts
+        self.code = code
+        self.requirement_ids = requirement_ids
+        super().__init__(code)
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "status": "clarification_required",
+            "code": self.code,
+            "conflicts": self.conflicts,
+            "requirement_ids": self.requirement_ids,
+        }

@@ -57,6 +57,31 @@ export function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
           </section>
         ))}
       </div>
+      {!!itinerary.reference_recommendations?.length && (
+        <section aria-label="Optional reference recommendations">
+          <h3>Optional references — not scheduled</h3>
+          <p>Additional options to consider independently. No bookings have been made.</p>
+          {itinerary.reference_recommendations.map((reference, index) => (
+            <article className="activity-card" key={reference.source_place_id ?? index}>
+              <div className="activity-content">
+                <h4>{reference.place_name}</h4>
+                <p>{reference.reason}</p>
+                {reference.associated_day && <p>Suggested day: {reference.associated_day}</p>}
+                {reference.area && <p>{reference.area}</p>}
+                <p>{reference.source_ref
+                  ? "Linked to supplied place information; current details may be uncertain."
+                  : "Model-generated suggestion; not live-verified."}</p>
+                {reference.uncertainty && <p>{reference.uncertainty}</p>}
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
+      <p className="field-help">
+        Weather forecasts, when used, are provided by <a href="https://open-meteo.com/">Open-Meteo</a>
+        {" "}under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+        Forecasts may be incomplete and are not guarantees.
+      </p>
     </section>
   );
 }

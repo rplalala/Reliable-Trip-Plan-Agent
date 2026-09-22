@@ -1,0 +1,60 @@
+{
+  "input_version": "planning_request_2",
+  "reference_date": "2026-09-19",
+  "cases": [
+    {
+      "case_id": "empty",
+      "request": {
+        "destination": "Sydney, Australia",
+        "start_date": "2026-09-21",
+        "end_date": "2026-09-23",
+        "traveler_count": 3,
+        "budget": {
+          "amount": "1800.00",
+          "currency": "AUD"
+        },
+        "additional_preferences": ""
+      },
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Complete shared form; no downstream calls in Requirement-only harness."
+      ]
+    },
+    {
+      "case_id": "preferences",
+      "request": {
+        "destination": "Sydney, Australia",
+        "start_date": "2026-09-21",
+        "end_date": "2026-09-23",
+        "traveler_count": 3,
+        "budget": {
+          "amount": "1800.00",
+          "currency": "AUD"
+        },
+        "additional_preferences": "I definitely want to visit the Sydney Opera House. My mother prefers quiet places and my father likes architecture."
+      },
+      "expected_outcome": "canonical_extraction",
+      "checks": [
+        "Complete shared form; no downstream calls in Requirement-only harness."
+      ]
+    },
+    {
+      "case_id": "unsupported_hard",
+      "request": {
+        "destination": "Sydney, Australia",
+        "start_date": "2026-09-21",
+        "end_date": "2026-09-23",
+        "traveler_count": 3,
+        "budget": {
+          "amount": "1800.00",
+          "currency": "AUD"
+        },
+        "additional_preferences": "Absolutely no stairs."
+      },
+      "expected_outcome": "unsupported_hard_clarification",
+      "checks": [
+        "Complete shared form; no downstream calls in Requirement-only harness."
+      ]
+    }
+  ]
+}

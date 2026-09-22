@@ -1,12 +1,52 @@
-# V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze
+# V1 milestone checkpoints
 
+## Latest accepted boundary - 2026-09-20
+
+V1 quality_first_1: 24 ordinary successes, 24 compared, 12 supplied, eight scheduled. Nearby remained independent.
+
+Status: implemented + bounded development-live-validated where covered, not production-ready, formal benchmark or automatic re-freeze. Current explicit configuration is quality_first_1 with 160k input guard and 16,384 output. This does not rewrite earlier frozen configurations. Exact implementation/config hashes, offline history, live inputs, failures, artifacts and limitations are maintained once in the [joint event](development_record.md#m-e07748f66be8). Reviews/Profile and ten-day K16 live were not covered; unknown Web reasoner usage stays unknown. No new validation is performed by this migration.
+
+Dated records below preserve original scope, status and evidence; they are not current runtime instructions. Current design is maintained separately. Proposed or unexecuted steps remain unexecuted unless a later explicitly identified record establishes otherwise.
+
+<a id="m-aee7853a6b50"></a>
+## V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze
+
+_Source context: original document introduction/navigation. Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+
+
+<a id="m-53d332da0236"></a>
+## Reopened B2 development checkpoint - 2026-09-19
+
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze. Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+<a id="b-53d332da0236-0"></a>
+
+B2 now implements the active revised V1 path. B1 is retired after the user's explicit
+architecture decision. **V1 is not re-frozen. No B2 live validation has occurred.**
+Current architecture: [V1 design](v1_development.md) and [POI selection](development_record.md).
+Offline results/cleanup: [B2 checkpoint](v1_selector_experiments.md). The three-flow chronology
+and reasons are in [POI selection evolution](development_record.md).
+
+<a id="b-53d332da0236-1"></a>
+
+All freeze/validation statements below are historical, including QCGRE descriptions.
+V0 and accepted TripWorld Phases 1-5 are preserved; Phase 6 integration remains paused.
+
+<a id="m-ea14c5d6fc29"></a>
 ## Current Status and Historical Scope
+
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze. Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+<a id="b-ea14c5d6fc29-0"></a>
 
 **Original V1-A freeze: explicitly approved on 2026-09-12.**
 **Revised V1-A: implemented, development-live-validated, and explicitly re-frozen
 on 2026-09-14.**
 **Complete V1: explicitly FROZEN on 2026-09-15 after final offline and
 cross-country development live validation.**
+
+<a id="b-ea14c5d6fc29-1"></a>
 
 The sections below beginning with "Historical Execution Flow and Comparability"
 record the 2026-09-12 as-built checkpoint and its acceptance history. Their
@@ -16,6 +56,8 @@ The revised implementation and final V1 status are recorded separately below.
 Actual code remains authoritative for implemented behavior; `docs/v1_design.md`
 describes the current architecture.
 
+<a id="b-ea14c5d6fc29-2"></a>
+
 After the original freeze, V1-A was intentionally reopened for Google-backed
 rating/review evidence and POI-selection realignment. The revised implementation
 progressively narrows candidates, acquires ratings and reviews selectively,
@@ -24,11 +66,15 @@ deterministically. `rating` remains separate from the Profile. The revised path
 does not request or use `userRatingCount`; its appearance in a historical mask
 below is a record of the original implementation, not current behavior.
 
+<a id="b-ea14c5d6fc29-3"></a>
+
 The former V1-C milestone is retired. Its Places-review responsibility is folded
 into V1-A because it affects POI selection. Reddit/TripAdvisor acquisition is not
 part of the current approved rating/review direction. V1-B supplements final
 selected POIs with official/current evidence. Its accepted Phase 1/2 subsystem
 and Phase 3 graph/planner integration are now implemented.
+
+<a id="b-ea14c5d6fc29-4"></a>
 
 The earlier code-based V1-B compatibility assessment in `docs/v1_design.md`
 identified integration-only impact (category B); Phase 3 subsequently supplied
@@ -36,100 +82,27 @@ the needed projection and graph/planner wiring. Frontend rating/review display
 is still not implemented. Later typed semantic extraction and V1 cost projection
 are recorded as post-checkpoint changes below.
 
+<a id="b-ea14c5d6fc29-5"></a>
+
 At the original checkpoint, V1-A asked whether normalized live Places, Weather,
 and Routes evidence improved the otherwise comparable V0 planner. It implemented
 neither Places review enrichment nor official Web Evidence. It included no RAG,
 general feasibility-validation/repair loop, or persistent evidence database. The
 following record is implementation history, not a formal research conclusion.
 
+<a id="m-9f6bee49adbc"></a>
 ## Revised V1-A Implementation and Re-Freeze (2026-09-14)
 
-### Implemented Flow and Selection Contract
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze. Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
 
-At the 2026-09-14 revised V1-A checkpoint, the independent V1 graph executed:
 
-```text
-requirements extraction (TravelRequirements + typed NamedPlaceIntent)
--> shared requested-date validation
--> destination resolution
--> generated/deduplicated search intents -> Places candidate discovery
--> C_raw neutral selection -> R_pool structured/rating Details
--> no-review selection baseline
--> counterfactual decision-sensitive review acquisition
--> ExperienceProfile -> deterministic E_exp -> final deterministic POI selection
--> Weather -> chunked Routes -> evidence-informed itinerary generation
--> shared final itinerary-date validation
-```
 
-The LLM extracts requirements and interprets retrieved review text into a bounded
-Profile, but does not choose the final POI set. Reviews and Profile influence
-selection only; neither is passed to the itinerary prompt. The selected Place
-IDs are projected in final order into aligned `PlaceCandidate[]` and
-`PlaceEvidence[]` for V1-B Phase 3. This Web stage was added after the revised
-V1-A re-freeze; the V1-A live checks in this section predate that integration.
+<a id="m-517f004f06d7"></a>
+## Weather, Routes, and Evidence Boundary
 
-The inclusive trip duration `D` determines algorithmic maxima:
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze / Revised V1-A Implementation and Re-Freeze (2026-09-14). Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
 
-```text
-K_final         = min(16, 2D + 2)
-R_pool          = max(10, K_final + 2)
-C_raw           = max(20, 2R_pool)
-review_pool_cap = min(6, ceil(K_final / 3))
-```
-
-Runtime budgets can explicitly lower effective capacities. The final selector
-protects eligible reconciled required Place IDs and greedily scores the rest by
-`Q_rel + C_cov + G_geo + R_rating + E_exp`: weighted real search-hit relevance,
-uncovered intent coverage, geographic grouping, bounded quantitative rating,
-and bounded review-derived experience fit. Stable provider-rank/Place-ID
-tie-breakers make the selected set deterministic. Missing rating is neutral;
-review/Profile failure gives `E_exp = 0` and leaves structured
-`PlaceEvidence.availability` unchanged. Selection conflicts remain explicit.
-
-Typed `NamedPlaceIntent` marks a specific named place `REQUIRED` when the user
-clearly expects it in the final trip, including *must visit*, *want to visit*,
-*would like to visit*, and *hope to visit*. Conditional/optional names are
-`OPTIONAL`; generic categories are not named must-visits. Exact Places identity
-reconciliation protects resolved required Place IDs through the funnel. An
-unresolved required name is reported, not replaced by a guessed POI. Aliases
-such as `MCA` that do not exactly match the provider display name are not
-fuzzily resolved.
-
-### Bounded Places, Reviews, and Opening Hours
-
-All supported candidate intents are generated and deduplicated before provider
-execution. Destination Text Search has separate normal/hard limits of **1/1**;
-candidate Text Search has **12/12**. Twelve is a provider execution budget, not
-a semantic maximum on user interests. Execution priority is required named
-places, explicit ordinary preferences/categories, then fallback. Excess intents
-are traced as `budget_not_attempted`; only actual provider hits contribute to
-`Q_rel` and `C_cov`. Broad search keeps an identity/location/status/`openingDate`
-mask without rating or reviews. Only the narrowed `R_pool` receives
-structured/rating Details; an even smaller decision-sensitive set receives
-separate review-only Details. The current normal budgets are `candidates=36`,
-`detail_calls=18`, `review_detail_calls=6`, `review_enriched_places=6`,
-`profile_llm_calls=6`, and `final_pois=16`.
-
-`CLOSED_PERMANENTLY` is a hard exclusion. `CLOSED_TEMPORARILY` remains with a
-date-verification risk. `FUTURE_OPENING` is treated conservatively and excluded
-when its known earliest opening is after the trip. Places structured status
-does not prove availability on a requested date. Each attempted POI contributes
-at most five usable deduplicated reviews to a retrieved-review-only structured
-summarizer. Review sensitivity tests reachable `E_exp` values under the same
-deterministic selector and attempts only candidates whose membership could
-change. Application validation checks Profile Place ID, references, counts,
-and signal taxonomy. Confidence is application-derived: one cited review is
-`low`, two or more are `medium`, and no `high` value exists. Unsupported signals
-remain absent; a failed/unavailable Profile is neutral, with no repair/retry.
-
-Current and regular opening hours remain separate. For each requested date,
-planning uses applicable current/date-sensitive hours within their supported
-window; otherwise it uses regular weekly hours as a baseline; otherwise hours
-are `unknown`. Regular hours are not a guarantee against a holiday or
-special-date exception. Targeted V1-B official evidence may address a remaining
-date-specific need or concrete operational risk.
-
-### Weather, Routes, and Evidence Boundary
+<a id="b-517f004f06d7-0"></a>
 
 Weather remains one Daily Forecast request for the provider horizon, normalized
 strictly to requested trip dates. The complete directed baseline Route Matrix
@@ -137,6 +110,8 @@ supports `N <= 16` final POIs, with at most **64 elements per request**, **256
 baseline elements per run**, and **four baseline calls**. Consecutive origin
 chunks retain all destinations; N=16 uses four 4 x 16 chunks rather than dropping
 POIs. Partial or unavailable elements remain explicit.
+
+<a id="b-517f004f06d7-1"></a>
 
 An explicitly supported transport mode does not automatically fan out. Default
 WALK uses deterministic directed triggers: distance > 3,000 m, duration > 2,700
@@ -150,16 +125,25 @@ described as provider-measured, and canonical unavailability creates no
 fabricated reverse duration. These are representative transport signals, not
 line, station, fare, or timetable evidence.
 
+<a id="b-517f004f06d7-2"></a>
+
 The V1-B Phase 1/2 Official Web Evidence subsystem was independent at the
 V1-A re-freeze checkpoint. Later Phase 3 integration consumes the final aligned
 candidate/structured-evidence projection; Profile objects do not enter the Web
 engine or itinerary prompt. Accepted/effective official evidence can now affect
 itinerary generation. The former V1-C is retired.
 
-### Development Validation and Re-Freeze
+<a id="m-424645500d4f"></a>
+## Development Validation and Re-Freeze
+
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze / Revised V1-A Implementation and Re-Freeze (2026-09-14). Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+<a id="b-424645500d4f-0"></a>
 
 These live runs checked integration behavior; they are **not formal benchmarks**
 or statistical reliability results.
+
+<a id="b-424645500d4f-1"></a>
 
 - Smoke A first selected Sydney Opera House while its required named identity
   remained unresolved. Typed `NamedPlaceIntent` and exact Place-ID
@@ -178,6 +162,8 @@ or statistical reliability results.
   four 4 x 16 WALK baseline chunks (256 elements); structured itinerary
   generation and final date validation succeeded.
 
+<a id="b-424645500d4f-2"></a>
+
 The revised V1-A checkpoint passed **507 backend tests** and Ruff lint.
 Standalone V0 and V1-B Phase 1/2 compatibility checks passed. The identical
 Smoke A and revised Smoke B live checks supported the user's explicit
@@ -185,7 +171,12 @@ Smoke A and revised Smoke B live checks supported the user's explicit
 itineraries always obey every supplied feasibility fact. The later full-V1
 regression and Web integration are recorded in the next section.
 
-### Known Limits and Pending Work
+<a id="m-2c74a8837355"></a>
+## Known Limits and Pending Work
+
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze / Revised V1-A Implementation and Re-Freeze (2026-09-14). Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+<a id="b-2c74a8837355-0"></a>
 
 Provider-display-name aliases are not fuzzily resolved. The bounded candidate
 search budget may leave additional supported intents `budget_not_attempted`.
@@ -197,21 +188,35 @@ hours, or other supplied evidence. V1 does not perform post-generation general
 feasibility validation, targeted repair, or re-validation; that mechanism
 belongs to V3, not a V1-A loop.
 
+<a id="b-2c74a8837355-1"></a>
+
 Frontend rating/review presentation remains future work: for a final-itinerary
 POI, a future Product UI may show only an actually acquired Places rating and,
 when available, one concise retrieved-review-derived Profile summary. It must
 not invent either or display `userRatingCount`. Full V1 was still unfinished at
 this V1-A checkpoint; later V1-B completion is recorded below.
 
+<a id="m-892dce9c65be"></a>
 ## Final V1-B Integration and Development Validation (2026-09-14)
 
-### Implemented Boundary
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze. Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+
+
+<a id="m-655d46786997"></a>
+## Implemented Boundary
+
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze / Final V1-B Integration and Development Validation (2026-09-14). Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+<a id="b-655d46786997-0"></a>
 
 Phase 3 integrates the accepted Phase 1/2 official-evidence subsystem after
 final V1-A selection, Weather, and Routes. It projects final selected Place IDs
 and aligned structured Places evidence, preserving typed named/must-visit IDs
 and trip-relevant opening-date conflicts. Rating is removed from the official
 Web projection; raw reviews and `ExperienceProfile` remain selection-only.
+
+<a id="b-655d46786997-1"></a>
 
 The deterministic trigger creates Web tasks for explicit unresolved official
 information needs or concrete decision-relevant operational/date risks. It no
@@ -221,6 +226,8 @@ risks for required, other named, and remaining selected POIs. Task identity and
 trace reasons are retained, with a normal budget of six Web tasks and six
 logical page fetches. Sufficient structured facts do not receive parallel Web
 re-verification; weather and routes are never re-checked through this path.
+
+<a id="b-655d46786997-2"></a>
 
 Luna native search exposes bounded observations. Optional PageRetriever fetches
 observed official pages when native evidence is insufficient. EvidenceReasoner
@@ -232,49 +239,20 @@ accepted/effective facts, source references, statuses, and explicit uncertainty,
 not raw search URLs/snippets or rejected claims. Absence of a discovered
 exception does not establish that no exception exists.
 
-### Live Validation Observations
+<a id="m-ef4b3e905335"></a>
+## Known Limits and Freeze Boundary
 
-The identical Sydney Opera House must-visit re-test corrected the earlier
-selected-but-unresolved contradiction: one resolved Place ID carried
-`must_visit=true` and no unresolved-required conflict. A larger revised V1-A
-case acquired real reviews/Profiles; this evidence changed one final POI
-membership. The final set naturally reached 16 POIs. Four 4 x 16 directed WALK
-chunks requested 256 baseline Route Matrix elements, and a structured nine-day
-itinerary passed final date validation. These V1-A observations preceded Phase 3.
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze / Final V1-B Integration and Development Validation (2026-09-14). Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
 
-An initial full-V1 Web smoke exposed the cost of broad proactive checking:
-16 selected POIs generated 16 exception tasks, consumed Web 6/6 and Page 6/6,
-and produced zero accepted official claims. With no-negative-inference, the
-effective Web state remained `UNKNOWN`. After the targeted trigger revision,
-a comparable nine-day case still selected 16 POIs but generated zero Web tasks,
-used Web 0/6 and Page 0/6, and completed itinerary generation and date
-validation. This is an integration observation, not a formal efficiency study.
-
-The targeted Australian Museum one-day case explicitly asked about admission,
-fees, ticketing, advance purchase, and reservations. It generated two Group-1
-Web tasks, retrieved first-party `australian.museum` sources, and produced two
-Gate-accepted `OfficialCurrentEvidence` claims. Resolver marked
-`general_admission_policy=AVAILABLE` and `admission_fee=AVAILABLE/free/0` for
-general entry. `ticket_requirement`, `advance_ticket_purchase_requirement`,
-and `reservation_requirement` remained `UNKNOWN`; a major-exhibition scoped
-claim was not broadened to general entry. Accepted facts and references reached
-the planner, while rejected candidates did not. The final one-day itinerary
-passed date validation without cross-facet negative inference.
-
-The Phase 3 checkpoint offline regression passed **545 backend tests**. Ruff lint
-and `git diff --check` passed; formatting passed for the checked files except
-an unchanged existing warning in `backend/tests/versions/v1/test_runner.py`.
-No suite was rerun solely for commit grouping or documentation.
-These live runs are development-time validation, not a formal benchmark or
-statistical comparison with V0.
-
-### Known Limits and Freeze Boundary
+<a id="b-ef4b3e905335-0"></a>
 
 Aliases such as `MCA` are not fuzzily expanded. Weather and Routes guide
 scheduling but do not cause V1 POI re-selection. A selected POI is not
 necessarily scheduled by the LLM unless the request or current contract
 requires it. The planner can still imperfectly apply supplied hours or route
 facts because V1 has no general itinerary validation/repair loop.
+
+<a id="b-ef4b3e905335-1"></a>
 
 One targeted Reasoner response was `incomplete` due to `max_output_tokens`;
 truncated JSON caused that source assessment to fail safely while other
@@ -285,13 +263,25 @@ sufficiency can leave an information need `UNKNOWN`. The earlier
 general-admission claim succeeded and Resolver derived fee 0 without changing
 the Gate contract. No retry, repair, relaxed parsing, or Gate bypass was added.
 
+<a id="b-ef4b3e905335-2"></a>
+
 At this Phase 3 checkpoint, full V1 implementation and targeted live validation
 were complete, but freeze still awaited the later semantic and cross-country
 checks. The final complete-V1 freeze is recorded in the next section.
 
+<a id="m-14725ce9982f"></a>
 ## Complete V1 Freeze (2026-09-15)
 
-### Final Implemented Boundary
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze. Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+
+
+<a id="m-1206d3d4abe0"></a>
+## Final Implemented Boundary
+
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze / Complete V1 Freeze (2026-09-15). Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+<a id="b-1206d3d4abe0-0"></a>
 
 One V1 requirements LLM call now returns unchanged base `TravelRequirements`
 plus bounded `NamedPlaceIntent`, `RequestedPlaceInformation`,
@@ -302,6 +292,8 @@ the typed contracts. The active V1 graph has no raw-text keyword/regex semantic
 fallback for these meanings. V0 retains its original requirements contract and
 independent execution path. EvidenceReasoner separately interprets what acquired
 official source text actually says; it does not reinterpret the user request.
+
+<a id="b-1206d3d4abe0-1"></a>
 
 The final V1-A path performs multi-intent Places discovery, dynamic
 `C_raw → R_pool → K_final` narrowing, structured Details/rating enrichment,
@@ -316,6 +308,8 @@ N=16 and 256 baseline elements, plus bounded selective TRANSIT. Measured routes
 remain distinct from mirrored-reverse duration estimates, and `not_observed`
 remains distinct from an observed `ROUTE_NOT_FOUND`.
 
+<a id="b-1206d3d4abe0-2"></a>
+
 After selection, the V1-B trigger uses explicit unresolved **typed** information
 needs, structured residual gaps, and concrete operational/date risks. It does
 not broadly Web-check all selected places or repeat sufficient structured,
@@ -326,6 +320,8 @@ accepted/effective evidence and explicit uncertainty in the planner. Raw Web
 observations and rejected claims do not become planner facts. No found exception
 never means that no exception exists.
 
+<a id="b-1206d3d4abe0-3"></a>
+
 Shared `Money` remains point-valued and `Activity.estimated_cost` remains
 optional. The V1-only Foundry mapping preserves valid points, projects a clear
 finite same-currency two-endpoint numeric range to its Decimal arithmetic
@@ -333,49 +329,12 @@ midpoint, and sets unsupported optional costs to `null`. It adds no planner LLM
 repair call and does not change V0. The midpoint is an itinerary estimate, not
 accepted official admission-price evidence.
 
-### Final Development-Time Validation
+<a id="m-a2037fa14ec6"></a>
+## Frozen Scope and Known Limits
 
-The earlier named-place live failure and identical re-test established that
-typed `NamedPlaceIntent` preserves a required Sydney Opera House Place ID and
-`must_visit=true`. A separate revised V1-A live run observed review/Profile
-evidence change one selected-POI membership and complete the natural N=16
-case with four 4 x 16 directed Routes chunks, 256 baseline elements, and a
-valid nine-day itinerary. The broad full-V1 Sydney Web smoke spent Web/Page
-budgets 6/6 and 6/6 with no accepted claim; a comparable case under the
-targeted trigger produced zero unnecessary Web tasks. The Australian Museum
-case accepted official general/free-admission evidence into the planner while
-ticket, advance-purchase, and reservation facets stayed `UNKNOWN`.
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze / Complete V1 Freeze (2026-09-15). Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
 
-The subsequent Melbourne request exposed loss of `ADMISSION_FEE` and
-`TICKET_REQUIREMENT` in a raw-text phrase classifier before Web planning. The
-one-call typed semantic migration preserved all four explicit requested facets
-through task planning in an identical live re-test. Its inaccessible official
-pages left those facts `UNKNOWN`; this was not claim-acceptance validation.
-
-In the first Singapore cross-country full-V1 smoke
-(`ca93496f-53dc-467c-8a28-975fb65f7828`), upstream semantics, Places/reviews,
-Weather, Routes, and targeted Web completed, but planner output contained
-`Money.amount="1.00-10.00"`. The Foundry DTO permitted a string while shared
-domain `Money` required a point-valued non-negative Decimal; domain validation
-lost the entire itinerary before final date validation. This was a narrow
-output-contract issue, not a semantic, provider-evidence, Resolver, or transient
-failure. The identical request with reference date 2026-09-15 succeeded after
-V1-only hardening (`d69ddaeb-d5cd-4154-ab29-3c0fda1c9404`). The same range
-reappeared at `days[0].activities[2].estimated_cost` as `1.00-10.00 SGD` and
-became `Decimal("5.50") SGD`. Its valid itinerary had four days, 11 activities,
-and nine distinct selected POIs scheduled; National Gallery Singapore and
-Gardens by the Bay were both required and scheduled. Final date validation
-passed. National Gallery whole-venue facets remained `UNKNOWN`; the derived
-activity estimate did not change official evidence or Resolver state.
-
-The final offline regression passed **605 backend tests** and Ruff. Diff
-whitespace checks passed; 25 affected files passed the whole-file format check.
-Five formatting suggestions in three other affected files were confirmed as
-unchanged pre-existing lines and left intact. These live cases are
-development-time integration observations, not formal benchmarks, statistical
-accuracy estimates, universal generalization, or a V0/V1 superiority claim.
-
-### Frozen Scope and Known Limits
+<a id="b-a2037fa14ec6-0"></a>
 
 Provider search relevance does not guarantee visitor suitability: the Melbourne
 architecture interest yielded professional-service firms. V1 has no explicit
@@ -389,252 +348,23 @@ subject/scope binding can reject plausible claims. V1 has no V3-style explicit
 feasibility validation, targeted repair, or re-validation. V2 RAG and V3
 validation remain future directions, not implemented solutions to these limits.
 
+<a id="b-a2037fa14ec6-1"></a>
+
 The user explicitly approved the **complete V1 milestone freeze on 2026-09-15**.
 This does not rewrite the original 2026-09-12 V1-A freeze or the revised
 2026-09-14 V1-A re-freeze. V2 has not started.
 
-## Historical Execution Flow and Comparability
-
-The independent V1 entry point is `scripts/run_v1.py`. Its fixed, non-agentic
-graph is:
-
-```text
-START
--> extract_requirements
--> validate_trip_dates
--> resolve_destination
--> search_place_candidates
--> shortlist_places
--> enrich_place_details
--> acquire_weather
--> acquire_routes
--> generate_evidence_informed_itinerary
--> validate_itinerary_dates
--> END
-```
-
-Provider calls go through `V1EvidenceAcquisitionService`, provider protocols,
-Google adapters, and typed normalization rather than directly from graph nodes.
-The V0 requirement-extraction prompt/schema, Foundry client/deployment behavior,
-provider-default temperature behavior, base planning objective, and final
-`Itinerary`/`PlanningResult` schemas remain the comparison baseline. V0 retains
-its independent `scripts/run_v0.py` path and uses no external evidence. V1's
-main changed input to generation is normalized external evidence; raw provider
-JSON is not passed to the planner.
-
-## Shared Ten-Day Date Contract
-
-`backend/app/policies/trip_dates.py` enforces the project-wide inclusive window:
-
-```text
-reference_date <= requested_start <= requested_end <= reference_date + 9 days
-final itinerary dates subset of requested trip dates
-```
-
-The trusted reference date is captured once at run start in the configured
-IANA time zone and reused for relative-date extraction and both validation
-boundaries. Product API callers cannot inject an arbitrary reference date;
-trusted Developer/CLI/test paths may inject one for reproducibility. Validation
-checks itinerary-level, day, and activity start/end dates. Product frontend
-pickers use browser-local dates as UX guidance; backend validation also rejects
-out-of-window direct API calls. This date contract is not V3 feasibility repair.
-
-## Runtime Configuration and Safety Limits
-
-Final configuration has three layers:
-
-```text
-backend/app/runtime/budget_limits.py  global hard safety envelope
-config/runtime.yaml                   validated non-secret runtime policy
-ToolBudget                            one run's actual reservations and usage
-```
-
-One global `TOOL_BUDGET_HARD_LIMITS` mapping defines the project-wide hard
-ceilings. Strict Pydantic models reject missing/unknown YAML keys, duplicates,
-invalid types, and budgets outside that envelope. The normal committed policy
-sets `app.time_zone: Australia/Sydney`, `logging.level: INFO`, and a metadata
-Run Trace in project-relative `logs/`. Relative trace paths resolve from the
-repository root, independently of the shell working directory.
-
-| Budget counter | Frozen runtime limit | Global hard maximum |
-| --- | ---: | ---: |
-| candidates | 20 | 40 |
-| place_search_calls | 4 | 12 |
-| place_detail_calls | 8 | 20 |
-| weather_calls | 2 | 3 |
-| route_matrix_elements | 64 | 100 |
-| alternative_route_pairs | 8 | 16 |
-| alternative_route_matrix_calls | 8 | 8 |
-| web_search_queries | 6 | 20 |
-| page_fetches | 6 | 20 |
-| review_enriched_places | 3 | 8 |
-
-The last three counters are configured for the shared budget model but unused
-by V1-A. `.env` remains for deployment-specific Foundry endpoint/deployment,
-Foundry API key, and Google Maps API key. Budget, time-zone, logging, and trace
-policy are not `.env` overrides. Changing an in-range runtime budget requires
-only `config/runtime.yaml`; changing a hard ceiling is centralized in
-`budget_limits.py`.
-
-## Places and Weather Evidence
-
-Places uses the API (New) in stages. One minimal-mask destination lookup obtains
-a coordinate; up to three category Text Searches use location bias, minimal
-identity/location/classification fields, and no reviews/photos/rating/hours.
-The candidate mask is `places.id,places.displayName,places.location,`
-`places.formattedAddress,places.primaryType,places.businessStatus`.
-Candidates are deduplicated by Place ID and non-operational statuses removed.
-The deterministic shortlist round-robins provider-ranked query categories,
-uses stable Place-ID tie-breaking, and is bounded by eight places, the details
-budget, and the square root of the baseline Route Matrix element limit.
-
-Only shortlisted places receive Place Details. The detail mask is `id,`
-`displayName,location,formattedAddress,primaryType,businessStatus,timeZone,`
-`currentOpeningHours,regularOpeningHours,rating,userRatingCount,websiteUri,`
-`priceLevel,priceRange,accessibilityOptions`. `PlaceEvidence` keeps place
-identity, location, type/status, applicable opening information, timezone,
-selected rating/price/accessibility/site fields, availability, and provenance.
-An individual details failure is represented as partial/unavailable evidence.
-There is no V1-A review request.
-
-Weather uses one Google Daily Forecast request for the provider's full ten-day
-horizon, then normalizes **only** dates inside the requested trip range. This
-avoids provider/local-calendar boundary mismatches without allowing extra days
-into the planner. `WeatherEvidence` contains availability and requested-date
-daily condition, temperature range, precipitation probability, and maximum
-wind speed when supplied. Provider failure remains explicitly unavailable;
-the LLM must not fill missing weather facts.
-
-## Final Routes and Logical-Pair Transport Policy
-
-The original V1-A design used one mode-specific matrix. Live testing showed
-that a default WALK matrix could identify an impossible walking transfer but
-could not offer an alternative. The approved final policy retains a fully
-directional, bounded baseline matrix and adds selective TRANSIT evidence only
-for default WALK. A user-explicit supported mode remains single-mode and does
-not trigger an automatic alternative. `DRIVE` uses `TRAFFIC_UNAWARE`;
-non-DRIVE modes do not send that routing preference.
-
-For default WALK, each directed pair is non-walkable when distance is strictly
-greater than 3,000 m, duration strictly greater than 2,700 s, or the condition
-is `ROUTE_NOT_FOUND`. Same-place elements are excluded. The two directions of
-a POI pair collapse into one unordered logical pair, ranked by the more severe
-directed WALK result. Stable ascending Place-ID order chooses the canonical
-TRANSIT direction. The highest-ranked pairs are selected within both the
-`alternative_route_pairs` and `alternative_route_matrix_calls` budgets; pairs
-sharing a canonical origin are grouped into sparse one-origin matrices. No
-full second N-by-N TRANSIT matrix is issued.
-
-Each selected logical pair requests exactly one real TRANSIT matrix element.
-The request includes a representative departure time at the trip start date's
-destination-local 12:00, converted to UTC by the Google adapter. A successful
-`provider_observed` element belongs only to the queried direction. Its reverse
-may receive a `mirrored_reverse_estimate` containing **duration only**; it does
-not copy provider distance, status, condition, or directional timetable facts.
-An unavailable canonical result produces no fabricated reverse duration.
-`RouteEvidenceBundle` carries baseline WALK, bounded alternatives, and all
-detected logical non-walkable pairs with explicit availability/provenance.
-TRANSIT durations support coarse grouping and time allowance, not exact
-navigation, fares, service lines, or timetables.
-
-## Request Cache, Run Trace, and Failure Semantics
-
-Each run creates one in-memory `RequestCache` and `ToolBudget`. Canonical
-request keys deduplicate identical Places searches/details, Weather requests,
-and ordered Route Matrix requests, including mode, field mask, departure time,
-and relevant options. Cache hits do not consume a second provider budget;
-there is no persistent evidence cache.
-
-The CLI creates one immutable `run_id` and a best-effort local trace at
-`<project-root>/logs/<UTC timestamp>_<run_id>/`. `run.json` records input,
-fixed reference date/window, requested dates, status, tool usage, final outcome,
-the allowlisted effective runtime configuration, and its deterministic SHA-256
-hash. `events.jsonl` records graph progress, provider/cache activity, routing
-trigger evaluation, selected/truncated logical pairs, canonical directions,
-representative departure time, alternative results, and failures. Optional
-`llm/`, `tools/`, and `evidence/` payloads depend on the configured level.
-The frozen default is `metadata`, with raw provider payload capture disabled.
-
-Trace serialization recursively redacts recognized credential keys, bearer
-tokens, assignments, and sensitive URL query parameters. The project-owned
-console logging handler also redacts provider URL credentials, including
-credentials that HTTP client INFO logging might otherwise print. `logs/` is
-gitignored and is observability output, not application persistence. Tests use
-disabled tracing or temporary directories. A trace write failure disables
-tracing without changing planner output or provider semantics.
-
-Missing critical requirements, invalid trip dates, no viable candidates,
-generation failure, and final-date violations stop a run. Individual Places
-Details failures, partial Routes results, and Weather unavailability remain
-explicit partial/unavailable evidence. No V1-A validation/repair loop follows
-generation.
-
-## Final Sydney Live-Flow Acceptance Case
-
-The final complete live flow used this new request: a one-day Sydney trip for
-two travellers on 2026-09-15, interested in harbour views, wildlife, and
-beaches, preferring moderate walking without unnecessarily long walking
-transfers. The run used `reference_date = 2026-09-12`; the allowed window was
-2026-09-12 through 2026-09-21. Requirements and final itinerary dates were
-both 2026-09-15 and passed the shared date checks.
-
-The live path exercised Azure Foundry, Google Places, Google Weather, and
-Google Routes. Four Places searches, including destination resolution,
-yielded 16 bounded/deduplicated candidates and an eight-place shortlist;
-only those eight received rich details. The one Weather call returned
-available evidence; the default metadata-level trace did not retain its
-daily condition/temperature payload, so no unverified weather values are
-reconstructed here. The default baseline was one directional 8 x 8 WALK
-matrix (64 requested elements). Threshold evaluation found 42 directed
-non-walkable results, collapsed them to 21 logical pairs, selected eight,
-and recorded 13 budget-truncated pairs.
-
-For a compact record of the actual canonical TRANSIT selections, `P1` through
-`P8` denote the eight Places in `shortlist_created` order in this run's
-`events.jsonl` (run ID `83b678ac-3331-43b7-b9b0-847662d1a7e6`). The
-metadata trace retained Place IDs, not a complete normalized name mapping:
-
-```text
-P1 ChIJV_wrHl2uEmsR92Q_ubhgXDI
-P2 ChIJLat3W0euEmsRCQCK0yaDjTc
-P3 ChIJQyYU8QOrEmsRFno4dKGQTYo
-P4 ChIJf2-DIACvEmsRgudjrmfw2Lo
-P5 ChIJi4HdHKCZEmsRYPPy-Wh9AQ8
-P6 ChIJm_XsjvyqEmsRQNv6iYFYSXA
-P7 ChIJswapWjeuEmsR_QZi2zrhtRI
-P8 ChIJ7fQkR0y3EmsRAvF7TJkyUd4
-```
-
-Canonical directions queried:
-
-```text
-P5 -> P6, P3 -> P5, P8 -> P5, P4 -> P5,
-P1 -> P5, P2 -> P5, P5 -> P7, P8 -> P6
-```
-
-The two `P5` destinations and two `P8` destinations were grouped by canonical
-origin, producing six sparse TRANSIT calls for eight real requested elements.
-All eight real elements were provider-observed, with eight separately labeled
-duration-only mirrored reverse estimates. The representative departure time
-was 2026-09-15 12:00 Australia/Sydney (`+10:00`), not an itinerary timetable.
-Routes usage was **one WALK call / 64 elements + six TRANSIT calls / eight
-elements = seven calls / 72 requested elements**. ToolBudget recorded
-`route_matrix_elements = 64/64`, `alternative_route_pairs = 8/8`,
-`alternative_route_matrix_calls = 6/8`, `weather_calls = 1/2`,
-`place_search_calls = 4/4`, `place_detail_calls = 8/8`, and
-`candidates = 16/20`; Web/review counters remained zero.
-
-The run completed and its metadata trace recorded the config snapshot/hash,
-logical-pair trigger and grouping events, observed/mirrored counts, budgets,
-and final date validation. The redaction check found no configured API key in
-the trace. This was an **integration and evidence-acquisition acceptance case**,
-not proof of a perfectly feasible generated itinerary or a formal V0/V1
-quality comparison.
-
+<a id="m-1f52839e92c1"></a>
 ## Live Discoveries, Follow-Up Fixes, and Known Limits
+
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze. Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+<a id="b-1f52839e92c1-0"></a>
 
 The following were post-design discoveries, not capabilities present in the
 initial V1-A proposal:
+
+<a id="b-1f52839e92c1-1"></a>
 
 - **Provider/runtime defects fixed:** real Places `timeZone` is an object with
   `id`/`version`, so normalization extracts its IANA `id`; Weather requests
@@ -654,7 +384,11 @@ initial V1-A proposal:
   compressed repeated wording without intentionally changing these rules.
   These are model instructions, not deterministic feasibility enforcement.
 
+<a id="b-1f52839e92c1-2"></a>
+
 Unresolved limitations remain explicit:
+
+<a id="b-1f52839e92c1-3"></a>
 
 1. Evidence-following is not guaranteed. In the Sydney follow-up, matching
    WALK evidence required about 28 minutes while the generated schedule
@@ -673,7 +407,12 @@ Unresolved limitations remain explicit:
    review-derived experience evidence. Those were then planned as V1-B/V1-C;
    the current reopening above supersedes that milestone allocation.
 
+<a id="m-541d26ddaba4"></a>
 ## Verification and Freeze Boundary
+
+_Source context: V1 Milestones: Historical V1-A Checkpoints and Complete V1 Freeze. Preserved dated record; original acceptance/proposal status applies to this event, not to current runtime instructions._
+
+<a id="b-541d26ddaba4-0"></a>
 
 The final complete live V1 flow completed through Places, Weather, Routes,
 Foundry generation, and final date validation. The latest backend offline
@@ -682,9 +421,26 @@ Ruff and `git diff --check` passed. Normal automated tests use fake providers
 and do not call live external services. The full live run preceded the final
 prompt-only follow-ups; no additional full live flow is claimed afterward.
 
+<a id="b-541d26ddaba4-1"></a>
+
 The 2026-09-12 freeze did not authorize subsequent V1-B or former V1-C work,
 a commit, a push, a merge, or a formal benchmark. V0 and V1 remained independently
 runnable; V2/V3 were not implemented or frozen at this checkpoint. Later
 reopening, implementation, re-freeze, and full-V1 development validation are
 recorded separately above and must not be read back into this original
 checkpoint.
+
+## Later shared first-draft checkpoint - 2026-09-20
+
+The prior accepted implementation and bounded-live checkpoints remain valid for their
+recorded scope. Later shared full-range generation guidance, declared roles, diagnostics
+and K20/400-element Routes support were implemented with offline checks only. The new
+prompt has not been live-validated. The single [shared event](development_record.md#first-generation-coverage-20260920)
+records the full run859 passed/9 skipped/2 failed and45-pass targeted correction; the
+full run is not retrospectively green. No re-freeze or benchmark is claimed.
+
+V2 acceptance does not establish feasible outputs: below-default/empty days, repeats,
+redundancy, opening/transition conflicts, visitor-access and cost UNKNOWN and factual
+contradictions remain possible. [V3 design](v3_design.md) records their future validation
+and targeted-repair boundary, not implemented capability. K20/default targets/sorting
+and connection tolerance are shared/V2 baseline work, not V3 research contributions.

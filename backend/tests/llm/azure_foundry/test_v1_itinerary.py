@@ -10,8 +10,8 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryActivityDTO,
     FoundryDateTimeDTO,
     FoundryItineraryDayDTO,
-    FoundryItineraryDTO,
     FoundryMoneyDTO,
+    FoundryPrimaryItineraryDTO,
 )
 from backend.app.llm.azure_foundry.itinerary_cost_projection import map_foundry_v1_itinerary
 from backend.app.llm.azure_foundry.mapping import FoundryMappingError, map_foundry_itinerary
@@ -26,8 +26,9 @@ def _itinerary(
     end_time: str = "11:00:00",
     notes: str | None = None,
     start_date: str = "2026-09-18",
-) -> FoundryItineraryDTO:
-    return FoundryItineraryDTO(
+) -> FoundryPrimaryItineraryDTO:
+    return FoundryPrimaryItineraryDTO(
+        output_version="itinerary_2",
         destination="Singapore",
         start_date=start_date,
         end_date="2026-09-18",
@@ -36,6 +37,8 @@ def _itinerary(
                 date="2026-09-18",
                 activities=[
                     FoundryActivityDTO(
+                        activity_kind="main_poi",
+                        source_place_id=None,
                         activity_id=f"activity-{index}",
                         title=f"Visit place {index}",
                         place_name=f"Place {index}",
@@ -171,7 +174,7 @@ def test_v1_invalid_date_and_missing_structure_still_fail() -> None:
     with pytest.raises(FoundryMappingError, match="start_date must use exactly YYYY-MM-DD"):
         map_foundry_v1_itinerary(_itinerary(None, start_date="2026/09/18"))
     with pytest.raises(ValidationError, match="Field required"):
-        FoundryItineraryDTO.model_validate(
+        FoundryPrimaryItineraryDTO.model_validate(
             {"destination": "Singapore", "start_date": "2026-09-18", "end_date": "2026-09-18"}
         )
 

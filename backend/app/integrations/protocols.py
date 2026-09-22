@@ -5,6 +5,7 @@ from typing import Protocol, runtime_checkable
 from backend.app.integrations.models import (
     PlaceDetailsDTO,
     PlaceDetailsRequest,
+    PlaceNearbySearchRequest,
     PlaceReviewsDTO,
     PlaceReviewsRequest,
     PlaceSearchRequest,
@@ -31,6 +32,13 @@ class PlacesProvider(Protocol):
     async def get_place_reviews(self, request: PlaceReviewsRequest) -> PlaceReviewsDTO:
         """Return bounded provider reviews without unrelated structured details."""
 
+        ...
+
+
+@runtime_checkable
+class NearbyPlacesProvider(Protocol):
+    async def search_nearby(self, request: PlaceNearbySearchRequest) -> PlaceSearchResponse:
+        """Search within a restricted circle without enrichment or retries."""
         ...
 
 

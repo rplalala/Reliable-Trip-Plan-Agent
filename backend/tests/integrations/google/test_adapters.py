@@ -19,7 +19,6 @@ from backend.app.integrations.google.routes import (
     ROUTE_MATRIX_FIELD_MASK,
     GoogleRoutesProvider,
 )
-from backend.app.integrations.google.weather import GoogleWeatherProvider
 from backend.app.integrations.models import (
     LatLng,
     PlaceDetailsRequest,
@@ -27,7 +26,6 @@ from backend.app.integrations.models import (
     PlaceSearchRequest,
     RouteMatrixRequest,
     RouteWaypoint,
-    WeatherRequest,
 )
 from backend.app.observability.run_trace import (
     FileRunTracer,
@@ -36,7 +34,7 @@ from backend.app.observability.run_trace import (
     TracePayloadMode,
 )
 from backend.app.policies.trip_dates import create_trip_date_window
-from backend.app.schemas.request import TravelRequest
+from backend.tests.request_fixtures import make_request
 
 
 @dataclass
@@ -261,7 +259,7 @@ def test_places_raw_trace_records_review_count_not_review_text(tmp_path: Path) -
             system_version="v1",
             reference_date=date(2026, 9, 11),
             date_window=create_trip_date_window(date(2026, 9, 11)),
-            request=TravelRequest(request_text="Plan Sydney."),
+            request=make_request(additional_preferences="Plan Sydney."),
             started_at=datetime(2026, 9, 11, tzinfo=UTC),
         ),
         root=tmp_path,
@@ -294,33 +292,6 @@ def test_places_raw_trace_records_review_count_not_review_text(tmp_path: Path) -
     assert "PRIVATE_REVIEW_TEXT_NOT_FOR_TRACE" not in trace_text
     assert "private-google-key" not in trace_text
     assert '"review_count": 1' in trace_text
-
-
-def test_weather_adapter_requests_one_unpaginated_metric_daily_horizon() -> None:
-    transport = FakeTransport(responses=[{"forecastDays": []}])
-    provider = GoogleWeatherProvider(api_key="secret-key", transport=transport, tracer=TRACER)
-
-    asyncio.run(
-        provider.get_daily_forecast(
-            WeatherRequest(
-                location=LatLng(latitude=-33.8, longitude=151.2),
-                horizon_days=4,
-                requested_start=date(2026, 9, 12),
-                requested_end=date(2026, 9, 14),
-            )
-        )
-    )
-
-    assert transport.calls[0]["url"].endswith("/forecast/days:lookup")
-    assert transport.calls[0]["params"] == {
-        "key": "secret-key",
-        "location.latitude": -33.8,
-        "location.longitude": 151.2,
-        "days": 4,
-        "pageSize": 4,
-        "unitsSystem": "METRIC",
-        "languageCode": "en",
-    }
 
 
 def test_routes_adapter_uses_minimal_fields_and_omits_invalid_preference() -> None:

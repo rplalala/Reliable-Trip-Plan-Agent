@@ -1,41 +1,24 @@
 """LangGraph definition for the V0 plain-LLM workflow."""
 
-from collections.abc import Sequence
 
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
+from pydantic import ValidationError
 
 from backend.app.llm.client import StructuredLLMClient
+from backend.app.policies.itinerary_output import validate_output_sources
 from backend.app.policies.trip_dates import (
-    create_trip_date_window,
-    validate_requested_trip_dates,
+    TripDatePolicyError,
 )
+from backend.app.schemas.interpreted_requirements import ClarificationRequired
 from backend.app.schemas.itinerary import Itinerary
-from backend.app.schemas.request import TravelRequirements
+from backend.app.schemas.requirement_boundary import RequirementBoundaryError
+from backend.app.services.preference_interpretation import interpret_preferences
 from backend.app.versions.v0.prompts import (
     ITINERARY_GENERATION_SYSTEM_PROMPT,
-    REQUIREMENT_EXTRACTION_SYSTEM_PROMPT,
     build_itinerary_generation_prompt,
-    build_requirement_extraction_prompt,
 )
 from backend.app.versions.v0.state import V0State
-
-REQUIRED_REQUIREMENT_FIELDS = ("destination", "start_date", "end_date")
-
-
-class MissingRequiredFieldsError(RuntimeError):
-    """Raised when V0 cannot plan without inventing critical user requirements."""
-
-    def __init__(
-        self,
-        *,
-        unresolved_fields: Sequence[str],
-        requirements: TravelRequirements,
-    ) -> None:
-        self.unresolved_fields = tuple(unresolved_fields)
-        self.requirements = requirements
-        fields = ", ".join(self.unresolved_fields)
-        super().__init__(f"Missing required travel fields: {fields}")
 
 
 class V0StageError(RuntimeError):
@@ -49,43 +32,21 @@ class V0StageError(RuntimeError):
 def build_v0_graph(llm_client: StructuredLLMClient) -> CompiledStateGraph:
     """Build the fixed two-node V0 graph without tools or persistence."""
 
-    async def extract_requirements(state: V0State) -> dict[str, TravelRequirements]:
+    async def extract_requirements(state: V0State) -> dict[str, object]:
         try:
-            requirements = await llm_client.generate_structured(
-                system_prompt=REQUIREMENT_EXTRACTION_SYSTEM_PROMPT,
-                user_prompt=build_requirement_extraction_prompt(
-                    state["request"],
-                    state["reference_date"],
-                ),
-                response_schema=TravelRequirements,
+            contract = await interpret_preferences(
+                state["request"], state["reference_date"], llm_client
             )
+        except (
+            ClarificationRequired,
+            RequirementBoundaryError,
+            ValidationError,
+            TripDatePolicyError,
+        ):
+            raise
         except Exception as exc:
             raise V0StageError("extract_requirements") from exc
-
-        missing_fields = [
-            field_name
-            for field_name in REQUIRED_REQUIREMENT_FIELDS
-            if getattr(requirements, field_name) is None
-        ]
-        if missing_fields:
-            unresolved_fields = list(
-                dict.fromkeys([*requirements.unresolved_fields, *missing_fields])
-            )
-            requirements = requirements.model_copy(
-                update={"unresolved_fields": unresolved_fields}
-            )
-            raise MissingRequiredFieldsError(
-                unresolved_fields=missing_fields,
-                requirements=requirements,
-            )
-
-        validate_requested_trip_dates(
-            requirements.start_date,
-            requirements.end_date,
-            create_trip_date_window(state["reference_date"]),
-        )
-
-        return {"requirements": requirements}
+        return {"requirements": contract.requirements, "interpreted_requirements": contract}
 
     async def generate_itinerary(state: V0State) -> dict[str, Itinerary]:
         requirements = state["requirements"]
@@ -96,9 +57,11 @@ def build_v0_graph(llm_client: StructuredLLMClient) -> CompiledStateGraph:
                     state["request"],
                     requirements,
                     state["reference_date"],
+                    state["interpreted_requirements"],
                 ),
                 response_schema=Itinerary,
             )
+            itinerary = validate_output_sources(itinerary)
         except Exception as exc:
             raise V0StageError("generate_itinerary") from exc
 

@@ -24,7 +24,7 @@ from backend.app.policies.official_web import (
 from backend.app.runtime.budget import ToolBudget, ToolBudgetExceededError, ToolBudgetKey
 from backend.app.runtime.cache import RequestCache
 from backend.app.runtime.config_models import WebEvidenceConfig
-from backend.app.schemas.request import TravelRequest, TravelRequirements
+from backend.app.schemas.request import PlanningRequest, TravelRequirements
 from backend.app.schemas.trip_intent import RequestedPlaceInformation
 
 
@@ -87,7 +87,7 @@ class WebEvidenceAcquisitionService:
 
     def plan_tasks(
         self,
-        request: TravelRequest | None,
+        request: PlanningRequest | None,
         requirements: TravelRequirements,
         shortlist: list[PlaceCandidate],
         places: list[PlaceEvidence],

@@ -15,12 +15,20 @@ dependencies = [
     "openai>=3.13,<4.0",
     "tzdata>=2025.2",
     "uvicorn>=0.35,<1.0",
+    "pyarrow>=18,<24",
+    "tiktoken>=0.9,<1",
 ]
 
 [dependency-groups]
 dev = [
+    {include-group = "retrieval"},
     "pytest>=8.4,<9.0",
     "ruff>=0.12,<1.0",
+]
+retrieval = [
+    "numpy>=2,<3",
+    "pgvector>=0.4,<1",
+    "psycopg[binary]>=3.2,<4",
 ]
 
 [tool.uv]

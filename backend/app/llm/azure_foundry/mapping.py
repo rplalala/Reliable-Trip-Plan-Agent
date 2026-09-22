@@ -9,17 +9,10 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
     FoundryMoneyDTO,
-    FoundryRequirementsWithNamedPlaceIntentsDTO,
-    FoundryTravelRequirementsDTO,
-    FoundryTripIntentExtractionDTO,
+    FoundryPrimaryItineraryDTO,
 )
 from backend.app.schemas.itinerary import Activity, Itinerary, ItineraryDay
-from backend.app.schemas.named_place_intent import (
-    NamedPlaceIntent,
-    RequirementsWithNamedPlaceIntents,
-)
-from backend.app.schemas.request import Money, TravelRequirements
-from backend.app.schemas.trip_intent import TripIntentExtractionResult
+from backend.app.schemas.request import Money
 
 _DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 _TIME_PATTERN = re.compile(r"(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\Z")
@@ -54,9 +47,7 @@ def map_foundry_datetime(value: FoundryDateTimeDTO, *, field_path: str) -> datet
 
     offset_match = _UTC_OFFSET_PATTERN.fullmatch(value.utc_offset)
     if offset_match is None:
-        raise FoundryMappingError(
-            f"{field_path}.utc_offset must use exactly +HH:MM or -HH:MM"
-        )
+        raise FoundryMappingError(f"{field_path}.utc_offset must use exactly +HH:MM or -HH:MM")
 
     hour, minute, second = (int(component) for component in value.time.split(":"))
     sign, offset_hour, offset_minute = offset_match.groups()
@@ -79,75 +70,13 @@ def map_foundry_money(value: FoundryMoneyDTO) -> Money:
     return Money(amount=value.amount, currency=value.currency)
 
 
-def map_foundry_requirements(value: FoundryTravelRequirementsDTO) -> TravelRequirements:
-    """Map requirement fields without filling or correcting missing information."""
-
-    return TravelRequirements(
-        destination=value.destination,
-        start_date=_map_optional_iso_date(
-            value.start_date,
-            field_path="start_date",
-        ),
-        end_date=_map_optional_iso_date(
-            value.end_date,
-            field_path="end_date",
-        ),
-        traveler_count=value.traveler_count,
-        budget=map_foundry_money(value.budget) if value.budget is not None else None,
-        required_activities=value.required_activities,
-        excluded_activities=value.excluded_activities,
-        preferences=value.preferences,
-        unresolved_fields=value.unresolved_fields,
-    )
-
-
-def map_foundry_requirements_with_named_places(
-    value: FoundryRequirementsWithNamedPlaceIntentsDTO,
-) -> RequirementsWithNamedPlaceIntents:
-    """Map the unchanged base fields and keep V1+ intents separate."""
-
-    return RequirementsWithNamedPlaceIntents(
-        requirements=map_foundry_requirements(value),
-        named_place_intents=tuple(
-            NamedPlaceIntent(
-                place_text=item.place_text,
-                inclusion=item.inclusion,
-                source_text=item.source_text,
-            )
-            for item in value.named_place_intents
-        ),
-    )
-
-
-def map_foundry_trip_intents(value: FoundryTripIntentExtractionDTO) -> TripIntentExtractionResult:
-    """Keep base requirements intact and validate separate semantic contracts."""
-
-    return TripIntentExtractionResult(
-        requirements=map_foundry_requirements(value),
-        named_place_intents=tuple(
-            NamedPlaceIntent(
-                place_text=item.place_text,
-                inclusion=item.inclusion,
-                source_text=item.source_text,
-            )
-            for item in value.named_place_intents
-        ),
-        requested_place_information=tuple(
-            item.model_dump() for item in value.requested_place_information
-        ),
-        experience_preferences=tuple(item.model_dump() for item in value.experience_preferences),
-        transport_preference=(
-            value.transport_preference.model_dump() if value.transport_preference else None
-        ),
-        poi_interests=tuple(item.model_dump() for item in value.poi_interests),
-    )
-
-
 def map_foundry_activity(value: FoundryActivityDTO, *, field_path: str) -> Activity:
     """Map one activity while preserving every provided value."""
 
     return Activity(
         activity_id=value.activity_id,
+        activity_kind=value.activity_kind,
+        source_place_id=value.source_place_id,
         title=value.title,
         place_name=value.place_name,
         location=value.location,
@@ -160,9 +89,7 @@ def map_foundry_activity(value: FoundryActivityDTO, *, field_path: str) -> Activ
             field_path=f"{field_path}.end_time",
         ),
         estimated_cost=(
-            map_foundry_money(value.estimated_cost)
-            if value.estimated_cost is not None
-            else None
+            map_foundry_money(value.estimated_cost) if value.estimated_cost is not None else None
         ),
         notes=value.notes,
     )
@@ -187,10 +114,24 @@ def map_foundry_itinerary_day(
     )
 
 
-def map_foundry_itinerary(value: FoundryItineraryDTO) -> Itinerary:
+def map_foundry_itinerary(value: FoundryPrimaryItineraryDTO) -> Itinerary:
     """Map a complete transport itinerary into the existing domain contract."""
 
     return Itinerary(
+        output_version=value.output_version,
+        reference_recommendations=[
+            {
+                **r.model_dump(exclude={"associated_day"}),
+                "associated_day": _map_iso_date(
+                    r.associated_day, field_path=f"reference_recommendations[{i}].associated_day"
+                )
+                if r.associated_day is not None
+                else None,
+            }
+            for i, r in enumerate(
+                value.reference_recommendations if isinstance(value, FoundryItineraryDTO) else []
+            )
+        ],
         destination=value.destination,
         start_date=_map_iso_date(value.start_date, field_path="start_date"),
         end_date=_map_iso_date(value.end_date, field_path="end_date"),
