@@ -155,7 +155,28 @@ class FoundryOperationalConflictDTO(FoundryTransportDTO):
     source_refs: list[FoundrySourceQuoteDTO]
 
 
+class FoundryVisitRequirementDTO(FoundryTransportDTO):
+    access_mode: Literal["venue_entry", "exterior"] | None
+    place_text: str
+    minimum_visits: int
+    dates: list[str]
+    status: Literal["executable", "unresolved"]
+    reason: str | None
+    source_refs: list[FoundrySourceQuoteDTO]
+
+
+class FoundryTimeProtectionDTO(FoundryTransportDTO):
+    dates: list[str]
+    start_time: str | None
+    end_time: str | None
+    status: Literal["fixed", "unresolved"]
+    reason: str | None
+    source_refs: list[FoundrySourceQuoteDTO]
+
+
 class FoundryInterpretationDTO(FoundryTransportDTO):
+    visit_requirements: list[FoundryVisitRequirementDTO] | None
+    time_protections: list[FoundryTimeProtectionDTO] | None
     operational_conflicts: list[FoundryOperationalConflictDTO]
     named_places: list[FoundryNamedRequirementDTO]
     requested_place_information: list[FoundryRequestedPlaceInformationDTO]

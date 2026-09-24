@@ -496,6 +496,8 @@ def test_captured_b_draft_reexpressed_in_v2_keeps_meaning_and_party_scope():
     assert fixture["provenance"]["kind"] == "captured_parsed_domain_draft"
     data = copy.deepcopy(fixture["draft"])
     data.pop("requirements")  # Historical captured form is not model output in revision 3.
+    data["visit_requirements"] = None  # This dimension was not assessed historically.
+    data["time_protections"] = None  # New dimension was not assessed in the capture.
     data["operational_conflicts"] = []
     assert any(s["subject_id"] == "party" for s in data["subjects"])
     # Explicit test fixture migration, NOT a runtime legacy repair/fallback.

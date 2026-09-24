@@ -1,5 +1,6 @@
 """Versioned open requirements; model drafts cannot author enforcement results."""
 
+from datetime import date, time
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, StringConstraints, model_validator
@@ -165,11 +166,72 @@ class OperationalConflict(ContractModel):
     source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
 
 
+class VisitRequirementDraft(ContractModel):
+    """Sourced visit count/date/access intention, never operating or admission evidence."""
+
+    place_text: str = Field(min_length=1, max_length=200)
+    access_mode: Literal["venue_entry", "exterior"] | None = None
+    minimum_visits: int = Field(ge=1, le=10)
+    dates: tuple[date, ...] = Field(max_length=10)
+    status: Literal["executable", "unresolved"]
+    reason: str | None = Field(max_length=320)
+    source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
+
+    @model_validator(mode="after")
+    def valid_scope(self):
+        if len(set(self.dates)) != len(self.dates) or self.minimum_visits < len(self.dates):
+            raise ValueError("Visit count must cover unique mandatory dates")
+        if self.status == "unresolved" and not self.reason:
+            raise ValueError("Unresolved visit requirement needs a reason")
+        return self
+
+
+class VisitRequirement(VisitRequirementDraft):
+    requirement_id: str
+    source_refs: tuple[SourceReference, ...] = Field(min_length=1, max_length=3)
+
+
+class TimeProtectionDraft(ContractModel):
+    """Destination-local fixed time, or a scoped restriction not yet executable."""
+
+    dates: tuple[date, ...] = Field(max_length=10)
+    start_time: time | None
+    end_time: time | None
+    status: Literal["fixed", "unresolved"]
+    reason: str | None = Field(max_length=320)
+    source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
+
+    @model_validator(mode="after")
+    def valid_interval(self):
+        if len(set(self.dates)) != len(self.dates):
+            raise ValueError("Duplicate protection date")
+        if self.status == "fixed":
+            if (
+                self.start_time is None
+                or self.end_time is None
+                or self.start_time.tzinfo is not None
+                or self.end_time.tzinfo is not None
+                or self.start_time >= self.end_time
+            ):
+                raise ValueError("Fixed protection requires a same-day local interval")
+        elif not self.reason:
+            raise ValueError("Unresolved protection requires a reason")
+        return self
+
+
+class TimeProtection(TimeProtectionDraft):
+    source_refs: tuple[SourceReference, ...] = Field(min_length=1, max_length=3)
+
+
 class InterpretationDraft(ContractModel):
     """One interpreter result. Local links are replaced with application IDs."""
 
     _diagnostic_call_id: str | None = PrivateAttr(default=None)
 
+    visit_requirements: tuple[VisitRequirementDraft, ...] | None = Field(
+        default=None, max_length=24
+    )
+    time_protections: tuple[TimeProtectionDraft, ...] | None = Field(default=None, max_length=24)
     operational_conflicts: tuple[OperationalConflict, ...] = Field(default=(), max_length=6)
     named_places: tuple[NamedRequirementDraft, ...] = Field(max_length=24)
     requested_place_information: tuple[RequestedPlaceInformation, ...] = Field(max_length=32)
@@ -239,6 +301,8 @@ class InterpretedTripRequirements(ContractModel):
         "budget.amount",
         "budget.currency",
     )
+    visit_requirements: tuple[VisitRequirement, ...] | None = Field(default=None, max_length=24)
+    time_protections: tuple[TimeProtection, ...] | None = Field(default=None, max_length=24)
     interpretation_origin: Literal["model", "skipped_empty"]
     requirements: TravelRequirements
     named_places: tuple[NamedRequirement, ...]

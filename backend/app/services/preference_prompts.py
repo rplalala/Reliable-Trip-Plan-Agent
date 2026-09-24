@@ -146,3 +146,35 @@ from overlapping wording. Do not decide whether external evidence is needed.
 
 """
 )
+
+# Same interpretation call; no additional model or primary-generation instruction.
+PREFERENCE_INTERPRETATION_SYSTEM_PROMPT += """
+Return time_protections for explicitly fixed rest, private appointments or reserved time.
+Use destination-local dates and times, with exact user source quotes. An empty dates list
+means every requested date. Fixed intervals must be same-day and unambiguous. Use status
+unresolved with a reason and the narrowest reliable date scope when a restriction cannot
+be represented (including ambiguous time zones or overnight reservations); do not invent hours.
+An empty list means this interpretation assessed this dimension and found no explicit fixed
+reservation; null means it could not assess the dimension. Represent the fixed-time obligation
+in time_protections, not as a duplicate arbitrary hard semantic requirement. Preserve other
+related open meanings in semantic_requirements without claiming they are executable.
+A general relaxed pace is a soft preference, not a fixed afternoon or a time reservation.
+Do not infer fixed time from a generated itinerary. Fixed time does not establish access mode.
+"""
+
+PREFERENCE_INTERPRETATION_SYSTEM_PROMPT += """
+Assess explicit visit-count, mandatory-date and revisit obligations in visit_requirements.
+Each entry must reference exactly one named_places place_text, with exact user source quotes.
+minimum_visits is the required total; every date in dates requires at least one visit on that
+particular requested date. With no specific dates use []. For an explicit repeat, preserve the
+required count; use unresolved plus a scoped reason when count/date cannot be represented.
+Do not invent multiple visits from soft enthusiasm. [] means assessed without such obligations;
+null means unassessed. Preserve ordinary REQUIRED inclusion in named_places; do not duplicate
+these executable obligations as unsupported hard semantic text. Unrelated soft preferences
+remain semantic_requirements. For explicit interior/admission visits use access_mode venue_entry;
+for explicit exterior-only
+viewing use exterior. Otherwise use null. These are sourced visit intentions, not verified public
+access, ticket or opening facts. Do not infer an access mode from a place category or name.
+This field supports whole-venue intent only; mark specific subvenue or mixed access intent
+unresolved with a reason rather than inventing an executable scope.
+"""

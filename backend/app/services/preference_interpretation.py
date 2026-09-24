@@ -42,6 +42,8 @@ def preference_prompt(request: PlanningRequest, reference_date: date) -> str:
 
 def empty_preference_draft() -> InterpretationDraft:
     return InterpretationDraft(
+        visit_requirements=(),
+        time_protections=(),
         named_places=(),
         requested_place_information=(),
         transport_preference=None,

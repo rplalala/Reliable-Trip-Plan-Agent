@@ -17,6 +17,8 @@ from backend.app.schemas.interpreted_requirements import (
     SemanticRequirement,
     SourceQuote,
     SourceReference,
+    TimeProtection,
+    VisitRequirement,
 )
 from backend.app.schemas.request import PlanningRequest
 from backend.app.schemas.requirement_boundary import RequirementBoundaryError
@@ -93,7 +95,13 @@ def validate_canonical_requirements(contract, request: PlanningRequest):
         raise RequirementBoundaryError("canonical_interpretation_origin_mismatch")
     if value.request_sha256 != hashlib.sha256(text.encode()).hexdigest():
         raise RequirementBoundaryError("canonical_request_mismatch")
-    for group in (value.subjects, value.semantic_requirements, value.named_places):
+    for group in (
+        value.subjects,
+        value.semantic_requirements,
+        value.named_places,
+        value.time_protections or (),
+        value.visit_requirements or (),
+    ):
         for item in group:
             for ref in item.source_refs:
                 if (
@@ -104,6 +112,19 @@ def validate_canonical_requirements(contract, request: PlanningRequest):
     for item in value.named_places:
         if not any(item.place_text in ref.quote for ref in item.source_refs):
             raise RequirementBoundaryError("named_surface_not_in_source")
+    for visit in value.visit_requirements or ():
+        matches = [
+            n
+            for n in value.named_places
+            if n.requirement_id == visit.requirement_id and n.place_text == visit.place_text
+        ]
+        if len(matches) != 1 or any(
+            not request.start_date <= d <= request.end_date for d in visit.dates
+        ):
+            raise RequirementBoundaryError("invalid_visit_requirement_scope")
+    for protection in value.time_protections or ():
+        if any(not request.start_date <= d <= request.end_date for d in protection.dates):
+            raise RequirementBoundaryError("time_protection_outside_request")
     _operational_sources(value, text)
     return value
 
@@ -268,7 +289,34 @@ def canonicalize_requirements(
             raise RequirementBoundaryError("conflicting_experience_targets")
         evidence[key] = linked
     try:
+        protections = (
+            None
+            if draft.time_protections is None
+            else tuple(
+                TimeProtection(
+                    **p.model_dump(exclude={"source_refs"}),
+                    source_refs=_sources(p.source_refs, text),
+                )
+                for p in draft.time_protections
+            )
+        )
+        visits = None
+        if draft.visit_requirements is not None:
+            visits = []
+            for v in draft.visit_requirements:
+                matches = [n for n in named if n.place_text == v.place_text]
+                if len(matches) != 1:
+                    raise RequirementBoundaryError("ambiguous_visit_requirement_identity")
+                visits.append(
+                    VisitRequirement(
+                        **v.model_dump(exclude={"source_refs"}),
+                        requirement_id=matches[0].requirement_id,
+                        source_refs=_sources(v.source_refs, text),
+                    )
+                )
         result = InterpretedTripRequirements(
+            visit_requirements=visits,
+            time_protections=protections,
             request_sha256=hashlib.sha256(text.encode()).hexdigest(),
             requirements=request.trip_requirements(),
             structured_input_sha256=request.structured_hash(),

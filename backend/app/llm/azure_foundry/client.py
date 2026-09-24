@@ -151,8 +151,8 @@ class AzureFoundryStructuredLLMClient:
             "prompt_hash": digest(system_prompt),
             "schema_hash": digest(wire),
             "config_hash": digest(self._requirement_config),
-            "prompt_version": "preference_prompt_5",
-            "schema_version": "preference_draft_3",
+            "prompt_version": "preference_prompt_8",
+            "schema_version": "preference_draft_6",
             "config": self._requirement_config,
         }
         self.last_call_metadata = {"call_id": call_id, **base}
