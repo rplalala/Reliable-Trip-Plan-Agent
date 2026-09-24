@@ -125,7 +125,7 @@ def test_v1_cli_trace_records_effective_config_without_live_providers(
     )
     monkeypatch.setattr(
         "backend.app.versions.v1.runner._create_official_web_providers",
-        lambda settings, web_config: (
+        lambda settings, web_config, **kwargs: (
             _NoSourceWeb(),
             _UnusedPageRetriever(),
             _UnusedReasoner(),

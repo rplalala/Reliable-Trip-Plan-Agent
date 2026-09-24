@@ -309,19 +309,29 @@ def _create_tool_providers(
 def _create_official_web_providers(
     settings: V1Settings,
     config: WebEvidenceConfig,
+    *,
+    existing=(None, None, None),
+    owned_clients=None,
 ) -> tuple[WebEvidenceProvider, PageRetriever, OfficialEvidenceReasoner]:
     endpoint = str(settings.azure_openai_endpoint)
     deployment = settings.azure_openai_deployment
     api_key = settings.azure_openai_api_key.get_secret_value()
-    return (
-        AzureFoundryWebEvidenceProvider(
+    factories = (
+        lambda: AzureFoundryWebEvidenceProvider(
             endpoint=endpoint, deployment=deployment, api_key=api_key, config=config
         ),
-        SafeHTMLPageRetriever(config.page_retrieval),
-        AzureFoundryEvidenceReasoner(
+        lambda: SafeHTMLPageRetriever(config.page_retrieval),
+        lambda: AzureFoundryEvidenceReasoner(
             endpoint=endpoint, deployment=deployment, api_key=api_key, config=config
         ),
     )
+    result = []
+    for supplied, factory in zip(existing, factories, strict=True):
+        value = supplied if supplied is not None else factory()
+        if supplied is None and owned_clients is not None and hasattr(value, "aclose"):
+            owned_clients.append(value)
+        result.append(value)
+    return tuple(result)
 
 
 def main(
@@ -351,6 +361,8 @@ def main(
         for item in (llm_client, places_provider, weather_provider, routes_provider)
     )
     settings: V1Settings | None = None
+    owned_clients = []
+    cleanup_delegated = False
     try:
         request = read_planning_request(args.input_json)
         runtime_config = (
@@ -413,16 +425,19 @@ def main(
             default_places, default_weather, default_routes = _create_tool_providers(
                 settings, effective_tracer
             )
-            llm_client = llm_client or create_foundry_client(settings)
+            if llm_client is None:
+                llm_client = create_foundry_client(settings)
+                owned_clients.append(llm_client)
             places_provider = places_provider or default_places
             weather_provider = weather_provider or default_weather
             routes_provider = routes_provider or default_routes
-            default_web, default_pages, default_reasoner = _create_official_web_providers(
-                settings, runtime_config.web_evidence
-            )
-            web_provider = web_provider or default_web
-            page_retriever = page_retriever or default_pages
-            official_reasoner = official_reasoner or default_reasoner
+            if not all(p is not None for p in (web_provider, page_retriever, official_reasoner)):
+                web_provider, page_retriever, official_reasoner = _create_official_web_providers(
+                    settings,
+                    runtime_config.web_evidence,
+                    existing=(web_provider, page_retriever, official_reasoner),
+                    owned_clients=owned_clients,
+                )
 
         if (
             llm_client is None
@@ -432,26 +447,30 @@ def main(
         ):
             raise RuntimeError("V1 providers were not configured")
 
+        cleanup_delegated = True
         result = asyncio.run(
-            (planner_runner or run_v1)(
-                request,
-                llm_client,
-                places_provider,
-                weather_provider,
-                routes_provider,
-                reference_date=effective_reference_date,
-                budget_limits=budget_limits,
-                tracer=effective_tracer,
-                llm_config_identity=(
-                    settings.azure_openai_deployment if settings is not None else None
+            _run_with_owned_clients(
+                (planner_runner or run_v1)(
+                    request,
+                    llm_client,
+                    places_provider,
+                    weather_provider,
+                    routes_provider,
+                    reference_date=effective_reference_date,
+                    budget_limits=budget_limits,
+                    tracer=effective_tracer,
+                    llm_config_identity=(
+                        settings.azure_openai_deployment if settings is not None else None
+                    ),
+                    web_provider=web_provider,
+                    page_retriever=page_retriever,
+                    official_reasoner=official_reasoner,
+                    web_evidence_config=runtime_config.web_evidence,
+                    runtime_config=runtime_config,
+                    runtime_config_path=args.runtime_config,
+                    development_timeout_seconds=args.development_timeout_seconds,
                 ),
-                web_provider=web_provider,
-                page_retriever=page_retriever,
-                official_reasoner=official_reasoner,
-                web_evidence_config=runtime_config.web_evidence,
-                runtime_config=runtime_config,
-                runtime_config_path=args.runtime_config,
-                development_timeout_seconds=args.development_timeout_seconds,
+                owned_clients,
             ),
             loop_factory=loop_factory,
         )
@@ -486,6 +505,33 @@ def main(
         error = {"error": f"{system_version.value}_execution_failed", "message": str(exc)}
         print(json.dumps(error), file=sys.stderr)
         return 1
+    finally:
+        if not cleanup_delegated and owned_clients:
+            # Assembly can fail before there is a running event loop or any request I/O.
+            asyncio.run(_close_owned_clients(owned_clients), loop_factory=loop_factory)
 
     print(serialize_planning_result(result))
     return 0
+
+
+async def _run_with_owned_clients(operation, owned_clients):
+    """CLI-created adapters close on the same loop; injected collaborators are borrowed."""
+    try:
+        return await operation
+    finally:
+        await _close_owned_clients(owned_clients)
+
+
+async def _close_owned_clients(owned_clients):
+    results = await asyncio.gather(
+        *(client.aclose() for client in reversed(owned_clients) if hasattr(client, "aclose")),
+        return_exceptions=True,
+    )
+    # Cleanup failure must not mask the original planning failure/cancellation.
+    for result in results:
+        if isinstance(result, BaseException):
+            import logging
+
+            logging.getLogger(__name__).warning(
+                "Owned client cleanup failed: %s", type(result).__name__
+            )

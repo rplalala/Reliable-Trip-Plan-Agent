@@ -129,6 +129,13 @@ class AzureFoundryStructuredLLMClient:
             max_retries=0,
         )
 
+    async def aclose(self):
+        """Release SDK clients when the application owns this adapter."""
+        try:
+            await self._chat_model.root_async_client.close()
+        finally:
+            self._chat_model.root_client.close()
+
     def capture_requirement_outcome(self, draft, error=None):
         call_id = draft._diagnostic_call_id
         if self.requirement_capture and call_id:
