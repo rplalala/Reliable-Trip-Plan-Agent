@@ -35,6 +35,11 @@ def _waypoint(latitude: float, longitude: float) -> dict[str, object]:
 class GoogleRoutesProvider:
     """Compute one mode-specific Route Matrix without automatic fan-out."""
 
+    @property
+    def observes_send_boundary(self):
+        """Expose the existing transport send hook for opt-in repair accounting."""
+        return getattr(self._transport, "observes_send_boundary", False)
+
     def __init__(
         self,
         *,

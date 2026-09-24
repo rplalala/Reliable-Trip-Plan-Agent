@@ -303,3 +303,30 @@ class AzureFoundryStructuredLLMClient:
     async def generate_primary_structured(self, *, generation_config, **kwargs):
         """Per-call settings, without mutating a shared client or other tasks."""
         return await self.generate_structured(**kwargs, _generation_config=generation_config)
+
+    async def generate_repair_structured(
+        self, *, system_prompt, user_prompt, output_tokens=None, usage_callback=None
+    ):
+        """Per-invocation V3 options and additive usage capture; primary stays unchanged."""
+        from backend.app.versions.v3.repair_budget import configured_policy
+        from backend.app.versions.v3.repair_models import RepairPatch
+        from backend.app.versions.v3.repair_projection import FoundryRepairPatchDTO
+
+        if output_tokens is None:
+            output_tokens = configured_policy().input.output_tokens
+        model = self._chat_model.with_structured_output(
+            FoundryRepairPatchDTO, method="json_schema", strict=True,
+            max_output_tokens=output_tokens,
+        )
+        try:
+            raw = await model.ainvoke(
+                [SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)],
+                **(
+                    {"config": {"callbacks": [usage_callback]}}
+                    if usage_callback is not None else {}
+                ),
+            )
+            dto = FoundryRepairPatchDTO.model_validate(raw)
+            return RepairPatch.model_validate(dto.model_dump())
+        except ValidationError as exc:
+            raise StructuredOutputError("Invalid Repair patch") from exc

@@ -1,13 +1,19 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-09-22.
+Current source of truth. Updated 2026-09-24.
 
 ## Purpose and implemented scope
 
 An LLM-Based Travel Planning System for Feasible and Reliable Itinerary Generation studies a
 sequence of independently runnable mechanisms: V0 plain LLM, V1 external information/tools,
-V2 RAG discovery, and future V3 validation/targeted repair/re-validation. V0/V1/V2 runners exist;
-V3 is not implemented. Current responsibility is engineering design, implementation and development
+V2 RAG discovery, and V3 validation/targeted repair/re-validation. All four runners exist;
+V3 has offline-tested structured findings, a read-only validator, bounded feedback-driven repair,
+request resource assembly and final-primary Nearby wiring. The A/B/C checkpoints additionally
+cover elastic time/real adjacency, conditional coverage and adjacent moves, and evidence-scoped
+operating/transfer repair; these changes are implemented + offline-validated only. See the latest
+checkpoint in docs/v3_design.md for supported evidence and limitations. Historical development
+live records remain separate and do not validate these later corrections retroactively.
+Current responsibility is engineering design, implementation and development
 validation, not formal benchmark comparison, thesis writing or final research conclusions.
 
 ## Current accepted foundation
@@ -126,8 +132,10 @@ establishment tolerance is 10 seconds; SQL60/RAG360 and the explicit development
 boundary remain unchanged. This is not a SQL performance fix or new live acceptance.
 
 V3 is documented as explicit post-generation feasibility validation, structured findings,
-targeted repair and re-validation. Its runtime, schemas, repair loops and runner are not
-implemented. Shared baseline fixes are not V3 contributions. Future evaluation must use
+targeted repair and re-validation. Its Step 1 findings schema and partial read-only validator
+are now implemented, along with the subsequent single-round repair service and independent
+graph/runner wiring. See the later Step 3 checkpoint for the offline integration boundary.
+Shared baseline fixes are not V3 contributions. Future evaluation must use
 matched shared checkpoints; historical Tokyo, Sydney and London captures are unchanged.
 
 ## Shared Weather/date checkpoint (2026-09-22)
@@ -167,3 +175,112 @@ was initially stopped; that context does not change the recorded pre-connection 
 No confirmed correctness blocker was found in this narrow review. The shared migration may close
 with bounded development-live evidence; current work is Git grouping approval, not another live
 or V3 implementation. Generation target counts are not itinerary-quality acceptance rates.
+
+## V3 Step 1 offline checkpoint (2026-09-22)
+
+The subsequent explicitly authorized task implements only `v3_validation_1` findings,
+separate observations/improvement targets, and `versions/v3/validation.py::validate_draft`.
+Shared schema/source/date checks remain preconditions. Cross-activity overlap and resolved
+named REQUIRED/EXCLUDED conflicts can be confirmed. Default counts and repeated identities
+are review findings; visitor access, route feasibility and verified total costs remain UNKNOWN.
+Date-specific effective opening mismatches are reviewable, not confirmed visit prohibitions,
+because the current Activity contract does not bind indoor/exterior visit mode.
+
+The focused offline regression passed 154 tests, including 55 new V3 cases and relevant
+shared/V0/V1/V2 checks. Ruff passed. No external services, database acquisition or live run.
+The existing primary serializer/offline tokenizer measured synthetic inputs at 43,337,
+106,130 and 131,988 tokens; this does not validate a future Repair payload. Full execution
+ceilings, acceptance rules, ledger accounting and sizing limits are in `docs/v3_design.md`.
+
+No graph, runner, Repair LLM or candidate/route acquisition is connected. Initial generation
+prompts, K, budgets, Weather, SQL and V0/V1/V2 execution paths are unchanged. Step 1 completion
+is not V3 milestone completion or a freeze. Next repair integration requires user approval.
+The earlier Weather/date pending and Git-grouping paragraphs are historical checkpoints;
+the accepted shared state is implemented + bounded development-live-validated, as recorded
+in the later Weather/date closeout and the three committed shared-checkpoint changes.
+
+## V3 Step 2 standalone checkpoint
+
+The separately approved repair service is implemented with injected collaborators only.
+It provides explicit operation/duration permissions, qualified candidate preparation,
+original/repair/final identity ledgers, one strict Repair model call, bounded real input
+serialization, directional transition evidence, atomic acceptance and reuse of the same
+validator. Partial improvement remains distinct from resolved targets; initial observations,
+augmented-evidence reassessment and proposed findings are separately preserved.
+
+Acquisition limits are repair-local; optional failures/exhaustion do not prevent feasible
+retiming with retained material. Stage/request deadlines, cancellation and zero retries are
+enforced. No primary prompt/K/shared acquisition budget, Weather or SQL behavior changed.
+New WALK temporal evidence, visitor/indoor-access semantics and verified total costs remain
+unsupported/UNKNOWN. Complex inputs can legitimately exceed 64k and skip repair.
+
+Affected offline regression:165 passed after a Windows event-loop guard-test correction;
+subsequent V3-specific tests:104 passed. Actual Repair sizing:3,688 and10,817 tokens fit;
+118,145 and76,705-token synthetic cases were rejected. The50-edit output example is2,956
+tokens, not a model completion guarantee. Full chronological results/limits are in
+`docs/v3_design.md`; primary sizing is not relabeled as Repair sizing.
+
+No V3 graph, runner, runtime lifecycle or final Nearby chain is connected, and no live was
+run. Those integration steps and a later live run need separate authorization. This is not
+a complete V3 milestone, formal evaluation, production acceptance or version freeze.
+
+
+## V3 Step 3 offline wiring checkpoint
+
+The separately authorized integration now provides scripts/run_v3.py, its own graph/state,
+request-scoped assembly and final-primary Nearby execution. It reuses the tools graph through
+a default-off post-primary hook, after initial source/date checks and before Nearby. No
+primary interpretation, discovery or generation repeats. Original supply/draft/reports remain
+separate from repair whitelist, adopted output and final reports/cost associations.
+
+Quantity review defaults off and is recorded per run. Automatic permissions cover overlap
+retiming with preserved duration, resolved REQUIRED additions and explicit EXCLUDED removal
+with loss records; repetitions/opening doubts do not authorize deletion. Existing partial
+validation and bounded Repair service are reused without new visitor/cost/WALK capabilities.
+
+V3 requires an explicit whole-request allowance from entry, including dependency preparation.
+Repair/Nearby share that deadline with independent stage budgets. Request cache/failure state
+and one lazily prepared RAG runtime persist across stages; owned resources close on every exit,
+borrowed resources stay caller-owned. Repeated embedding client reuse and common CLI-owned SDK
+cleanup are shared correctness changes, not V3 contributions. V0/V1/V2 behavior and product V0
+default remain covered by affected offline regressions; primary prompts/K/budgets are unchanged.
+
+Affected regression passed290; subsequent targeted ownership/policy/CLI regression passed18.
+New TRANSIT integration cases passed2 after correcting a fixture field. The full chronological
+record, previous test failures and unchanged actual Repair sizing remain in docs/v3_design.md.
+The final new wiring/lifecycle/policy suite passed43; changed-code Ruff and diff checks passed.
+V3 wiring is offline-validated only: no V3 live, database startup, SQL/vector changes, formal
+evaluation, freeze or full version-level acceptance. Live requires separate user authorization.
+
+
+## V3 target-addition candidate revision (2026-09-22)
+
+The authorized local revision separates protected itinerary context, target/date operation
+candidates and the application identity ledger. It retains the 28-ID input union, bounded
+old-candidate reuse/new discovery, at most two round-wide exploration opportunities, one Repair
+call and existing deadlines. Uncertainty is not ineligibility. Additions require actual input
+membership and target authorization; original supply statistics remain independent of ledger
+growth. Parsed patches, proposals and structured rejection comparisons are auditable with
+redaction and visible size limits. Chronological offline tests and actual Repair sizing are in
+`docs/v3_design.md`; this revision has no live evidence. Historical three-day no-Repair and
+seven-day rejected-Repair observations are retained, not rerun or reinterpreted as successful
+repair. Shared primary generation, budgets, Weather, SQL and earlier versions remain unchanged.
+
+
+## V3 bounded multi-round/spatial configuration checkpoint (2026-09-22)
+
+The authorized extension now uses up to three feedback-conditioned rounds with one shared
+300-second Repair stage and unchanged stage acquisition totals. Runtime YAML owns all adjustable
+Repair timing/input/acquisition/spatial policies; config/README.md documents every current YAML
+path. The 28-ID per-call union, target authorization, independent identity ledger, fair comparison
+and prior audit contracts remain. UNKNOWN candidates can be arranged without relabeling facts.
+Spatial checks distinguish time-applicable Routes, untimed WALK layout measurements and the
+short-distance conservative reserve. Added daily transport burden is cumulative against the
+stage-original draft. Later failures preserve prior accepted improvements; Nearby runs once.
+
+Affected offline regression passed 249 tests; subsequent scoped fixes/checks passed 35, 5, 3 and 103.
+Actual Repair serializer stress cases remain rejected at the unchanged 64k ceiling. Full test
+chronology, exact sizing, limits and unsupported capabilities are in docs/v3_design.md. No live,
+benchmark, vector/SQL/Weather/primary-budget change, commit or freeze accompanies this checkpoint.
+Historical three-day/seven-day observations and preexisting work remain; the full seven-day
+rejection cause is not claimed resolved. Further live work needs separate authorization.

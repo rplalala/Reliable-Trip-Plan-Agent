@@ -93,6 +93,10 @@ def build_tools_graph(
     reference_service: ReferenceDiscoveryService | None = None,
     discovery_extension=None,
     runtime_config=None,
+    post_primary=None,
+    reference_node=None,
+    state_schema=V1State,
+    graph_name="v1",
 ) -> CompiledStateGraph:
     """Build the fixed V1 graph with one bounded official-Web step."""
 
@@ -438,7 +442,7 @@ def build_tools_graph(
         )
         return {"itinerary": itinerary, **updates}
 
-    graph_builder = StateGraph(V1State)
+    graph_builder = StateGraph(state_schema)
     graph_builder.add_node("extract_requirements", extract_requirements)
     graph_builder.add_node("validate_trip_dates", validate_trip_dates)
     graph_builder.add_node("resolve_destination", resolve_destination)
@@ -450,7 +454,9 @@ def build_tools_graph(
         "generate_evidence_informed_itinerary", generate_evidence_informed_itinerary
     )
     graph_builder.add_node("validate_itinerary_dates", validate_itinerary_date_node)
-    graph_builder.add_node("discover_reference_recommendations", discover_reference_recommendations)
+    graph_builder.add_node(
+        "discover_reference_recommendations", reference_node or discover_reference_recommendations
+    )
     graph_builder.add_edge(START, "extract_requirements")
     graph_builder.add_edge("extract_requirements", "validate_trip_dates")
     graph_builder.add_edge("validate_trip_dates", "resolve_destination")
@@ -462,9 +468,14 @@ def build_tools_graph(
         "acquire_and_resolve_official_web", "generate_evidence_informed_itinerary"
     )
     graph_builder.add_edge("generate_evidence_informed_itinerary", "validate_itinerary_dates")
-    graph_builder.add_edge("validate_itinerary_dates", "discover_reference_recommendations")
+    if post_primary is None:
+        graph_builder.add_edge("validate_itinerary_dates", "discover_reference_recommendations")
+    else:
+        graph_builder.add_node("post_primary", post_primary)
+        graph_builder.add_edge("validate_itinerary_dates", "post_primary")
+        graph_builder.add_edge("post_primary", "discover_reference_recommendations")
     graph_builder.add_edge("discover_reference_recommendations", END)
-    return graph_builder.compile(name="v1")
+    return graph_builder.compile(name=graph_name)
 
 
 def build_v1_graph(llm_client, evidence_service, tracer, **kwargs):

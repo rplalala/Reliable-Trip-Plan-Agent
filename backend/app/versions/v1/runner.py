@@ -99,6 +99,7 @@ async def run_tools_planner(
     graph_factory=None,
     discovery_factory=None,
     result_factory=PlanningSupplyPlanningResult,
+    result_projector=None,
 ) -> PlanningResult:
     """Run V1 with one fixed date, shared budget, cache, tracer, and explicit graph."""
 
@@ -218,6 +219,8 @@ async def run_tools_planner(
             raise RuntimeError("V1 graph completed without a planning result")
         selection = final_state["review_selection"]
         extra = {"rag_discovery": extension.finalize(final_state)} if extension else {}
+        if result_projector is not None:
+            extra.update(result_projector(final_state))
         result = result_factory(
             **extra,
             generation_diagnostics=final_state["generation_diagnostics"],
