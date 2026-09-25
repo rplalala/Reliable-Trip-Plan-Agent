@@ -404,6 +404,9 @@ def test_typed_required_place_survives_active_final_selection_and_trace() -> Non
 
 
 class ReviewProfileLLM:
+    async def generate_poi_semantics_structured(self, **kwargs):
+        return await FakeStructuredLLMClient([]).generate_poi_semantics_structured(**kwargs)
+
     def __init__(self, req: TravelRequirements) -> None:
         self.req = req
         self.calls: list[tuple[type, str]] = []
@@ -452,7 +455,9 @@ def test_review_relations_are_available_but_raw_reviews_stay_out_of_planner() ->
     )
     assert state["review_selection"].evaluator_calls == 0
     assert {schema for schema, _ in llm.calls} <= {
-        TripIntentExtractionResult, ExperienceProfileDraft, V1Itinerary
+        TripIntentExtractionResult,
+        ExperienceProfileDraft,
+        V1Itinerary,
     }
     assert len(places.reviews_requests) == 1
     assert len(state["review_selection"].profiles) == 1
@@ -603,12 +608,16 @@ def test_trace_write_failure_does_not_change_active_planning_result(tmp_path: Pa
             tracer=tracer,
         )
     )
-    # Wall-clock telemetry is not part of the deterministic planning result.
+    # Wall-clock telemetry and correlation IDs are not deterministic planning results.
     exclude = {
+        "semantic_assessment": {
+            "elapsed_seconds": True,
+            "records": {"__all__": {"elapsed_seconds", "call_id"}},
+        },
         "planning_supply": {
             "elapsed_seconds": True,
             "cpu_seconds": True,
             "acquisition_diagnostics": {"elapsed_seconds"},
-        }
+        },
     }
     assert with_failed_trace.model_dump(exclude=exclude) == baseline.model_dump(exclude=exclude)

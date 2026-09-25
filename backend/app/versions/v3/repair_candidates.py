@@ -96,6 +96,7 @@ def candidate_targets(original, context, scope):
         if finding.check != "coverage" and finding.reason not in {
             "required_identity_omitted",
             "required_visit_obligation_unmet",
+            "experience_goal_count_unmet",
         }:
             continue
         for day in scope.add_dates:
@@ -116,7 +117,7 @@ def candidate_targets(original, context, scope):
                     - days[day].distinct_main_poi_count,
                 )
                 if finding.check == "coverage"
-                else 1
+                else int(finding.magnitude or 1)
             )
             if gap:
                 targets.append((finding.finding_id, day, "add", gap))
@@ -207,6 +208,7 @@ async def prepare_candidates(
     intent_ids=(),
     rag=None,
     geographic_scope=None,
+    semantic_service=None,
 ):
     """rag is an already prepared RuntimeRetrieval-compatible port; no instance assembly."""
     policy = budget.policy
@@ -219,6 +221,13 @@ async def prepare_candidates(
     if len(scheduled) > capacity:
         raise ValueError("repair_identity_union_ceiling")
     targets = candidate_targets(original, context, scope)
+    from backend.app.versions.v3.repair_acceptance import assess
+
+    goal_targets = {
+        f.finding_id: f.requirement_ids
+        for f in assess(original, context).findings
+        if f.reason == "experience_goal_count_unmet"
+    }
     from backend.app.versions.v3.repair_targets import insertion_windows
 
     available_dates = {
@@ -239,6 +248,18 @@ async def prepare_candidates(
         if p.place_id in context.original_supply_ids
     }
     ledger.update({c.place.place_id: c for c in context.identity_ledger})
+    if semantic_service:
+        initial_places = {pid: c.place for pid, c in ledger.items()}
+        initial_places.update(
+            {
+                p.candidate.place_id: p.structured_evidence
+                for p in pool
+                if qualify(p, context.contract.requirements.end_date, excluded)
+            }
+        )
+        await semantic_service.prepare(
+            list(initial_places.values()), context.contract, deadline=budget.io_deadline
+        )
     items = {item.candidate.place_id: item for item in pool}
     decisions = []
     eligible = {}
@@ -352,8 +373,26 @@ async def prepare_candidates(
         return False
 
     def associations(candidate, item=None):
+        assessment = next(
+            (r for r in context.semantic_assessments if r.place_id == candidate.place.place_id),
+            None,
+        )
+        if semantic_service:
+            assessment = semantic_service.ledger.get(candidate.place.place_id)
+            # Newly acquired identities await the bounded batch in finish(). These
+            # provisional associations never authorize model input before assessment.
+            if assessment is not None and not assessment.main_eligible:
+                return []
         rows = []
         for target, day, operation, _ in targets:
+            if target in goal_targets:
+                if assessment is not None and not any(
+                    m.requirement_id in goal_targets[target] and m.relation == "supported"
+                    for m in assessment.matches
+                ):
+                    continue
+                if assessment is None and not semantic_service:
+                    continue
             pid, place = candidate.place.place_id, candidate.place
             disposition, reason = "eligible", "qualified_option_not_date_verified"
             refs = candidate.provenance
@@ -673,6 +712,11 @@ async def prepare_candidates(
         return False
 
     def can_acquire():
+        if semantic_service and (
+            semantic_service.calls >= semantic_service.config.max_calls
+            or semantic_service.elapsed >= semantic_service.config.total_seconds
+        ):
+            return stop("semantic_assessment_preparation_limit")
         if not targets:
             return stop("no_candidate_operation")
         if not acquisition_dates:
@@ -762,7 +806,25 @@ async def prepare_candidates(
             )
         return False
 
-    def finish():
+    async def finish():
+        judgments = {r.place_id: r for r in context.semantic_assessments}
+        if semantic_service:
+            judgments = await semantic_service.prepare(
+                [c.place for c in ledger.values()], context.contract, deadline=budget.io_deadline
+            )
+            for key in list(eligible):
+                if key[0] not in judgments or not judgments[key[0]].main_eligible:
+                    del eligible[key]
+        for key, option in list(eligible.items()):
+            if option.target_id in goal_targets and (
+                option.place_id not in judgments
+                or not judgments[option.place_id].main_eligible
+                or not any(
+                    m.requirement_id in goal_targets[option.target_id] and m.relation == "supported"
+                    for m in judgments[option.place_id].matches
+                )
+            ):
+                del eligible[key]
         chosen = select_ids()
         auth = tuple(
             r.model_copy(
@@ -1072,7 +1134,7 @@ async def prepare_candidates(
         )
         if hasattr(rag, "allows_embedding") and not rag.allows_embedding([query.text]):
             budget.stops.append("previous_rag_failure")
-            return finish()
+            return await finish()
         vector = await budget.call(
             ("rag_embedding", SPACE_ID, query.text),
             lambda: _embed_one(rag, query.text),
@@ -1082,7 +1144,7 @@ async def prepare_candidates(
         if vector is not None:
             if hasattr(rag, "allows_search") and not rag.allows_search(vector, geographic_scope):
                 budget.stops.append("previous_rag_failure")
-                return finish()
+                return await finish()
             rows = await budget.call(
                 (
                     "rag_retrieval",
@@ -1130,7 +1192,7 @@ async def prepare_candidates(
                     break
                 except (ValueError, KeyError, TypeError):
                     budget.stops.append("invalid_rag_candidate")
-    return finish()
+    return await finish()
 
 
 async def _embed_one(rag, text):

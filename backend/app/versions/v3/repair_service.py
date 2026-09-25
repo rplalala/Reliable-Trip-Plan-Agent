@@ -45,20 +45,24 @@ async def run_repair_once(
     round_index=1,
     round_deadline=None,
     runtime_config=None,
+    semantic_service=None,
 ):
     """All collaborators are injected. Optional acquisition failures are local stops.
 
     Inputs must be an accepted V2 primary snapshot. Cancellation is always propagated.
     No result from a rejected patch becomes the final itinerary.
     """
-    progress_details("repair_targets", {
-        "round_index": round_index,
-        "target_ids": list(scope.target_ids),
-        "permitted_operations": [
-            {"activity_id": p.activity_id, "operations": sorted(p.operations)}
-            for p in scope.permissions
-        ],
-    })
+    progress_details(
+        "repair_targets",
+        {
+            "round_index": round_index,
+            "target_ids": list(scope.target_ids),
+            "permitted_operations": [
+                {"activity_id": p.activity_id, "operations": sorted(p.operations)}
+                for p in scope.permissions
+            ],
+        },
+    )
     budget = (
         budget
         if budget is not None
@@ -87,6 +91,7 @@ async def run_repair_once(
     sizing = {}
     attempted = False
     preparation = patch = proposed = comparison = None
+    effective_patch = None
     model_returned = False
     spatial = {}
     proposed_schedule = context.schedule
@@ -129,10 +134,16 @@ async def run_repair_once(
         from backend.app.versions.v3.repair_targets import related_progress
 
         record = RepairResult(
+            pending_groups=tuple(getattr(budget, "pending_groups", ())),
+            effective_patch=effective_patch,
             components=components,
             material_fingerprint=fingerprint,
             related_targets=related_progress(
-                snapshot, proposed if proposed is not None else snapshot, scope, proposed_schedule
+                snapshot,
+                proposed if proposed is not None else snapshot,
+                scope,
+                proposed_schedule,
+                context.semantic_assessments,
             ),
             schedule=proposed_schedule if final is not None else context.schedule,
             window_adjustments=window_adjustments,
@@ -217,6 +228,8 @@ async def run_repair_once(
                 ("scope", scope),
                 ("candidates", preparation),
                 ("patch", audit_patch),
+                ("effective_patch", effective_patch),
+                ("pending_groups", record.pending_groups),
                 ("proposal", audit_proposed),
                 ("comparison", comparison),
                 ("related_targets", record.related_targets),
@@ -260,8 +273,13 @@ async def run_repair_once(
                 intent_ids=intent_ids,
                 rag=rag,
                 geographic_scope=geographic_scope,
+                semantic_service=semantic_service,
             )
             whitelist = preparation.ledger
+            if semantic_service:
+                context = context.model_copy(
+                    update={"semantic_assessments": tuple(semantic_service.ledger.values())}
+                )
             if not scope.permissions and not preparation.authorizations:
                 return result("SKIPPED", "no_executable_candidate_operation")
             all_places = {p.place_id: p for p in context.places}
@@ -294,6 +312,9 @@ async def run_repair_once(
                 initial,
             )
             extra = (*extra, *option_routes)
+            from backend.app.versions.v3.repair_pending import active_pending, combine_pending
+
+            pending = active_pending(budget, snapshot)
             system, user, sizing = build_repair_input(
                 snapshot,
                 initial,
@@ -304,6 +325,7 @@ async def run_repair_once(
                 policy=policy,
                 feedback=feedback,
                 transport_options=transport_options,
+                pending_groups=pending,
             )
             fingerprint = material_fingerprint(user)
             if fingerprint in getattr(budget, "input_fingerprints", set()):
@@ -330,6 +352,7 @@ async def run_repair_once(
                 usage = dict(callback.usage_metadata)
             model_returned = True
             patch = RepairPatch.model_validate(raw)
+            effective_patch = combine_pending(patch, pending)
             if any(d.target_id not in scope.target_ids for d in patch.target_dispositions):
                 raise ValueError("Unauthorized target disposition")
             if remaining() <= 0:
@@ -340,7 +363,7 @@ async def run_repair_once(
             budget.io_deadline = round_deadline - timing.finalization_reserve_seconds
             component_result = await observed("revalidation")(accept_components)(
                 snapshot,
-                patch,
+                effective_patch,
                 initial,
                 context,
                 scope,
@@ -380,7 +403,9 @@ async def run_repair_once(
                 return result("REJECTED", reasons or comparison.reason)
             from backend.app.versions.v3.repair_targets import related_progress
 
-            linked = related_progress(snapshot, proposed, scope, proposed_schedule)
+            linked = related_progress(
+                snapshot, proposed, scope, proposed_schedule, context.semantic_assessments
+            )
             complete = all(p.outcome == "resolved" for p in progress) and all(
                 r.status == "resolved" for r in linked
             )
@@ -394,6 +419,10 @@ async def run_repair_once(
     except TimeoutError:
         return result("REJECTED" if attempted else "SKIPPED", "repair_timeout")
     except Exception as exc:
+        from backend.app.schemas.poi_semantics import SemanticAssessmentError
+
+        if isinstance(exc, SemanticAssessmentError):
+            raise
         if hasattr(exc, "counts"):
             sizing = exc.counts
         return result("REJECTED" if attempted else "SKIPPED", f"{type(exc).__name__}:{exc}")
@@ -473,6 +502,10 @@ async def run_repair_stage(
     stop = "model_budget_disabled" if not policy.max_model_calls else "round_limit"
     last = None
     for index in range(1, min(policy.max_rounds, policy.max_model_calls) + 1):
+        if kwargs.get("semantic_service"):
+            context = context.model_copy(
+                update={"semantic_assessments": tuple(kwargs["semantic_service"].ledger.values())}
+            )
         effective = context.model_copy(
             update={
                 "schedule": current_schedule,
@@ -685,6 +718,10 @@ async def run_repair_stage(
             current_schedule,
         ),
     )
+    if kwargs.get("semantic_service"):
+        context = context.model_copy(
+            update={"semantic_assessments": tuple(kwargs["semantic_service"].ledger.values())}
+        )
     final_report = assess(
         current,
         context.model_copy(update={"schedule": current_schedule, "active_related": active_related}),
@@ -760,6 +797,10 @@ async def run_repair_stage(
             accumulate(values, target)
     return last.model_copy(
         update={
+            "pending_groups": tuple(
+                {**g, "status": "rolled_back", "stop_reason": stop}
+                for g in getattr(budget, "pending_groups", ())
+            ),
             "schedule": current_schedule,
             "related_targets": active_related,
             "window_adjustments": tuple(

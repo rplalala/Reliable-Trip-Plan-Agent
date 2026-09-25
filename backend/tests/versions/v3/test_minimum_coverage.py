@@ -207,7 +207,7 @@ def honolulu_context():
         window=create_trip_date_window(date(2026, 9, 25)),
         places=places,
         original_supply_ids=tuple(raw["supplied_ids"]),
-        policy=ValidationPolicy(review_targets={"coverage", "repetition", "overfull"}),
+        policy=ValidationPolicy(review_targets={"coverage", "overfull"}),
         schedule=build_schedule(draft, contract, places, primary_generated=True),
     )
     policy = load_runtime_config().v3_repair

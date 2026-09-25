@@ -9,6 +9,7 @@ from backend.app.schemas.planning import PlanningResult
 
 
 class PlanningSupplyPlanningResult(PlanningResult):
+    semantic_assessment: dict | None = None
     interpreted_requirements: InterpretedTripRequirements
     selection_status: Literal["selected", "degraded_selection"]
     selection_contract_version: Literal["planning_supply_1"] = "planning_supply_1"

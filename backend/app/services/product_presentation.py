@@ -163,6 +163,14 @@ def present_product(result, evidence, introductions=None):
             )
         )
     return ProductPlanResult(
+        policy_completion=result.generation_diagnostics.policy_completion
+        if result.generation_diagnostics
+        else "unassessed",
+        policy_reasons=tuple(
+            dict.fromkeys(row["reason"] for row in result.generation_diagnostics.policy_issues)
+        )
+        if result.generation_diagnostics
+        else (),
         requirements=result.requirements,
         itinerary=ProductItinerary(
             destination=final.destination,

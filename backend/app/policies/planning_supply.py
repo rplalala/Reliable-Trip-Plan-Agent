@@ -1,7 +1,7 @@
 """Direct bounded candidate supply; no model judgment, weights or subset search."""
 
 from collections import Counter
-from math import asin, cos, radians, sin, sqrt
+from math import asin, ceil, cos, radians, sin, sqrt
 from time import perf_counter, process_time
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -101,6 +101,8 @@ def select_planning_supply(
     hard_capacity,
     destination_coordinates,
     profiles=None,
+    semantic_assessments=None,
+    semantic_config=None,
 ):
     """Fill capacity after round-robin subject opportunity; soft signals never exclude.
 
@@ -131,7 +133,18 @@ def select_planning_supply(
             if requirements[ref].polarity == "favor"
             for s in requirements[ref].subject_refs
         }
-        members = {pid for pid, c in by_id.items() if intent.intent_id in c.intent_ids}
+        members = {
+            pid
+            for pid, c in by_id.items()
+            if (
+                any(
+                    m.requirement_id in intent.requirement_refs and m.relation == "supported"
+                    for m in semantic_assessments[pid].matches
+                )
+                if semantic_assessments is not None
+                else intent.intent_id in c.intent_ids
+            )
+        }
         for subject in subjects:
             buckets[(subject, intent.intent_id)] = members
     subject_turns = Counter()
@@ -150,6 +163,25 @@ def select_planning_supply(
 
     while len(chosen) < target:
         remaining = set(by_id) - set(chosen)
+        if semantic_assessments is not None:
+            exception_counts = Counter(
+                ref for pid in chosen for ref in semantic_assessments[pid].exception_requirement_ids
+            )
+            remaining = {
+                pid
+                for pid in remaining
+                if not semantic_assessments[pid].exception_requirement_ids
+                or any(
+                    exception_counts[ref]
+                    < semantic_config.exception_alternatives
+                    * (requirements[ref].experience_goal.count or 1)
+                    if ref in requirements
+                    else exception_counts[ref] < semantic_config.exception_alternatives
+                    for ref in semantic_assessments[pid].exception_requirement_ids
+                )
+            }
+        if not remaining:
+            break
         active = {
             key: members & remaining for key, members in buckets.items() if members & remaining
         }
@@ -158,6 +190,55 @@ def select_planning_supply(
             cohort = active[key]
         else:
             key, cohort = None, remaining
+        count_options = set()
+        if semantic_assessments is not None:
+            for req in requirements.values():
+                goal = req.experience_goal
+                if (
+                    req.polarity != "favor"
+                    or not goal
+                    or goal.frequency not in {"exact", "minimum"}
+                ):
+                    continue
+                supported = {
+                    pid
+                    for pid in by_id
+                    if any(
+                        m.requirement_id == req.requirement_id and m.relation == "supported"
+                        for m in semantic_assessments[pid].matches
+                    )
+                }
+                needed = goal.count if goal.target == "category" else 1
+                if len(supported & set(chosen)) < needed:
+                    count_options.update(supported & remaining)
+        if count_options:
+            if key and cohort & count_options:
+                cohort &= count_options
+            else:
+                key, cohort = None, count_options
+        elif semantic_assessments is not None and not any(
+            r.experience_goal and r.experience_goal.trip_scope in {"themed", "exclusive"}
+            for r in requirements.values()
+        ):
+            # Once a sourced one-off bucket has an option, diversify its remaining opportunities.
+            fresh = {pid for pid in remaining if by_id[pid].primary_type not in types}
+            favored = {r.requirement_id for r in requirements.values() if r.polarity == "favor"}
+            general = {
+                pid
+                for pid in remaining
+                if not any(
+                    m.requirement_id in favored and m.relation == "supported"
+                    for m in semantic_assessments[pid].matches
+                )
+            }
+            explored = len(chosen) - len(required)
+            due = ceil((explored + 1) * semantic_config.exploration_fraction) > ceil(
+                explored * semantic_config.exploration_fraction
+            )
+            if due and general:
+                key, cohort = None, (general & fresh) or general
+            elif fresh and (due or (key and intent_turns[key] > 0)):
+                key, cohort = None, fresh
         best = min(priority(pid) for pid in cohort)
         tied = {pid for pid in cohort if priority(pid) == best}
         rated = all(by_id[pid].rating is not None for pid in tied)

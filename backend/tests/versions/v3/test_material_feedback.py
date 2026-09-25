@@ -345,7 +345,7 @@ def tokyo_fixture():
         ),
         schedule=ScheduleState.model_validate(saved["schedule"]),
         route_evidence=tuple(RouteEvidence.model_validate(x) for x in saved["routes"]),
-        policy=ValidationPolicy(review_targets={"coverage", "repetition", "overfull"}),
+        policy=ValidationPolicy(review_targets={"coverage", "overfull"}),
     )
     # Candidate-anchor matrices were not retained in the CLI record. Synthetic support
     # preserves the observed five selectable identities solely for control-flow replay.

@@ -137,7 +137,11 @@ def test_quality_pipeline_profile_precedes_supply_and_uses_injected_limits():
             return rows
 
         acq.search_candidate_observations = observations
-        pipeline = PlanningCandidateSupplyPipeline(acq, None, acq._tracer, "fixture")
+        from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+
+        pipeline = PlanningCandidateSupplyPipeline(
+            acq, FakeStructuredLLMClient([]), acq._tracer, "fixture"
+        )
         seen = []
 
         async def profile(pid):
@@ -561,7 +565,11 @@ def test_required_extension_retains_normal_and_effective_supply_diagnostics():
 
     async def run():
         acq, rows, _, contract, dest = acquisition(16)
-        pipeline = PlanningCandidateSupplyPipeline(acq, None, acq._tracer, "fixture")
+        from backend.tests.versions.v0.fakes import FakeStructuredLLMClient
+
+        pipeline = PlanningCandidateSupplyPipeline(
+            acq, FakeStructuredLLMClient([]), acq._tracer, "fixture"
+        )
         normal = pipeline.capacities(
             contract.requirements, create_trip_date_window(date(2026, 9, 19))
         )
@@ -571,6 +579,7 @@ def test_required_extension_retains_normal_and_effective_supply_diagnostics():
             for row in rows
         ]
         required = {p.candidate.place_id for p in rich}
+        await acq.poi_semantics.assess([p.structured_evidence for p in rich], contract)
         selected = await pipeline.select(
             contract, (), rich, required, set(), expanded, dest, {}, set(), {}, {}
         )

@@ -144,12 +144,34 @@ class ModelTransport(httpx.MockTransport):
         self.requests, self.close_calls = [], 0
         self.values = values or payloads()
         self.missing_usage = missing_usage
+        self.ordinary_index = 0
         super().__init__(self.respond)
 
     def respond(self, request):
         self.requests.append(json.loads(request.content))
         assert "DO_NOT_SEND_CHECKS" not in request.content.decode()
-        value = self.values[len(self.requests) - 1]
+        data = json.loads(request.content)
+        if "FoundrySemanticAssessmentBatch" in request.content.decode():
+            content = data["input"][-1]["content"]
+            payload = json.loads(content if isinstance(content, str) else content[0]["text"])
+            value = {
+                "assessments": [
+                    dict(
+                        place_id=p["place_id"],
+                        visit_object=p["name"],
+                        role="attraction",
+                        categories=["fixture"],
+                        reason="Synthetic fixture evidence",
+                        evidence_refs=[p["source_ref"]],
+                        matches=[],
+                        exception_requirement_ids=[],
+                    )
+                    for p in payload["places"]
+                ]
+            }
+        else:
+            value = self.values[self.ordinary_index]
+            self.ordinary_index += 1
         raw = response(value if isinstance(value, str) else json.dumps(value), len(self.requests))
         if self.missing_usage:
             raw.pop("usage")
@@ -193,15 +215,15 @@ def test_real_five_case_matrix_and_two_successive_sessions(tmp_path, repeat):
             results, session, transport, supplied = await matrix(tmp_path / str(i))
             assert [r["outcome"] for r in results] == ["completed"] * 4 + ["clarification"]
             assert results[-1]["code"] == "unsupported_hard_requirements"
-            assert [r["client_invocations"] for r in results] == [1, 1, 2, 2, 1]
+            assert [r["client_invocations"] for r in results] == [1, 2, 2, 3, 1]
             assert [r["value"]["system_version"] for r in results[:4]] == ["v0", "v1", "v0", "v1"]
-            assert len(session.calls) == len(transport.requests) == 7
+            assert len(session.calls) == len(transport.requests) == 9
             assert all(c["http_sends"] == len(c["responses"]) == 1 for c in session.calls.values())
             assert (
                 sum(c["responses"][0]["usage"]["total_tokens"] for c in session.calls.values())
-                == 280
+                == 360
             )
-            assert sum(e["layer"] == "langchain_response" for e in session.events) == 7
+            assert sum(e["layer"] == "langchain_response" for e in session.events) == 9
             assert not session.broken and not session.capture_errors
             assert supplied["places_provider"].details_requests
             assert not supplied["places_provider"].reviews_requests
@@ -241,7 +263,7 @@ def test_json_observer_preserves_installed_sdk_and_client_ownership(tmp_path):
                 rows = await run_matrix(manifest, tmp_path, session=session, providers=providers())
                 assert [r["outcome"] for r in rows] == ["completed"] * 4 + ["clarification"]
                 assert all(c["http_sends"] == 1 for c in session.calls.values())
-                assert len(model.requests) == 7
+                assert len(model.requests) == 9
             assert legacy_httpx.AsyncClient is original_class
             assert not session.http.is_closed
             sends = [e for e in session.events if e["layer"] == "external_http_send"]
@@ -250,7 +272,7 @@ def test_json_observer_preserves_installed_sdk_and_client_ownership(tmp_path):
             assert "fixture-secret" not in json.dumps(sends)
             assert (
                 sum(c["responses"][0]["usage"]["total_tokens"] for c in session.calls.values())
-                == 280
+                == 360
             )
             assert not session.capture_errors
         assert model.close_calls == session.close_count == 1
@@ -491,7 +513,7 @@ def test_valid_dto_then_domain_failure_preserves_usage(tmp_path):
             assert [r["outcome"] for r in rows] == ["content_or_business_failure", "completed"]
             first = next(iter(s.calls.values()))
             assert not first["mapped"] and first["responses"][0]["usage"]["total_tokens"] == 40
-            assert sum(e["layer"] == "langchain_response" for e in s.events) == 2
+            assert sum(e["layer"] == "langchain_response" for e in s.events) == 3
 
     asyncio.run(exercise())
 
@@ -604,10 +626,10 @@ def test_spent_matrix_and_unique_artifacts(tmp_path):
             with pytest.raises(FileExistsError):
                 await run_matrix(manifest, tmp_path, session=s, providers=providers())
             assert all(p.read_bytes() == raw for p, raw in before.items())
-            assert not s.http.is_closed and len(s.calls) == 2
+            assert not s.http.is_closed and len(s.calls) == 3
             records = [json.loads(raw) for raw in before.values()]
             received = [r for r in records if r["layer"] == "sdk_response"]
-            assert len(received) == len({r["call_id"] for r in received}) == 2
+            assert len(received) == len({r["call_id"] for r in received}) == 3
             assert {r["case_id"] for r in received} == {"V0_E", "V1_E"}
 
     asyncio.run(exercise())

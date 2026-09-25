@@ -265,8 +265,24 @@ async def accept_components(
                     spatial=spatial,
                 )
                 if not comparison.accepted or not spatial["accepted"]:
+                    from backend.app.versions.v3.repair_pending import retain_pending
+
+                    deduplication = any(
+                        f.check == "repetition" and ("target", f.finding_id) in dependencies
+                        for f in initial.findings
+                    )
+                    pending = deduplication and retain_pending(
+                        budget,
+                        working,
+                        proposal,
+                        component,
+                        dependencies,
+                        after,
+                        comparison,
+                        spatial,
+                    )
                     audit.update(
-                        status="rejected",
+                        status="pending" if pending else "rejected",
                         reason=comparison.reason + "; " + "; ".join(spatial["reasons"]),
                     )
                     continue
@@ -281,6 +297,9 @@ async def accept_components(
                     audit.update(status="rejected", reason=global_check.reason)
                     continue
                 working, schedule = proposal, proposed_schedule
+                from backend.app.versions.v3.repair_pending import complete_pending
+
+                complete_pending(budget, dependencies)
                 losses.extend(removed)
                 adjustments.extend(changes)
                 latest_spatial = spatial

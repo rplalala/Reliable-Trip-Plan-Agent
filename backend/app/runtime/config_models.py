@@ -352,7 +352,6 @@ class V3RepairConfig(_RepairConfigModel):
     max_rounds: StrictInt = Field(ge=1, le=5)
     max_model_calls: StrictInt = Field(ge=0, le=5)
     quantity_review_enabled: StrictBool
-    repetition_review_enabled: StrictBool
     overfull_review_enabled: StrictBool
     daily_main_min: StrictInt = Field(ge=1, le=5)
     daily_main_max: StrictInt = Field(ge=1, le=10)
@@ -380,7 +379,25 @@ class V3RepairConfig(_RepairConfigModel):
         return self
 
 
+class POISemanticsConfig(_RepairConfigModel):
+    max_calls: StrictInt = Field(ge=1)
+    batch_size: StrictInt = Field(ge=1, le=32)
+    input_tokens: StrictInt = Field(ge=1, le=32000)
+    output_tokens: StrictInt = Field(ge=1, le=8192)
+    call_timeout_seconds: float = Field(gt=0)
+    total_seconds: float = Field(gt=0)
+    exploration_fraction: float = Field(gt=0, le=1)
+    exception_alternatives: StrictInt = Field(ge=1)
+
+    @model_validator(mode="after")
+    def consistent(self):
+        if self.call_timeout_seconds > self.total_seconds:
+            raise ValueError("Semantic call timeout exceeds request-wide allowance")
+        return self
+
+
 class RuntimeConfig(_ConfigModel):
+    poi_semantics: POISemanticsConfig
     transport: TransportPolicyConfig | None = None
     v3_repair: V3RepairConfig | None = None
     acquisition: AcquisitionConfig = Field(default_factory=AcquisitionConfig)
@@ -412,6 +429,11 @@ class RuntimeConfig(_ConfigModel):
 
     @model_validator(mode="after")
     def coordinated_policy(self):
+        if (
+            self.poi_semantics
+            and self.poi_semantics.input_tokens <= self.main_generation.framing_tokens
+        ):
+            raise ValueError("Semantic input must exceed shared framing reserve")
         if self.budget.routes.alternative_elements < self.budget.routes.alternative_pairs:
             raise ValueError("Alternative element allowance must cover selected pairs")
         if self.acquisition.policy_id == "quality_first_1":

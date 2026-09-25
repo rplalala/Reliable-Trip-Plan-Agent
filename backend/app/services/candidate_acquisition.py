@@ -31,8 +31,6 @@ from backend.app.services.review_selection import ReviewSelectionService
 STRENGTH_ORDER = {"hard": 0, "high": 1, "medium": 2, "low": 3}
 
 
-
-
 def allocate_review_order(contract, places, required, associations):
     """Allocate evidence opportunities only for explicitly registered dimensions."""
     requested = {e.requirement_id for e in contract.experience_evidence_requests}
@@ -96,14 +94,23 @@ class CandidatePool:
     excluded_place_ids: frozenset[str]
 
 
-
-
 class CandidateAcquisition:
     """One request; acquisition adapter owns budgets/cache, selector owns no providers."""
 
     def __init__(self, acquisition, llm, tracer, llm_identity):
         self.acquisition = acquisition
         self.tracer = tracer
+        config = getattr(acquisition, "runtime_config", None)
+        if config and config.poi_semantics:
+            from backend.app.services.poi_semantics import POISemanticsService
+
+            acquisition.poi_semantics = POISemanticsService(
+                llm,
+                config.poi_semantics,
+                config.main_generation.framing_tokens,
+                tracer=tracer,
+                deadline=getattr(acquisition, "request_deadline", None),
+            )
         self.review = ReviewSelectionService(
             places_provider=acquisition._places,
             llm_client=llm,
@@ -112,8 +119,6 @@ class CandidateAcquisition:
             cache=acquisition._cache,
             tracer=tracer,
         )
-
-
 
     async def run(self, contract, destination, window, *, supply):
         acq = self.acquisition
@@ -229,6 +234,12 @@ class CandidateAcquisition:
                     optional.add(resolution.resolved_place_id)
         if required & excluded:
             raise ClarificationRequired("required_excluded_conflict")
+        if getattr(acq, "poi_semantics", None):
+            acq.poi_semantics.named_bindings = {
+                n.requirement_id: resolution.resolved_place_id
+                for n, resolution in zip(ordered_names, resolutions, strict=True)
+                if resolution.resolved_place_id
+            }
         extension = getattr(supply, "discovery_extension", None)
         if extension is not None:
             merged = await extension.extend(contract, destination, merged, excluded)
@@ -276,9 +287,55 @@ class CandidateAcquisition:
         acq._consume_new_candidates(p.candidate.place_id for p in admitted)
         from backend.app.services.candidate_details import acquire_candidate_details
 
+        semantics = getattr(acq, "poi_semantics", None)
+
+        async def adequate(items, deadline):
+            rows = await semantics.prepare(
+                [p.structured_evidence for p in items], contract, deadline=deadline
+            )
+            if (
+                semantics.calls >= semantics.config.max_calls
+                or semantics.elapsed >= semantics.config.total_seconds
+            ):
+                return True  # No assessment capacity for additional unassessed Details.
+            qualified = {pid: row for pid, row in rows.items() if row.main_eligible}
+            if len(qualified) < capacities.k_final:
+                return False
+            themed = any(
+                r.experience_goal and r.experience_goal.trip_scope in {"themed", "exclusive"}
+                for r in contract.semantic_requirements
+            )
+            if themed:
+                return True
+            from math import ceil
+
+            favored = {
+                r.requirement_id for r in contract.semantic_requirements if r.polarity == "favor"
+            }
+            general = sum(
+                pid not in required
+                and not any(
+                    m.requirement_id in favored and m.relation == "supported" for m in row.matches
+                )
+                for pid, row in qualified.items()
+            )
+            reference = ceil(
+                max(0, capacities.k_final - len(required)) * semantics.config.exploration_fraction
+            )
+            unprocessed = {p.candidate.place_id for p in admitted} - rows.keys()
+            # Search origin is an opportunity lane, never proof of semantic suitability.
+            pending_general = any(not associations.get(pid) for pid in unprocessed)
+            return general >= reference or not pending_general
+
         rich, detail_failures, attempted = await acquire_candidate_details(
-            acq, admitted, r.end_date, capacities.r_pool
+            acq,
+            admitted,
+            r.end_date,
+            capacities.r_pool,
+            adequate=adequate if semantics else None,
         )
+        if semantics:
+            await semantics.prepare([p.structured_evidence for p in rich], contract)
         if not required <= {p.candidate.place_id for p in rich}:
             raise ClarificationRequired("required_place_details_unusable")
         if not rich:

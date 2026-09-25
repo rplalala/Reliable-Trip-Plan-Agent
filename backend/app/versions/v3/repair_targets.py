@@ -84,7 +84,11 @@ def localize_scope(
     for f in findings:
         if f.check == "coverage":
             direct.update(f.dates)
-        elif f.reason in {"required_identity_omitted", "required_visit_obligation_unmet"}:
+        elif f.reason in {
+            "required_identity_omitted",
+            "required_visit_obligation_unmet",
+            "experience_goal_count_unmet",
+        }:
             # Named omissions have explicit application authorization across these dates.
             direct.update(
                 f.dates
@@ -156,18 +160,21 @@ def visit_rules(context):
     return rules
 
 
-def main_visits(itinerary, pid):
+def main_visits(itinerary, pid, assessments=()):
+    from backend.app.policies.visit_multiplicity import is_primary_visit
+
     return [
         (d.date, a)
         for d in itinerary.days
         for a in d.activities
-        if a.activity_kind == "main_poi" and a.source_place_id == pid
+        if is_primary_visit(a, assessments) and a.source_place_id == pid
     ]
 
 
 def protect_visits(original, proposed, context):
     for pid, count, dates, uncertain in visit_rules(context):
-        before, after = main_visits(original, pid), main_visits(proposed, pid)
+        before = main_visits(original, pid, context.semantic_assessments)
+        after = main_visits(proposed, pid, context.semantic_assessments)
         from backend.app.versions.v3.repair_obligations import bind_visits, visit_binding
 
         modes = {
@@ -218,6 +225,18 @@ def protect_visits(original, proposed, context):
 
 
 def repeat_excess(itinerary, pid, context=None):
+    if context:
+        from backend.app.policies.visit_multiplicity import excess_visits
+
+        return (
+            excess_visits(
+                [a for _, a in main_visits(itinerary, pid, context.semantic_assessments)],
+                context.contract,
+                context.named_resolutions,
+                pid,
+            )
+            or 0
+        )
     count = max((n for p, n, _, _ in visit_rules(context) if p == pid), default=1) if context else 1
     return max(0, len(main_visits(itinerary, pid)) - count)
 
@@ -267,7 +286,9 @@ def check_blank_windows(original, proposed, context):
                 raise ValueError("Blank date lacks an applicable authorized local window")
 
 
-def related_progress(original, proposed, scope, schedule=None):
+def related_progress(original, proposed, scope, schedule=None, semantic_assessments=()):
+    from backend.app.policies.visit_multiplicity import is_primary_visit
+
     old = {a.activity_id: (d.date, a) for d in original.days for a in d.activities}
     new = {a.activity_id: (d.date, a) for d in proposed.days for a in d.activities}
     active = {r.permission.target_id: r for r in scope.active_related}
@@ -291,18 +312,18 @@ def related_progress(original, proposed, scope, schedule=None):
                 for d in original.days
                 if d.date == permission.date
                 for a in d.activities
-                if a.activity_kind == "main_poi" and a.source_place_id
+                if is_primary_visit(a, semantic_assessments) and a.source_place_id
             }
         )
         after = len(
             {
                 a.source_place_id
                 for a in activities
-                if a.activity_kind == "main_poi" and a.source_place_id
+                if is_primary_visit(a, semantic_assessments) and a.source_place_id
             }
         )
         uncertain = any(
-            a.activity_kind == "unknown"
+            (a.activity_kind == "unknown" and not is_primary_visit(a, semantic_assessments))
             or (a.activity_kind == "main_poi" and not a.source_place_id)
             for a in activities
         )

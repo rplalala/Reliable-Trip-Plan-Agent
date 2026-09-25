@@ -85,7 +85,17 @@ class FoundryUnresolvedTargetDTO(FoundryTransportDTO):
     reason: str
 
 
+class FoundryExperienceGoalDTO(FoundryTransportDTO):
+    frequency: Literal["one_off", "continuing", "exact", "minimum"]
+    count: int | None
+    target: Literal["category", "named_place"]
+    distinct_dates: bool
+    explicit_primary_exception: bool
+    trip_scope: Literal["ordinary", "themed", "exclusive"]
+
+
 class FoundrySemanticDTO(FoundryTransportDTO):
+    experience_goal: FoundryExperienceGoalDTO | None
     local_key: str
     normalized_text: str
     kind: Literal["preference", "constraint", "goal"]
@@ -162,6 +172,8 @@ class FoundryOperationalConflictDTO(FoundryTransportDTO):
 
 
 class FoundryVisitRequirementDTO(FoundryTransportDTO):
+    exact_visits: int | None
+    distinct_dates: bool
     access_mode: Literal["venue_entry", "exterior"] | None
     place_text: str
     minimum_visits: int

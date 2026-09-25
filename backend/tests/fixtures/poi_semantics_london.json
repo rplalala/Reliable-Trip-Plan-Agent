@@ -1,0 +1,631 @@
+{
+  "provenance": {
+    "run_id": "cd6ffe0a-dcd8-44bd-8439-18e18a39c647",
+    "sources": {
+      "logs\\v3_london_preference_trace_20261001\\result-complete.json": "eac329267dd45eef534f7f4f2f8150b4c7050244989fe41a955d1431c69d7363",
+      "logs\\v3_london_preference_trace_20261001\\capture-2bdbf58d-1ab5-421d-8875-f8f0ecad02ae.json": "73beb6a16485f3bee60b08b518d2df235a57df74f34e284dc2aec49adb067688",
+      "logs\\v3_london_preference_trace_20261001\\capture-7f4ec9c8-dacf-4a67-b43f-6964c7547691.json": "80220c37c535a6ae09d6ffe2c539439798b9349c77beea72cecb58e08b44db95",
+      "logs\\v3_london_preference_trace_20261001\\capture-a133594f-6d3e-4126-9573-66170f3568f0.json": "7dd3b55e06451680f1ce87a816af5b57d3d05924711f9996593b9552ec856dac"
+    },
+    "note": "Minimal historical search identity/provenance projection. No semantic judgments were present in this run."
+  },
+  "contract": {
+    "contract_version": "interpreted_requirements_3",
+    "request_sha256": "7c0f59c4c3f76ee05b5b59061fb6c9675a06644c616025591f2ceed4ab85b6a2",
+    "input_version": "planning_request_2",
+    "structured_input_sha256": "29e7e643d0d6e5fbb16edeab0a24f531ddc3a55b67082f966034a21758d5b9b3",
+    "structured_field_paths": [
+      "destination",
+      "start_date",
+      "end_date",
+      "traveler_count",
+      "budget.amount",
+      "budget.currency"
+    ],
+    "visit_requirements": [],
+    "time_protections": [],
+    "interpretation_origin": "model",
+    "requirements": {
+      "destination": "London",
+      "start_date": "2026-10-01",
+      "end_date": "2026-10-08",
+      "traveler_count": 1,
+      "budget": {
+        "amount": "3000",
+        "currency": "AUD"
+      },
+      "required_activities": [],
+      "excluded_activities": [],
+      "preferences": [],
+      "unresolved_fields": []
+    },
+    "named_places": [],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "requirement_id": "semantic_1",
+        "normalized_text": "The requester likes mountain climbing.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "subject_1"
+        ],
+        "source_refs": [
+          {
+            "quote": "I like climbing mountain",
+            "occurrence": 0,
+            "start": 0,
+            "end": 24,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_2",
+        "normalized_text": "The requester wants to visit a zoo.",
+        "kind": "goal",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "subject_1"
+        ],
+        "source_refs": [
+          {
+            "quote": "I want to visit zoo",
+            "occurrence": 0,
+            "start": 26,
+            "end": 45,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_3",
+        "normalized_text": "The requester wants to enjoy a rich trip.",
+        "kind": "goal",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "whole_trip",
+        "subject_refs": [
+          "subject_1"
+        ],
+        "source_refs": [
+          {
+            "quote": "I also want to enjoy a rich trip.",
+            "occurrence": 0,
+            "start": 47,
+            "end": 80,
+            "match_mode": "exact"
+          }
+        ]
+      }
+    ],
+    "subjects": [
+      {
+        "subject_id": "subject_1",
+        "label": "Requester",
+        "source_refs": [
+          {
+            "quote": "I like climbing mountain",
+            "occurrence": 0,
+            "start": 0,
+            "end": 24,
+            "match_mode": "exact"
+          }
+        ]
+      }
+    ],
+    "discovery_intents": [
+      {
+        "intent_id": "discovery_1",
+        "requirement_refs": [
+          "semantic_1"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "mountain climbing"
+      },
+      {
+        "intent_id": "discovery_2",
+        "requirement_refs": [
+          "semantic_2"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "zoo"
+      }
+    ],
+    "experience_evidence_requests": [],
+    "extraction_issues": []
+  },
+  "candidates": [
+    {
+      "place_id": "ChIJLyu983gcdkgRRJu2wltOnBk",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.5653079,
+      "longitude": -0.09256180000000001,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJ-UEYyyUddkgRRyz5wqqtX5Q",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.527699,
+      "longitude": -0.0398529,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJQ95lCpUEdkgRUuTIZTujxgg",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.4923431,
+      "longitude": -0.11460139999999999,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJU6_UJnobdkgRrlCVY0JlvcE",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.5243585,
+      "longitude": -0.1419586,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJMxB_mWCo2EcRRMMffvQJOv0",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.4943567,
+      "longitude": 0.043023,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJ58qsxJwPdkgR75ELwG_4mnU",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.4764426,
+      "longitude": -0.199494,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJ8QGpx8IFdkgRSQRHHP6e2i0",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.498554899999995,
+      "longitude": -0.1139022,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJjf9CAyUcdkgRKa_360oVl_g",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.5854096,
+      "longitude": -0.0607319,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJK8vcrm0TdkgRSpgXJM1FbnY",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.5808074,
+      "longitude": -0.3444013,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJvZTTchoDdkgRgEjd4k2cSus",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.5144051,
+      "longitude": -0.0745315,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJ20OAMOoFdkgRpNF0ftodUHE",
+      "primary_type": null,
+      "latitude": 51.458757,
+      "longitude": -0.12831889999999999,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJma4W3O0EdkgRCr6FEltKyZ0",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.4850646,
+      "longitude": -0.12281269999999998,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJOX7BxhcDdkgRQvMjxK9TN9g",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.493443,
+      "longitude": -0.06086839999999999,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJpzURDCcQdkgRYcL6SULhwiQ",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.515518099999994,
+      "longitude": -0.2205732,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJIWsxS7kddkgRkdH_QvQ4nUA",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.527598,
+      "longitude": -0.056319,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJrzoDdS4PdkgRVK945lorOfw",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.5094485,
+      "longitude": -0.2230555,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJtVhZY50ddkgRGae5riWnNGg",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.5345229,
+      "longitude": -0.0602298,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJq8g9mKAPdkgRaVcZOlPlP-A",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.4942685,
+      "longitude": -0.23634,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJKbN8lEip2EcRAJtD2dc4gAM",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.51119070000001,
+      "longitude": 0.012757099999999999,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJwWSPQiMKdkgRnigBE0JWqR0",
+      "primary_type": "sports_activity_location",
+      "latitude": 51.372355899999995,
+      "longitude": -0.29127759999999997,
+      "intent_ids": [
+        "discovery_1"
+      ]
+    },
+    {
+      "place_id": "ChIJV_iXMtcadkgRqBI84CY_crE",
+      "primary_type": "zoo",
+      "latitude": 51.535287499999995,
+      "longitude": -0.1534303,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJiymRl2NFdkgRrB2GOSbz1_k",
+      "primary_type": "zoo",
+      "latitude": 51.850029,
+      "longitude": -0.5441602,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJed76NXMFdkgRVjjPgq8ZIxE",
+      "primary_type": "zoo",
+      "latitude": 51.481352799999996,
+      "longitude": -0.1565835,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJHQ0TmmENdkgRStqMV2LSW5M",
+      "primary_type": "zoo",
+      "latitude": 51.512403299999995,
+      "longitude": -0.3485011,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJA9IL6RkhdkgRCE7WGJD3p3g",
+      "primary_type": "zoo",
+      "latitude": 51.7431959,
+      "longitude": -0.062328499999999995,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJv9tbXcsRdkgRdSU67tQcC2w",
+      "primary_type": "zoo",
+      "latitude": 51.566928000000004,
+      "longitude": -0.189387,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJB0xEZAkbdkgR4cycOZID_tc",
+      "primary_type": "zoo",
+      "latitude": 51.534283099999996,
+      "longitude": -0.1525138,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJOWBQvA4FdkgRQf5iYYFF1v4",
+      "primary_type": "park",
+      "latitude": 51.4791075,
+      "longitude": -0.1564981,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJeX5wVd0adkgRBU0uMt3sxZQ",
+      "primary_type": "zoo",
+      "latitude": 51.5354889,
+      "longitude": -0.15257279999999998,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJ3c1koogbdkgRAkVlf6pO2Ns",
+      "primary_type": "zoo",
+      "latitude": 51.5352013,
+      "longitude": -0.1556543,
+      "intent_ids": [
+        "discovery_2"
+      ]
+    },
+    {
+      "place_id": "ChIJc2nSALkEdkgRkuoJJBfzkUI",
+      "primary_type": "tourist_attraction",
+      "latitude": 51.5031864,
+      "longitude": -0.11951919999999999,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJk9LIC8cEdkgR2TkO-raMEDk",
+      "primary_type": "event_venue",
+      "latitude": 51.502511899999995,
+      "longitude": -0.11876279999999999,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJ3TgfM0kDdkgRZ2TV4d1Jv6g",
+      "primary_type": "castle",
+      "latitude": 51.508112399999995,
+      "longitude": -0.0759493,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJDbhTs1ADdkgR-2MjTkoJXXg",
+      "primary_type": "scenic_spot",
+      "latitude": 51.5044028,
+      "longitude": -0.0865331,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJc2nSALkEdkgRviluWxwFsxA",
+      "primary_type": "aquarium",
+      "latitude": 51.501557999999996,
+      "longitude": -0.119506,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJtV5bzSAFdkgRpwLZFPWrJgo",
+      "primary_type": "cultural_landmark",
+      "latitude": 51.501363999999995,
+      "longitude": -0.14189,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJSdtli0MDdkgRLW9aCBpCeJ4",
+      "primary_type": "bridge",
+      "latitude": 51.5054564,
+      "longitude": -0.07535649999999999,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJH-tBOc4EdkgRJ8aJ8P1CUxo",
+      "primary_type": "plaza",
+      "latitude": 51.508039,
+      "longitude": -0.128069,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJnzLnCMcEdkgRioLEm8rT_aA",
+      "primary_type": "tourist_attraction",
+      "latitude": 51.5018817,
+      "longitude": -0.1193734,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJq4lX1doEdkgR5JXPstgQjc0",
+      "primary_type": "history_museum",
+      "latitude": 51.5021585,
+      "longitude": -0.1293572,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJh7wHoqwEdkgR3l-vqQE1HTo",
+      "primary_type": "church",
+      "latitude": 51.5138453,
+      "longitude": -0.0983506,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJ2dGMjMMEdkgRqVqkuXQkj7c",
+      "primary_type": "cultural_landmark",
+      "latitude": 51.500729199999995,
+      "longitude": -0.12462540000000001,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJUUj2OtIEdkgRbNmNisTEtQw",
+      "primary_type": "tourist_attraction",
+      "latitude": 51.5104809,
+      "longitude": -0.13117779999999998,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJmZuNDMQEdkgRfB9O9456eQc",
+      "primary_type": "government_office",
+      "latitude": 51.4994794,
+      "longitude": -0.1248092,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJeclqF84EdkgRYkL4mtJ7rLM",
+      "primary_type": "art_gallery",
+      "latitude": 51.5094236,
+      "longitude": -0.1281216,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJLzVDusQEdkgRelObBaL_jto",
+      "primary_type": "church",
+      "latitude": 51.4993695,
+      "longitude": -0.1272993,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJG-CxwNoEdkgRXx26gHZwVf8",
+      "primary_type": "park",
+      "latitude": 51.502967,
+      "longitude": -0.1339534,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJAcVkt8cEdkgRMppkB6-eoGE",
+      "primary_type": "tourist_attraction",
+      "latitude": 51.5029205,
+      "longitude": -0.1183738,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJLU07DdoFdkgRbImA_ez8Nkw",
+      "primary_type": "tourist_attraction",
+      "latitude": 51.5106622,
+      "longitude": -0.1299112,
+      "intent_ids": [
+        "default_0"
+      ]
+    },
+    {
+      "place_id": "ChIJbxkx_1EDdkgRLfU_tC9tPb0",
+      "primary_type": "garden",
+      "latitude": 51.509715,
+      "longitude": -0.0824601,
+      "intent_ids": [
+        "default_0"
+      ]
+    }
+  ],
+  "historical_supply": [
+    "ChIJGXGPYsEFdkgRAIIfSSET698",
+    "ChIJeX5wVd0adkgRBU0uMt3sxZQ",
+    "ChIJ8QGpx8IFdkgRSQRHHP6e2i0",
+    "ChIJOWBQvA4FdkgRQf5iYYFF1v4",
+    "ChIJcWlQxa4EdkgRJVRrNVOPNBo",
+    "ChIJdfQDVtMadkgRywCRPsP_GiU",
+    "ChIJSWU_czgbdkgR0Hy7bzPcKpY",
+    "ChIJl-cjD9QEdkgRVkkQt3pySRI",
+    "ChIJlVkfb0gFdkgRpqIbSkkFdkg",
+    "ChIJZdN_kTgFdkgR0NR3z813cBw",
+    "ChIJ2z13nUAFdkgR5JZACc4cVmc",
+    "ChIJnbhVw_YPdkgR2FvRK5V9lUc",
+    "ChIJgfn1lkAFdkgRFEhXfrdyBO4",
+    "ChIJEYfH57cEdkgR-_nTJFs0hRc",
+    "ChIJDbhTs1ADdkgR-2MjTkoJXXg",
+    "ChIJc2nSALkEdkgRviluWxwFsxA"
+  ],
+  "historical_selection_reasons": [
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity",
+    "discovery_opportunity"
+  ]
+}

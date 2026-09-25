@@ -123,7 +123,9 @@ def fixtures(days, count, long_text=False):
         shortfall=0,
         profile_relations={pid: profile_relations(contract, profiles, pid) for pid in ids},
     )
-    projection = planner_supply_projection(SimpleNamespace(policy_result=policy), contract)
+    projection = planner_supply_projection(
+        SimpleNamespace(policy_result=policy, semantic_assessments=()), contract
+    )
     routes = _routes(ids)
     from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
 

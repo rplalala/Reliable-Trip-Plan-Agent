@@ -69,11 +69,13 @@ def primary(overlap=True):
             )
         )
     # This fixture tests first-day repair, not an unrelated minimum-coverage miss.
-    # Keep the same identity set; repetition remains a separate opt-in review.
+    # Use a different identity: unauthorized repetition is now an automatic product target.
     draft.days[1].activities = [
         a.model_copy(
             update={
                 "activity_id": "second-day-visit",
+                "source_place_id": "poi-0-2",
+                "place_name": "Place poi-0-2",
                 "start_time": a.start_time + timedelta(days=1),
                 "end_time": a.end_time + timedelta(days=1),
             }
@@ -99,9 +101,9 @@ class Model(FakeStructuredLLMClient):
             supply = json.loads(
                 kwargs["user_prompt"].split("Planning candidate supply contract:\n", 1)[1]
             )
-            for day in self.responses[0].days:
+            for index, day in enumerate(self.responses[0].days):
                 for activity in day.activities:
-                    activity.source_place_id = supply["optional_canonical_ids"][0]
+                    activity.source_place_id = supply["optional_canonical_ids"][index]
         return await super().generate_structured(**kwargs)
 
     async def generate_repair_structured(self, **kwargs):
@@ -175,6 +177,8 @@ async def execute(model=None, places=None, runtime=None, **kwargs):
         reference_date=date(2026, 9, 11),
         retrieval_factory=lambda: runtime,
         development_timeout_seconds=kwargs.pop("development_timeout_seconds", 600),
+        # Isolate existing conflict fixtures; default-policy coverage passes None explicitly.
+        quantity_review_enabled=kwargs.pop("quantity_review_enabled", False),
         **kwargs,
     )
     return result, model, places, runtime
@@ -202,7 +206,7 @@ def test_actual_repair_and_adopted_report(behavior, status):
     assert outcome.original_report == outcome.repair.original_report
     assert result.generation_diagnostics == outcome.final_report.diagnostics
     assert result.itinerary.model_dump() == outcome.final_primary.model_dump()
-    assert result.output_role_summary.scheduled_place_ids == ("poi-0-0", "poi-0-1")
+    assert result.output_role_summary.scheduled_place_ids == ("poi-0-0", "poi-0-1", "poi-0-2")
     assert runtime.prepares == runtime.enters == runtime.closes == 1
     assert result.request_resources["closed"]
     assert places.nearby and len(places.nearby) <= 2
@@ -221,7 +225,7 @@ def test_actual_repair_and_adopted_report(behavior, status):
     assert outcome.draft_cost_projections == outcome.final_cost_projections
 
 
-def test_quantity_default_off_skips_model_and_preserves_original_flow():
+def test_quantity_explicit_off_skips_model_and_preserves_original_flow():
     result, model, places, _ = asyncio.run(execute(Model(primary(False))))
     assert not result.v3.quantity_review_enabled
     assert result.v3.scope is result.v3.repair is None
@@ -232,6 +236,20 @@ def test_quantity_default_off_skips_model_and_preserves_original_flow():
         f.check == "coverage" and f.status == "NEEDS_REVIEW"
         for f in result.v3.final_report.findings
     )
+
+
+def test_quantity_yaml_default_repairs_sparse_days_without_expanding_permissions():
+    result, model, _, _ = asyncio.run(
+        execute(Model(primary(False), "existing_add"), quantity_review_enabled=None)
+    )
+    assert result.v3.quantity_review_enabled
+    assert model.repair_calls > 0
+    assert result.generation_diagnostics.days[0].distinct_main_poi_count == 2
+    assert not result.v3.scope.permissions
+    assert not result.v3.scope.revisits
+    original = {a.activity_id: a for d in result.v3.draft.days for a in d.activities}
+    final = {a.activity_id: a for d in result.itinerary.days for a in d.activities}
+    assert all(final[aid] == activity for aid, activity in original.items())
 
 
 def test_legal_identity_outside_original_supply_reaches_final_and_nearby():
@@ -546,6 +564,7 @@ def test_actual_v3_cli_serializes_adopted_result(tmp_path, monkeypatch, capsys):
             "2026-09-11",
             "--development-timeout-seconds",
             "600",
+            "--no-repair-quantity-review",
         ],
         llm_client=Model(),
         places_provider=Places(),

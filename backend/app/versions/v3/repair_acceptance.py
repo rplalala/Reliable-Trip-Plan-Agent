@@ -4,6 +4,7 @@ from dataclasses import replace
 from datetime import timedelta
 
 from backend.app.observability.progress import observed
+from backend.app.policies.visit_multiplicity import is_primary_visit
 from backend.app.schemas.itinerary import Activity, ItineraryDay
 from backend.app.versions.v3.repair_models import RepairComparison, TargetProgress
 from backend.app.versions.v3.repair_obligations import (
@@ -34,6 +35,7 @@ def assess(itinerary, context, whitelist=(), evidence=(), transitions=None):
         policy=context.policy,
         schedule=context.schedule,
         visit_bindings=bind_visits(itinerary, context),
+        semantic_assessments=context.semantic_assessments,
         route_evidence=(*context.route_evidence, *evidence),
         transitions=context.transitions if transitions is None else transitions,
     )
@@ -149,7 +151,9 @@ def apply_patch(
                 or (day != edit.date and edit.operation != "move")
             ):
                 raise ValueError("Unauthorized operation")
-            if previous.activity_kind == "free_time":
+            if previous.activity_kind == "free_time" and not is_primary_visit(
+                previous, context.semantic_assessments if context else ()
+            ):
                 raise ValueError("Placeholders may only be adjusted by the application")
             if edit.operation == "move" and (
                 day != permission.source_date
@@ -165,7 +169,7 @@ def apply_patch(
             if context is None and previous.source_place_id in required_ids:
                 raise ValueError("Cannot delete a REQUIRED visit")
             changes[aid] = None
-            if previous.activity_kind == "main_poi":
+            if is_primary_visit(previous, context.semantic_assessments if context else ()):
                 lost.append(aid)
             continue
         if edit.start_time is None or edit.end_time is None:
@@ -194,7 +198,7 @@ def apply_patch(
                 raise ValueError("Identity is outside the repair whitelist or excluded")
             if previous is not None and (
                 (context is None and previous.source_place_id in required_ids)
-                or previous.activity_kind != "main_poi"
+                or not is_primary_visit(previous, context.semantic_assessments if context else ())
             ):
                 raise ValueError("Cannot replace a REQUIRED or non-main activity")
             if (
@@ -292,7 +296,9 @@ def apply_patch(
 
             active_dates = {
                 r.permission.date
-                for r in related_progress(original, result, scope, context.schedule)
+                for r in related_progress(
+                    original, result, scope, context.schedule, context.semantic_assessments
+                )
             }
             if any(
                 e.operation == "add" and e.date not in set(scope.direct_add_dates) | active_dates
@@ -300,6 +306,43 @@ def apply_patch(
             ):
                 raise ValueError("Conditional addition has no activating edit")
         check_blank_windows(original, result, context)
+    if context and context.semantic_assessments:
+        from backend.app.policies.poi_semantic_output import goal_progress, semantic_policy_issues
+
+        before_goals = {
+            r["requirement_id"]: r
+            for r in goal_progress(original, context.contract, context.semantic_assessments)
+        }
+        for row in goal_progress(result, context.contract, context.semantic_assessments):
+            previous = before_goals[row["requirement_id"]]
+            if min(row["matched"], row["expected"]) < min(
+                previous["matched"], previous["expected"]
+            ):
+                raise ValueError("Sourced experience goal satisfaction decreased")
+
+        old = semantic_policy_issues(
+            original, context.contract, context.semantic_assessments, context.named_resolutions
+        )
+        new = semantic_policy_issues(
+            result, context.contract, context.semantic_assessments, context.named_resolutions
+        )
+
+        def issue_key(row):
+            return tuple(
+                row.get(k) for k in ("reason", "requirement_id", "activity_id", "place_id")
+            )
+
+        prior = {issue_key(row): row for row in old}
+        if any(
+            row["reason"] not in {"unauthorized_repeat", "visit_multiplicity_unassessed"}
+            and (
+                issue_key(row) not in prior
+                or row.get("excess", row.get("shortfall", 1))
+                > prior[issue_key(row)].get("excess", prior[issue_key(row)].get("shortfall", 1))
+            )
+            for row in new
+        ):
+            raise ValueError("Patch violates primary role, exception or multiplicity authorization")
     return result, tuple(lost)
 
 
@@ -312,6 +355,10 @@ def finding_key(f):
         return f.check, f.activity_ids, f.place_ids
     if f.check == "repetition":
         return f.check, f.place_ids
+    if f.check == "primary_policy" and f.requirement_ids:
+        return f.check, f.reason, f.requirement_ids
+    if f.reason == "experience_goal_count_unmet":
+        return f.check, f.reason, f.requirement_ids
     return f.check, tuple(sorted(f.activity_ids)), f.dates, f.place_ids, f.requirement_ids
 
 
@@ -331,7 +378,9 @@ def severity(f, itinerary):
             return None
     if f.check == "named_requirement":
         return 1.0 if f.status == "CONFIRMED" else 0.0 if f.status == "PASS" else None
-    if f.check in {"route", "opening"}:
+    if f.check in {"route", "opening", "repetition", "primary_policy"}:
+        return f.magnitude
+    if f.reason == "experience_goal_count_unmet":
         return f.magnitude
     return None
 
@@ -344,7 +393,8 @@ def compare(
     new = {finding_key(f): f for f in after.findings}
     from backend.app.versions.v3.repair_targets import related_progress, repeat_excess
 
-    related = related_progress(original, proposed, scope, schedule)
+    assessments = context.semantic_assessments if context else ()
+    related = related_progress(original, proposed, scope, schedule, assessments)
     permitted = {
         r.permission.date
         for r in related
@@ -404,14 +454,14 @@ def compare(
             for d in original.days
             if d.date == day
             for a in d.activities
-            if a.activity_kind == "main_poi"
+            if is_primary_visit(a, assessments)
         }
         new_ids = {
             a.source_place_id
             for d in proposed.days
             if d.date == day
             for a in d.activities
-            if a.activity_kind == "main_poi"
+            if is_primary_visit(a, assessments)
         }
         excluded = inclusion_ids(context)[1] if context else set()
         conflict_removals = {
@@ -478,6 +528,23 @@ def compare(
                     distance(a.distinct_main_poi_count),
                     distance(b.distinct_main_poi_count),
                 )
+        elif f.check == "primary_policy" or f.reason == "experience_goal_count_unmet":
+            left = f.magnitude
+            right = max(
+                (
+                    r.magnitude or 0
+                    for r in after.findings
+                    if r.status == "CONFIRMED"
+                    and r.check == f.check
+                    and r.reason == f.reason
+                    and (
+                        r.requirement_ids == f.requirement_ids
+                        if f.requirement_ids
+                        else bool(set(r.activity_ids) & set(f.activity_ids))
+                    )
+                ),
+                default=0,
+            )
         elif f.check == "repetition":
             left = repeat_excess(original, f.place_ids[0], context)
             right = repeat_excess(proposed, f.place_ids[0], context)

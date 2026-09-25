@@ -26,6 +26,11 @@ def test_historical_mismatch_is_valid_and_never_automatically_reclassified(name,
     saved = json.loads((FIXTURES / f"historical_{name}_taxonomy.json").read_text())
     payload = json.loads(saved["raw_model_response"][0]["text"])
     assert payload == saved["strict_parsed_dto"]
+    # Synthetic wire migration only; historical raw artifacts are not changed.
+    for row in payload.get("semantic_requirements") or ():
+        row["experience_goal"] = None
+    for row in payload.get("visit_requirements") or ():
+        row.update(exact_visits=None, distinct_dates=False)
     text = saved["input"]["additional_preferences"]
     value, _ = asyncio.run(interpret(payload, text=text, canonical=False))
     with pytest.raises(PreferenceInputBlocked) as error:
@@ -124,7 +129,7 @@ def test_synthetic_valid_contrasts_are_not_reclassified_by_application(text):
 
 def test_prompt_has_decision_order_without_changing_wire_ownership():
     prompt = PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
-    assert "preference_prompt_13" in prompt
+    assert "preference_prompt_16" in prompt
     assert (
         "Not knowing which clear requirement the user will give up is NOT semantic ambiguity"
         in prompt

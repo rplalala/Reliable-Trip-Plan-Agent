@@ -13,7 +13,7 @@ from backend.app.runtime.budget import ToolBudgetExceededError, ToolBudgetKey
 from backend.app.runtime.config_models import AcquisitionConfig
 
 
-async def acquire_candidate_details(acq, admitted, trip_end, target):
+async def acquire_candidate_details(acq, admitted, trip_end, target, *, adequate=None):
     runtime_config = getattr(acq, "runtime_config", None)
     config = runtime_config.acquisition if runtime_config else AcquisitionConfig()
     ends = perf_counter() + config.details_deadline_seconds
@@ -75,8 +75,12 @@ async def acquire_candidate_details(acq, admitted, trip_end, target):
                     report["stop"] = "deadline"
                     break
                 if report["new_successes"] >= target:
-                    report["stop"] = "new_success_target"
-                    break
+                    if adequate is None or await adequate(list(rich.values()), ends):
+                        report["stop"] = "new_success_target"
+                        break
+                    # Resume this queue, preserving the original deadline and counters.
+                    target = min(len(admitted), target + runtime_config.poi_semantics.batch_size)
+                    report["continued_for_semantic_supply"] = True
                 if len(rich) >= len(admitted):
                     report["stop"] = "comparison_capacity"
                     break

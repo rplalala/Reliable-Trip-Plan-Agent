@@ -104,7 +104,7 @@ def test_unresolved_locality_does_not_expand_to_trip_dates():
     assert not narrowed.dates and not narrowed.add_dates and not narrowed.permissions
 
 
-def test_shared_activity_cannot_borrow_deferred_repetition_operations():
+def test_current_mandatory_repeat_joins_confirmed_scope():
     original, ctx, _, policy = setup(
         [
             [visit("a", "a", end="11:00"), visit("b", "b", start="10:30", end="11:30")],
@@ -113,9 +113,11 @@ def test_shared_activity_cannot_borrow_deferred_repetition_operations():
     )
     result, _ = execute((original, ctx, policy), [[]])
     scope = result.rounds[0].result.scope
-    assert scope.deferred_review_target_ids
-    assert all(p.operations == {"retime"} for p in scope.permissions)
-    assert not result.rounds[0].result.candidate_preparation.authorizations
+    assert not scope.deferred_review_target_ids
+    assert any("delete" in p.operations for p in scope.permissions)
+    assert any(
+        f.check == "repetition" and f.status == "CONFIRMED" for f in result.original_report.findings
+    )
 
 
 def honolulu_fixture():
@@ -149,7 +151,7 @@ def honolulu_fixture():
         identity_ledger=tuple(RepairCandidate.model_validate(c) for c in saved["ledger"]),
         schedule=ScheduleState.model_validate(saved["schedule"]),
         route_evidence=tuple(RouteEvidence.model_validate(r) for r in saved["routes"]),
-        policy=ValidationPolicy(review_targets={"coverage", "repetition", "overfull"}),
+        policy=ValidationPolicy(review_targets={"coverage", "overfull"}),
     )
     ctx = ctx.model_copy(
         update={"transitions": bind_transitions(original, "WALK", schedule=ctx.schedule)}
@@ -164,7 +166,8 @@ def test_honolulu_real_validation_scope_preparation_projection():
     result, model = execute((original, ctx, configured_policy()), [[]], mode="WALK")
     first = result.rounds[0].result
     assert len(first.scope.target_ids) == 2
-    assert len(first.scope.deferred_review_target_ids) == 6
+    # Historical multiplicity has not been assessed under the new exact-count contract.
+    assert len(first.scope.deferred_review_target_ids) == 5
     assert {str(a.date) for a in first.candidate_preparation.authorizations} == {
         "2026-09-27",
         "2026-10-03",

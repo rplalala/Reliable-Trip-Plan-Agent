@@ -86,6 +86,7 @@ def test_v1_cli_outputs_shared_planning_result_with_offline_injections(capsys) -
     assert captured.err == ""
     assert output["system_version"] == "v1"
     assert set(output) == {
+        "semantic_assessment",
         "generation_diagnostics",
         "system_version",
         "requirements",

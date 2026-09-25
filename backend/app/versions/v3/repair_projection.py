@@ -42,6 +42,10 @@ available. Opportunity states are preparation hints, never full feasibility or a
 Resolve as many currently authorized targets as can be safely and coherently improved.
 Do not add edits merely to touch more targets. Independent date groups may be accepted separately;
 dependent deletions, compensation, visits and their transfers remain atomic together.
+pending_dependency_groups are unpublished proposals. Their edits will be combined with your
+new edits and rechecked against the publishable input, never silently adopted. Complete their
+coverage compensation within authorized dates. A new edit to an existing pending activity
+supersedes that pending edit and must still obey the original operation permissions.
 Use target_worksheet and report a brief target disposition; explanations are not facts.
 WALK is a soft preference, then TRANSIT, then DRIVE. Existing usable DRIVE does not require a
 TRANSIT call. The application chooses and verifies authorized per-leg options, never you invent
@@ -72,6 +76,7 @@ def build_repair_input(
     policy=None,
     feedback=None,
     transport_options=(),
+    pending_groups=(),
 ):
     from backend.app.versions.v3.repair_budget import configured_policy
 
@@ -203,6 +208,12 @@ def build_repair_input(
             )
 
     payload = {
+        "pending_dependency_groups": pending_groups,
+        "semantic_assessments": [
+            r.model_dump(mode="json")
+            for r in context.semantic_assessments
+            if r.place_id in input_ids
+        ],
         "version": "repair_input_2",
         "projection_revision": "mixed_transport_components_1",
         "transport_options": transport_options,

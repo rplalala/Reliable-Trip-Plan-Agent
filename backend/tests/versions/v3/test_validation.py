@@ -192,7 +192,7 @@ def test_natural_language_never_changes_verdict_or_manufactures_exception(text):
 
 def test_repetition_does_not_prove_unreasonable_repeat():
     report = run([activity(), activity("two", start="12:00", end="13:00")])
-    assert findings(report, "repetition")[0].status == "NEEDS_REVIEW"
+    assert findings(report, "repetition")[0].status == "UNKNOWN"
     assert report.diagnostics.days[0].distinct_main_poi_count == 1
     assert not any(f.is_violation for f in report.findings)
 
