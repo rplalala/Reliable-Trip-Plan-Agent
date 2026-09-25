@@ -271,3 +271,17 @@ Do not repeatedly read or test unrelated parts of the repository without a reaso
 - Do not implement future-stage mechanisms early.
 - Do not automatically commit or push unless explicitly asked.
 - Keep explanations concise unless I ask for more detail.
+
+## Agent skills
+
+### Issue tracker
+
+Project issues and specs live under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the default five triage roles as local issue `Status:` values. See `docs/agents/triage-labels.md`.
+
+### Project documentation
+
+Use `PROJECT.md` for current project state and `docs/README.md` to find relevant design documents. See `docs/agents/domain.md`.
