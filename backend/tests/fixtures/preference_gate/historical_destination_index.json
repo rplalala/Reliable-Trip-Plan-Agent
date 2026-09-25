@@ -1,0 +1,75 @@
+{
+  "source_run_id": "9f50dee0-4cc1-4f18-8eec-800a90597730",
+  "source_path": "logs\\shared_preference_gate_10case_20260925\\01_physical_destination.json",
+  "source_sha256": "5354ed6f6dcde9f0db0d2fda2ff695181ebf153f198cdb5308b11a1e18a9472c",
+  "raw_structured_text": "{\n  \"preference_input_assessment\": {\n    \"input_disposition\": \"REWRITE_REQUIRED\",\n    \"safety_disposition\": \"CLEAR\",\n    \"issues\": [\n      {\n        \"issue_type\": \"destination_scope_conflict\",\n        \"source_refs\": [\n          {\n            \"quote\": \"I want to visit the Bronx Zoo in New York.\",\n            \"occurrence\": 0\n          }\n        ],\n        \"quote_status\": \"located\",\n        \"related_field\": \"destination\",\n        \"operational_conflict_index\": 0,\n        \"scope\": \"The requested Bronx Zoo visit in New York conflicts with the structured Paris destination.\"\n      }\n    ]\n  },\n  \"visit_requirements\": [\n    {\n      \"access_mode\": null,\n      \"place_text\": \"Bronx Zoo\",\n      \"minimum_visits\": 1,\n      \"dates\": [],\n      \"status\": \"unresolved\",\n      \"reason\": \"The explicit visit request conflicts with the structured Paris destination.\",\n      \"source_refs\": [\n        {\n          \"quote\": \"I want to visit the Bronx Zoo in New York.\",\n          \"occurrence\": 0\n        }\n      ]\n    }\n  ],\n  \"time_protections\": [],\n  \"operational_conflicts\": [\n    {\n      \"field\": \"destination\",\n      \"source_refs\": [\n        {\n          \"quote\": \"I want to visit the Bronx Zoo in New York.\",\n          \"occurrence\": 0\n        }\n      ]\n    }\n  ],\n  \"named_places\": [\n    {\n      \"place_text\": \"Bronx Zoo\",\n      \"inclusion\": \"REQUIRED\",\n      \"source_refs\": [\n        {\n          \"quote\": \"I want to visit the Bronx Zoo in New York.\",\n          \"occurrence\": 0\n        }\n      ]\n    }\n  ],\n  \"requested_place_information\": [],\n  \"transport_preference\": null,\n  \"semantic_requirements\": [],\n  \"subjects\": [],\n  \"discovery_intents\": [],\n  \"experience_evidence_requests\": [],\n  \"extraction_issues\": [],\n  \"overflow\": false\n}",
+  "payload": {
+    "preference_input_assessment": {
+      "input_disposition": "REWRITE_REQUIRED",
+      "safety_disposition": "CLEAR",
+      "issues": [
+        {
+          "issue_type": "destination_scope_conflict",
+          "source_refs": [
+            {
+              "quote": "I want to visit the Bronx Zoo in New York.",
+              "occurrence": 0
+            }
+          ],
+          "quote_status": "located",
+          "related_field": "destination",
+          "operational_conflict_index": 0,
+          "scope": "The requested Bronx Zoo visit in New York conflicts with the structured Paris destination."
+        }
+      ]
+    },
+    "visit_requirements": [
+      {
+        "access_mode": null,
+        "place_text": "Bronx Zoo",
+        "minimum_visits": 1,
+        "dates": [],
+        "status": "unresolved",
+        "reason": "The explicit visit request conflicts with the structured Paris destination.",
+        "source_refs": [
+          {
+            "quote": "I want to visit the Bronx Zoo in New York.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "time_protections": [],
+    "operational_conflicts": [
+      {
+        "field": "destination",
+        "source_refs": [
+          {
+            "quote": "I want to visit the Bronx Zoo in New York.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "named_places": [
+      {
+        "place_text": "Bronx Zoo",
+        "inclusion": "REQUIRED",
+        "source_refs": [
+          {
+            "quote": "I want to visit the Bronx Zoo in New York.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [],
+    "subjects": [],
+    "discovery_intents": [],
+    "experience_evidence_requests": [],
+    "extraction_issues": [],
+    "overflow": false
+  }
+}

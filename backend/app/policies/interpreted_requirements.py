@@ -161,6 +161,10 @@ def canonicalize_requirements(
         ) from exc
     if draft.overflow:
         raise RequirementBoundaryError("extraction_overflow")
+    if draft.preference_input_assessment is not None:
+        from backend.app.policies.preference_input import check_preference_input
+
+        check_preference_input(draft, request)
     if draft.operational_conflicts:
         conflicts = tuple(
             {

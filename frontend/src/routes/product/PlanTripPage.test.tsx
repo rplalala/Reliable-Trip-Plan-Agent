@@ -71,6 +71,24 @@ describe("PlanTripPage", () => {
     vi.useRealTimers();
   });
 
+  it("shows provider filtering separately and waits for manual resubmission", async () => {
+    submitPlanningMock.mockResolvedValue({
+      status: "provider_blocked",
+      message: "Your preference input triggered the AI provider's content filter.",
+      action: "Please rewrite your preferences as travel-related requests and submit again.",
+    });
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+    await fillRequiredFields(user);
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    expect(await screen.findByText("Please revise your preferences")).toBeInTheDocument();
+    expect(screen.getByText(/provider's content filter/)).toBeInTheDocument();
+    expect(submitPlanningMock).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("Travel planning paused")).not.toBeInTheDocument();
+    await user.type(screen.getByLabelText("Destination"), " City");
+    expect(screen.queryByText("Please revise your preferences")).not.toBeInTheDocument();
+  });
+
   it("requires structured trip fields before enabling submission", async () => {
     const user = userEvent.setup();
     render(<PlanTripPage />);
@@ -224,6 +242,79 @@ describe("PlanTripPage", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Please review them and try again.")).toBeInTheDocument();
     expect(screen.queryByText("start date")).not.toBeInTheDocument();
+  });
+
+  it("shows exact text safely, retains fields, and clears issues on edit and resubmit", async () => {
+    const quote = '<img src=x onerror="alert(1)"> Visit New York.';
+    submitPlanningMock.mockResolvedValueOnce({
+      status: "needs_clarification",
+      requirements: completedResult.requirements,
+      issues: {
+        input_disposition: "REWRITE_REQUIRED",
+        issues: [{
+          issue_type: "destination_scope_conflict",
+          source_refs: [{ quote, start: 0, end: quote.length }],
+          quote_status: "located", related_field: "destination", current_value: "Kyoto",
+          reason: "This requests a different physical trip scope.",
+          action: "Update the destination or revise the requested visit.",
+        }],
+      },
+    }).mockResolvedValueOnce(completedResult);
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+    await fillRequiredFields(user);
+    const preference = screen.getByLabelText("Additional preferences Optional");
+    await user.type(preference, quote);
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    expect(await screen.findByText(quote, { selector: "blockquote" })).toBeInTheDocument();
+    expect(document.querySelector("blockquote img")).toBeNull();
+    expect(screen.getByText("Current destination: Kyoto")).toBeInTheDocument();
+    expect(preference).toHaveValue(quote);
+    await user.clear(preference);
+    await user.type(preference, "Local museums.");
+    expect(screen.queryByText("This requests a different physical trip scope.")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    expect(submitPlanningMock).toHaveBeenLastCalledWith(expect.objectContaining({
+      additional_preferences: "Local museums.", destination: "Kyoto",
+    }));
+  });
+
+  it("uses dedicated safety presentation and removes old safety and itinerary results", async () => {
+    submitPlanningMock.mockResolvedValueOnce(completedResult).mockResolvedValueOnce({
+      status: "safety_blocked", requirements: completedResult.requirements,
+      message: "Your safety matters. Travel planning has been paused.",
+      action: "Please seek support from someone you trust.",
+    });
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+    await fillRequiredFields(user);
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    const preference = screen.getByLabelText("Additional preferences Optional");
+    await user.type(preference, "Changed request");
+    expect(document.querySelector(".itinerary")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    expect(await screen.findByText("Travel planning paused")).toBeInTheDocument();
+    expect(screen.queryByText("We couldn't interpret some of your trip details")).toBeNull();
+    await user.clear(preference);
+    expect(screen.queryByText("Travel planning paused")).toBeNull();
+  });
+
+  it("renders unavailable quotes without fabricating source text", async () => {
+    submitPlanningMock.mockResolvedValue({
+      status: "needs_clarification", requirements: completedResult.requirements,
+      issues: { issues: [{
+        issue_type: "structured_request_conflict", source_refs: [], quote_status: "unavailable",
+        related_field: "destination", current_value: "Kyoto",
+        reason: "Conflicting destination.", action: "Review the destination field.",
+      }] },
+    });
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+    await fillRequiredFields(user);
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    expect(await screen.findByText("Original quote unavailable.")).toBeInTheDocument();
+    expect(document.querySelector("blockquote")).toBeNull();
+    expect(screen.getByText("Review the destination field.")).toBeInTheDocument();
   });
 
   it("shows a product-safe failure message", async () => {

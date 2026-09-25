@@ -10,6 +10,8 @@ from backend.app.api.schemas.planning import (
     NeedsClarificationResponse,
     ProductPlanningRequest,
     ProductPlanningResponse,
+    ProviderBlockedResponse,
+    SafetyBlockedResponse,
 )
 from backend.app.policies.trip_dates import (
     MAX_TRIP_DAYS,
@@ -17,6 +19,7 @@ from backend.app.policies.trip_dates import (
     TripDatePolicyError,
     create_trip_date_window,
 )
+from backend.app.schemas.requirement_boundary import RequirementBoundaryError
 from backend.app.services.planning import (
     PlanningFailedError,
     PlanningNeedsClarificationError,
@@ -41,8 +44,20 @@ async def create_planning_result(
             detail=exc.as_detail(),
         ) from exc
     except PlanningNeedsClarificationError as exc:
+        if exc.issues.get("safety_disposition") == "SAFETY_BLOCK":
+            from backend.app.policies.preference_input import MESSAGES
+
+            types = {i["issue_type"] for i in exc.issues["issues"]}
+            kind = "safety_self_harm" if "safety_self_harm" in types else "safety_serious_harm"
+            message, action = MESSAGES[kind]
+            return SafetyBlockedResponse(
+                requirements=exc.requirements, message=message, action=action
+            )
         return NeedsClarificationResponse(requirements=exc.requirements, issues=exc.issues)
     except PlanningFailedError as exc:
+        cause = exc.__cause__
+        if isinstance(cause, RequirementBoundaryError) and cause.provider_content_filtered:
+            return ProviderBlockedResponse(**cause.public_provider_action())
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail={
@@ -51,9 +66,12 @@ async def create_planning_result(
             },
         ) from exc
 
+    from backend.app.schemas.generation_diagnostics import public_minimum_coverage
+
     return CompletedPlanningResponse(
         requirements=result.requirements,
         itinerary=result.itinerary,
+        minimum_daily_coverage=public_minimum_coverage(result.generation_diagnostics),
     )
 
 

@@ -21,6 +21,7 @@ def protected_draft(**changes):
         start_time="12:00",
         end_time="14:00",
         status="fixed",
+        full_day=False,
         reason=None,
         source_refs=[{"quote": "Private time", "occurrence": 0}],
     )

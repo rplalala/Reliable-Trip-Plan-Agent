@@ -1,0 +1,273 @@
+{
+  "provenance": {
+    "source": "logs/shared_preference_gate_harness_fixed_10case_20260925/02_hard_contradiction.json",
+    "sha256": "fa932f1d41b69921a9256dd1ab3efd162fc5cb66818feae99007ab86a838cd97",
+    "status": "historical semantic mismatch; structurally valid output, not corrected"
+  },
+  "input": {
+    "input_version": "planning_request_2",
+    "destination": "Paris, France",
+    "start_date": "2026-09-26",
+    "end_date": "2026-09-28",
+    "traveler_count": 2,
+    "budget": {
+      "amount": "1000",
+      "currency": "EUR"
+    },
+    "additional_preferences": "I only want to walk everywhere. I must use the metro for every transfer.",
+    "request_id": null
+  },
+  "frozen_expected": {
+    "expected_input": "REWRITE_REQUIRED",
+    "expected_safety": "CLEAR",
+    "expected_issue_types": [
+      "internal_requirement_contradiction"
+    ],
+    "expected_source_quotes": [
+      "I only want to walk everywhere.",
+      "I must use the metro for every transfer."
+    ],
+    "expected_related_field": null,
+    "expected_operational_conflict_index": null
+  },
+  "raw_model_response": [
+    {
+      "text": "{\n  \"preference_input_assessment\": {\n    \"input_disposition\": \"CLARIFICATION_REQUIRED\",\n    \"safety_disposition\": \"CLEAR\",\n    \"issues\": [\n      {\n        \"issue_type\": \"semantic_ambiguity\",\n        \"source_refs\": [\n          {\n            \"quote\": \"I only want to walk everywhere.\",\n            \"occurrence\": 0\n          },\n          {\n            \"quote\": \"I must use the metro for every transfer.\",\n            \"occurrence\": 0\n          }\n        ],\n        \"quote_status\": \"located\",\n        \"related_field\": null,\n        \"operational_conflict_index\": null,\n        \"scope\": \"The requester gives conflicting transport instructions: walk everywhere, but use the metro for every transfer.\"\n      }\n    ]\n  },\n  \"visit_requirements\": [],\n  \"time_protections\": [],\n  \"operational_conflicts\": [],\n  \"named_places\": [],\n  \"requested_place_information\": [],\n  \"transport_preference\": null,\n  \"semantic_requirements\": [\n    {\n      \"local_key\": \"walk\",\n      \"normalized_text\": \"The requester wants to walk everywhere and says walking is the only mode they want.\",\n      \"kind\": \"preference\",\n      \"polarity\": \"favor\",\n      \"strength\": \"high\",\n      \"scope\": \"transport\",\n      \"subject_target\": {\n        \"kind\": \"specified\",\n        \"first_ref\": \"requester\",\n        \"additional_refs\": []\n      },\n      \"source_refs\": [\n        {\n          \"quote\": \"I only want to walk everywhere.\",\n          \"occurrence\": 0\n        }\n      ]\n    },\n    {\n      \"local_key\": \"metro\",\n      \"normalized_text\": \"The requester says they must use the metro for every transfer.\",\n      \"kind\": \"constraint\",\n      \"polarity\": \"favor\",\n      \"strength\": \"hard\",\n      \"scope\": \"transport\",\n      \"subject_target\": {\n        \"kind\": \"specified\",\n        \"first_ref\": \"requester\",\n        \"additional_refs\": []\n      },\n      \"source_refs\": [\n        {\n          \"quote\": \"I must use the metro for every transfer.\",\n          \"occurrence\": 0\n        }\n      ]\n    }\n  ],\n  \"subjects\": [\n    {\n      \"local_key\": \"requester\",\n      \"label\": \"requester\",\n      \"source_refs\": [\n        {\n          \"quote\": \"I only want to walk everywhere.\",\n          \"occurrence\": 0\n        },\n        {\n          \"quote\": \"I must use the metro for every transfer.\",\n          \"occurrence\": 0\n        }\n      ]\n    }\n  ],\n  \"discovery_intents\": [],\n  \"experience_evidence_requests\": [],\n  \"extraction_issues\": [\n    \"Walking everywhere and using the metro for every transfer are conflicting transport modes; clarification is needed.\"\n  ],\n  \"overflow\": false\n}",
+      "usage": {
+        "input_tokens": 6635,
+        "output_tokens": 1738,
+        "total_tokens": 8373,
+        "input_token_details": {
+          "cache_creation": 124,
+          "cache_read": 6508
+        },
+        "output_token_details": {
+          "reasoning": 1123
+        }
+      },
+      "response_id": "resp_0a194cdc6a96dd27006ab5de0280848193b7d12e0c5d2e4101"
+    }
+  ],
+  "strict_parsed_dto": {
+    "preference_input_assessment": {
+      "input_disposition": "CLARIFICATION_REQUIRED",
+      "safety_disposition": "CLEAR",
+      "issues": [
+        {
+          "issue_type": "semantic_ambiguity",
+          "source_refs": [
+            {
+              "quote": "I only want to walk everywhere.",
+              "occurrence": 0
+            },
+            {
+              "quote": "I must use the metro for every transfer.",
+              "occurrence": 0
+            }
+          ],
+          "quote_status": "located",
+          "related_field": null,
+          "operational_conflict_index": null,
+          "scope": "The requester gives conflicting transport instructions: walk everywhere, but use the metro for every transfer."
+        }
+      ]
+    },
+    "visit_requirements": [],
+    "time_protections": [],
+    "operational_conflicts": [],
+    "named_places": [],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "local_key": "walk",
+        "normalized_text": "The requester wants to walk everywhere and says walking is the only mode they want.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "high",
+        "scope": "transport",
+        "subject_target": {
+          "kind": "specified",
+          "first_ref": "requester",
+          "additional_refs": []
+        },
+        "source_refs": [
+          {
+            "quote": "I only want to walk everywhere.",
+            "occurrence": 0
+          }
+        ]
+      },
+      {
+        "local_key": "metro",
+        "normalized_text": "The requester says they must use the metro for every transfer.",
+        "kind": "constraint",
+        "polarity": "favor",
+        "strength": "hard",
+        "scope": "transport",
+        "subject_target": {
+          "kind": "specified",
+          "first_ref": "requester",
+          "additional_refs": []
+        },
+        "source_refs": [
+          {
+            "quote": "I must use the metro for every transfer.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "subjects": [
+      {
+        "local_key": "requester",
+        "label": "requester",
+        "source_refs": [
+          {
+            "quote": "I only want to walk everywhere.",
+            "occurrence": 0
+          },
+          {
+            "quote": "I must use the metro for every transfer.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "discovery_intents": [],
+    "experience_evidence_requests": [],
+    "extraction_issues": [
+      "Walking everywhere and using the metro for every transfer are conflicting transport modes; clarification is needed."
+    ],
+    "overflow": false
+  },
+  "domain_parsed_dto": {
+    "preference_input_assessment": {
+      "input_disposition": "CLARIFICATION_REQUIRED",
+      "safety_disposition": "CLEAR",
+      "issues": [
+        {
+          "issue_type": "semantic_ambiguity",
+          "source_refs": [
+            {
+              "quote": "I only want to walk everywhere.",
+              "occurrence": 0
+            },
+            {
+              "quote": "I must use the metro for every transfer.",
+              "occurrence": 0
+            }
+          ],
+          "quote_status": "located",
+          "related_field": null,
+          "operational_conflict_index": null,
+          "scope": "The requester gives conflicting transport instructions: walk everywhere, but use the metro for every transfer."
+        }
+      ]
+    },
+    "visit_requirements": [],
+    "time_protections": [],
+    "operational_conflicts": [],
+    "named_places": [],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "local_key": "walk",
+        "normalized_text": "The requester wants to walk everywhere and says walking is the only mode they want.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "high",
+        "scope": "transport",
+        "subject_target": {
+          "kind": "specified",
+          "first_ref": "requester",
+          "additional_refs": []
+        },
+        "source_refs": [
+          {
+            "quote": "I only want to walk everywhere.",
+            "occurrence": 0
+          }
+        ]
+      },
+      {
+        "local_key": "metro",
+        "normalized_text": "The requester says they must use the metro for every transfer.",
+        "kind": "constraint",
+        "polarity": "favor",
+        "strength": "hard",
+        "scope": "transport",
+        "subject_target": {
+          "kind": "specified",
+          "first_ref": "requester",
+          "additional_refs": []
+        },
+        "source_refs": [
+          {
+            "quote": "I must use the metro for every transfer.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "subjects": [
+      {
+        "local_key": "requester",
+        "label": "requester",
+        "source_refs": [
+          {
+            "quote": "I only want to walk everywhere.",
+            "occurrence": 0
+          },
+          {
+            "quote": "I must use the metro for every transfer.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "discovery_intents": [],
+    "experience_evidence_requests": [],
+    "extraction_issues": [
+      "Walking everywhere and using the metro for every transfer are conflicting transport modes; clarification is needed."
+    ],
+    "overflow": false
+  },
+  "application_outcome": {
+    "status": "clarification_required",
+    "category": "USER_INPUT_ISSUE",
+    "code": "preference_input_blocked",
+    "assessment_version": "preference_input_2",
+    "input_disposition": "CLARIFICATION_REQUIRED",
+    "safety_disposition": "CLEAR",
+    "issues": [
+      {
+        "issue_type": "semantic_ambiguity",
+        "source_refs": [
+          {
+            "quote": "I only want to walk everywhere.",
+            "occurrence": 0,
+            "start": 0,
+            "end": 31,
+            "match_mode": "exact"
+          },
+          {
+            "quote": "I must use the metro for every transfer.",
+            "occurrence": 0,
+            "start": 32,
+            "end": 72,
+            "match_mode": "exact"
+          }
+        ],
+        "quote_status": "located",
+        "related_field": null,
+        "current_value": null,
+        "reason": "An ambiguity affects the trip scope or interpretation of a hard requirement.",
+        "action": "Clarify the subject, scope, or condition of this requirement.",
+        "scope": "The requester gives conflicting transport instructions: walk everywhere, but use the metro for every transfer.",
+        "basis_refs": []
+      }
+    ]
+  }
+}

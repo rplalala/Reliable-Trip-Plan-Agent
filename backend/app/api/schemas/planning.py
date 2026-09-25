@@ -5,6 +5,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from backend.app.schemas.generation_diagnostics import MinimumDailyCoverage
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.request import PlanningRequest, TravelRequirements
 
@@ -19,6 +20,7 @@ class CompletedPlanningResponse(BaseModel):
     status: Literal["completed"] = "completed"
     requirements: TravelRequirements
     itinerary: Itinerary
+    minimum_daily_coverage: tuple[MinimumDailyCoverage, ...] = ()
 
 
 class NeedsClarificationResponse(BaseModel):
@@ -31,8 +33,28 @@ class NeedsClarificationResponse(BaseModel):
     issues: dict[str, object] = Field(default_factory=dict)
 
 
+class SafetyBlockedResponse(BaseModel):
+    """Supportive, application-authored response; never echoes sensitive issue quotes."""
+
+    model_config = ConfigDict(extra="forbid")
+    status: Literal["safety_blocked"] = "safety_blocked"
+    requirements: TravelRequirements
+    message: str
+    action: str
+
+
+class ProviderBlockedResponse(BaseModel):
+    """Provider-filtered input; no domain assessment or sensitive provider details."""
+
+    model_config = ConfigDict(extra="forbid")
+    status: Literal["provider_blocked"] = "provider_blocked"
+    message: str
+    action: str
+
+
 ProductPlanningResponse = Annotated[
-    CompletedPlanningResponse | NeedsClarificationResponse,
+    CompletedPlanningResponse | NeedsClarificationResponse | SafetyBlockedResponse
+    | ProviderBlockedResponse,
     Field(discriminator="status"),
 ]
 

@@ -31,6 +31,10 @@ def draft_for(text="Prefer local places", **updates):
         source_refs=(SourceQuote(quote=text, occurrence=0),),
     )
     fields = dict(
+        # Synthetic current assessment; not inferred from historical model responses.
+        preference_input_assessment={
+            "input_disposition": "VALID", "safety_disposition": "CLEAR", "issues": []
+        },
         named_places=(),
         requested_place_information=(),
         transport_preference=None,
