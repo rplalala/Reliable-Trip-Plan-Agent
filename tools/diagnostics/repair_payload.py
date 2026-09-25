@@ -27,7 +27,7 @@ def enriched_fixture():
     from backend.app.evidence.official_models import OfficialCurrentEvidence
     from backend.app.policies.official_evidence_resolver import resolve_effective_evidence
 
-    itinerary, _, scope, context, whitelist = fixture(10, 28)
+    itinerary, _, scope, context, whitelist = fixture(10, 32)
     data = context.contract.model_dump()
     data["interpretation_origin"] = "model"
     sentence = "Prefer museums with architectural exhibits and varied experiences."
@@ -87,7 +87,7 @@ def enriched_fixture():
     return itinerary, report, scope, context, whitelist
 
 
-def fixture(days, candidates, stress=False):
+def fixture(days, candidates, stress=False, *, name_units=650):
     start = date(2026, 9, 26)
     end = start + timedelta(days=days - 1)
     request = PlanningRequest(
@@ -114,7 +114,7 @@ def fixture(days, candidates, stress=False):
     name = "Synthetic museum"
     if stress:
         # Deliberately adversarial but field-valid text, below the 12k candidate-object bound.
-        name = " ".join(f"venue{i:05x}" for i in range(650))
+        name = " ".join(f"venue{i:05x}" for i in range(name_units))
     places = tuple(
         PlaceEvidence(
             place_id=f"place_{i}",
@@ -211,7 +211,7 @@ def fixture(days, candidates, stress=False):
     return itinerary, report, scope, context, preparation
 
 
-def addition_fixture(days=1, candidates=28):
+def addition_fixture(days=1, candidates=32):
     from backend.app.versions.v3.models import ValidationPolicy
 
     original, _, _, context, preparation = fixture(days, candidates)
@@ -373,7 +373,7 @@ def b_fixture(kind):
     from backend.app.versions.v3.repair_targets import prepare_blank_windows
     from backend.app.versions.v3.wiring import operation_scope
 
-    original, _, _, context, prep = fixture(3 if kind == "feedback" else 2, 28)
+    original, _, _, context, prep = fixture(3 if kind == "feedback" else 2, 32)
     for day in original.days:
         day.activities[1].start_time += timedelta(hours=2)
         day.activities[1].end_time += timedelta(hours=2)
@@ -461,7 +461,7 @@ def c_fixture(kind):
     from backend.app.versions.v3.repair_targets import prepare_blank_windows
     from backend.app.versions.v3.wiring import operation_scope
 
-    original, _, _, context, prep = fixture(2, 28)
+    original, _, _, context, prep = fixture(2, 32)
     a, b = original.days[0].activities
     a.start_time = a.start_time.replace(hour=17)
     a.end_time = a.end_time.replace(hour=18)
@@ -520,6 +520,7 @@ def c_fixture(kind):
                         origin_place_id=a.source_place_id,
                         destination_place_id=b.source_place_id,
                         condition="ROUTE_EXISTS",
+                        status="OK",
                         duration_seconds=1800,
                         availability="available",
                     )
@@ -578,21 +579,24 @@ def main():
     samples = [
         ("retime_only", retime_fixture()),
         ("c_opening_retime", c_fixture("retime")),
-        ("c_route_reorder_union28", c_fixture("route")),
-        ("c_replace_compensate_move_union28", c_fixture("move")),
-        ("round2_c_obligation_feedback_union28", c_fixture("move")),
-        ("b_dedup_compensation_union28", b_fixture("repeat")),
-        ("b_adjacent_move_union28", b_fixture("move")),
-        ("b_missing_date_union28", b_fixture("missing")),
-        ("round2_b_related_feedback_union28", b_fixture("feedback")),
-        ("single_date_addition_union28", addition_fixture()),
-        ("three_target_addition_union28", addition_fixture(3)),
-        ("ten_day_other_operations_union28", fixture(10, 28)),
-        ("long_text_union28", fixture(10, 28, True)),
+        ("c_route_reorder_union32", c_fixture("route")),
+        ("c_replace_compensate_move_union32", c_fixture("move")),
+        ("round2_c_obligation_feedback_union32", c_fixture("move")),
+        ("b_dedup_compensation_union32", b_fixture("repeat")),
+        ("b_adjacent_move_union32", b_fixture("move")),
+        ("b_missing_date_union32", b_fixture("missing")),
+        ("round2_b_related_feedback_union32", b_fixture("feedback")),
+        ("single_date_addition_union32", addition_fixture()),
+        ("three_target_addition_union32", addition_fixture(3)),
+        ("ten_day_other_operations_union32", fixture(10, 32)),
+        ("long_text_union32", fixture(10, 32, True)),
+        ("separate_just_over_ceiling_union32", fixture(10, 32, True, name_units=550)),
+        ("separate_near_ceiling_union32", fixture(10, 32, True, name_units=548)),
+        ("historical_size_pressure_union28", fixture(10, 28, True)),
         ("24_requirements_conflicting_hours", enriched_fixture()),
-        ("elastic_fixed_time_union28", time_window_fixture()),
-        ("round2_residual_split_union28", time_window_fixture(later=True)),
-        ("round2_long_time_context_union28", time_window_fixture(later=True, long=True)),
+        ("elastic_fixed_time_union32", time_window_fixture()),
+        ("round2_residual_split_union32", time_window_fixture(later=True)),
+        ("round2_long_time_context_union32", time_window_fixture(later=True, long=True)),
     ]
     from types import SimpleNamespace
 
@@ -601,6 +605,10 @@ def main():
 
     feedback = round_feedback(
         SimpleNamespace(
+            components=(),
+            model_attempted=True,
+            conflict_records=(),
+            proposed_report=None,
             status="REJECTED",
             reason="No verifiable arrangement improvement",
             parsed_patch=RepairPatch(edits=()),
@@ -629,8 +637,43 @@ def main():
     )
     samples.extend(
         [
-            ("round2_feedback_union28", addition_fixture(3)),
-            ("round3_feedback_union28", addition_fixture(3)),
+            ("round2_feedback_union32", addition_fixture(3)),
+            ("round3_feedback_union32", addition_fixture(3)),
+            ("round4_feedback_union32", addition_fixture(3)),
+            ("round5_feedback_union32", addition_fixture(3)),
+        ]
+    )
+    # Exercise the current preparation DTO rather than only hand-built authorizations.
+    import asyncio
+    from time import monotonic
+
+    from backend.app.versions.v3.repair_budget import RepairBudget
+    from backend.app.versions.v3.repair_candidates import prepare_candidates
+
+    material_original, material_report, material_scope, material_context, material_prep = (
+        addition_fixture(3)
+    )
+    material_context = material_context.model_copy(update={"identity_ledger": material_prep.ledger})
+    material_prep = asyncio.run(
+        prepare_candidates(
+            material_context,
+            material_scope,
+            RepairBudget(monotonic() + 600),
+            original=material_original,
+        )
+    )
+    material_args = (
+        material_original,
+        material_report,
+        material_scope,
+        material_context,
+        material_prep,
+    )
+    samples.extend(
+        [
+            ("material_opportunities_union32", material_args),
+            ("round2_noop_material_union32", material_args),
+            ("round3_specific_time_constraint_union32", material_args),
         ]
     )
     for label, args in samples:
@@ -653,14 +696,33 @@ def main():
         args = original, report, scope, context, preparation
         row = {"fixture": label}
         try:
+            sample_feedback = (
+                later_feedback
+                if label.startswith(("round3", "round4", "round5"))
+                else feedback
+                if label.startswith("round2")
+                else None
+            )
+            if label == "round3_specific_time_constraint_union32":
+                sample_feedback = dict(
+                    later_feedback,
+                    arrangement_constraints=[
+                        {
+                            "place_id": preparation.input_candidates[0].place.place_id,
+                            "date": str(original.start_date),
+                            "start": f"{original.start_date}T13:00:00+00:00",
+                            "end": f"{original.start_date}T14:00:00+00:00",
+                            "check": "route",
+                            "mode": "WALK",
+                            "related_activity_ids": [original.days[0].activities[0].activity_id],
+                            "evidence_refs": ["fixture:route_conflict"],
+                        }
+                    ],
+                )
             _, _, counts = build_repair_input(
                 *args,
                 route_evidence=context.route_evidence,
-                feedback=later_feedback
-                if label.startswith("round3")
-                else feedback
-                if label.startswith("round2")
-                else None,
+                feedback=sample_feedback,
             )
             row.update(counts, status="within_ceiling")
         except ValueError as exc:
@@ -668,6 +730,7 @@ def main():
         rows.append(row)
     output = FoundryRepairPatchDTO.model_validate(
         {
+            "target_dispositions": [],
             "edits": [
                 {
                     "operation": "add",
@@ -678,7 +741,7 @@ def main():
                     "end_time": "2026-09-26T11:00:00+00:00",
                 }
                 for i in range(50)
-            ]
+            ],
         }
     )
     print(
@@ -694,5 +757,388 @@ def main():
     )
 
 
+def api_policy_sizing():
+    """Controlled same-payload ablations, not historical payload reconstruction."""
+    from copy import deepcopy
+
+    from backend.app.evidence.normalization import _opening_hours
+
+    samples = [
+        ("retime", retime_fixture()),
+        ("overlapping_groups_32", fixture(3, 32)),
+        ("c_route_32", c_fixture("route")),
+        ("periods_32", fixture(3, 32)),
+        ("feedback_periods_32", fixture(3, 32)),
+        ("stress_32", fixture(10, 32, stress=True)),
+    ]
+    rows = []
+    for label, args in samples:
+        original, report, scope, context, prep = args
+        if label != "retime":
+            # A fixed, identical set of authorization rows is used in both projections.
+            additions = tuple(
+                r.model_copy(update={"operation": "add"})
+                for r in prep.authorizations
+                if r.place_id not in prep.scheduled_ids
+            )
+            prep = prep.model_copy(update={"authorizations": (*prep.authorizations, *additions)})
+        if "periods" in label:
+            hours = _opening_hours(
+                {
+                    "periods": [
+                        {"open": {"day": d, "hour": 9}, "close": {"day": d, "hour": 18}}
+                        for d in range(7)
+                    ]
+                },
+                applicability="regular_weekly_pattern",
+            )
+            places = tuple(
+                p.model_copy(update={"regular_opening_hours": hours}) for p in context.places
+            )
+            context = context.model_copy(update={"places": places})
+            candidates = tuple(
+                c.model_copy(
+                    update={"place": next(p for p in places if p.place_id == c.place.place_id)}
+                )
+                for c in prep.input_candidates
+            )
+            prep = prep.model_copy(update={"input_candidates": candidates, "ledger": candidates})
+            report = assess(original, context)
+        feedback = (
+            {
+                "round": 2,
+                "previous_status": "REJECTED",
+                "reason": "minimum_transfer_deficit",
+                "adjustment": "Use a later authorized interval; retain adopted visits.",
+            }
+            if "feedback" in label
+            else None
+        )
+        try:
+            _, text, counts = build_repair_input(
+                original, report, scope, context, prep, feedback=feedback
+            )
+        except ValueError as exc:
+            rows.append(
+                dict(sample=label, status="rejected", reason=str(exc), **getattr(exc, "counts", {}))
+            )
+            continue
+        payload = json.loads(text)
+        catalog = {c["place"]["place_id"]: c for c in payload["candidate_catalog"]}
+        inline = deepcopy(payload)
+        inline.pop("candidate_catalog")
+        for group in ("addition_candidates", "other_operation_candidates"):
+            inline[group] = [
+                dict(catalog[r["place_id"]], target_authorizations=r["target_authorizations"])
+                for r in payload[group]
+            ]
+
+        # Legacy alias is not restored: this isolates ONLY group-object duplication.
+        def tokens(value):
+            return count_tokens(
+                json.dumps(value, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+            )
+
+        without_fields = deepcopy(payload)
+        new_fields = {
+            "selected_opening_evidence",
+            "adopted_evidence",
+            "periods_state",
+            "periods",
+            "special_days",
+            "requested_at",
+            "status_state",
+            "static_duration_seconds",
+            "fallback_info",
+            "origin_index",
+            "destination_index",
+        }
+
+        def ablate(value, new_fields=new_fields):
+            if isinstance(value, dict):
+                return {k: ablate(v) for k, v in value.items() if k not in new_fields}
+            if isinstance(value, list):
+                return [ablate(v) for v in value]
+            return value
+
+        row = dict(sample=label, status="within_ceiling", **counts)
+        row["inline_same_content_user_tokens"] = tokens(inline)
+        row["group_dedup_saved_tokens"] = tokens(inline) - counts["user_tokens"]
+        row["new_evidence_fields_user_delta"] = counts["user_tokens"] - tokens(
+            ablate(without_fields)
+        )
+        rows.append(row)
+    print(
+        json.dumps(
+            {
+                "method": (
+                    "Actual DTO/prompt/schema/serializer and offline tokenizer; "
+                    "controlled group duplication and field ablation, not historical replay"
+                ),
+                "samples": rows,
+            },
+            indent=2,
+        )
+    )
+
+
+def locality_sizing():
+    """Saved Honolulu material, scope-only ablation, and actual fresh preparation."""
+    import asyncio
+    from time import monotonic
+
+    from backend.app.versions.v3.repair_budget import RepairBudget
+    from backend.app.versions.v3.repair_candidates import (
+        candidate_targets,
+        prepare_candidates,
+        spatial_candidate_options,
+    )
+    from backend.app.versions.v3.repair_targets import localize_scope
+    from backend.app.versions.v3.wiring import operation_scope
+    from backend.tests.versions.v3.test_target_locality import honolulu_fixture
+
+    saved, original, ctx, scope = honolulu_fixture()
+    report = assess(original, ctx)
+    active = tuple(f.finding_id for f in report.findings if f.status == "CONFIRMED")
+    deferred = tuple(t.finding_id for t in report.improvement_targets if t.finding_id not in active)
+    budget = RepairBudget(monotonic() + 600)
+    scope = operation_scope(original, report, context=ctx, policy=budget.policy, mode="WALK")
+    narrowed = localize_scope(
+        original, report, scope, active, deferred, context=ctx, policy=budget.policy
+    )
+    prep = asyncio.run(prepare_candidates(ctx, narrowed, budget, original=original))
+    data = dict(saved["historical_preparation"])
+    ids = set(data.pop("input_candidate_ids"))
+    data.update(
+        ledger=ctx.identity_ledger,
+        input_candidates=tuple(c for c in ctx.identity_ledger if c.place.place_id in ids),
+    )
+    historical = CandidatePreparation.model_validate(data)
+    valid_keys = {(t, d, op) for t, d, op, _ in candidate_targets(original, ctx, narrowed)}
+    auth = tuple(
+        a for a in historical.authorizations if (a.target_id, a.date, a.operation) in valid_keys
+    )
+    only_scope = historical.model_copy(
+        update={
+            "authorizations": auth,
+            "input_candidates": tuple(
+                c
+                for c in historical.input_candidates
+                if any(a.place_id == c.place.place_id for a in auth)
+            ),
+            "discovery_opportunities": (),
+            "spatial_options": tuple(
+                spatial_candidate_options(
+                    {a.place_id for a in auth},
+                    set(historical.scheduled_ids),
+                    auth,
+                    {c.place.place_id: c for c in ctx.identity_ledger},
+                    budget.policy,
+                    narrowed.travel_mode,
+                )
+            ),
+        }
+    )
+    rows = []
+    for label, current_scope, preparation in (
+        (
+            "historical_scope_saved_routes",
+            RepairScope.model_validate(saved["historical_round_scope"]),
+            historical,
+        ),
+        ("scope_only_filtered_same_authorizations", narrowed, only_scope),
+        ("current_preparation_saved_ledger_routes", narrowed, prep),
+    ):
+        try:
+            _, _, counts = build_repair_input(
+                original, report, current_scope, ctx, preparation, ctx.route_evidence
+            )
+            outcome = "within_ceiling"
+        except ValueError as exc:
+            counts = getattr(exc, "counts", {})
+            outcome = str(exc)
+        rows.append(
+            dict(
+                sample=label,
+                outcome=outcome,
+                **counts,
+                add_associations=sum(a.operation == "add" for a in preparation.authorizations),
+                replace_associations=sum(
+                    a.operation == "replace" for a in preparation.authorizations
+                ),
+                add_identities=len(
+                    {a.place_id for a in preparation.authorizations if a.operation == "add"}
+                ),
+                replace_identities=len(
+                    {a.place_id for a in preparation.authorizations if a.operation == "replace"}
+                ),
+            )
+        )
+    print(
+        json.dumps(
+            dict(
+                provenance=saved["provenance"],
+                historical_sizing=saved["historical_sizing"],
+                active_targets=len(active),
+                deferred_targets=len(deferred),
+                samples=rows,
+                identity_capacity=prep.identity_capacity_summary,
+                operation_opportunities=prep.target_opportunities,
+            ),
+            indent=2,
+        )
+    )
+
+
+def mixed_sizing():
+    """Actual mixed projection, bounded feedback and strict output schema; no I/O ports."""
+    import asyncio
+    from time import monotonic
+
+    from backend.app.versions.v3.repair_budget import RepairBudget
+    from backend.app.versions.v3.repair_transport import prepare_options
+    from backend.tests.versions.v3.test_mixed_transport import measured
+
+    original, report, scope, context, preparation = addition_fixture(3)
+    evidence = tuple(
+        measured(
+            mode,
+            (
+                600
+                if mode == "WALK" and int(c.place.place_id.split("_")[-1]) % 3 == 0
+                else 5000
+                if mode == "TRANSIT" and int(c.place.place_id.split("_")[-1]) % 3 == 2
+                else seconds
+            ),
+            a.source_place_id,
+            c.place.place_id,
+            distance=800 if int(c.place.place_id.split("_")[-1]) % 3 == 0 else 4000,
+            departure=a.end_time if mode == "TRANSIT" else None,
+        )
+        for d in original.days
+        for a in d.activities
+        for c in preparation.input_candidates
+        if c.place.place_id != a.source_place_id
+        for mode, seconds in (("WALK", 5000), ("TRANSIT", 1500), ("DRIVE", 1080))
+    )
+    options, _ = asyncio.run(
+        prepare_options(
+            original,
+            preparation,
+            scope,
+            context,
+            evidence,
+            None,
+            RepairBudget(monotonic() + 600),
+            report,
+        )
+    )
+    rows = []
+    for index in range(1, 6):
+        feedback = (
+            None
+            if index == 1
+            else {
+                "kind": "arrangement_improved" if index == 2 else "no_measurable_improvement",
+                "components": [
+                    {"component_id": "component_1", "status": "accepted"},
+                    {
+                        "component_id": "component_2",
+                        "status": "rejected",
+                        "reason": "insufficient_layout_transfer_window",
+                    },
+                ],
+                "arrangement_constraints": [
+                    {
+                        "place_id": "place_8",
+                        "date": str(original.start_date),
+                        "start": f"{original.start_date}T13:00:00Z",
+                        "mode": "TRANSIT",
+                        "check": "route",
+                    }
+                ],
+                "adjustment": "Preserve adopted visits; use a different authorized insertion time.",
+            }
+        )
+        _, text, counts = build_repair_input(
+            original,
+            report,
+            scope,
+            context,
+            preparation,
+            route_evidence=evidence,
+            transport_options=options,
+            feedback=feedback,
+        )
+        payload = json.loads(text)
+        rows.append(
+            dict(
+                sample=f"mixed_round_{index}_union32",
+                **counts,
+                worksheet_targets=len(payload["target_worksheet"]),
+                options=len(options),
+                option_modes=sorted({o["mode"] for o in options}),
+            )
+        )
+    # Keep all protected text. Vary only a synthetic original note to bracket the ceiling.
+    for units in (220000, 247000, 250000, 270000):
+        args = list(retime_fixture())
+        args[0] = args[0].model_copy(deep=True)
+        args[0].days[0].activities[0].notes = "context " * units
+        try:
+            _, _, counts = build_repair_input(*args)
+            rows.append(dict(sample=f"protected_text_{units}", status="within_ceiling", **counts))
+        except ValueError as exc:
+            rows.append(
+                dict(
+                    sample=f"protected_text_{units}", status=str(exc), **getattr(exc, "counts", {})
+                )
+            )
+    output = FoundryRepairPatchDTO.model_validate(
+        {
+            "edits": [
+                {
+                    "operation": "add",
+                    "activity_id": None,
+                    "date": "2026-09-26",
+                    "place_id": f"place_{i}",
+                    "start_time": "2026-09-26T10:00:00Z",
+                    "end_time": "2026-09-26T11:00:00Z",
+                }
+                for i in range(50)
+            ],
+            "target_dispositions": [
+                {
+                    "target_id": f"target_{i}",
+                    "disposition": "unresolved",
+                    "reason": "No supported arrangement in the authorized window.",
+                }
+                for i in range(50)
+            ],
+        }
+    )
+    print(
+        json.dumps(
+            dict(
+                method="Actual prompt/DTO/schema/serializer; offline tokenizer; synthetic only",
+                samples=rows,
+                output_tokens=count_tokens(output.model_dump_json()),
+                output_ceiling=16384,
+                diagnostic_groups_are_not_additive=True,
+            ),
+            indent=2,
+        )
+    )
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+
+    if "--mixed" in sys.argv:
+        mixed_sizing()
+    elif "--locality" in sys.argv:
+        locality_sizing()
+    elif "--api-policy-comparison" in sys.argv:
+        api_policy_sizing()
+    else:
+        main()

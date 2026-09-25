@@ -314,9 +314,9 @@ def test_foreign_requirement_and_outside_supply_use_boundary_errors():
 def test_opening_uses_existing_resolver_without_inventing_visit_mode(changes):
     result = run(effective_places=(effective(**changes),))
     finding = findings(result, "opening")[0]
-    assert finding.status == ("UNKNOWN" if not changes else "NEEDS_REVIEW")
+    assert finding.status == ("PASS" if not changes else "CONFIRMED")
     assert finding.evidence_refs == ("official:a",)
-    assert not finding.is_violation
+    assert finding.is_violation == bool(changes)
 
 
 @pytest.mark.parametrize(
@@ -449,7 +449,7 @@ def test_cancellation_is_not_reclassified(monkeypatch):
     def cancelled(*args):
         raise asyncio.CancelledError
 
-    monkeypatch.setattr("backend.app.versions.v3.validation.ZoneInfo", cancelled)
+    monkeypatch.setattr("backend.app.evidence.opening_hours.ZoneInfo", cancelled)
     with pytest.raises(asyncio.CancelledError):
         run(effective_places=(effective(),))
 
@@ -549,7 +549,7 @@ def test_timezone_conversion_and_unparsed_places_hours():
         [activity(start_time=f"{DAY}T19:00:00+10:00", end_time=f"{DAY}T20:00:00+10:00")],
         effective_places=(effective(),),
     )
-    assert findings(result, "opening")[0].reason == "within_hours_but_visit_access_unverified"
+    assert findings(result, "opening")[0].reason == "adopted_hours_only"
     p = place(
         opening_hours={
             "applicability": "regular",

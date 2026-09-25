@@ -65,13 +65,13 @@ def stage(model, original=None, ctx=None, scope=None, **kwargs):
     )
 
 
-def test_no_improvement_then_feedback_repairs_without_discovery():
+def test_no_improvement_without_material_change_stops_before_second_model():
     model = SequenceModel([[], [edit()]])
     result = stage(model)
-    assert result.status == "ACCEPTED_COMPLETE"
-    assert len(result.rounds) == model.calls == 2
+    assert result.status == "REJECTED"
+    assert len(result.rounds) == 2 and model.calls == 1
     assert model.inputs[0]["feedback"] is None
-    assert model.inputs[1]["feedback"]["previous_patch"] == {"edits": []}
+    assert result.reason == "no_material_change_for_remaining_targets"
     assert result.counters.get("details", 0) == 0
     assert result.original == overlap_draft()
     assert result.rounds[0].result.status == "REJECTED"
@@ -92,8 +92,8 @@ def test_later_provider_failure_preserves_partial_improvement():
 def test_repeated_failed_patch_stops_before_third_call():
     model = SequenceModel([[], [], [edit()]])
     result = stage(model)
-    assert model.calls == 2
-    assert result.reason == "duplicate_failed_patch"
+    assert model.calls == 1
+    assert result.reason == "no_material_change_for_remaining_targets"
     assert result.final == result.original
 
 
@@ -156,7 +156,7 @@ def test_untimed_walk_measurement_is_used_but_not_future_verified():
     assert len(provider.calls) == 1 and provider.calls[0].departure_time is None
     checked = layout(original, proposed, evidence=evidence, mode="WALK")
     assert checked["accepted"]
-    assert checked["legs"][0]["basis"] == "untimed_walk_measurement"
+    assert checked["legs"][0]["basis"] == "walk_provider_estimate"
     assert not checked["legs"][0]["time_verified"]
     missing = layout(original, proposed)
     assert not missing["accepted"]
@@ -220,13 +220,16 @@ def test_runtime_spatial_value_changes_actual_policy_result():
 @pytest.mark.parametrize(
     "change",
     [
-        {"max_rounds": 4},
+        {"max_rounds": 6},
+        {"acquisition": {"canonical": 31}},
+        {"timing": {"stage_seconds": 361}},
         {"max_rounds": True},
         {"max_model_calls": -1},
         {"timing": {"model_seconds": 0}},
         {"timing": {"round_seconds": 20}},
-        {"input": {"identity_capacity": 29}},
+        {"input": {"identity_capacity": 33}},
         {"input": {"input_tokens": 10}},
+        {"input": {"input_tokens": 252001}},
         {"acquisition": {"google": 0}},
         {"acquisition": {"routes": 0}},
         {"spatial": {"fallback_distance_km": 3}},
@@ -242,12 +245,15 @@ def test_runtime_yaml_snapshot_round_trips_and_v0_defaults_remain():
     config = load_runtime_config()
     assert RuntimeConfig.model_validate(config.model_dump()) == config
     assert config.v3_repair.quantity_review_enabled is False
-    assert config.main_generation.input_tokens == 160000
+    assert config.main_generation.input_tokens == 252000
     assert config.budget.final_pois == 20
 
 
 def test_blank_day_two_rounds_use_unique_ids_and_current_candidate_groups():
     original, ctx = draft([]), context()
+    ctx = ctx.model_copy(
+        update={"contract": ctx.contract.model_copy(update={"time_protections": ()})}
+    )
     scope = scope_for(original, ctx, check="coverage", add_dates=(DAY,))
     model = SequenceModel(
         [
@@ -262,7 +268,7 @@ def test_blank_day_two_rounds_use_unique_ids_and_current_candidate_groups():
         "repair_r1_new_1",
         "repair_r2_new_1",
     }
-    assert "a" not in {c["place"]["place_id"] for c in model.inputs[1]["addition_candidates"]}
+    assert "a" not in {c["place_id"] for c in model.inputs[1]["addition_candidates"]}
     assert result.rounds[1].target_links
 
 
@@ -270,9 +276,9 @@ def test_budget_settings_control_sends_and_nearby_reserve_without_round_reset():
     from backend.app.versions.v3.repair_budget import RepairBudget
 
     async def scenario():
-        p = policy(acquisition={"routes": 1, "elements": 1})
+        p = policy(acquisition={"routes": 1, "elements": 1, "post_proposal_route_reserve": 0})
         budget = RepairBudget(500, clock=lambda: 100, policy=p, nearby_reserve=7)
-        assert budget.deadline == 400
+        assert budget.deadline == 460
         shorter = policy(timing={"stage_seconds": 120})
         assert RepairBudget(500, clock=lambda: 100, policy=shorter).deadline == 220
         sends = []
@@ -347,8 +353,9 @@ def test_actual_graph_feedback_rounds_then_nearby_once(monkeypatch):
             return await super().generate_repair_structured(**kwargs)
 
     result, model, _, owner = asyncio.run(execute(FeedbackGraphModel()))
-    assert result.v3.repair.status == "ACCEPTED_COMPLETE"
-    assert model.repair_calls == 2 and len(model.calls) == 1
+    assert result.v3.repair.status == "REJECTED"
+    assert result.v3.repair.reason == "no_material_change_for_remaining_targets"
+    assert model.repair_calls == 1 and len(model.calls) == 1
     assert len(calls) == 1 and owner.closes == 1
 
 
@@ -433,7 +440,7 @@ def test_actual_usage_is_cumulative_and_missing_values_remain_explicit():
             )
             return await super().generate_repair_structured(**kwargs)
 
-    result = stage(UsageModel([[], [edit()]]))
+    result = stage(UsageModel([[edit("10:50", "11:50")], [edit()]]))
     assert result.usage["fixture-model"]["total_tokens"] == 26
     assert [r.usage["fixture-model"]["total_tokens"] for r in result.rounds] == [13, 13]
     assert result.usage_status == "reported"
@@ -450,7 +457,7 @@ def test_configured_routes_stage_allowance_does_not_reset_between_rounds():
         ctx,
         scope,
         routes_provider=provider,
-        policy=policy(acquisition={"routes": 1, "elements": 1}),
+        policy=policy(acquisition={"routes": 1, "elements": 1, "post_proposal_route_reserve": 0}),
     )
     assert len(result.rounds) == 2
     assert len(provider.calls) == result.counters["routes"] == result.counters["elements"] == 1

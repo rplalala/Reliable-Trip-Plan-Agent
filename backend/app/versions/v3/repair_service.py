@@ -6,18 +6,16 @@ from time import monotonic
 
 from backend.app.observability.run_trace import redact_secrets
 from backend.app.versions.v3.repair_acceptance import (
-    apply_patch,
     assess,
     compare,
-    inclusion_ids,
     validate_scope,
 )
 from backend.app.versions.v3.repair_budget import RepairBudget
 from backend.app.versions.v3.repair_candidates import prepare_candidates
+from backend.app.versions.v3.repair_feedback import feedback_kind, learn, material_fingerprint
 from backend.app.versions.v3.repair_models import RepairPatch, RepairResult, TargetProgress
 from backend.app.versions.v3.repair_projection import build_repair_input
 from backend.app.versions.v3.repair_routes import acquire_transitions, bind_transitions
-from backend.app.versions.v3.repair_schedule import check_time_permissions, consume_windows
 
 
 async def run_repair_once(
@@ -85,6 +83,8 @@ async def run_repair_once(
     window_adjustments = ()
     usage = {}
     model_timeout = None
+    fingerprint = None
+    components = ()
 
     def audit(value):
         if value is None:
@@ -119,6 +119,8 @@ async def run_repair_once(
         from backend.app.versions.v3.repair_targets import related_progress
 
         record = RepairResult(
+            components=components,
+            material_fingerprint=fingerprint,
             related_targets=related_progress(
                 snapshot, proposed if proposed is not None else snapshot, scope, proposed_schedule
             ),
@@ -159,6 +161,7 @@ async def run_repair_once(
             ),
             main_visits_lost=losses,
             coverage_regressions=regressions,
+            acquisition_audit=tuple(dict(row) for row in budget.acquisition_audit),
             counters=dict(budget.used),
             stops=tuple(budget.stops),
             sizing=sizing,
@@ -198,6 +201,7 @@ async def run_repair_once(
         if tracer is not None:
             # Separate compact artifacts survive truncation of the full V3 outcome.
             for name, value in (
+                ("components", components),
                 ("schedule", proposed_schedule),
                 ("window_adjustments", window_adjustments),
                 ("scope", scope),
@@ -231,6 +235,7 @@ async def run_repair_once(
             return result("SKIPPED", "phase_or_request_deadline")
         async with asyncio.timeout(remaining()):
             # Optional preparation cannot consume the model/recheck allocation.
+            budget.route_phase = "preparation"
             budget.io_deadline = min(
                 budget.clock() + timing.preparation_seconds,
                 round_deadline - timing.minimum_model_seconds - timing.recheck_reserve_seconds,
@@ -266,23 +271,33 @@ async def run_repair_once(
                 budget,
                 context.schedule,
             )
+            from backend.app.versions.v3.repair_transport import prepare_options
+
+            transport_options, option_routes = await prepare_options(
+                snapshot,
+                preparation,
+                scope,
+                context,
+                (*context.route_evidence, *extra),
+                routes_provider,
+                budget,
+                initial,
+            )
+            extra = (*extra, *option_routes)
             system, user, sizing = build_repair_input(
                 snapshot,
                 initial,
                 scope,
                 context,
                 preparation,
-                relevant_routes(
-                    snapshot, scope, (*context.route_evidence, *extra), context.schedule
-                ),
+                (*context.route_evidence, *extra),
                 policy=policy,
                 feedback=feedback,
+                transport_options=transport_options,
             )
-            import hashlib
-
-            fingerprint = hashlib.sha256((system + user).encode()).hexdigest()
+            fingerprint = material_fingerprint(user)
             if fingerprint in getattr(budget, "input_fingerprints", set()):
-                return result("SKIPPED", "duplicate_effective_input")
+                return result("SKIPPED", "no_material_change_for_remaining_targets")
             budget.input_fingerprints = getattr(budget, "input_fingerprints", set()) | {fingerprint}
             timeout = min(timing.model_seconds, remaining() - timing.recheck_reserve_seconds)
             if timeout < timing.minimum_model_seconds:
@@ -305,90 +320,54 @@ async def run_repair_once(
                 usage = dict(callback.usage_metadata)
             model_returned = True
             patch = RepairPatch.model_validate(raw)
-            required, excluded = inclusion_ids(context)
-            proposed, losses = apply_patch(
-                snapshot,
-                patch,
-                scope,
-                preparation,
-                required,
-                excluded,
-                id_prefix=f"repair_r{round_index}_new",
-                context=context,
-            )
-            check_time_permissions(snapshot, proposed, context.schedule)
-            budget.io_deadline = round_deadline - timing.finalization_reserve_seconds
-            # Reject unauthorized patches BEFORE any post-repair provider work.
+            if any(d.target_id not in scope.target_ids for d in patch.target_dispositions):
+                raise ValueError("Unauthorized target disposition")
             if remaining() <= 0:
                 return result("REJECTED", "phase_deadline")
-            proposed_bindings = bind_transitions(
-                proposed,
-                None if scope.unsupported_explicit_mode else (scope.travel_mode or "WALK"),
-                scope.routing_preference,
-                context.schedule,
-            )
-            later = await acquire_transitions(
-                proposed,
-                scoped_bindings(
-                    proposed, scope, proposed_bindings, previous=snapshot, schedule=context.schedule
-                ),
-                (*context.route_evidence, *extra),
+            from backend.app.versions.v3.repair_components import accept_components
+
+            budget.route_phase = "post_proposal"
+            budget.io_deadline = round_deadline - timing.finalization_reserve_seconds
+            component_result = await accept_components(
+                snapshot,
+                patch,
+                initial,
+                context,
+                scope,
+                preparation,
+                extra,
                 tuple(all_places.values()),
                 routes_provider,
                 budget,
-                context.schedule,
-            )
-            extra = (*extra, *later)
-            proposed, proposed_schedule, window_adjustments = consume_windows(
-                snapshot,
-                proposed,
-                scope,
-                context.schedule,
-                tuple(all_places.values()),
-                (*context.route_evidence, *extra),
-                policy.spatial,
-                prefix=f"repair_r{round_index}",
-            )
-            if sum(len(d.activities) for d in proposed.days) > policy.input.activity_capacity:
-                raise ValueError("repair_activity_capacity_after_window_split")
-            proposed_context = context.model_copy(update={"schedule": proposed_schedule})
-            # Preserve initial observation; compare both arrangements on the augmented evidence.
-            reassessed = assess(snapshot, context, whitelist, extra, original_bindings)
-            after = assess(proposed, proposed_context, whitelist, extra, proposed_bindings)
-            comparison = compare(
-                snapshot, proposed, initial, reassessed, after, scope, proposed_schedule, context
-            )
-            from backend.app.versions.v3.repair_spatial import check_addition_layout
-
-            spatial = check_addition_layout(
                 stage_original,
-                proposed,
-                tuple(all_places.values()),
-                (*context.route_evidence, *extra),
-                scope.travel_mode,
-                policy.spatial,
-                required,
-                routing_preference=scope.routing_preference,
-                schedule=proposed_schedule,
+                f"repair_r{round_index}_new",
             )
-            spatial["mode_basis"] = scope.mode_source or spatial["mode_basis"]
-            if scope.unsupported_explicit_mode and any(
-                e.operation in {"add", "replace"} for e in patch.edits
-            ):
-                spatial["accepted"] = False
-                spatial["reasons"].append("explicit_transport_mode_not_supported")
-            if not spatial["accepted"]:
-                comparison = comparison.model_copy(
-                    update={
-                        "accepted": False,
-                        "reason": comparison.reason + "; " + "; ".join(spatial["reasons"]),
-                    }
-                )
+            components = component_result["components"]
+            proposed = component_result["final"]
+            proposed_schedule = component_result["schedule"]
+            window_adjustments = component_result["adjustments"]
+            extra = (*extra, *component_result["extra"])
+            reassessed, after = component_result["reassessed"], component_result["after"]
+            comparison, spatial = component_result["comparison"], component_result["spatial"]
+            losses = component_result["losses"]
             progress, regressions = comparison.progress, comparison.coverage_regressions
             if not comparison.accepted:
-                return result("REJECTED", comparison.reason)
-            if remaining() <= 0:
-                return result("REJECTED", "phase_deadline")
+                proposed = None if components else snapshot
+                if len(components) == 1 and components[0].get("proposal"):
+                    from backend.app.versions.v3.models import ValidationReport
+                    from backend.app.versions.v3.repair_models import RepairComparison
+
+                    component = components[0]
+                    proposed = type(snapshot).model_validate(component["proposal"])
+                    losses = tuple(component.get("main_visits_lost", ()))
+                    if component.get("report"):
+                        after = ValidationReport.model_validate(component["report"])
+                    if component.get("comparison"):
+                        comparison = RepairComparison.model_validate(component["comparison"])
+                        progress, regressions = comparison.progress, comparison.coverage_regressions
+                    spatial = component.get("spatial") or {}
+                reasons = "; ".join(c.get("reason", "") for c in components)
+                return result("REJECTED", reasons or comparison.reason)
             from backend.app.versions.v3.repair_targets import related_progress
 
             linked = related_progress(snapshot, proposed, scope, proposed_schedule)
@@ -466,6 +445,13 @@ async def run_repair_stage(
     original_keys = {
         finding_key(f): f.finding_id for f in initial.findings if f.finding_id in scope.target_ids
     }
+    # Opt-in quantity authority may continue on the same originally authorized date
+    # after its product minimum is met. It never adds unrelated dates or operations.
+    if "coverage" in context.policy.review_targets:
+        for f in initial.findings:
+            if f.finding_id in scope.target_ids and f.reason == "minimum_daily_coverage_missing":
+                ordinary_key = ("coverage", (), f.dates, (), ())
+                original_keys[ordinary_key] = f.finding_id
     current = original.model_copy(deep=True)
     current_schedule = context.schedule
     active_related = scope.active_related
@@ -505,53 +491,39 @@ async def run_repair_stage(
         if not remaining_targets:
             stop = "authorized_targets_complete"
             break
-        confirmed_ids = {
+
+        # Hard obligations first, then product minimum, then opt-in review work.
+        def target_tier(f):
+            if f.reason == "minimum_daily_coverage_missing":
+                return 1
+            return 0 if f.status == "CONFIRMED" else 2
+
+        active_tier = min(
+            target_tier(f) for f in report.findings if f.finding_id in remaining_targets
+        )
+        active_ids = {
             f.finding_id
             for f in report.findings
-            if f.finding_id in remaining_targets and f.status == "CONFIRMED"
+            if f.finding_id in remaining_targets and target_tier(f) == active_tier
         }
-        deferred = (
-            tuple(i for i in remaining_targets if i not in confirmed_ids) if confirmed_ids else ()
-        )
-        if confirmed_ids:
-            remaining_targets = tuple(i for i in remaining_targets if i in confirmed_ids)
+        deferred = tuple(i for i in remaining_targets if i not in active_ids)
+        remaining_targets = tuple(i for i in remaining_targets if i in active_ids)
         remaining_findings = [f for f in report.findings if f.finding_id in remaining_targets]
-        addition_dates = {day for f in remaining_findings for day in (f.dates or scope.add_dates)}
-        activity_ids = {aid for f in remaining_findings for aid in f.activity_ids}
-        activity_ids.update(
-            a.activity_id
-            for d in current.days
-            for a in d.activities
-            if any(f.check == "overfull" and d.date in f.dates for f in remaining_findings)
-        )
-        excluded_targets = {
-            pid
-            for f in remaining_findings
-            if f.reason == "excluded_identity_scheduled"
-            for pid in f.place_ids
-        }
-        activity_ids.update(
-            a.activity_id
-            for d in current.days
-            for a in d.activities
-            if a.source_place_id in excluded_targets
-        )
-        round_scope = scope.model_copy(
-            update={
-                "target_ids": remaining_targets,
-                "deferred_review_target_ids": deferred,
-                "active_related": active_related,
-                "add_dates": tuple(
-                    d
-                    for d in scope.add_dates
-                    if d in addition_dates
-                    or any(
-                        r.permission.date == d and r.status != "resolved" for r in active_related
-                    )
-                ),
-                "revisits": tuple(r for r in scope.revisits if r.date in addition_dates),
-                "permissions": tuple(p for p in scope.permissions if p.activity_id in activity_ids),
-            }
+        from backend.app.versions.v3.repair_targets import localize_scope
+
+        round_scope = localize_scope(
+            current,
+            report,
+            scope,
+            remaining_targets,
+            deferred,
+            active_related,
+            {
+                f.finding_id: original_keys.get(finding_key(f), f.finding_id)
+                for f in remaining_findings
+            },
+            context=effective,
+            policy=policy,
         )
         timing = policy.timing
         if budget.remaining() < timing.minimum_model_seconds + timing.recheck_reserve_seconds:
@@ -565,7 +537,9 @@ async def run_repair_stage(
             ),
         )
         allocation = min(timing.round_seconds, budget.remaining() / affordable)
+        budget.round_index = index
         before = current.model_copy(deep=True)
+        budget.target_keys = {f.finding_id: repr(finding_key(f)) for f in remaining_findings}
         result = await run_repair_once(
             current,
             effective,
@@ -578,6 +552,24 @@ async def run_repair_stage(
             round_deadline=clock() + allocation,
             **kwargs,
         )
+        result = learn(result, budget, index)
+        if kwargs.get("tracer") is not None:
+            data = redact_secrets(
+                {
+                    "round_index": index,
+                    "kind": result.feedback_kind,
+                    "material_fingerprint": result.material_fingerprint,
+                    "presentation_history": result.presentation_history,
+                    "conflict_records": result.conflict_records,
+                }
+            )
+            size = len(json.dumps(data, ensure_ascii=True).encode())
+            kwargs["tracer"].event(
+                "v3_repair_material_feedback",
+                data
+                if size <= kwargs.get("audit_max_bytes", 1000000)
+                else {"truncated": True, "original_bytes": size},
+            )
         last = result
         ledger.update({c.place.place_id: c for c in result.repair_whitelist})
         routes = (*routes, *result.acquired_routes)
@@ -642,6 +634,7 @@ async def run_repair_stage(
         if stop != "feedback_iteration":
             break
         feedback = new_feedback
+        budget.feedback_kind = result.feedback_kind
         budget.explore_feedback = bool(result.spatial.get("reasons"))
     else:
         stop = "round_or_model_limit"
@@ -702,9 +695,16 @@ async def run_repair_stage(
             "ACCEPTED_COMPLETE"
             if all(p.outcome == "resolved" for p in summary.progress)
             and all(r.status == "resolved" for r in active_related)
+            and not any(
+                finding_key(f) in original_keys
+                and f.finding_id in {t.finding_id for t in final_report.improvement_targets}
+                for f in final_report.findings
+            )
             else "ACCEPTED_PARTIAL"
         )
         if any_accepted
+        else "REJECTED"
+        if any(r.result.model_attempted for r in records)
         else last.status
     )
     cumulative_usage = {}
@@ -746,6 +746,7 @@ async def run_repair_stage(
             "repair_whitelist": tuple(ledger.values()),
             "acquired_routes": routes,
             "rounds": tuple(records),
+            "acquisition_audit": tuple(dict(row) for row in budget.acquisition_audit),
             "counters": dict(budget.used),
             "stops": tuple(budget.stops),
             "scope": scope,
@@ -801,6 +802,22 @@ def scoped_bindings(itinerary, scope, bindings, *, previous=None, schedule=None)
 def round_feedback(result, accepted):
     """Compact prior business feedback; no provider response or reasoning history."""
     return {
+        "kind": feedback_kind(result),
+        "arrangement_constraints": list(result.conflict_records)
+        + (
+            [
+                {
+                    "invalid_operation_patch": result.parsed_patch.model_dump(mode="json"),
+                    "constraint": result.reason,
+                }
+            ]
+            if feedback_kind(result) == "scope_or_operation_invalid" and result.parsed_patch
+            else []
+        ),
+        "components": [
+            {k: c.get(k) for k in ("component_id", "edit_indices", "status", "reason")}
+            for c in result.components
+        ],
         "previous_status": result.status,
         "reason": result.reason,
         "previous_patch": result.parsed_patch.model_dump(mode="json")

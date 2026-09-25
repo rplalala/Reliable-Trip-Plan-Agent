@@ -2,7 +2,6 @@
 
 from collections import defaultdict
 from itertools import combinations
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from backend.app.evidence.effective_models import EffectivePlaceEvidence
 from backend.app.evidence.models import PlaceEvidence, RouteEvidenceBundle
@@ -59,6 +58,9 @@ def validate_draft(
         itinerary,
         contract.requirements,
         reference_date=window.reference_date,
+        contract=contract,
+        schedule=schedule,
+        places=places,
         supplied_ids=supplied_ids,
         related_requirement_ids=tuple(r.requirement_id for r in contract.semantic_requirements),
     )
@@ -92,6 +94,22 @@ def validate_draft(
 
     for row in diagnostics.days:
         count = row.distinct_main_poi_count
+        if row.minimum_coverage == "missing":
+            add(
+                "coverage",
+                "CONFIRMED",
+                "minimum_daily_coverage_missing",
+                dates=(row.date,),
+                magnitude=1,
+                evidence_refs=row.minimum_coverage_evidence,
+                adopted_evidence={"rule": "minimum_daily_coverage_1", "required_count": 1},
+            )
+            continue
+        if row.minimum_coverage == "exempt":
+            continue
+        if row.minimum_coverage == "unknown" and count == 0:
+            add("coverage", "UNKNOWN", row.minimum_coverage_reason, dates=(row.date,))
+            continue
         if (
             row.target_status == "not_assessable"
             or count < policy.daily_main_min
@@ -272,12 +290,25 @@ def validate_draft(
     for activity in activities:
         if not activity.source_place_id or activity.activity_kind in {"transport", "free_time"}:
             continue
-        place = by_id[activity.source_place_id]
+        from backend.app.evidence.opening_hours import with_context_timezone
+
+        place = with_context_timezone(
+            by_id[activity.source_place_id],
+            [
+                by_id[a.source_place_id]
+                for d in itinerary.days
+                if d.date == activity.start_time.date()
+                for a in d.activities
+                if a.source_place_id in by_id
+            ],
+        )
         evidence = effective.get(place.place_id)
         from backend.app.versions.v3.repair_obligations import visit_binding
 
         binding = visit_binding(activity, visit_bindings)
-        status, reason, refs = _opening(activity, place, evidence, binding)
+        from backend.app.evidence.opening_hours import assess_opening
+
+        status, reason, refs, magnitude, audit = assess_opening(activity, place, evidence, binding)
         fields = dict(
             activity_ids=(activity.activity_id,),
             place_ids=(place.place_id,),
@@ -288,15 +319,46 @@ def validate_draft(
             status,
             reason,
             evidence_refs=refs,
-            magnitude=_opening_magnitude(activity, place, evidence)
-            if status in {"CONFIRMED", "PASS"}
-            else None,
+            magnitude=magnitude,
+            adopted_evidence=audit,
             **fields,
         )
         add(
             "visitor_suitability",
             "UNKNOWN",
-            "public_access_and_visit_mode_not_typed",
+            "admission_reservation_and_special_area_unverified",
+            adopted_evidence={
+                "scheduling_policy": audit["policy"],
+                "access_mode": audit["access_mode"],
+                "reported_conditions": [
+                    f.model_dump(mode="json")
+                    for f in evidence.facts
+                    if f.dimension
+                    in {
+                        "admission_policy",
+                        "reservation_requirement",
+                        "ticket_requirement",
+                        "advance_ticket_purchase_requirement",
+                    }
+                    and f.source_refs
+                    and (
+                        not f.applicable_start_date
+                        or f.applicable_start_date <= activity.start_time.date()
+                    )
+                    and (
+                        not f.applicable_end_date
+                        or f.applicable_end_date >= activity.start_time.date()
+                    )
+                ]
+                if evidence
+                else [],
+                "unverified": [
+                    "admission_eligibility",
+                    "reservation_completion",
+                    "ticket_possession",
+                    "special_area_access",
+                ],
+            },
             evidence_refs=(place.source_ref,),
             **fields,
         )
@@ -355,144 +417,12 @@ def validate_draft(
 
 
 def _opening(activity, place, evidence, binding=None):
-    """Find date-specific window differences without inventing visit/access scope.
+    from backend.app.evidence.opening_hours import assess_opening
 
-    Only an explicit application binding distinguishes entry from exterior viewing.
-    Unbound activity mismatches remain reviewable; intent never proves public access.
-    """
-    unknown = ("UNKNOWN", "applicable_structured_hours_unavailable", ())
-    if (
-        evidence is None
-        or evidence.place_id != place.place_id
-        or place.availability == "unavailable"
-    ):
-        return unknown
-    if not place.timezone_id or activity.start_time.utcoffset() is None:
-        return "UNKNOWN", "venue_timezone_or_activity_offset_missing", ()
-    try:
-        zone = ZoneInfo(place.timezone_id)
-    except ZoneInfoNotFoundError:
-        return "UNKNOWN", "venue_timezone_unrecognized", ()
-    start, end = activity.start_time.astimezone(zone), activity.end_time.astimezone(zone)
-    if start.date() != end.date():
-        return "UNKNOWN", "overnight_hours_not_supported", ()
-    day = next((d for d in evidence.operational_days if d.date == start.date()), None)
-    if day and (day.status == "unresolved_conflict" or day.unresolved_reason):
-        return "UNKNOWN", "conflicting_operational_evidence", day.source_refs
-    bound = binding is not None and binding.mode == "venue_entry"
-    if binding is not None and binding.mode == "exterior":
-        return "UNKNOWN", "exterior_access_not_established_by_venue_hours", ()
-    closure_facts = [
-        f
-        for f in evidence.facts
-        if f.dimension == "operational_availability"
-        and f.subject_scope == "whole_venue"
-        and f.temporal_basis == "explicit_date_or_range"
-        and f.applicable_start_date
-        and f.applicable_end_date
-        and f.applicable_start_date <= start.date() <= f.applicable_end_date
-    ]
-    if any(f.relation in {"conflict", "unresolved"} or f.unresolved_reason for f in closure_facts):
-        return (
-            "UNKNOWN",
-            "conflicting_operational_evidence",
-            tuple(r for f in closure_facts for r in f.source_refs),
-        )
-    if day and day.status == "confirmed_date_closed" and day.source_refs:
-        if bound and any(
-            f.source_refs
-            and f.authority_bases
-            and f.value_kind in {"temporary_closure", "permanent_closure"}
-            and set(f.source_refs) & set(day.source_refs)
-            for f in closure_facts
-        ):
-            return "CONFIRMED", "bound_entry_date_closed", day.source_refs
-        return (
-            ("UNKNOWN", "closure_provenance_or_scope_insufficient", day.source_refs)
-            if bound
-            else ("NEEDS_REVIEW", "venue_closed_but_visit_mode_unbound", day.source_refs)
-        )
-    facts = [
-        f
-        for f in evidence.facts
-        if f.dimension == "opening_hours"
-        and f.subject_scope == "whole_venue"
-        and f.temporal_basis == "explicit_date_or_range"
-        and f.applicable_start_date
-        and f.applicable_end_date
-        and f.applicable_start_date <= start.date() <= f.applicable_end_date
-    ]
-    if any(f.relation in {"conflict", "unresolved"} or f.unresolved_reason for f in facts):
-        return (
-            "UNKNOWN",
-            "conflicting_hours_evidence",
-            tuple(sorted({ref for f in facts for ref in f.source_refs})),
-        )
-    usable = _usable_hours(facts)
-    if not usable or len({(f.opens_at, f.closes_at) for f in usable}) != 1:
-        return unknown
-    fact = usable[0]
-    if start.time() < fact.opens_at or end.time() > fact.closes_at:
-        return (
-            ("CONFIRMED", "bound_entry_outside_hours", fact.source_refs)
-            if bound
-            else ("NEEDS_REVIEW", "outside_venue_hours_but_visit_mode_unbound", fact.source_refs)
-        )
-    # Matching hours do not establish admission or the absence of special restrictions.
-    return (
-        ("PASS", "bound_entry_hours_only", fact.source_refs)
-        if bound
-        else ("UNKNOWN", "within_hours_but_visit_access_unverified", fact.source_refs)
-    )
+    return assess_opening(activity, place, evidence, binding)[:3]
 
 
 def _opening_magnitude(activity, place, evidence):
-    """Seconds outside the supported explicit daily window; closed day loses the visit."""
-    start, end = (
-        activity.start_time.astimezone(ZoneInfo(place.timezone_id)),
-        activity.end_time.astimezone(ZoneInfo(place.timezone_id)),
-    )
-    if any(
-        d.date == start.date() and d.status == "confirmed_date_closed"
-        for d in evidence.operational_days
-    ):
-        return (end - start).total_seconds()
-    facts = _usable_hours(
-        [
-            f
-            for f in evidence.facts
-            if f.dimension == "opening_hours"
-            and f.subject_scope == "whole_venue"
-            and f.temporal_basis == "explicit_date_or_range"
-            and f.applicable_start_date
-            and f.applicable_end_date
-            and f.applicable_start_date <= start.date() <= f.applicable_end_date
-        ]
-    )
-    f = facts[0]
-    opens = start.replace(
-        hour=f.opens_at.hour, minute=f.opens_at.minute, second=f.opens_at.second, microsecond=0
-    )
-    closes = start.replace(
-        hour=f.closes_at.hour, minute=f.closes_at.minute, second=f.closes_at.second, microsecond=0
-    )
-    return max(
-        0,
-        (end - start).total_seconds()
-        - max(0, (min(end, closes) - max(start, opens)).total_seconds()),
-    )
+    from backend.app.evidence.opening_hours import assess_opening
 
-
-def _usable_hours(facts):
-    return [
-        f
-        for f in facts
-        if f.source_refs
-        and f.authority_bases
-        and f.opens_at is not None
-        and f.closes_at is not None
-        and f.opens_at.tzinfo is None
-        and f.closes_at.tzinfo is None
-        and f.opens_at < f.closes_at
-        and f.schedule_scope == "daily"
-    ]
+    return assess_opening(activity, place, evidence)[3]

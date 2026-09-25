@@ -35,6 +35,7 @@ class Finding(ValidationModel):
     evidence_refs: tuple[str, ...] = ()
     is_violation: bool = False
     magnitude: float | None = None
+    adopted_evidence: dict[str, object] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def confirmed_is_violation(self):

@@ -29,10 +29,40 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
     activities = {a.activity_id: (d.date, a) for d in draft.days for a in d.activities}
     rows = {r.date: r for r in report.diagnostics.days}
     eligible = {t.finding_id for t in report.improvement_targets}
-    uncertain_binding = any(
-        f.check == "named_requirement" and f.reason == "missing_or_inconsistent_identity_binding"
-        for f in report.findings
-    )
+
+    def uncertain_binding(aid):
+        if context is None:
+            return False
+        day, activity = activities[aid]
+        for finding in report.findings:
+            if (
+                finding.check != "named_requirement"
+                or finding.reason != "missing_or_inconsistent_identity_binding"
+            ):
+                continue
+            for rid in finding.requirement_ids:
+                specs = [
+                    v for v in context.contract.visit_requirements or () if v.requirement_id == rid
+                ]
+                if specs and all(v.dates and day not in v.dates for v in specs):
+                    continue
+                named = next(
+                    (n for n in context.contract.named_places if n.requirement_id == rid), None
+                )
+                matches = [r for r in context.named_resolutions if r.search_intent_id == rid]
+                if (
+                    named is None
+                    or len(matches) != 1
+                    or matches[0].named_place_intent.place_text != named.place_text
+                    or matches[0].named_place_intent.source_text
+                    not in {r.quote for r in named.source_refs}
+                    or not matches[0].matching_place_ids
+                ):
+                    return True  # No trustworthy scope: retain protection.
+                if activity.source_place_id in matches[0].matching_place_ids:
+                    return True
+        return False
+
     dependent = []
     move_destinations = defaultdict(set)
     direct_additions = set()
@@ -80,11 +110,13 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
                 if (
                     context
                     and context.contract.visit_requirements is not None
-                    and not uncertain_binding
+                    and not uncertain_binding(aid)
                     and dispensable_visit(draft, aid, context)
                 ):
                     permissions[aid].update({"replace", "delete"})
-        elif f.check == "coverage" and f.status == "NEEDS_REVIEW":
+        elif f.check == "coverage" and (
+            f.status == "NEEDS_REVIEW" or f.reason == "minimum_daily_coverage_missing"
+        ):
             applicable = set(f.dates)
             if context and context.schedule:
                 from backend.app.versions.v3.repair_schedule import subtract
@@ -112,11 +144,10 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
         elif f.check == "repetition" and len(f.dates) > 1:
             if context and (
                 context.contract.visit_requirements is None
-                or uncertain_binding
                 or not repeat_excess(draft, f.place_ids[0], context)
             ):
                 continue
-            selected = list(f.activity_ids)
+            selected = [aid for aid in f.activity_ids if not uncertain_binding(aid)]
             for aid in selected:
                 permissions[aid].update({"delete", "replace"})
         elif f.check == "overfull":
@@ -125,8 +156,9 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
                 for aid, (day, a) in activities.items()
                 if day in f.dates and a.activity_kind == "main_poi"
             ]
-            if context and (context.contract.visit_requirements is None or uncertain_binding):
+            if context and context.contract.visit_requirements is None:
                 continue
+            selected = [aid for aid in selected if not uncertain_binding(aid)]
             for aid in selected:
                 permissions[aid].add("delete")
         else:
@@ -134,7 +166,11 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
         for aid in selected:
             day, a = activities[aid]
             dates.add(day)
-            if f.check in {"repetition", "overfull", "opening", "route"} and movable(a, context):
+            if (
+                f.check in {"repetition", "overfull", "opening", "route"}
+                and not uncertain_binding(aid)
+                and movable(a, context)
+            ):
                 destinations = {
                     d for d in all_dates if 0 < abs((d - day).days) <= policy.move_max_days
                 }
@@ -362,6 +398,39 @@ class V3PostPrimary:
                 final, mode, state["transport_mode"].routing_preference, final_context.schedule
             ),
         )
+        from backend.app.versions.v3.repair_transport import present_transfers
+
+        final = present_transfers(
+            final,
+            bind_transitions(
+                final, mode, state["transport_mode"].routing_preference, final_context.schedule
+            ),
+            (*context.route_evidence, *(repair.acquired_routes if repair else ())),
+            final_context.schedule,
+            default_source="USER_EXPLICIT"
+            if state["transport_mode"].is_explicit
+            else "APPLICATION_DEFAULT_WALK",
+        )
+        from backend.app.policies.itinerary_schedule import ordered_activities
+        from backend.app.services.initial_routes import leg_diagnostic, permitted_modes
+
+        selected = {(t.from_activity_id, t.to_activity_id): t for t in final.transfers}
+        route_diagnostics = [
+            leg_diagnostic(
+                left,
+                right,
+                permitted_modes(state["transport_mode"]),
+                (*context.route_evidence, *(repair.acquired_routes if repair else ())),
+                self.acq.runtime_config.transport or self.acq.runtime_config.v3_repair.spatial,
+                final_context.schedule,
+                state["transport_mode"],
+                selected.get((left.activity_id, right.activity_id)),
+            )
+            for day in final.days
+            for ordered in [ordered_activities(day, final_context.schedule)]
+            for left, right in zip(ordered, ordered[1:], strict=False)
+        ]
+        final = final.model_copy(update={"route_diagnostics": route_diagnostics})
         outcome = V3Outcome(
             review_policy={
                 "quantity": self.quantity_review,

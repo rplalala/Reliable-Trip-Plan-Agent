@@ -3,15 +3,17 @@
 from backend.app.evidence.normalization import normalize_routes
 from backend.app.integrations.google.routes import ROUTE_MATRIX_FIELD_MASK
 from backend.app.integrations.models import LatLng, RouteMatrixRequest, RouteWaypoint
+from backend.app.policies.route_options import route_rows, transfer_time_check
 from backend.app.services.evidence_acquisition import V1EvidenceAcquisitionService
 from backend.app.versions.v3.repair_models import TransitionBinding
-from backend.app.versions.v3.repair_schedule import available_minutes, ordered_activities
+from backend.app.versions.v3.repair_schedule import ordered_activities
 
 
 def bind_transitions(itinerary, mode, routing_preference=None, schedule=None):
     if mode is None:
         return ()
     bindings = []
+    saved = {(t.from_activity_id, t.to_activity_id): t for t in itinerary.transfers}
     for day in itinerary.days:
         ordered = ordered_activities(day, schedule)
         for left, right in zip(ordered, ordered[1:], strict=False):
@@ -21,41 +23,44 @@ def bind_transitions(itinerary, mode, routing_preference=None, schedule=None):
                 and left.source_place_id != right.source_place_id
                 and left.end_time.utcoffset() is not None
             ):
+                transfer = saved.get((left.activity_id, right.activity_id))
+                if transfer and (
+                    transfer.origin_place_id != left.source_place_id
+                    or transfer.destination_place_id != right.source_place_id
+                    or transfer.departure_time < left.end_time
+                    or transfer.departure_time > right.start_time
+                ):
+                    transfer = None
                 bindings.append(
                     TransitionBinding(
                         from_activity_id=left.activity_id,
                         to_activity_id=right.activity_id,
-                        travel_mode=mode,
-                        departure_time=left.end_time,
-                        routing_preference=routing_preference,
+                        travel_mode=transfer.mode if transfer else mode,
+                        departure_time=transfer.departure_time if transfer else left.end_time,
+                        routing_preference=transfer.routing_preference
+                        if transfer
+                        else routing_preference,
+                        application_reserve_seconds=transfer.reserve_seconds if transfer else 0,
+                        mode_source=transfer.mode_source if transfer else "USER_EXPLICIT",
                     )
                 )
     return tuple(bindings)
 
 
 def applicable_elements(left, right, binding, evidence):
-    if binding.departure_time.utcoffset() is None or binding.departure_time != left.end_time:
+    if binding.departure_time.utcoffset() is None or binding.departure_time < left.end_time:
         return []
-    matches = []
-    for route in evidence:
-        if route.availability == "unavailable" or route.travel_mode != binding.travel_mode:
-            continue
-        if route.routing_preference != binding.routing_preference:
-            continue
-        # Strict temporal matching: representative noon evidence cannot certify another leg.
-        if route.representative_departure_time != binding.departure_time:
-            continue
-        for element in route.elements:
-            if (
-                element.origin_place_id == left.source_place_id
-                and element.destination_place_id == right.source_place_id
-                and element.evidence_type == "provider_observed"
-                and element.availability == "available"
-                and element.condition == "ROUTE_EXISTS"
-                and element.duration_seconds is not None
-            ):
-                matches.append((element.duration_seconds, route.source_ref))
-    return matches
+    return [
+        (r["duration_seconds"], r["source_ref"])
+        for r in route_rows(
+            left.source_place_id,
+            right.source_place_id,
+            binding.travel_mode,
+            binding.routing_preference,
+            binding.departure_time,
+            evidence,
+        )
+    ]
 
 
 def check_transitions(itinerary, bindings, evidence, schedule=None):
@@ -78,25 +83,70 @@ def check_transitions(itinerary, bindings, evidence, schedule=None):
             yield row
             continue
         left, right = (items[i] for i in pair)
+        row["adopted_evidence"] = {
+            "considered_routes": [
+                {
+                    "source_ref": r.source_ref,
+                    "travel_mode": r.travel_mode,
+                    "routing_preference": r.routing_preference,
+                    "departure_time": r.representative_departure_time.isoformat()
+                    if r.representative_departure_time
+                    else None,
+                    "retrieved_at": r.retrieved_at.isoformat(),
+                    "element": e.model_dump(mode="json"),
+                }
+                for r in evidence
+                for e in r.elements
+                if e.origin_place_id == left.source_place_id
+                and e.destination_place_id == right.source_place_id
+            ]
+        }
         matches = applicable_elements(left, right, binding, evidence)
         if not matches or len({duration for duration, _ in matches}) != 1:
             yield row
             continue
         try:
-            minutes = available_minutes(left, right, schedule, at_departure=True)
-            if minutes is None:
+            selected = route_rows(
+                left.source_place_id,
+                right.source_place_id,
+                binding.travel_mode,
+                binding.routing_preference,
+                binding.departure_time,
+                evidence,
+            )
+            comparison = transfer_time_check(
+                left,
+                right,
+                selected,
+                schedule,
+                binding.departure_time,
+                binding.application_reserve_seconds,
+            )
+            if comparison is None:
                 yield row
                 continue
-            gap = minutes * 60
+            gap, deficit = comparison
         except TypeError:
             yield row
             continue
-        deficit = max(0, matches[0][0] - gap)
+        row.pop("adopted_evidence", None)
         yield dict(
             **{
                 **row,
                 "status": "CONFIRMED" if deficit else "PASS",
                 "reason": "minimum_transfer_deficit" if deficit else "minimum_transfer_only",
+            },
+            adopted_evidence={
+                "available_seconds": gap,
+                "application_reserve_seconds": binding.application_reserve_seconds,
+                "selected_routes": route_rows(
+                    left.source_place_id,
+                    right.source_place_id,
+                    binding.travel_mode,
+                    binding.routing_preference,
+                    binding.departure_time,
+                    evidence,
+                ),
             },
             magnitude=deficit,
             evidence_refs=tuple(sorted({ref for _, ref in matches})),

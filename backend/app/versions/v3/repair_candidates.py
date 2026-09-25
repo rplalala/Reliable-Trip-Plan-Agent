@@ -22,11 +22,13 @@ from backend.app.tripworld.database.vectors import SPACE_ID
 from backend.app.tripworld.retrieval.entities import RetrievalEntity
 from backend.app.versions.v3.repair_acceptance import inclusion_ids
 from backend.app.versions.v3.repair_budget import RepairLimit
+from backend.app.versions.v3.repair_feedback import digest, opportunity
 from backend.app.versions.v3.repair_models import (
     CandidateDecision,
     CandidatePreparation,
     RepairCandidate,
 )
+from backend.app.versions.v3.repair_transport import allowed_modes
 
 
 def qualify(item, trip_end, excluded):
@@ -84,23 +86,56 @@ def candidate_targets(original, context, scope):
     from backend.app.versions.v3.repair_acceptance import assess
 
     report = assess(original, context)
+    from backend.app.versions.v3.repair_targets import affected_activity_ids
+
     targets = []
     days = {d.date: d for d in report.diagnostics.days}
     for finding in report.findings:
         if finding.finding_id not in scope.target_ids:
             continue
+        if finding.check != "coverage" and finding.reason not in {
+            "required_identity_omitted",
+            "required_visit_obligation_unmet",
+        }:
+            continue
         for day in scope.add_dates:
+            if scope.direct_add_dates is not None and day not in scope.direct_add_dates:
+                continue
             if finding.dates and day not in finding.dates:
                 continue
+            if finding.check == "coverage" and not finding.dates:
+                continue
             gap = (
-                max(0, scope.daily_main_min - days[day].distinct_main_poi_count)
+                max(
+                    0,
+                    (
+                        1
+                        if finding.reason == "minimum_daily_coverage_missing"
+                        else scope.daily_main_min
+                    )
+                    - days[day].distinct_main_poi_count,
+                )
                 if finding.check == "coverage"
                 else 1
             )
             if gap:
                 targets.append((finding.finding_id, day, "add", gap))
     for permission in scope.coverage_permissions:
-        if permission.date in scope.add_dates:
+        if permission.date in scope.add_dates and (
+            (
+                permission.parent_id in scope.target_ids
+                and any(
+                    p.activity_id in permission.trigger_activity_ids
+                    and p.operations & {"replace", "delete", "move"}
+                    for p in scope.permissions
+                )
+            )
+            or permission.target_id in scope.target_ids
+            or any(
+                r.permission.target_id == permission.target_id and r.status != "resolved"
+                for r in scope.active_related
+            )
+        ):
             targets.append(
                 (permission.target_id, permission.date, "add", max(1, permission.minimum_count))
             )
@@ -115,24 +150,18 @@ def candidate_targets(original, context, scope):
             parents = [
                 f.finding_id
                 for f in report.findings
-                if f.finding_id in scope.target_ids and permission.activity_id in f.activity_ids
+                if f.finding_id in scope.target_ids
+                and permission.activity_id in affected_activity_ids(original, f)
             ]
-            for target in parents or scope.target_ids[:1]:
+            for target in parents:
                 targets.append((target, day, "replace", 1))
     return tuple(dict.fromkeys(targets))
 
 
 def date_hours(place, day):
-    """Presence of applicable provider hours only, not executable visitor access."""
-    for hours in (place.current_opening_hours, place.regular_opening_hours, place.opening_hours):
-        if hours is None or not hours.weekday_descriptions:
-            continue
-        if hours.applicability == "regular_weekly_pattern":
-            return True
-        if hours.valid_from is not None and hours.valid_through is not None:
-            if hours.valid_from <= day <= hours.valid_through:
-                return True
-    return False
+    from backend.app.evidence.opening_hours import selected_hours
+
+    return selected_hours(place, day)["known"]
 
 
 def matched_capacity(decisions, targets, multiplier=2):
@@ -151,6 +180,7 @@ def matched_capacity(decisions, targets, multiplier=2):
             and d.date == day
             and d.operation == operation
             and d.disposition == "eligible"
+            and d.opportunity_status != "BLOCKED"
         }
         for target, day, operation in slots
     ]
@@ -189,6 +219,20 @@ async def prepare_candidates(
     if len(scheduled) > capacity:
         raise ValueError("repair_identity_union_ceiling")
     targets = candidate_targets(original, context, scope)
+    from backend.app.versions.v3.repair_targets import insertion_windows
+
+    available_dates = {
+        str(w["start"])[:10] for w in insertion_windows(original, context.schedule, scope)
+    }
+    acquisition_dates = {
+        day
+        for _, day, operation, _ in targets
+        if context.schedule is None
+        or operation == "replace"
+        or scope.coverage_permissions
+        or str(day) in context.schedule.unresolved_dates
+        or str(day) in available_dates
+    }
     ledger = {
         p.place_id: RepairCandidate(place=p, origin="original_supply", provenance=(p.source_ref,))
         for p in context.places
@@ -205,19 +249,40 @@ async def prepare_candidates(
     reference = sum(alternatives * gap for _, _, _, gap in targets)
     base_geographic_scope = geographic_scope
     opportunity_records = []
+    history = getattr(budget, "presentation_history", ())
+    presented = {row["signature"] for row in history}
+    feedback_adjustment = getattr(budget, "feedback_kind", None) in {
+        "no_op_patch",
+        "no_measurable_improvement",
+        "candidate_specific_conflict",
+    }
+    local_stops = []
+    reserve = 0
 
     def discovery_scope():
         from backend.app.tripworld.retrieval.geography import GeographicScope
 
         seen_dates = getattr(budget, "discovery_dates", set())
-        days = sorted({day for _, day, _, _ in targets})
+        days = sorted(acquisition_dates)
         if not days:
             return None, base_geographic_scope
 
         def priority(day):
             count = len({r.place_id for r in eligible.values() if r.date == day})
+            novel = len(
+                {
+                    r.place_id
+                    for r in eligible.values()
+                    if r.date == day and r.opportunity_signature not in presented
+                }
+            )
             need = max((alternatives * gap for _, d, _, gap in targets if d == day), default=0)
-            return (count >= need, day in seen_dates, count - need, day)
+            return (
+                novel > 0 if feedback_adjustment else count >= need,
+                day in seen_dates,
+                count - need,
+                day,
+            )
 
         day = min(days, key=priority)
         anchors = [
@@ -235,7 +300,7 @@ async def prepare_candidates(
                 latitude=p.latitude,
                 longitude=p.longitude,
                 radius_km=policy.spatial.walk_radius_km
-                if scope.travel_mode in (None, "WALK")
+                if allowed_modes(scope) == ("WALK",)
                 else policy.spatial.motor_radius_km,
             )
         return day, selected
@@ -259,6 +324,32 @@ async def prepare_candidates(
         or not set(intent_ids) <= intents.keys()
     ):
         raise ValueError("Discovery intents must fit configured acquisition capacity")
+
+    def has_existing_route(pid, day):
+        from backend.app.versions.v3.repair_routes import route_rows
+
+        for d in original.days:
+            if d.date != day:
+                continue
+            for a in d.activities:
+                if not a.source_place_id:
+                    continue
+                # Preparation grants an option, not a final time/adjacency certification.
+                for origin, destination, mode in (
+                    (o, d, m)
+                    for o, d in ((a.source_place_id, pid), (pid, a.source_place_id))
+                    for m in allowed_modes(scope)
+                ):
+                    if route_rows(
+                        origin,
+                        destination,
+                        mode,
+                        "TRAFFIC_UNAWARE" if mode == "DRIVE" else None,
+                        a.end_time,
+                        context.route_evidence,
+                    ):
+                        return True
+        return False
 
     def associations(candidate, item=None):
         rows = []
@@ -297,15 +388,110 @@ async def prepare_candidates(
                 ]
                 radius = (
                     policy.spatial.walk_radius_km
-                    if scope.travel_mode in (None, "WALK")
+                    if allowed_modes(scope) == ("WALK",)
                     else policy.spatial.motor_radius_km
                 )
                 distances = [distance_km(place, anchor) for anchor in anchors]
-                if distances and all(v is not None and v > radius for v in distances):
+                if (
+                    distances
+                    and all(v is not None and v > radius for v in distances)
+                    and not has_existing_route(pid, day)
+                ):
                     disposition, reason = "excluded", "target_geographic_policy"
-            hours = date_hours(place, day)
+            from backend.app.evidence.opening_hours import selected_hours, with_context_timezone
+
+            scoped_place = with_context_timezone(
+                place,
+                [
+                    ledger[a.source_place_id].place
+                    for d in original.days
+                    if d.date == day
+                    for a in d.activities
+                    if a.source_place_id in ledger
+                ],
+            )
+            view = selected_hours(
+                scoped_place,
+                day,
+                next((e for e in context.effective_places if e.place_id == pid), None),
+            )
+            hours = view["known"]
+            if disposition == "eligible" and hours and not view["intervals"]:
+                disposition, reason = "excluded", "adopted_date_closed"
+                refs = tuple(view["evidence_refs"])
+            state, opportunity_reason, windows = opportunity(
+                scoped_place,
+                day,
+                operation,
+                view,
+                original,
+                context,
+                scope,
+                policy.spatial,
+                pid in required,
+            )
+            if disposition != "eligible":
+                state, opportunity_reason = "BLOCKED", reason
+            elif state == "BLOCKED":
+                disposition, reason = "excluded", opportunity_reason
+                if opportunity_reason == "leg_policy_excludes_all_authorized_windows":
+                    refs = tuple(
+                        sorted(
+                            set(refs)
+                            | {
+                                r.source_ref
+                                for r in context.route_evidence
+                                if any(
+                                    pid in (e.origin_place_id, e.destination_place_id)
+                                    for e in r.elements
+                                )
+                            }
+                        )
+                    )
+            anchors = [
+                a.model_dump(mode="json")
+                for d in original.days
+                if d.date == day
+                for a in d.activities
+            ]
+            signature = digest(
+                dict(
+                    place_id=pid,
+                    date=str(day),
+                    operation=operation,
+                    target=getattr(budget, "target_keys", {}).get(target, target),
+                    windows=windows,
+                    hours=view,
+                    anchors=anchors,
+                    mode=scope.travel_mode,
+                    routing_preference=scope.routing_preference,
+                    failed_combinations=[
+                        r
+                        for r in getattr(budget, "conflict_records", ())
+                        if r["place_id"] == pid and r["date"] == str(day)
+                    ],
+                    routes=[
+                        r.model_dump(mode="json")
+                        | {
+                            "elements": [
+                                e.model_dump(mode="json")
+                                for e in r.elements
+                                if pid in (e.origin_place_id, e.destination_place_id)
+                            ]
+                        }
+                        for r in context.route_evidence
+                        if any(
+                            pid in (e.origin_place_id, e.destination_place_id) for e in r.elements
+                        )
+                    ],
+                )
+            )
             rows.append(
                 CandidateDecision(
+                    opportunity_status=state,
+                    opportunity_reason=opportunity_reason,
+                    opportunity_windows=windows,
+                    opportunity_signature=signature,
                     place_id=pid,
                     target_id=target,
                     date=day,
@@ -318,7 +504,10 @@ async def prepare_candidates(
                     if item is not None
                     else (),
                     unknowns=(() if hours else ("target_date_hours_missing",))
-                    + ("visit_mode_and_access_not_supported", "verified_cost_not_supported"),
+                    + (
+                        "admission_reservation_and_special_area_unverified",
+                        "verified_cost_not_supported",
+                    ),
                 )
             )
         return rows
@@ -440,7 +629,12 @@ async def prepare_candidates(
             # permanently to a date or rewarding a discovery source.
             def opportunity(pid):
                 rows = [r for r in eligible.values() if r.place_id in chosen | {pid}]
-                return (-matched_capacity(rows, targets, alternatives), *rank(pid))
+                novel = [r for r in rows if r.opportunity_signature not in presented]
+                return (
+                    -matched_capacity(novel, targets, alternatives) if feedback_adjustment else 0,
+                    -matched_capacity(rows, targets, alternatives),
+                    *rank(pid),
+                )
 
             chosen.add(min(all_ids - chosen, key=opportunity))
         return chosen
@@ -454,7 +648,12 @@ async def prepare_candidates(
         if insufficient(rows):
             result.append("distinct_target_alternatives_shortfall")
         # Missing generic facts do not make candidates ineligible or cause universal exploration.
-        if getattr(budget, "explore_feedback", False) and not getattr(
+        novel = any(
+            r.opportunity_signature not in presented for r in rows if r.place_id in select_ids()
+        )
+        if feedback_adjustment and not novel:
+            result.append("no_progress_requires_new_opportunity")
+        elif getattr(budget, "explore_feedback", False) and not getattr(
             budget, "feedback_explored", False
         ):
             result.append("previous_arrangement_requires_other_options")
@@ -467,6 +666,8 @@ async def prepare_candidates(
     preparing_old = True
 
     def stop(reason):
+        if reason not in local_stops:
+            local_stops.append(reason)
         if reason not in budget.stops:
             budget.stops.append(reason)
         return False
@@ -474,8 +675,18 @@ async def prepare_candidates(
     def can_acquire():
         if not targets:
             return stop("no_candidate_operation")
+        if not acquisition_dates:
+            return stop("no_authorized_insertion_window")
         if not (material_reasons() if preparing_old else reasons):
-            return stop("existing_material_sufficient")
+            return stop("preparation_reference_met")
+        if feedback_adjustment and any(
+            r.opportunity_signature not in presented
+            for r in eligible.values()
+            if r.place_id in select_ids()
+        ):
+            return stop("novel_existing_opportunity_available")
+        if budget.io_deadline <= budget.clock() or budget.remaining() <= 0:
+            return stop("preparation_deadline")
         if (
             reserve == 0
             and not preparing_old
@@ -489,9 +700,9 @@ async def prepare_candidates(
             or budget.used["details"] >= budget.limits["details"]
         ):
             reason = (
-                "canonical_exhausted"
+                "canonical_budget_exhausted"
                 if budget.used["canonical"] >= budget.limits["canonical"]
-                else "details_exhausted"
+                else "details_budget_exhausted"
             )
             if reason not in budget.stops:
                 budget.stops.append(reason)
@@ -578,7 +789,85 @@ async def prepare_candidates(
         )
         from backend.app.versions.v3.repair_targets import insertion_windows
 
+        def operation_audit(target, day, operation):
+            rows = [
+                r
+                for r in eligible.values()
+                if (r.target_id, r.date, r.operation) == (target, day, operation)
+            ]
+            blocked = {
+                r.place_id
+                for r in decisions
+                if (r.target_id, r.date, r.operation) == (target, day, operation)
+                and r.opportunity_status == "BLOCKED"
+            }
+            return dict(
+                target_id=target,
+                date=str(day),
+                operation=operation,
+                association_edges=len(rows),
+                unique_candidate_identities=len({r.place_id for r in rows}),
+                input_candidate_identities=len({r.place_id for r in rows if r.place_id in chosen}),
+                tryable=len({r.place_id for r in rows if r.opportunity_status == "TRYABLE"}),
+                unresolved=len({r.place_id for r in rows if r.opportunity_status == "UNRESOLVED"}),
+                blocked=len(blocked),
+                presented=len({r.place_id for r in rows if r.opportunity_signature in presented}),
+                unpresented=len(
+                    {r.place_id for r in rows if r.opportunity_signature not in presented}
+                ),
+                preparation_reference_met=(
+                    matched_capacity(
+                        rows,
+                        [
+                            (target, day, operation, gap)
+                            for t, d, op, gap in targets
+                            if (t, d, op) == (target, day, operation)
+                        ],
+                        alternatives,
+                    )
+                    >= sum(
+                        alternatives * gap
+                        for t, d, op, gap in targets
+                        if (t, d, op) == (target, day, operation)
+                    )
+                ),
+                acquisition_stops=list(local_stops),
+            )
+
         return CandidatePreparation(
+            identity_capacity_summary=dict(
+                scope="all_active_candidate_operations",
+                independent_identity_capacity=matched_capacity(
+                    list(eligible.values()), targets, alternatives
+                ),
+                input_independent_identity_capacity=matched_capacity(
+                    [r for r in eligible.values() if r.place_id in chosen], targets, alternatives
+                ),
+                unique_candidate_identities=len({r.place_id for r in eligible.values()}),
+                association_edges=len(eligible),
+                preparation_reference=reference,
+                preparation_reference_met=not insufficient(list(eligible.values())),
+            ),
+            identity_free_operations=tuple(
+                dict(
+                    activity_id=p.activity_id,
+                    operation=op,
+                    candidate_identities_required=False,
+                    source_date=str(
+                        next(
+                            d.date
+                            for d in original.days
+                            for a in d.activities
+                            if a.activity_id == p.activity_id
+                        )
+                    ),
+                    destination_dates=[str(d) for d in p.move_dates] if op == "move" else [],
+                )
+                for p in scope.permissions
+                for op in sorted(p.operations)
+                if op in {"retime", "move", "delete"}
+            ),
+            target_opportunities=tuple(operation_audit(t, d, op) for t, d, op, _ in targets),
             elastic_windows=tuple(insertion_windows(original, context.schedule, scope)),
             spatial_options=tuple(spatial_options),
             discovery_opportunities=tuple(opportunity_records)
@@ -586,7 +875,13 @@ async def prepare_candidates(
                 dict(
                     date=str(day),
                     status="not_attempted",
-                    reason="material_capacity_budget_or_provider_boundary",
+                    reason=local_stops[-1]
+                    if local_stops
+                    else "no_targeted_query"
+                    if not intent_ids
+                    else "provider_unavailable"
+                    if provider is None
+                    else "no_new_result",
                 )
                 for day in sorted({d for _, d, _, _ in targets})
                 if not any(r["date"] == str(day) for r in opportunity_records)
@@ -616,12 +911,13 @@ async def prepare_candidates(
                 ]
                 radius = (
                     policy.spatial.walk_radius_km
-                    if scope.travel_mode in (None, "WALK")
+                    if allowed_modes(scope) == ("WALK",)
                     else policy.spatial.motor_radius_km
                 )
                 distances = [distance_km(item.candidate, a) for a in anchors_for_day]
                 outside.append(
                     operation == "add"
+                    and not has_existing_route(item.candidate.place_id, day)
                     and bool(distances)
                     and all(v is not None and v > radius for v in distances)
                 )
@@ -651,7 +947,7 @@ async def prepare_candidates(
             budget.canonical_processed = processed | {item.candidate.place_id}
             budget.charge(canonical=1)
         except RepairLimit:
-            budget.stops.append("canonical_exhausted")
+            budget.stops.append("canonical_budget_exhausted")
             return
         if provider is None or item.candidate.place_id in excluded:
             return
@@ -673,9 +969,16 @@ async def prepare_candidates(
 
     old_attempt_start = budget.used["canonical"]
     # When discovery is available, retain up to two existing canonical/Details
-    # attempts for it; this subdivides the same eight-attempt cap, never adds budget.
+    # attempts for it; reserve both remaining attempts and sends, never add budget.
     old_attempt_limit = (
-        max(0, budget.limits["canonical"] - reserve)
+        max(
+            0,
+            min(
+                budget.limits["canonical"] - budget.used["canonical"],
+                budget.limits["details"] - budget.used["details"],
+            )
+            - reserve,
+        )
         if provider is not None and intent_ids
         else budget.limits["canonical"]
     )
@@ -694,7 +997,10 @@ async def prepare_candidates(
         budget.feedback_explored = True
     if provider is not None:
         for index in range(
-            min(policy.acquisition.google, len({d for _, d, _, _ in targets}) * len(intent_ids))
+            min(
+                budget.limits["ordinary_google"],
+                len({d for _, d, _, _ in targets}) * len(intent_ids),
+            )
         ):
             iid = intent_ids[index % len(intent_ids)]
             if not can_acquire():
@@ -730,6 +1036,7 @@ async def prepare_candidates(
                 key,
                 lambda req=req: provider.search_text(req),
                 charges={"google": 1},
+                audit={"date": str(target_day), "intent_id": iid},
                 timeout=budget.rag_config.google_timeout,
                 observed=getattr(provider, "observes_send_boundary", False),
                 unwrap=True,
@@ -819,7 +1126,7 @@ async def prepare_candidates(
                     resolver.attach(items, value.place_id, entity, [(query, row)], method, value)
                     admit(merge_details(items[value.place_id], value), "rag")
                 except RepairLimit:
-                    budget.stops.append("canonical_exhausted")
+                    budget.stops.append("canonical_budget_exhausted")
                     break
                 except (ValueError, KeyError, TypeError):
                     budget.stops.append("invalid_rag_candidate")

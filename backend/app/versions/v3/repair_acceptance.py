@@ -302,6 +302,8 @@ def apply_patch(
 
 
 def finding_key(f):
+    if f.reason == "minimum_daily_coverage_missing":
+        return "minimum_coverage", f.dates
     if f.reason == "conditional_coverage_deficit":
         return "related", f.finding_id
     if f.check == "opening":
@@ -312,6 +314,8 @@ def finding_key(f):
 
 
 def severity(f, itinerary):
+    if f.reason == "minimum_daily_coverage_missing":
+        return f.magnitude
     if f.check == "overlap":
         items = {a.activity_id: a for d in itinerary.days for a in d.activities}
         if not set(f.activity_ids) <= items.keys():
@@ -336,6 +340,15 @@ def compare(
     """Evidence-only gains cannot qualify as schedule improvement."""
     old = {finding_key(f): f for f in reassessed.findings}
     new = {finding_key(f): f for f in after.findings}
+    from backend.app.versions.v3.repair_targets import related_progress, repeat_excess
+
+    related = related_progress(original, proposed, scope, schedule)
+    permitted = {
+        r.permission.date
+        for r in related
+        if r.permission.allow_partial
+        and r.permission.reason in {"excluded_removal", "confirmed_visit_removal"}
+    }
     rejections = []
     for f in initial_report.findings:
         if f.status == "CONFIRMED":
@@ -347,6 +360,14 @@ def compare(
             continue
         before = old.get(key)
         if before is None or before.status != "CONFIRMED":
+            # Scoped hard-obligation removal may leave a visible coverage debt.
+            # The loss-specific regression check below still rejects other losses.
+            if (
+                f.reason == "minimum_daily_coverage_missing"
+                and f.dates
+                and set(f.dates) <= permitted
+            ):
+                continue
             rejections.append("New confirmed conflict")
             continue
         left, right = severity(before, original), severity(f, proposed)
@@ -373,15 +394,6 @@ def compare(
         for r in after.diagnostics.days
         if r.distinct_main_poi_count < before_days[r.date].distinct_main_poi_count
     )
-    from backend.app.versions.v3.repair_targets import related_progress, repeat_excess
-
-    related = related_progress(original, proposed, scope, schedule)
-    permitted = {
-        r.permission.date
-        for r in related
-        if r.permission.allow_partial
-        and r.permission.reason in {"excluded_removal", "confirmed_visit_removal"}
-    }
     for day in regressions:
         before = before_days[day]
         current = next(r for r in after.diagnostics.days if r.date == day)
@@ -451,7 +463,8 @@ def compare(
                     return max(
                         (
                             int(finding.magnitude)
-                            if finding.reason == "conditional_coverage_deficit"
+                            if finding.reason
+                            in {"conditional_coverage_deficit", "minimum_daily_coverage_missing"}
                             else scope.daily_main_min
                         )
                         - n,

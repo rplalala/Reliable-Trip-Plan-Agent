@@ -157,7 +157,8 @@ def test_deduplication_without_compensation_is_atomic_rejection():
     args = repeated()
     result, _ = run(args, [[edit("delete", "a2", day=1)]])
     assert result.status == "REJECTED" and result.final == args[0]
-    assert "compensation" in result.reason or "duplicate_failed_patch" in result.reason
+    assert result.reason == "no_material_change_for_remaining_targets"
+    assert "compensation" in result.rounds[0].result.reason
     assert result.rounds[0].result.comparison is not None
 
 
@@ -369,7 +370,7 @@ def test_review_flags_flow_through_actual_runner_and_graph():
 
             self.repair_calls += 1
             payload = json.loads(kwargs["user_prompt"])
-            candidate = payload["addition_candidates"][0]["place"]["place_id"]
+            candidate = payload["addition_candidates"][0]["place_id"]
             return {
                 "edits": [
                     dict(
@@ -516,6 +517,8 @@ def test_overfull_enabled_in_real_graph_and_keeps_cost_association():
     from backend.tests.versions.v3.test_wiring import execute, primary
 
     original = primary(False)
+    original.days = original.days[:1]
+    original.end_date = original.start_date
     a = original.days[0].activities[0]
     original.days[0].activities = [
         a.model_copy(
@@ -565,6 +568,9 @@ def test_overfull_enabled_in_real_graph_and_keeps_cost_association():
     result, model, places, runtime = asyncio.run(
         execute(
             Model(original),
+            request=__import__(
+                "backend.tests.request_fixtures", fromlist=["make_request"]
+            ).make_request(end_date=original.end_date),
             places=__import__(
                 "backend.tests.versions.v3.test_wiring", fromlist=["ManyPlaces"]
             ).ManyPlaces(),

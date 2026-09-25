@@ -92,8 +92,17 @@ class RepairEdit(ValidationModel):
     end_time: datetime | None
 
 
+class TargetDisposition(ValidationModel):
+    target_id: str
+    disposition: Literal[
+        "proposed", "unresolved", "needs_evidence", "competing_candidate", "not_attempted"
+    ]
+    reason: str = Field(max_length=240)
+
+
 class RepairPatch(ValidationModel):
     edits: tuple[RepairEdit, ...] = Field(max_length=50)
+    target_dispositions: tuple[TargetDisposition, ...] = Field(default=(), max_length=50)
 
 
 class RepairCandidate(ValidationModel):
@@ -122,9 +131,16 @@ class CandidateDecision(ValidationModel):
     # Evidence presence is not a visit feasibility judgment.
     has_date_hours: bool = False
     related_intent_ids: tuple[str, ...] = ()
+    opportunity_status: Literal["TRYABLE", "UNRESOLVED", "BLOCKED"] = "UNRESOLVED"
+    opportunity_reason: str = "not_preassessed"
+    opportunity_windows: tuple[tuple[str, str], ...] = ()
+    opportunity_signature: str = ""
 
 
 class CandidatePreparation(ValidationModel):
+    identity_capacity_summary: dict = Field(default_factory=dict)
+    identity_free_operations: tuple[dict, ...] = ()
+    target_opportunities: tuple[dict, ...] = ()
     elastic_windows: tuple[dict, ...] = ()
     discovery_opportunities: tuple[dict, ...] = ()
     ledger: tuple[RepairCandidate, ...] = ()
@@ -152,6 +168,8 @@ class TransitionBinding(ValidationModel):
     travel_mode: Literal["WALK", "TRANSIT", "DRIVE"]
     departure_time: datetime
     routing_preference: str | None = None
+    application_reserve_seconds: float = Field(default=0, ge=0)
+    mode_source: str = "USER_EXPLICIT"
 
 
 class VisitBinding(ValidationModel):
@@ -189,6 +207,12 @@ class TargetProgress(ValidationModel):
 
 
 class RepairResult(ValidationModel):
+    components: tuple[dict, ...] = ()
+    acquisition_audit: tuple[dict, ...] = ()
+    feedback_kind: str = "not_evaluated"
+    material_fingerprint: str | None = None
+    presentation_history: tuple[dict, ...] = ()
+    conflict_records: tuple[dict, ...] = ()
     related_targets: tuple[RelatedTarget, ...] = ()
     schedule: ScheduleState | None = None
     window_adjustments: tuple[dict, ...] = ()

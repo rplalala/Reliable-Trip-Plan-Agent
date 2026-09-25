@@ -152,7 +152,8 @@ def test_two_rounds_use_residual_window_and_later_failure_retains_adoption():
     )
     assert result.status == "ACCEPTED_COMPLETE", result.reason
     assert len(result.rounds) == 2
-    assert result.rounds[0].result.status == "ACCEPTED_PARTIAL"
+    # First round completes 0->1; the opt-in 1->2 review is a separate next-round goal.
+    assert result.rounds[0].result.status == "ACCEPTED_COMPLETE"
     assert result.rounds[1].input_itinerary == result.rounds[0].adopted
     assert len({a.activity_id for d in result.final.days for a in d.activities}) == sum(
         len(d.activities) for d in result.final.days
@@ -382,10 +383,12 @@ def test_fixed_occupancy_cannot_be_credited_as_transfer_time():
     timed = route(duration=1200, travel_mode="WALK", representative_departure_time=left.end_time)
     assert available_minutes(left, right, state) == 30
     assert available_minutes(left, right, state, at_departure=True) == 0
-    assert layout_measure(left, right, "WALK", (timed,), schedule=state)[1] == "route_unknown"
+    assert (
+        layout_measure(left, right, "WALK", (timed,), schedule=state)[1] == "walk_provider_estimate"
+    )
     assert (
         layout_measure(left, right, "WALK", (measured,), schedule=state)[1]
-        == "untimed_walk_measurement"
+        == "walk_provider_estimate"
     )
 
 

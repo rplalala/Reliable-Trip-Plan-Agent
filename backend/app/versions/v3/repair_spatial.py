@@ -2,8 +2,7 @@
 
 from math import asin, cos, radians, sin, sqrt
 
-from backend.app.versions.v3.repair_routes import applicable_elements
-from backend.app.versions.v3.repair_schedule import available_minutes, ordered_activities
+from backend.app.versions.v3.repair_schedule import available_intervals, ordered_activities
 
 
 def distance_km(a, b):
@@ -23,38 +22,33 @@ def distance_km(a, b):
 
 
 def walk_measurements(left, right, evidence):
+    from backend.app.versions.v3.repair_routes import route_rows
+
     return [
-        (element.duration_seconds, route.source_ref)
-        for route in evidence
-        if route.travel_mode == "WALK"
-        and route.representative_departure_time is None
-        and route.availability != "unavailable"
-        for element in route.elements
-        if element.origin_place_id == left.source_place_id
-        and element.destination_place_id == right.source_place_id
-        and element.evidence_type == "provider_observed"
-        and element.availability == "available"
-        and element.condition == "ROUTE_EXISTS"
-        and element.duration_seconds is not None
+        (r["duration_seconds"], r["source_ref"])
+        for r in route_rows(
+            left.source_place_id, right.source_place_id, "WALK", None, None, evidence
+        )
     ]
 
 
 def layout_measure(left, right, mode, evidence, routing_preference=None, schedule=None):
-    bindings = bind_transitions_for_pair(left, right, mode, routing_preference)
-    timed = applicable_elements(left, right, bindings, evidence) if bindings else []
-    if (
-        timed
-        and len({value for value, _ in timed}) == 1
-        and (
-            schedule is None
-            or (available_minutes(left, right, schedule, at_departure=True) or 0)
-            >= timed[0][0] / 60
+    from backend.app.versions.v3.repair_routes import route_rows
+
+    rows = route_rows(
+        left.source_place_id,
+        right.source_place_id,
+        mode,
+        routing_preference,
+        left.end_time,
+        evidence,
+    )
+    if rows and len({r["duration_seconds"] for r in rows}) == 1:
+        return (
+            rows[0]["duration_seconds"] / 60,
+            rows[0]["basis"],
+            tuple(r["source_ref"] for r in rows),
         )
-    ):
-        return timed[0][0] / 60, "time_applicable", tuple(ref for _, ref in timed)
-    measured = walk_measurements(left, right, evidence) if mode == "WALK" else []
-    if measured and len({value for value, _ in measured}) == 1:
-        return measured[0][0] / 60, "untimed_walk_measurement", tuple(ref for _, ref in measured)
     return None, "route_unknown", ()
 
 
@@ -135,30 +129,50 @@ def check_addition_layout(
                 continue
             affected_pairs.append((a, b))
             distance = distance_km(places.get(a.source_place_id), places.get(b.source_place_id))
+            from backend.app.versions.v3.repair_transport import saved_transfer
+
+            transfer = saved_transfer(proposed, a, b)
+            leg_mode = transfer.mode if transfer else effective_mode
+            leg_preference = transfer.routing_preference if transfer else routing_preference
             minutes, basis, refs = layout_measure(
-                a, b, effective_mode, evidence, routing_preference, schedule
+                a, b, leg_mode, evidence, leg_preference, schedule
             )
+            if transfer and transfer.provider_duration_seconds is not None:
+                minutes = (transfer.provider_duration_seconds + transfer.reserve_seconds) / 60
+                basis, refs = transfer.calculation_basis, transfer.evidence_refs
             try:
-                gap = available_minutes(a, b, schedule)
+                gap = max(
+                    (
+                        (end - start).total_seconds() / 60
+                        for start, end in available_intervals(a, b, schedule)
+                    ),
+                    default=0,
+                )
             except TypeError:
                 gap = None
             errors = []
-            if distance is None:
+            if distance is None and minutes is None:
                 errors.append("coordinates_required_for_automatic_addition")
-            elif distance > radius:
+            elif minutes is None and distance is not None and distance > radius:
                 errors.append("automatic_geographic_range")
             # Explicit no-route observations cannot be masked by conservative fallback.
             if any(
-                r.travel_mode == effective_mode
+                r.travel_mode == leg_mode
+                and r.routing_preference == leg_preference
                 and (
                     r.representative_departure_time == a.end_time
-                    or (effective_mode == "WALK" and r.representative_departure_time is None)
+                    or (leg_mode == "WALK" and r.representative_departure_time is None)
                 )
                 and any(
                     e.origin_place_id == a.source_place_id
                     and e.destination_place_id == b.source_place_id
                     and e.evidence_type == "provider_observed"
                     and e.condition == "ROUTE_NOT_FOUND"
+                    and (
+                        e.status_state == "success"
+                        or e.status_state == "legacy"
+                        and e.status in {"OK", "0"}
+                    )
                     for e in r.elements
                 )
                 for r in evidence
@@ -169,9 +183,43 @@ def check_addition_layout(
                 basis = "policy_reserve_route_unknown"
                 if distance is None or distance > policy.fallback_distance_km:
                     errors.append("no_route_fallback_distance")
-                if mode not in (None, "WALK"):
+                if leg_mode != "WALK":
                     errors.append("explicit_motor_mode_requires_route_evidence")
-            if minutes > policy.max_leg_minutes:
+            from backend.app.versions.v3.repair_routes import route_rows
+
+            measured_rows = route_rows(
+                a.source_place_id,
+                b.source_place_id,
+                leg_mode,
+                leg_preference,
+                transfer.departure_time if transfer else a.end_time,
+                evidence,
+            )
+            provider_minutes = (
+                transfer.provider_duration_seconds / 60
+                if transfer and transfer.provider_duration_seconds is not None
+                else minutes
+            )
+            limit = (
+                policy.max_leg_minutes
+                if leg_mode == "WALK"
+                else policy.transit_max_minutes
+                if leg_mode == "TRANSIT"
+                else policy.drive_max_minutes
+            )
+            if (
+                leg_mode == "WALK"
+                and measured_rows
+                and any(
+                    r["element"].get("distance_meters") is not None
+                    and r["element"]["distance_meters"] > policy.walk_route_max_km * 1000
+                    for r in measured_rows
+                )
+            ):
+                errors.append("automatic_walk_route_distance")
+            if leg_mode == "DRIVE" and not transfer and basis != "policy_reserve_route_unknown":
+                minutes += policy.drive_reserve_minutes
+            if provider_minutes > limit:
                 errors.append("automatic_leg_burden")
             if gap is None or gap < minutes:
                 errors.append("insufficient_layout_transfer_window")
@@ -180,6 +228,7 @@ def check_addition_layout(
             rows.append(
                 dict(
                     date=str(day.date),
+                    mode=leg_mode,
                     from_activity_id=a.activity_id,
                     to_activity_id=b.activity_id,
                     distance_km=distance,
@@ -201,7 +250,13 @@ def check_addition_layout(
                     distance = distance_km(
                         places.get(a.source_place_id), places.get(b.source_place_id)
                     )
-                    if distance is None or distance > radius:
+                    measured, _, _ = layout_measure(
+                        a, b, effective_mode, evidence, routing_preference
+                    )
+                    transfer = saved_transfer(proposed, a, b)
+                    if transfer and transfer.validation_state == "PASS":
+                        measured = transfer.provider_duration_seconds / 60
+                    if measured is None and (distance is None or distance > radius):
                         failures.append("blank_day_group_range")
             if not affected_pairs and group:
                 if places.get(group[0].source_place_id) is None:
@@ -209,14 +264,18 @@ def check_addition_layout(
         # Compare each insertion chain against its original retained adjacent anchors.
         credits = []
         for pair, (a, b) in old_pairs.items():
-            if pair in new_pairs:
+            if pair in new_pairs and all(
+                next(x for x in ordered if x.activity_id == old.activity_id).source_place_id
+                == old.source_place_id
+                for old in (a, b)
+            ):
                 continue
             indices = {x.activity_id: i for i, x in enumerate(ordered)}
             if a.activity_id not in indices or b.activity_id not in indices:
                 continue
             lo, hi = indices[a.activity_id], indices[b.activity_id]
             chain = ordered[lo : hi + 1]
-            if hi <= lo or not any(x.activity_id in automatic for x in chain[1:-1]):
+            if hi <= lo or not any(x.activity_id in automatic for x in chain):
                 continue
             base_distance = distance_km(
                 places.get(a.source_place_id), places.get(b.source_place_id)

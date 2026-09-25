@@ -1,10 +1,132 @@
 """B target dependencies and executable visit satisfaction, never text interpretation."""
 
-from datetime import datetime, time, timedelta
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from datetime import datetime
 
 from backend.app.versions.v3.repair_models import RelatedTarget
-from backend.app.versions.v3.repair_schedule import TimeWindow, ordered_activities, subtract
+from backend.app.versions.v3.repair_schedule import ordered_activities, subtract
+
+
+def affected_activity_ids(itinerary, finding):
+    """Use structured dependencies, never notes or a trip-wide date fallback."""
+    return set(finding.activity_ids) | {
+        a.activity_id
+        for d in itinerary.days
+        for a in d.activities
+        if (finding.check == "overfull" and d.date in finding.dates)
+        or (
+            finding.reason == "excluded_identity_scheduled"
+            and a.source_place_id in finding.place_ids
+        )
+    }
+
+
+def localize_scope(
+    itinerary,
+    report,
+    scope,
+    active_ids,
+    deferred=(),
+    related=(),
+    links=None,
+    *,
+    context=None,
+    policy=None,
+):
+    """Intersect current target dependencies with the original operation authorization."""
+    links = links or {}
+    findings = [f for f in report.findings if f.finding_id in active_ids]
+    activities = {a.activity_id: d.date for d in itinerary.days for a in d.activities}
+    affected = set().union(*(affected_activity_ids(itinerary, f) for f in findings))
+    permissions = tuple(p for p in scope.permissions if p.activity_id in affected)
+    if deferred and context is not None:
+        # Reuse the application operation policy: sharing an activity with a deferred
+        # target must not lend that target's DELETE/REPLACE/MOVE permission.
+        from backend.app.versions.v3.wiring import operation_scope
+
+        active_report = report.model_copy(
+            update={
+                "improvement_targets": tuple(
+                    t for t in report.improvement_targets if t.finding_id in active_ids
+                )
+            }
+        )
+        policy_scope = operation_scope(
+            itinerary, active_report, context=context, policy=policy, mode=scope.travel_mode
+        )
+        allowed = {p.activity_id: p for p in policy_scope.permissions} if policy_scope else {}
+        permissions = tuple(
+            p.model_copy(
+                update={
+                    "operations": p.operations & allowed[p.activity_id].operations,
+                    "move_dates": tuple(
+                        d for d in p.move_dates if d in allowed[p.activity_id].move_dates
+                    ),
+                }
+            )
+            for p in permissions
+            if p.activity_id in allowed and p.operations & allowed[p.activity_id].operations
+        )
+    original_active = {links.get(t, t) for t in active_ids}
+    current_ids = {links.get(t, t): t for t in active_ids}
+    removal_ids = {
+        p.activity_id for p in permissions if p.operations & {"replace", "delete", "move"}
+    }
+    active_children = {r.permission.target_id for r in related if r.status != "resolved"}
+    coverage = tuple(
+        p.model_copy(update={"parent_id": current_ids.get(p.parent_id, p.parent_id)})
+        for p in scope.coverage_permissions
+        if (
+            p.parent_id in original_active and any(a in removal_ids for a in p.trigger_activity_ids)
+        )
+        or p.target_id in active_children.intersection(active_ids)
+    )
+    direct = set()
+    for f in findings:
+        if f.check == "coverage":
+            direct.update(f.dates)
+        elif f.reason in {"required_identity_omitted", "required_visit_obligation_unmet"}:
+            # Named omissions have explicit application authorization across these dates.
+            direct.update(
+                f.dates
+                or (
+                    scope.direct_add_dates
+                    if scope.direct_add_dates is not None
+                    else scope.add_dates
+                )
+            )
+    direct.intersection_update(
+        scope.direct_add_dates if scope.direct_add_dates is not None else scope.add_dates
+    )
+    addition_dates = direct | {p.date for p in coverage}
+    dates = addition_dates | {
+        activities[p.activity_id] for p in permissions if p.activity_id in activities
+    }
+    dates.update(d for p in permissions for d in p.move_dates)
+    dates.update(d for f in findings for d in f.dates)
+    roots = scope.window_roots
+    if context is not None and context.schedule is not None:
+        roots = tuple(
+            r
+            for r in roots
+            if any(
+                w.root_activity_id == r and w.start.date() in dates
+                for w in context.schedule.windows
+            )
+        )
+    return scope.model_copy(
+        update={
+            "window_roots": roots,
+            "target_ids": tuple(active_ids),
+            "deferred_review_target_ids": tuple(deferred),
+            "active_related": tuple(related),
+            "coverage_permissions": coverage,
+            "permissions": permissions,
+            "dates": tuple(d for d in scope.dates if d in dates),
+            "add_dates": tuple(d for d in scope.add_dates if d in addition_dates),
+            "direct_add_dates": tuple(d for d in scope.add_dates if d in direct),
+            "revisits": tuple(r for r in scope.revisits if r.date in addition_dates),
+        }
+    )
 
 
 def visit_rules(context):
@@ -112,36 +234,9 @@ def movable(activity, context):
 
 
 def prepare_blank_windows(itinerary, context, policy):
-    state = context.schedule
-    if state is None:
-        return None
-    zones = {p.timezone_id for p in context.places if p.timezone_id}
-    try:
-        zone = ZoneInfo(next(iter(zones))) if len(zones) == 1 else None
-    except (ValueError, ZoneInfoNotFoundError):
-        zone = None
-    windows = []
-    existing = {d.date: d.activities for d in itinerary.days}
-    day = itinerary.start_date
-    while day <= itinerary.end_date:
-        if (
-            not existing.get(day)
-            and zone
-            and context.contract.time_protections is not None
-            and str(day) not in state.unresolved_dates
-        ):
-            start = datetime.combine(day, time(policy.blank_day_start_hour), zone)
-            end = datetime.combine(day, time(), zone) + timedelta(hours=policy.blank_day_end_hour)
-            windows.append(
-                TimeWindow(
-                    root_activity_id=f"blank:{day}",
-                    start=start,
-                    end=end,
-                    source="application_blank_day_policy",
-                )
-            )
-        day += timedelta(days=1)
-    return state.model_copy(update={"blank_windows": tuple(windows)})
+    from backend.app.policies.itinerary_schedule import prepare_blank_windows as shared_windows
+
+    return shared_windows(itinerary, context, policy)
 
 
 def check_blank_windows(original, proposed, context):

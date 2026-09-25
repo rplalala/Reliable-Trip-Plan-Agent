@@ -1,0 +1,30 @@
+{
+  "provenance": "Saved normalized observation; not raw provider response. No missing baseline elements reconstructed.",
+  "run_id": "759ee785-05c6-44e6-9ef7-9a812a6e21bb",
+  "route": {
+    "travel_mode": "WALK",
+    "mode_reason": "repair_bound_leg",
+    "purpose": "baseline",
+    "routing_preference": null,
+    "representative_departure_time": null,
+    "availability": "available",
+    "elements": [
+      {
+        "origin_place_id": "ChIJR6AfJquMGGARLtT29Rg6HLY",
+        "destination_place_id": "ChIJAQC0jKiMGGARsJFW3NLdod8",
+        "evidence_type": "provider_observed",
+        "derived_from_origin_place_id": null,
+        "derived_from_destination_place_id": null,
+        "status": "OK",
+        "condition": "ROUTE_EXISTS",
+        "distance_meters": 1062,
+        "duration_seconds": 863,
+        "availability": "available",
+        "unavailable_reason": null
+      }
+    ],
+    "unavailable_reason": null,
+    "retrieved_at": "2026-09-24T09:49:43.394446Z",
+    "source_ref": "google_routes:compute_route_matrix"
+  }
+}

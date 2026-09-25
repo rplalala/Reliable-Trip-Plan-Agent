@@ -68,6 +68,17 @@ def primary(overlap=True):
                 }
             )
         )
+    # This fixture tests first-day repair, not an unrelated minimum-coverage miss.
+    # Keep the same identity set; repetition remains a separate opt-in review.
+    draft.days[1].activities = [
+        a.model_copy(
+            update={
+                "activity_id": "second-day-visit",
+                "start_time": a.start_time + timedelta(days=1),
+                "end_time": a.end_time + timedelta(days=1),
+            }
+        )
+    ]
     draft.set_cost_projections(
         (
             EstimatedCostProjectionDiagnostic(
@@ -88,9 +99,9 @@ class Model(FakeStructuredLLMClient):
             supply = json.loads(
                 kwargs["user_prompt"].split("Planning candidate supply contract:\n", 1)[1]
             )
-            self.responses[0].days[0].activities[0].source_place_id = supply[
-                "optional_canonical_ids"
-            ][0]
+            for day in self.responses[0].days:
+                for activity in day.activities:
+                    activity.source_place_id = supply["optional_canonical_ids"][0]
         return await super().generate_structured(**kwargs)
 
     async def generate_repair_structured(self, **kwargs):
@@ -109,7 +120,12 @@ class Model(FakeStructuredLLMClient):
                 next(
                     c
                     for c in self.payload["addition_candidates"]
-                    if c["origin"] != "original_supply"
+                    if next(
+                        p
+                        for p in self.payload["candidate_catalog"]
+                        if p["place"]["place_id"] == c["place_id"]
+                    )["origin"]
+                    != "original_supply"
                 )
                 if self.behavior == "add"
                 else self.payload["addition_candidates"][1]
@@ -122,13 +138,13 @@ class Model(FakeStructuredLLMClient):
                         "date": "2026-09-12",
                         "place_id": "invented"
                         if self.behavior == "unknown_id"
-                        else candidate["place"]["place_id"],
+                        else candidate["place_id"],
                         "start_time": "2026-09-12T14:00:00+10:00",
                         "end_time": "2026-09-12T15:00:00+10:00",
                     }
                 ]
             }
-        start, end = ("10:50", "11:50") if self.behavior == "partial" else ("11:00", "12:00")
+        start, end = ("10:50", "11:50") if self.behavior == "partial" else ("11:30", "12:30")
         if self.behavior == "duration":
             end = "11:20"
         return {
@@ -170,7 +186,6 @@ async def execute(model=None, places=None, runtime=None, **kwargs):
         ("complete", "ACCEPTED_COMPLETE"),
         ("partial", "ACCEPTED_PARTIAL"),
         ("empty", "REJECTED"),
-        ("delete", "REJECTED"),
         ("duration", "REJECTED"),
         ("failure", "REJECTED"),
     ],
@@ -197,7 +212,9 @@ def test_actual_repair_and_adopted_report(behavior, status):
         )
         assert outcome.repair.target_progress[0].outcome == "improved"
     if status == "REJECTED":
-        assert outcome.final_primary == outcome.draft
+        assert outcome.final_primary.model_dump(
+            exclude={"transfers", "route_diagnostics"}
+        ) == outcome.draft.model_dump(exclude={"transfers", "route_diagnostics"})
         assert any(
             f.check == "overlap" and f.status == "CONFIRMED" for f in outcome.final_report.findings
         )
@@ -239,12 +256,14 @@ def test_legal_identity_outside_original_supply_reaches_final_and_nearby():
 
 def test_actual_serializer_overflow_is_repair_skip_not_invalid_input():
     draft = primary()
-    draft.days[0].activities[0].notes = "large " * 60000
+    draft.days[0].activities[0].notes = "large " * 260000
     result, model, places, _ = asyncio.run(execute(Model(draft)))
     assert result.v3.repair.status == "SKIPPED"
     assert "repair_input_overflow" in result.v3.reason
     assert model.repair_calls == 0 and places.nearby
-    assert result.v3.final_primary == result.v3.draft
+    assert result.v3.final_primary.model_dump(
+        exclude={"transfers", "route_diagnostics"}
+    ) == result.v3.draft.model_dump(exclude={"transfers", "route_diagnostics"})
 
 
 def test_model_timeout_uses_real_service_timer_and_preserves_draft(monkeypatch):
@@ -264,7 +283,11 @@ def test_model_timeout_uses_real_service_timer_and_preserves_draft(monkeypatch):
     result, model, places, _ = asyncio.run(execute(Model(behavior="wait")))
     assert result.v3.repair.reason == "model_failed_no_retry"
     assert result.v3.repair.rounds[-1].result.reason == "repair_timeout"
-    assert result.v3.final_primary == result.v3.draft and places.nearby
+    assert (
+        result.v3.final_primary.model_dump(exclude={"transfers", "route_diagnostics"})
+        == result.v3.draft.model_dump(exclude={"transfers", "route_diagnostics"})
+        and places.nearby
+    )
     assert model.repair_calls == 1
 
 
@@ -383,7 +406,7 @@ def test_cross_phase_rag_cache_failures_and_initial_report_are_preserved(failure
                 DiscoveryDraft(
                     requirement_refs=("s0",), purpose="semantic_discovery", query_text="Museums"
                 ),
-            )
+            ),
         }
     )
     model = Model(primary(False), "existing_add")
@@ -402,7 +425,10 @@ def test_cross_phase_rag_cache_failures_and_initial_report_are_preserved(failure
         0 if failure in {"prepare", "embedding"} else 1
     )
     if failure:
-        assert not result.v3.repair.candidate_preparation.exploration_reasons
+        assert all(
+            r in {"no_progress_requires_new_opportunity"}
+            for r in result.v3.repair.candidate_preparation.exploration_reasons
+        )
         assert result.v3.repair.counters.get("retrieval", 0) == 0
     else:
         assert result.v3.repair.counters.get("cache_hits", 0) == 0
@@ -430,7 +456,9 @@ def test_arbitrary_new_id_is_rejected_before_nearby():
     assert result.v3.repair.status == "REJECTED"
     assert "invented" not in result.v3.final_identity_ids
     assert "invented" not in result.output_role_summary.scheduled_place_ids
-    assert result.v3.final_primary == result.v3.draft
+    assert result.v3.final_primary.model_dump(
+        exclude={"transfers", "route_diagnostics"}
+    ) == result.v3.draft.model_dump(exclude={"transfers", "route_diagnostics"})
 
 
 def test_one_nearby_phase_attaches_independent_ledger_without_primary_cost_change(monkeypatch):
@@ -630,9 +658,56 @@ def test_v3_outcome_trace_truncation_retains_individual_artifact_markers():
         execute(Model(behavior="empty"), runtime_config=config, tracer=tracer)
     )
     assert result.v3.repair.status == "REJECTED"
-    assert result.v3.repair.artifact_status["proposal"].startswith("truncated:")
+    assert result.v3.repair.rounds[0].result.artifact_status["proposal"].startswith("truncated:")
+    assert result.v3.repair.artifact_status["proposal"] == "not_constructed"
 
     assert tracer.events["v3_finalized"]["truncated"]
     assert "v3_repair_patch" in tracer.events["v3_finalized"]["artifact_events"]
-    assert tracer.events["v3_repair_patch"]["artifact_status"] == "recorded"
-    assert tracer.events["v3_repair_proposal"]["artifact_status"].startswith("truncated:")
+    assert tracer.events["v3_repair_patch"]["artifact_status"] == "not_executed"
+    assert tracer.events["v3_repair_proposal"]["artifact_status"] == "not_constructed"
+    assert tracer.events["v3_repair_material_feedback"]["truncated"]
+
+
+def test_api_route_conflict_authorizes_removal_with_unresolved_coverage_child():
+    result, _, _, _ = asyncio.run(execute(Model(behavior="delete")))
+    assert result.v3.repair.status == "ACCEPTED_PARTIAL"
+    assert len(result.itinerary.days[0].activities) == 1
+    assert any(r.status == "unresolved" for r in result.v3.repair.related_targets)
+
+
+def test_mixed_drive_adoption_reaches_output_and_nearby_unchanged():
+    class MixedRoutes(FakeRoutesProvider):
+        async def compute_route_matrix(self, request):
+            value = await super().compute_route_matrix(request)
+            if request.travel_mode == "TRANSIT":
+                raise RuntimeError("fixture transit unavailable")
+            return value.model_copy(
+                update={
+                    "elements": [
+                        dict(
+                            e,
+                            duration="4200s" if request.travel_mode == "WALK" else "1080s",
+                            distanceMeters=4000,
+                        )
+                        for e in value.elements
+                    ]
+                }
+            )
+
+    routes = MixedRoutes()
+    result, model, places, owner = asyncio.run(
+        execute(
+            Model(primary(False), "existing_add"),
+            routes_provider=routes,
+            quantity_review_enabled=True,
+        )
+    )
+    assert result.v3.repair.status.startswith("ACCEPTED"), result.v3.repair.reason
+    transfers = result.v3.final_primary.transfers
+    assert transfers and transfers[0].mode == "DRIVE"
+    assert transfers[0].provider_duration_seconds == 1080 and transfers[0].reserve_seconds == 600
+    assert transfers[0].validation_state == "PASS"
+    assert result.itinerary.transfers == transfers
+    assert any(f.check == "route" and f.status == "PASS" for f in result.v3.final_report.findings)
+    assert len(model.calls) == 1 and owner.closes == 1 and places.nearby
+    assert result.request_resources["closed"]

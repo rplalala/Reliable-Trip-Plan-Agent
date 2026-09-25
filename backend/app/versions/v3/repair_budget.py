@@ -1,6 +1,7 @@
 """One repair ledger and monotonic deadline; local exhaustion is not global failure."""
 
 import asyncio
+import hashlib
 from collections import Counter
 from time import monotonic
 
@@ -58,6 +59,13 @@ class RepairBudget:
         self.io_deadline = self.deadline
         self.used = Counter()
         self.stops = []
+        self.acquisition_audit = []
+        self.round_index = 1
+        self.route_phase = "post_proposal"
+        self.limits["preparation_routes"] = (
+            self.limits["routes"] - self.policy.acquisition.post_proposal_route_reserve
+        )
+        self.limits["ordinary_google"] = self.limits["google"] - self.limits["fallback"]
         self.cache = cache if cache is not None else RequestCache()
         # A new phase is not a retry opportunity, including failed pre-send attempts.
         # This does not relabel a reservation as a send or consume the new send budget.
@@ -72,22 +80,63 @@ class RepairBudget:
                 raise RepairLimit(f"{key}_exhausted")
         self.used.update(charges)
 
-    async def call(self, key, factory, *, charges, timeout=None, observed=False, unwrap=False):
+    async def call(
+        self, key, factory, *, charges, timeout=None, observed=False, unwrap=False, audit=None
+    ):
         """Reuse compatible cache entries; charge failed sends, never retry a key.
 
         observed=True requires the provider's actual send notification. For fixture or
         non-observing ports, dispatch is conservatively counted as a send attempt.
         """
+        # Reservation is checked before adapter entry and checked again at actual send.
+        if "google" in charges and "fallback" not in charges:
+            charges = {**charges, "ordinary_google": charges["google"]}
+        if "routes" in charges and self.route_phase == "preparation":
+            charges = {**charges, "preparation_routes": charges["routes"]}
+        record = {
+            "round": self.round_index,
+            "route_phase": self.route_phase if "routes" in charges else None,
+            "operation": str(key[0]),
+            "key_sha256": hashlib.sha256(repr(key).encode()).hexdigest(),
+            "purpose": "provider_acquisition"
+            if "google" not in charges
+            else "canonical_fallback"
+            if "fallback" in charges
+            else "feedback_target_discovery"
+            if getattr(self, "feedback_kind", None) in ("no_op_patch", "no_measurable_improvement")
+            else "ordinary_target_discovery",
+            "budget_before": dict(self.used),
+            "sent": False,
+            **(audit or {}),
+        }
+        self.acquisition_audit.append(record)
         cached, hit = self.cache.lookup(key)
         if hit:
             self.used["cache_hits"] += 1
+            record.update(outcome="cache_hit", budget_after=dict(self.used))
             return getattr(cached, "value", cached) if unwrap else cached
         if key in self.attempted or self.cache.terminal_attempt(key):
+            record.update(outcome="previous_attempt", budget_after=dict(self.used))
             self.stops.append("previous_attempt")
             return None
         available = min(self.remaining(), self.io_deadline - self.clock())
         if available <= 0:
+            record.update(outcome="phase_deadline", budget_after=dict(self.used))
             self.stops.append("phase_deadline")
+            return None
+        reasons = {
+            "google": "google_search_budget_exhausted",
+            "ordinary_google": "google_discovery_budget_exhausted",
+            "fallback": "google_fallback_budget_exhausted",
+            "details": "details_budget_exhausted",
+            "routes": "routes_request_budget_exhausted",
+            "elements": "routes_element_budget_exhausted",
+        }
+        exhausted = next((k for k, n in charges.items() if self.used[k] + n > self.limits[k]), None)
+        if exhausted:
+            reason = reasons.get(exhausted, f"{exhausted}_budget_exhausted")
+            self.stops.append(reason)
+            record.update(outcome=reason, budget_after=dict(self.used))
             return None
         self.attempted.add(key)
         try:
@@ -106,9 +155,25 @@ class RepairBudget:
                     return value
 
             value, _ = await self.cache.get_or_create(key, load)
+            actual = getattr(value, "value", value)
+            record.update(outcome="success", sent=True, budget_after=dict(self.used))
+            if hasattr(actual, "candidates"):
+                record["raw_hit_count"] = len(actual.candidates)
             return getattr(value, "value", value) if unwrap else value
         except asyncio.CancelledError:
             raise
         except Exception as exc:
-            self.stops.append(f"{key[0]}:{type(exc).__name__}")
+            from backend.app.integrations.dispatch import ProviderNotSentError
+
+            cause = exc.__cause__ if isinstance(exc, ProviderNotSentError) else exc
+            if isinstance(cause, RepairLimit):
+                reason = reasons.get(str(cause).removesuffix("_exhausted"), str(cause))
+            elif isinstance(exc, ProviderNotSentError):
+                reason = "provider_pre_send_error"
+            else:
+                reason = f"{key[0]}:{type(exc).__name__}"
+            record.update(
+                outcome=reason, sent=self.cache.terminal_attempt(key), budget_after=dict(self.used)
+            )
+            self.stops.append(reason)
             return None

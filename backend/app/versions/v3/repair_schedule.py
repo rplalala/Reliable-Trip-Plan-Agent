@@ -1,173 +1,24 @@
-"""Application-owned time occupancy and location adjacency; no text interpretation."""
+"""Repair-only time authorization over the shared occupancy view."""
 
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 
-from pydantic import Field
-
-from backend.app.versions.v3.models import ValidationModel
-
-
-class TimeWindow(ValidationModel):
-    root_activity_id: str
-    start: datetime
-    end: datetime
-    source: str
-
-
-class ScheduleState(ValidationModel):
-    windows: tuple[TimeWindow, ...] = ()
-    blank_windows: tuple[TimeWindow, ...] = ()
-    day_windows: tuple[TimeWindow, ...] = ()
-    # Historical IDs remain here so the stage-original spatial baseline uses the same view.
-    lineage: dict[str, str] = Field(default_factory=dict)
-    fixed: tuple[TimeWindow, ...] = ()
-    unresolved_dates: tuple[str, ...] = ()
-    classifications: tuple[dict, ...] = ()
-    occupied_transfers: tuple[dict, ...] = ()
-
-
-def subtract(start, end, intervals):
-    pieces = [(start, end)]
-    for left, right in sorted(intervals):
-        updated = []
-        for a, b in pieces:
-            if right <= a or left >= b:
-                updated.append((a, b))
-            else:
-                if a < left:
-                    updated.append((a, left))
-                if right < b:
-                    updated.append((right, b))
-        pieces = updated
-    return pieces
-
-
-def build_schedule(itinerary, contract, places=(), *, primary_generated=False):
-    """None means historical/unassessed, never an assertion of no fixed requirements."""
-    windows, lineage, classifications, fixed, unresolved = [], {}, [], [], set()
-    zones = {p.timezone_id for p in places if p.timezone_id}
-    try:
-        zone = ZoneInfo(next(iter(zones))) if len(zones) == 1 else None
-    except (ValueError, KeyError):
-        zone = None
-    day_windows = []
-    protections = contract.time_protections
-    cost_links = {p.field_path: p for p in getattr(itinerary, "cost_projections", ())}
-    from backend.app.schemas.itinerary import ItineraryDay
-
-    schedule_days = list(itinerary.days)
-    existing_dates = {d.date for d in schedule_days}
-    date_cursor = itinerary.start_date
-    while date_cursor <= itinerary.end_date:
-        if date_cursor not in existing_dates:
-            schedule_days.append(ItineraryDay(date=date_cursor, activities=[]))
-        date_cursor += timedelta(days=1)
-    for day_index, day in enumerate(schedule_days):
-        if day.activities and all(a.start_time.utcoffset() is not None for a in day.activities):
-            midnight = datetime.combine(
-                day.date, datetime.min.time(), day.activities[0].start_time.tzinfo
-            )
-            day_windows.append(
-                TimeWindow(
-                    root_activity_id=f"calendar:{day.date}",
-                    start=midnight,
-                    end=midnight + timedelta(days=1),
-                    source="existing_day_calendar_gaps",
-                )
-            )
-        relevant = [p for p in protections or () if not p.dates or day.date in p.dates]
-        for index, protection in enumerate(relevant):
-            if protection.status == "unresolved" or zone is None:
-                unresolved.add(str(day.date))
-                continue
-            fixed.append(
-                TimeWindow(
-                    root_activity_id=f"requirement_time_{day.date}_{index}",
-                    start=datetime.combine(day.date, protection.start_time, zone),
-                    end=datetime.combine(day.date, protection.end_time, zone),
-                    source=protection.model_dump_json(),
-                )
-            )
-        for activity_index, activity in enumerate(day.activities):
-            if activity.activity_kind != "free_time":
-                continue
-            reason = "generated_locationless_placeholder"
-            if not primary_generated or protections is None:
-                reason = "time_provenance_unassessed"
-            elif str(day.date) in unresolved:
-                reason = "scoped_time_requirement_unresolved"
-            elif activity.source_place_id or activity.location or activity.place_name:
-                reason = "location_commitment"
-            elif activity.estimated_cost is not None or (
-                (
-                    projection := cost_links.get(
-                        f"days[{day_index}].activities[{activity_index}].estimated_cost"
-                    )
-                )
-                is not None
-                and projection.projection not in {"explicit_null", "invalid_set_null"}
-            ):
-                reason = "cost_obligation"
-            elif activity.start_time.utcoffset() is None:
-                reason = "time_zone_unavailable"
-            if reason == "generated_locationless_placeholder":
-                windows.append(
-                    TimeWindow(
-                        root_activity_id=activity.activity_id,
-                        start=activity.start_time,
-                        end=activity.end_time,
-                        source="primary_generation:activity:" + activity.activity_id,
-                    )
-                )
-                lineage[activity.activity_id] = activity.activity_id
-            classifications.append(
-                dict(
-                    activity_id=activity.activity_id,
-                    reason=reason,
-                    disposition="elastic_with_fixed_exclusions"
-                    if activity.activity_id in lineage
-                    else "protected_or_uncertain",
-                )
-            )
-    return ScheduleState(
-        windows=tuple(windows),
-        day_windows=tuple(day_windows),
-        lineage=lineage,
-        fixed=tuple(fixed),
-        unresolved_dates=tuple(sorted(unresolved)),
-        classifications=tuple(classifications),
-    )
-
-
-def ordered_activities(day, schedule=None):
-    elastic = schedule.lineage if schedule else {}
-    return sorted(
-        (a for a in day.activities if a.activity_id not in elastic), key=lambda a: a.start_time
-    )
-
-
-def available_intervals(left, right, schedule=None):
-    if left.end_time.utcoffset() is None or right.start_time.utcoffset() is None:
-        return []
-    blocked = [(w.start, w.end) for w in schedule.fixed] if schedule else []
-    return (
-        subtract(left.end_time, right.start_time, blocked)
-        if right.start_time > left.end_time
-        else []
-    )
-
-
-def available_minutes(left, right, schedule=None, *, at_departure=False):
-    try:
-        gaps = available_intervals(left, right, schedule)
-        if at_departure:
-            return next(((b - a).total_seconds() / 60 for a, b in gaps if a == left.end_time), 0)
-        if gaps:
-            return max((b - a).total_seconds() / 60 for a, b in gaps)
-        return min(0, (right.start_time - left.end_time).total_seconds() / 60)
-    except TypeError:
-        return None
+from backend.app.policies.itinerary_schedule import (
+    ScheduleState as ScheduleState,
+)
+from backend.app.policies.itinerary_schedule import (
+    TimeWindow as TimeWindow,
+)
+from backend.app.policies.itinerary_schedule import (
+    available_intervals,
+    ordered_activities,
+    subtract,
+)
+from backend.app.policies.itinerary_schedule import (
+    available_minutes as available_minutes,
+)
+from backend.app.policies.itinerary_schedule import (
+    build_schedule as build_schedule,
+)
 
 
 def window_projection(itinerary, schedule, roots):
@@ -319,6 +170,12 @@ def consume_windows(original, proposed, scope, schedule, places, evidence, polic
                 scope.routing_preference,
                 schedule,
             )
+            from backend.app.versions.v3.repair_transport import saved_transfer
+
+            transfer = saved_transfer(proposed, left, right)
+            if transfer and transfer.provider_duration_seconds is not None:
+                minutes = (transfer.provider_duration_seconds + transfer.reserve_seconds) / 60
+                basis, refs = transfer.calculation_basis, transfer.evidence_refs
             if minutes is None:
                 minutes, basis = policy.fallback_reserve_minutes, "policy_reserve_route_unknown"
             duration = timedelta(minutes=minutes)
@@ -326,7 +183,11 @@ def consume_windows(original, proposed, scope, schedule, places, evidence, polic
                 (
                     (a, a + duration)
                     for a, b in available_intervals(left, right, schedule)
-                    if b - a >= duration and (basis != "time_applicable" or a == left.end_time)
+                    if b - a >= duration
+                    and (
+                        basis != "time_applicable"
+                        or a == (transfer.departure_time if transfer else left.end_time)
+                    )
                 ),
                 None,
             )

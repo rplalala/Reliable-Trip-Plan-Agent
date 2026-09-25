@@ -265,12 +265,12 @@ def test_optional_details_failure_and_exhaustion_do_not_abort_time_repair():
         budget=exploring_budget(),
         scope=scope,
         places_provider=provider,
-        pool=tuple(selection(str(i)) for i in range(12)),
+        pool=tuple(selection(str(i)) for i in range(31)),
     )
     assert result.status == "ACCEPTED_COMPLETE", result.reason
-    assert provider.calls == 8 and result.counters["details"] == 8
-    assert result.counters["canonical"] == 8
-    assert "canonical_exhausted" in result.stops
+    assert provider.calls == 30 and result.counters["details"] == 30
+    assert result.counters["canonical"] == 30
+    assert "canonical_budget_exhausted" in result.stops
 
 
 def test_new_qualified_candidate_outside_original_supply_can_be_added():
@@ -323,7 +323,7 @@ def test_deadline_reserves_nearby_and_rechecks():
     model = Model()
     result = run(model=model, clock=lambda: 100, request_deadline=125)
     assert result.status == "SKIPPED" and model.calls == 0
-    assert RepairBudget(1000, clock=lambda: 100).deadline == 400
+    assert RepairBudget(1000, clock=lambda: 100).deadline == 460
     assert RepairBudget(150, clock=lambda: 100).deadline == 140
 
 
@@ -345,7 +345,7 @@ def test_budget_actual_sends_cache_failed_attempts_and_matrix_elements():
         assert len(calls) == 2 and budget.used["elements"] == 32 and budget.used["routes"] == 2
         assert budget.used["cache_hits"] == 1
         with pytest.raises(RepairLimit):
-            budget.charge(google=3)
+            budget.charge(google=7)
         assert budget.used["google"] == 0
 
     asyncio.run(scenario())
@@ -401,6 +401,7 @@ def route(duration=60, **changes):
                     "origin_place_id": "a",
                     "destination_place_id": "b",
                     "condition": "ROUTE_EXISTS",
+                    "status": "OK",
                     "duration_seconds": duration,
                     "availability": "available",
                 }
@@ -424,6 +425,7 @@ def route(duration=60, **changes):
                     "destination_place_id": "a",
                     "availability": "available",
                     "condition": "ROUTE_EXISTS",
+                    "status": "OK",
                     "duration_seconds": 10,
                 }
             ]
@@ -435,6 +437,7 @@ def route(duration=60, **changes):
                     "destination_place_id": "b",
                     "availability": "available",
                     "condition": "ROUTE_EXISTS",
+                    "status": "OK",
                     "duration_seconds": 10,
                     "evidence_type": "mirrored_reverse_estimate",
                 }
@@ -506,7 +509,7 @@ def test_foundry_repair_options_are_per_call_and_primary_unchanged():
             return self
 
         async def ainvoke(self, messages):
-            return {"edits": []}
+            return {"edits": [], "target_dispositions": []}
 
     client = object.__new__(AzureFoundryStructuredLLMClient)
     client._chat_model = Chat()
@@ -774,7 +777,7 @@ def test_actual_serializer_candidate_and_per_candidate_bounds():
     from backend.app.versions.v3.repair_projection import build_repair_input
     from tools.diagnostics.repair_payload import fixture
 
-    args = fixture(10, 29)
+    args = fixture(10, 33)
     with pytest.raises(ValueError, match="candidate_ceiling"):
         build_repair_input(*args)
     args = list(fixture(1, 3))
@@ -973,11 +976,11 @@ def test_addition_projection_separates_context_and_stops_when_old_material_suffi
         intent_ids=("discovery_1",),
     )
     assert provider.calls == provider.searches == 0
-    assert {c["place"]["place_id"] for c in model.input["addition_candidates"]} == {"b", "c"}
+    assert {c["place_id"] for c in model.input["addition_candidates"]} == {"b", "c"}
     assert model.input["protected_activities"][0]["source_place_id"] == "a"
     assert not result.candidate_preparation.exploration_reasons
     assert any(
-        "visit_mode_and_access_not_supported" in a.unknowns
+        "admission_reservation_and_special_area_unverified" in a.unknowns
         for a in result.candidate_preparation.authorizations
     )
     assert result.status == "REJECTED" and result.parsed_patch.edits == ()
@@ -1038,8 +1041,8 @@ def test_full_union_reserves_only_two_round_slots_and_keeps_ledger_separate():
         intent_ids=("discovery_1",),
     )
     prep = result.candidate_preparation
-    assert len(prep.input_candidates) == 27
-    assert result.sizing["input_identity_union"] == 28
+    assert len(prep.input_candidates) == 31
+    assert result.sizing["input_identity_union"] == 32
     assert {"fresh", "fresh2"} <= {c.place.place_id for c in prep.input_candidates}
     assert len(prep.ledger) == 38 and provider.calls == 2
     assert any(d.disposition == "capacity_omitted" for d in prep.decisions)
@@ -1063,7 +1066,7 @@ def test_no_new_results_refill_old_slots_and_unknown_does_not_loop():
         intent_ids=("discovery_1",),
     )
     assert provider.searches == 1 and provider.calls == 0
-    assert len(result.candidate_preparation.input_candidates) == 27
+    assert len(result.candidate_preparation.input_candidates) == 30
     assert result.candidate_preparation.exploration_reasons == (
         "previous_arrangement_requires_other_options",
     )
@@ -1071,11 +1074,11 @@ def test_no_new_results_refill_old_slots_and_unknown_does_not_loop():
 
 
 def test_no_input_room_stops_all_optional_acquisition_but_keeps_context():
-    original = draft([activity(str(i), str(i)) for i in range(28)])
+    original = draft([activity(str(i), str(i)) for i in range(32)])
     # Explicitly authorized replacement keeps this test independent of coverage detection.
     ctx = discovery_context(
-        original_supply_ids=tuple(str(i) for i in range(28)),
-        places=tuple(place(str(i)) for i in range(28)),
+        original_supply_ids=tuple(str(i) for i in range(32)),
+        places=tuple(place(str(i)) for i in range(32)),
     )
     scope = scope_for(original, ctx, operations=("retime", "replace"))
     from backend.app.versions.v3.repair_models import ActivityPermission
@@ -1097,7 +1100,7 @@ def test_no_input_room_stops_all_optional_acquisition_but_keeps_context():
         intent_ids=("discovery_1",),
     )
     assert provider.calls == provider.searches == 0
-    assert len(result.candidate_preparation.scheduled_ids) == 28
+    assert len(result.candidate_preparation.scheduled_ids) == 32
     assert result.model_attempted
 
 
@@ -1110,7 +1113,10 @@ def two_day_case(ps):
     original.days.append(ItineraryDay(date=tomorrow, activities=[]))
     c = contract()
     c = c.model_copy(
-        update={"requirements": c.requirements.model_copy(update={"end_date": tomorrow})}
+        update={
+            "time_protections": (),
+            "requirements": c.requirements.model_copy(update={"end_date": tomorrow}),
+        }
     )
     ctx = context(c, places=ps, original_supply_ids=tuple(p.place_id for p in ps))
     return original, ctx, addition_scope(original, ctx)
@@ -1139,8 +1145,10 @@ def test_multi_target_links_remain_but_supply_and_patch_cannot_double_count():
     assert {(a.place_id, a.date) for a in auth} == {("b", DAY), ("b", tomorrow)}
     eligible = [a.model_copy(update={"disposition": "eligible"}) for a in auth]
     assert matched_capacity(eligible, candidate_targets(original, ctx, scope)) == 1
-    assert result.status == "REJECTED" and "Revisit" in result.reason
-    assert result.final == original
+    assert result.status == "ACCEPTED_PARTIAL"
+    assert [c["status"] for c in result.components] == ["accepted", "rejected"]
+    assert "Revisit" in result.components[1]["reason"]
+    assert sum(a.source_place_id == "b" for d in result.final.days for a in d.activities) == 1
 
 
 def test_date_exclusion_preserves_other_date_and_unknown_is_not_excluded():
@@ -1242,10 +1250,10 @@ def test_identity_in_ledger_but_omitted_from_input_is_not_add_authorized():
 
 
 def test_protected_context_over_union_limit_is_not_truncated_to_call_model():
-    original = draft([activity(str(i), str(i)) for i in range(29)])
+    original = draft([activity(str(i), str(i)) for i in range(33)])
     ctx = context(
-        original_supply_ids=tuple(str(i) for i in range(29)),
-        places=tuple(place(str(i)) for i in range(29)),
+        original_supply_ids=tuple(str(i) for i in range(33)),
+        places=tuple(place(str(i)) for i in range(33)),
     )
     report = assess(original, ctx)
     scope = RepairScope(
@@ -1256,7 +1264,7 @@ def test_protected_context_over_union_limit_is_not_truncated_to_call_model():
     model = Model([])
     result = run(original=original, ctx=ctx, scope=scope, model=model)
     assert result.status == "SKIPPED" and "identity_union_ceiling" in result.reason
-    assert model.calls == 0 and len(result.final.days[0].activities) == 29
+    assert model.calls == 0 and len(result.final.days[0].activities) == 33
 
 
 def test_multiple_targets_reserve_two_total_and_stop_at_available_input_capacity():
@@ -1265,7 +1273,9 @@ def test_multiple_targets_reserve_two_total_and_stop_at_available_input_capacity
     )
     base = discovery_context().contract
     ctx = ctx.model_copy(
-        update={"contract": base.model_copy(update={"requirements": ctx.contract.requirements})}
+        update={"contract": base.model_copy(
+            update={"requirements": ctx.contract.requirements, "time_protections": ()}
+        )}
     )
     provider = CandidateSearch(ids=("fresh", "fresh2", "unused3", "unused4"))
     result = run(
@@ -1277,10 +1287,10 @@ def test_multiple_targets_reserve_two_total_and_stop_at_available_input_capacity
         places_provider=provider,
         intent_ids=("discovery_1",),
     )
-    assert result.candidate_preparation.preparation_reference == 6
+    assert result.candidate_preparation.preparation_reference == 4
     assert result.candidate_preparation.exploration_slots == 2
     assert provider.calls == 2 and provider.searches == 1
-    assert result.sizing["input_identity_union"] == 28
+    assert result.sizing["input_identity_union"] == 32
 
 
 def test_needed_rag_exploration_respects_prior_failure_without_retry():
@@ -1334,13 +1344,13 @@ def test_old_details_preserve_discovery_opportunity_for_concrete_feedback():
         ctx=ctx,
         scope=addition_scope(original, ctx),
         model=Model([]),
-        pool=tuple(selection(f"pending{i}") for i in range(8)),
+        pool=tuple(selection(f"pending{i}") for i in range(12)),
         places_provider=provider,
         intent_ids=("discovery_1",),
     )
     prep = result.candidate_preparation
-    assert provider.searches == 1 and provider.calls == 8
-    assert result.counters["canonical"] == result.counters["details"] == 8
+    assert provider.searches == 1 and provider.calls == 14
+    assert result.counters["canonical"] == result.counters["details"] == 14
     assert {"fresh", "fresh2"} <= {c.place.place_id for c in prep.input_candidates}
     assert "previous_arrangement_requires_other_options" in prep.exploration_reasons
-    assert "old_details_discovery_reserve" in result.stops
+    assert result.counters["canonical"] < result.effective_policy["acquisition"]["canonical"]
