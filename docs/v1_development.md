@@ -1599,3 +1599,148 @@ no fresh live result is claimed. Acquisition goals remain unchanged and no repai
 exists. The single [development event](development_record.md#first-generation-coverage-20260920)
 owns sizing, first failures and subsequent targeted test results. Historical live and
 full-suite records above retain their original configuration and outcome.
+
+
+## Compatible transfer output update (2026-09-25)
+
+The shared itinerary DTO now accepts optional `transfers` (missing defaults empty).
+Current V3 binds and presents verified/unknown per-leg route estimates and separate
+application reserves; V0-V2 do not fabricate transfers or acquire additional routes for
+this field. Primary model DTO/prompt, K, existing version entry points and product default
+are unchanged. The frontend can render this optional data when supplied; this does not
+implement the deferred Product V3/API selection or the whole frontend backlog.
+See [V3 design](v3_design.md#shared-output-and-frontend) and the
+[development verification record](v3_development.md#mixed-transport-and-joint-components-2026-09-25).
+This is shared output compatibility, not evidence of a V3-only quality gain or a re-freeze.
+
+
+## 2026-09-25 - Shared first-generation mixed transport
+
+Status: implemented + offline-validated. No provider/model/embedding/database calls or
+new live run were performed. Earlier live evidence is unchanged. This shared V1/V2/V3
+upgrade does not freeze any version or establish improved itinerary quality.
+
+### Implementation and ownership
+
+- `policies/itinerary_schedule.py` owns the existing A occupancy/real-adjacency view;
+  `versions/v3/repair_schedule.py` retains Repair-only authorization and atomic edits,
+  with explicit compatibility re-exports.
+- `policies/route_options.py` owns provider applicability, adopted option construction,
+  and the continuous-window time comparison used by shared diagnostics and the V3
+  validator. No new semantic evaluator or independent feasibility validator was added.
+- `services/initial_routes.py` owns initial pre/post route work, distinct directed pair
+  admission, internal reservations, compact projection, and actual transfer binding.
+  Origin round-robin pair opportunity ordering is deterministic. There are no inferred
+  target dates before generation, no route scorer, and no second POI discovery pass.
+- The shared graph supplies mixed options before one primary call, validates identity
+  and dates, binds actual transfers, then invokes the existing optional V3 post-primary
+  extension. V1/V2 do not edit activities or call Repair. Nearby remains after final primary.
+- `transfers` remains application-owned; `route_diagnostics` is an optional application
+  output list, empty for historical/V0 input. Every evaluated adjacency has a record even
+  without a transfer. Unknown real-location activities remain visible, not skipped.
+  V3 final diagnostics are regenerated for the adopted itinerary, not copied from rejected
+  proposals or old adjacency. Cost/activity fields remain unchanged by initial binding.
+- `transport` in runtime.yaml is the common policy authority; the V3 spatial snapshot
+  receives a derived projection. Repair-only acquisition, authority and added burden stay
+  in V3. Existing per-mode provider applicability is reused without relaxing evidence gates.
+
+### Capacity and failure boundaries
+
+Primary engineering input 252000, output 16384, framing 2048. Baseline stays 7 requests /
+400 elements / 64 elements per request. Supplementary totals are 32 distinct directed pairs,
+32 actual requests and 64 requested elements across pre/post generation. Reservations of
+16 pairs / 16 requests / 32 elements protect post-generation; pre limits are derived.
+Selecting an uncached pair for supplementary processing consumes pair admission; enumerating
+it does not. Mode/time changes reuse pair admission but charge actual sends/elements.
+Cache reuse remains possible after quota exhaustion. Failed sends count; failure history
+and successful cache are shared with Repair, without sharing or resetting its send budget.
+
+Route work uses cumulative monotonic wall time (120 seconds, 30 post reserve). Nested or
+overlapping work counts once; LLM/Web pauses do not count. All work remains under the same
+request deadline. V3 headroom references existing minimum-model/recheck policy; Nearby's
+reserve comes from its single configuration owner. No reservation guarantees provider success
+or downstream time. Cancellation propagates. A local route stop does not discard the primary.
+
+A specific WALK deficit does not prove all allowed modes impossible. Missing alternatives
+stay UNKNOWN. Explicit mode deficits and all sufficiently checked mode deficits are distinct.
+Mode policy rejection is distinct from a factual access/route prohibition. Representative
+TRANSIT is rechecked at actual departure; stable WALK/basic DRIVE retain their approved
+planning-estimate applicability. DRIVE provider time and application reserve are separate.
+
+Shared correctness adjustments, not V3-specific gains: route providers now use their actual
+send observer when available; the shared planner's explicit timeout starts at planner entry
+rather than restarting at graph invocation. V3 retains its outer request deadline.
+
+### Actual offline execution order
+
+1. Configuration, mixed Repair and A schedule selection: 27 passed / 3 failed, stopped at
+   three stale 16-pair default assertions.
+2. After default updates, added V1 graph: 77 passed / 3 failed (old primary 160k assertion,
+   new topology not in fixture, old route prompt shape).
+3. New initial service plus runtime/V1/V3 wiring: 56 passed / 5 failed before stopping.
+   One test used nonexistent `ToolBudget.used`; topology expectations still needed edges;
+   rejected-primary comparisons needed to distinguish regenerated route presentation from
+   unchanged activity fields. The prompt assertion exposed a real compact-catalog collision:
+   different modes may share provider source_ref. Keys now incorporate complete evidence;
+   original provenance is retained. A single targeted V1 prompt test failed while diagnosing
+   that collision, then the four-suite selection passed all 88 tests.
+4. Initial Ruff reported imports/style issues; formatting and explicit shared re-exports fixed
+   them. Expanded V0/V1/V2, selected V3, Routes and runtime regression: 283 passed / 3 failed.
+   Two were old default assertions; one malformed-index fixture lacked the success status
+   required by the already accepted Google evidence policy. Added `{}` status to the intended
+   successful element without weakening normalization. Targeted expanded service/runner/
+   matrix tests: 61 passed.
+5. Sizing first failed because synthetic logical pair IDs were not in canonical sort order;
+   corrected fixture construction. Rerun completed with the figures below.
+6. Full V3 plus affected shared selections: 468 passed / 3 failed (old primary ceiling,
+   documentation leaf values, and historical cache test counting the same pair at a new
+   time as a second pair). Updated expected semantics; requests/elements still count twice.
+   Targeted configuration/multiround/transport/service retest: 72 passed.
+7. Final affected V0/V1/V2/V3 plus shared route/runtime selection: 583 passed in 18.62 seconds.
+   Ruff passed. A subsequent small consolidation removed duplicate time-gap arithmetic by
+   sharing `transfer_time_check`; its affected service/API-evidence/mixed/C/wiring tests were
+   run separately: 119 passed in 8.23 seconds. No full-repository test was run.
+
+### Actual serializer sizing
+
+`python -m tools.diagnostics.initial_mixed_payload` uses the current primary prompt,
+strict DTO schema, serializer and installed offline tokenizer. System/schema/framing are
+1161 / 792 / 2048 tokens in these samples. Route facts and section measurements are not an
+additional additive partition of the complete input.
+
+| Synthetic case | User tokens | Complete input | Result |
+| --- | ---: | ---: | --- |
+| 3 days, K12 | 36019 | 40020 | within 252000 |
+| 5 days, K16 | 58602 | 62603 | within 252000 |
+| 10 days, K20 | 94481 | 98482 | within 252000 |
+| 10 days, bounded additional mixed facts | 96859 | 100860 | within 252000 |
+| 10 days, 24 semantic requirements / long text | 120339 | 124340 | within 252000 |
+| Engineering-only near-limit padding | 247903 | 251904 | within ceiling |
+| Engineering-only overflow padding | 248103 | 252104 | rejected |
+
+The two padding cases test the engineering guard only; they are not claimed to pass every
+upstream source-text/fact bound. Necessary facts were not deleted to fit. The compact
+projection preserves all directed baseline facts; omission audit is empty because no selective
+omission policy is enabled. Overflow fails closed instead of silently dropping requirements.
+
+A schema-validated ten-day / 50-activity primary output is 6168 tokens, below 16384; adopted
+transfers are not model output. This is output-capacity evidence, not proof of realistic model
+completion, factual feasibility, or a promise that longer notes always fit. No provider usage
+was estimated or reported as actual usage.
+
+### Remaining limitations
+
+Only already supplied POIs benefit; omitted candidates are not rediscovered. Fixed/unknown
+real activities retain their occupancy limitations. Unsupported transport semantics remain
+unsupported. Cache/source/time conflicts and failed or missing routes remain UNKNOWN as
+appropriate. Driving access, costs, parking/booking availability and future reality are not
+established. The shared default window is an application policy, not a user-stated threshold.
+The 32/64 and 120-second caps are tested execution boundaries, not measured optimal budgets.
+Mixed actual-time TRANSIT, provider latency, real model selection and real output completion
+still require a separately authorized live run. This checkpoint does not prove the historical
+seven-day failure has been repaired.
+
+Final static pass: expanded Ruff selection found three long test assertions; formatting
+corrected them and Ruff passed. Final git diff --check passed. No semantic changes followed
+the 119-test retest. Frontend code was unchanged in this checkpoint, so no frontend build
+was rerun. Existing frontend dirty changes belong to the preceding checkpoint.

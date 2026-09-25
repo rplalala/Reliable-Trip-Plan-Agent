@@ -60,6 +60,24 @@ class RoutesBudgetConfig(_ConfigModel):
     alternative_pairs: StrictInt
     alternative_matrix_calls: StrictInt
     alternative_elements: StrictInt = 16
+    post_generation_reserved_pairs: StrictInt = Field(default=0, ge=0)
+    post_generation_reserved_requests: StrictInt = Field(default=0, ge=0)
+    post_generation_reserved_elements: StrictInt = Field(default=0, ge=0)
+    work_seconds: float = Field(default=120, gt=0, le=120)
+    post_generation_reserved_seconds: float = Field(default=30, ge=0)
+    provider_timeout_seconds: float = Field(default=20, gt=0, le=20)
+
+    @model_validator(mode="after")
+    def reservations_fit(self):
+        for total, reserve in (
+            (self.alternative_pairs, self.post_generation_reserved_pairs),
+            (self.alternative_matrix_calls, self.post_generation_reserved_requests),
+            (self.alternative_elements, self.post_generation_reserved_elements),
+            (self.work_seconds, self.post_generation_reserved_seconds),
+        ):
+            if reserve > total:
+                raise ValueError("Post-generation reservation must fit route total")
+        return self
 
 
 class WebBudgetConfig(_ConfigModel):
@@ -202,8 +220,6 @@ class TraceConfig(_ConfigModel):
         return value
 
 
-
-
 class ReferenceDiscoveryConfig(_ConfigModel):
     policy_version: Literal["nearby_references_1"] = "nearby_references_1"
     max_requests: int = Field(default=3, ge=0, le=3)
@@ -233,12 +249,140 @@ class AcquisitionConfig(_ConfigModel):
 
 class MainGenerationConfig(_ConfigModel):
     enabled: bool = False
-    input_tokens: int = Field(default=96000, ge=1, le=160000)
+    input_tokens: int = Field(default=96000, ge=1, le=252000)
     output_tokens: int = Field(default=16384, ge=1, le=16384)
     framing_tokens: int = Field(default=2048, ge=2048, le=2048)
 
 
+class _RepairConfigModel(_ConfigModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True, allow_inf_nan=False)
+
+
+class RepairAcquisitionConfig(_RepairConfigModel):
+    google: StrictInt = Field(ge=0, le=6)
+    fallback: StrictInt = Field(ge=0, le=1)
+    embedding: StrictInt = Field(ge=0, le=1)
+    retrieval: StrictInt = Field(ge=0, le=1)
+    canonical: StrictInt = Field(ge=0, le=30)
+    details: StrictInt = Field(ge=0, le=30)
+    routes: StrictInt = Field(ge=0, le=24)
+    post_proposal_route_reserve: StrictInt = Field(ge=0, le=24)
+    elements: StrictInt = Field(ge=0, le=32)
+    top_k: StrictInt = Field(ge=1, le=10)
+    provider_timeout_seconds: float = Field(gt=0, le=20)
+
+    @model_validator(mode="after")
+    def consistent(self):
+        if (
+            self.fallback > self.google
+            or bool(self.routes) != bool(self.elements)
+            or self.post_proposal_route_reserve > self.routes
+        ):
+            raise ValueError("Repair fallback/routes budgets are inconsistent")
+        return self
+
+
+class RepairTimingConfig(_RepairConfigModel):
+    stage_seconds: float = Field(gt=0, le=360)
+    round_seconds: float = Field(gt=0, le=120)
+    model_seconds: float = Field(gt=0, le=70)
+    preparation_seconds: float = Field(ge=0, le=45)
+    recheck_reserve_seconds: float = Field(gt=0)
+    minimum_model_seconds: float = Field(gt=0)
+    round_reference_seconds: float = Field(gt=0)
+    finalization_reserve_seconds: float = Field(gt=0)
+
+    @model_validator(mode="after")
+    def consistent(self):
+        if not (
+            self.minimum_model_seconds <= self.model_seconds
+            and self.minimum_model_seconds + self.recheck_reserve_seconds
+            <= self.round_reference_seconds
+            <= self.round_seconds
+            <= self.stage_seconds
+            and self.finalization_reserve_seconds < self.recheck_reserve_seconds
+        ):
+            raise ValueError("Repair timing allocations are inconsistent")
+        return self
+
+
+class RepairInputConfig(_RepairConfigModel):
+    input_tokens: StrictInt = Field(ge=1, le=252000)
+    output_tokens: StrictInt = Field(ge=1, le=16384)
+    framing_tokens: StrictInt = Field(ge=1)
+    identity_capacity: StrictInt = Field(ge=1, le=32)
+    activity_capacity: StrictInt = Field(ge=1, le=120)
+    candidate_characters: StrictInt = Field(ge=1, le=12000)
+    feedback_characters: StrictInt = Field(ge=1, le=12000)
+
+    @model_validator(mode="after")
+    def consistent(self):
+        if self.framing_tokens >= self.input_tokens:
+            raise ValueError("Repair framing reserve must fit input ceiling")
+        return self
+
+
+class TransportPolicyConfig(_RepairConfigModel):
+    walk_route_max_km: float = Field(gt=0)
+    transit_max_minutes: float = Field(gt=0)
+    drive_max_minutes: float = Field(gt=0)
+    drive_reserve_minutes: float = Field(ge=0)
+    walk_radius_km: float = Field(gt=0)
+    motor_radius_km: float = Field(gt=0)
+    max_leg_minutes: float = Field(gt=0)
+
+
+class RepairSpatialConfig(TransportPolicyConfig):
+    detour_floor_km: float = Field(ge=0)
+    detour_ratio: float = Field(ge=0)
+    fallback_distance_km: float = Field(gt=0)
+    fallback_reserve_minutes: float = Field(gt=0)
+    daily_added_minutes: float = Field(gt=0)
+
+    @model_validator(mode="after")
+    def consistent(self):
+        if self.fallback_distance_km > self.walk_radius_km:
+            raise ValueError("Fallback distance must fit walk geographic range")
+        if self.fallback_reserve_minutes > self.max_leg_minutes:
+            raise ValueError("Fallback reserve exceeds automatic leg policy")
+        return self
+
+
+class V3RepairConfig(_RepairConfigModel):
+    max_rounds: StrictInt = Field(ge=1, le=5)
+    max_model_calls: StrictInt = Field(ge=0, le=5)
+    quantity_review_enabled: StrictBool
+    repetition_review_enabled: StrictBool
+    overfull_review_enabled: StrictBool
+    daily_main_min: StrictInt = Field(ge=1, le=5)
+    daily_main_max: StrictInt = Field(ge=1, le=10)
+    move_max_days: StrictInt = Field(ge=0, le=1)
+    blank_day_start_hour: StrictInt = Field(ge=0, le=23)
+    blank_day_end_hour: StrictInt = Field(ge=1, le=24)
+    alternatives_per_gap: StrictInt = Field(ge=1)
+    exploration_positions: StrictInt = Field(ge=0, le=2)
+    timing: RepairTimingConfig
+    input: RepairInputConfig
+    acquisition: RepairAcquisitionConfig
+    spatial: RepairSpatialConfig
+
+    @model_validator(mode="after")
+    def consistent(self):
+        if (
+            self.daily_main_min > self.daily_main_max
+            or self.blank_day_start_hour >= self.blank_day_end_hour
+        ):
+            raise ValueError("Invalid Repair coverage/window relationship")
+        if self.max_model_calls > self.max_rounds:
+            raise ValueError("At most one model call per round")
+        if self.exploration_positions > self.input.identity_capacity:
+            raise ValueError("Exploration positions must fit identity capacity")
+        return self
+
+
 class RuntimeConfig(_ConfigModel):
+    transport: TransportPolicyConfig | None = None
+    v3_repair: V3RepairConfig | None = None
     acquisition: AcquisitionConfig = Field(default_factory=AcquisitionConfig)
     main_generation: MainGenerationConfig = Field(default_factory=MainGenerationConfig)
     development_timeout_seconds: int = Field(default=600, ge=1, le=600)
@@ -250,6 +394,21 @@ class RuntimeConfig(_ConfigModel):
     tripworld_discovery: RAGConfig = Field(default_factory=RAGConfig)
     logging: LoggingConfig
     trace: TraceConfig
+
+    @model_validator(mode="before")
+    @classmethod
+    def shared_transport_policy(cls, value):
+        if isinstance(value, dict) and value.get("transport") and value.get("v3_repair"):
+            from copy import deepcopy
+
+            value = deepcopy(value)
+            transport = value["transport"]
+            if isinstance(transport, BaseModel):
+                transport = transport.model_dump()
+            repair = value["v3_repair"]
+            if isinstance(repair, dict):
+                repair["spatial"] = {**repair["spatial"], **transport}
+        return value
 
     @model_validator(mode="after")
     def coordinated_policy(self):

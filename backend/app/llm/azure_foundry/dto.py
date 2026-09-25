@@ -2,7 +2,13 @@
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+from backend.app.schemas.interpreted_requirements import (
+    InputDisposition,
+    InputIssueType,
+    RequestField,
+)
 
 
 class FoundryTransportDTO(BaseModel):
@@ -155,7 +161,88 @@ class FoundryOperationalConflictDTO(FoundryTransportDTO):
     source_refs: list[FoundrySourceQuoteDTO]
 
 
+class FoundryVisitRequirementDTO(FoundryTransportDTO):
+    access_mode: Literal["venue_entry", "exterior"] | None
+    place_text: str
+    minimum_visits: int
+    dates: list[str]
+    status: Literal["executable", "unresolved"]
+    reason: str | None
+    source_refs: list[FoundrySourceQuoteDTO]
+
+
+class FoundryTimeProtectionDTO(FoundryTransportDTO):
+    full_day: bool | None
+    dates: list[str]
+    start_time: str | None
+    end_time: str | None
+    status: Literal["fixed", "unresolved"]
+    reason: str | None
+    source_refs: list[FoundrySourceQuoteDTO]
+
+
+class FoundryPreferenceInputIssueDTO(FoundryTransportDTO):
+    """Common descriptions; concrete wire branches own conditional link fields."""
+
+    issue_type: InputIssueType
+    source_refs: list[FoundrySourceQuoteDTO] = Field(
+        description=(
+            "Exact original quote/zero-based occurrence pairs. Located issues require sources; "
+            "internal_requirement_contradiction requires both distinct conflicting sources. "
+            "Unavailable structured issues must use an empty list and a valid conflict link."
+        )
+    )
+    quote_status: Literal["located", "unavailable"]
+    related_field: RequestField | None = Field(
+        description=(
+            "Read-only request field path, never its value. destination_scope_conflict requires "
+            "destination; structured_request_conflict requires its linked conflict field. "
+            "Use null when no structured field is implicated, including ordinary safety issues."
+        )
+    )
+    operational_conflict_index: int | None = Field(
+        description=(
+            "Only structured_request_conflict may populate this zero-based operational_conflicts "
+            "index. Every other issue type MUST return null. Linked field and exact source "
+            "occurrence must correspond to the same conflict; never invent an index."
+        )
+    )
+    scope: str = Field(description="Affected subject and conditions, at most 320 characters.")
+
+
+class FoundryStructuredInputIssueDTO(FoundryPreferenceInputIssueDTO):
+    issue_type: Literal["structured_request_conflict"]
+    related_field: RequestField = Field(description="Field of the linked operational conflict.")
+
+
+class FoundryOtherInputIssueDTO(FoundryPreferenceInputIssueDTO):
+    issue_type: Literal[
+        "destination_scope_conflict",
+        "internal_requirement_contradiction",
+        "unsupported_request_scope",
+        "semantic_ambiguity",
+        "non_travel_control_instruction",
+        "safety_self_harm",
+        "safety_serious_harm",
+    ]
+    operational_conflict_index: None = Field(
+        description="MUST be null: only structured_request_conflict owns an operational link."
+    )
+    quote_status: Literal["located"] = Field(
+        description="Non-structured issues require exact located source quotes."
+    )
+
+
+class FoundryPreferenceInputAssessmentDTO(FoundryTransportDTO):
+    input_disposition: InputDisposition
+    safety_disposition: Literal["CLEAR", "SAFETY_BLOCK"]
+    issues: list[FoundryStructuredInputIssueDTO | FoundryOtherInputIssueDTO]
+
+
 class FoundryInterpretationDTO(FoundryTransportDTO):
+    preference_input_assessment: FoundryPreferenceInputAssessmentDTO
+    visit_requirements: list[FoundryVisitRequirementDTO] | None
+    time_protections: list[FoundryTimeProtectionDTO] | None
     operational_conflicts: list[FoundryOperationalConflictDTO]
     named_places: list[FoundryNamedRequirementDTO]
     requested_place_information: list[FoundryRequestedPlaceInformationDTO]

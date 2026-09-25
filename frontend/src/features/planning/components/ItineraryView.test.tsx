@@ -43,3 +43,48 @@ describe("Itinerary reference roles", () => {
     expect(screen.queryByText(/canonical-id/)).not.toBeInTheDocument();
   });
 });
+
+
+describe("Adopted structured transfers", () => {
+  it.each([
+    ["WALK", "Walk", 720, 800, 0],
+    ["TRANSIT", "Public transport", 1500, 4300, 0],
+    ["DRIVE", "Car transport", 1080, 7200, 600],
+  ] as const)("displays %s facts separately from reserves", (mode, label, seconds, metres, reserve) => {
+    render(<ItineraryView itinerary={{ ...base, transfers: [{
+      from_activity_id: "previous", to_activity_id: "a", mode, mode_source: "APPLICATION_DEFAULT",
+      calculation_basis: "provider_estimate", provider_duration_seconds: seconds, distance_meters: metres,
+      reserve_seconds: reserve, validation_state: "PASS",
+      unknowns: mode === "DRIVE" ? ["Car transport must be arranged; cost and availability not verified."] : [],
+    }] }} />);
+    const card = screen.getByLabelText("Transfer");
+    expect(within(card).getByText(new RegExp(`${label}: about ${seconds / 60} min`))).toBeInTheDocument();
+    expect(card.textContent).toContain(`${(metres / 1000).toFixed(1)} km`);
+    if (reserve) {
+      expect(within(card).getByText(/additional 10 min/)).toBeInTheDocument();
+      expect(within(card).getByText(/Car transport must be arranged/)).toBeInTheDocument();
+      expect(within(card).queryByText(/about 28 min/)).not.toBeInTheDocument();
+    }
+    expect(within(card).queryByText(/station|subway line|rental car/i)).not.toBeInTheDocument();
+  });
+  it("does not invent unknown estimates or transfers for references", () => {
+    render(<ItineraryView itinerary={{ ...base, reference_recommendations: [suggestion], transfers: [{
+      from_activity_id: "previous", to_activity_id: "a", mode: "WALK", mode_source: "APPLICATION_DEFAULT_WALK",
+      calculation_basis: "route_unknown", provider_duration_seconds: null, distance_meters: null, reserve_seconds: 0,
+      validation_state: "UNKNOWN", unknowns: [],
+    }] }} />);
+    expect(screen.getByText(/Time unknown/)).toBeInTheDocument();
+    expect(screen.getByText(/Distance unknown/)).toBeInTheDocument();
+    expect(screen.getAllByLabelText("Transfer")).toHaveLength(1);
+    expect(within(screen.getByRole("region", { name: "Optional reference recommendations" })).queryByLabelText("Transfer")).not.toBeInTheDocument();
+  });
+});
+
+
+it("shows an unmet daily minimum separately from optional Nearby references", () => {
+  render(<ItineraryView itinerary={{ ...base, reference_recommendations: [suggestion] }}
+    minimumCoverage={[{ date: "2026-09-21", countable_primary_activities: 0,
+      status: "missing", reason: "minimum_daily_coverage_missing" }]} />);
+  expect(screen.getByRole("status")).toHaveTextContent("Minimum daily coverage remains unmet");
+  expect(screen.getByText("Optional cafe")).toBeInTheDocument();
+});

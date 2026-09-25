@@ -72,7 +72,7 @@ class PlanningCandidateSupplyPipeline:
             effective = limits.model_copy(
                 update={
                     "max_candidates": values.c_raw,
-                    "max_place_detail_calls": values.r_pool + 8,
+                    "max_place_detail_calls": config.budget.places.detail_calls,
                     "max_review_detail_calls": values.review_pool_cap,
                     "max_review_enriched_places": values.review_pool_cap,
                     "max_experience_profile_llm_calls": values.review_pool_cap,

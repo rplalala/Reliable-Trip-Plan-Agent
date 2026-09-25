@@ -416,7 +416,7 @@ def test_final_sdk_wire_schema_ownership():
     [
         ("refusal", "provider_refusal"),
         ("incomplete", "provider_incomplete"),
-        ("bad_config", "configuration_failure"),
+        ("bad_config", "provider_request_rejected"),
         ("service_failure", "transport_failure"),
     ],
 )
@@ -487,6 +487,32 @@ def test_capture_is_disabled_by_default():
     assert client.requirement_capture is None
 
 
+@pytest.mark.parametrize("invalid", ["missing", "fabricated", "occurrence", "extra_value"])
+def test_gate_strict_wire_and_provenance_failures_are_not_user_issues(invalid):
+    data = wire_draft()
+    if invalid == "missing":
+        del data["preference_input_assessment"]
+    else:
+        row = {
+            "issue_type": "destination_scope_conflict",
+            "source_refs": [{"quote": "I like architecture.", "occurrence": 0}],
+            "quote_status": "located", "related_field": "destination",
+            "operational_conflict_index": None, "scope": "whole_trip",
+        }
+        if invalid == "fabricated":
+            row["source_refs"][0]["quote"] = "Invented sentence"
+        elif invalid == "occurrence":
+            row["source_refs"][0]["occurrence"] = 4
+        else:
+            row["current_value"] = "Model cannot supply this field"
+        data["preference_input_assessment"] = {
+            "input_disposition": "REWRITE_REQUIRED", "safety_disposition": "CLEAR",
+            "issues": [row],
+        }
+    with pytest.raises(RequirementBoundaryError):
+        asyncio.run(interpret(data))
+
+
 def test_captured_b_draft_reexpressed_in_v2_keeps_meaning_and_party_scope():
     fixture = json.loads(
         (
@@ -496,7 +522,13 @@ def test_captured_b_draft_reexpressed_in_v2_keeps_meaning_and_party_scope():
     assert fixture["provenance"]["kind"] == "captured_parsed_domain_draft"
     data = copy.deepcopy(fixture["draft"])
     data.pop("requirements")  # Historical captured form is not model output in revision 3.
+    data["visit_requirements"] = None  # This dimension was not assessed historically.
+    data["time_protections"] = None  # New dimension was not assessed in the capture.
     data["operational_conflicts"] = []
+    # Synthetic current assessment for wire re-expression, NOT historical evidence.
+    data["preference_input_assessment"] = {
+        "input_disposition": "VALID", "safety_disposition": "CLEAR", "issues": []
+    }
     assert any(s["subject_id"] == "party" for s in data["subjects"])
     # Explicit test fixture migration, NOT a runtime legacy repair/fallback.
     data["subjects"] = [

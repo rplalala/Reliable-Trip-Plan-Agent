@@ -165,5 +165,6 @@ class RouteMatrixRequest(IntegrationModel):
 
 
 class RouteMatrixDTO(IntegrationModel):
+    requested_at: str | None = None
     elements: list[dict[str, object]] = Field(default_factory=list)
     retrieved_at: str

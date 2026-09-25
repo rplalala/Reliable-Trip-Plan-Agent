@@ -44,7 +44,6 @@ from backend.app.integrations.models import (
     PlaceDetailsRequest,
     PlaceSearchRequest,
     PlaceSearchResponse,
-    RouteMatrixDTO,
     RouteMatrixRequest,
     RouteWaypoint,
     WeatherForecastDTO,
@@ -138,8 +137,14 @@ class V1EvidenceAcquisitionService:
                         key,
                         factory,
                         on_send=lambda: self._budget.consume_many(charges),
-                        observed=key[0] in {"place_details", "places_search"}
-                        and getattr(self._places, "observes_send_boundary", False),
+                        observed=(
+                            key[0] in {"place_details", "places_search"}
+                            and getattr(self._places, "observes_send_boundary", False)
+                        )
+                        or (
+                            key[0] == "route_matrix"
+                            and getattr(self._routes, "observes_send_boundary", False)
+                        ),
                     )
                 )
             except ProviderNotSentError as exc:
@@ -632,14 +637,53 @@ class V1EvidenceAcquisitionService:
         matrix_elements = len(request.origins) * len(request.destinations)
         additional_charges = ((call_budget_key, 1),) if call_budget_key is not None else ()
         if budget_key is ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS:
-            additional_charges += ((ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS, matrix_elements),)
-        result: _ProviderResult[RouteMatrixDTO] = await self._cached_provider_call(
-            key=self._route_cache_key(request),
-            budget_key=budget_key,
-            budget_amount=matrix_elements,
-            additional_budget_charges=additional_charges,
-            factory=lambda: self._routes.compute_route_matrix(request),
-        )
+            # Compatibility adapter: admission counts distinct directed identities,
+            # while the provider boundary charges only actual requests/elements.
+            key = self._route_cache_key(request)
+            _, hit = self._cache.lookup(key)
+            pairs = {
+                (a.place_id, b.place_id) for a in request.origins for b in request.destinations
+            }
+            admitted = getattr(self, "_legacy_route_pairs", set())
+            if not hit:
+                self._budget.consume(ToolBudgetKey.ALTERNATIVE_ROUTE_PAIRS, len(pairs - admitted))
+                self._legacy_route_pairs = admitted | pairs
+            budget_key = ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS
+
+        async def acquire():
+            return await self._cached_provider_call(
+                key=self._route_cache_key(request),
+                budget_key=budget_key,
+                budget_amount=matrix_elements,
+                additional_budget_charges=additional_charges,
+                factory=lambda: self._routes.compute_route_matrix(request),
+            )
+
+        work = getattr(self, "initial_route_work", None)
+        _, cache_hit = self._cache.lookup(self._route_cache_key(request))
+        if work is not None and not cache_hit:
+            import asyncio
+
+            remaining = min(work.remaining(), work.config.provider_timeout_seconds)
+            if remaining <= 0:
+                return unavailable_routes(
+                    request,
+                    mode_reason=mode_reason,
+                    reason="initial_route_work_exhausted",
+                    purpose=purpose,
+                )
+            try:
+                async with asyncio.timeout(remaining):
+                    result = await acquire()
+            except TimeoutError:
+                return unavailable_routes(
+                    request,
+                    mode_reason=mode_reason,
+                    reason="initial_route_work_timeout",
+                    purpose=purpose,
+                )
+        else:
+            result = await acquire()
         if result.value is None:
             return unavailable_routes(
                 request,

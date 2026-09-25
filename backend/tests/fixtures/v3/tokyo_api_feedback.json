@@ -1,0 +1,6502 @@
+{
+  "provenance": {
+    "run_id": "29b2a5f7-c6fa-45b8-9eba-31b9e89e3ea4",
+    "source": "logs\\v3_tokyo_7day_api_evidence_20260926\\result.json",
+    "sha256": "b1248888e6c008b01a0b360c9b20055a657d9ba9967062b936055f8f934c9cc2",
+    "note": "Historical fields extracted unchanged. Route envelopes reconstructed from saved selected-route evidence. No claim of a new live result."
+  },
+  "draft": {
+    "output_version": "itinerary_2",
+    "reference_recommendations": [],
+    "destination": "Tokyo, Japan",
+    "start_date": "2026-09-26",
+    "end_date": "2026-10-02",
+    "days": [
+      {
+        "date": "2026-09-26",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day1-ueshima",
+            "title": "Visit Ueshima Museum",
+            "place_name": "Ueshima Museum",
+            "source_place_id": "ChIJof1KZwCNGGARFfqGRkwb5tY",
+            "location": "Shibuya, Tokyo",
+            "start_time": "2026-09-26T11:15:00+09:00",
+            "end_time": "2026-09-26T12:45:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor museum visit; the supplied date-specific hours are 11:00\u201317:00."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day1-esp",
+            "title": "Visit ESP MUSEUM",
+            "place_name": "ESP MUSEUM",
+            "source_place_id": "ChIJAQC0jKiMGGARsJFW3NLdod8",
+            "location": "Shibuya, Tokyo",
+            "start_time": "2026-09-26T14:15:00+09:00",
+            "end_time": "2026-09-26T15:45:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor museum visit; the supplied date-specific hours are 11:00\u201319:00."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-27",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day2-minon",
+            "title": "Visit Min-on Music Museum",
+            "place_name": "Min-on Music Museum",
+            "source_place_id": "ChIJ5W-rtJOMGGARB-JFc6fs9c8",
+            "location": "Shinjuku, Tokyo",
+            "start_time": "2026-09-27T10:30:00+09:00",
+            "end_time": "2026-09-27T12:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "The supplied date-specific hours are 10:00\u201317:00."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day2-samurai",
+            "title": "Visit Samurai Museum TOKYO Shinjuku",
+            "place_name": "Samurai Museum TOKYO Shinjuku",
+            "source_place_id": "ChIJA5gBoXeNGGARJqJqceqLJiQ",
+            "location": "Shinjuku, Tokyo",
+            "start_time": "2026-09-27T13:30:00+09:00",
+            "end_time": "2026-09-27T15:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "The supplied date-specific hours are 09:00\u201318:00."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-28",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day3-metropolitan-building",
+            "title": "Explore the Tokyo Metropolitan Government Building",
+            "place_name": "Tokyo Metropolitan Government Building",
+            "source_place_id": "ChIJoTcat9SMGGAR6GGG8zdcZvE",
+            "location": "Nishishinjuku, Tokyo",
+            "start_time": "2026-09-28T10:00:00+09:00",
+            "end_time": "2026-09-28T11:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "The supplied weekday hours are 08:00\u201318:45; this is a general hours baseline, not a date-specific guarantee. Rain showers are forecast, so this indoor architectural stop suits the day's conditions."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-29",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day4-teamlab",
+            "title": "Explore teamLab Borderless",
+            "place_name": "teamLab Borderless: MORI Building DIGITAL ART MUSEUM",
+            "source_place_id": "ChIJQ5Sa1PqJGGARUSaNKKOrMVg",
+            "location": "Azabudai Hills, Minato City, Tokyo",
+            "start_time": "2026-09-29T10:30:00+09:00",
+            "end_time": "2026-09-29T13:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor visit; the supplied weekday hours are a regular weekly baseline of 08:30\u201321:00, not a date-specific guarantee."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day4-tokyo-tower",
+            "title": "Visit Tokyo Tower",
+            "place_name": "Tokyo Tower",
+            "source_place_id": "ChIJCewJkL2LGGAR3Qmk0vCTGkg",
+            "location": "Minato City, Tokyo",
+            "start_time": "2026-09-29T15:00:00+09:00",
+            "end_time": "2026-09-29T16:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "The supplied weekday hours are a regular weekly baseline of 09:00\u201323:00, not a date-specific guarantee. Leave a flexible interval between visits."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-30",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day5-ghibli",
+            "title": "Visit Ghibli Museum",
+            "place_name": "Ghibli Museum",
+            "source_place_id": "ChIJLYwD5TTuGGARBZKEP5BV4U0",
+            "location": "Mitaka, Tokyo",
+            "start_time": "2026-09-30T10:30:00+09:00",
+            "end_time": "2026-09-30T13:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "A longer, single-focus museum day. The supplied hours are 10:00\u201318:00; admission and ticket details are not established in the supplied evidence."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-01",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day6-small-worlds",
+            "title": "Explore small worlds",
+            "place_name": "small worlds",
+            "source_place_id": "ChIJZRKFm-eJGGARglEoaF4NcC8",
+            "location": "Ariake, Koto City, Tokyo",
+            "start_time": "2026-10-01T10:30:00+09:00",
+            "end_time": "2026-10-01T13:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor visit; the supplied hours are a regular weekly baseline of 09:00\u201319:00, not a date-specific guarantee. Rain showers are forecast."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-02",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day7-square-a",
+            "title": "Street-side architectural viewing at Shibuya Square A",
+            "place_name": "\u6e0b\u8c37\u30b9\u30af\u30a8\u30a2A",
+            "source_place_id": "ChIJEXVHr1eLGGARohlFCknjXwM",
+            "location": "Dogenzaka, Shibuya, Tokyo",
+            "start_time": "2026-10-02T10:30:00+09:00",
+            "end_time": "2026-10-02T11:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Plan for an exterior look only; visitor access and opening hours are not established in the supplied evidence. Light drizzle is forecast."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day7-duplex",
+            "title": "Street-side architectural viewing at Shibuya Duplex B's",
+            "place_name": "Shibuya Duplex B's",
+            "source_place_id": "ChIJox7xbVuLGGARL7Zk-mP1JCw",
+            "location": "Shibuya, Tokyo",
+            "start_time": "2026-10-02T11:30:00+09:00",
+            "end_time": "2026-10-02T12:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Plan for an exterior look only; operational status, visitor access, and opening hours are not established in the supplied evidence."
+          }
+        ]
+      }
+    ]
+  },
+  "contract": {
+    "contract_version": "interpreted_requirements_3",
+    "request_sha256": "3ec3cba7d9108f2195a564bbc7432bcf0584956411da4f18a84db989bb766bcd",
+    "input_version": "planning_request_2",
+    "structured_input_sha256": "51ae73cbf4c55aeaa8bcc8a4a9431959b95e9291db1d56f4bae8f9a5281a4964",
+    "structured_field_paths": [
+      "destination",
+      "start_date",
+      "end_date",
+      "traveler_count",
+      "budget.amount",
+      "budget.currency"
+    ],
+    "visit_requirements": [],
+    "time_protections": [],
+    "interpretation_origin": "model",
+    "requirements": {
+      "destination": "Tokyo, Japan",
+      "start_date": "2026-09-26",
+      "end_date": "2026-10-02",
+      "traveler_count": 2,
+      "budget": {
+        "amount": "120000",
+        "currency": "JPY"
+      },
+      "required_activities": [],
+      "excluded_activities": [],
+      "preferences": [],
+      "unresolved_fields": []
+    },
+    "named_places": [],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "requirement_id": "semantic_1",
+        "normalized_text": "Favor distinctive local architecture.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "individual_poi",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "We enjoy distinctive local architecture",
+            "occurrence": 0,
+            "start": 0,
+            "end": 39,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_2",
+        "normalized_text": "Favor small museums.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "individual_poi",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "We enjoy distinctive local architecture and small museums.",
+            "occurrence": 0,
+            "start": 0,
+            "end": 58,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_3",
+        "normalized_text": "Favor a relaxed pace for the trip.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "itinerary_style",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "Please arrange a relaxed seven-day trip.",
+            "occurrence": 0,
+            "start": 59,
+            "end": 99,
+            "match_mode": "exact"
+          }
+        ]
+      }
+    ],
+    "subjects": [],
+    "discovery_intents": [
+      {
+        "intent_id": "discovery_1",
+        "requirement_refs": [
+          "semantic_1"
+        ],
+        "purpose": "semantic_discovery",
+        "query_text": "Distinctive local architecture"
+      },
+      {
+        "intent_id": "discovery_2",
+        "requirement_refs": [
+          "semantic_2"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Small museums"
+      }
+    ],
+    "experience_evidence_requests": [],
+    "extraction_issues": []
+  },
+  "places": [
+    {
+      "place_id": "ChIJp604hgvzGGARhvvSFLTArYE",
+      "name": "Shigeru Ban Architects",
+      "formatted_address": "5-ch\u014dme-2-4 Matsubara, Setagaya City, Tokyo 156-0043, Japan",
+      "latitude": 35.6625957,
+      "longitude": 139.6552645,
+      "primary_type": "service",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:45.711946Z",
+      "opening_hours": null,
+      "current_opening_hours": null,
+      "regular_opening_hours": null,
+      "rating": 4.6,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false,
+        "wheelchairAccessibleEntrance": false
+      },
+      "website_uri": "http://www.shigerubanarchitects.com/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:46.529315Z",
+      "source_ref": "google_places:ChIJp604hgvzGGARhvvSFLTArYE"
+    },
+    {
+      "place_id": "ChIJA5gBoXeNGGARJqJqceqLJiQ",
+      "name": "Samurai Museum TOKYO Shinjuku",
+      "formatted_address": "Japan, \u3012160-0022 Tokyo, Shinjuku City, Shinjuku, 5-ch\u014dme\u221217\u2212\uff11\uff13 \u30aa\u30ea\u30a8\u30f3\u30bf\u30eb\u30a6\u30a7\u30fc\u30d6\u30d3\u30eb",
+      "latitude": 35.6929413,
+      "longitude": 139.7052152,
+      "primary_type": "amusement_center",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:47.802651Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T00:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T00:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 18,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T00:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.9,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false
+      },
+      "website_uri": "https://mai-ko.com/samurai/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:48.113496Z",
+      "source_ref": "google_places:ChIJA5gBoXeNGGARJqJqceqLJiQ"
+    },
+    {
+      "place_id": "ChIJoTcat9SMGGAR6GGG8zdcZvE",
+      "name": "Tokyo Metropolitan Government Building",
+      "formatted_address": "2-ch\u014dme-8-1 Nishishinjuku, Shinjuku City, Tokyo 163-8001, Japan",
+      "latitude": 35.6894807,
+      "longitude": 139.6916863,
+      "primary_type": "government_office",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:46.837393Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 1,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Tuesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Wednesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Thursday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Friday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Saturday: Closed",
+          "Sunday: Closed"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-24T23:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 1,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 8,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 45,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Tuesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Wednesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Thursday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Friday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Saturday: Closed",
+          "Sunday: Closed"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-24T23:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 1,
+              "hour": 8,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 45
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 8,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 18,
+              "minute": 45
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 8,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 45
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 8,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 45
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 8,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 45
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Tuesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Wednesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Thursday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Friday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Saturday: Closed",
+          "Sunday: Closed"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-24T23:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true
+      },
+      "website_uri": "https://www.metro.tokyo.lg.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:47.798825Z",
+      "source_ref": "google_places:ChIJoTcat9SMGGAR6GGG8zdcZvE"
+    },
+    {
+      "place_id": "ChIJ0ROVLn-NGGAREqgBMH575yI",
+      "name": "Extinct Media Museum",
+      "formatted_address": "Japan, \u3012101-0047 Tokyo, Chiyoda City, Uchikanda, 2-ch\u014dme\u22123\u2212\uff16 \u6953\u30d3\u30eb 1\u968e",
+      "latitude": 35.689636799999995,
+      "longitude": 139.76790359999998,
+      "primary_type": "museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:56.052482Z",
+      "opening_hours": null,
+      "current_opening_hours": null,
+      "regular_opening_hours": null,
+      "rating": 4.7,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleSeating": false
+      },
+      "website_uri": "https://extinct-media-museum.blog.jp/otemachi/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:56.389872Z",
+      "source_ref": "google_places:ChIJ0ROVLn-NGGAREqgBMH575yI"
+    },
+    {
+      "place_id": "ChIJEXVHr1eLGGARohlFCknjXwM",
+      "name": "\u6e0b\u8c37\u30b9\u30af\u30a8\u30a2A",
+      "formatted_address": "Japan, \u3012150-0043 Tokyo, Shibuya, D\u014dgenzaka, 1-ch\u014dme\u22129\u2212\uff15 \u6e0b\u8c37\u30b9\u30af\u30a8\u30a2A",
+      "latitude": 35.6572551,
+      "longitude": 139.6993938,
+      "primary_type": null,
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:42.328703Z",
+      "opening_hours": null,
+      "current_opening_hours": null,
+      "regular_opening_hours": null,
+      "rating": 3.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false,
+        "wheelchairAccessibleEntrance": true
+      },
+      "website_uri": "https://office.tokyu-land.co.jp/bldg/shibuya_square_a/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:42.655232Z",
+      "source_ref": "google_places:ChIJEXVHr1eLGGARohlFCknjXwM"
+    },
+    {
+      "place_id": "ChIJQ5Sa1PqJGGARUSaNKKOrMVg",
+      "name": "teamLab Borderless: MORI Building DIGITAL ART MUSEUM",
+      "formatted_address": "Japan, \u3012106-0041 Tokyo, Minato City, Toranomon, 5-ch\u014dme\u22129\u2212\uff19 Azabudai Hills Garden Plaza B, B1",
+      "latitude": 35.6620689,
+      "longitude": 139.7432671,
+      "primary_type": "art_museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:54.771128Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Tuesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Wednesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Thursday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Friday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Saturday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-24T12:00:00Z"
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 8,
+              "minute": 30,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Tuesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Wednesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Thursday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Friday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Saturday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-24T12:00:00Z"
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 8,
+              "minute": 30
+            },
+            "close": {
+              "day": 0,
+              "hour": 21,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 8,
+              "minute": 30
+            },
+            "close": {
+              "day": 1,
+              "hour": 21,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 8,
+              "minute": 30
+            },
+            "close": {
+              "day": 2,
+              "hour": 21,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 8,
+              "minute": 30
+            },
+            "close": {
+              "day": 3,
+              "hour": 21,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 8,
+              "minute": 30
+            },
+            "close": {
+              "day": 4,
+              "hour": 21,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 8,
+              "minute": 30
+            },
+            "close": {
+              "day": 5,
+              "hour": 21,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 8,
+              "minute": 30
+            },
+            "close": {
+              "day": 6,
+              "hour": 21,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Tuesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Wednesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Thursday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Friday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Saturday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-24T12:00:00Z"
+      },
+      "rating": 4.6,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true
+      },
+      "website_uri": "https://www.teamlab.art/jp/e/tokyo/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:55.726521Z",
+      "source_ref": "google_places:ChIJQ5Sa1PqJGGARUSaNKKOrMVg"
+    },
+    {
+      "place_id": "ChIJG5cEUViLGGAR11svVziK-DY",
+      "name": "d47 design travel store",
+      "formatted_address": "Japan, \u3012150-0002 Tokyo, Shibuya, 2-ch\u014dme\u221221\u2212\uff11 8F d47 MUSEUM\u5185",
+      "latitude": 35.6590724,
+      "longitude": 139.7034852,
+      "primary_type": "gift_shop",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:48.118541Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Tuesday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Wednesday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Thursday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Friday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 12:00\u2009\u2013\u20098:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T03:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Tuesday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Wednesday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Thursday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Friday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 12:00\u2009\u2013\u20098:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T03:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 12,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 12,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 12,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 12,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 12,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 12,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 12,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 20,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Tuesday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Wednesday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Thursday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Friday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 12:00\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 12:00\u2009\u2013\u20098:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T03:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.3,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false
+      },
+      "website_uri": "https://www.instagram.com/d47_designtravelstore/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:48.445176Z",
+      "source_ref": "google_places:ChIJG5cEUViLGGAR11svVziK-DY"
+    },
+    {
+      "place_id": "ChIJAQC0jKiMGGARsJFW3NLdod8",
+      "name": "ESP MUSEUM",
+      "formatted_address": "Japan, \u3012150-0041 Tokyo, Shibuya, Jinnan, 1-ch\u014dme\u221220\u2212\uff11\uff16 \u9ad8\u5c71\u30e9\u30f3\u30c9\u30d3\u30eb3F",
+      "latitude": 35.6621381,
+      "longitude": 139.70009199999998,
+      "primary_type": "museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:44.116072Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.6,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false,
+        "wheelchairAccessibleEntrance": false
+      },
+      "website_uri": "http://www.espguitars.co.jp/museum/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:44.403473Z",
+      "source_ref": "google_places:ChIJAQC0jKiMGGARsJFW3NLdod8"
+    },
+    {
+      "place_id": "ChIJox7xbVuLGGARL7Zk-mP1JCw",
+      "name": "Shibuya Duplex B's",
+      "formatted_address": "Shibuya Duplex B's, 3-ch\u014dme-26 Shibuya, Tokyo 150-0002, Japan",
+      "latitude": 35.654181099999995,
+      "longitude": 139.705447,
+      "primary_type": "premise",
+      "business_status": null,
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:39.076994Z",
+      "opening_hours": null,
+      "current_opening_hours": null,
+      "regular_opening_hours": null,
+      "rating": null,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": null,
+      "website_uri": null,
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:39.389802Z",
+      "source_ref": "google_places:ChIJox7xbVuLGGARL7Zk-mP1JCw"
+    },
+    {
+      "place_id": "ChIJof1KZwCNGGARFfqGRkwb5tY",
+      "name": "Ueshima Museum",
+      "formatted_address": "Japan, \u3012150-0002 Tokyo, Shibuya, 1-ch\u014dme\u221221\u2212\uff11\uff18 \u6e0b\u8c37\u6559\u80b2\u5b66\u5712 \u690d\u5cf6\u30bf\u30ef\u30fc",
+      "latitude": 35.6638908,
+      "longitude": 139.70349199999998,
+      "primary_type": "art_museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:48.445176Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 17,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 17,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 17,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-29"
+        ],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: Closed",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Thursday: Closed",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 17,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 17,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 17,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-29"
+        ],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: Closed",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Thursday: Closed",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 17,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 17,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 17,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 17,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 17,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 17,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleEntrance": true
+      },
+      "website_uri": "https://ueshima-museum.com/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:48.740899Z",
+      "source_ref": "google_places:ChIJof1KZwCNGGARFfqGRkwb5tY"
+    },
+    {
+      "place_id": "ChIJ91khboGMGGARBo42MbnQzg8",
+      "name": "Japan Traditional Crafts Aoyama Square",
+      "formatted_address": "Japan, \u3012107-0052 Tokyo, Minato City, Akasaka, 8-ch\u014dme\u22121\u2212\uff12\uff12 \uff11F",
+      "latitude": 35.6734771,
+      "longitude": 139.7276153,
+      "primary_type": null,
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:49.054650Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 12:00\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T03:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 12,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 12:00\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T03:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 12,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 12:00\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T03:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleEntrance": true
+      },
+      "website_uri": "https://kougeihin.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:49.346559Z",
+      "source_ref": "google_places:ChIJ91khboGMGGARBo42MbnQzg8"
+    },
+    {
+      "place_id": "ChIJZRKFm-eJGGARglEoaF4NcC8",
+      "name": "small worlds",
+      "formatted_address": "Japan, \u3012135-0063 Tokyo, Koto City, Ariake, 1-ch\u014dme\u22123\u2212\uff13\uff13 \u6709\u660e\u7269\u6d41\u30bb\u30f3\u30bf\u30fc",
+      "latitude": 35.6379228,
+      "longitude": 139.78835560000002,
+      "primary_type": "amusement_center",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:49.346559Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T00:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T00:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 19,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 19,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T00:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.4,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true
+      },
+      "website_uri": "https://www.smallworlds.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:49.665676Z",
+      "source_ref": "google_places:ChIJZRKFm-eJGGARglEoaF4NcC8"
+    },
+    {
+      "place_id": "ChIJCewJkL2LGGAR3Qmk0vCTGkg",
+      "name": "Tokyo Tower",
+      "formatted_address": "4-ch\u014dme-2-8 Shibak\u014den, Minato City, Tokyo 105-0011, Japan",
+      "latitude": 35.6585805,
+      "longitude": 139.7454329,
+      "primary_type": "observation_deck",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:50.741269Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-24T14:00:00Z"
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 23,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-24T14:00:00Z"
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 23,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 23,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 23,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 23,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 23,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 23,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 9,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 23,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u200911:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-24T14:00:00Z"
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleSeating": true
+      },
+      "website_uri": "https://www.tokyotower.co.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:51.595231Z",
+      "source_ref": "google_places:ChIJCewJkL2LGGAR3Qmk0vCTGkg"
+    },
+    {
+      "place_id": "ChIJ5W-rtJOMGGARB-JFc6fs9c8",
+      "name": "Min-on Music Museum",
+      "formatted_address": "Japan, \u3012160-8588 \u6771\u4eac\u90fd\u65b0\u5bbf\u533a\u4fe1\u6fc3\u753a\uff18",
+      "latitude": 35.6823686,
+      "longitude": 139.7192584,
+      "primary_type": "museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:40.738610Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 17,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 17,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 16,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 10,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 17,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 16,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 16,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 16,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 16,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 16,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20094:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.6,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true
+      },
+      "website_uri": "https://museum.min-on.or.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:41.055161Z",
+      "source_ref": "google_places:ChIJ5W-rtJOMGGARB-JFc6fs9c8"
+    },
+    {
+      "place_id": "ChIJrTj_5uOLGGARwTS44M_8oBY",
+      "name": "Okuno Building",
+      "formatted_address": "1-ch\u014dme-9-8 Ginza, Chuo City, Tokyo 104-0061, Japan",
+      "latitude": 35.6737703,
+      "longitude": 139.7688513,
+      "primary_type": null,
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:53.019217Z",
+      "opening_hours": null,
+      "current_opening_hours": null,
+      "regular_opening_hours": null,
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false,
+        "wheelchairAccessibleEntrance": false
+      },
+      "website_uri": null,
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:53.307858Z",
+      "source_ref": "google_places:ChIJrTj_5uOLGGARwTS44M_8oBY"
+    },
+    {
+      "place_id": "ChIJLYwD5TTuGGARBZKEP5BV4U0",
+      "name": "Ghibli Museum",
+      "formatted_address": "1-ch\u014dme-1-83 Shimorenjaku, Mitaka, Tokyo 181-0013, Japan",
+      "latitude": 35.696238,
+      "longitude": 139.5704317,
+      "primary_type": "art_museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:42:52.704939Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T01:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 10,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 18,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T01:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 10,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 10,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 10,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 10,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 10,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 18,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 10,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 18,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T01:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true,
+        "wheelchairAccessibleSeating": true
+      },
+      "website_uri": "https://www.ghibli-museum.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:42:53.019217Z",
+      "source_ref": "google_places:ChIJLYwD5TTuGGARBZKEP5BV4U0"
+    },
+    {
+      "place_id": "ChIJZcKAeACJGGARDLfJzIBD7Bg",
+      "name": "Odaiba Retro Museum",
+      "formatted_address": "Japan, \u3012135-0091 Tokyo, Minato City, Daiba, 1-ch\u014dme\u22126\u2212\uff11 \u30c7\u30c3\u30af\u30b9\u6771\u4eac\u30d3\u30fc\u30c1 \u30b7\u30fc\u30b5\u30a4\u30c9\u30e2\u30fc\u30eb 4\u968e",
+      "latitude": 35.629210199999996,
+      "longitude": 139.7759112,
+      "primary_type": "museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "requested_at": "2026-09-24T11:43:35.801699Z",
+      "opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            },
+            "close": {
+              "day": 0,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 27
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            },
+            "close": {
+              "day": 1,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 28
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            },
+            "close": {
+              "day": 2,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 29
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            },
+            "close": {
+              "day": 3,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 30
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            },
+            "close": {
+              "day": 4,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 24
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            },
+            "close": {
+              "day": 5,
+              "hour": 20,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 25
+              }
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            },
+            "close": {
+              "day": 6,
+              "hour": 21,
+              "minute": 0,
+              "date": {
+                "year": 2026,
+                "month": 9,
+                "day": 26
+              }
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-24",
+        "valid_through": "2026-09-30",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "periods_state": "present",
+        "periods": [
+          {
+            "open": {
+              "day": 0,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 0,
+              "hour": 21,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 1,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 1,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 2,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 2,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 3,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 3,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 4,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 4,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 5,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 5,
+              "hour": 20,
+              "minute": 0
+            }
+          },
+          {
+            "open": {
+              "day": 6,
+              "hour": 11,
+              "minute": 0
+            },
+            "close": {
+              "day": 6,
+              "hour": 21,
+              "minute": 0
+            }
+          }
+        ],
+        "special_days": [],
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-25T02:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.7,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": null,
+      "website_uri": "https://odaiba-retromuseum.tokyo.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:43:36.172400Z",
+      "source_ref": "google_places:ChIJZcKAeACJGGARDLfJzIBD7Bg"
+    }
+  ],
+  "original_supply_ids": [
+    "ChIJp604hgvzGGARhvvSFLTArYE",
+    "ChIJA5gBoXeNGGARJqJqceqLJiQ",
+    "ChIJoTcat9SMGGAR6GGG8zdcZvE",
+    "ChIJ0ROVLn-NGGAREqgBMH575yI",
+    "ChIJEXVHr1eLGGARohlFCknjXwM",
+    "ChIJQ5Sa1PqJGGARUSaNKKOrMVg",
+    "ChIJG5cEUViLGGAR11svVziK-DY",
+    "ChIJAQC0jKiMGGARsJFW3NLdod8",
+    "ChIJox7xbVuLGGARL7Zk-mP1JCw",
+    "ChIJof1KZwCNGGARFfqGRkwb5tY",
+    "ChIJ91khboGMGGARBo42MbnQzg8",
+    "ChIJZRKFm-eJGGARglEoaF4NcC8",
+    "ChIJCewJkL2LGGAR3Qmk0vCTGkg",
+    "ChIJ5W-rtJOMGGARB-JFc6fs9c8",
+    "ChIJrTj_5uOLGGARwTS44M_8oBY",
+    "ChIJLYwD5TTuGGARBZKEP5BV4U0"
+  ],
+  "scope": {
+    "deferred_review_target_ids": [],
+    "window_roots": [],
+    "coverage_permissions": [],
+    "active_related": [],
+    "daily_main_min": 2,
+    "daily_main_max": 5,
+    "dates": [
+      "2026-09-28",
+      "2026-09-30",
+      "2026-10-01"
+    ],
+    "permissions": [],
+    "add_dates": [
+      "2026-09-28",
+      "2026-09-30",
+      "2026-10-01"
+    ],
+    "direct_add_dates": [
+      "2026-09-28",
+      "2026-09-30",
+      "2026-10-01"
+    ],
+    "target_ids": [
+      "finding_1",
+      "finding_2",
+      "finding_3"
+    ],
+    "allow_coverage_regression": false,
+    "travel_mode": "WALK",
+    "revisits": [],
+    "routing_preference": null,
+    "mode_source": "default_pedestrian_transfer_for_poi_grouping",
+    "unsupported_explicit_mode": null
+  },
+  "schedule": {
+    "windows": [],
+    "blank_windows": [],
+    "day_windows": [
+      {
+        "root_activity_id": "calendar:2026-09-26",
+        "start": "2026-09-26T00:00:00+09:00",
+        "end": "2026-09-27T00:00:00+09:00",
+        "source": "existing_day_calendar_gaps"
+      },
+      {
+        "root_activity_id": "calendar:2026-09-27",
+        "start": "2026-09-27T00:00:00+09:00",
+        "end": "2026-09-28T00:00:00+09:00",
+        "source": "existing_day_calendar_gaps"
+      },
+      {
+        "root_activity_id": "calendar:2026-09-28",
+        "start": "2026-09-28T00:00:00+09:00",
+        "end": "2026-09-29T00:00:00+09:00",
+        "source": "existing_day_calendar_gaps"
+      },
+      {
+        "root_activity_id": "calendar:2026-09-29",
+        "start": "2026-09-29T00:00:00+09:00",
+        "end": "2026-09-30T00:00:00+09:00",
+        "source": "existing_day_calendar_gaps"
+      },
+      {
+        "root_activity_id": "calendar:2026-09-30",
+        "start": "2026-09-30T00:00:00+09:00",
+        "end": "2026-10-01T00:00:00+09:00",
+        "source": "existing_day_calendar_gaps"
+      },
+      {
+        "root_activity_id": "calendar:2026-10-01",
+        "start": "2026-10-01T00:00:00+09:00",
+        "end": "2026-10-02T00:00:00+09:00",
+        "source": "existing_day_calendar_gaps"
+      },
+      {
+        "root_activity_id": "calendar:2026-10-02",
+        "start": "2026-10-02T00:00:00+09:00",
+        "end": "2026-10-03T00:00:00+09:00",
+        "source": "existing_day_calendar_gaps"
+      }
+    ],
+    "lineage": {},
+    "fixed": [],
+    "unresolved_dates": [],
+    "classifications": [],
+    "occupied_transfers": []
+  },
+  "routes": [
+    {
+      "travel_mode": "WALK",
+      "mode_reason": "historical_provider_observation",
+      "requested_at": "2026-09-24T11:43:03.114361+00:00",
+      "representative_departure_time": null,
+      "routing_preference": null,
+      "retrieved_at": "2026-09-24T11:43:03.670816+00:00",
+      "availability": "available",
+      "source_ref": "google_routes:compute_route_matrix",
+      "elements": [
+        {
+          "origin_place_id": "ChIJof1KZwCNGGARFfqGRkwb5tY",
+          "destination_place_id": "ChIJAQC0jKiMGGARsJFW3NLdod8",
+          "evidence_type": "provider_observed",
+          "derived_from_origin_place_id": null,
+          "derived_from_destination_place_id": null,
+          "status": "OK",
+          "condition": "ROUTE_EXISTS",
+          "status_state": "success",
+          "static_duration_seconds": 438,
+          "fallback_info": null,
+          "requested_at": "2026-09-24T11:43:03.114361Z",
+          "retrieved_at": "2026-09-24T11:43:03.670816Z",
+          "origin_index": 1,
+          "destination_index": 7,
+          "distance_meters": 494,
+          "duration_seconds": 438,
+          "availability": "available",
+          "unavailable_reason": null
+        }
+      ]
+    },
+    {
+      "travel_mode": "WALK",
+      "mode_reason": "historical_provider_observation",
+      "requested_at": "2026-09-24T11:43:03.674651+00:00",
+      "representative_departure_time": null,
+      "routing_preference": null,
+      "retrieved_at": "2026-09-24T11:43:04.236861+00:00",
+      "availability": "available",
+      "source_ref": "google_routes:compute_route_matrix",
+      "elements": [
+        {
+          "origin_place_id": "ChIJ5W-rtJOMGGARB-JFc6fs9c8",
+          "destination_place_id": "ChIJA5gBoXeNGGARJqJqceqLJiQ",
+          "evidence_type": "provider_observed",
+          "derived_from_origin_place_id": null,
+          "derived_from_destination_place_id": null,
+          "status": "OK",
+          "condition": "ROUTE_EXISTS",
+          "status_state": "success",
+          "static_duration_seconds": 1940,
+          "fallback_info": null,
+          "requested_at": "2026-09-24T11:43:03.674651Z",
+          "retrieved_at": "2026-09-24T11:43:04.236861Z",
+          "origin_index": 1,
+          "destination_index": 1,
+          "distance_meters": 2189,
+          "duration_seconds": 1940,
+          "availability": "available",
+          "unavailable_reason": null
+        }
+      ]
+    },
+    {
+      "travel_mode": "WALK",
+      "mode_reason": "historical_provider_observation",
+      "requested_at": "2026-09-24T11:43:02.578122+00:00",
+      "representative_departure_time": null,
+      "routing_preference": null,
+      "retrieved_at": "2026-09-24T11:43:03.114361+00:00",
+      "availability": "available",
+      "source_ref": "google_routes:compute_route_matrix",
+      "elements": [
+        {
+          "origin_place_id": "ChIJQ5Sa1PqJGGARUSaNKKOrMVg",
+          "destination_place_id": "ChIJCewJkL2LGGAR3Qmk0vCTGkg",
+          "evidence_type": "provider_observed",
+          "derived_from_origin_place_id": null,
+          "derived_from_destination_place_id": null,
+          "status": "OK",
+          "condition": "ROUTE_EXISTS",
+          "status_state": "success",
+          "static_duration_seconds": 656,
+          "fallback_info": null,
+          "requested_at": "2026-09-24T11:43:02.578122Z",
+          "retrieved_at": "2026-09-24T11:43:03.114361Z",
+          "origin_index": 1,
+          "destination_index": 12,
+          "distance_meters": 695,
+          "duration_seconds": 656,
+          "availability": "available",
+          "unavailable_reason": null
+        }
+      ]
+    },
+    {
+      "travel_mode": "WALK",
+      "mode_reason": "historical_provider_observation",
+      "requested_at": "2026-09-24T11:43:02.578122+00:00",
+      "representative_departure_time": null,
+      "routing_preference": null,
+      "retrieved_at": "2026-09-24T11:43:03.114361+00:00",
+      "availability": "available",
+      "source_ref": "google_routes:compute_route_matrix",
+      "elements": [
+        {
+          "origin_place_id": "ChIJEXVHr1eLGGARohlFCknjXwM",
+          "destination_place_id": "ChIJox7xbVuLGGARL7Zk-mP1JCw",
+          "evidence_type": "provider_observed",
+          "derived_from_origin_place_id": null,
+          "derived_from_destination_place_id": null,
+          "status": "OK",
+          "condition": "ROUTE_EXISTS",
+          "status_state": "success",
+          "static_duration_seconds": 738,
+          "fallback_info": null,
+          "requested_at": "2026-09-24T11:43:02.578122Z",
+          "retrieved_at": "2026-09-24T11:43:03.114361Z",
+          "origin_index": 0,
+          "destination_index": 8,
+          "distance_meters": 869,
+          "duration_seconds": 738,
+          "availability": "available",
+          "unavailable_reason": null
+        }
+      ]
+    },
+    {
+      "travel_mode": "WALK",
+      "mode_reason": "repair_bound_leg",
+      "requested_at": "2026-09-24T11:43:42.520080Z",
+      "purpose": "baseline",
+      "routing_preference": null,
+      "representative_departure_time": null,
+      "availability": "available",
+      "elements": [
+        {
+          "origin_place_id": "ChIJZRKFm-eJGGARglEoaF4NcC8",
+          "destination_place_id": "ChIJZcKAeACJGGARDLfJzIBD7Bg",
+          "evidence_type": "provider_observed",
+          "derived_from_origin_place_id": null,
+          "derived_from_destination_place_id": null,
+          "status": "OK",
+          "condition": "ROUTE_EXISTS",
+          "status_state": "success",
+          "static_duration_seconds": 1439,
+          "fallback_info": null,
+          "requested_at": "2026-09-24T11:43:42.520080Z",
+          "retrieved_at": "2026-09-24T11:43:42.834294Z",
+          "origin_index": 0,
+          "destination_index": 0,
+          "distance_meters": 1681,
+          "duration_seconds": 1439,
+          "availability": "available",
+          "unavailable_reason": null
+        }
+      ],
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-24T11:43:42.834294Z",
+      "source_ref": "google_routes:compute_route_matrix"
+    }
+  ],
+  "patches": [
+    {
+      "edits": [
+        {
+          "operation": "add",
+          "activity_id": null,
+          "date": "2026-10-01",
+          "place_id": "ChIJZcKAeACJGGARDLfJzIBD7Bg",
+          "start_time": "2026-10-01T13:45:00+09:00",
+          "end_time": "2026-10-01T15:15:00+09:00"
+        }
+      ]
+    },
+    {
+      "edits": []
+    },
+    {
+      "edits": []
+    }
+  ],
+  "final": {
+    "output_version": "itinerary_2",
+    "reference_recommendations": [],
+    "destination": "Tokyo, Japan",
+    "start_date": "2026-09-26",
+    "end_date": "2026-10-02",
+    "days": [
+      {
+        "date": "2026-09-26",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day1-ueshima",
+            "title": "Visit Ueshima Museum",
+            "place_name": "Ueshima Museum",
+            "source_place_id": "ChIJof1KZwCNGGARFfqGRkwb5tY",
+            "location": "Shibuya, Tokyo",
+            "start_time": "2026-09-26T11:15:00+09:00",
+            "end_time": "2026-09-26T12:45:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor museum visit; the supplied date-specific hours are 11:00\u201317:00."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day1-esp",
+            "title": "Visit ESP MUSEUM",
+            "place_name": "ESP MUSEUM",
+            "source_place_id": "ChIJAQC0jKiMGGARsJFW3NLdod8",
+            "location": "Shibuya, Tokyo",
+            "start_time": "2026-09-26T14:15:00+09:00",
+            "end_time": "2026-09-26T15:45:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor museum visit; the supplied date-specific hours are 11:00\u201319:00."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-27",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day2-minon",
+            "title": "Visit Min-on Music Museum",
+            "place_name": "Min-on Music Museum",
+            "source_place_id": "ChIJ5W-rtJOMGGARB-JFc6fs9c8",
+            "location": "Shinjuku, Tokyo",
+            "start_time": "2026-09-27T10:30:00+09:00",
+            "end_time": "2026-09-27T12:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "The supplied date-specific hours are 10:00\u201317:00."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day2-samurai",
+            "title": "Visit Samurai Museum TOKYO Shinjuku",
+            "place_name": "Samurai Museum TOKYO Shinjuku",
+            "source_place_id": "ChIJA5gBoXeNGGARJqJqceqLJiQ",
+            "location": "Shinjuku, Tokyo",
+            "start_time": "2026-09-27T13:30:00+09:00",
+            "end_time": "2026-09-27T15:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "The supplied date-specific hours are 09:00\u201318:00."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-28",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day3-metropolitan-building",
+            "title": "Explore the Tokyo Metropolitan Government Building",
+            "place_name": "Tokyo Metropolitan Government Building",
+            "source_place_id": "ChIJoTcat9SMGGAR6GGG8zdcZvE",
+            "location": "Nishishinjuku, Tokyo",
+            "start_time": "2026-09-28T10:00:00+09:00",
+            "end_time": "2026-09-28T11:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "The supplied weekday hours are 08:00\u201318:45; this is a general hours baseline, not a date-specific guarantee. Rain showers are forecast, so this indoor architectural stop suits the day's conditions."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-29",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day4-teamlab",
+            "title": "Explore teamLab Borderless",
+            "place_name": "teamLab Borderless: MORI Building DIGITAL ART MUSEUM",
+            "source_place_id": "ChIJQ5Sa1PqJGGARUSaNKKOrMVg",
+            "location": "Azabudai Hills, Minato City, Tokyo",
+            "start_time": "2026-09-29T10:30:00+09:00",
+            "end_time": "2026-09-29T13:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor visit; the supplied weekday hours are a regular weekly baseline of 08:30\u201321:00, not a date-specific guarantee."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day4-tokyo-tower",
+            "title": "Visit Tokyo Tower",
+            "place_name": "Tokyo Tower",
+            "source_place_id": "ChIJCewJkL2LGGAR3Qmk0vCTGkg",
+            "location": "Minato City, Tokyo",
+            "start_time": "2026-09-29T15:00:00+09:00",
+            "end_time": "2026-09-29T16:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "The supplied weekday hours are a regular weekly baseline of 09:00\u201323:00, not a date-specific guarantee. Leave a flexible interval between visits."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-30",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day5-ghibli",
+            "title": "Visit Ghibli Museum",
+            "place_name": "Ghibli Museum",
+            "source_place_id": "ChIJLYwD5TTuGGARBZKEP5BV4U0",
+            "location": "Mitaka, Tokyo",
+            "start_time": "2026-09-30T10:30:00+09:00",
+            "end_time": "2026-09-30T13:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "A longer, single-focus museum day. The supplied hours are 10:00\u201318:00; admission and ticket details are not established in the supplied evidence."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-01",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day6-small-worlds",
+            "title": "Explore small worlds",
+            "place_name": "small worlds",
+            "source_place_id": "ChIJZRKFm-eJGGARglEoaF4NcC8",
+            "location": "Ariake, Koto City, Tokyo",
+            "start_time": "2026-10-01T10:30:00+09:00",
+            "end_time": "2026-10-01T13:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor visit; the supplied hours are a regular weekly baseline of 09:00\u201319:00, not a date-specific guarantee. Rain showers are forecast."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "repair_r1_new_1",
+            "title": "Odaiba Retro Museum",
+            "place_name": "Odaiba Retro Museum",
+            "source_place_id": "ChIJZcKAeACJGGARDLfJzIBD7Bg",
+            "location": "Japan, \u3012135-0091 Tokyo, Minato City, Daiba, 1-ch\u014dme\u22126\u2212\uff11 \u30c7\u30c3\u30af\u30b9\u6771\u4eac\u30d3\u30fc\u30c1 \u30b7\u30fc\u30b5\u30a4\u30c9\u30e2\u30fc\u30eb 4\u968e",
+            "start_time": "2026-10-01T13:45:00+09:00",
+            "end_time": "2026-10-01T15:15:00+09:00",
+            "estimated_cost": null,
+            "notes": null
+          }
+        ]
+      },
+      {
+        "date": "2026-10-02",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day7-square-a",
+            "title": "Street-side architectural viewing at Shibuya Square A",
+            "place_name": "\u6e0b\u8c37\u30b9\u30af\u30a8\u30a2A",
+            "source_place_id": "ChIJEXVHr1eLGGARohlFCknjXwM",
+            "location": "Dogenzaka, Shibuya, Tokyo",
+            "start_time": "2026-10-02T10:30:00+09:00",
+            "end_time": "2026-10-02T11:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Plan for an exterior look only; visitor access and opening hours are not established in the supplied evidence. Light drizzle is forecast."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "day7-duplex",
+            "title": "Street-side architectural viewing at Shibuya Duplex B's",
+            "place_name": "Shibuya Duplex B's",
+            "source_place_id": "ChIJox7xbVuLGGARL7Zk-mP1JCw",
+            "location": "Shibuya, Tokyo",
+            "start_time": "2026-10-02T11:30:00+09:00",
+            "end_time": "2026-10-02T12:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Plan for an exterior look only; operational status, visitor access, and opening hours are not established in the supplied evidence."
+          }
+        ]
+      }
+    ]
+  }
+}

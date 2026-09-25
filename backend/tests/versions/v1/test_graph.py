@@ -71,6 +71,7 @@ def test_v1_graph_has_explicit_non_agentic_topology() -> None:
         "acquire_and_resolve_official_web",
         "generate_evidence_informed_itinerary",
         "validate_itinerary_dates",
+        "bind_actual_transfers",
         "discover_reference_recommendations",
         "__end__",
     }
@@ -83,7 +84,8 @@ def test_v1_graph_has_explicit_non_agentic_topology() -> None:
         ("extract_requirements", "validate_trip_dates"),
         ("generate_evidence_informed_itinerary", "validate_itinerary_dates"),
         ("resolve_destination", "acquire_candidate_funnel"),
-        ("validate_itinerary_dates", "discover_reference_recommendations"),
+        ("validate_itinerary_dates", "bind_actual_transfers"),
+        ("bind_actual_transfers", "discover_reference_recommendations"),
         ("discover_reference_recommendations", "__end__"),
         ("validate_trip_dates", "resolve_destination"),
     }
@@ -134,9 +136,9 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert "place_evidence" not in generation_prompt
     assert '"places"' in generation_prompt
     assert '"precipitation_probability_percent": 70' in generation_prompt
-    assert '"travel_mode": "WALK"' in generation_prompt
-    assert '"baseline"' in generation_prompt
-    assert '"non_walkable_pairs"' in generation_prompt
+    assert '"mode": "WALK"' in generation_prompt
+    assert '"directed_facts"' in generation_prompt
+    assert '"projection_version": "primary_mixed_routes_1"' in generation_prompt
     assert "provider_observed" in generation_system_prompt
     assert "mirrored_reverse_estimate" in generation_system_prompt
     assert "schedule the entire visit within them" in " ".join(generation_system_prompt.split())

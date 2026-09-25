@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from typing import cast
 from uuid import uuid4
 
-import openai
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, ValidationError
@@ -23,6 +22,7 @@ from backend.app.llm.azure_foundry.mapping import (
     FoundryMappingError,
     map_foundry_itinerary,
 )
+from backend.app.llm.azure_foundry.provider_diagnostics import failure_category, normalize
 from backend.app.llm.client import StructuredModelT, StructuredOutputError
 from backend.app.runtime.fingerprints import digest
 from backend.app.schemas.interpreted_requirements import InterpretationDraft
@@ -49,7 +49,7 @@ def requirement_wire_format():
     return {
         "type": "json_schema",
         "json_schema": {
-            "name": "PreferenceDraftV3",
+            "name": "PreferenceDraftV9",
             "strict": True,
             "schema": schema,
         },
@@ -119,7 +119,7 @@ class AzureFoundryStructuredLLMClient:
             "deployment": deployment,
             "api": "responses/v1",
             "max_retries": 0,
-            "contract": "requirement_draft_2",
+            "contract": "preference_draft_9",
         }
         self._chat_model = ChatOpenAI(
             model=deployment,
@@ -128,6 +128,13 @@ class AzureFoundryStructuredLLMClient:
             use_responses_api=True,
             max_retries=0,
         )
+
+    async def aclose(self):
+        """Release SDK clients when the application owns this adapter."""
+        try:
+            await self._chat_model.root_async_client.close()
+        finally:
+            self._chat_model.root_client.close()
 
     def capture_requirement_outcome(self, draft, error=None):
         call_id = draft._diagnostic_call_id
@@ -139,9 +146,18 @@ class AzureFoundryStructuredLLMClient:
                     "status": "validated" if error is None else type(error).__name__,
                 }
             )
-            self.requirement_capture.record(
-                call_id, "canonicalization", detail, secrets=self._capture_secrets
-            )
+            try:
+                saved = self.requirement_capture.record(
+                    call_id, "canonicalization", detail, secrets=self._capture_secrets
+                )
+                if saved is None:
+                    self.last_call_metadata.setdefault("secondary_errors", []).append(
+                        "capture_failure:unavailable"
+                    )
+            except Exception as exc:
+                self.last_call_metadata.setdefault("secondary_errors", []).append(
+                    "capture_failure:" + type(exc).__name__
+                )
 
     async def _interpret(self, system_prompt, user_prompt):
         call_id = uuid4().hex
@@ -151,17 +167,26 @@ class AzureFoundryStructuredLLMClient:
             "prompt_hash": digest(system_prompt),
             "schema_hash": digest(wire),
             "config_hash": digest(self._requirement_config),
-            "prompt_version": "preference_prompt_5",
-            "schema_version": "preference_draft_3",
+            "prompt_version": "preference_prompt_13",
+            "schema_version": "preference_draft_9",
             "config": self._requirement_config,
         }
-        self.last_call_metadata = {"call_id": call_id, **base}
+        self.last_call_metadata = {"call_id": call_id, **base, "secondary_errors": []}
+        diagnostics = normalize(secrets=self._capture_secrets)
 
         def capture(stage, payload):
             if self.requirement_capture:
-                self.requirement_capture.record(
-                    call_id, stage, {**base, **payload}, secrets=self._capture_secrets
-                )
+                try:
+                    saved = self.requirement_capture.record(
+                        call_id, stage, {**base, **payload, "provider_diagnostics": diagnostics},
+                        secrets=self._capture_secrets
+                    )
+                    if saved is None:
+                        self.last_call_metadata["secondary_errors"].append("capture_failure:unavailable")
+                except Exception as exc:
+                    self.last_call_metadata["secondary_errors"].append(
+                        "capture_failure:" + type(exc).__name__
+                    )
 
         stage = "transport"
         try:
@@ -181,6 +206,11 @@ class AzureFoundryStructuredLLMClient:
                 model_name=metadata.get("model_name"),
                 response_id=getattr(raw, "id", None),
             )
+            diagnostics = normalize(
+                metadata=metadata, content=content, usage=usage,
+                response_id=getattr(raw, "id", None), secrets=self._capture_secrets,
+            )
+            self.last_call_metadata["provider_diagnostics"] = diagnostics
             blocks = [{"type": "text", "text": content}] if isinstance(content, str) else content
             refusal = any(b.get("type") == "refusal" for b in blocks if isinstance(b, dict))
             capture(
@@ -210,7 +240,16 @@ class AzureFoundryStructuredLLMClient:
             if len(text) > 250000:
                 raise RequirementBoundaryError("response_resource_overflow", stage="json")
             stage = "json"
-            payload = json.loads(text, object_pairs_hook=_unique_object)
+            try:
+                payload = json.loads(text, object_pairs_hook=_unique_object)
+            except json.JSONDecodeError:
+                # Non-JSON prose is not a Gate classification; never inspect its meaning.
+                if text.strip() and not text.lstrip().startswith(("{", "[")):
+                    raise RequirementBoundaryError(
+                        "unstructured_requirement_response", stage="provider",
+                        category="provider_incomplete",
+                    ) from None
+                raise
             stage = "transport_dto"
             dto = FoundryInterpretationDTO.model_validate(payload)
             stage = "draft_domain"
@@ -219,6 +258,7 @@ class AzureFoundryStructuredLLMClient:
             capture("draft_validated", {"status": "validated"})
             return draft
         except RequirementBoundaryError as exc:
+            exc.provider_diagnostics = diagnostics
             capture(exc.stage, exc.as_dict())
             raise
         except (ValidationError, FoundryMappingError, json.JSONDecodeError) as exc:
@@ -228,24 +268,18 @@ class AzureFoundryStructuredLLMClient:
                 else ()
             )
             error = RequirementBoundaryError(
-                "invalid_requirement_response", stage=stage, errors=errors
+                "invalid_requirement_response", stage=stage, errors=errors,
+                provider_diagnostics=diagnostics,
             )
             capture(stage, error.as_dict())
             raise error from exc
         except Exception as exc:
-            category = (
-                "configuration_failure"
-                if isinstance(
-                    exc,
-                    (
-                        openai.BadRequestError,
-                        openai.AuthenticationError,
-                        openai.PermissionDeniedError,
-                    ),
-                )
-                else "transport_failure"
+            diagnostics = normalize(error=exc, secrets=self._capture_secrets)
+            self.last_call_metadata["provider_diagnostics"] = diagnostics
+            error = RequirementBoundaryError(
+                "requirement_provider_failed", stage=stage,
+                category=failure_category(diagnostics), provider_diagnostics=diagnostics,
             )
-            error = RequirementBoundaryError(type(exc).__name__, stage=stage, category=category)
             capture(stage, error.as_dict())
             raise error from exc
 
@@ -296,3 +330,30 @@ class AzureFoundryStructuredLLMClient:
     async def generate_primary_structured(self, *, generation_config, **kwargs):
         """Per-call settings, without mutating a shared client or other tasks."""
         return await self.generate_structured(**kwargs, _generation_config=generation_config)
+
+    async def generate_repair_structured(
+        self, *, system_prompt, user_prompt, output_tokens=None, usage_callback=None
+    ):
+        """Per-invocation V3 options and additive usage capture; primary stays unchanged."""
+        from backend.app.versions.v3.repair_budget import configured_policy
+        from backend.app.versions.v3.repair_models import RepairPatch
+        from backend.app.versions.v3.repair_projection import FoundryRepairPatchDTO
+
+        if output_tokens is None:
+            output_tokens = configured_policy().input.output_tokens
+        model = self._chat_model.with_structured_output(
+            FoundryRepairPatchDTO, method="json_schema", strict=True,
+            max_output_tokens=output_tokens,
+        )
+        try:
+            raw = await model.ainvoke(
+                [SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)],
+                **(
+                    {"config": {"callbacks": [usage_callback]}}
+                    if usage_callback is not None else {}
+                ),
+            )
+            dto = FoundryRepairPatchDTO.model_validate(raw)
+            return RepairPatch.model_validate(dto.model_dump())
+        except ValidationError as exc:
+            raise StructuredOutputError("Invalid Repair patch") from exc

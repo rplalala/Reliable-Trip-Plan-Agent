@@ -11,7 +11,16 @@ from backend.app.schemas.generation_diagnostics import (
 
 
 def observe_generation(
-    itinerary, requirements, *, reference_date, supplied_ids=None, related_requirement_ids=()
+    itinerary,
+    requirements,
+    *,
+    reference_date,
+    supplied_ids=None,
+    related_requirement_ids=(),
+    contract=None,
+    schedule=None,
+    places=(),
+    blank_policy=None,
 ):
     """Count only main visits; canonical mode requires the validated supply ledger.
 
@@ -19,6 +28,26 @@ def observe_generation(
     misses are observations, even when user pace or evidence justifies fewer visits.
     V0 name equality is a proxy, never canonical identity or semantic deduplication.
     """
+    from backend.app.policies.minimum_coverage import minimum_coverage
+
+    if schedule is None and contract is not None:
+        from backend.app.policies.itinerary_schedule import build_schedule
+
+        schedule = build_schedule(itinerary, contract, places)
+        from types import SimpleNamespace
+
+        from backend.app.policies.itinerary_schedule import prepare_blank_windows
+        from backend.app.runtime.config_loader import load_runtime_config
+
+        schedule = prepare_blank_windows(
+            itinerary,
+            SimpleNamespace(
+                schedule=schedule,
+                contract=contract,
+                places=places,
+            ),
+            blank_policy or load_runtime_config().v3_repair,
+        )
     canonical = supplied_ids is not None
     supplied = set(supplied_ids or ())
     by_date = {day.date: day for day in itinerary.days}
@@ -57,6 +86,9 @@ def observe_generation(
             if count > 5
             else "within_target"
         )
+        minimum, minimum_reason, minimum_refs = minimum_coverage(
+            day_date, count, unclassified, same_day=same_day, contract=contract, schedule=schedule
+        )
         rows.append(
             DayGenerationDiagnostics(
                 date=day_date,
@@ -74,6 +106,9 @@ def observe_generation(
                 unclassified_activity_count=unclassified,
                 target_status=status,
                 empty_day=not activities,
+                minimum_coverage=minimum,
+                minimum_coverage_reason=minimum_reason,
+                minimum_coverage_evidence=minimum_refs,
             )
         )
         day_date += timedelta(days=1)

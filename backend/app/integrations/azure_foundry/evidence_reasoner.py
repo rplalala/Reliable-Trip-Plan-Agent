@@ -223,15 +223,22 @@ class AzureFoundryEvidenceReasoner:
     ) -> None:
         self._deployment = deployment
         self._config = config
-        self._responses = (
-            responses_client
-            or AsyncOpenAI(
+        self._owned_client = None
+        if responses_client is None:
+            self._owned_client = AsyncOpenAI(
                 api_key=api_key,
                 base_url=endpoint,
                 max_retries=0,
                 timeout=config.timeout_seconds,
-            ).responses
+            )
+        self._responses = (
+            responses_client if responses_client is not None else self._owned_client.responses
         )
+
+    async def aclose(self):
+        """Only close an SDK client created by this adapter."""
+        if self._owned_client is not None:
+            await self._owned_client.close()
 
     async def reason(
         self,

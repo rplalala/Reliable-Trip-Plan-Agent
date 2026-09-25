@@ -1,5 +1,11 @@
 # V0 milestone checkpoints
 
+Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
+for current configuration, shared ownership and artifact-verified evidence. Earlier dated
+implementation/live statements below retain their original scope. V0 remains tool-free;
+V1/V2 do not run Repair; the product default remains V0. Provider recovery UI is offline-only.
+
+
 ## Latest accepted boundary - 2026-09-20
 
 V0 retains tool-free shared-input/output execution; the latest joint quality run did not rerun V0.
@@ -115,3 +121,26 @@ research behavior must remain stable for V0/V1 comparison:
 
 Necessary backward-compatible shared infrastructure changes are allowed only when
 they do not change V0 research behavior and all V0 regression tests continue to pass.
+
+
+## Compatible transfer output update (2026-09-25)
+
+The shared itinerary DTO now accepts optional `transfers` (missing defaults empty).
+Current V3 binds and presents verified/unknown per-leg route estimates and separate
+application reserves; V0-V2 do not fabricate transfers or acquire additional routes for
+this field. Primary model DTO/prompt, K, existing version entry points and product default
+are unchanged. The frontend can render this optional data when supplied; this does not
+implement the deferred Product V3/API selection or the whole frontend backlog.
+See [V3 design](v3_design.md#shared-output-and-frontend) and the
+[development verification record](v3_development.md#mixed-transport-and-joint-components-2026-09-25).
+This is shared output compatibility, not evidence of a V3-only quality gain or a re-freeze.
+
+
+### Post-milestone shared startup correction (2026-09-25)
+
+A fresh standard V0 CLI process failed before --help due to eager services package exports
+re-entering the partially initialized V0 graph. Lazy planning exports now preserve public imports
+without that cycle. Fresh-process --help regressions cover V0-V3. This is shared correctness,
+not a V3 mechanism benefit; previous milestones/live records are not rewritten. Shared prompt13
+also distinguishes party trip-budget totals from expense scope; explicit provider filtering has
+an independent public rewrite action. See shared_preference_input.md for boundaries and tests.

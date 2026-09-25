@@ -31,7 +31,9 @@ async def create_developer_planning_result(
             body.request,
             reference_date=body.reference_date,
         )
-    except (ClarificationRequired, RequirementBoundaryError) as exc:
+    except RequirementBoundaryError as exc:
+        raise HTTPException(status_code=502, detail=exc.as_dict()) from exc
+    except ClarificationRequired as exc:
         raise HTTPException(status_code=422, detail=exc.as_dict()) from exc
     except TripDatePolicyError as exc:
         raise HTTPException(

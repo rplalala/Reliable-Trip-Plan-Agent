@@ -123,6 +123,9 @@ def test_both_graphs_send_identical_shared_interpretation_and_canonical_context(
     first, second = FakeStructuredLLMClient([draft_for()]), FakeStructuredLLMClient([draft_for()])
 
     class ForbiddenEvidence:
+        request_deadline = None
+        _routes = None
+
         def __getattr__(self, name):
             raise AssertionError(f"No evidence allowed at shared boundary: {name}")
 
@@ -162,8 +165,10 @@ def test_grounded_conflict_preserves_form_and_stops_generation(field):
     before = request.model_dump()
     with pytest.raises(ClarificationRequired) as exc:
         asyncio.run(run_v0(request, client, reference_date=REF))
-    assert exc.value.code == "structured_input_conflict"
-    assert exc.value.conflicts[0]["source_refs"][0]["start"] == 0
+    assert exc.value.code == "preference_input_blocked"
+    assert exc.value.input_disposition == "REWRITE_REQUIRED"
+    assert exc.value.issues[0]["related_field"] == field
+    assert exc.value.issues[0]["source_refs"][0]["start"] == 0
     assert before == request.model_dump() and len(client.calls) == 1
 
 

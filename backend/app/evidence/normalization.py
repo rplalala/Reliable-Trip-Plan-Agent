@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping, Sequence
 from datetime import UTC, date, datetime, timedelta
-from decimal import Decimal, InvalidOperation
+from decimal import ROUND_CEILING, Decimal, InvalidOperation
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from backend.app.evidence.models import (
@@ -104,6 +104,25 @@ def _opening_hours(
 
     descriptions = source.get("weekdayDescriptions", [])
     return OpeningHoursEvidence(
+        periods_state=(
+            "missing"
+            if "periods" not in source
+            else "present"
+            if isinstance(source["periods"], list)
+            and all(isinstance(p, dict) for p in source["periods"])
+            else "invalid"
+        ),
+        periods=source.get("periods")
+        if isinstance(source.get("periods"), list)
+        and all(isinstance(p, dict) for p in source["periods"])
+        else None,
+        special_days=[
+            d
+            for row in (
+                source.get("specialDays", []) if isinstance(source.get("specialDays"), list) else []
+            )
+            if isinstance(row, dict) and (d := _display_date(row.get("date")))
+        ],
         applicability=applicability,
         valid_from=valid_window[0] if valid_window else None,
         valid_through=valid_window[1] if valid_window else None,
@@ -169,6 +188,7 @@ def normalize_place_details(
         primary_type=details.primary_type or candidate.primary_type,
         business_status=details.business_status or candidate.business_status,
         timezone_id=details.time_zone,
+        requested_at=_parse_datetime(details.requested_at or details.retrieved_at),
         opening_hours=current_hours or regular_hours,
         current_opening_hours=current_hours,
         regular_opening_hours=regular_hours,
@@ -292,8 +312,11 @@ def _duration_seconds(value: object) -> int | None:
     if not isinstance(value, str) or not value.endswith("s"):
         return None
     try:
-        return max(0, round(float(value[:-1])))
-    except ValueError:
+        seconds = Decimal(value[:-1])
+        if not seconds.is_finite() or seconds < 0:
+            return None
+        return int(seconds.to_integral_value(rounding=ROUND_CEILING))
+    except (ValueError, InvalidOperation):
         return None
 
 
@@ -322,20 +345,50 @@ def normalize_routes(
         if not 0 <= destination_index < len(request.destinations):
             continue
         condition = raw.get("condition") if isinstance(raw.get("condition"), str) else None
-        exists = condition == "ROUTE_EXISTS"
+        status = raw.get("status")
+        status_state = (
+            "missing"
+            if "status" not in raw
+            else "success"
+            if isinstance(status, Mapping)
+            and type(status.get("code", 0)) is int
+            and status.get("code", 0) == 0
+            else "error"
+            if isinstance(status, Mapping) and type(status.get("code")) is int
+            else "invalid"
+        )
+        duration = _duration_seconds(raw.get("duration"))
+        exists = condition == "ROUTE_EXISTS" and status_state == "success" and duration is not None
         elements.append(
             RouteElementEvidence(
                 origin_place_id=request.origins[origin_index].place_id,
                 destination_place_id=request.destinations[destination_index].place_id,
                 status=_status_text(raw.get("status")),
                 condition=condition,
+                status_state=status_state,
+                unavailable_reason=None
+                if exists
+                else f"provider_status_{status_state}"
+                if status_state != "success"
+                else "invalid_or_missing_duration"
+                if duration is None
+                else condition or "missing_condition",
+                requested_at=_parse_datetime(dto.requested_at),
+                retrieved_at=_retrieved_at(dto.retrieved_at),
+                origin_index=origin_index,
+                destination_index=destination_index,
+                static_duration_seconds=_duration_seconds(raw.get("staticDuration")),
+                fallback_info=raw.get("fallbackInfo")
+                if isinstance(raw.get("fallbackInfo"), dict)
+                else None,
                 distance_meters=(
                     int(raw["distanceMeters"])
                     if isinstance(raw.get("distanceMeters"), int)
                     and not isinstance(raw.get("distanceMeters"), bool)
+                    and raw["distanceMeters"] >= 0
                     else None
                 ),
-                duration_seconds=_duration_seconds(raw.get("duration")),
+                duration_seconds=duration,
                 availability=(
                     EvidenceAvailability.AVAILABLE if exists else EvidenceAvailability.UNAVAILABLE
                 ),
@@ -350,6 +403,7 @@ def normalize_routes(
         availability = EvidenceAvailability.AVAILABLE
     return RouteEvidence(
         travel_mode=request.travel_mode,
+        requested_at=_parse_datetime(dto.requested_at),
         mode_reason=mode_reason,
         purpose=purpose,
         routing_preference=request.routing_preference,

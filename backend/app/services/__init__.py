@@ -4,12 +4,6 @@ from backend.app.services.evidence_acquisition import (
     NoViableCandidatesError,
     V1EvidenceAcquisitionService,
 )
-from backend.app.services.planning import (
-    DeveloperPlanningService,
-    PlanningFailedError,
-    PlanningNeedsClarificationError,
-    PlanningService,
-)
 
 __all__ = [
     "DeveloperPlanningService",
@@ -19,3 +13,14 @@ __all__ = [
     "PlanningService",
     "V1EvidenceAcquisitionService",
 ]
+
+
+def __getattr__(name):
+    """Load planner exports only on demand; leaf services must not import graphs."""
+    if name in {
+        "DeveloperPlanningService", "PlanningFailedError",
+        "PlanningNeedsClarificationError", "PlanningService",
+    }:
+        from backend.app.services import planning
+        return getattr(planning, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

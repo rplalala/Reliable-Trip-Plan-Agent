@@ -12,9 +12,10 @@ import type { ProductPlanningInput } from "../types";
 interface PlanningFormProps {
   isSubmitting: boolean;
   onSubmit: (input: ProductPlanningInput) => void;
+  onEdit?: () => void;
 }
 
-export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
+export function PlanningForm({ isSubmitting, onSubmit, onEdit }: PlanningFormProps) {
   const [dateWindow, setDateWindow] = useState<TripDateWindow | null>(null);
   const [dateError, setDateError] = useState(false);
   useEffect(() => {
@@ -88,7 +89,7 @@ export function PlanningForm({ isSubmitting, onSubmit }: PlanningFormProps) {
   }
 
   return (
-    <form className="planning-form" onSubmit={handleSubmit}>
+    <form className="planning-form" onSubmit={handleSubmit} onChange={onEdit}>
       <div className="product-form-grid">
         <label className="field-wide">
           Destination

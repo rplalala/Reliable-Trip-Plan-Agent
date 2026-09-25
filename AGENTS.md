@@ -91,6 +91,19 @@ For every meaningful development task:
    - recommended next step.
 7. Do not start the next stage without my approval.
 
+### Self-contained documentation update reports
+
+When updating project documentation, also include a brief, self-contained Chinese summary of
+the updated content in the final chat response. The user forwards these responses to ChatGPT
+on the web, where local repository links and files are not available.
+
+- Explain the substantive changes, current status, important boundaries and remaining limitations.
+- When documenting validation, summarize the actual test sequence, initial failures, corrections
+  and retest outcomes at a level sufficient to understand the result without opening the file.
+- Local document links are supplementary references, not a substitute for this summary.
+- Do not require the user to upload the updated document merely to understand the report.
+- Keep the summary concise; do not reproduce the entire document or unrelated project history.
+
 ## Git Commit Policy
 
 Only create commits when I explicitly ask.

@@ -219,6 +219,10 @@ def make_revised_extraction(
         for i, e in enumerate(experience)
     )
     return InterpretationDraft(
+        # Synthetic current gate assessment for this offline fixture.
+        preference_input_assessment={
+            "input_disposition": "VALID", "safety_disposition": "CLEAR", "issues": []
+        },
         named_places=tuple(
             NamedRequirementDraft(
                 place_text=n.place_text,

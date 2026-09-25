@@ -93,8 +93,22 @@ def build_tools_graph(
     reference_service: ReferenceDiscoveryService | None = None,
     discovery_extension=None,
     runtime_config=None,
+    post_primary=None,
+    reference_node=None,
+    state_schema=V1State,
+    graph_name="v1",
 ) -> CompiledStateGraph:
     """Build the fixed V1 graph with one bounded official-Web step."""
+
+    from backend.app.runtime.config_loader import load_runtime_config
+    from backend.app.services.initial_routes import InitialRoutes
+
+    initial_routes = InitialRoutes(evidence_service, runtime_config or load_runtime_config())
+    if post_primary is not None:
+        repair_timing = initial_routes.config.v3_repair.timing
+        initial_routes.work.downstream_reserve = (
+            repair_timing.minimum_model_seconds + repair_timing.recheck_reserve_seconds
+        )
 
     async def extract_requirements(state: V1State) -> dict[str, object]:
         try:
@@ -174,7 +188,7 @@ def build_tools_graph(
     async def acquire_routes(state: V1State) -> dict[str, object]:
         mode = select_transport_mode_from_intent(state["transport_preference"])
         tracer.event("route_matrix_started", mode.model_dump(mode="json"))
-        routes = await evidence_service.acquire_routes(
+        routes = await initial_routes.prepare(
             places=state["place_evidence"],
             mode=mode,
             requirements=state["requirements"],
@@ -317,6 +331,7 @@ def build_tools_graph(
             places=state["place_evidence"],
             weather=state["weather_evidence"],
             routes=state["route_evidence"],
+            transport_policy=initial_routes.policy,
             requirement_conflicts=state["selection_conflicts"],
             official_evidence=state.get("official_planner_evidence"),
         )
@@ -386,16 +401,30 @@ def build_tools_graph(
         )
         tracer.event("itinerary_dates_validated")
         diagnostics = observe_generation(
-            state["itinerary"], state["requirements"],
+            state["itinerary"],
+            state["requirements"],
             reference_date=state["reference_date"],
+            contract=state["interpreted_requirements"],
+            blank_policy=runtime_config.v3_repair if runtime_config else None,
+            places=state["place_evidence"],
             supplied_ids=state["review_selection"].policy_result.selected_place_ids,
             related_requirement_ids=tuple(
-                r.requirement_id
-                for r in state["interpreted_requirements"].semantic_requirements
+                r.requirement_id for r in state["interpreted_requirements"].semantic_requirements
             ),
         )
         tracer.event("generation_diagnostics", diagnostics.model_dump(mode="json"))
         return {"generation_diagnostics": diagnostics}
+
+    async def bind_actual_transfers(state):
+        itinerary, routes = await initial_routes.bind(
+            state["itinerary"],
+            state["interpreted_requirements"],
+            state["place_evidence"],
+            state["route_evidence"],
+            state["transport_mode"],
+        )
+        tracer.event("initial_transfer_binding", itinerary.route_diagnostics)
+        return {"itinerary": itinerary, "route_evidence": routes}
 
     async def discover_reference_recommendations(state: V1State) -> dict[str, object]:
         itinerary = state["itinerary"]
@@ -438,7 +467,7 @@ def build_tools_graph(
         )
         return {"itinerary": itinerary, **updates}
 
-    graph_builder = StateGraph(V1State)
+    graph_builder = StateGraph(state_schema)
     graph_builder.add_node("extract_requirements", extract_requirements)
     graph_builder.add_node("validate_trip_dates", validate_trip_dates)
     graph_builder.add_node("resolve_destination", resolve_destination)
@@ -450,7 +479,10 @@ def build_tools_graph(
         "generate_evidence_informed_itinerary", generate_evidence_informed_itinerary
     )
     graph_builder.add_node("validate_itinerary_dates", validate_itinerary_date_node)
-    graph_builder.add_node("discover_reference_recommendations", discover_reference_recommendations)
+    graph_builder.add_node("bind_actual_transfers", bind_actual_transfers)
+    graph_builder.add_node(
+        "discover_reference_recommendations", reference_node or discover_reference_recommendations
+    )
     graph_builder.add_edge(START, "extract_requirements")
     graph_builder.add_edge("extract_requirements", "validate_trip_dates")
     graph_builder.add_edge("validate_trip_dates", "resolve_destination")
@@ -462,9 +494,15 @@ def build_tools_graph(
         "acquire_and_resolve_official_web", "generate_evidence_informed_itinerary"
     )
     graph_builder.add_edge("generate_evidence_informed_itinerary", "validate_itinerary_dates")
-    graph_builder.add_edge("validate_itinerary_dates", "discover_reference_recommendations")
+    graph_builder.add_edge("validate_itinerary_dates", "bind_actual_transfers")
+    if post_primary is None:
+        graph_builder.add_edge("bind_actual_transfers", "discover_reference_recommendations")
+    else:
+        graph_builder.add_node("post_primary", post_primary)
+        graph_builder.add_edge("bind_actual_transfers", "post_primary")
+        graph_builder.add_edge("post_primary", "discover_reference_recommendations")
     graph_builder.add_edge("discover_reference_recommendations", END)
-    return graph_builder.compile(name="v1")
+    return graph_builder.compile(name=graph_name)
 
 
 def build_v1_graph(llm_client, evidence_service, tracer, **kwargs):

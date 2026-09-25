@@ -1,0 +1,203 @@
+{
+  "provenance": {
+    "source": "logs/shared_preference_gate_remaining_8case_20260925/03_cross_city_scope/03_cross_city_scope.json",
+    "sha256": "0cb306c2942fc5cdd32daeb587d9656d2ed0035497cf5a88bd4ab2409a64260c",
+    "status": "historical semantic mismatch; structurally valid output, not corrected"
+  },
+  "input": {
+    "input_version": "planning_request_2",
+    "destination": "Paris, France",
+    "start_date": "2026-09-26",
+    "end_date": "2026-09-28",
+    "traveler_count": 2,
+    "budget": {
+      "amount": "1000",
+      "currency": "EUR"
+    },
+    "additional_preferences": "I also want to spend one full day sightseeing in London.",
+    "request_id": null
+  },
+  "frozen_expected": {
+    "expected_input": "CLARIFICATION_REQUIRED",
+    "expected_safety": "CLEAR",
+    "expected_issue_types": [
+      "unsupported_request_scope"
+    ],
+    "expected_source_quotes": [
+      "I also want to spend one full day sightseeing in London."
+    ],
+    "expected_related_field": null,
+    "expected_operational_conflict_index": null
+  },
+  "raw_model_response": [
+    {
+      "text": "{\n  \"preference_input_assessment\": {\n    \"input_disposition\": \"REWRITE_REQUIRED\",\n    \"safety_disposition\": \"CLEAR\",\n    \"issues\": [\n      {\n        \"issue_type\": \"destination_scope_conflict\",\n        \"source_refs\": [\n          {\n            \"quote\": \"I also want to spend one full day sightseeing in London.\",\n            \"occurrence\": 0\n          }\n        ],\n        \"quote_status\": \"located\",\n        \"related_field\": \"destination\",\n        \"operational_conflict_index\": null,\n        \"scope\": \"whole-trip physical visit to London\"\n      }\n    ]\n  },\n  \"visit_requirements\": [],\n  \"time_protections\": [],\n  \"operational_conflicts\": [],\n  \"named_places\": [\n    {\n      \"place_text\": \"London\",\n      \"inclusion\": \"REQUIRED\",\n      \"source_refs\": [\n        {\n          \"quote\": \"I also want to spend one full day sightseeing in London.\",\n          \"occurrence\": 0\n        }\n      ]\n    }\n  ],\n  \"requested_place_information\": [],\n  \"transport_preference\": null,\n  \"semantic_requirements\": [\n    {\n      \"local_key\": \"full_day_sightseeing\",\n      \"normalized_text\": \"Spend one full day sightseeing in London.\",\n      \"kind\": \"goal\",\n      \"polarity\": \"favor\",\n      \"strength\": \"medium\",\n      \"scope\": \"itinerary_style\",\n      \"subject_target\": {\n        \"kind\": \"party\"\n      },\n      \"source_refs\": [\n        {\n          \"quote\": \"I also want to spend one full day sightseeing in London.\",\n          \"occurrence\": 0\n        }\n      ]\n    }\n  ],\n  \"subjects\": [],\n  \"discovery_intents\": [],\n  \"experience_evidence_requests\": [],\n  \"extraction_issues\": [],\n  \"overflow\": false\n}",
+      "usage": {
+        "input_tokens": 6631,
+        "output_tokens": 878,
+        "total_tokens": 7509,
+        "input_token_details": {
+          "cache_creation": 120,
+          "cache_read": 6508
+        },
+        "output_token_details": {
+          "reasoning": 474
+        }
+      },
+      "response_id": "resp_0a2371d5c1f6c81b006ab5df62380c81979d9c5131bfed4ad6"
+    }
+  ],
+  "strict_parsed_dto": {
+    "preference_input_assessment": {
+      "input_disposition": "REWRITE_REQUIRED",
+      "safety_disposition": "CLEAR",
+      "issues": [
+        {
+          "issue_type": "destination_scope_conflict",
+          "source_refs": [
+            {
+              "quote": "I also want to spend one full day sightseeing in London.",
+              "occurrence": 0
+            }
+          ],
+          "quote_status": "located",
+          "related_field": "destination",
+          "operational_conflict_index": null,
+          "scope": "whole-trip physical visit to London"
+        }
+      ]
+    },
+    "visit_requirements": [],
+    "time_protections": [],
+    "operational_conflicts": [],
+    "named_places": [
+      {
+        "place_text": "London",
+        "inclusion": "REQUIRED",
+        "source_refs": [
+          {
+            "quote": "I also want to spend one full day sightseeing in London.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "local_key": "full_day_sightseeing",
+        "normalized_text": "Spend one full day sightseeing in London.",
+        "kind": "goal",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "itinerary_style",
+        "subject_target": {
+          "kind": "party"
+        },
+        "source_refs": [
+          {
+            "quote": "I also want to spend one full day sightseeing in London.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "subjects": [],
+    "discovery_intents": [],
+    "experience_evidence_requests": [],
+    "extraction_issues": [],
+    "overflow": false
+  },
+  "domain_parsed_dto": {
+    "preference_input_assessment": {
+      "input_disposition": "REWRITE_REQUIRED",
+      "safety_disposition": "CLEAR",
+      "issues": [
+        {
+          "issue_type": "destination_scope_conflict",
+          "source_refs": [
+            {
+              "quote": "I also want to spend one full day sightseeing in London.",
+              "occurrence": 0
+            }
+          ],
+          "quote_status": "located",
+          "related_field": "destination",
+          "operational_conflict_index": null,
+          "scope": "whole-trip physical visit to London"
+        }
+      ]
+    },
+    "visit_requirements": [],
+    "time_protections": [],
+    "operational_conflicts": [],
+    "named_places": [
+      {
+        "place_text": "London",
+        "inclusion": "REQUIRED",
+        "source_refs": [
+          {
+            "quote": "I also want to spend one full day sightseeing in London.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "local_key": "full_day_sightseeing",
+        "normalized_text": "Spend one full day sightseeing in London.",
+        "kind": "goal",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "itinerary_style",
+        "subject_target": {
+          "kind": "party"
+        },
+        "source_refs": [
+          {
+            "quote": "I also want to spend one full day sightseeing in London.",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "subjects": [],
+    "discovery_intents": [],
+    "experience_evidence_requests": [],
+    "extraction_issues": [],
+    "overflow": false
+  },
+  "application_outcome": {
+    "status": "clarification_required",
+    "category": "USER_INPUT_ISSUE",
+    "code": "preference_input_blocked",
+    "assessment_version": "preference_input_2",
+    "input_disposition": "REWRITE_REQUIRED",
+    "safety_disposition": "CLEAR",
+    "issues": [
+      {
+        "issue_type": "destination_scope_conflict",
+        "source_refs": [
+          {
+            "quote": "I also want to spend one full day sightseeing in London.",
+            "occurrence": 0,
+            "start": 0,
+            "end": 56,
+            "match_mode": "exact"
+          }
+        ],
+        "quote_status": "located",
+        "related_field": "destination",
+        "current_value": "Paris, France",
+        "reason": "This preference requests a physical visit outside the stated trip scope.",
+        "action": "Update the destination or revise the requested visit.",
+        "scope": "whole-trip physical visit to London",
+        "basis_refs": []
+      }
+    ]
+  }
+}

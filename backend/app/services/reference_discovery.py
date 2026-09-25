@@ -95,7 +95,16 @@ class ReferenceDiscoveryService:
         self.provider, self.cache, self.config = provider, cache, config
         self._failed_keys: set[tuple] = set()
 
-    async def discover(self, primary, places, supplied_ids, excluded_ids=(), known_places=()):
+    async def discover(
+        self,
+        primary,
+        places,
+        supplied_ids,
+        excluded_ids=(),
+        known_places=(),
+        *,
+        request_deadline=None,
+    ):
         diagnostics = {
             "policy_version": self.config.policy_version,
             "status": "empty",
@@ -111,6 +120,12 @@ class ReferenceDiscoveryService:
         }
         result = ReferenceDiscoveryResult(primary, diagnostics=diagnostics)
         started = asyncio.get_running_loop().time()
+        deadline = started + self.config.deadline_seconds
+        if request_deadline is not None:
+            deadline = min(deadline, request_deadline)
+        if deadline <= started:
+            diagnostics.update(status="request_deadline", elapsed_seconds=0, reference_count=0)
+            return result
         try:
             await self._discover(
                 result,
@@ -118,7 +133,7 @@ class ReferenceDiscoveryService:
                 supplied_ids,
                 excluded_ids,
                 known_places,
-                started + self.config.deadline_seconds,
+                deadline,
             )
         except Exception as exc:
             # Cancellation is a BaseException and deliberately propagates to the caller.

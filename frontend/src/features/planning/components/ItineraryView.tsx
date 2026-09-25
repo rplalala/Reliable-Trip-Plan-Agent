@@ -1,4 +1,22 @@
-import type { Activity, Itinerary } from "../types";
+import { Fragment } from "react";
+import type { Activity, Itinerary, Transfer, MinimumDailyCoverage } from "../types";
+
+function TransferCard({ transfer }: { transfer: Transfer }) {
+  const label = { WALK: "Walk", TRANSIT: "Public transport", DRIVE: "Car transport" }[transfer.mode];
+  return (
+    <aside className="activity-card" aria-label="Transfer">
+      <p>{label}: {transfer.provider_duration_seconds === null ? "Time unknown" :
+        `about ${Math.ceil(transfer.provider_duration_seconds / 60)} min`}
+        {" · "}{transfer.distance_meters === null ? "Distance unknown" :
+          `${(transfer.distance_meters / 1000).toFixed(1)} km`}</p>
+      {transfer.reserve_seconds > 0 && <p>Allow an additional {Math.ceil(transfer.reserve_seconds / 60)} min {transfer.mode === "DRIVE" ? "for pickup/drop-off." : "as a conservative scheduling reserve; route unverified."}</p>}
+      <p>{transfer.validation_state === "CONFIRMED" ? "Transfer conflict remains." :
+        transfer.validation_state === "UNKNOWN" ? "Transfer feasibility is unverified." :
+          "Based on the adopted route estimate; not a guarantee."}</p>
+      {transfer.unknowns.map((value, index) => <p key={index}>{value}</p>)}
+    </aside>
+  );
+}
 
 function formatTime(value: string): string {
   const match = value.match(/T(\d{2}):(\d{2})/);
@@ -26,7 +44,9 @@ function ActivityCard({ activity }: { activity: Activity }) {
   );
 }
 
-export function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
+export function ItineraryView({ itinerary, minimumCoverage = [] }: {
+  itinerary: Itinerary; minimumCoverage?: MinimumDailyCoverage[];
+}) {
   return (
     <section className="itinerary" aria-labelledby="itinerary-title">
       <header className="itinerary-header">
@@ -38,6 +58,15 @@ export function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
           {itinerary.start_date} to {itinerary.end_date}
         </p>
       </header>
+      {minimumCoverage.filter(row => row.status !== "satisfied").map(row => (
+        <p key={row.date} role={row.status === "missing" ? "status" : undefined}>
+          {row.date}: {row.status === "missing"
+            ? "Minimum daily coverage remains unmet: no countable main visit was arranged."
+            : row.status === "exempt"
+              ? "Exempt from minimum sightseeing coverage because of a fixed user commitment."
+              : "Minimum daily coverage could not be fully assessed."}
+        </p>
+      ))}
       <div className="itinerary-days">
         {itinerary.days.map((day, index) => (
           <section className="itinerary-day" key={day.date}>
@@ -48,7 +77,11 @@ export function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
             <div className="activity-list">
               {day.activities.length > 0 ? (
                 day.activities.map((activity) => (
-                  <ActivityCard activity={activity} key={activity.activity_id} />
+                  <Fragment key={activity.activity_id}>
+                    {(itinerary.transfers ?? []).filter(t => t.to_activity_id === activity.activity_id)
+                      .map(t => <TransferCard key={`${t.from_activity_id}:${t.to_activity_id}`} transfer={t} />)}
+                    <ActivityCard activity={activity} />
+                  </Fragment>
                 ))
               ) : (
                 <p className="empty-day">No scheduled activities.</p>

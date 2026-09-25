@@ -1,13 +1,36 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-09-22.
+## Final engineering checkpoint — 2026-09-25
+
+Current closeout status: **V3 ENGINEERING CLOSED — FINAL ENGINEERING CHECKPOINT RECORDED**. The [closeout record](docs/v3_closeout.md) supersedes
+earlier current-state claims below; dated checkpoints remain historical. Shared mixed transport,
+five-round Repair, minimum coverage, same-round component partial adoption and two final TRANSIT
+legs have artifact-confirmed bounded live observations. Prompt13 budget scope and the latest
+content-filter UI mapping remain offline-only. Benchmark Frozen: NO; Formal Evaluation: NOT STARTED.
+
+
+Current source of truth. Updated 2026-09-25.
 
 ## Purpose and implemented scope
 
 An LLM-Based Travel Planning System for Feasible and Reliable Itinerary Generation studies a
 sequence of independently runnable mechanisms: V0 plain LLM, V1 external information/tools,
-V2 RAG discovery, and future V3 validation/targeted repair/re-validation. V0/V1/V2 runners exist;
-V3 is not implemented. Current responsibility is engineering design, implementation and development
+V2 RAG discovery, and V3 validation/targeted repair/re-validation. All four runners exist;
+V3 has offline-tested structured findings, a read-only validator, bounded feedback-driven repair,
+request resource assembly and final-primary Nearby wiring. The A/B/C checkpoints additionally
+cover elastic time/real adjacency, conditional coverage and adjacent moves, and evidence-scoped
+operating/transfer repair; these changes are implemented + offline-validated only. See the latest
+checkpoint in docs/v3_development.md for supported evidence and limitations. Historical development
+live records remain separate and do not validate these later corrections retroactively.
+Google API evidence adoption has bounded live evidence from run
+29b2a5f7-c6fa-45b8-9eba-31b9e89e3ea4: ten final opening checks and five WALK transfers passed;
+one quantity addition was accepted, followed by two empty patches. This did not exercise C conflict
+repair or establish overall trip quality. The subsequent material-feedback correction has offline validation and bounded first-round
+live evidence from 4b0b018e-92ae-4563-a401-83f303d8c9cb (two additions, complete in one round): no-op/no-progress reconsiders target opportunities, rotates presentations,
+and skips semantically unchanged model input. It preserves the latest adopted draft and all limits.
+The separately saved ABC run 759ee785-05c6-44e6-9ef7-9a812a6e21bb retains its original evidence.
+See the final v3_design checkpoint for supported boundaries, test chronology and sizing.
+Current responsibility is engineering design, implementation and development
 validation, not formal benchmark comparison, thesis writing or final research conclusions.
 
 ## Current accepted foundation
@@ -126,8 +149,10 @@ establishment tolerance is 10 seconds; SQL60/RAG360 and the explicit development
 boundary remain unchanged. This is not a SQL performance fix or new live acceptance.
 
 V3 is documented as explicit post-generation feasibility validation, structured findings,
-targeted repair and re-validation. Its runtime, schemas, repair loops and runner are not
-implemented. Shared baseline fixes are not V3 contributions. Future evaluation must use
+targeted repair and re-validation. Its Step 1 findings schema and partial read-only validator
+are now implemented, along with the subsequent single-round repair service and independent
+graph/runner wiring. See the later Step 3 checkpoint for the offline integration boundary.
+Shared baseline fixes are not V3 contributions. Future evaluation must use
 matched shared checkpoints; historical Tokyo, Sydney and London captures are unchanged.
 
 ## Shared Weather/date checkpoint (2026-09-22)
@@ -167,3 +192,286 @@ was initially stopped; that context does not change the recorded pre-connection 
 No confirmed correctness blocker was found in this narrow review. The shared migration may close
 with bounded development-live evidence; current work is Git grouping approval, not another live
 or V3 implementation. Generation target counts are not itinerary-quality acceptance rates.
+
+## V3 Step 1 offline checkpoint (2026-09-22)
+
+The subsequent explicitly authorized task implements only `v3_validation_1` findings,
+separate observations/improvement targets, and `versions/v3/validation.py::validate_draft`.
+Shared schema/source/date checks remain preconditions. Cross-activity overlap and resolved
+named REQUIRED/EXCLUDED conflicts can be confirmed. Default counts and repeated identities
+are review findings; visitor access, route feasibility and verified total costs remain UNKNOWN.
+Date-specific effective opening mismatches are reviewable, not confirmed visit prohibitions,
+because the current Activity contract does not bind indoor/exterior visit mode.
+
+The focused offline regression passed 154 tests, including 55 new V3 cases and relevant
+shared/V0/V1/V2 checks. Ruff passed. No external services, database acquisition or live run.
+The existing primary serializer/offline tokenizer measured synthetic inputs at 43,337,
+106,130 and 131,988 tokens; this does not validate a future Repair payload. Full execution
+ceilings, acceptance rules, ledger accounting and sizing limits are in `docs/v3_development.md`.
+
+No graph, runner, Repair LLM or candidate/route acquisition is connected. Initial generation
+prompts, K, budgets, Weather, SQL and V0/V1/V2 execution paths are unchanged. Step 1 completion
+is not V3 milestone completion or a freeze. Next repair integration requires user approval.
+The earlier Weather/date pending and Git-grouping paragraphs are historical checkpoints;
+the accepted shared state is implemented + bounded development-live-validated, as recorded
+in the later Weather/date closeout and the three committed shared-checkpoint changes.
+
+## V3 Step 2 standalone checkpoint
+
+The separately approved repair service is implemented with injected collaborators only.
+It provides explicit operation/duration permissions, qualified candidate preparation,
+original/repair/final identity ledgers, one strict Repair model call, bounded real input
+serialization, directional transition evidence, atomic acceptance and reuse of the same
+validator. Partial improvement remains distinct from resolved targets; initial observations,
+augmented-evidence reassessment and proposed findings are separately preserved.
+
+Acquisition limits are repair-local; optional failures/exhaustion do not prevent feasible
+retiming with retained material. Stage/request deadlines, cancellation and zero retries are
+enforced. No primary prompt/K/shared acquisition budget, Weather or SQL behavior changed.
+New WALK temporal evidence, visitor/indoor-access semantics and verified total costs remain
+unsupported/UNKNOWN. Complex inputs can legitimately exceed 64k and skip repair.
+
+Affected offline regression:165 passed after a Windows event-loop guard-test correction;
+subsequent V3-specific tests:104 passed. Actual Repair sizing:3,688 and10,817 tokens fit;
+118,145 and76,705-token synthetic cases were rejected. The50-edit output example is2,956
+tokens, not a model completion guarantee. Full chronological results/limits are in
+`docs/v3_development.md`; primary sizing is not relabeled as Repair sizing.
+
+No V3 graph, runner, runtime lifecycle or final Nearby chain is connected, and no live was
+run. Those integration steps and a later live run need separate authorization. This is not
+a complete V3 milestone, formal evaluation, production acceptance or version freeze.
+
+
+## V3 Step 3 offline wiring checkpoint
+
+The separately authorized integration now provides scripts/run_v3.py, its own graph/state,
+request-scoped assembly and final-primary Nearby execution. It reuses the tools graph through
+a default-off post-primary hook, after initial source/date checks and before Nearby. No
+primary interpretation, discovery or generation repeats. Original supply/draft/reports remain
+separate from repair whitelist, adopted output and final reports/cost associations.
+
+Quantity review defaults off and is recorded per run. Automatic permissions cover overlap
+retiming with preserved duration, resolved REQUIRED additions and explicit EXCLUDED removal
+with loss records; repetitions/opening doubts do not authorize deletion. Existing partial
+validation and bounded Repair service are reused without new visitor/cost/WALK capabilities.
+
+V3 requires an explicit whole-request allowance from entry, including dependency preparation.
+Repair/Nearby share that deadline with independent stage budgets. Request cache/failure state
+and one lazily prepared RAG runtime persist across stages; owned resources close on every exit,
+borrowed resources stay caller-owned. Repeated embedding client reuse and common CLI-owned SDK
+cleanup are shared correctness changes, not V3 contributions. V0/V1/V2 behavior and product V0
+default remain covered by affected offline regressions; primary prompts/K/budgets are unchanged.
+
+Affected regression passed290; subsequent targeted ownership/policy/CLI regression passed18.
+New TRANSIT integration cases passed2 after correcting a fixture field. The full chronological
+record, previous test failures and unchanged actual Repair sizing remain in docs/v3_development.md.
+The final new wiring/lifecycle/policy suite passed43; changed-code Ruff and diff checks passed.
+V3 wiring is offline-validated only: no V3 live, database startup, SQL/vector changes, formal
+evaluation, freeze or full version-level acceptance. Live requires separate user authorization.
+
+
+## V3 target-addition candidate revision (2026-09-22)
+
+The authorized local revision separates protected itinerary context, target/date operation
+candidates and the application identity ledger. It retains the 28-ID input union, bounded
+old-candidate reuse/new discovery, at most two round-wide exploration opportunities, one Repair
+call and existing deadlines. Uncertainty is not ineligibility. Additions require actual input
+membership and target authorization; original supply statistics remain independent of ledger
+growth. Parsed patches, proposals and structured rejection comparisons are auditable with
+redaction and visible size limits. Chronological offline tests and actual Repair sizing are in
+`docs/v3_development.md`; this revision has no live evidence. Historical three-day no-Repair and
+seven-day rejected-Repair observations are retained, not rerun or reinterpreted as successful
+repair. Shared primary generation, budgets, Weather, SQL and earlier versions remain unchanged.
+
+
+## V3 bounded multi-round/spatial configuration checkpoint (2026-09-22)
+
+The authorized extension now uses up to three feedback-conditioned rounds with one shared
+300-second Repair stage and unchanged stage acquisition totals. Runtime YAML owns all adjustable
+Repair timing/input/acquisition/spatial policies; config/README.md documents every current YAML
+path. The 28-ID per-call union, target authorization, independent identity ledger, fair comparison
+and prior audit contracts remain. UNKNOWN candidates can be arranged without relabeling facts.
+Spatial checks distinguish time-applicable Routes, untimed WALK layout measurements and the
+short-distance conservative reserve. Added daily transport burden is cumulative against the
+stage-original draft. Later failures preserve prior accepted improvements; Nearby runs once.
+
+Affected offline regression passed 249 tests; subsequent scoped fixes/checks passed 35, 5, 3 and 103.
+Actual Repair serializer stress cases remain rejected at the unchanged 64k ceiling. Full test
+chronology, exact sizing, limits and unsupported capabilities are in docs/v3_development.md. No live,
+benchmark, vector/SQL/Weather/primary-budget change, commit or freeze accompanies this checkpoint.
+Historical three-day/seven-day observations and preexisting work remain; the full seven-day
+rejection cause is not claimed resolved. Further live work needs separate authorization.
+
+## Capacity calibration freeze candidate (2026-09-25)
+
+Repair stage limits are Google total 5 (ordinary <=4, reserved fallback <=1),
+canonical attempts 12, Details sends 10, Routes 6 requests/32 elements, per-call
+identity union 32 and engineering input 72000. Output remains 16384; rounds,
+time, primary supply and spatial/evidence acceptance policies are unchanged.
+This is resource calibration, not a new V3 mechanism or a formal freeze. Google
+and canonical headroom address observed exhaustion; input/Routes headroom is
+preventive. The latest Tokyo live used only 19 identities and 26454 engineering
+tokens and did not exercise no-op recovery across real model calls. See the
+capacity checkpoint in docs/v3_development.md for validation and the separately
+authorized Honolulu smoke. Further expansion requires explicit authorization.
+
+The authorized Honolulu smoke was prepared but blocked by automatic approval
+review before process creation (including a second submission citing explicit
+attachment authorization). Zero live runs/services were started. Capacity
+calibration remains offline-validated; no Honolulu outcome is claimed.
+
+After explicit chat confirmation, the one Honolulu capacity smoke ran (a84b4286-
+8e9b-4665-a9fd-14e7179e29bc), exit 0. Repair safely skipped before model dispatch
+at 154653/72000 input tokens and retained its draft with two route conflicts.
+Dateless route targets expanded candidate preparation across unrelated add dates;
+per-operation opportunity counting also mixed add/replace edges. These require
+an explicit follow-up decision before engineering closeout, not automatic budget
+expansion. No fix or rerun was performed. See the capacity checkpoint for evidence.
+
+### Explicit Details allowance update (2026-09-25)
+
+Following separate user authorization, ordinary primary Details is now 60,
+initial RAG Details 30, and Repair stage Details 30. YAML remains authoritative.
+The quality_first_1 adapter now uses the configured primary send allowance
+instead of r_pool + 8; its new-success goal remains unchanged (32 for seven/nine
+days). This shared change applies to V1/V2/V3, not V0. RAG resolution remains
+16 entities; Repair canonical attempts remain 12, so neither larger send budget
+is a promise to acquire 30 distinct candidates. All time, input, review, search,
+route and acceptance limits remain unchanged. Honolulu used the previous limits;
+no live was executed for this update. Offline sequence: 135 related tests passed,
+then a new real policy-adapter configuration test and its existing companion
+passed 2/2; Ruff passed. No prior failure or test retry occurred. This update
+does not fix the documented target-scope or payload-overflow issues.
+
+
+### Active-target locality and capacity follow-up (2026-09-25)
+
+Implemented and offline-validated only. Current-round scope now intersects active
+finding dependencies, original permissions and the existing application operation
+policy. Dateless route findings resolve through activity IDs; unresolved locality
+never falls back to all addition dates. Deferred reviews retain their report and
+future eligibility but no current candidate acquisition permission. Conditional
+compensation remains local to active parents/children. Opportunity audit separates
+ADD/REPLACE associations from unique identities and one global matching capacity.
+RETIME/MOVE/DELETE do not independently request new candidate identities.
+
+Capacity calibration is separate from the correctness fix: Repair now permits up
+to four rounds/calls and 120000 input tokens, with all stage time, acquisition,
+identity, output, spatial and evidence policies unchanged. Details remains the
+previously authorized 60/30/30; resolver/canonical ceilings can stop well before
+30 sends. The Honolulu saved-material reconstruction is 78511 tokens versus the
+historical 154653, but only six historical selected routes were retained, so the
+entire delta is not attributable to locality. A same-retained-evidence scope-only
+ablation removes 50604 tokens. See the locality checkpoint in docs/v3_development.md
+for full limits, test sequence and sizing. No new live or freeze is claimed.
+
+
+### Authorized processing and stage-time alignment (2026-09-25)
+
+The follow-up configuration is implemented and offline-validated: initial RAG
+resolution_entities 16 -> 30, Repair canonical attempts 12 -> 30, and Repair stage
+300 -> 360 seconds. YAML and typed upper-bound validation agree. Initial RAG
+changes apply to V2/V3; Repair changes apply only to V3. This is capacity alignment,
+not a new research mechanism or live validation.
+
+Preparation stays 30 seconds, rounds/calls 4/4, model cap 70 seconds, explicit whole
+request 600 seconds, Routes 6/32, Google 5, both RAG/Repair Details 30, identity
+union 32 and input 120000. All other policies are unchanged. Four rounds share one
+360-second maximum stage and acquisition state; the entry request deadline and
+Nearby reservation may shorten it. First allocation with a full stage is 90
+seconds; preparation reduces the model allowance below its 70-second maximum.
+The old 16/12 processing caps no longer prevent reaching the 30-send allowance,
+but fallback, cache reuse, input capacity, sufficiency and time can still stop work
+earlier. No quota is a requirement to spend or a promise of successful candidates.
+
+Validation sequence: 98 tests passed first (initial RAG, runtime config, Repair
+capacity and multiround); targeted locality/material-feedback/graph regression
+then passed 53 tests. Ruff passed. No runtime service was called. Prompt, DTO and
+serializer were unchanged, so no repeated sizing was necessary. Historical live
+records and earlier checkpoint numbers remain historical; no live or freeze is
+claimed, and no files were staged or committed.
+
+
+## Mixed transport and component Repair revision (2026-09-25)
+
+Current architecture is in docs/v3_design.md; chronological checkpoints and tests are in
+ docs/v3_development.md; delivery/live boundaries are in docs/v3_milestone.md.
+The revision is implemented + offline-validated and introduces per-leg WALK/TRANSIT/DRIVE selection, compact joint target worksheets
+and application-partitioned dependency-component acceptance. Optional transfers and their
+frontend renderer are shared output compatibility, not a V3-exclusive quality contribution.
+Initial prompts, K, shared acquisition, product default and independent V0-V2 execution remain
+unchanged. Routes are now16 stage sends /32 elements (4 reserved for proposals); preparation
+cap is45 seconds. No new live or freeze is implied.
+
+
+## Shared first-generation mixed transport (current offline checkpoint)
+
+V1/V2/V3 now use shared baseline routing, bounded pre-generation mixed-mode options,
+one primary generation, and actual-adjacency/time transfer binding before the version's
+post-primary step. V1/V2 report conflicts and UNKNOWN without repairing activities.
+V3 reuses the same evidence and adopted transfers in its existing validator and Repair.
+V0 remains tool-free. This is a shared baseline upgrade, not V3-exclusive mechanism value.
+
+The normal planning supply is unchanged: this does not rediscover omitted POIs, increase K,
+or add a second discovery pass. Default WALK preference permits evidence-supported TRANSIT
+and DRIVE alternatives; explicit supported requirements remain restrictive. Representative
+TRANSIT never inherits final-time PASS. Provider duration and DRIVE application reserve are
+separate. The primary projection retains all directed baseline facts in a compact catalogue;
+it drops redundant wrappers, not inconvenient facts. No selective fact omission is performed.
+Unbound actual adjacencies remain in application-owned `route_diagnostics`, including
+per-mode facts and unresolved alternatives; absent transfers do not erase obligations.
+
+Primary input is 252000, output 16384. Supplementary totals are 32 directed pairs / 32 sends /
+64 requested elements; post-generation reservations are 16 / 16 / 32 within those totals.
+Baseline remains 7 / 400 / 64. Cumulative route-work wall time is 120 seconds with 30 seconds
+reserved for post-generation, always inside the original request deadline. Other acquisition,
+Repair and Nearby limits are unchanged. Common transport policy now belongs to `transport`
+in runtime.yaml; Repair-only authority and added-burden policy remain version-specific.
+
+Implementation and tests are recorded in `docs/v1_development.md`. This checkpoint has only
+offline evidence; historical development live records are unchanged and do not validate it.
+No new live, evaluation, freeze, commit or push is implied.
+
+
+## Shared preference input checkpoint (2026-09-25)
+
+The existing one-call interpreter now includes a bounded preference input assessment shared by
+V0-V3. Exact-sourced user issues stop before travel tools; safety has separate product output.
+Invalid DTO/provenance remains a system failure; real-world UNKNOWN is not input invalidity.
+VALID does not override existing capability or hard-requirement checks. Empty preferences retain
+no-model execution. Product engine, travel policies and budgets are unchanged. The gate, frontend
+feedback and stop/cleanup paths are implemented + offline-validated; actual LLM classification
+accuracy is untested. Historical records remain unchanged. See docs/shared_preference_input.md
+for contracts, compatibility, test sequence and actual serializer sizing.
+
+
+### Minimum daily coverage update (2026-09-25)
+
+Shared output now reports the one-primary-visit minimum independently of 2-5 review
+quantity guidance. V0-V2 remain diagnostic-only; V3 prioritizes confirmed minimum gaps
+below hard protections and above optional reviews. Explicit source-linked full-day time
+protections support exemptions; uncertain applicability remains unknown. Product output
+includes coverage status without research metadata or source quotations. The primary
+prompt, default engine and budgets are unchanged. See [shared minimum coverage](docs/shared_minimum_daily_coverage.md)
+for counting, compatibility, exemption and partial-result boundaries, and the V3 development
+checkpoint for offline and live evidence. This does not retroactively validate historical runs.
+
+
+Minimum coverage live checkpoint (2026-09-25): the single authorized Honolulu run
+`f9bd621d-0eb5-47d7-8af8-03825d57524b` repaired three zero-main-visit dates in round1;
+all nine days meet the minimum, while one ordinary quantity review remains. Five actual
+Repair calls retained eight additions (10 -> 18 main visits), exit0. This supplies limited
+live evidence for the observed path only; exemptions/review-off remain offline-tested.
+See `docs/v3_development.md` and the complete run report for counters, UNKNOWNs and limits.
+No freeze or formal evaluation is implied.
+
+
+Preference Gate contract-alignment checkpoint: prompt11/wire9/input2 reserves operational
+conflict links structurally to structured issues and retains domain fail-closed enforcement.
+The historical first smoke remains BLOCKED; see docs/shared_preference_input.md for offline
+results and the separately authorized new interpreter-only smoke. No travel budget changes.
+
+
+New Preference Gate smoke `9c8eb048-1e8c-47bd-b17f-9578a7c7c6f8` stopped before any model
+send due to a capture-harness UnboundLocalError. All10 cases NOT_ATTEMPTED; SDK resources
+closed. Alignment remains offline-validated; Step1 live remains BLOCKED. No rerun performed.

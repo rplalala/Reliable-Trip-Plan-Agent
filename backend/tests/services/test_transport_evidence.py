@@ -422,5 +422,5 @@ def test_route_cache_deduplicates_same_departure_time_and_separates_new_date() -
     assert routes.requests[1].departure_time != routes.requests[2].departure_time
     assert budget.summary()["baseline_route_matrix_elements"]["used"] == 4
     assert budget.summary()["baseline_route_matrix_calls"]["used"] == 1
-    assert budget.summary()["alternative_route_pairs"]["used"] == 2
+    assert budget.summary()["alternative_route_pairs"]["used"] == 1
     assert budget.summary()["alternative_route_matrix_calls"]["used"] == 2

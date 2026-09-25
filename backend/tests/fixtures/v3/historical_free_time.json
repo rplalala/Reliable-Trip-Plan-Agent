@@ -1,0 +1,1219 @@
+{
+  "provenance": {
+    "run_id": "cc5c3a29-ee2b-477e-b4da-d93ed7223b23",
+    "source_sha256": "98301e1c5f6e438febda03871bbdfd585e14cdd2869eaf801b5fcd2fae69c17a",
+    "notice": "Draft, patches and Places copied from the historical result. New time protection assessment is NOT historical evidence. Route matrices are not included; tests must not claim a complete replay."
+  },
+  "draft": {
+    "output_version": "itinerary_2",
+    "reference_recommendations": [],
+    "destination": "Tokyo, Japan",
+    "start_date": "2026-09-26",
+    "end_date": "2026-10-02",
+    "days": [
+      {
+        "date": "2026-09-26",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d1-tokyo-national-museum",
+            "title": "Tokyo National Museum",
+            "place_name": "Tokyo National Museum",
+            "source_place_id": "ChIJEX3XFIOOGGAR3XdJvRjWLyM",
+            "location": "13-9 Uenok\u014den, Taito City, Tokyo 110-8712, Japan",
+            "start_time": "2026-09-26T10:00:00+09:00",
+            "end_time": "2026-09-26T12:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "A relaxed indoor museum visit suited to the forecast moderate rain showers. The supplied schedule lists 09:30\u201320:00 for this Saturday; date-specific exceptions beyond that baseline are unknown."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d1-national-art-center",
+            "title": "The National Art Center, Tokyo",
+            "place_name": "The National Art Center, Tokyo",
+            "source_place_id": "ChIJP-vO9nuLGGARGJ2q8uryJUA",
+            "location": "7-ch\u014dme-22-2 Roppongi, Minato City, Tokyo 106-8558, Japan",
+            "start_time": "2026-09-26T15:00:00+09:00",
+            "end_time": "2026-09-26T17:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Indoor architecture and art stop with a generous afternoon gap for an unhurried transfer. The supplied Saturday schedule lists 10:00\u201320:00; date-specific exceptions are unknown."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-27",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d2-teamlab-borderless",
+            "title": "teamLab Borderless: MORI Building DIGITAL ART MUSEUM",
+            "place_name": "teamLab Borderless: MORI Building DIGITAL ART MUSEUM",
+            "source_place_id": "ChIJQ5Sa1PqJGGARUSaNKKOrMVg",
+            "location": "Azabudai Hills Garden Plaza B, B1, 5-ch\u014dme-9-9 Toranomon, Minato City, Tokyo 106-0041, Japan",
+            "start_time": "2026-09-27T10:00:00+09:00",
+            "end_time": "2026-09-27T13:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "A spacious indoor experience for the light-drizzle forecast. The supplied Sunday schedule lists 08:30\u201321:00; date-specific exceptions are unknown."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d2-traditional-crafts",
+            "title": "Japan Traditional Crafts Aoyama Square",
+            "place_name": "Japan Traditional Crafts Aoyama Square",
+            "source_place_id": "ChIJ91khboGMGGARBo42MbnQzg8",
+            "location": "8-ch\u014dme-1-22 Akasaka, Minato City, Tokyo 107-0052, Japan",
+            "start_time": "2026-09-27T15:00:00+09:00",
+            "end_time": "2026-09-27T16:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "A short, low-pressure afternoon visit focused on Japanese craft displays. The supplied Sunday schedule lists 11:00\u201319:00; date-specific exceptions are unknown."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-28",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d3-tmg-building",
+            "title": "Tokyo Metropolitan Government Building",
+            "place_name": "Tokyo Metropolitan Government Building",
+            "source_place_id": "ChIJoTcat9SMGGAR6GGG8zdcZvE",
+            "location": "2-ch\u014dme-8-1 Nishishinjuku, Shinjuku City, Tokyo 163-8001, Japan",
+            "start_time": "2026-09-28T09:30:00+09:00",
+            "end_time": "2026-09-28T11:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "A single architectural focus for the rainy day, keeping the pace relaxed. The supplied Monday schedule lists 08:00\u201318:45; date-specific exceptions are unknown."
+          },
+          {
+            "activity_kind": "free_time",
+            "activity_id": "d3-rain-rest",
+            "title": "Unallocated afternoon and rest time",
+            "place_name": null,
+            "source_place_id": null,
+            "location": null,
+            "start_time": "2026-09-28T12:00:00+09:00",
+            "end_time": "2026-09-28T17:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "Kept intentionally open because of the moderate rain-shower forecast."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-29",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d4-edo-tokyo-open-air",
+            "title": "Edo-Tokyo Open Air Architectural Museum",
+            "place_name": "Edo-Tokyo Open Air Architectural Museum",
+            "source_place_id": "ChIJh5F6GpuNGGARZ6dHiggrfyQ",
+            "location": "3-ch\u014dme-7-1 Sakurach\u014d, Koganei, Tokyo 184-0005, Japan",
+            "start_time": "2026-09-29T10:00:00+09:00",
+            "end_time": "2026-09-29T13:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "The day\u2019s main architectural experience, with time to explore without rushing. The supplied Tuesday schedule lists 09:30\u201317:30; date-specific exceptions are unknown."
+          },
+          {
+            "activity_kind": "free_time",
+            "activity_id": "d4-open-afternoon",
+            "title": "Unallocated afternoon",
+            "place_name": null,
+            "source_place_id": null,
+            "location": null,
+            "start_time": "2026-09-29T14:00:00+09:00",
+            "end_time": "2026-09-29T17:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "Left open to preserve the requested relaxed pace."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-30",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d5-national-art-center",
+            "title": "The National Art Center, Tokyo",
+            "place_name": "The National Art Center, Tokyo",
+            "source_place_id": "ChIJP-vO9nuLGGARGJ2q8uryJUA",
+            "location": "7-ch\u014dme-22-2 Roppongi, Minato City, Tokyo 106-8558, Japan",
+            "start_time": "2026-09-30T10:30:00+09:00",
+            "end_time": "2026-09-30T13:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "A second, unhurried look at this distinctive building and its exhibitions. The supplied Wednesday hours are a regular weekly baseline of 10:00\u201318:00, not a guarantee against date-specific exceptions."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d5-traditional-crafts",
+            "title": "Japan Traditional Crafts Aoyama Square",
+            "place_name": "Japan Traditional Crafts Aoyama Square",
+            "source_place_id": "ChIJ91khboGMGGARBo42MbnQzg8",
+            "location": "8-ch\u014dme-1-22 Akasaka, Minato City, Tokyo 107-0052, Japan",
+            "start_time": "2026-09-30T14:30:00+09:00",
+            "end_time": "2026-09-30T16:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "A compact craft-focused museum-style stop after a generous midday gap. The supplied Wednesday hours are a regular weekly baseline of 11:00\u201319:00, not a date-specific guarantee."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-01",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d6-ghibli-museum",
+            "title": "Ghibli Museum",
+            "place_name": "Ghibli Museum",
+            "source_place_id": "ChIJLYwD5TTuGGARBZKEP5BV4U0",
+            "location": "1-ch\u014dme-1-83 Shimorenjaku, Mitaka, Tokyo 181-0013, Japan",
+            "start_time": "2026-10-01T10:30:00+09:00",
+            "end_time": "2026-10-01T13:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "A single small-museum-style experience for the overcast day. The supplied Thursday hours are a regular weekly baseline of 10:00\u201318:00, not a date-specific guarantee."
+          },
+          {
+            "activity_kind": "free_time",
+            "activity_id": "d6-unallocated-afternoon",
+            "title": "Unallocated afternoon and neighborhood time",
+            "place_name": null,
+            "source_place_id": null,
+            "location": null,
+            "start_time": "2026-10-01T14:00:00+09:00",
+            "end_time": "2026-10-01T17:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "Left open rather than adding a distant second venue, supporting a relaxed pace."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-02",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d7-extinct-media-museum",
+            "title": "Extinct Media Museum",
+            "place_name": "Extinct Media Museum",
+            "source_place_id": "ChIJ0ROVLn-NGGAREqgBMH575yI",
+            "location": "Uchikanda, 2-ch\u014dme-3-6 Kaede Building 1F, Chiyoda City, Tokyo 101-0047, Japan",
+            "start_time": "2026-10-02T11:00:00+09:00",
+            "end_time": "2026-10-02T12:30:00+09:00",
+            "estimated_cost": null,
+            "notes": "A small, specialized museum visit suited to the light-drizzle forecast. Opening hours for this date are unknown and were not verified in the supplied evidence."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "d7-tokyo-national-museum",
+            "title": "Tokyo National Museum",
+            "place_name": "Tokyo National Museum",
+            "source_place_id": "ChIJEX3XFIOOGGAR3XdJvRjWLyM",
+            "location": "13-9 Uenok\u014den, Taito City, Tokyo 110-8712, Japan",
+            "start_time": "2026-10-02T15:00:00+09:00",
+            "end_time": "2026-10-02T17:00:00+09:00",
+            "estimated_cost": null,
+            "notes": "A calm closing museum visit with a broad time gap after the first stop. The supplied Friday schedule lists 09:30\u201320:00; date-specific exceptions are unknown."
+          }
+        ]
+      }
+    ]
+  },
+  "contract": {
+    "contract_version": "interpreted_requirements_3",
+    "request_sha256": "3ec3cba7d9108f2195a564bbc7432bcf0584956411da4f18a84db989bb766bcd",
+    "input_version": "planning_request_2",
+    "structured_input_sha256": "51ae73cbf4c55aeaa8bcc8a4a9431959b95e9291db1d56f4bae8f9a5281a4964",
+    "structured_field_paths": [
+      "destination",
+      "start_date",
+      "end_date",
+      "traveler_count",
+      "budget.amount",
+      "budget.currency"
+    ],
+    "interpretation_origin": "model",
+    "requirements": {
+      "destination": "Tokyo, Japan",
+      "start_date": "2026-09-26",
+      "end_date": "2026-10-02",
+      "traveler_count": 2,
+      "budget": {
+        "amount": "120000",
+        "currency": "JPY"
+      },
+      "required_activities": [],
+      "excluded_activities": [],
+      "preferences": [],
+      "unresolved_fields": []
+    },
+    "named_places": [],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "requirement_id": "semantic_1",
+        "normalized_text": "Favor distinctive local architecture experiences with a local character.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "We enjoy distinctive local architecture",
+            "occurrence": 0,
+            "start": 0,
+            "end": 39,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_2",
+        "normalized_text": "Favor visits to small museums.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "small museums",
+            "occurrence": 0,
+            "start": 44,
+            "end": 57,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_3",
+        "normalized_text": "Prefer a relaxed overall trip pace.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "itinerary_style",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "Please arrange a relaxed seven-day trip.",
+            "occurrence": 0,
+            "start": 59,
+            "end": 99,
+            "match_mode": "exact"
+          }
+        ]
+      }
+    ],
+    "subjects": [],
+    "discovery_intents": [
+      {
+        "intent_id": "discovery_1",
+        "requirement_refs": [
+          "semantic_1"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Distinctive local architecture in Tokyo"
+      },
+      {
+        "intent_id": "discovery_2",
+        "requirement_refs": [
+          "semantic_2"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Small museums in Tokyo"
+      }
+    ],
+    "experience_evidence_requests": [],
+    "extraction_issues": []
+  },
+  "places": [
+    {
+      "place_id": "ChIJ0ROVLn-NGGAREqgBMH575yI",
+      "name": "Extinct Media Museum",
+      "formatted_address": "Japan, \u3012101-0047 Tokyo, Chiyoda City, Uchikanda, 2-ch\u014dme\u22123\u2212\uff16 \u6953\u30d3\u30eb 1\u968e",
+      "latitude": 35.689636799999995,
+      "longitude": 139.76790359999998,
+      "primary_type": "museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": null,
+      "current_opening_hours": null,
+      "regular_opening_hours": null,
+      "rating": 4.7,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleSeating": false
+      },
+      "website_uri": "https://extinct-media-museum.blog.jp/otemachi/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:12.696834Z",
+      "source_ref": "google_places:ChIJ0ROVLn-NGGAREqgBMH575yI"
+    },
+    {
+      "place_id": "ChIJ91khboGMGGARBo42MbnQzg8",
+      "name": "Japan Traditional Crafts Aoyama Square",
+      "formatted_address": "Japan, \u3012107-0052 Tokyo, Minato City, Akasaka, 8-ch\u014dme\u22121\u2212\uff12\uff12 \uff11F",
+      "latitude": 35.6734771,
+      "longitude": 139.7276153,
+      "primary_type": null,
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T10:00:00Z"
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T10:00:00Z"
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Tuesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Wednesday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Thursday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Friday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Saturday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM",
+          "Sunday: 11:00\u202fAM\u2009\u2013\u20097:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T10:00:00Z"
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleEntrance": true
+      },
+      "website_uri": "https://kougeihin.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:03.117303Z",
+      "source_ref": "google_places:ChIJ91khboGMGGARBo42MbnQzg8"
+    },
+    {
+      "place_id": "ChIJA5gBoXeNGGARJqJqceqLJiQ",
+      "name": "Samurai Museum TOKYO Shinjuku",
+      "formatted_address": "Japan, \u3012160-0022 Tokyo, Shinjuku City, Shinjuku, 5-ch\u014dme\u221217\u2212\uff11\uff13 \u30aa\u30ea\u30a8\u30f3\u30bf\u30eb\u30a6\u30a7\u30fc\u30d6\u30d3\u30eb",
+      "latitude": 35.6929413,
+      "longitude": 139.7052152,
+      "primary_type": "amusement_center",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Wednesday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "rating": 4.9,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false
+      },
+      "website_uri": "https://mai-ko.com/samurai/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:26:00.587225Z",
+      "source_ref": "google_places:ChIJA5gBoXeNGGARJqJqceqLJiQ"
+    },
+    {
+      "place_id": "ChIJEX3XFIOOGGAR3XdJvRjWLyM",
+      "name": "Tokyo National Museum",
+      "formatted_address": "13-9 Uenok\u014den, Taito City, Tokyo 110-8712, Japan",
+      "latitude": 35.7188351,
+      "longitude": 139.7765215,
+      "primary_type": "museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Wednesday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Thursday: Closed",
+          "Friday: 9:30\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 9:30\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T08:00:00Z"
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Wednesday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Thursday: Closed",
+          "Friday: 9:30\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 9:30\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T08:00:00Z"
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Wednesday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Thursday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM",
+          "Friday: 9:30\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 9:30\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 9:30\u202fAM\u2009\u2013\u20095:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T08:00:00Z"
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true,
+        "wheelchairAccessibleSeating": false
+      },
+      "website_uri": "https://www.tnm.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:15.116657Z",
+      "source_ref": "google_places:ChIJEX3XFIOOGGAR3XdJvRjWLyM"
+    },
+    {
+      "place_id": "ChIJLYwD5TTuGGARBZKEP5BV4U0",
+      "name": "Ghibli Museum",
+      "formatted_address": "1-ch\u014dme-1-83 Shimorenjaku, Mitaka, Tokyo 181-0013, Japan",
+      "latitude": 35.696238,
+      "longitude": 139.5704317,
+      "primary_type": "art_museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28"
+        ],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28"
+        ],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true,
+        "wheelchairAccessibleSeating": true
+      },
+      "website_uri": "https://www.ghibli-museum.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:05.392475Z",
+      "source_ref": "google_places:ChIJLYwD5TTuGGARBZKEP5BV4U0"
+    },
+    {
+      "place_id": "ChIJP-vO9nuLGGARGJ2q8uryJUA",
+      "name": "The National Art Center, Tokyo",
+      "formatted_address": "7-ch\u014dme-22-2 Roppongi, Minato City, Tokyo 106-8558, Japan",
+      "latitude": 35.665289,
+      "longitude": 139.726374,
+      "primary_type": "art_museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28"
+        ],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28"
+        ],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Thursday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 10:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Saturday: 10:00\u202fAM\u2009\u2013\u20098:00\u202fPM",
+          "Sunday: 10:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:00:00Z"
+      },
+      "rating": 4.4,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true
+      },
+      "website_uri": "https://www.nact.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:01.348677Z",
+      "source_ref": "google_places:ChIJP-vO9nuLGGARGJ2q8uryJUA"
+    },
+    {
+      "place_id": "ChIJQ5Sa1PqJGGARUSaNKKOrMVg",
+      "name": "teamLab Borderless: MORI Building DIGITAL ART MUSEUM",
+      "formatted_address": "Japan, \u3012106-0041 Tokyo, Minato City, Toranomon, 5-ch\u014dme\u22129\u2212\uff19 Azabudai Hills Garden Plaza B, B1",
+      "latitude": 35.6620689,
+      "longitude": 139.7432671,
+      "primary_type": "art_museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Tuesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Wednesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Thursday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Friday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Saturday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T12:00:00Z"
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Tuesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Wednesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Thursday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Friday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Saturday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T12:00:00Z"
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Tuesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Wednesday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Thursday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Friday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Saturday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM",
+          "Sunday: 8:30\u202fAM\u2009\u2013\u20099:00\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T12:00:00Z"
+      },
+      "rating": 4.6,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true
+      },
+      "website_uri": "https://www.teamlab.art/jp/e/tokyo/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:08.468893Z",
+      "source_ref": "google_places:ChIJQ5Sa1PqJGGARUSaNKKOrMVg"
+    },
+    {
+      "place_id": "ChIJh5F6GpuNGGARZ6dHiggrfyQ",
+      "name": "Edo-Tokyo Open Air Architectural Museum",
+      "formatted_address": "Japan, \u3012184-0005 Tokyo, Koganei, Sakurach\u014d, 3-ch\u014dme\u22127\u2212\uff11 \u5185 \u90fd\u7acb\u5c0f\u91d1\u4e95\u516c\u5712",
+      "latitude": 35.7155722,
+      "longitude": 139.5125434,
+      "primary_type": "museum",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Wednesday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Thursday: Closed",
+          "Friday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Saturday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Sunday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T08:30:00Z"
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Wednesday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Thursday: Closed",
+          "Friday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Saturday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Sunday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T08:30:00Z"
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: Closed",
+          "Tuesday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Wednesday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Thursday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Friday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Saturday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM",
+          "Sunday: 9:30\u202fAM\u2009\u2013\u20095:30\u202fPM"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T08:30:00Z"
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true,
+        "wheelchairAccessibleSeating": true
+      },
+      "website_uri": "https://www.tatemonoen.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:06.653069Z",
+      "source_ref": "google_places:ChIJh5F6GpuNGGARZ6dHiggrfyQ"
+    },
+    {
+      "place_id": "ChIJkfGFFUnuGGARf3LSy8cfGAU",
+      "name": "\uff08\u682a\uff09Two Style Architects \u4e00\u7d1a\u5efa\u7bc9\u58eb\u4e8b\u52d9\u6240",
+      "formatted_address": "Japan, \u3012180-0004 Tokyo, Musashino, Kichij\u014dji Honch\u014d, 2-ch\u014dme\u221226\u2212\uff11 2F",
+      "latitude": 35.7044132,
+      "longitude": 139.5753799,
+      "primary_type": "service",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: Closed",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-24T00:00:00Z",
+        "next_close_time": null
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-26",
+          "2026-09-27",
+          "2026-09-28"
+        ],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: Closed",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-24T00:00:00Z",
+        "next_close_time": null
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Tuesday: Closed",
+          "Wednesday: Closed",
+          "Thursday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Friday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Saturday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM",
+          "Sunday: 9:00\u202fAM\u2009\u2013\u20096:00\u202fPM"
+        ],
+        "open_now": false,
+        "next_open_time": "2026-09-24T00:00:00Z",
+        "next_close_time": null
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": false,
+        "wheelchairAccessibleEntrance": false
+      },
+      "website_uri": "http://www.2style.co.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:12.319098Z",
+      "source_ref": "google_places:ChIJkfGFFUnuGGARf3LSy8cfGAU"
+    },
+    {
+      "place_id": "ChIJoTcat9SMGGAR6GGG8zdcZvE",
+      "name": "Tokyo Metropolitan Government Building",
+      "formatted_address": "2-ch\u014dme-8-1 Nishishinjuku, Shinjuku City, Tokyo 163-8001, Japan",
+      "latitude": 35.6894807,
+      "longitude": 139.6916863,
+      "primary_type": "government_office",
+      "business_status": "OPERATIONAL",
+      "timezone_id": "Asia/Tokyo",
+      "opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-28",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Tuesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Wednesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Thursday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Friday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Saturday: Closed",
+          "Sunday: Closed"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:45:00Z"
+      },
+      "current_opening_hours": {
+        "applicability": "provider_current_window",
+        "valid_from": "2026-09-23",
+        "valid_through": "2026-09-29",
+        "source_dated_days": [
+          "2026-09-23",
+          "2026-09-24",
+          "2026-09-25",
+          "2026-09-28",
+          "2026-09-29"
+        ],
+        "weekday_descriptions": [
+          "Monday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Tuesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Wednesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Thursday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Friday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Saturday: Closed",
+          "Sunday: Closed"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:45:00Z"
+      },
+      "regular_opening_hours": {
+        "applicability": "regular_weekly_pattern",
+        "valid_from": null,
+        "valid_through": null,
+        "source_dated_days": [],
+        "weekday_descriptions": [
+          "Monday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Tuesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Wednesday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Thursday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Friday: 8:00\u202fAM\u2009\u2013\u20096:45\u202fPM",
+          "Saturday: Closed",
+          "Sunday: Closed"
+        ],
+        "open_now": true,
+        "next_open_time": null,
+        "next_close_time": "2026-09-23T09:45:00Z"
+      },
+      "rating": 4.5,
+      "price_level": null,
+      "price_range": null,
+      "accessibility_options": {
+        "wheelchairAccessibleParking": true,
+        "wheelchairAccessibleEntrance": true,
+        "wheelchairAccessibleRestroom": true
+      },
+      "website_uri": "https://www.metro.tokyo.lg.jp/",
+      "availability": "available",
+      "unavailable_reason": null,
+      "retrieved_at": "2026-09-23T02:25:00.982717Z",
+      "source_ref": "google_places:ChIJoTcat9SMGGAR6GGG8zdcZvE"
+    }
+  ],
+  "patches": [
+    {
+      "edits": [
+        {
+          "operation": "add",
+          "activity_id": null,
+          "date": "2026-09-28",
+          "place_id": "ChIJA5gBoXeNGGARJqJqceqLJiQ",
+          "start_time": "2026-09-28T12:00:00+09:00",
+          "end_time": "2026-09-28T13:00:00+09:00"
+        }
+      ]
+    },
+    {
+      "edits": [
+        {
+          "operation": "add",
+          "activity_id": null,
+          "date": "2026-10-01",
+          "place_id": "ChIJkfGFFUnuGGARf3LSy8cfGAU",
+          "start_time": "2026-10-01T14:30:00+09:00",
+          "end_time": "2026-10-01T15:30:00+09:00"
+        }
+      ]
+    },
+    {
+      "edits": [
+        {
+          "operation": "add",
+          "activity_id": null,
+          "date": "2026-09-28",
+          "place_id": "ChIJA5gBoXeNGGARJqJqceqLJiQ",
+          "start_time": "2026-09-28T13:00:00+09:00",
+          "end_time": "2026-09-28T14:00:00+09:00"
+        }
+      ]
+    }
+  ]
+}

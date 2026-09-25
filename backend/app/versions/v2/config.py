@@ -12,8 +12,8 @@ class RAGConfig(BaseModel):
     max_positions: int = Field(default=20, ge=1, le=80)
     total_query_tokens: int = Field(default=1024, ge=1, le=2048)
     top_k: int = Field(default=10, ge=1, le=20)
-    resolution_entities: int = Field(default=6, ge=0, le=16)
-    details_calls: int = Field(default=8, ge=0, le=20)
+    resolution_entities: int = Field(default=6, ge=0, le=30)
+    details_calls: int = Field(default=8, ge=0, le=30)
     fallback_calls: int = Field(default=2, ge=0, le=4)
     radius_km: Literal[15] = 15
     identity_radius_km: Literal[1] = 1

@@ -9,6 +9,7 @@ from backend.app.evidence.opening_hours import planning_opening_hours
 from backend.app.policies.generation_policy import FIRST_GENERATION_POLICY
 from backend.app.policies.poi_selection import SelectionConflict
 from backend.app.schemas.request import PlanningRequest, TravelRequirements
+from backend.app.services.initial_routes import compact_routes
 
 ITINERARY_GENERATION_SYSTEM_PROMPT = """
 You are the itinerary-generation stage of a travel planner.
@@ -21,17 +22,17 @@ The response schema is supplied separately.
 Every activity start and end must include date YYYY-MM-DD, time HH:MM:SS (including :00
 seconds), and utc_offset +HH:MM or -HH:MM. Keep activity identifiers unique.
 
-For a WALK baseline, use it for short pairs but never treat non_walkable_pairs as realistic
-walking transfers. Honor an explicitly chosen transport mode without inferring a fallback.
-TRANSIT alternatives give representative durations at their recorded departure time for
-coarse sequencing and travel-time allowance only: provider_observed is measured by the
-provider in that direction; mirrored_reverse_estimate copies only the observed duration in
-reverse as an approximate proxy, not observed directional timetable evidence. If WALK is
-unrealistic and TRANSIT unavailable, avoid tight sequencing or note uncertain transport
-feasibility. Do not invent or promise transit lines, stops, timetables, departure times,
-fares, bookings, or exact services. Before quoting route distance or duration, match the
-element's origin_place_id and destination_place_id to the exact two Place evidence entries
-for that transfer. Never reuse another pair's measurement; omit numbers without a match.
+Default mixed transport has a soft preference WALK, then TRANSIT, then DRIVE; explicit
+structured restrictions take precedence. Use only supplied directed route options.
+WALK outside the application window does not exclude a supplied POI when another allowed
+mode works. TRANSIT representative departure estimates support coarse layout only and
+must be rechecked at the actual departure by the application. Basic DRIVE estimates do
+not establish car availability, booking or cost. Include the supplied DRIVE application
+reserve in time layout, separately from provider duration. Do not invent route distances,
+service lines, timetables or fares. The application creates final transfers after generation;
+do not encode transport facts in notes as a substitute for a binding.
+provider_observed records its actual direction; mirrored_reverse_estimate is only an
+approximate reverse proxy. Never reuse another pair's measurement.
 
 Use Place evidence only for its identified place. Do not infer missing facts, present
 unavailable or partial evidence as confirmed, or claim checks outside supplied evidence.
@@ -87,12 +88,16 @@ def build_itinerary_generation_prompt(
     weather: WeatherEvidence,
     routes: RouteEvidenceBundle,
     requirement_conflicts: Sequence[SelectionConflict] = (),
+    transport_policy=None,
     official_evidence: Sequence[dict[str, object]] | None = None,
 ) -> str:
     """Build one bounded prompt containing normalized evidence only."""
 
     if requirements.start_date is None or requirements.end_date is None:
         raise ValueError("Complete trip dates are required for opening-hours planning evidence")
+    if transport_policy is None:
+        from backend.app.runtime.config_loader import load_runtime_config
+        transport_policy = load_runtime_config().transport
     planning_places: list[dict[str, object]] = []
     for item in places:
         place_data = item.model_dump(
@@ -107,7 +112,8 @@ def build_itinerary_generation_prompt(
     evidence = {
         "places": planning_places,
         "weather": weather.model_dump(mode="json"),
-        "routes": routes.model_dump(mode="json"),
+        "routes": compact_routes(routes),
+        "transport_policy": transport_policy.model_dump() if transport_policy else None,
     }
     conflicts = [
         {"place_id_or_name": item.place_id_or_name, "reason": item.reason}

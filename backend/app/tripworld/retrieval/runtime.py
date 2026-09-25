@@ -122,32 +122,33 @@ class RuntimeRetrieval:
     async def _embed(self, texts):
         if not os.environ.get("OPENAI_API_KEY"):
             raise ValueError("Embedding credentials unavailable")
-        self.client = self.embedding_client_factory(
-            api_key=os.environ["OPENAI_API_KEY"],
-            base_url="https://api.openai.com/v1",
-            timeout=self.config.embedding_timeout,
-            max_retries=0,
-        )
-        # Attach to this owned SDK client's actual transport (httpx2 in the installed stack).
-        http = self.client._client
-        active = {}
+        if self.client is None:
+            self.client = self.embedding_client_factory(
+                api_key=os.environ["OPENAI_API_KEY"],
+                base_url="https://api.openai.com/v1",
+                timeout=self.config.embedding_timeout,
+                max_retries=0,
+            )
+            # Attach to this owned SDK client's actual transport (httpx2 in the installed stack).
+            http = self.client._client
+            active = {}
 
-        async def request_hook(request):
-            row = {"attempt_id": uuid4().hex, "status_code": None, "request_id": None}
-            self.http_attempts.append(row)
-            active[id(request)] = row
+            async def request_hook(request):
+                row = {"attempt_id": uuid4().hex, "status_code": None, "request_id": None}
+                self.http_attempts.append(row)
+                active[id(request)] = row
 
-        async def response_hook(response):
-            row = active.pop(id(response.request), None)
-            if row is not None:
-                row.update(
-                    status_code=response.status_code,
-                    request_id=response.headers.get("x-request-id"),
-                )
+            async def response_hook(response):
+                row = active.pop(id(response.request), None)
+                if row is not None:
+                    row.update(
+                        status_code=response.status_code,
+                        request_id=response.headers.get("x-request-id"),
+                    )
 
-        http.event_hooks["request"].append(request_hook)
-        http.event_hooks["response"].append(response_hook)
-        self._http_hooks = (http, request_hook, response_hook)
+            http.event_hooks["request"].append(request_hook)
+            http.event_hooks["response"].append(response_hook)
+            self._http_hooks = (http, request_hook, response_hook)
         async with asyncio.timeout(self.config.embedding_timeout):
             self.embedding_sends += 1
             response = await self.client.embeddings.create(

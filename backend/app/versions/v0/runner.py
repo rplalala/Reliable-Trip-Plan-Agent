@@ -72,6 +72,7 @@ async def run_v0(
             itinerary,
             requirements,
             reference_date=effective_reference_date,
+            contract=final_state["interpreted_requirements"],
             related_requirement_ids=tuple(
                 r.requirement_id
                 for r in final_state["interpreted_requirements"].semantic_requirements
@@ -146,7 +147,10 @@ def main(
                 reference_date=effective_date,
             )
         )
-    except (ClarificationRequired, RequirementBoundaryError) as exc:
+    except RequirementBoundaryError as exc:
+        print(json.dumps(exc.as_dict()), file=sys.stderr)
+        return 1
+    except ClarificationRequired as exc:
         print(json.dumps(exc.as_dict()), file=sys.stderr)
         return 2
     except (ValidationError, OSError) as exc:

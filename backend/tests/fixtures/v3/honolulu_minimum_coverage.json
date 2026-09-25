@@ -1,0 +1,565 @@
+{
+  "source_run_id": "8b7db82f-9c52-4cdc-b802-2c273406ee66",
+  "source_sha256": "a180feff55210ad7c7c954f5fb056e4909c4a1bc3a5cb55cb9b993ed8ad540c6",
+  "scope": "Historical draft and contract; minimal identity/location evidence projection for coverage-only offline reconstruction. Not a replay of all opening/route facts.",
+  "draft": {
+    "output_version": "itinerary_2",
+    "destination": "Honolulu, Hawaii, USA",
+    "start_date": "2026-09-27",
+    "end_date": "2026-10-05",
+    "days": [
+      {
+        "date": "2026-09-27",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20260927-waikiki",
+            "title": "Relaxed coastal time at Waik\u012bk\u012b Beach",
+            "place_name": "Waik\u012bk\u012b Beach",
+            "source_place_id": "ChIJsfS2gnZyAHwRD7lEf-yFB8Q",
+            "location": "Honolulu, HI 96815, USA",
+            "start_time": "2026-09-27T14:30:00-10:00",
+            "end_time": "2026-09-27T16:30:00-10:00",
+            "estimated_cost": null,
+            "notes": null
+          }
+        ]
+      },
+      {
+        "date": "2026-09-28",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20260928-capitol",
+            "title": "Hawai\u02bbi State Capitol visit",
+            "place_name": "Hawaii State Capitol",
+            "source_place_id": "ChIJ__8PWnVuAHwRgHWIJ-cFceY",
+            "location": "415 S Beretania St., Honolulu, HI 96813, USA",
+            "start_time": "2026-09-28T10:00:00-10:00",
+            "end_time": "2026-09-28T11:15:00-10:00",
+            "estimated_cost": null,
+            "notes": "The supplied opening-hours evidence lists Monday hours of 07:00\u201317:00; visitor access details are not established here."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20260928-statue",
+            "title": "King Kamehameha I Statue",
+            "place_name": "King Kamehameha I Statue",
+            "source_place_id": "ChIJ8_ZO2QpuAHwRLbTH9ixOoAY",
+            "location": "447 S King St, Honolulu, HI 96813, USA",
+            "start_time": "2026-09-28T11:30:00-10:00",
+            "end_time": "2026-09-28T12:00:00-10:00",
+            "estimated_cost": null,
+            "notes": "Opening hours were not available in the supplied evidence."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-29",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20260929-history-society",
+            "title": "Hawaiian Historical Society visit",
+            "place_name": "Hawaiian Historical Society",
+            "source_place_id": "ChIJHe4AggpuAHwRBpZwglgSVAI",
+            "location": "560 Kawaiaha\u02bbo St, Honolulu, HI 96813, USA",
+            "start_time": "2026-09-29T10:00:00-10:00",
+            "end_time": "2026-09-29T12:00:00-10:00",
+            "estimated_cost": null,
+            "notes": "The supplied date-specific opening-hours evidence lists Tuesday hours of 10:00\u201316:00."
+          },
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20260929-iolani",
+            "title": "\u02bbIolani Palace visit",
+            "place_name": "Iolani Palace",
+            "source_place_id": "ChIJq0y-NHVuAHwRF-EDUxSGsmg",
+            "location": "364 S King St, Honolulu, HI 96813, USA",
+            "start_time": "2026-09-29T13:00:00-10:00",
+            "end_time": "2026-09-29T15:00:00-10:00",
+            "estimated_cost": null,
+            "notes": "The supplied date-specific opening-hours evidence lists Tuesday hours of 09:00\u201316:00. Admission and reservation details are not established here."
+          }
+        ]
+      },
+      {
+        "date": "2026-09-30",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20260930-shangri-la",
+            "title": "Shangri La Museum of Islamic Art, Culture & Design",
+            "place_name": "Shangri La Museum of Islamic Art, Culture & Design",
+            "source_place_id": "ChIJ9_-ySZJyAHwRfog-IMQe70w",
+            "location": "4055 P\u0101p\u016b Cir, Honolulu, HI 96816, USA",
+            "start_time": "2026-09-30T09:30:00-10:00",
+            "end_time": "2026-09-30T12:00:00-10:00",
+            "estimated_cost": null,
+            "notes": "The supplied date-specific opening-hours evidence lists Wednesday hours of 09:00\u201313:30. Admission and reservation requirements are not established by the supplied evidence."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-01",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20261001-punchbowl",
+            "title": "Punchbowl Scenic Lookout",
+            "place_name": "Punchbowl Scenic Lookout",
+            "source_place_id": "ChIJTxZHftttAHwR8WUhbkrjMPc",
+            "location": "2177 P\u016bowaina Dr, Honolulu, HI 96813, USA",
+            "start_time": "2026-10-01T10:00:00-10:00",
+            "end_time": "2026-10-01T11:30:00-10:00",
+            "estimated_cost": null,
+            "notes": "The supplied hours are a regular Thursday baseline of 08:00\u201318:00; date-specific exceptions are unknown."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-02",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20261002-liljestrand",
+            "title": "The Liljestrand House visit",
+            "place_name": "The Liljestrand House",
+            "source_place_id": "ChIJZw2351FsAHwRQNLA6xJjHJI",
+            "location": "3300 Tantalus Dr, Honolulu, HI 96822, USA",
+            "start_time": "2026-10-02T10:00:00-10:00",
+            "end_time": "2026-10-02T11:30:00-10:00",
+            "estimated_cost": null,
+            "notes": "Opening hours and visit access were not verified in the supplied evidence; confirm availability before planning around this visit."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-03",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20261003-inspiration-museum",
+            "title": "Inspiration Hawaii Museum visit",
+            "place_name": "Inspiration Hawaii Museum",
+            "source_place_id": "ChIJy2RaVABvAHwRdNhAg5Orok0",
+            "location": "900 Richards St, Honolulu, HI 96813, USA",
+            "start_time": "2026-10-03T10:30:00-10:00",
+            "end_time": "2026-10-03T12:00:00-10:00",
+            "estimated_cost": null,
+            "notes": "Opening hours and date-specific access status are unknown in the supplied evidence; confirm that a visit is available."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-04",
+        "activities": [
+          {
+            "activity_kind": "main_poi",
+            "activity_id": "act-20261004-kuhio-beach",
+            "title": "Unhurried coastal time at Kuhio Beach",
+            "place_name": "Kuhio Beach",
+            "source_place_id": "ChIJeYJyKHFyAHwRBCh1073FqPE",
+            "location": "2453 Kal\u0101kaua Ave, Honolulu, HI 96815, USA",
+            "start_time": "2026-10-04T10:00:00-10:00",
+            "end_time": "2026-10-04T12:00:00-10:00",
+            "estimated_cost": null,
+            "notes": "Opening hours were not available in the supplied evidence."
+          }
+        ]
+      },
+      {
+        "date": "2026-10-05",
+        "activities": [
+          {
+            "activity_kind": "generic_activity",
+            "activity_id": "act-20261005-downtown-stroll",
+            "title": "Unhurried downtown architecture stroll",
+            "place_name": null,
+            "source_place_id": null,
+            "location": "Downtown Honolulu",
+            "start_time": "2026-10-05T10:00:00-10:00",
+            "end_time": "2026-10-05T11:30:00-10:00",
+            "estimated_cost": null,
+            "notes": "A self-paced, exterior-focused stroll; specific buildings and opening hours were not established in the supplied evidence."
+          }
+        ]
+      }
+    ]
+  },
+  "contract": {
+    "contract_version": "interpreted_requirements_3",
+    "request_sha256": "1f3604dded8e18f47da534ef89cf12c86cb8029ce6e1ca9c3cbff397fb5f439f",
+    "input_version": "planning_request_2",
+    "structured_input_sha256": "47a4037859991224f8b8fdf7761b2a69b8ab8cd617046cdb6b4f3ec02c64b8c8",
+    "structured_field_paths": [
+      "destination",
+      "start_date",
+      "end_date",
+      "traveler_count",
+      "budget.amount",
+      "budget.currency"
+    ],
+    "visit_requirements": [],
+    "time_protections": [],
+    "interpretation_origin": "model",
+    "requirements": {
+      "destination": "Honolulu, Hawaii, USA",
+      "start_date": "2026-09-27",
+      "end_date": "2026-10-05",
+      "traveler_count": 2,
+      "budget": {
+        "amount": "3000",
+        "currency": "USD"
+      },
+      "required_activities": [],
+      "excluded_activities": [],
+      "preferences": [],
+      "unresolved_fields": []
+    },
+    "named_places": [],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "requirement_id": "semantic_1",
+        "normalized_text": "Favor experiences about Hawaiian history and culture.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "We enjoy Hawaiian history and culture",
+            "occurrence": 0,
+            "start": 0,
+            "end": 37,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_2",
+        "normalized_text": "Favor museums.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "museums",
+            "occurrence": 0,
+            "start": 39,
+            "end": 46,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_3",
+        "normalized_text": "Favor scenic coastal places.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "scenic coastal places",
+            "occurrence": 0,
+            "start": 48,
+            "end": 69,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_4",
+        "normalized_text": "Favor local architecture.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "local architecture",
+            "occurrence": 0,
+            "start": 75,
+            "end": 93,
+            "match_mode": "exact"
+          }
+        ]
+      },
+      {
+        "requirement_id": "semantic_5",
+        "normalized_text": "Favor a relaxed pace for the nine-day trip.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "itinerary_style",
+        "subject_refs": [
+          "party"
+        ],
+        "source_refs": [
+          {
+            "quote": "Please arrange a relaxed nine-day trip.",
+            "occurrence": 0,
+            "start": 95,
+            "end": 134,
+            "match_mode": "exact"
+          }
+        ]
+      }
+    ],
+    "subjects": [],
+    "discovery_intents": [
+      {
+        "intent_id": "discovery_1",
+        "requirement_refs": [
+          "semantic_1"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Hawaiian history and culture experiences"
+      },
+      {
+        "intent_id": "discovery_2",
+        "requirement_refs": [
+          "semantic_4"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Local architecture"
+      },
+      {
+        "intent_id": "discovery_3",
+        "requirement_refs": [
+          "semantic_2"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Museums"
+      },
+      {
+        "intent_id": "discovery_4",
+        "requirement_refs": [
+          "semantic_3"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Scenic coastal places"
+      }
+    ],
+    "experience_evidence_requests": [],
+    "extraction_issues": []
+  },
+  "supplied_ids": [
+    "ChIJy2RaVABvAHwRdNhAg5Orok0",
+    "ChIJKS6zBHVuAHwRrjnoaAirE1o",
+    "ChIJ9_-ySZJyAHwRfog-IMQe70w",
+    "ChIJTxZHftttAHwR8WUhbkrjMPc",
+    "ChIJHe4AggpuAHwRBpZwglgSVAI",
+    "ChIJ5UJLbnNuAHwRgaIFcp7TTVE",
+    "ChIJq0y-NHVuAHwRF-EDUxSGsmg",
+    "ChIJsfS2gnZyAHwRD7lEf-yFB8Q",
+    "ChIJm89uFENtAHwRpoPc3w8l4nQ",
+    "ChIJZw2351FsAHwRQNLA6xJjHJI",
+    "ChIJ8_ZO2QpuAHwRLbTH9ixOoAY",
+    "ChIJeYJyKHFyAHwRBCh1073FqPE",
+    "ChIJNdcyPihsAHwRs6ARX7B0yS0",
+    "ChIJ__8PWnVuAHwRgHWIJ-cFceY",
+    "ChIJRQewc-dtAHwRzlsPd8gv6zk",
+    "ChIJjTNVpYNtAHwRMfN3bNF3lyY",
+    "ChIJpw3kz7ltAHwR8AWlZ2-32So",
+    "ChIJO5od3QhuAHwRO8VzXmIKuQk"
+  ],
+  "places": [
+    {
+      "place_id": "ChIJy2RaVABvAHwRdNhAg5Orok0",
+      "name": "Inspiration Hawaii Museum",
+      "latitude": 21.3071496,
+      "longitude": -157.8607467,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJy2RaVABvAHwRdNhAg5Orok0",
+      "retrieved_at": "2026-09-24T21:04:36.897192Z"
+    },
+    {
+      "place_id": "ChIJKS6zBHVuAHwRrjnoaAirE1o",
+      "name": "Longhouse Design+Build",
+      "latitude": 21.3092878,
+      "longitude": -157.85958259999998,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJKS6zBHVuAHwRrjnoaAirE1o",
+      "retrieved_at": "2026-09-24T21:04:36.010355Z"
+    },
+    {
+      "place_id": "ChIJ9_-ySZJyAHwRfog-IMQe70w",
+      "name": "Shangri La Museum of Islamic Art, Culture & Design",
+      "latitude": 21.2570987,
+      "longitude": -157.79499629999998,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJ9_-ySZJyAHwRfog-IMQe70w",
+      "retrieved_at": "2026-09-24T21:04:46.760367Z"
+    },
+    {
+      "place_id": "ChIJTxZHftttAHwR8WUhbkrjMPc",
+      "name": "Punchbowl Scenic Lookout",
+      "latitude": 21.310856599999997,
+      "longitude": -157.8477866,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJTxZHftttAHwR8WUhbkrjMPc",
+      "retrieved_at": "2026-09-24T21:04:36.612742Z"
+    },
+    {
+      "place_id": "ChIJHe4AggpuAHwRBpZwglgSVAI",
+      "name": "Hawaiian Historical Society",
+      "latitude": 21.303746999999998,
+      "longitude": -157.85709409999998,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJHe4AggpuAHwRBpZwglgSVAI",
+      "retrieved_at": "2026-09-24T21:04:42.662921Z"
+    },
+    {
+      "place_id": "ChIJ5UJLbnNuAHwRgaIFcp7TTVE",
+      "name": "Downtown",
+      "latitude": 21.309618699999998,
+      "longitude": -157.8599592,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJ5UJLbnNuAHwRgaIFcp7TTVE",
+      "retrieved_at": "2026-09-24T21:04:31.425713Z"
+    },
+    {
+      "place_id": "ChIJq0y-NHVuAHwRF-EDUxSGsmg",
+      "name": "Iolani Palace",
+      "latitude": 21.3067572,
+      "longitude": -157.85876969999998,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJq0y-NHVuAHwRF-EDUxSGsmg",
+      "retrieved_at": "2026-09-24T21:04:35.708666Z"
+    },
+    {
+      "place_id": "ChIJsfS2gnZyAHwRD7lEf-yFB8Q",
+      "name": "Waik\u012bk\u012b Beach",
+      "latitude": 21.276235,
+      "longitude": -157.82731769999998,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJsfS2gnZyAHwRD7lEf-yFB8Q",
+      "retrieved_at": "2026-09-24T21:04:40.607898Z"
+    },
+    {
+      "place_id": "ChIJm89uFENtAHwRpoPc3w8l4nQ",
+      "name": "Experience Nutridge",
+      "latitude": 21.3161624,
+      "longitude": -157.8204821,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJm89uFENtAHwRpoPc3w8l4nQ",
+      "retrieved_at": "2026-09-24T21:04:40.904466Z"
+    },
+    {
+      "place_id": "ChIJZw2351FsAHwRQNLA6xJjHJI",
+      "name": "The Liljestrand House",
+      "latitude": 21.324318599999998,
+      "longitude": -157.831226,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJZw2351FsAHwRQNLA6xJjHJI",
+      "retrieved_at": "2026-09-24T21:04:38.928448Z"
+    },
+    {
+      "place_id": "ChIJ8_ZO2QpuAHwRLbTH9ixOoAY",
+      "name": "King Kamehameha I Statue",
+      "latitude": 21.3057277,
+      "longitude": -157.8596457,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJ8_ZO2QpuAHwRLbTH9ixOoAY",
+      "retrieved_at": "2026-09-24T21:04:34.060728Z"
+    },
+    {
+      "place_id": "ChIJeYJyKHFyAHwRBCh1073FqPE",
+      "name": "Kuhio Beach",
+      "latitude": 21.274988,
+      "longitude": -157.82477,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJeYJyKHFyAHwRBCh1073FqPE",
+      "retrieved_at": "2026-09-24T21:04:41.215284Z"
+    },
+    {
+      "place_id": "ChIJNdcyPihsAHwRs6ARX7B0yS0",
+      "name": "Ka\u02bbiwak\u012bloumoku Hawaiian Cultural Center",
+      "latitude": 21.3385823,
+      "longitude": -157.855677,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJNdcyPihsAHwRs6ARX7B0yS0",
+      "retrieved_at": "2026-09-24T21:04:38.666120Z"
+    },
+    {
+      "place_id": "ChIJ__8PWnVuAHwRgHWIJ-cFceY",
+      "name": "Hawaii State Capitol",
+      "latitude": 21.3072405,
+      "longitude": -157.8574296,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJ__8PWnVuAHwRgHWIJ-cFceY",
+      "retrieved_at": "2026-09-24T21:04:37.182029Z"
+    },
+    {
+      "place_id": "ChIJRQewc-dtAHwRzlsPd8gv6zk",
+      "name": "Honolulu Museum of Art Caf\u00e9",
+      "latitude": 21.304051299999998,
+      "longitude": -157.8482785,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJRQewc-dtAHwRzlsPd8gv6zk",
+      "retrieved_at": "2026-09-24T21:04:37.514406Z"
+    },
+    {
+      "place_id": "ChIJjTNVpYNtAHwRMfN3bNF3lyY",
+      "name": "Breeze Hawaii",
+      "latitude": 21.285616599999997,
+      "longitude": -157.8130021,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJjTNVpYNtAHwRMfN3bNF3lyY",
+      "retrieved_at": "2026-09-24T21:04:27.617740Z"
+    },
+    {
+      "place_id": "ChIJpw3kz7ltAHwR8AWlZ2-32So",
+      "name": "Hawaii Nature Center",
+      "latitude": 21.3163889,
+      "longitude": -157.8278895,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJpw3kz7ltAHwR8AWlZ2-32So",
+      "retrieved_at": "2026-09-24T21:04:40.327247Z"
+    },
+    {
+      "place_id": "ChIJO5od3QhuAHwRO8VzXmIKuQk",
+      "name": "Moku Kitchen",
+      "latitude": 21.298195200000002,
+      "longitude": -157.8617229,
+      "timezone_id": "Pacific/Honolulu",
+      "availability": "available",
+      "source_ref": "google_places:ChIJO5od3QhuAHwRO8VzXmIKuQk",
+      "retrieved_at": "2026-09-24T21:04:29.688061Z"
+    }
+  ]
+}
