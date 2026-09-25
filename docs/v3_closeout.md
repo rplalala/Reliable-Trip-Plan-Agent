@@ -3,6 +3,50 @@
 Status: V3 ENGINEERING CLOSED — FINAL ENGINEERING CHECKPOINT RECORDED. Benchmark Frozen: NO. Formal Evaluation: NOT STARTED.
 Next stage: Evaluation Readiness Audit, not started or authorized by this checkpoint.
 
+## Authorized post-checkpoint review corrections — 2026-09-25
+
+Status: implemented + offline-validated; no new live evidence. The review used committed
+checkpoint `c339b832799c6e186792f91b988da293ad767c71`. The authorized fixes were applied on
+the current `feature/frontend` working tree while preserving its existing uncommitted work.
+They do not retroactively change historical smoke outcomes or increase any runtime limit.
+
+- Shared V1/V2/V3 transfer checking now uses the continuous interval containing the actual
+  bound departure for WALK and basic DRIVE as well as time-dependent modes. A 20-minute
+  transfer departing at 11:50 cannot borrow a 13:00-14:00 gap across fixed 12:00-13:00 rest.
+  Explicitly binding departure to 13:00 can pass with the same route estimate. Missing
+  timezone information remains UNKNOWN. This is shared correctness, not a V3-only benefit.
+- V3 stage `comparison`, `main_visits_lost`, `coverage_regressions` and `spatial` now describe
+  the original-to-adopted result, rather than inheriting the final attempted round. Round
+  proposals, losses and rejection reasons remain in `rounds`. Net visit losses include
+  removed or replaced original main visits; moving an unchanged identity is not visit loss.
+  The existing comparison vocabulary is retained: `coverage_regressions` records count
+  reductions, including an authorized overfull reduction from six visits to five, rather
+  than exclusively new coverage violations. No acceptance rule was relaxed.
+- `RepairBudget` obtains its implicit Repair policy from the supplied runtime snapshot.
+  Explicit `policy` still takes precedence; missing Repair policy fails clearly. Independent
+  stage callers no longer need to pass the same policy twice. Normal graph callers already
+  supplied both values. This change does not claim to remove every legacy diagnostics
+  configuration read elsewhere in the application.
+
+Offline execution order:
+
+1. New focused regressions: 6 passed, 1 failed. A global configuration-loader mock also
+   blocked the fixture's existing diagnostics read. The mock was narrowed to budget
+   construction; the real stage still checks injected policy execution.
+2. Focused tests plus Repair, multi-round, B/C targets, mixed transport, shared initial
+   routes, V3 wiring and API-evidence regressions: 261 passed.
+3. Ruff initially reported two overlong lines in the new test file; formatting that file
+   resolved them. The targeted Ruff check passed; the initial diff whitespace check passed.
+4. An additional accepted-then-rejected deletion regression yielded 7 passed, 1 failed:
+   its assertion incorrectly treated all count reductions as coverage violations. The
+   assertion was corrected to preserve the existing allowed six-to-five comparison meaning.
+5. Final focused regressions: 8 passed. Targeted Ruff passed. No model, HTTP, embedding,
+   database or live calls were made; no full-repository regression was run.
+
+Implementation: `route_options.py`, `repair_budget.py`, `repair_service.py`.
+Regression coverage: `backend/tests/versions/v3/test_closeout_corrections.py`.
+Historical artifacts, budgets, prompts, V0 behavior and the product default are unchanged.
+
 ## Authority and checkpoint identity
 
 Current code and parsed runtime configuration establish implementation facts. Accepted user

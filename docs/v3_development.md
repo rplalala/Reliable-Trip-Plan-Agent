@@ -1,5 +1,13 @@
 # V3 development record
 
+## Post-closeout review corrections — 2026-09-25
+
+Three authorized corrections are implemented + offline-validated: actual-departure transfer
+windows, adopted-stage summaries after later failed attempts, and injected standalone Repair
+policy ownership. See [the closeout correction record](v3_closeout.md#authorized-post-checkpoint-review-corrections--2026-09-25)
+for scope, the test failures/corrections in execution order, and evidence limitations.
+No new live validation or budget changes accompany this correction.
+
 ## Final engineering checkpoint — 2026-09-25
 
 Current closeout status: **V3 ENGINEERING CLOSED — FINAL ENGINEERING CHECKPOINT RECORDED**. The [closeout record](v3_closeout.md) supersedes
