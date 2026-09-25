@@ -655,3 +655,30 @@ input:focus {
     grid-column: auto;
   }
 }
+/* MVP execution and secondary evidence presentation. */
+.nearby-list { margin: 1rem 0 0 1.25rem; padding-left: 1rem; border-left: 2px solid #809b99; font-size: 0.85em; }
+.nearby-list h5 { font-size: 1em; margin-bottom: 0.5rem; }
+.nearby-list p { margin: 0.3rem 0; }
+.weather-card { padding: 1rem; border: 1px solid #809b99; border-radius: 0.5rem; }
+.research-runs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: 1rem; margin-top: 2rem; }
+.research-run { min-width: 0; padding: 1rem; border: 1px solid #809b99; border-radius: 0.5rem; }
+.research-run pre { overflow: auto; max-height: 28rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.button { transition: background-color 160ms, box-shadow 160ms; }
+.button:focus-visible { outline: 3px solid #359b88; outline-offset: 3px; }
+.button-secondary, .button-stop { border: 1px solid currentColor; background: transparent; box-shadow: none; }
+.button-secondary { color: inherit; }
+.button-stop { color: #a94023; }
+.button-secondary:hover:not(:disabled), .button-stop:hover:not(:disabled) { background: rgb(128 128 128 / 12%); }
+.developer-shell .button-stop { color: #ffb49c; }
+.planning-progress-panel { margin-top: 1.5rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+.planning-progress { margin: 1rem 0; }
+.planning-progress small { display: block; margin-top: 0.5rem; opacity: 0.8; }
+.planning-progress-track { overflow: hidden; height: 0.65rem; border-radius: 999px; background: rgb(128 128 128 / 20%); }
+.planning-progress-fill { height: 100%; border-radius: inherit; background: #359b88; transition: width 300ms ease-out; }
+.planning-progress[data-state="failed"] .planning-progress-fill,
+.planning-progress[data-state="cancelled"] .planning-progress-fill,
+.planning-progress[data-state="paused"] .planning-progress-fill { background: #957245; }
+@media (prefers-reduced-motion: reduce) {
+  .button, .planning-progress-fill { transition: none; }
+}
+details { margin: 1rem 0; }

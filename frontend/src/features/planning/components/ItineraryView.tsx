@@ -1,19 +1,43 @@
 import { Fragment } from "react";
-import type { Activity, Itinerary, Transfer, MinimumDailyCoverage } from "../types";
+import type { Activity, Itinerary, Transfer, MinimumDailyCoverage, ProductWeather } from "../types";
+
+function WeatherCard({ weather }: { weather: ProductWeather }) {
+  const forecast = weather.status === "available" ? weather.forecast : null;
+  return <aside aria-label="Daily weather" className="weather-card">
+    <h4>Weather</h4>
+    {!forecast ? <p>Weather information is unavailable for this day.</p> : <>
+      {forecast.condition && <p>{forecast.condition}</p>}
+      {forecast.min_temperature_c !== null && <p>Low: {forecast.min_temperature_c} °C</p>}
+      {forecast.max_temperature_c !== null && <p>High: {forecast.max_temperature_c} °C</p>}
+      {forecast.precipitation_probability_percent !== null && <p>Chance of rain: {forecast.precipitation_probability_percent}%</p>}
+      {forecast.max_wind_speed_kph !== null && <p>Maximum wind: {forecast.max_wind_speed_kph} km/h</p>}
+      {weather.attribution && <p className="field-help">{weather.attribution}</p>}
+      {weather.source_url === "https://open-meteo.com/" && <p className="field-help">
+        <a href="https://open-meteo.com/">Open-Meteo</a>{" · "}
+        <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+      </p>}
+      <p className="field-help">Forecasts may change.</p>
+    </>}
+  </aside>;
+}
 
 function TransferCard({ transfer }: { transfer: Transfer }) {
-  const label = { WALK: "Walk", TRANSIT: "Public transport", DRIVE: "Car transport" }[transfer.mode];
+  const label = transfer.mode ? { WALK: "Walk", TRANSIT: "Public transport", DRIVE: "Car transport" }[transfer.mode] : "Transport unverified";
   return (
     <aside className="activity-card" aria-label="Transfer">
+      {transfer.preceding_end_time && <p>{formatTime(transfer.preceding_end_time)}: Previous activity ends</p>}
       <p>{label}: {transfer.provider_duration_seconds === null ? "Time unknown" :
         `about ${Math.ceil(transfer.provider_duration_seconds / 60)} min`}
         {" · "}{transfer.distance_meters === null ? "Distance unknown" :
           `${(transfer.distance_meters / 1000).toFixed(1)} km`}</p>
-      {transfer.reserve_seconds > 0 && <p>Allow an additional {Math.ceil(transfer.reserve_seconds / 60)} min {transfer.mode === "DRIVE" ? "for pickup/drop-off." : "as a conservative scheduling reserve; route unverified."}</p>}
+      {transfer.reserve_seconds > 0 && <p>Allow an additional {Math.ceil(transfer.reserve_seconds / 60)} min {transfer.mode === "DRIVE" ? "for pickup/drop-off." : "as a separate scheduling reserve."}</p>}
+      {transfer.attribution && <p>Source: {transfer.attribution}</p>}
+      {transfer.estimate_kind === "derived" && <p>This is a derived estimate, not a direct route observation.</p>}
       <p>{transfer.validation_state === "CONFIRMED" ? "Transfer conflict remains." :
         transfer.validation_state === "UNKNOWN" ? "Transfer feasibility is unverified." :
           "Based on the adopted route estimate; not a guarantee."}</p>
       {transfer.unknowns.map((value, index) => <p key={index}>{value}</p>)}
+      {transfer.following_start_time && <p>{formatTime(transfer.following_start_time)}: Next activity starts</p>}
     </aside>
   );
 }
@@ -33,12 +57,22 @@ function ActivityCard({ activity }: { activity: Activity }) {
         <h4>{activity.title}</h4>
         {activity.place_name && <p className="activity-place">{activity.place_name}</p>}
         {activity.location && <p>{activity.location}</p>}
+        {activity.introduction && <p>{activity.introduction}</p>}
         {activity.notes && <p>{activity.notes}</p>}
         {activity.estimated_cost && (
           <p className="cost">
             Estimated cost: {activity.estimated_cost.currency} {activity.estimated_cost.amount}
           </p>
         )}
+        {!!activity.nearby?.length && <section className="nearby-list" aria-label={`Nearby ${activity.place_name || activity.title}`}>
+          <h5>Nearby options — not scheduled</h5>
+          <ul>{activity.nearby.map((place, index) => <li key={index}>
+            <strong>{place.place_name}</strong><p>{place.reason}</p>
+            {place.area && <p>{place.area}</p>}
+            {place.uncertainty && <p>{place.uncertainty}</p>}
+            {place.attribution && <p>Source: {place.attribution}</p>}
+          </li>)}</ul>
+        </section>}
       </div>
     </article>
   );
@@ -75,6 +109,7 @@ export function ItineraryView({ itinerary, minimumCoverage = [] }: {
               <h3>{day.date}</h3>
             </div>
             <div className="activity-list">
+              {day.weather && <WeatherCard weather={day.weather} />}
               {day.activities.length > 0 ? (
                 day.activities.map((activity) => (
                   <Fragment key={activity.activity_id}>
@@ -110,11 +145,6 @@ export function ItineraryView({ itinerary, minimumCoverage = [] }: {
           ))}
         </section>
       )}
-      <p className="field-help">
-        Weather forecasts, when used, are provided by <a href="https://open-meteo.com/">Open-Meteo</a>
-        {" "}under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
-        Forecasts may be incomplete and are not guarantees.
-      </p>
     </section>
   );
 }

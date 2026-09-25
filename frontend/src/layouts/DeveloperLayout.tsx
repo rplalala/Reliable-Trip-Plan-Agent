@@ -9,7 +9,7 @@ export function DeveloperLayout() {
           <h1>Planner workbench</h1>
         </div>
         <nav aria-label="Developer navigation">
-          <NavLink to="/dev/planner">Planner</NavLink>
+          <NavLink to="/dev">Planner</NavLink>
           <NavLink to="/">Return to product</NavLink>
         </nav>
       </header>

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { PlanningProgressBar } from "../../shared/PlanningProgressBar";
+import { advanceProgress } from "../../shared/planningProgress";
 
 import { submitPlanningRequest } from "../../features/planning/api";
 import { ItineraryView } from "../../features/planning/components/ItineraryView";
@@ -12,21 +14,54 @@ export function PlanTripPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<ProductPlanningResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState("");
+  const [position, setPosition] = useState(0);
+  const [progressState, setProgressState] = useState("idle");
+  const active = useRef<AbortController | null>(null);
+  useEffect(() => () => { active.current?.abort(); active.current = null; }, []);
 
   async function handleSubmit(input: ProductPlanningInput) {
-    if (isSubmitting) {
+    if (active.current) {
       return;
     }
 
     setIsSubmitting(true);
     setError(null);
     setResult(null);
+    setProgress("Starting your trip plan");
+    setPosition(0);
+    setProgressState("running");
+    const controller = new AbortController();
+    active.current = controller;
     try {
-      setResult(await submitPlanningRequest(input));
+      const response = await submitPlanningRequest(input, {
+        signal: controller.signal,
+        onEvent: event => {
+          if (active.current === controller && !controller.signal.aborted) {
+            setPosition(previous => advanceProgress(previous, event, "product"));
+          }
+          if (active.current === controller && !controller.signal.aborted && event.type === "stage" && event.status !== "skipped" && event.message) {
+            setProgress(event.message);
+          }
+        },
+      });
+      if (active.current === controller && !controller.signal.aborted) {
+        setResult(response);
+        setProgressState(response.status === "completed" ? "completed" : "paused");
+        setProgress(response.status === "completed" ? "Your itinerary is ready" : "Planning paused. Please review the message below.");
+        if (response.status === "completed") setPosition(1);
+      }
     } catch {
-      setError("We could not generate your itinerary. Please try again.");
+      if (active.current === controller && !controller.signal.aborted) {
+        setError("We could not generate your itinerary. Please try again.");
+        setProgressState("failed");
+        setProgress("Planning could not be completed");
+      }
     } finally {
-      setIsSubmitting(false);
+      if (active.current === controller) {
+        active.current = null;
+        setIsSubmitting(false);
+      }
     }
   }
 
@@ -41,8 +76,18 @@ export function PlanTripPage() {
       <PlanningForm
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}
-        onEdit={() => { setResult(null); setError(null); }}
+        onEdit={() => { setResult(null); setError(null); setProgressState("idle"); setPosition(0); }}
       />
+
+      {progressState !== "idle" && <section aria-label="Planning progress" className="planning-progress-panel">
+        <p role="status">{progress}</p>
+        <PlanningProgressBar label="Planning progress" value={position} state={progressState} message={progress} />
+        {isSubmitting && <button className="button button-stop" type="button" onClick={() => {
+          active.current?.abort(); active.current = null;
+          setIsSubmitting(false); setProgress("Planning stopped"); setProgressState("cancelled");
+          setError("Planning stopped. You can edit your trip and try again.");
+        }}>Stop planning</button>}
+      </section>}
 
       <div aria-live="polite">
         {error && <div className="alert alert-error">{error}</div>}

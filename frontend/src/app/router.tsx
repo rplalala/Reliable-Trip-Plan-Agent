@@ -1,4 +1,4 @@
-import { Navigate, type RouteObject, createBrowserRouter } from "react-router-dom";
+import { type RouteObject, createBrowserRouter } from "react-router-dom";
 
 import { DeveloperLayout } from "../layouts/DeveloperLayout";
 import { ProductLayout } from "../layouts/ProductLayout";
@@ -19,8 +19,7 @@ export const routes: RouteObject[] = [
     path: "dev",
     element: <DeveloperLayout />,
     children: [
-      { index: true, element: <Navigate to="planner" replace /> },
-      { path: "planner", element: <DeveloperPlannerPage /> },
+      { index: true, element: <DeveloperPlannerPage /> },
     ],
   },
   { path: "*", element: <NotFoundPage /> },

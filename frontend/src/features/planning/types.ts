@@ -16,6 +16,8 @@ export interface TravelRequirements {
 }
 
 export interface Activity {
+  introduction?: string | null;
+  nearby?: Nearby[];
   activity_id: string;
   source_place_id?: string | null;
   title: string;
@@ -28,6 +30,7 @@ export interface Activity {
 }
 
 export interface ItineraryDay {
+  weather?: ProductWeather;
   date: string;
   activities: Activity[];
 }
@@ -45,13 +48,17 @@ export interface ReferenceRecommendation {
 export interface Transfer {
   from_activity_id: string;
   to_activity_id: string;
-  mode: "WALK" | "TRANSIT" | "DRIVE";
-  mode_source: string;
+  mode: "WALK" | "TRANSIT" | "DRIVE" | null;
+  mode_source?: string;
+  preceding_end_time?: string;
+  following_start_time?: string;
+  attribution?: string | null;
+  estimate_kind?: "provider" | "derived" | "unverified";
   provider_duration_seconds: number | null;
   distance_meters: number | null;
   reserve_seconds: number;
   validation_state: "PASS" | "CONFIRMED" | "UNKNOWN";
-  calculation_basis: string;
+  calculation_basis?: string;
   unknowns: string[];
 }
 
@@ -70,8 +77,32 @@ export interface ProductPlanningInput {
   start_date: string;
   end_date: string;
   traveler_count: number;
-  budget?: Money;
+  budget: Money;
   additional_preferences?: string;
+}
+
+export interface Nearby {
+  place_name: string;
+  reason: string;
+  associated_day: string;
+  anchor_activity_id: string;
+  area: string | null;
+  uncertainty: string | null;
+  attribution: string | null;
+}
+
+export interface ProductWeather {
+  status: "available" | "unavailable";
+  forecast: {
+    date: string;
+    condition: string | null;
+    min_temperature_c: number | null;
+    max_temperature_c: number | null;
+    precipitation_probability_percent: number | null;
+    max_wind_speed_kph: number | null;
+  } | null;
+  attribution: string | null;
+  source_url: string | null;
 }
 
 export interface MinimumDailyCoverage {
