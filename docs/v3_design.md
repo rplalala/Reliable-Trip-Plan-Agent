@@ -1,5 +1,10 @@
 # V3 design
 
+Post-checkpoint correction (2026-09-25): formal transfers use their bound departure's continuous
+free interval; stage summaries compare the original with the adopted itinerary; standalone
+Repair budgets honor injected runtime policy. These corrections have offline evidence only.
+See [closeout corrections](v3_closeout.md#authorized-post-checkpoint-review-corrections--2026-09-25).
+
 ## Final engineering checkpoint — 2026-09-25
 
 Current closeout status: **V3 ENGINEERING CLOSED — FINAL ENGINEERING CHECKPOINT RECORDED**. The [closeout record](v3_closeout.md) supersedes

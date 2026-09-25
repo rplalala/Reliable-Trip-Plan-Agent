@@ -15,6 +15,40 @@ const suggestion: ReferenceRecommendation = {
   place_name: "Optional cafe", source_place_id: null, source_ref: null,
   reason: "An extra place to consider", associated_day: null, area: null, uncertainty: null,
 };
+
+it("renders final daily weather, optional introduction and nested Nearby as text", () => {
+  const day = base.days[0];
+  render(<ItineraryView itinerary={{ ...base, days: [{ ...day,
+    weather: { status: "available", forecast: { date: day.date, condition: "Cloudy", min_temperature_c: 0,
+      max_temperature_c: 18, precipitation_probability_percent: 0, max_wind_speed_kph: null },
+      attribution: "Weather attribution", source_url: "https://open-meteo.com/" },
+    activities: [{ ...day.activities[0], introduction: "A local history museum.", nearby: [{
+      place_name: "<script>cafe</script>", reason: "An optional stop", associated_day: day.date,
+      anchor_activity_id: "a", area: null, uncertainty: "Hours unknown", attribution: "Google Places",
+    }] }],
+  }] }} />);
+  expect(screen.getByText("Low: 0 °C")).toBeInTheDocument();
+  expect(screen.getByText("Chance of rain: 0%")).toBeInTheDocument();
+  expect(screen.getByText("A local history museum.")).toBeInTheDocument();
+  const nearby = screen.getByRole("region", { name: "Nearby Museum" });
+  expect(nearby.closest("article")).toHaveTextContent("Primary visit");
+  expect(nearby).toHaveClass("nearby-list");
+  expect(within(nearby).getByText("<script>cafe</script>")).toBeInTheDocument();
+  expect(nearby.querySelector("script")).toBeNull();
+  expect(within(nearby).queryByText(/Estimated cost|10:00/)).toBeNull();
+});
+
+it("renders unavailable weather and unknown transport without false attribution", () => {
+  render(<ItineraryView itinerary={{ ...base,
+    days: [{ ...base.days[0], weather: { status: "unavailable", forecast: null, attribution: null, source_url: null } }],
+    transfers: [{ from_activity_id: "before", to_activity_id: "a", mode: null,
+      provider_duration_seconds: null, distance_meters: null, reserve_seconds: 0,
+      validation_state: "UNKNOWN", unknowns: [], estimate_kind: "unverified" }],
+  }} />);
+  expect(screen.getByText(/Weather information is unavailable/)).toBeInTheDocument();
+  expect(screen.getByText(/Transport unverified: Time unknown/)).toBeInTheDocument();
+  expect(screen.queryByText(/Google|Open-Meteo/)).toBeNull();
+});
 afterEach(cleanup);
 describe("Itinerary reference roles", () => {
   it.each([undefined, []])("hides empty and historical references", (references) => {
@@ -87,4 +121,19 @@ it("shows an unmet daily minimum separately from optional Nearby references", ()
       status: "missing", reason: "minimum_daily_coverage_missing" }]} />);
   expect(screen.getByRole("status")).toHaveTextContent("Minimum daily coverage remains unmet");
   expect(screen.getByText("Optional cafe")).toBeInTheDocument();
+});
+
+it("renders a final conflicting connection without hiding the itinerary", () => {
+  render(<ItineraryView itinerary={{ ...base, transfers: [{
+    from_activity_id: "previous", to_activity_id: "a", mode: "WALK",
+    preceding_end_time: "2026-09-21T10:10:00+10:00",
+    following_start_time: "2026-09-21T10:00:00+10:00",
+    provider_duration_seconds: 720, distance_meters: 800, reserve_seconds: 0,
+    validation_state: "CONFIRMED", unknowns: [], estimate_kind: "provider",
+  }] }} />);
+  expect(screen.getByText("Primary visit")).toBeInTheDocument();
+  const card = within(screen.getByLabelText("Transfer"));
+  expect(card.getByText("Transfer conflict remains.")).toBeInTheDocument();
+  expect(card.getByText("10:10: Previous activity ends")).toBeInTheDocument();
+  expect(card.getByText("10:00: Next activity starts")).toBeInTheDocument();
 });

@@ -1,5 +1,10 @@
 # V2 main-candidate RAG integration
 
+Shared correctness correction (2026-09-25, offline-validated): V2 inherits the V1/V3 route timing
+fix that checks the continuous interval at the actual bound departure, including WALK/basic DRIVE.
+Later free time cannot validate crossing fixed rest. RAG, budgets and primary generation are unchanged.
+See [review correction evidence](v3_closeout.md#authorized-post-checkpoint-review-corrections--2026-09-25).
+
 Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
 for current configuration, shared ownership and artifact-verified evidence. Earlier dated
 implementation/live statements below retain their original scope. V0 remains tool-free;

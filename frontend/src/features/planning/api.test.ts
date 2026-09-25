@@ -56,11 +56,12 @@ describe("product planning API", () => {
       start_date: "2026-09-12",
       end_date: "2026-09-14",
       traveler_count: 2,
+      budget: { amount: "2000", currency: "AUD" },
     });
 
     const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     const payload = JSON.parse(String(init.body)) as Record<string, unknown>;
-    expect(payload).not.toHaveProperty("budget");
+    expect(payload.budget).toEqual({ amount: "2000", currency: "AUD" });
     expect(payload).not.toHaveProperty("additional_preferences");
   });
 });

@@ -4,6 +4,7 @@ import asyncio
 import json
 from time import monotonic
 
+from backend.app.observability.progress import observed, progress_details
 from backend.app.observability.run_trace import redact_secrets
 from backend.app.versions.v3.repair_acceptance import (
     assess,
@@ -18,6 +19,7 @@ from backend.app.versions.v3.repair_projection import build_repair_input
 from backend.app.versions.v3.repair_routes import acquire_transitions, bind_transitions
 
 
+@observed("repair_round")
 async def run_repair_once(
     original,
     context,
@@ -49,6 +51,14 @@ async def run_repair_once(
     Inputs must be an accepted V2 primary snapshot. Cancellation is always propagated.
     No result from a rejected patch becomes the final itinerary.
     """
+    progress_details("repair_targets", {
+        "round_index": round_index,
+        "target_ids": list(scope.target_ids),
+        "permitted_operations": [
+            {"activity_id": p.activity_id, "operations": sorted(p.operations)}
+            for p in scope.permissions
+        ],
+    })
     budget = (
         budget
         if budget is not None
@@ -240,7 +250,7 @@ async def run_repair_once(
                 budget.clock() + timing.preparation_seconds,
                 round_deadline - timing.minimum_model_seconds - timing.recheck_reserve_seconds,
             )
-            preparation = await prepare_candidates(
+            preparation = await observed("repair_preparation")(prepare_candidates)(
                 context,
                 scope,
                 budget,
@@ -310,7 +320,7 @@ async def run_repair_once(
             callback = UsageMetadataCallbackHandler()
             try:
                 async with asyncio.timeout(timeout):
-                    raw = await model.generate_repair_structured(
+                    raw = await observed("repair_model")(model.generate_repair_structured)(
                         system_prompt=system,
                         user_prompt=user,
                         output_tokens=policy.input.output_tokens,
@@ -328,7 +338,7 @@ async def run_repair_once(
 
             budget.route_phase = "post_proposal"
             budget.io_deadline = round_deadline - timing.finalization_reserve_seconds
-            component_result = await accept_components(
+            component_result = await observed("revalidation")(accept_components)(
                 snapshot,
                 patch,
                 initial,
@@ -415,6 +425,7 @@ def relevant_routes(itinerary, scope, evidence, schedule=None):
     )
 
 
+@observed("repair")
 async def run_repair_stage(
     original,
     context,
@@ -689,6 +700,33 @@ async def run_repair_stage(
     summary = compare(
         original, current, initial, reassessed, final_report, scope, current_schedule, context
     )
+    from backend.app.versions.v3.repair_acceptance import inclusion_ids
+    from backend.app.versions.v3.repair_spatial import check_addition_layout
+
+    final_activities = {a.activity_id: a for d in current.days for a in d.activities}
+    net_losses = tuple(
+        a.activity_id
+        for d in original.days
+        for a in d.activities
+        if a.activity_kind == "main_poi"
+        and (
+            a.activity_id not in final_activities
+            or final_activities[a.activity_id].source_place_id != a.source_place_id
+        )
+    )
+    final_places = {p.place_id: p for p in context.places}
+    final_places.update({key: candidate.place for key, candidate in ledger.items()})
+    stage_spatial = check_addition_layout(
+        original,
+        current,
+        tuple(final_places.values()),
+        (*context.route_evidence, *routes),
+        scope.travel_mode,
+        policy.spatial,
+        inclusion_ids(context)[0],
+        routing_preference=scope.routing_preference,
+        schedule=current_schedule,
+    )
     any_accepted = any(r.result.status.startswith("ACCEPTED") for r in records)
     status = (
         (
@@ -743,6 +781,10 @@ async def run_repair_stage(
             "original_report": initial,
             "reassessed_original_report": reassessed,
             "target_progress": summary.progress,
+            "comparison": summary,
+            "main_visits_lost": net_losses,
+            "coverage_regressions": summary.coverage_regressions,
+            "spatial": stage_spatial,
             "repair_whitelist": tuple(ledger.values()),
             "acquired_routes": routes,
             "rounds": tuple(records),

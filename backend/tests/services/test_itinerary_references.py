@@ -14,6 +14,7 @@ from backend.app.llm.azure_foundry.mapping import map_foundry_itinerary
 from backend.app.policies.itinerary_output import output_role_summary, validate_output_sources
 from backend.app.schemas.itinerary import Activity, Itinerary
 from backend.app.services import preference_interpretation as _bootstrap  # noqa: F401
+from backend.app.services.product_presentation import present_product
 from backend.app.versions.v0.runner import run_v0
 from backend.tests.llm.azure_foundry.test_mapping import make_itinerary as make_dto
 from backend.tests.request_fixtures import make_request
@@ -145,10 +146,18 @@ def test_primary_cost_projection_and_final_api_contract():
     result = validate_output_sources(result, places=[evidence("museum")], supplied_ids=["museum"])
     assert str(result.days[0].activities[0].estimated_cost.amount) == "15"
     assert result.cost_projections and result.reference_recommendations == []
-    response = CompletedPlanningResponse(
-        requirements=make_request().trip_requirements(), itinerary=result
+    public = present_product(
+        SimpleNamespace(
+            requirements=make_request().trip_requirements(),
+            itinerary=result,
+            generation_diagnostics=None,
+        ),
+        SimpleNamespace(weather=None),
     )
-    assert response.itinerary.output_version == "itinerary_2"
+    response = CompletedPlanningResponse(**public.model_dump())
+    assert str(response.itinerary.days[0].activities[0].estimated_cost.amount) == "15"
+    assert "output_version" not in response.itinerary.model_dump()
+    assert "cost_projections" not in response.itinerary.model_dump()
     with pytest.raises(ValidationError):
         FoundryPrimaryItineraryDTO.model_validate({**data, "reference_recommendations": []})
     plain = make_dto().model_dump()

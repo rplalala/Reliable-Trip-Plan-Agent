@@ -11,6 +11,7 @@ from backend.app.integrations.google.places import (
     PLACES_DETAILS_FIELD_MASK,
 )
 from backend.app.integrations.models import LatLng, PlaceDetailsRequest, PlaceSearchRequest
+from backend.app.observability.progress import observed
 from backend.app.policies.poi_funnel import MergedSearchObservations, normalize_exact_name
 from backend.app.policies.tripworld_query_plan import query_plan
 from backend.app.schemas.tripworld_discovery import TripWorldOrigin
@@ -224,6 +225,7 @@ class TripWorldDiscovery:
             current = current.model_copy(update={"discovery_origins": tuple(union.values())})
         by_id[pid] = current
 
+    @observed("retrieval")
     async def extend(self, contract, destination, merged, excluded):
         phase_timer = None
         started = perf_counter()

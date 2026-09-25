@@ -1,5 +1,10 @@
 # V1 external-information design
 
+Shared correctness correction (2026-09-25, offline-validated): route timing checks use the
+continuous free interval at the bound departure, including WALK/basic DRIVE. A later gap cannot
+justify departing across fixed rest. No mode, budget or primary-generation policy changed.
+See [review correction evidence](v3_closeout.md#authorized-post-checkpoint-review-corrections--2026-09-25).
+
 Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
 for current configuration, shared ownership and artifact-verified evidence. Earlier dated
 implementation/live statements below retain their original scope. V0 remains tool-free;

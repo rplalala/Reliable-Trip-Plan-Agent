@@ -52,11 +52,15 @@ const completedResult: ProductPlanningResponse = {
 
 type TestUser = ReturnType<typeof userEvent.setup>;
 
-async function fillRequiredFields(user: TestUser) {
+async function fillRequiredFields(user: TestUser, withBudget = true) {
   await user.type(screen.getByLabelText("Destination"), "Kyoto");
   await user.type(screen.getByLabelText("Start date"), "2026-09-12");
   await user.type(screen.getByLabelText("End date"), "2026-09-12");
   await user.type(screen.getByLabelText("Travelers"), "1");
+  if (withBudget) {
+    await user.type(screen.getByLabelText("Budget amount"), "2000");
+    await user.type(screen.getByLabelText("Currency"), "AUD");
+  }
 }
 
 describe("PlanTripPage", () => {
@@ -147,7 +151,8 @@ describe("PlanTripPage", () => {
   it("requires a complete valid budget pair", async () => {
     const user = userEvent.setup();
     render(<PlanTripPage />);
-    await fillRequiredFields(user);
+    await fillRequiredFields(user, false);
+    expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
 
     await user.type(screen.getByLabelText("Budget amount"), "2000");
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
@@ -166,7 +171,7 @@ describe("PlanTripPage", () => {
   it("rejects a negative budget amount", async () => {
     const user = userEvent.setup();
     render(<PlanTripPage />);
-    await fillRequiredFields(user);
+    await fillRequiredFields(user, false);
 
     await user.type(screen.getByLabelText("Budget amount"), "-1");
     await user.type(screen.getByLabelText("Currency"), "AUD");
@@ -181,7 +186,7 @@ describe("PlanTripPage", () => {
     submitPlanningMock.mockResolvedValue(completedResult);
     const user = userEvent.setup();
     render(<PlanTripPage />);
-    await fillRequiredFields(user);
+    await fillRequiredFields(user, false);
     await user.type(screen.getByLabelText("Budget amount"), "2000");
     await user.type(screen.getByLabelText("Currency"), "AUD");
     await user.type(
@@ -198,7 +203,7 @@ describe("PlanTripPage", () => {
       traveler_count: 1,
       budget: { amount: "2000", currency: "AUD" },
       additional_preferences: "Local food and quiet mornings.",
-    });
+    }, expect.objectContaining({ signal: expect.any(AbortSignal), onEvent: expect.any(Function) }));
     expect(await screen.findByRole("heading", { name: "Kyoto" })).toBeInTheDocument();
     expect(screen.getByText("Visit Fushimi Inari Shrine")).toBeInTheDocument();
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
@@ -219,7 +224,8 @@ describe("PlanTripPage", () => {
       start_date: "2026-09-12",
       end_date: "2026-09-12",
       traveler_count: 1,
-    });
+      budget: { amount: "2000", currency: "AUD" },
+    }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
   });
 
   it("uses a neutral message for the defensive clarification outcome", async () => {
@@ -276,7 +282,7 @@ describe("PlanTripPage", () => {
     await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
     expect(submitPlanningMock).toHaveBeenLastCalledWith(expect.objectContaining({
       additional_preferences: "Local museums.", destination: "Kyoto",
-    }));
+    }), expect.objectContaining({ signal: expect.any(AbortSignal) }));
   });
 
   it("uses dedicated safety presentation and removes old safety and itinerary results", async () => {
@@ -351,6 +357,42 @@ describe("PlanTripPage", () => {
       resolvePlanning(completedResult);
     });
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeEnabled();
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
+    expect(screen.getByRole("status")).toHaveTextContent("Your itinerary is ready");
+  });
+
+  it("shows stage-driven safe progress and ignores a stopped run's late result", async () => {
+    let resolve!: (value: ProductPlanningResponse) => void;
+    submitPlanningMock.mockImplementation(() => new Promise(yes => { resolve = yes; }));
+    const user = userEvent.setup();
+    const { unmount } = render(<PlanTripPage />);
+    await fillRequiredFields(user);
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    const options = submitPlanningMock.mock.calls[0][1]!;
+    act(() => options.onEvent({ type: "stage", run_id: "one", sequence: 1, elapsed_ms: 10,
+      stage: "weather", status: "started", message: "Checking the weather", details: { provider: "secret debug" } }));
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0.32");
+    expect(screen.getByRole("status")).toHaveTextContent("Checking the weather");
+    expect(screen.queryByText(/secret debug/)).toBeNull();
+    for (const [stage, message] of [["repair", "Adjusting your itinerary"], ["official_information", "Checking place information"]]) {
+      act(() => options.onEvent({ type: "stage", run_id: "one", sequence: 2, elapsed_ms: 20,
+        stage, status: "skipped", message }));
+      expect(screen.getByRole("status")).toHaveTextContent("Checking the weather");
+      expect(screen.queryByText(message)).toBeNull();
+    }
+    act(() => options.onEvent({ type: "stage", run_id: "one", sequence: 4, elapsed_ms: 30,
+      stage: "generation", status: "started", message: "Planning your days" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Planning your days");
+    await user.click(screen.getByRole("button", { name: "Stop planning" }));
+    expect(options.signal.aborted).toBe(true);
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0.5");
+    await act(async () => resolve(completedResult));
+    expect(screen.queryByRole("heading", { name: "Kyoto" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0");
+    const next = submitPlanningMock.mock.calls[1][1]!;
+    unmount();
+    expect(next.signal.aborted).toBe(true);
   });
 });
 

@@ -36,7 +36,9 @@ class RepairBudget:
 
         runtime_config = runtime_config if runtime_config is not None else load_runtime_config()
         self.rag_config = runtime_config.tripworld_discovery
-        self.policy = policy if policy is not None else configured_policy()
+        self.policy = policy if policy is not None else runtime_config.v3_repair
+        if self.policy is None:
+            raise ValueError("runtime.v3_repair is required for V3")
         if nearby_reserve is None:
             nearby_reserve = runtime_config.reference_discovery.deadline_seconds
         self.limits = self.policy.acquisition.model_dump(

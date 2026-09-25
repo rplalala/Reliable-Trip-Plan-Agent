@@ -225,6 +225,9 @@ def build_tools_graph(
 
     async def acquire_and_resolve_official_web(state: V1State) -> dict[str, object]:
         if official_web_service is None:
+            from backend.app.observability.progress import skipped
+
+            skipped("official_information")
             tracer.event("official_web_disabled")
             return {"official_web_result": None}
         try:
@@ -427,6 +430,10 @@ def build_tools_graph(
         return {"itinerary": itinerary, "route_evidence": routes}
 
     async def discover_reference_recommendations(state: V1State) -> dict[str, object]:
+        if reference_service is None:
+            from backend.app.observability.progress import skipped
+
+            skipped("nearby")
         itinerary = state["itinerary"]
         selection = state["review_selection"].policy_result
         updates = {}
@@ -466,6 +473,28 @@ def build_tools_graph(
             },
         )
         return {"itinerary": itinerary, **updates}
+
+    from backend.app.observability.progress import current_progress, observed
+
+    # HTTP observers are opt-in; independent research runs keep the original node callables.
+    if current_progress() is not None:
+        resolve_destination = observed("destination")(resolve_destination)
+        acquire_candidate_funnel = observed("candidates")(acquire_candidate_funnel)
+        acquire_weather = observed("weather")(acquire_weather)
+        acquire_routes = observed("routes")(acquire_routes)
+        if official_web_service is not None:
+            acquire_and_resolve_official_web = observed("official_information")(
+                acquire_and_resolve_official_web
+            )
+        generate_evidence_informed_itinerary = observed("generation")(
+            generate_evidence_informed_itinerary
+        )
+        validate_itinerary_date_node = observed("date_validation")(validate_itinerary_date_node)
+        bind_actual_transfers = observed("transfers")(bind_actual_transfers)
+        if reference_node is not None or reference_service is not None:
+            reference_node = observed("nearby")(
+                reference_node or discover_reference_recommendations
+            )
 
     graph_builder = StateGraph(state_schema)
     graph_builder.add_node("extract_requirements", extract_requirements)

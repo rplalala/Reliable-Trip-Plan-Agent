@@ -1,18 +1,24 @@
 """Application services separating HTTP clients from research planners."""
 
 from datetime import date
+from uuid import uuid4
 
-from backend.app.llm.client import StructuredLLMClient
+from backend.app.observability.progress import ProgressTracer, current_progress
+from backend.app.observability.run_trace import NullRunTracer
 from backend.app.policies.trip_dates import (
     DateProvider,
     SystemDateProvider,
+    TripDatePolicyError,
 )
 from backend.app.schemas.interpreted_requirements import ClarificationRequired
-from backend.app.schemas.planning import PlanningResult
+from backend.app.schemas.planning import PlanningResult, SystemVersion
+from backend.app.schemas.product import ProductPlanResult
 from backend.app.schemas.request import PlanningRequest, TravelRequirements
-from backend.app.schemas.requirement_boundary import RequirementBoundaryError
-from backend.app.versions.v0.graph import V0StageError
-from backend.app.versions.v0.runner import run_v0
+from backend.app.services.planner_runtime import PlannerRuntime
+from backend.app.services.preference_interpretation import validate_planning_request
+from backend.app.services.product_evidence import ProductEvidenceCollector
+from backend.app.services.product_introductions import ProductIntroductions
+from backend.app.services.product_presentation import present_product
 
 
 class PlanningNeedsClarificationError(RuntimeError):
@@ -33,22 +39,41 @@ class PlanningService:
 
     def __init__(
         self,
-        llm_client: StructuredLLMClient,
+        runtime: PlannerRuntime,
         date_provider: DateProvider | None = None,
+        *,
+        introductions: ProductIntroductions | None = None,
     ) -> None:
-        self._llm_client = llm_client
+        self._runtime = runtime
         self._date_provider = date_provider or SystemDateProvider()
+        self._introductions = introductions or ProductIntroductions()
 
-    async def plan(self, request: PlanningRequest) -> PlanningResult:
-        """The product engine remains V0; input semantics do not select an engine."""
+    def validate(self, request: PlanningRequest) -> PlanningRequest:
+        return validate_planning_request(request, self._date_provider.today())
+
+    async def plan(self, request: PlanningRequest) -> ProductPlanResult:
+        """Run V3, then decorate only the final Product presentation."""
+        observer = current_progress()
+        evidence = ProductEvidenceCollector(
+            ProgressTracer(observer) if observer else NullRunTracer(uuid4())
+        )
         try:
-            return await run_v0(request, self._llm_client, date_provider=self._date_provider)
+            result = await self._runtime.run(
+                SystemVersion.V3,
+                request,
+                reference_date=self._date_provider.today(),
+                tracer=evidence,
+            )
         except ClarificationRequired as exc:
             raise PlanningNeedsClarificationError(
                 request.trip_requirements(), exc.as_dict()
             ) from exc
-        except (V0StageError, RequirementBoundaryError) as exc:
+        except (TripDatePolicyError, TimeoutError):
+            raise
+        except Exception as exc:
             raise PlanningFailedError("The active planner failed") from exc
+        descriptions = await self._introductions.generate(result.itinerary, evidence)
+        return present_product(result, evidence, descriptions)
 
 
 class DeveloperPlanningService:
@@ -56,23 +81,27 @@ class DeveloperPlanningService:
 
     def __init__(
         self,
-        llm_client: StructuredLLMClient,
+        runtime: PlannerRuntime,
         date_provider: DateProvider | None = None,
     ) -> None:
-        self._llm_client = llm_client
+        self._runtime = runtime
         self._date_provider = date_provider or SystemDateProvider()
 
-    async def plan_v0(
+    def reference_date(self, override: date | None = None) -> date:
+        return override or self._date_provider.today()
+
+    async def plan(
         self,
+        version: SystemVersion,
         request: PlanningRequest,
         *,
         reference_date: date | None = None,
     ) -> PlanningResult:
-        """Run V0 directly while preserving its research-facing behavior."""
+        """Select a real research runner without narrowing its result model."""
 
-        effective_reference_date = reference_date or self._date_provider.today()
-        return await run_v0(
+        effective_reference_date = self.reference_date(reference_date)
+        return await self._runtime.run(
+            version,
             request,
-            self._llm_client,
             reference_date=effective_reference_date,
         )

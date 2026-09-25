@@ -326,6 +326,10 @@ class V3PostPrimary:
             )
         self.owner.phase = "repair"
         repair = None
+        if scope is None:
+            from backend.app.observability.progress import skipped
+
+            skipped("repair")
         if scope is not None:
             rich = state["candidate_funnel"].enriched_candidates
             rich_ids = {c.candidate.place_id for c in rich}

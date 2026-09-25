@@ -308,12 +308,13 @@ def test_actual_product_api_separates_user_safety_and_system_errors(outcome):
 def test_developer_api_contract_failure_is_502_not_input_422():
     from backend.app.services.planning import DeveloperPlanningService
     from backend.tests.api.test_developer_planning import post_developer_planning
+    from backend.tests.fakes import V0TestRuntime
 
     client = FakeStructuredLLMClient(
         [draft(issue(source_refs=[{"quote": "fabricated", "occurrence": 0}]))]
     )
     status, body = post_developer_planning(
-        DeveloperPlanningService(client),
+        DeveloperPlanningService(V0TestRuntime(client)),
         {
             "version": "v0",
             "reference_date": "2026-09-11",

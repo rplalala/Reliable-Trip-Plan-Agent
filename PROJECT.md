@@ -11,6 +11,16 @@ content-filter UI mapping remain offline-only. Benchmark Frozen: NO; Formal Eval
 
 Current source of truth. Updated 2026-09-25.
 
+Frontend migration checkpoint: Product API now selects V3 through the request-owned application
+runtime and projects an allowlisted final presentation contract. Product-only introductions are
+optional and bounded by the remaining request deadline; Developer V0-V3 retains research output
+without introduction calls. React now consumes streaming progress and Product presentation fields;
+the `/dev` workbench runs four independent versions from one structured snapshot. Offline validation
+is recorded separately from bounded real-provider acceptance: Product completion, Developer four-way
+completion and cancellation isolation passed after the approved HTTP-client ownership fix.
+This does not cover every repair/retrieval branch or establish itinerary quality.
+See docs/frontend_design.md for implementation boundaries and validation status.
+
 ## Purpose and implemented scope
 
 An LLM-Based Travel Planning System for Feasible and Reliable Itinerary Generation studies a
@@ -80,8 +90,8 @@ Latest joint evidence supports normal V2 retrieval/resolution and shared two-pas
 It does not establish RAG superiority, universal preference satisfaction or complete tool coverage.
 Tokyo Weather coverage limitations (Sydney ten-day acquisition succeeded), Web accepted-fact/usage gaps, exact SQL variation, unknown costs, visitor suitability
 and duplicate experiences remain open. Melbourne named-identity ambiguity remains a separate
-conservative clarification limitation. Product/developer APIs remain V0-only; frontend budget,
-clarification and developer input/version selection need separate alignment.
+conservative clarification limitation. The later frontend migration checkpoint above supersedes
+the former V0-only API boundary; Product selects V3 and Developer exposes V0-V3.
 
 ## Current work and next approval
 

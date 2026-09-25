@@ -4,6 +4,7 @@ import json
 from datetime import date
 from pathlib import Path
 
+from backend.app.observability.progress import observed
 from backend.app.policies.interpreted_requirements import (
     assess_requirements,
     canonicalize_requirements,
@@ -62,6 +63,7 @@ def empty_preference_draft() -> InterpretationDraft:
     )
 
 
+@observed("requirements")
 async def interpret_preferences(request, reference_date, client, tracer=None):
     request = validate_planning_request(request, reference_date)
     if request.additional_preferences:

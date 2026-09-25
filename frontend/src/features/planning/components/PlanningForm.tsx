@@ -13,10 +13,13 @@ interface PlanningFormProps {
   isSubmitting: boolean;
   onSubmit: (input: ProductPlanningInput) => void;
   onEdit?: () => void;
+  submitLabel?: string;
+  referenceDate?: string;
 }
 
-export function PlanningForm({ isSubmitting, onSubmit, onEdit }: PlanningFormProps) {
-  const [dateWindow, setDateWindow] = useState<TripDateWindow | null>(null);
+export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, referenceDate }: PlanningFormProps) {
+  const [serverDateWindow, setDateWindow] = useState<TripDateWindow | null>(null);
+  const dateWindow = referenceDate ? { allowedStart: referenceDate, allowedEnd: addCalendarDays(referenceDate, 13), maxTripDays: 10 } : serverDateWindow;
   const [dateError, setDateError] = useState(false);
   useEffect(() => {
     let active = true;
@@ -47,9 +50,7 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit }: PlanningFormPro
     (!endDate || isDateWithinTripWindow(endDate, dateWindow));
   const hasBudgetAmount = budgetAmount.trim().length > 0;
   const hasBudgetCurrency = budgetCurrency.trim().length > 0;
-  const hasBudget = hasBudgetAmount || hasBudgetCurrency;
   const hasValidBudget =
-    !hasBudget ||
     (hasBudgetAmount &&
       hasBudgetCurrency &&
       Number.isFinite(Number(budgetAmount)) &&
@@ -75,13 +76,8 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit }: PlanningFormPro
       start_date: startDate,
       end_date: endDate,
       traveler_count: parsedTravelerCount,
+      budget: { amount: budgetAmount, currency: budgetCurrency },
     };
-    if (hasBudgetAmount && hasBudgetCurrency) {
-      input.budget = {
-        amount: budgetAmount,
-        currency: budgetCurrency,
-      };
-    }
     if (additionalPreferences.trim().length > 0) {
       input.additional_preferences = additionalPreferences;
     }
@@ -162,14 +158,15 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit }: PlanningFormPro
       </div>
 
       <fieldset className="budget-fields">
-        <legend>Budget <span>Optional</span></legend>
-        <p className="field-help">If you add a budget, provide both the amount and currency.</p>
+        <legend>Whole-trip budget <span>Required</span></legend>
+        <p className="field-help">Provide the total amount for all travelers and its currency.</p>
         <div className="product-form-grid">
           <label>
             Budget amount
             <input
               type="number"
               value={budgetAmount}
+              required
               min="0"
               step="0.01"
               disabled={isSubmitting}
@@ -183,6 +180,7 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit }: PlanningFormPro
             <input
               type="text"
               value={budgetCurrency}
+              required
               pattern="[A-Z]{3}"
               maxLength={3}
               disabled={isSubmitting}
@@ -220,7 +218,7 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit }: PlanningFormPro
           type="submit"
           disabled={!canSubmit}
         >
-          {isSubmitting ? "Building your itinerary…" : "Generate itinerary"}
+          {isSubmitting ? "Building your itinerary…" : submitLabel || "Generate itinerary"}
         </button>
         <span className="form-note">Generation may take a moment.</span>
       </div>
