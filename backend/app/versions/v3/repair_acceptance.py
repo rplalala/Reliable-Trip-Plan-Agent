@@ -3,6 +3,7 @@
 from dataclasses import replace
 from datetime import timedelta
 
+from backend.app.observability.progress import observed
 from backend.app.schemas.itinerary import Activity, ItineraryDay
 from backend.app.versions.v3.repair_models import RepairComparison, TargetProgress
 from backend.app.versions.v3.repair_obligations import (
@@ -13,6 +14,7 @@ from backend.app.versions.v3.repair_obligations import (
 from backend.app.versions.v3.validation import validate_draft
 
 
+@observed("validation")
 def assess(itinerary, context, whitelist=(), evidence=(), transitions=None):
     whitelist = (*context.identity_ledger, *whitelist)
     places = {p.place_id: p for p in context.places}

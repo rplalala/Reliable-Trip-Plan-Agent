@@ -4,6 +4,7 @@ import asyncio
 import json
 from time import monotonic
 
+from backend.app.observability.progress import observed, progress_details
 from backend.app.observability.run_trace import redact_secrets
 from backend.app.versions.v3.repair_acceptance import (
     assess,
@@ -18,6 +19,7 @@ from backend.app.versions.v3.repair_projection import build_repair_input
 from backend.app.versions.v3.repair_routes import acquire_transitions, bind_transitions
 
 
+@observed("repair_round")
 async def run_repair_once(
     original,
     context,
@@ -49,6 +51,14 @@ async def run_repair_once(
     Inputs must be an accepted V2 primary snapshot. Cancellation is always propagated.
     No result from a rejected patch becomes the final itinerary.
     """
+    progress_details("repair_targets", {
+        "round_index": round_index,
+        "target_ids": list(scope.target_ids),
+        "permitted_operations": [
+            {"activity_id": p.activity_id, "operations": sorted(p.operations)}
+            for p in scope.permissions
+        ],
+    })
     budget = (
         budget
         if budget is not None
@@ -240,7 +250,7 @@ async def run_repair_once(
                 budget.clock() + timing.preparation_seconds,
                 round_deadline - timing.minimum_model_seconds - timing.recheck_reserve_seconds,
             )
-            preparation = await prepare_candidates(
+            preparation = await observed("repair_preparation")(prepare_candidates)(
                 context,
                 scope,
                 budget,
@@ -310,7 +320,7 @@ async def run_repair_once(
             callback = UsageMetadataCallbackHandler()
             try:
                 async with asyncio.timeout(timeout):
-                    raw = await model.generate_repair_structured(
+                    raw = await observed("repair_model")(model.generate_repair_structured)(
                         system_prompt=system,
                         user_prompt=user,
                         output_tokens=policy.input.output_tokens,
@@ -328,7 +338,7 @@ async def run_repair_once(
 
             budget.route_phase = "post_proposal"
             budget.io_deadline = round_deadline - timing.finalization_reserve_seconds
-            component_result = await accept_components(
+            component_result = await observed("revalidation")(accept_components)(
                 snapshot,
                 patch,
                 initial,
@@ -415,6 +425,7 @@ def relevant_routes(itinerary, scope, evidence, schedule=None):
     )
 
 
+@observed("repair")
 async def run_repair_stage(
     original,
     context,
