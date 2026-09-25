@@ -29,6 +29,7 @@ Thumbs.db
 /logs/
 
 /thesis_notes/
+/thesis/
 
 # Local TripWorld source data and generated artifacts
 /data/tripworld/raw/
@@ -40,3 +41,6 @@ Thumbs.db
 # Local diagnostic results and caches
 /artifacts/
 /.cache/
+
+# Local presentation slides
+/slides/
