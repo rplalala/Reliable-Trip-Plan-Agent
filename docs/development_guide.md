@@ -229,3 +229,17 @@ factory; Places/Routes still require the existing Google key, Weather does not. 
 fallback exists. V0 has no Weather calls. API/form date limits come from /api/planning/date-window.
 Existing CLI/AcceptanceSession use the same shared validation; use the true reference date for live.
 A separately approved new test should freeze dates before calls; old dated captures are historical.
+
+
+### Preference smoke provider diagnostics
+
+The existing preference_gate_smoke harness records adapter-owned provider_diagnostics_1 per case,
+plus observed HTTP status, first_stop_reason and secondary capture/cleanup errors. It does not
+reclassify provider prose or repair model output. Provider request IDs are separate from internal
+run/case/request hashes. Null/unavailable fields are missing evidence, not zero usage or success.
+Diagnostics are partial and bounded (messages1024 characters, scalar text256); truncation and
+unavailable fields are explicit. Error envelopes are never logged wholesale, and no reasoning
+content or credentials are added. Do not add diagnostic usage to the existing callback totals.
+The public error dictionary excludes internal provider details. Live execution still needs explicit
+approval, a fresh frozen manifest/directory and the existing no-retry controls. Historical Case4/5
+cannot be explained retrospectively from this new instrumentation; see shared_preference_input.md.

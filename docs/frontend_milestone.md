@@ -1,5 +1,11 @@
 # Frontend milestone checkpoints
 
+Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
+for current configuration, shared ownership and artifact-verified evidence. Earlier dated
+implementation/live statements below retain their original scope. V0 remains tool-free;
+V1/V2 do not run Repair; the product default remains V0. Provider recovery UI is offline-only.
+
+
 Dated records below preserve original scope, status and evidence; they are not current runtime instructions. Current design is maintained separately. Proposed or unexecuted steps remain unexecuted unless a later explicitly identified record establishes otherwise.
 
 <a id="m-f3db512f7a23"></a>
@@ -196,3 +202,16 @@ This Stage 0 update does not change:
 Stage 0 frontend verification completed with 21 tests, passing ESLint, and a passing
 production build. Backend validation remains the authoritative security and domain
 boundary; the frontend restriction is a user-experience aid.
+
+
+## Compatible transfer output update (2026-09-25)
+
+The shared itinerary DTO now accepts optional `transfers` (missing defaults empty).
+Current V3 binds and presents verified/unknown per-leg route estimates and separate
+application reserves; V0-V2 do not fabricate transfers or acquire additional routes for
+this field. Primary model DTO/prompt, K, existing version entry points and product default
+are unchanged. The frontend can render this optional data when supplied; this does not
+implement the deferred Product V3/API selection or the whole frontend backlog.
+See [V3 design](v3_design.md#shared-output-and-frontend) and the
+[development verification record](v3_development.md#mixed-transport-and-joint-components-2026-09-25).
+This is shared output compatibility, not evidence of a V3-only quality gain or a re-freeze.

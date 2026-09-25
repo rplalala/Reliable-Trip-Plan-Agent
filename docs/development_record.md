@@ -8666,3 +8666,27 @@ misses, repeated visits, unknown costs/access and unvalidated opening/route feas
 9/10 days meeting a count target is not9/10 days of validated itinerary quality. V0 name proxies
 remain distinct from V1/V2 canonical statistics. Future shared correctness bugs remain fixable in
 shared code; this closeout does not permanently freeze implementation.
+
+
+## 2026-09-25: Shared Preference provider-response diagnostics
+
+Case4/5 diagnostics alignment is implemented + offline-validated, not newly live-validated.
+The shared adapter retains bounded provider facts; unknown HTTP400 is no longer presumed to be
+configuration failure. Refusal/incomplete never fabricates a domain Safety/input classification.
+Capture/cleanup preserve primary failure; internal details remain outside public error payloads.
+See the Case4/5 checkpoint in shared_preference_input.md for the contract and actual chronology:
+76 pass/2 fail (fixtures),146 pass;9 Ruff long lines;15 pass/1 fail (SDK usage unwrapping),16 pass;
+148-pass affected regression; final Ruff/diff checks. Historical captures remain unchanged.
+No prompt, taxonomy, budget, retries, model, travel functionality or frontend was changed.
+
+
+## 2026-09-25: Three bounded shared Preference fixes
+
+Implemented offline: explicit provider content_filter gets a distinct product provider_blocked
+rewrite prompt without inventing Gate classification; services planning exports are lazy to break
+the reproducible standard V0 CLI import cycle; preference_prompt_13 separates budget amount from
+expense inclusion scope. V0-V3 shared contracts and product default remain intact. No retry or
+budget change. New tests cover fresh CLI processes, public API isolation, compatible budget scope
+and genuine budget conflicts. Tests:121 backend pass; frontend initial EPERM then16 pass; Ruff
+formatting issues corrected; frontend build pass; affected backend76 pass; final static checks pass.
+No real-model claim: prompt13 and the new user-facing recovery path await separate live approval.
