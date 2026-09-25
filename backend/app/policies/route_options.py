@@ -131,12 +131,11 @@ def route_option(left, right, mode, evidence, policy, schedule=None, routing_pre
 
 def transfer_time_check(left, right, rows, schedule, departure, reserve=0):
     """One shared continuous-window comparison for diagnostics and formal validation."""
-    from backend.app.policies.itinerary_schedule import available_minutes
-
-    minutes = available_minutes(
-        left, right, schedule, at_departure=any(r["basis"] == "time_applicable" for r in rows)
-    )
-    if departure != left.end_time:
+    # Time-independent provider estimates still require a continuous itinerary slot
+    # at the actual bound departure; a later free interval cannot validate this leg.
+    if any(t.utcoffset() is None for t in (left.end_time, right.start_time, departure)):
+        return None
+    try:
         minutes = next(
             (
                 (end - departure).total_seconds() / 60
@@ -145,7 +144,7 @@ def transfer_time_check(left, right, rows, schedule, departure, reserve=0):
             ),
             0,
         )
-    if minutes is None:
+    except TypeError:
         return None
     gap = minutes * 60
     return gap, max(0, rows[0]["duration_seconds"] + reserve - gap)

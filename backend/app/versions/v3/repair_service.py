@@ -689,6 +689,33 @@ async def run_repair_stage(
     summary = compare(
         original, current, initial, reassessed, final_report, scope, current_schedule, context
     )
+    from backend.app.versions.v3.repair_acceptance import inclusion_ids
+    from backend.app.versions.v3.repair_spatial import check_addition_layout
+
+    final_activities = {a.activity_id: a for d in current.days for a in d.activities}
+    net_losses = tuple(
+        a.activity_id
+        for d in original.days
+        for a in d.activities
+        if a.activity_kind == "main_poi"
+        and (
+            a.activity_id not in final_activities
+            or final_activities[a.activity_id].source_place_id != a.source_place_id
+        )
+    )
+    final_places = {p.place_id: p for p in context.places}
+    final_places.update({key: candidate.place for key, candidate in ledger.items()})
+    stage_spatial = check_addition_layout(
+        original,
+        current,
+        tuple(final_places.values()),
+        (*context.route_evidence, *routes),
+        scope.travel_mode,
+        policy.spatial,
+        inclusion_ids(context)[0],
+        routing_preference=scope.routing_preference,
+        schedule=current_schedule,
+    )
     any_accepted = any(r.result.status.startswith("ACCEPTED") for r in records)
     status = (
         (
@@ -743,6 +770,10 @@ async def run_repair_stage(
             "original_report": initial,
             "reassessed_original_report": reassessed,
             "target_progress": summary.progress,
+            "comparison": summary,
+            "main_visits_lost": net_losses,
+            "coverage_regressions": summary.coverage_regressions,
+            "spatial": stage_spatial,
             "repair_whitelist": tuple(ledger.values()),
             "acquired_routes": routes,
             "rounds": tuple(records),
