@@ -1,5 +1,9 @@
 # V2 main-candidate RAG integration
 
+## Shared semantic supply implemented — 2026-09-26
+
+V2 applies the same semantic assessment and exploration policy to merged Google/RAG identities. Retrieval links remain provenance, not proof of matching a user goal. Identity/cache/provider budgets retain their current ownership. V2 remains independent and does not execute Repair. See the [offline checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26); historical live runs do not validate this new policy.
+
 Shared correctness correction (2026-09-25, offline-validated): V2 inherits the V1/V3 route timing
 fix that checks the continuous interval at the actual bound departure, including WALK/basic DRIVE.
 Later free time cannot validate crossing fixed rest. RAG, budgets and primary generation are unchanged.

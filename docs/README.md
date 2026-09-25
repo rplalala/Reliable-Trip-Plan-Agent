@@ -9,6 +9,8 @@ records have one responsibility owner instead of being copied into the entry doc
 1. [Shared architecture](shared_architecture.md): version mechanisms and evidence authority.
 2. [Requirements](shared_requirements.md): structured form, open semantics, subjects and HARD boundary.
 3. [POI supply](shared_poi_supply.md): C/G/K, Details, cache, Profile and deterministic policy.
+   The [semantic extension checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26)
+   owns candidate judgments, exploration, visit multiplicity and grouped compensation.
 4. [Output](shared_itinerary_output.md): primary/reference roles, ledgers and generation ownership.
 5. [V0](v0_design.md), [V1](v1_design.md), [V2](v2_design.md): version-specific orchestration.
 6. [Development guide](development_guide.md): actual commands, configuration, scripts and preservation.
@@ -70,6 +72,9 @@ Runtime/tool cleanup and evidence relocation are recorded in [the development re
 
 
 ## Current checkpoint navigation
+
+- [POI semantics iteration closeout](poi_semantics_closeout.md): current semantic/quantity
+  acceptance, user decisions, remaining boundaries and proposed uncommitted-work grouping.
 
 [V2 implementation acceptance](v2_milestone.md#current-implementation-acceptance-2026-09-20)
 is supported by the [joint Tokyo/Sydney evidence](development_record.md#v2-current-checkpoint-acceptance).

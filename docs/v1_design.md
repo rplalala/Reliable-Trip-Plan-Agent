@@ -1,5 +1,9 @@
 # V1 external-information design
 
+## Shared semantic supply implemented — 2026-09-26
+
+V1 now assesses factual-qualified Details through the bounded request-owned semantic service, retains general exploration opportunities and resumes the existing Details queue when qualification is insufficient. Primary generation receives scoped goal/role judgments. V1 remains independent, without RAG or Repair. This shared change has offline evidence only; see the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26).
+
 Shared correctness correction (2026-09-25, offline-validated): route timing checks use the
 continuous free interval at the bound departure, including WALK/basic DRIVE. A later gap cannot
 justify departing across fixed rest. No mode, budget or primary-generation policy changed.

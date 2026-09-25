@@ -1,5 +1,21 @@
 # V3 development record
 
+## Approved review defaults — 2026-09-26
+
+Quantity review now defaults on for Product and Dev V3. The obsolete optional repetition
+configuration and report field have been removed; unauthorized-repeat repair remains automatic.
+Overfull review, budgets and permissions are unchanged. See the
+[policy follow-up](poi_semantics_closeout.md#review-policy-follow-up--2026-09-26) for migration
+and validation. Earlier default-off statements below remain historical checkpoints.
+
+## Implemented semantic policy checkpoint — 2026-09-26
+
+The [implementation checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26) records shared semantic supply, automatic unauthorized-repeat repair, pending compensation, incomplete output, actual offline sizing and chronological test corrections. This is post-closeout offline evidence only. The planning entry below remains the historical proposal, not current implementation status.
+
+## Planning-only checkpoint: POI semantics and exploration — 2026-09-25
+
+Q1-Q19 product decisions are accepted and documented in the [POI semantics implementation plan](shared_poi_semantics_plan.md). London trace cd6ffe0a-dcd8-44bd-8439-18e18a39c647 localized preference-bucket dominance; the trace ran on a separately hashed frontend tree, not this plan baseline. No implementation, tests, sizing or new live occurred while writing the plan. Numeric assessment limits are proposed, and later repeated capacity smokes remain separately authorized backlog work. Historical reports are unchanged.
+
 ## Post-closeout review corrections — 2026-09-25
 
 Three authorized corrections are implemented + offline-validated: actual-departure transfer

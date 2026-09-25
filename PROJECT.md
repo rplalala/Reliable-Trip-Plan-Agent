@@ -1,5 +1,59 @@
 # Capstone Project Context
 
+## Current iteration closeout — 2026-09-26
+
+The POI semantics / quantity-reuse iteration is implemented with offline and bounded live
+evidence. The [iteration closeout](docs/poi_semantics_closeout.md) is the current summary;
+the dated checkpoints below retain their historical status. Latest backend validation:
+1648 passed / 9 skipped. Latest frontend validation:59 passed; TypeScript/Vite build passed
+at the preceding API checkpoint (frontend code is unchanged by the review-policy update).
+The subsequent Product API follow-up preserves policy completion/reasons in both JSON and
+SSE responses; incomplete results remain visible without the misleading ready message.
+Offline routing checks confirm the Product frontend uses current V3. This is source/test
+verification, not a running deployment or new live acceptance.
+Subsequent approved policy update: V3 quantity review now defaults on for Product and Dev.
+The obsolete repetition-review switch/report entry has been removed; unauthorized-repeat
+repair remains automatic. Overfull review stays off; budgets and permissions are unchanged.
+Existing backend processes must restart to reload cached configuration. Earlier dated
+default-off statements below describe historical checkpoints, not current configuration.
+The final quantity-enabled D pilot used two Repair calls, changed15 visits to18, resolved
+its three dynamically identified gaps, and preserved all original activities and budgets.
+
+The user explicitly declined further Penguin Beach / London Zoo work. Their exhibit/parent
+relationship is not an established defect or an open task. P3 remains deferred; factual
+UNKNOWNs and bounded model-reliability evidence remain. Production quantity review stays
+enabled following the separate policy approval. No new freeze, formal evaluation, live run
+or Git action is authorized by closeout.
+Offline browser integration subsequently passed using synthetic external ports: Product
+quantity repair and incomplete-state presentation, plus Dev's four independent version runs.
+Both V3 paths report quantity review enabled and omit the obsolete repetition flag. Temporary
+servers were stopped. Local commits are now authorized without another grouping approval;
+see the [reviewed commit groups](.scratch/iteration-closeout/commit-plan.md). No push or freeze.
+
+## Current POI semantics extension — 2026-09-26
+
+The accepted [POI semantics extension](docs/shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26) is implemented with offline evidence. Shared one-pass goal/multiplicity interpretation and request-owned candidate semantic assessment now protect main-role qualification, scoped exceptions and exploration opportunities. V3 adds default unauthorized-repeat repair and unpublished grouped compensation. Product output distinguishes incomplete adopted itineraries. New semantic-model limits are separate from unchanged travel/primary/Repair limits. This post-closeout work now has bounded A/B live observations described below; historical closeout and smoke records do not validate the extension.
+
+The approved [Spec review fixes](docs/shared_poi_semantics_plan.md#13-approved-spec-review-fixes-2026-09-26) unify canonical visit counting, enforce explicit category cardinality/date targets, propagate named visit obligations into completion, and prioritize explicit category counts in supply selection. Existing capacity and version boundaries remain. After the approved target-priority fixture correction, full offline validation passed: 1591 passed, 9 skipped, zero failures. The old fixture was aligned with confirmed-repeat priority while preserving every original adopted-loss isolation assertion; production logic was unchanged. The P3 pending-reason heuristic remains deferred.
+
+Latest network-enabled acceptance (2026-09-26): A completed with eight distinct main POIs and complete policy status; B satisfied exact two museums on different dates and minimum two parks. Duplicate/count Repair branches were not triggered. C received HTTP 200 but stopped at `unsupported_hard_requirements` for `semantic_1`; the batch stopped without retry, and the user's eight-day London mountain/zoo/rich-trip case D remains unexecuted. This is partial live evidence, not a completed acceptance or freeze. See [the bounded acceptance record](docs/shared_poi_semantics_plan.md#15-network-enabled-bounded-acceptance-2026-09-26).
+
+Named-visit routing follow-up (2026-09-26): `preference_prompt_15` makes executable named counts/dates authoritative in VisitRequirement while preserving independent hard conditions. A new opt-in one-case acceptance entry retains failed interpretation evidence without retries or gate changes. This follow-up passed the full offline backend suite (1602 passed, 9 skipped, zero failures). A separately authorized captured C retest passed once in 131.094 seconds: exact-two British Museum visits on October 5 and 6, no duplicate hard semantic requirement, complete Product status, no Repair, and complete normalized capture. This is limited live evidence, not a stability guarantee; D remains unexecuted. See [the implementation record](docs/shared_poi_semantics_plan.md#16-named-visit-prompt-routing-and-acceptance-capture-2026-09-26) and the subsequent captured retest record.
+
+D captured acceptance (2026-09-26): after separate authorization, D ran once and stopped after 12.0 seconds at `preference_input_blocked`. The HTTP-200 prompt-15 draft classified `I also want to enjoy a rich trip` as a clarification-required semantic ambiguity. Complete normalized draft/rejection evidence was saved; recorded travel-tool usage is zero, with no itinerary or Product output. No retry was performed. D's mountain/zoo/diversity behavior remains unvalidated; the next proposed step is offline diagnosis of this input classification. See section 18 of `docs/shared_poi_semantics_plan.md` and `artifacts/poi_semantics_acceptance/20260926_D_captured/report.md`. Earlier unexecuted-D statements describe the preceding checkpoints.
+
+Soft-quality boundary follow-up (2026-09-26): approved prompt 16 now distinguishes ordinary rich/varied/enjoyable/memorable trip wishes from missing decisive mandatory meaning. It preserves sourced soft semantics without invented counts, themes or luxury spending, while independent genuine input issues still block. Shared V0-V3 instructions and prompt metadata changed; gate, schema, budgets, supply and Repair did not. Nine new controlled SDK/instruction checks pass, and the full offline backend suite passed 1611 tests with 9 skipped. Standards and Spec review found no issues. The historical D fixture still reproduces the block by design; real-model compliance remains unvalidated until a separately approved captured D retest. No live run or commit occurred in this follow-up. See section 19 of `docs/shared_poi_semantics_plan.md`.
+
+Captured prompt-16 D retest (2026-09-26): one separately authorized run passed input interpretation with all three sourced preferences and VALID/CLEAR, then failed after 95.312 seconds with `SemanticAssessmentError: Invalid match evidence references` in the first POI semantic call. No itinerary or Product was generated. Requirement capture is complete; raw downstream semantic output was not captured. This provides limited live evidence for the input correction, while mountain/zoo/diversity/repeat acceptance remains blocked. No retry or production edit occurred. See section 20 of `docs/shared_poi_semantics_plan.md`.
+
+Semantic reference follow-up (2026-09-26): approved `poi_semantics_prompt_2` now specifies exact same-candidate citations. Strict reference rejection remains; errors add bounded offending/allowed reference details. The development acceptance entry adds default-off `--capture-semantics` for correlated normalized input, pre-membership output and outcome, with redaction and enforced 1 MiB/artifact, 4 MiB/case limits including partial-write failures. Shared V1-V3 semantic paths carry prompt fingerprints/cache identity; V0 remains tool-free and requirement prompt 16 is unchanged. After a review-found partial-write cap fix and a test-only exclusion of random call IDs, the final backend suite passed **1625 tests, 9 skipped, zero failures**; Standards and Spec reviews have no remaining findings. No live run or commit occurred. D still requires separate authorization for a retest with both capture flags. See section 21 of `docs/shared_poi_semantics_plan.md`.
+
+Dual-capture D retest (2026-09-26): one authorized run completed in 133.797 seconds with both captures complete. Input interpretation and both semantic batches passed; 14 distinct main POIs have no cross-day repeats, the one-off zoo goal is satisfied, and two indoor climbing alternatives are explicitly distinguished from mountain climbing. Actual mountain climbing remains unfulfilled. Daily counts are 3/3/2/1/2/1/1/1: four days remain below the quantity target (NEEDS_REVIEW), while all meet minimum coverage. Product complete does not imply richness; unchanged quantity review is disabled, so no Repair was authorized. This is bounded improvement with remaining quality limitations, not full rich-trip acceptance or a benchmark. See section 22 of `docs/shared_poi_semantics_plan.md`.
+
+Acceptance and sparse-day diagnosis (2026-09-26): the user accepted this semantic extension and D run; this is not a version freeze. Subsequent offline diagnosis found 16/16 selected supply from 37 eligible candidates, 14 used identities, and an unchanged initial/final itinerary. The two unused choices are animal venues, one about 26.9 km from the destination anchor; insertion feasibility is not established. Four sparse dates are NEEDS_REVIEW rather than missing minimum coverage. Quantity review is disabled, so no Repair ran; round/time exhaustion is not the cause. Pure validator replay with coverage review enabled creates four targets but does not prove repairs feasible. Production defaults and budgets remain unchanged. See the D artifact's `diagnosis/report.md` for evidence and limitations.
+
+Offline sparse-day scope inspection (2026-09-26): actual scope/window/candidate preparation over saved original supply authorizes additions on the four sparse dates only, with no existing-activity move/retime/delete/replace or revisit permissions. Penguin Beach is the sole preliminary new identity, associated with October 4 and 7; the other dates and Eagle Heights fail geographic screening. Saved WALK routes for the two surviving associations exceed policy limits and no matching motor-route facts were retained, so insertion remains unverified. This replay excludes the full comparison pool and performs no acquisition/model/adoption. Enabling review or increasing rounds alone is not proof of four-day completion. See the D artifact's `diagnosis/repair_scope_report.md`; production defaults and the prior acceptance remain unchanged.
+
 ## Final engineering checkpoint — 2026-09-25
 
 Current closeout status: **V3 ENGINEERING CLOSED — FINAL ENGINEERING CHECKPOINT RECORDED**. The [closeout record](docs/v3_closeout.md) supersedes
@@ -485,3 +539,40 @@ results and the separately authorized new interpreter-only smoke. No travel budg
 New Preference Gate smoke `9c8eb048-1e8c-47bd-b17f-9578a7c7c6f8` stopped before any model
 send due to a capture-harness UnboundLocalError. All10 cases NOT_ATTEMPTED; SDK resources
 closed. Alignment remains offline-validated; Step1 live remains BLOCKED. No rerun performed.
+
+### Quantity comparison-pool reuse checkpoint (2026-09-26)
+
+Offline verification confirms that V3 already passes the full enriched/admitted comparison
+pool into Repair, including candidates outside the original selected supply. No candidate
+selection, operation-permission, adoption, budget or production-default change was needed.
+Dates/counts remain validator-derived; synthetic one/three/five-date tests exclude any
+London, fixed-date or four-day special case.
+
+The development acceptance tool now supports opt-in bounded pre-Repair snapshots and
+explicit quantity-review pass-through. A separate offline replay entry reconstructs
+typed scope/windows and evidence-only candidate preparation, preserving request/semantic
+usage and missing evidence. Capture failures are explicit and do not rewrite planning
+outcomes. Replay does not run providers, models, round localization or adoption, and does
+not restore D's missing historical pool. Existing V0-V2 paths remain unchanged.
+
+Validation: 15 new tests, 421 focused V3 tests, and final full backend suite 1640 passed /
+9 skipped; Ruff and compilation passed. Synthetic CLI serialization/replay also passed.
+No new live execution, commit, P3 work or freeze. Quantity improvement on D remains
+unverified; the next step requires separate approval for a quantity-enabled captured pilot.
+See [.scratch/quantity-quality-reuse/implementation.md](.scratch/quantity-quality-reuse/implementation.md)
+for TDD corrections, the existing-policy regression matrix and replay limitations.
+
+Quantity-review D pilot (2026-09-26): one separately authorized captured run completed
+in 183.844 seconds, exit0. The new initial itinerary had three dynamic quantity gaps
+(October 3/7/8); two Repair rounds added three visits, from15 to18 distinct canonical
+IDs, yielding daily counts3/3/2/2/2/2/2/2. Original activities stayed unchanged. Two
+additions came from the comparison pool and one from unused selected supply. Repair
+reused37 qualified candidates without new search/Details/retrieval/semantic calls;
+2/5 Repair model calls and18/24 route sends remained within existing budgets. All three
+capture types completed and saved-snapshot offline replay succeeded.
+
+This supports the current quantity/reuse mechanism only. Penguin Beach and its parent
+London Zoo are distinct IDs on the same day, exposing a site-level richness limitation
+beyond canonical nonrepetition. Final validation retains26 UNKNOWNs; no mountain-climbing
+fulfillment or verified cost/access claim is implied. No rerun, production-default change,
+P3 work, commit or freeze. See the [pilot report](artifacts/poi_semantics_acceptance/20260926_D_quantity_review/report.md).

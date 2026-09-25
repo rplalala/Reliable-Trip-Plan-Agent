@@ -1,6 +1,8 @@
 # Shared architecture
 
-Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
+Current semantic extension (2026-09-26): shared candidate judgments and V3 automatic deduplication
+are implemented with offline evidence only; see the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26).
+Earlier shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
 for current configuration, shared ownership and artifact-verified evidence. Earlier dated
 implementation/live statements below retain their original scope. V0 remains tool-free;
 V1/V2 do not run Repair; the product default remains V0. Provider recovery UI is offline-only.
@@ -9,21 +11,27 @@ V1/V2 do not run Repair; the product default remains V0. Provider recovery UI is
 ## Version and responsibility boundaries
 
 V0 is plain LLM planning without external travel acquisition. V1 adds tools and current evidence.
-V2 adds TripWorld main-candidate discovery before shared admission. V3 targeted validation/repair
-is not implemented. The implemented versions have independent runners; product/developer APIs
-currently dispatch only V0. React, FastAPI and backend orchestration remain a modular monolith.
+V2 adds TripWorld main-candidate discovery before shared admission. V3 adds implemented targeted
+validation, bounded multi-round Repair and revalidation before final Nearby. Independent V0-V3
+runners remain available; the product default remains V0. React, FastAPI and backend orchestration
+remain a modular monolith. Historical proposal sections below do not override this current flow.
 
 ```text
 PlanningRequest -> optional shared interpretation -> canonical context
 V0 -> plain generation -> itinerary_2
 V1 -> Google discovery ---------------------------------------+
 V2 -> Google discovery + TripWorld / Google resolution --------+-> canonical union
-   -> admission -> Details/selective Reviews -> deterministic supply
-   -> Weather/Routes/Official Web -> primary generation/validation -> Nearby -> itinerary_2
+   -> admission -> Details + semantic assessment / selective Reviews -> bounded supply
+   -> Weather/Routes/Official Web -> primary generation / shared checks
+   -> V1/V2: final primary; V3: validation / targeted Repair / revalidation
+   -> one final Nearby stage -> itinerary_2
 ```
 
 Application code owns form facts, identity, provenance, mechanical rules, budgets and validation.
-The Requirement LLM interprets language once; the itinerary LLM uses bounded supplied context.
+The Requirement LLM interprets language once; a request-owned candidate LLM judges actual visit
+objects and scoped requirement matches. The itinerary LLM uses bounded supplied context. V3's
+Repair LLM proposes authorized edits; application checks decide adoption. Candidate semantic
+failures terminate, while pre-send preparation limits leave unassessed candidates unauthorized.
 Discovery source, factual provider and budget owner are different dimensions. TripWorld enrichment
 is a retrieval prior, not current evidence. Google resolution does not imply Google discovery.
 Review signals and official claims retain their separate evidence and uncertainty boundaries.

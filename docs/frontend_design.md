@@ -1,5 +1,9 @@
 # Frontend and API design
 
+## Semantic completion presentation implemented — 2026-09-26
+
+Product results now carry policy_completion and policy_reasons. ItineraryView displays an explicit incomplete-policy message while preserving the latest adopted itinerary and Nearby references. Semantic assessment errors follow the existing system-error path, not preference rewrite. V0/unassessed inputs are not falsely marked semantically verified. Two targeted frontend suites passed (30 tests); direct TypeScript no-emit checks and changed-file ESLint passed. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26).
+
 Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
 for current configuration, shared ownership and artifact-verified evidence. Earlier dated
 implementation/live statements below retain their original scope. V0 remains tool-free;
