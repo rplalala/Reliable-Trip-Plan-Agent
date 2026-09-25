@@ -210,6 +210,24 @@ describe("PlanTripPage", () => {
     expect(screen.queryByText(/V0|V1|V2|V3/)).not.toBeInTheDocument();
   });
 
+  it("keeps an incomplete itinerary visible without claiming it is ready", async () => {
+    submitPlanningMock.mockResolvedValue({
+      ...completedResult,
+      policy_completion: "incomplete",
+      policy_reasons: ["required_visit_obligation_unmet"],
+    });
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+    await fillRequiredFields(user);
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+
+    expect(await screen.findByText("Visit Fushimi Inari Shrine")).toBeInTheDocument();
+    expect(screen.getByText(/This itinerary is incomplete/)).toBeInTheDocument();
+    expect(screen.getByText(/Planning finished with unmet requirements/)).toHaveAttribute("role", "status");
+    expect(screen.queryByText("Your itinerary is ready")).not.toBeInTheDocument();
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
+  });
+
   it("omits blank optional Product fields", async () => {
     submitPlanningMock.mockResolvedValue(completedResult);
     const user = userEvent.setup();

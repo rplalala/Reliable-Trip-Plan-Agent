@@ -16,6 +16,12 @@ const suggestion: ReferenceRecommendation = {
   reason: "An extra place to consider", associated_day: null, area: null, uncertainty: null,
 };
 
+it("shows policy incompleteness without hiding the adopted itinerary", () => {
+  render(<ItineraryView itinerary={base} policyCompletion="incomplete" />);
+  expect(screen.getByRole("status")).toHaveTextContent("This itinerary is incomplete");
+  expect(screen.getByText("Primary visit")).toBeInTheDocument();
+});
+
 it("renders final daily weather, optional introduction and nested Nearby as text", () => {
   const day = base.days[0];
   render(<ItineraryView itinerary={{ ...base, days: [{ ...day,

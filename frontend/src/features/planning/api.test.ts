@@ -43,6 +43,29 @@ describe("product planning API", () => {
     expect(payload).not.toHaveProperty("version");
   });
 
+  it.each([false, true])("preserves public completion fields (stream=%s)", async (stream) => {
+    const result = {
+      status: "completed",
+      requirements: { destination: "Kyoto" },
+      itinerary: { destination: "Kyoto", days: [] },
+      minimum_daily_coverage: { status: "satisfied" },
+      policy_completion: "incomplete",
+      policy_reasons: ["required_visit_obligation_unmet"],
+    };
+    const fetchMock = vi.fn().mockResolvedValue(new Response(
+      stream ? `data: ${JSON.stringify({ type: "result", run_id: "test-run", sequence: 1, elapsed_ms: 1, result })}\n\n` : JSON.stringify(result),
+      { headers: { "Content-Type": stream ? "text/event-stream" : "application/json" } },
+    ));
+    vi.stubGlobal("fetch", fetchMock);
+    const response = await submitPlanningRequest({
+      destination: "Kyoto", start_date: "2026-09-12", end_date: "2026-09-12",
+      traveler_count: 1, budget: { amount: "2000", currency: "AUD" },
+    }, stream ? { signal: new AbortController().signal, onEvent: vi.fn() } : undefined);
+
+    expect(response).toEqual(result);
+    expect(fetchMock.mock.calls[0][0]).toBe(stream ? "/api/planning/stream" : "/api/planning");
+  });
+
   it("omits optional fields when the user did not supply them", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

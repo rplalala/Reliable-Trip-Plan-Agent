@@ -78,11 +78,15 @@ function ActivityCard({ activity }: { activity: Activity }) {
   );
 }
 
-export function ItineraryView({ itinerary, minimumCoverage = [] }: {
+export function ItineraryView({ itinerary, minimumCoverage = [], policyCompletion }: {
+  policyCompletion?: "complete" | "incomplete" | "unassessed";
   itinerary: Itinerary; minimumCoverage?: MinimumDailyCoverage[];
 }) {
   return (
     <section className="itinerary" aria-labelledby="itinerary-title">
+      {policyCompletion === "incomplete" && <p role="status">
+        This itinerary is incomplete: some primary-visit or repetition requirements remain unresolved.
+      </p>}
       <header className="itinerary-header">
         <div>
           <p className="eyebrow">Your itinerary</p>
