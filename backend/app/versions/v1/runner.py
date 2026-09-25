@@ -7,6 +7,7 @@ import sys
 from collections.abc import Sequence
 from datetime import UTC, date, datetime
 from pathlib import Path
+from time import monotonic
 from uuid import uuid4
 
 from pydantic import ValidationError
@@ -103,6 +104,7 @@ async def run_tools_planner(
 ) -> PlanningResult:
     """Run V1 with one fixed date, shared budget, cache, tracer, and explicit graph."""
 
+    request_started = monotonic()
     if reference_date is not None and date_provider is not None:
         raise ValueError("reference_date and date_provider cannot both be supplied")
 
@@ -138,6 +140,11 @@ async def run_tools_planner(
         cache=cache,
         tracer=effective_tracer,
         runtime_config=runtime_config,
+    )
+    evidence_service.request_deadline = (
+        request_started + development_timeout_seconds
+        if development_timeout_seconds is not None
+        else getattr(routes_provider, "deadline", None)
     )
     web_dependencies = (web_provider, page_retriever, official_reasoner)
     if any(item is not None for item in web_dependencies) and not all(
@@ -205,7 +212,7 @@ async def run_tools_planner(
         if development_timeout_seconds is not None:
             if not 0 < development_timeout_seconds <= runtime_config.development_timeout_seconds:
                 raise ValueError("Invalid development whole-request timeout")
-            async with asyncio.timeout(development_timeout_seconds):
+            async with asyncio.timeout_at(request_started + development_timeout_seconds):
                 final_state = await graph.ainvoke(
                     {"request": request, "reference_date": effective_reference_date}
                 )

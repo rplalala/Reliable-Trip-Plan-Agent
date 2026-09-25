@@ -160,7 +160,7 @@ def test_quality_pipeline_profile_precedes_supply_and_uses_injected_limits():
         )
         assert len(funnel.enriched_candidates) == 24
         assert len(selection.selected_place_ids) == 12
-        assert acq._budget.limits.max_place_detail_calls == 32
+        assert acq._budget.limits.max_place_detail_calls == 60
 
     asyncio.run(run())
 
@@ -217,14 +217,14 @@ def test_resource_overflow_does_not_truncate():
         check_primary_input("system", "large" * 200000, config().main_generation)
 
 
-def test_rag_twenty_topk_sixteen_attempts_and_single_batch():
+def test_rag_twenty_unique_hits_and_single_batch():
     async def run():
         service, contract, dest, merged, places, runtime = setup(
             [hit(f"rag{i}", rank=i + 1) for i in range(20)], config=config().tripworld_discovery
         )
         await service.extend(contract, dest, merged, set())
-        assert service.report["resolution_attempts"] == 16
-        assert service.report["details_sends"] == 16
+        assert service.report["resolution_attempts"] == 20
+        assert service.report["details_sends"] == 20
         assert runtime.embedding_sends == 1
         assert service.report["returned_positions"] == 20 * len(service.report["queries"])
 
@@ -344,9 +344,9 @@ def test_quality_four_queries_and_eighty_positions_no_hidden_ten_slice():
         result = await service.extend(contract, dest, merged, set())
         assert len(service.report["queries"]) == runtime.searches == 4
         assert service.report["returned_positions"] == 80
-        assert service.report["resolution_attempts"] == 16
-        assert len(places.ids) == 16
-        assert len(result.places) == len(merged.places) + 16
+        assert service.report["resolution_attempts"] == 20
+        assert len(places.ids) == 20
+        assert len(result.places) == len(merged.places) + 20
         assert max(len(p.discovery_origins) for p in result.places) == 4
 
     asyncio.run(run())
@@ -378,9 +378,9 @@ def test_quality_routes_actual_elements_and_mirrors_are_separate():
             and sum(len(r.origins) * len(r.destinations) for r in baseline) == 256
         )
         elements = sum(len(r.origins) * len(r.destinations) for r in alternate)
-        assert elements == 16
+        assert elements == 32
         assert budget.summary()["alternative_route_elements"]["used"] == elements
-        assert budget.summary()["alternative_route_pairs"]["used"] == 16
+        assert budget.summary()["alternative_route_pairs"]["used"] == 32
         assert (
             len(
                 [
@@ -390,7 +390,7 @@ def test_quality_routes_actual_elements_and_mirrors_are_separate():
                     if e.evidence_type == "mirrored_reverse_estimate"
                 ]
             )
-            == 16
+            == 32
         )
         before = len(routes.requests)
         await acq.acquire_routes(**kwargs)
@@ -403,7 +403,10 @@ def test_alternative_budget_reservation_is_atomic():
     from backend.app.runtime.budget import ToolBudgetExceededError
 
     b = ToolBudget(tool_limits(config()))
-    b.consume(ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS, 15)
+    b.consume(
+        ToolBudgetKey.ALTERNATIVE_ROUTE_ELEMENTS,
+        b.limits.max_alternative_route_elements - 1,
+    )
     before = b.summary()
     with pytest.raises(ToolBudgetExceededError):
         b.consume_many(
@@ -416,7 +419,7 @@ def test_alternative_budget_reservation_is_atomic():
     assert b.summary() == before
 
 
-def test_payload_fixtures_validate_under_explicit_160k_guard():
+def test_payload_fixtures_validate_under_current_guard():
     from backend.app.versions.v1.prompts import ITINERARY_GENERATION_SYSTEM_PROMPT
     from tools.diagnostics.itinerary_payload import fixtures, measure
 
@@ -535,8 +538,8 @@ def test_rag_failure_attempts_fallback_four_and_details_twenty():
         )
         places.fail = {f"bad{i}" for i in range(20)}
         await service.extend(contract, dest, merged, set())
-        assert service.report["resolution_attempts"] == 16
-        assert service.report["details_sends"] == 16
+        assert service.report["resolution_attempts"] == 20
+        assert service.report["details_sends"] == 20
         assert service.report["fallback_sends"] == 4
         assert len(places.searches) == 4
         assert len(set(places.ids)) == len(places.ids)
@@ -578,7 +581,7 @@ def test_required_extension_retains_normal_and_effective_supply_diagnostics():
     asyncio.run(run())
 
 
-def test_rag_twenty_details_includes_four_distinct_fallback_targets():
+def test_rag_twenty_hits_include_four_distinct_fallback_details():
     from backend.app.integrations.models import LatLng, PlaceCandidateDTO, PlaceSearchResponse
 
     async def run():
@@ -601,10 +604,10 @@ def test_rag_twenty_details_includes_four_distinct_fallback_targets():
 
         places.search_text = fallback
         await service.extend(contract, dest, merged, set())
-        assert service.report["resolution_attempts"] == 16
-        assert service.report["details_sends"] == 20
+        assert service.report["resolution_attempts"] == 20
+        assert service.report["details_sends"] == 24
         assert service.report["fallback_sends"] == 4
-        assert len(set(places.ids)) == len(places.ids) == 20
+        assert len(set(places.ids)) == len(places.ids) == 24
 
     asyncio.run(run())
 
@@ -613,18 +616,18 @@ def test_default_input_guard_preserves_quality_limits(monkeypatch):
     from backend.app.runtime.config_loader import load_runtime_config
     from backend.app.runtime.config_models import MainGenerationConfig
 
-    assert config().main_generation.input_tokens == 160000
-    assert load_runtime_config().main_generation.input_tokens == 160000
+    assert config().main_generation.input_tokens == 252000
+    assert load_runtime_config().main_generation.input_tokens == 252000
     assert MainGenerationConfig().input_tokens == 96000
     assert config().main_generation.output_tokens == 16384
     assert config().main_generation.framing_tokens == 2048
     with pytest.raises(ValueError):
-        MainGenerationConfig(input_tokens=160001)
+        MainGenerationConfig(input_tokens=252001)
     monkeypatch.setattr(
         "backend.app.services.generation_resources.count_tokens", lambda text: len(text)
     )
     sizing = check_primary_input("", "", config().main_generation)
-    boundary = "x" * (160000 - sizing["total_tokens"])
+    boundary = "x" * (252000 - sizing["total_tokens"])
     assert check_primary_input("", boundary, config().main_generation)["remaining"] == 0
     with pytest.raises(GenerationResourceError):
         check_primary_input("", boundary + "x", config().main_generation)

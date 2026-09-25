@@ -118,8 +118,11 @@ def test_missing_sources_and_missing_timezone_keep_uncertainty_explicit() -> Non
     no_local_window = _place(current=CURRENT, regular=REGULAR, time_zone=None)
     assert no_local_window.current_opening_hours is not None
     assert no_local_window.current_opening_hours.valid_from is None
-    assert opening_hours_for_date(no_local_window, date(2026, 9, 15)).basis == (
-        "regular_weekly_baseline"
+    # A known special-day gap must not silently become the regular open schedule.
+    assert opening_hours_for_date(no_local_window, date(2026, 9, 15)).basis == "unknown"
+    assert (
+        opening_hours_for_date(no_local_window, date(2026, 9, 16)).basis
+        == "regular_weekly_baseline"
     )
 
 

@@ -189,6 +189,7 @@ class MalformedRoutesProvider(PolicyRoutesProvider):
                     "destinationIndex": 1,
                     "condition": "ROUTE_EXISTS",
                     "duration": "500s",
+                    "status": {},
                 },
                 {"originIndex": 99, "destinationIndex": 0, "condition": "ROUTE_EXISTS"},
                 {"originIndex": True, "destinationIndex": 1, "condition": "ROUTE_EXISTS"},

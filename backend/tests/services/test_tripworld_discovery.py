@@ -201,6 +201,38 @@ def test_all_overlap_needs_no_google_resolution():
     assert x[4].ids == [] and x[0].report["new_canonical_ids"] == []
 
 
+def test_runtime_resolution_allows_thirty_entities_without_ordinary_double_charge():
+    from backend.app.runtime.config_loader import load_runtime_config
+
+    x = list(setup([], config=load_runtime_config().tripworld_discovery))
+    x[1] = x[1].model_copy(
+        update={
+            "discovery_intents": tuple(
+                DiscoveryIntent(
+                    intent_id=f"discovery_{i}",
+                    query_text=text,
+                    requirement_refs=("semantic_1",),
+                    purpose="semantic_discovery",
+                )
+                for i, text in enumerate(("museums", "culture"), 1)
+            )
+        }
+    )
+    runtime = x[5]
+
+    async def search(*_):
+        offset = runtime.searches * 20
+        runtime.searches += 1
+        return [hit(f"new-{i}", rank=i - offset + 1) for i in range(offset, offset + 20)]
+
+    runtime.search = search
+    execute(x)
+    assert x[0].report["resolution_attempts"] == 30
+    assert x[0].report["details_sends"] == len(x[4].ids) == 30
+    assert x[0].acq._budget.summary()["place_detail_calls"]["used"] == 0
+    assert runtime.closed
+
+
 def test_duplicate_entities_and_canonical_ids_union_query_refs():
     x = setup([hit("new"), hit("new", entity_id="other", rank=2)])
     contract = x[1].model_copy(

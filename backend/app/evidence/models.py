@@ -49,6 +49,10 @@ class PlaceCandidate(EvidenceModel):
 class OpeningHoursEvidence(EvidenceModel):
     """Compact opening information with explicit temporal applicability."""
 
+    # None preserves legacy/unmapped evidence; missing is distinct from an empty schedule.
+    periods_state: Literal["legacy_unmapped", "missing", "present", "invalid"] = "legacy_unmapped"
+    periods: list[dict[str, object]] | None = None
+    special_days: list[date] = Field(default_factory=list)
     applicability: str = Field(min_length=1)
     valid_from: date | None = None
     valid_through: date | None = None
@@ -70,6 +74,7 @@ class PlaceEvidence(EvidenceModel):
     primary_type: str | None = None
     business_status: str | None = None
     timezone_id: str | None = None
+    requested_at: datetime | None = None
     opening_hours: OpeningHoursEvidence | None = None
     current_opening_hours: OpeningHoursEvidence | None = None
     regular_opening_hours: OpeningHoursEvidence | None = None
@@ -89,6 +94,9 @@ class OpeningHoursPlanningDay(EvidenceModel):
 
     date: date
     basis: Literal["current_date_window", "regular_weekly_baseline", "unknown"]
+    structured_known: bool = False
+    structured_reason: str = "legacy_unmapped"
+    intervals: list[tuple[str, str]] = Field(default_factory=list)
     weekday_description: str | None = None
     source_window_start: date | None = None
     source_window_end: date | None = None
@@ -139,6 +147,13 @@ class RouteElementEvidence(EvidenceModel):
     derived_from_destination_place_id: str | None = None
     status: str | None = None
     condition: str | None = None
+    status_state: Literal["legacy", "success", "missing", "invalid", "error"] = "legacy"
+    static_duration_seconds: int | None = Field(default=None, ge=0)
+    fallback_info: dict[str, object] | None = None
+    requested_at: datetime | None = None
+    retrieved_at: datetime | None = None
+    origin_index: int | None = None
+    destination_index: int | None = None
     distance_meters: int | None = Field(default=None, ge=0)
     duration_seconds: int | None = Field(default=None, ge=0)
     availability: EvidenceAvailability
@@ -184,6 +199,7 @@ class RouteEvidence(EvidenceModel):
 
     travel_mode: str = Field(min_length=1)
     mode_reason: str = Field(min_length=1)
+    requested_at: datetime | None = None
     purpose: RouteEvidencePurpose = RouteEvidencePurpose.BASELINE
     routing_preference: str | None = None
     representative_departure_time: AwareDatetime | None = None

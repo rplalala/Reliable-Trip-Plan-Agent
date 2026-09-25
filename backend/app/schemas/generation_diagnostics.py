@@ -21,6 +21,9 @@ class DayGenerationDiagnostics(BaseModel):
     free_time_activity_count: int
     unclassified_activity_count: int
     target_status: Literal["within_target", "below_target", "above_target", "not_assessable"]
+    minimum_coverage: Literal["satisfied", "missing", "exempt", "unknown"] = "unknown"
+    minimum_coverage_reason: str = "historical_unassessed"
+    minimum_coverage_evidence: tuple[str, ...] = ()
     empty_day: bool
 
 
@@ -40,4 +43,29 @@ class GenerationDiagnostics(BaseModel):
     related_requirement_ids: tuple[str, ...] = ()
     assessment_basis: Literal["default_target_observation_not_feasibility"] = (
         "default_target_observation_not_feasibility"
+    )
+
+
+class MinimumDailyCoverage(BaseModel):
+    """Public product status, without research metadata or user source quotations."""
+
+    date: date
+    countable_primary_activities: int
+    status: Literal["satisfied", "missing", "exempt", "unknown"]
+    reason: str
+
+
+def public_minimum_coverage(diagnostics):
+    return (
+        tuple(
+            MinimumDailyCoverage(
+                date=row.date,
+                countable_primary_activities=row.main_activity_count,
+                status=row.minimum_coverage,
+                reason=row.minimum_coverage_reason,
+            )
+            for row in diagnostics.days
+        )
+        if diagnostics
+        else ()
     )

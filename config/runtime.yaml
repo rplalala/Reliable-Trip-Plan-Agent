@@ -23,7 +23,7 @@ budget:
   places:
     destination_search_calls: 1
     candidate_search_calls: 12
-    detail_calls: 40
+    detail_calls: 60
     review_detail_calls: 8
   weather:
     calls: 2
@@ -32,9 +32,15 @@ budget:
     baseline_elements_per_request: 64
     baseline_elements_per_run: 400
     baseline_calls: 7
-    alternative_pairs: 16
-    alternative_matrix_calls: 16
-    alternative_elements: 16
+    alternative_pairs: 32 # Distinct directed pairs, independent of mode/time.
+    alternative_matrix_calls: 32 # Actual sends across pre/post generation.
+    alternative_elements: 64 # Requested origins times destinations, including failures.
+    post_generation_reserved_pairs: 16
+    post_generation_reserved_requests: 16
+    post_generation_reserved_elements: 32
+    work_seconds: 120 # Cumulative monotonic route-work wall time; pauses exclude LLM/Web.
+    post_generation_reserved_seconds: 30
+    provider_timeout_seconds: 20
   web:
     evidence_tasks: 8
     page_fetches: 8
@@ -74,8 +80,8 @@ trace:
 tripworld_discovery:
   version: tripworld_runtime_1
   top_k: 20
-  resolution_entities: 16
-  details_calls: 20
+  resolution_entities: 30
+  details_calls: 30
   fallback_calls: 4
   radius_km: 15
   identity_radius_km: 1
@@ -94,15 +100,25 @@ acquisition:
   details_timeout_seconds: 20
 main_generation:
   enabled: true
-  input_tokens: 160000
+  input_tokens: 252000
   output_tokens: 16384
   framing_tokens: 2048
 development_timeout_seconds: 600
 
+transport:
+  walk_route_max_km: 3 # Provider route distance; geographic prefilters are separate.
+  transit_max_minutes: 45 # Applicable provider total duration, including its access legs.
+  drive_max_minutes: 30 # Provider driving duration only.
+  drive_reserve_minutes: 10 # Additional application occupancy, never provider duration.
+  # Discovery / no-route filter; usable API routes proceed to burden and detour checks.
+  walk_radius_km: 2
+  motor_radius_km: 5
+  max_leg_minutes: 45
+
 # V3-only development policy. Acquisition totals are shared across all rounds.
 v3_repair:
-  max_rounds: 3
-  max_model_calls: 3 # One call per round; zero disables model attempts.
+  max_rounds: 5 # Stage ceiling; shared 360-second deadline may stop earlier.
+  max_model_calls: 5 # One call per round; zero disables model attempts.
   quantity_review_enabled: false # CLI may explicitly override this review policy.
   repetition_review_enabled: false # Same-canonical review; never a confirmed fact conflict.
   overfull_review_enabled: false # Independent from shortage review.
@@ -114,40 +130,38 @@ v3_repair:
   alternatives_per_gap: 2 # Preparation reference, not an acceptance requirement.
   exploration_positions: 2 # Stage-wide reusable positions within the same ID union.
   timing:
-    stage_seconds: 300
+    stage_seconds: 360
     round_seconds: 120
     model_seconds: 70
-    preparation_seconds: 30
+    preparation_seconds: 45 # Upper bound; model startup and recheck reserves take precedence.
     recheck_reserve_seconds: 20
     minimum_model_seconds: 30
     round_reference_seconds: 60
     finalization_reserve_seconds: 1
     # Nearby reservation uses reference_discovery.deadline_seconds above.
   input:
-    input_tokens: 64000
+    input_tokens: 252000 # Per-call system/user/schema/framing total; fail closed.
     output_tokens: 16384
     framing_tokens: 2048
-    identity_capacity: 28 # Scheduled context UNION operation candidates, per call.
+    identity_capacity: 32 # Scheduled context UNION operation candidates, per call.
     activity_capacity: 120
     candidate_characters: 12000
     feedback_characters: 12000
   acquisition:
-    google: 2 # Includes fallback sends; cache hits do not consume sends.
+    google: 6 # Stage total; ordinary discovery <= total minus reserved fallback (5).
     fallback: 1
     embedding: 1
     retrieval: 1
-    canonical: 8 # Processing attempts, including failed attempts.
-    details: 8
-    routes: 4
+    canonical: 30 # Processing attempts, including failed attempts.
+    details: 30
+    routes: 24 # All modes and rounds share actual sends.
+    post_proposal_route_reserve: 8 # Preparation ceiling is routes minus this reserve.
     elements: 32 # Actual origin count times destination count, not returned rows.
     top_k: 10
     provider_timeout_seconds: 20
   spatial:
-    walk_radius_km: 2
-    motor_radius_km: 5
-    max_leg_minutes: 45
     detour_floor_km: 1
     detour_ratio: 0.5
     fallback_distance_km: 1
-    fallback_reserve_minutes: 45 # Schedule reserve, not measured travel duration.
+    fallback_reserve_minutes: 45 # No-route schedule reserve, not a provider duration or extra API-route buffer.
     daily_added_minutes: 90 # Cumulative per day against the stage-original itinerary.

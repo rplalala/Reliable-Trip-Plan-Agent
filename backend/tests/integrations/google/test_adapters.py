@@ -312,7 +312,7 @@ def test_routes_adapter_uses_minimal_fields_and_omits_invalid_preference() -> No
 
     body = transport.calls[0]["json_body"]
     assert ROUTE_MATRIX_FIELD_MASK == (
-        "originIndex,destinationIndex,duration,distanceMeters,status,condition"
+        "originIndex,destinationIndex,duration,staticDuration,fallbackInfo,distanceMeters,status,condition"
     )
     assert body["travelMode"] == "WALK"
     assert "routingPreference" not in body

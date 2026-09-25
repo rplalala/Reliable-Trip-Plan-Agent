@@ -38,7 +38,7 @@ def test_committed_yaml_selects_quality_first_budget_and_trace_defaults() -> Non
     assert limits.max_final_pois == 20
     assert limits.max_destination_search_calls == 1
     assert limits.max_candidate_search_calls == 12
-    assert limits.max_place_detail_calls == 40
+    assert limits.max_place_detail_calls == 60
     assert limits.max_review_detail_calls == 8
     assert limits.max_review_enriched_places == 8
     assert limits.max_experience_profile_llm_calls == 8
@@ -46,13 +46,13 @@ def test_committed_yaml_selects_quality_first_budget_and_trace_defaults() -> Non
     assert limits.max_baseline_route_matrix_elements_per_request == 64
     assert limits.max_baseline_route_matrix_elements == 400
     assert limits.max_baseline_route_matrix_calls == 7
-    assert limits.max_alternative_route_pairs == 16
-    assert limits.max_alternative_route_matrix_calls == 16
+    assert limits.max_alternative_route_pairs == 32
+    assert limits.max_alternative_route_matrix_calls == 32
     assert limits.max_weather_calls == 2
     assert config.acquisition.policy_id == "quality_first_1"
     assert config.tripworld_discovery.sql_timeout == 60
     assert config.tripworld_discovery.deadline_seconds == 360
-    assert config.main_generation.input_tokens == 160000
+    assert config.main_generation.input_tokens == 252000
     assert config.main_generation.output_tokens == 16384
     assert config.schema_version == 6
     assert limits.max_web_evidence_tasks == 8
@@ -261,7 +261,7 @@ def test_env_cannot_override_yaml_policy(monkeypatch) -> None:
     monkeypatch.setenv("V1_TRACE_ENABLED", "false")
     monkeypatch.setenv("APP_TIME_ZONE", "Pacific/Auckland")
 
-    assert ToolBudgetLimits().max_alternative_route_pairs == 16
+    assert ToolBudgetLimits().max_alternative_route_pairs == 32
     assert load_runtime_config().trace.enabled is True
     assert load_runtime_config().app.time_zone == "Australia/Sydney"
 
@@ -284,7 +284,7 @@ def test_config_snapshot_is_stable_and_contains_only_policy() -> None:
     )
 
     assert snapshot["trace"]["directory"] == "logs"
-    assert snapshot["effective_tool_budget"]["alternative_route_pairs"] == 16
+    assert snapshot["effective_tool_budget"]["alternative_route_pairs"] == 32
     assert snapshot["effective_tool_budget"]["web_evidence_tasks"] == 8
     assert "web_search_queries" not in json.dumps(snapshot)
     assert (snapshot, digest) == runtime_config_snapshot(
@@ -328,6 +328,16 @@ def test_console_log_filter_redacts_provider_query_credentials() -> None:
 
 
 
+
+
+def test_repair_input_ceiling_accepts_authorized_capacity_and_rejects_overflow():
+    from backend.app.runtime.config_models import RepairInputConfig
+
+    values = load_runtime_config().v3_repair.input.model_dump()
+    assert values["input_tokens"] == 252000
+    assert RepairInputConfig.model_validate(values).input_tokens == 252000
+    with pytest.raises(ValidationError):
+        RepairInputConfig.model_validate({**values, "input_tokens": 252001})
 
 
 def test_rag_time_and_work_bounds_remain_finite():

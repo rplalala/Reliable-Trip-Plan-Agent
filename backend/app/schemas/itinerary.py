@@ -58,6 +58,28 @@ class ItineraryDay(BaseModel):
     activities: list[Activity] = Field(default_factory=list)
 
 
+class Transfer(BaseModel):
+    """Application-owned adopted transfer; absent for historical or unbound results."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    from_activity_id: str
+    to_activity_id: str
+    origin_place_id: str
+    destination_place_id: str
+    mode: Literal["WALK", "TRANSIT", "DRIVE"]
+    mode_source: str
+    departure_time: datetime
+    arrival_time: datetime | None = None
+    provider_duration_seconds: float | None = Field(default=None, ge=0)
+    distance_meters: int | None = Field(default=None, ge=0)
+    reserve_seconds: float = Field(default=0, ge=0)
+    routing_preference: str | None = None
+    evidence_refs: tuple[str, ...] = ()
+    calculation_basis: str
+    validation_state: Literal["PASS", "CONFIRMED", "UNKNOWN"]
+    unknowns: tuple[str, ...] = ()
+
+
 class Itinerary(BaseModel):
     """A structured itinerary shared by all system versions."""
 
@@ -65,6 +87,8 @@ class Itinerary(BaseModel):
 
     # Missing version marks historical input, not newly generated wire output.
     output_version: Literal["itinerary_1", "itinerary_2"] = "itinerary_1"
+    transfers: list[Transfer] = Field(default_factory=list)
+    route_diagnostics: list[dict] = Field(default_factory=list)
     reference_recommendations: list[ReferenceRecommendation] = Field(
         default_factory=list, max_length=3
     )

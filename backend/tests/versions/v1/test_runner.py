@@ -66,8 +66,8 @@ def test_v1_settings_reuse_v0_foundry_config_and_add_bounded_google_config(
     assert settings.tool_budget_limits().max_baseline_route_matrix_elements_per_request == 64
     assert settings.tool_budget_limits().max_baseline_route_matrix_elements == 400
     assert settings.tool_budget_limits().max_baseline_route_matrix_calls == 7
-    assert settings.tool_budget_limits().max_alternative_route_pairs == 16
-    assert settings.tool_budget_limits().max_alternative_route_matrix_calls == 16
+    assert settings.tool_budget_limits().max_alternative_route_pairs == 32
+    assert settings.tool_budget_limits().max_alternative_route_matrix_calls == 32
 
 
 def test_v1_cli_outputs_shared_planning_result_with_offline_injections(capsys) -> None:
@@ -143,7 +143,7 @@ def test_v1_cli_trace_records_effective_config_without_live_providers(
     assert len(run_files) == 1
     run = json.loads(run_files[0].read_text(encoding="utf-8"))
     assert run["runtime_config"]["trace"]["directory"] == str(tmp_path)
-    assert run["runtime_config"]["effective_tool_budget"]["alternative_route_pairs"] == 16
+    assert run["runtime_config"]["effective_tool_budget"]["alternative_route_pairs"] == 32
     assert (
         run["runtime_config"]["effective_tool_budget"]["baseline_route_matrix_elements_per_request"]
         == 64

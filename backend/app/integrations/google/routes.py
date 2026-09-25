@@ -12,6 +12,8 @@ ROUTE_MATRIX_FIELDS = (
     "originIndex",
     "destinationIndex",
     "duration",
+    "staticDuration",
+    "fallbackInfo",
     "distanceMeters",
     "status",
     "condition",
@@ -76,6 +78,7 @@ class GoogleRoutesProvider:
             "X-Goog-Api-Key": self._api_key,
             "X-Goog-FieldMask": request.field_mask,
         }
+        requested_at = datetime.now(UTC).isoformat()
         response = await self._transport.request_json(
             "POST",
             f"{self._base_url}/distanceMatrix/v2:computeRouteMatrix",
@@ -96,6 +99,7 @@ class GoogleRoutesProvider:
         if not isinstance(raw_elements, list):
             raw_elements = []
         return RouteMatrixDTO(
+            requested_at=requested_at,
             elements=[dict(item) for item in raw_elements if isinstance(item, Mapping)],
             retrieved_at=datetime.now(UTC).isoformat(),
         )

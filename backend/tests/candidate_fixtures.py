@@ -23,6 +23,10 @@ def candidate_fixture(n=4, r=2):
     texts = [(f"Preference {i}: " + text_unit * 15)[:100] for i in range(r)]
     raw = "\n".join(texts) or "Plan a trip to Sydney."
     draft = InterpretationDraft(
+        # Synthetic current gate assessment for this offline fixture.
+        preference_input_assessment={
+            "input_disposition": "VALID", "safety_disposition": "CLEAR", "issues": []
+        },
         semantic_requirements=tuple(
             SemanticDraft(
                 local_key=f"r{i}",
