@@ -13,6 +13,7 @@ from backend.app.api.schemas.planning import (
     ProviderBlockedResponse,
     SafetyBlockedResponse,
 )
+from backend.app.api.streaming import planning_stream
 from backend.app.policies.trip_dates import (
     MAX_TRIP_DAYS,
     DateProvider,
@@ -25,8 +26,22 @@ from backend.app.services.planning import (
     PlanningNeedsClarificationError,
     PlanningService,
 )
+from backend.app.services.product_presentation import public_clarification
 
 router = APIRouter(prefix="/api", tags=["product-planning"])
+
+
+@router.post("/planning/stream")
+async def stream_planning_result(
+    body: ProductPlanningRequest,
+    planning_service: Annotated[PlanningService, Depends(get_planning_service)],
+):
+    """Reject date policy failures before opening the stream or invoking a planner."""
+    try:
+        planning_service.validate(body)
+    except TripDatePolicyError as exc:
+        raise HTTPException(status_code=422, detail=exc.as_detail()) from exc
+    return planning_stream(lambda: create_planning_result(body, planning_service))
 
 
 @router.post("/planning", response_model=ProductPlanningResponse)
@@ -38,6 +53,8 @@ async def create_planning_result(
 
     try:
         result = await planning_service.plan(body)
+    except TimeoutError as exc:
+        raise HTTPException(status_code=504, detail={"code": "planning_timeout"}) from exc
     except TripDatePolicyError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
@@ -53,7 +70,9 @@ async def create_planning_result(
             return SafetyBlockedResponse(
                 requirements=exc.requirements, message=message, action=action
             )
-        return NeedsClarificationResponse(requirements=exc.requirements, issues=exc.issues)
+        return NeedsClarificationResponse(
+            requirements=exc.requirements, issues=public_clarification(exc.issues)
+        )
     except PlanningFailedError as exc:
         cause = exc.__cause__
         if isinstance(cause, RequirementBoundaryError) and cause.provider_content_filtered:
@@ -66,12 +85,10 @@ async def create_planning_result(
             },
         ) from exc
 
-    from backend.app.schemas.generation_diagnostics import public_minimum_coverage
-
     return CompletedPlanningResponse(
         requirements=result.requirements,
         itinerary=result.itinerary,
-        minimum_daily_coverage=public_minimum_coverage(result.generation_diagnostics),
+        minimum_daily_coverage=result.minimum_daily_coverage,
     )
 
 

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import cast
 from uuid import uuid4
 
+import httpx
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, ValidationError
@@ -110,7 +111,9 @@ class AzureFoundryStructuredLLMClient:
     """Use strict transport DTOs through a Microsoft Foundry v1 endpoint."""
 
     def __init__(
-        self, *, endpoint: str, deployment: str, api_key: str, requirement_capture=None
+        self, *, endpoint: str, deployment: str, api_key: str, requirement_capture=None,
+        http_client: httpx.Client | None = None,
+        http_async_client: httpx.AsyncClient | None = None,
     ) -> None:
         self.requirement_capture = requirement_capture
         self._capture_secrets = (api_key,)
@@ -121,12 +124,18 @@ class AzureFoundryStructuredLLMClient:
             "max_retries": 0,
             "contract": "preference_draft_9",
         }
+        transport_options = {}
+        if http_client is not None:
+            transport_options["http_client"] = http_client
+        if http_async_client is not None:
+            transport_options["http_async_client"] = http_async_client
         self._chat_model = ChatOpenAI(
             model=deployment,
             base_url=endpoint,
             api_key=api_key,
             use_responses_api=True,
             max_retries=0,
+            **transport_options,
         )
 
     async def aclose(self):

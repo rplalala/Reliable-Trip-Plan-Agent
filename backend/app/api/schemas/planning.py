@@ -5,22 +5,18 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from backend.app.schemas.generation_diagnostics import MinimumDailyCoverage
-from backend.app.schemas.itinerary import Itinerary
+from backend.app.schemas.product import ProductPlanResult
 from backend.app.schemas.request import PlanningRequest, TravelRequirements
 
 ProductPlanningRequest = PlanningRequest
 
 
-class CompletedPlanningResponse(BaseModel):
+class CompletedPlanningResponse(ProductPlanResult):
     """A completed product planning result without research metadata."""
 
     model_config = ConfigDict(extra="forbid")
 
     status: Literal["completed"] = "completed"
-    requirements: TravelRequirements
-    itinerary: Itinerary
-    minimum_daily_coverage: tuple[MinimumDailyCoverage, ...] = ()
 
 
 class NeedsClarificationResponse(BaseModel):
@@ -63,6 +59,6 @@ class DeveloperPlanningRequest(BaseModel):
     """Engine selection is separate from the shared user form."""
 
     model_config = ConfigDict(extra="forbid")
-    version: Literal["v0"]
+    version: Literal["v0", "v1", "v2", "v3"]
     request: PlanningRequest
     reference_date: date | None = None

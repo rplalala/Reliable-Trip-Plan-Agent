@@ -3,11 +3,14 @@
 import asyncio
 from datetime import date
 
+import pytest
 from httpx import ASGITransport, AsyncClient
 
 from backend.app.api.dependencies import get_developer_planning_service
 from backend.app.main import app
+from backend.app.schemas.planning import PlanningResult
 from backend.app.services.planning import DeveloperPlanningService
+from backend.tests.fakes import V0TestRuntime
 from backend.tests.request_fixtures import make_request
 from backend.tests.versions.v0.fakes import (
     FakeStructuredLLMClient,
@@ -38,7 +41,7 @@ def post_developer_planning(
 
 
 def test_developer_planning_returns_raw_v0_result() -> None:
-    service = DeveloperPlanningService(FakeStructuredLLMClient([make_itinerary()]))
+    service = DeveloperPlanningService(V0TestRuntime(FakeStructuredLLMClient([make_itinerary()])))
 
     status_code, body = post_developer_planning(
         service,
@@ -56,11 +59,11 @@ def test_developer_planning_returns_raw_v0_result() -> None:
 
 
 def test_developer_planning_rejects_unimplemented_version() -> None:
-    service = DeveloperPlanningService(FakeStructuredLLMClient([]))
+    service = DeveloperPlanningService(V0TestRuntime(FakeStructuredLLMClient([])))
 
     status_code, body = post_developer_planning(
         service,
-        {"version": "v1", "request": structured_input(), "reference_date": "2026-09-11"},
+        {"version": "v4", "request": structured_input(), "reference_date": "2026-09-11"},
     )
 
     assert status_code == 422
@@ -70,7 +73,8 @@ def test_developer_planning_rejects_unimplemented_version() -> None:
 def test_developer_planning_missing_form_fields_are_validation_errors():
     client = FakeStructuredLLMClient([])
     status, body = post_developer_planning(
-        DeveloperPlanningService(client), {"version": "v0", "request": {"destination": "Kyoto"}}
+        DeveloperPlanningService(V0TestRuntime(client)),
+        {"version": "v0", "request": {"destination": "Kyoto"}}
     )
     assert status == 422
     assert not client.calls
@@ -78,7 +82,7 @@ def test_developer_planning_missing_form_fields_are_validation_errors():
 
 def test_developer_planning_exposes_v0_stage_for_debugging() -> None:
     service = DeveloperPlanningService(
-        FakeStructuredLLMClient([RuntimeError("provider unavailable")])
+        V0TestRuntime(FakeStructuredLLMClient([RuntimeError("provider unavailable")]))
     )
 
     status_code, body = post_developer_planning(
@@ -105,7 +109,7 @@ def test_developer_planning_uses_trusted_reference_date_for_window_validation() 
         }
     )
     client = FakeStructuredLLMClient([requirements])
-    service = DeveloperPlanningService(client)
+    service = DeveloperPlanningService(V0TestRuntime(client))
 
     status_code, body = post_developer_planning(
         service,
@@ -120,3 +124,43 @@ def test_developer_planning_uses_trusted_reference_date_for_window_validation() 
     assert body["detail"]["system_version"] == "v0"
     assert body["detail"]["code"] == "trip_date_after_window"
     assert len(client.calls) == 0
+
+
+@pytest.mark.parametrize("version", ["v0", "v1", "v2", "v3"])
+def test_developer_dispatch_preserves_extended_result_fields(version):
+    class ExtendedResult(PlanningResult):
+        research_details: dict
+
+    class Runtime:
+        async def run(self, selected, request, *, reference_date):
+            assert selected == version
+            assert reference_date == date(2026, 9, 11)
+            return ExtendedResult(
+                system_version=selected,
+                requirements=request.trip_requirements(),
+                itinerary=make_itinerary(),
+                research_details={"nested": {"retained": True}},
+            )
+
+    status, body = post_developer_planning(
+        DeveloperPlanningService(Runtime()),
+        {"version": version, "request": structured_input(), "reference_date": "2026-09-11"},
+    )
+    assert status == 200
+    assert body["system_version"] == version
+    assert body["research_details"] == {"nested": {"retained": True}}
+
+
+@pytest.mark.parametrize("error,expected", [(TimeoutError(), 504), (RuntimeError("secret"), 502)])
+def test_developer_runtime_failures_have_terminal_http_response(error, expected):
+    class Runtime:
+        async def run(self, *args, **kwargs):
+            raise error
+
+    status, body = post_developer_planning(
+        DeveloperPlanningService(Runtime()),
+        {"version": "v3", "request": structured_input(), "reference_date": "2026-09-11"},
+    )
+    assert status == expected
+    assert body["detail"]["system_version"] == "v3"
+    assert "secret" not in str(body)

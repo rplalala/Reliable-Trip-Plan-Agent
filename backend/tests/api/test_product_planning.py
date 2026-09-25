@@ -8,7 +8,7 @@ from httpx import ASGITransport, AsyncClient
 from backend.app.api.dependencies import get_planning_service
 from backend.app.main import app
 from backend.app.services.planning import PlanningService
-from backend.tests.fakes import FixedDateProvider
+from backend.tests.fakes import FixedDateProvider, V0TestRuntime
 from backend.tests.versions.v0.fakes import (
     FakeStructuredLLMClient,
     make_itinerary,
@@ -45,7 +45,7 @@ def make_product_payload() -> dict[str, object]:
 
 
 def make_planning_service(client: FakeStructuredLLMClient) -> PlanningService:
-    return PlanningService(client, FixedDateProvider(date(2026, 9, 11)))
+    return PlanningService(V0TestRuntime(client, "v3"), FixedDateProvider(date(2026, 9, 11)))
 
 
 def test_product_planning_returns_completed_contract_without_version() -> None:
