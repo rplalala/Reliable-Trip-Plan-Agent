@@ -1,8 +1,5 @@
 """Opt-in local development capture, disabled for normal runtime."""
 
-
-
-
 import json
 import os
 from pathlib import Path
@@ -23,7 +20,7 @@ class DevelopmentRequirementCapture:
         self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
         (self.directory / ".gitignore").write_text("*\n", encoding="utf-8")
 
-    def record(self, call_id, stage, payload, *, secrets=()):
+    def record(self, call_id, stage, payload, *, secrets=(), max_bytes=None):
         # Unique immutable artifacts per call/stage. Never overwrite an earlier response.
         def sanitize(value):
             if isinstance(value, str):
@@ -50,6 +47,11 @@ class DevelopmentRequirementCapture:
             ensure_ascii=True,
             indent=2,
         )
+        if (
+            max_bytes is not None
+            and len(content.replace("\n", os.linesep).encode("utf-8")) > max_bytes
+        ):
+            raise OverflowError("Diagnostic artifact exceeds capture limit")
         path = self.directory / f"{uuid4().hex}.json"
         try:
             fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)

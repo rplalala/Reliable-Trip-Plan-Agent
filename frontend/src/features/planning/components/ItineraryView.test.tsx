@@ -16,6 +16,12 @@ const suggestion: ReferenceRecommendation = {
   reason: "An extra place to consider", associated_day: null, area: null, uncertainty: null,
 };
 
+it("shows policy incompleteness without hiding the adopted itinerary", () => {
+  render(<ItineraryView itinerary={base} policyCompletion="incomplete" />);
+  expect(screen.getByRole("status")).toHaveTextContent("This itinerary is incomplete");
+  expect(screen.getByText("Primary visit")).toBeInTheDocument();
+});
+
 it("renders final daily weather, optional introduction and nested Nearby as text", () => {
   const day = base.days[0];
   render(<ItineraryView itinerary={{ ...base, days: [{ ...day,
@@ -36,6 +42,23 @@ it("renders final daily weather, optional introduction and nested Nearby as text
   expect(within(nearby).getByText("<script>cafe</script>")).toBeInTheDocument();
   expect(nearby.querySelector("script")).toBeNull();
   expect(within(nearby).queryByText(/Estimated cost|10:00/)).toBeNull();
+});
+
+it("keeps forecast facts in a compact strip with accessible source details", () => {
+  const day = base.days[0];
+  render(<ItineraryView itinerary={{ ...base, days: [{ ...day, weather: {
+    status: "available", forecast: { date: day.date, condition: "Cloudy",
+      min_temperature_c: 0, max_temperature_c: 18,
+      precipitation_probability_percent: 0, max_wind_speed_kph: 12 },
+    attribution: "Weather attribution", source_url: "https://open-meteo.com/",
+  } }] }} />);
+  const weather = screen.getByLabelText("Daily weather");
+  expect(weather).toHaveClass("weather-strip");
+  expect(within(weather).getByText("Cloudy")).toBeInTheDocument();
+  expect(within(weather).getByText("Maximum wind: 12 km/h")).toBeInTheDocument();
+  expect(within(weather).getByRole("link", { name: "Open-Meteo" })).toHaveAttribute("href", "https://open-meteo.com/");
+  expect(within(weather).getByText("Weather attribution").closest("details")).not.toBeNull();
+  expect(screen.getByText("Primary visit")).toBeInTheDocument();
 });
 
 it("renders unavailable weather and unknown transport without false attribution", () => {

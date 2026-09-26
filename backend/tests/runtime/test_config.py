@@ -64,6 +64,17 @@ def test_committed_yaml_selects_quality_first_budget_and_trace_defaults() -> Non
     assert config.trace.raw_provider_payloads is False
 
 
+def test_removed_repetition_review_key_is_rejected(tmp_path) -> None:
+    data = load_runtime_config().model_dump(mode="json")
+    assert data["v3_repair"]["quantity_review_enabled"] is True
+    assert "repetition_review_enabled" not in data["v3_repair"]
+    data["v3_repair"]["repetition_review_enabled"] = False
+    path = tmp_path / "old-policy.yaml"
+    _write_config(path, data)
+    with pytest.raises(ValidationError, match="repetition_review_enabled"):
+        load_runtime_config_file(path)
+
+
 def test_config_path_and_trace_directory_ignore_working_directory(tmp_path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
 

@@ -1,5 +1,9 @@
 # Minimum Daily Coverage
 
+## Implemented qualification integration — 2026-09-26
+
+Canonical main counts now use available semantic eligibility. Known non-main objects do not count; unassessed roles retain uncertainty, independently of opening/access uncertainty. Default V3 deduplication and its direct compensation are atomic dependencies. Unpublished pending groups may continue across rounds; failed groups do not undo independent accepted edits. Remaining repeats or missing minimum coverage are reported as incomplete. See the [offline checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26); no new live evidence.
+
 Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
 for current configuration, shared ownership and artifact-verified evidence. Earlier dated
 implementation/live statements below retain their original scope. V0 remains tool-free;

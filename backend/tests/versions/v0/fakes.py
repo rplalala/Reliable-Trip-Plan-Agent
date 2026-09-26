@@ -26,6 +26,29 @@ class FakeStructuredLLMClient:
     def __init__(self, responses: list[BaseModel | Exception]) -> None:
         self.responses = list(responses)
         self.calls: list[StructuredCall] = []
+        self.semantic_calls = []
+
+    async def generate_poi_semantics_structured(self, **kwargs):
+        """Explicit synthetic role evidence for graph tests, never a production fallback."""
+        import json
+
+        payload = json.loads(kwargs["user_prompt"])
+        self.semantic_calls.append(payload)
+        return {
+            "assessments": [
+                dict(
+                    place_id=p["place_id"],
+                    visit_object=p["name"],
+                    role="attraction",
+                    categories=["fixture_attraction"],
+                    reason="Synthetic graph fixture",
+                    evidence_refs=[p["source_ref"]],
+                    matches=[],
+                    exception_requirement_ids=[],
+                )
+                for p in payload["places"]
+            ]
+        }
 
     async def generate_structured(
         self,

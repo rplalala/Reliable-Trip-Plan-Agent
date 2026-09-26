@@ -3,6 +3,7 @@
 import json
 from collections import defaultdict
 from copy import deepcopy
+from time import monotonic
 
 from backend.app.observability.run_trace import redact_secrets
 from backend.app.policies.itinerary_output import validate_output_sources
@@ -79,7 +80,11 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
                 if activities[aid][1].activity_kind != "free_time":
                     permissions[aid].add("retime")
                 dates.add(activities[aid][0])
-        elif f.reason in {"required_identity_omitted", "required_visit_obligation_unmet"}:
+        elif f.reason in {
+            "required_identity_omitted",
+            "required_visit_obligation_unmet",
+            "experience_goal_count_unmet",
+        }:
             additions.update(all_dates)
             direct_additions.update(all_dates)
             dates.update(all_dates)
@@ -141,7 +146,12 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
             additions.update(applicable)
             direct_additions.update(applicable)
             dates.update(applicable)
-        elif f.check == "repetition" and len(f.dates) > 1:
+        elif f.check == "primary_policy" and f.status == "CONFIRMED":
+            selected = [aid for aid in f.activity_ids if not uncertain_binding(aid)]
+            for aid in selected:
+                if f.reason != "experience_goal_dates_unmet":
+                    permissions[aid].update({"delete", "replace"})
+        elif f.check == "repetition":
             if context and (
                 context.contract.visit_requirements is None
                 or not repeat_excess(draft, f.place_ids[0], context)
@@ -167,7 +177,10 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
             day, a = activities[aid]
             dates.add(day)
             if (
-                f.check in {"repetition", "overfull", "opening", "route"}
+                (
+                    f.check in {"repetition", "overfull", "opening", "route"}
+                    or f.reason == "experience_goal_dates_unmet"
+                )
                 and not uncertain_binding(aid)
                 and movable(a, context)
             ):
@@ -248,6 +261,7 @@ class V3PostPrimary:
         mode = state["transport_mode"].travel_mode.value
         mode = mode if mode in {"WALK", "TRANSIT", "DRIVE"} else None
         context = ValidationContext(
+            semantic_assessments=state["review_selection"].semantic_assessments,
             contract=state["interpreted_requirements"],
             window=create_trip_date_window(state["reference_date"]),
             original_supply_ids=state["review_selection"].policy_result.selected_place_ids,
@@ -261,11 +275,6 @@ class V3PostPrimary:
                 daily_main_max=self.acq.runtime_config.v3_repair.daily_main_max,
                 review_targets=frozenset(
                     (["coverage"] if self.quantity_review else [])
-                    + (
-                        ["repetition"]
-                        if self.acq.runtime_config.v3_repair.repetition_review_enabled
-                        else []
-                    )
                     + (
                         ["overfull"]
                         if self.acq.runtime_config.v3_repair.overfull_review_enabled
@@ -325,6 +334,43 @@ class V3PostPrimary:
                 }
             )
         self.owner.phase = "repair"
+        # Reuse existing intents only when a shortage authorizes additions.
+        coverage_target = scope is not None and any(
+            f.check == "coverage" and f.finding_id in scope.target_ids
+            for f in original_report.findings
+        )
+        intent_ids = (
+            tuple(
+                i.intent_id
+                for i in context.contract.discovery_intents[
+                    : max(
+                        self.acq.runtime_config.v3_repair.acquisition.google,
+                        self.acq.runtime_config.v3_repair.acquisition.retrieval,
+                    )
+                ]
+            )
+            if scope and (coverage_target or scope.coverage_permissions)
+            else ()
+        )
+        # An opt-in development observer cannot change planning or trigger retries.
+        observer = getattr(self.model, "capture_repair_snapshot", None)
+        if observer is not None:
+            try:
+                observer(
+                    original=draft,
+                    context=context,
+                    scope=scope,
+                    enriched=state["candidate_funnel"].enriched_candidates,
+                    admitted=state["candidate_funnel"].admitted_candidates,
+                    runtime=self.acq.runtime_config,
+                    request_remaining=max(0, self.deadline - monotonic()),
+                    cache=self.acq._cache,
+                    semantic_service=getattr(self.acq, "poi_semantics", None),
+                    geographic_scope=getattr(self.discovery, "scope", None),
+                    intent_ids=intent_ids,
+                )
+            except Exception:
+                pass
         repair = None
         if scope is None:
             from backend.app.observability.progress import skipped
@@ -340,24 +386,6 @@ class V3PostPrimary:
                     for c in state["candidate_funnel"].admitted_candidates
                     if c.candidate.place_id not in rich_ids
                 ),
-            )
-            # Reuse existing intents only when a shortage authorizes additions.
-            coverage_target = any(
-                f.check == "coverage" and f.finding_id in scope.target_ids
-                for f in original_report.findings
-            )
-            intent_ids = (
-                tuple(
-                    i.intent_id
-                    for i in context.contract.discovery_intents[
-                        : max(
-                            self.acq.runtime_config.v3_repair.acquisition.google,
-                            self.acq.runtime_config.v3_repair.acquisition.retrieval,
-                        )
-                    ]
-                )
-                if coverage_target or scope.coverage_permissions
-                else ()
             )
             repair = await run_repair_stage(
                 draft,
@@ -376,6 +404,7 @@ class V3PostPrimary:
                 audit_max_bytes=self.acq.runtime_config.trace.max_payload_bytes,
                 policy=self.acq.runtime_config.v3_repair,
                 runtime_config=self.acq.runtime_config,
+                semantic_service=getattr(self.acq, "poi_semantics", None),
                 nearby_reserve=self.acq.runtime_config.reference_discovery.deadline_seconds,
             )
         chosen = repair.final if repair else draft
@@ -389,6 +418,9 @@ class V3PostPrimary:
         validate_itinerary_dates(context.contract.requirements, final, context.window)
         final_context = context.model_copy(
             update={
+                "semantic_assessments": tuple(self.acq.poi_semantics.ledger.values())
+                if getattr(self.acq, "poi_semantics", None)
+                else context.semantic_assessments,
                 "schedule": repair.schedule if repair else context.schedule,
                 "active_related": repair.related_targets if repair else (),
             }
@@ -438,7 +470,6 @@ class V3PostPrimary:
         outcome = V3Outcome(
             review_policy={
                 "quantity": self.quantity_review,
-                "repetition": self.acq.runtime_config.v3_repair.repetition_review_enabled,
                 "overfull": self.acq.runtime_config.v3_repair.overfull_review_enabled,
             },
             quantity_review_enabled=self.quantity_review,

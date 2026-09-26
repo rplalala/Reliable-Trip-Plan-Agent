@@ -18,6 +18,7 @@ class PlanningSupplySelection:
     final_selection: POISelectionResult
     policy_result: PlanningSupplyResult
     profiles: tuple
+    semantic_assessments: tuple = ()
 
     evaluator_calls = 0
     subset_enumerator_calls = 0
@@ -57,7 +58,16 @@ class PlanningCandidateSupplyPipeline:
     def acquisition_order(self, places, required, associations, strengths, contract, destination):
         from backend.app.policies.acquisition_opportunities import opportunity_order
 
-        return opportunity_order(places, required, contract, destination)
+        config = getattr(self.acquisition, "runtime_config", None)
+        return opportunity_order(
+            places,
+            required,
+            contract,
+            destination,
+            exploration_fraction=config.poi_semantics.exploration_fraction
+            if config and config.poi_semantics
+            else 0,
+        )
 
     def required_capacities(self, capacities, count):
         limits = self.acquisition._budget.limits
@@ -118,17 +128,29 @@ class PlanningCandidateSupplyPipeline:
         associations,
         strengths,
     ):
+        service = getattr(self.acquisition, "poi_semantics", None)
+        judgments = service.ledger if service else None
         candidates = tuple(
             SupplyCandidate(
                 place_id=p.candidate.place_id,
-                primary_type=p.structured_evidence.primary_type,
+                primary_type=(
+                    judgments[p.candidate.place_id].categories[0]
+                    if judgments and judgments[p.candidate.place_id].categories
+                    else p.structured_evidence.primary_type
+                ),
                 rating=p.rating,
                 latitude=p.structured_evidence.latitude,
                 longitude=p.structured_evidence.longitude,
                 intent_ids=p.discovery_intent_ids,
             )
             for p in rich
+            if judgments is None
+            or (p.candidate.place_id in judgments and judgments[p.candidate.place_id].main_eligible)
         )
+        if judgments is not None and not set(required) <= {c.place_id for c in candidates}:
+            from backend.app.schemas.poi_semantics import SemanticPreparationLimit
+
+            raise SemanticPreparationLimit("required_primary_role_not_qualified")
         result = select_planning_supply(
             candidates,
             contract,
@@ -138,6 +160,8 @@ class PlanningCandidateSupplyPipeline:
             hard_capacity=self.acquisition._budget.limits.max_final_pois,
             destination_coordinates=(destination.latitude, destination.longitude),
             profiles=profiles,
+            semantic_assessments=judgments,
+            semantic_config=service.config if service else None,
         )
         result = result.model_copy(
             update={"acquisition_diagnostics": getattr(self.acquisition, "details_report", {})}
@@ -149,7 +173,12 @@ class PlanningCandidateSupplyPipeline:
             contract.requirements.end_date,
             details=True,
         )
-        return PlanningSupplySelection(final, result, tuple(profiles.values()))
+        return PlanningSupplySelection(
+            final,
+            result,
+            tuple(profiles.values()),
+            tuple(judgments[pid] for pid in result.selected_place_ids) if judgments else (),
+        )
 
 
 def planner_supply_projection(selection, contract):
@@ -157,6 +186,7 @@ def planner_supply_projection(selection, contract):
     result = selection.policy_result
     return {
         "contract_version": "planning_supply_1",
+        "poi_semantics": [r.model_dump(mode="json") for r in selection.semantic_assessments],
         "required_canonical_ids": result.required_canonical_ids,
         "optional_canonical_ids": result.optional_canonical_ids,
         "planning_supply_count": len(result.selected_place_ids),
@@ -173,6 +203,14 @@ def planner_supply_projection(selection, contract):
             for pid in result.selected_place_ids
         },
         "instructions": (
+            "Use each canonical identity once unless a sourced visit requirement explicitly "
+            "authorizes revisits. Exact counts and distinct dates must be respected. "
+            "Satisfy one-off category goals, then prefer other unrepresented suitable experiences; "
+            "continuing preferences are not quotas or a requirement for every visit. "
+            "Semantic role judgments authorize primary choices, not operating facts. "
+            "Exception alternatives share one request-level visit allowance. One Michelin meal "
+            "does not authorize other ordinary restaurants. Indoor climbing is not mountain "
+            "climbing; related alternatives do not prove exact requirement satisfaction. "
             "REQUIRED IDs are explicit user must-visits; preserve their canonical identities. "
             "OPTIONAL candidates are planning options: use a suitable subset, not every option. "
             "Attempt a coherent trip and preference alignment; soft trade-offs are allowed. "

@@ -2,6 +2,28 @@
 
 PREFERENCE_INTERPRETATION_SYSTEM_PROMPT = (
     """
+POI experience interpretation (shared requirements 4):
+Representation precedence: executable named-place visit counts/dates belong in
+named_places + visit_requirements. Do not emit a second semantic requirement for the same
+visit obligation, even when the count is exact or non-negotiable. Its strength is preserved
+by the executable count/date fields, not by duplicating it as hard semantic text.
+Use experience_goal for category goals and other relevant semantic meaning; it does not
+replace visit_requirements for a named venue. Preserve independent unsupported hard conditions.
+For relevant semantic_requirements, populate experience_goal from the cited source. A request
+"I want to visit a zoo" is a one_off category goal, count=null; general "I like museums" is
+continuing, not a requirement that every activity be a museum. Explicit themed/exclusive trips
+must be sourced, never inferred from a list of ordinary interests. Irrelevant semantics use null.
+"Visit the same zoo total twice on different days" means exact count=2 and distinct_dates=true;
+"at least twice" means minimum count=2, without inventing an upper bound. Keep named-place visit
+requirements consistent: exact_visits=2 and minimum_visits=2 for exact twice, otherwise exact=null.
+For a named venue, these values go in visit_requirements without a duplicate experience_goal.
+Do not fabricate named identities for category requests such as two different zoos.
+An explicit request to experience a restaurant/cafe/service can authorize a bounded primary
+exception: explicit_primary_exception=true, normally one_off. General liking of food is not
+permission to make every restaurant a main attraction. Never infer Michelin qualification.
+A company-operated public museum can be a museum, but a museum cafe remains a cafe; venue
+assessment occurs later using supplied evidence. Indoor climbing is not mountain climbing;
+related alternatives cannot silently satisfy an exact or hard requirement.
 Interpret only additional_preferences. Structured trip facts are authoritative read-only context.
 Never return or regenerate destination, dates, traveler_count or budget.
 Budget is total-trip, not per-day or per-person; this does not specify expense categories.
@@ -193,7 +215,28 @@ required count; use unresolved plus a scoped reason when count/date cannot be re
 Do not invent multiple visits from soft enthusiasm. [] means assessed without such obligations;
 null means unassessed. Preserve ordinary REQUIRED inclusion in named_places; do not duplicate
 these executable obligations as unsupported hard semantic text. Unrelated soft preferences
-remain semantic_requirements. For explicit interior/admission visits use access_mode venue_entry;
+and independent hard conditions remain semantic_requirements. Separate the supported visit
+obligation from any remaining meaning in the same sentence; a shared source quote does not
+make that remaining meaning executable. Do not lower a hard condition to high to avoid the gate.
+
+Named-count example: "Visit the British Museum exactly twice, on two different days.
+Include other attractions as well." Put British Museum in named_places as REQUIRED and one
+visit_requirements entry with minimum_visits=2, exact_visits=2, distinct_dates=true, dates=[],
+status=executable, reason=null, access_mode=null. Cite the original visit clause for both.
+Do not add a semantic requirement or experience_goal for that same count/date obligation.
+The other-attractions preference may remain separately sourced semantic meaning.
+
+Partial-coverage example: "Visit the British Museum exactly twice on different days, and I
+require a guarantee that I will never queue on either visit." Preserve the executable
+named count/date fields AND the independent non-negotiable queue guarantee as hard semantic
+meaning. Do not claim that a VisitRequirement verifies queues, tickets, opening or access.
+
+Category contrast: "Visit exactly two different museums on different days and at least two
+different parks." Use sourced category experience_goal entries: museums exact/count=2 with
+distinct_dates=true, parks minimum/count=2. Do not invent named venues or VisitRequirement
+entries for these category requests. A minimum does not become an upper bound.
+
+For explicit interior/admission visits use access_mode venue_entry;
 for explicit exterior-only
 viewing use exterior. Otherwise use null. These are sourced visit intentions, not verified public
 access, ticket or opening facts. Do not infer an access mode from a place category or name.
@@ -204,7 +247,7 @@ unresolved with a reason rather than inventing an executable scope.
 
 PREFERENCE_INTERPRETATION_SYSTEM_PROMPT += """
 
-Preference Input Gate (preference_prompt_13 / preference_draft_9 / preference_input_2):
+Preference Input Gate (preference_prompt_16 / preference_draft_10 / preference_input_2):
 In this SAME response, return preference_input_assessment with input_disposition
 VALID, CLARIFICATION_REQUIRED, or REWRITE_REQUIRED, safety_disposition CLEAR or
 SAFETY_BLOCK, and at most eight typed issues. Do not add a judge call.
@@ -248,6 +291,24 @@ Contrast: "I prefer walking, but public transport is fine for longer distances."
 "Use walking or metro depending on what works for me." alone can be normal flexibility, not an
 invented ambiguity. Clarify only missing decisive meaning, for example an unresolved reference in
 "Apply the mandatory transport restriction I mentioned earlier." when none was provided.
+
+Soft quality versus decisive ambiguity (use full context, not a phrase allowlist):
+Ordinary soft quality/style wishes do not require a precise definition before planning.
+"I want a rich trip", "a varied and enjoyable trip", and "a memorable trip" are normal
+tradeable wishes, not semantic_ambiguity merely because no measurable threshold was given.
+Preserve their source-linked meaning as soft semantic requirements; do not silently discard
+them. Do not invent exact counts, exclusive themes, luxury spending or feasibility guarantees.
+For "I like climbing mountain, I want to visit zoo, I also want to enjoy a rich trip":
+absent another issue, return VALID/CLEAR with no input issues. Preserve mountain climbing
+as a continuing ordinary preference, zoo as a one_off ordinary category goal, and the rich-trip
+wish as a soft whole_trip or itinerary_style preference for a rich/varied experience, with
+experience_goal=null. Do not infer that every activity must be climbing or zoo related.
+Do not substitute indoor climbing for mountain climbing or claim any goal is fulfilled.
+A soft quality wish never cancels a separate genuine input issue. For example,
+"I want a rich trip. Apply the mandatory transport restriction I mentioned earlier."
+still requires semantic_ambiguity for the unresolved mandatory reference only.
+Clarify when missing decisive meaning prevents identifying an actual obligation or supported
+trip scope; preserve genuine hard conditions, contradictions, scope conflicts and safety checks.
 
 Geographic/scope decision (product intent, not geographic fact verification):
 1. Style, analogy and inspiration without an incompatible physical visit are not scope conflicts.

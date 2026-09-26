@@ -323,14 +323,18 @@ class AcceptanceSession:
             "mapped": False,
         }
         self.calls[call_id] = row
-        capture_input = {**kwargs, "response_schema": kwargs["response_schema"].__name__}
+        method = kwargs.pop("_method", "generate_structured")
+        capture_input = {k: v for k, v in kwargs.items() if k != "usage_callback"}
+        capture_input["response_schema"] = kwargs["response_schema"].__name__
         if capture_input.get("_generation_config") is not None:
             capture_input["_generation_config"] = capture_input["_generation_config"].model_dump(
                 mode="json"
             )
         self.record("model_input", capture_input)
         try:
-            result = await self.client.generate_structured(**kwargs)
+            if method != "generate_structured":
+                kwargs.pop("response_schema")
+            result = await getattr(self.client, method)(**kwargs)
             row["mapped"] = True
             self.record("domain_output", result.model_dump(mode="json"))
             return result
@@ -343,6 +347,15 @@ class AcceptanceSession:
     async def generate_primary_structured(self, *, generation_config, **kwargs):
         """Keep session capture and ownership for configured primary generation."""
         return await self.generate_structured(**kwargs, _generation_config=generation_config)
+
+    async def generate_poi_semantics_structured(self, **kwargs):
+        from backend.app.schemas.poi_semantics import SemanticAssessmentBatch
+
+        return await self.generate_structured(
+            **kwargs,
+            response_schema=SemanticAssessmentBatch,
+            _method="generate_poi_semantics_structured",
+        )
 
 
 def failure_kind(exc, session):

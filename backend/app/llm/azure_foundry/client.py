@@ -111,7 +111,12 @@ class AzureFoundryStructuredLLMClient:
     """Use strict transport DTOs through a Microsoft Foundry v1 endpoint."""
 
     def __init__(
-        self, *, endpoint: str, deployment: str, api_key: str, requirement_capture=None,
+        self,
+        *,
+        endpoint: str,
+        deployment: str,
+        api_key: str,
+        requirement_capture=None,
         http_client: httpx.Client | None = None,
         http_async_client: httpx.AsyncClient | None = None,
     ) -> None:
@@ -122,7 +127,7 @@ class AzureFoundryStructuredLLMClient:
             "deployment": deployment,
             "api": "responses/v1",
             "max_retries": 0,
-            "contract": "preference_draft_9",
+            "contract": "preference_draft_10",
         }
         transport_options = {}
         if http_client is not None:
@@ -176,8 +181,8 @@ class AzureFoundryStructuredLLMClient:
             "prompt_hash": digest(system_prompt),
             "schema_hash": digest(wire),
             "config_hash": digest(self._requirement_config),
-            "prompt_version": "preference_prompt_13",
-            "schema_version": "preference_draft_9",
+            "prompt_version": "preference_prompt_16",
+            "schema_version": "preference_draft_10",
             "config": self._requirement_config,
         }
         self.last_call_metadata = {"call_id": call_id, **base, "secondary_errors": []}
@@ -187,11 +192,15 @@ class AzureFoundryStructuredLLMClient:
             if self.requirement_capture:
                 try:
                     saved = self.requirement_capture.record(
-                        call_id, stage, {**base, **payload, "provider_diagnostics": diagnostics},
-                        secrets=self._capture_secrets
+                        call_id,
+                        stage,
+                        {**base, **payload, "provider_diagnostics": diagnostics},
+                        secrets=self._capture_secrets,
                     )
                     if saved is None:
-                        self.last_call_metadata["secondary_errors"].append("capture_failure:unavailable")
+                        self.last_call_metadata["secondary_errors"].append(
+                            "capture_failure:unavailable"
+                        )
                 except Exception as exc:
                     self.last_call_metadata["secondary_errors"].append(
                         "capture_failure:" + type(exc).__name__
@@ -216,8 +225,11 @@ class AzureFoundryStructuredLLMClient:
                 response_id=getattr(raw, "id", None),
             )
             diagnostics = normalize(
-                metadata=metadata, content=content, usage=usage,
-                response_id=getattr(raw, "id", None), secrets=self._capture_secrets,
+                metadata=metadata,
+                content=content,
+                usage=usage,
+                response_id=getattr(raw, "id", None),
+                secrets=self._capture_secrets,
             )
             self.last_call_metadata["provider_diagnostics"] = diagnostics
             blocks = [{"type": "text", "text": content}] if isinstance(content, str) else content
@@ -255,7 +267,8 @@ class AzureFoundryStructuredLLMClient:
                 # Non-JSON prose is not a Gate classification; never inspect its meaning.
                 if text.strip() and not text.lstrip().startswith(("{", "[")):
                     raise RequirementBoundaryError(
-                        "unstructured_requirement_response", stage="provider",
+                        "unstructured_requirement_response",
+                        stage="provider",
                         category="provider_incomplete",
                     ) from None
                 raise
@@ -277,7 +290,9 @@ class AzureFoundryStructuredLLMClient:
                 else ()
             )
             error = RequirementBoundaryError(
-                "invalid_requirement_response", stage=stage, errors=errors,
+                "invalid_requirement_response",
+                stage=stage,
+                errors=errors,
                 provider_diagnostics=diagnostics,
             )
             capture(stage, error.as_dict())
@@ -286,8 +301,10 @@ class AzureFoundryStructuredLLMClient:
             diagnostics = normalize(error=exc, secrets=self._capture_secrets)
             self.last_call_metadata["provider_diagnostics"] = diagnostics
             error = RequirementBoundaryError(
-                "requirement_provider_failed", stage=stage,
-                category=failure_category(diagnostics), provider_diagnostics=diagnostics,
+                "requirement_provider_failed",
+                stage=stage,
+                category=failure_category(diagnostics),
+                provider_diagnostics=diagnostics,
             )
             capture(stage, error.as_dict())
             raise error from exc
@@ -340,6 +357,27 @@ class AzureFoundryStructuredLLMClient:
         """Per-call settings, without mutating a shared client or other tasks."""
         return await self.generate_structured(**kwargs, _generation_config=generation_config)
 
+    async def generate_poi_semantics_structured(
+        self, *, system_prompt, user_prompt, output_tokens, usage_callback=None
+    ):
+        from backend.app.schemas.poi_semantics import (
+            FoundrySemanticAssessmentBatch,
+            SemanticAssessmentBatch,
+        )
+
+        model = self._chat_model.with_structured_output(
+            FoundrySemanticAssessmentBatch,
+            method="json_schema",
+            strict=True,
+            max_output_tokens=output_tokens,
+        )
+        raw = await model.ainvoke(
+            [SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)],
+            **({"config": {"callbacks": [usage_callback]}} if usage_callback else {}),
+        )
+        dto = FoundrySemanticAssessmentBatch.model_validate(raw)
+        return SemanticAssessmentBatch.model_validate(dto.model_dump())
+
     async def generate_repair_structured(
         self, *, system_prompt, user_prompt, output_tokens=None, usage_callback=None
     ):
@@ -351,7 +389,9 @@ class AzureFoundryStructuredLLMClient:
         if output_tokens is None:
             output_tokens = configured_policy().input.output_tokens
         model = self._chat_model.with_structured_output(
-            FoundryRepairPatchDTO, method="json_schema", strict=True,
+            FoundryRepairPatchDTO,
+            method="json_schema",
+            strict=True,
             max_output_tokens=output_tokens,
         )
         try:
@@ -359,7 +399,8 @@ class AzureFoundryStructuredLLMClient:
                 [SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)],
                 **(
                     {"config": {"callbacks": [usage_callback]}}
-                    if usage_callback is not None else {}
+                    if usage_callback is not None
+                    else {}
                 ),
             )
             dto = FoundryRepairPatchDTO.model_validate(raw)

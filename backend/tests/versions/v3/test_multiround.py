@@ -244,7 +244,7 @@ def test_invalid_policy_fails_explicitly(change):
 def test_runtime_yaml_snapshot_round_trips_and_v0_defaults_remain():
     config = load_runtime_config()
     assert RuntimeConfig.model_validate(config.model_dump()) == config
-    assert config.v3_repair.quantity_review_enabled is False
+    assert config.v3_repair.quantity_review_enabled is True
     assert config.main_generation.input_tokens == 252000
     assert config.budget.final_pois == 20
 
@@ -371,7 +371,11 @@ def test_yaml_round_limit_reaches_actual_runner(tmp_path):
     path = tmp_path / "runtime.yaml"
     path.write_text(yaml.safe_dump(data), encoding="utf-8")
     result, model, _, _ = asyncio.run(
-        execute(GraphModel(behavior="empty"), runtime_config=load_runtime_config_file(path))
+        execute(
+            GraphModel(behavior="empty"),
+            runtime_config=load_runtime_config_file(path),
+            quantity_review_enabled=None,
+        )
     )
     assert model.repair_calls == 1 and result.v3.quantity_review_enabled
 

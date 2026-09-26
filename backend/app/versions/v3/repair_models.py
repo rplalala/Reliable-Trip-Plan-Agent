@@ -11,6 +11,7 @@ from backend.app.policies.poi_funnel import NamedPlaceResolution
 from backend.app.policies.trip_dates import TripDateWindow
 from backend.app.schemas.interpreted_requirements import InterpretedTripRequirements
 from backend.app.schemas.itinerary import Itinerary
+from backend.app.schemas.poi_semantics import POISemanticAssessment
 from backend.app.versions.v3.models import ValidationModel, ValidationPolicy, ValidationReport
 from backend.app.versions.v3.repair_schedule import ScheduleState
 
@@ -183,6 +184,7 @@ class VisitBinding(ValidationModel):
 
 
 class ValidationContext(ValidationModel):
+    semantic_assessments: tuple[POISemanticAssessment, ...] = ()
     visit_bindings: tuple[VisitBinding, ...] = ()
     active_related: tuple[RelatedTarget, ...] = ()
     schedule: ScheduleState | None = None
@@ -207,6 +209,8 @@ class TargetProgress(ValidationModel):
 
 
 class RepairResult(ValidationModel):
+    pending_groups: tuple[dict, ...] = ()
+    effective_patch: RepairPatch | None = None
     components: tuple[dict, ...] = ()
     acquisition_audit: tuple[dict, ...] = ()
     feedback_kind: str = "not_evaluated"

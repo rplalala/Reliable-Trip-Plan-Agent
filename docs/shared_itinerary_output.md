@@ -1,5 +1,9 @@
 # Shared itinerary output
 
+## Implemented semantic policy output — 2026-09-26
+
+GenerationDiagnostics now exposes policy_completion, policy_issues and goal_progress. ProductPlanResult forwards completion/reason codes; the UI labels incomplete adopted results without hiding the itinerary. This completion scope concerns counted primary roles/multiplicity/minimum coverage, not global feasibility or verified cost/access. Semantic assessment failures remain system errors. The result includes request-wide semantic assessment/config/cache/usage audit. Nearby remains separate. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26).
+
 Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
 for current configuration, shared ownership and artifact-verified evidence. Earlier dated
 implementation/live statements below retain their original scope. V0 remains tool-free;

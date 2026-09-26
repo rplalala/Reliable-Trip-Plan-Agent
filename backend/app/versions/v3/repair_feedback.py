@@ -38,6 +38,8 @@ def material_fingerprint(user):
     payload = json.loads(user)
     # These fields describe decisions, not round commentary, counts or acquisition history.
     keys = (
+        "semantic_assessments",
+        "pending_dependency_groups",
         "candidate_catalog",
         "selected_opening_evidence",
         "time_windows",

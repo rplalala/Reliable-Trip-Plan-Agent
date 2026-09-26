@@ -113,6 +113,8 @@ export interface MinimumDailyCoverage {
 }
 
 export interface CompletedPlanningResponse {
+  policy_completion?: "complete" | "incomplete" | "unassessed";
+  policy_reasons?: string[];
   minimum_daily_coverage?: MinimumDailyCoverage[];
   status: "completed";
   requirements: TravelRequirements;

@@ -1,0 +1,132 @@
+{
+  "provenance": "Normalized captured draft; not raw provider text. Historical mismatch, never auto-corrected.",
+  "source_sha256": "248e4e3adafa899af60539dc47223bbad24af8921c8ac324ccfa3e8fb83975b7",
+  "prompt_version": "preference_prompt_15",
+  "request": {
+    "input_version": "planning_request_2",
+    "destination": "London",
+    "start_date": "2026-10-01",
+    "end_date": "2026-10-08",
+    "traveler_count": 1,
+    "budget": {
+      "amount": "3000",
+      "currency": "AUD"
+    },
+    "additional_preferences": "I like climbing mountain, I want to visit zoo, I also want to enjoy a rich trip",
+    "request_id": null
+  },
+  "draft": {
+    "preference_input_assessment": {
+      "input_disposition": "CLARIFICATION_REQUIRED",
+      "safety_disposition": "CLEAR",
+      "issues": [
+        {
+          "issue_type": "semantic_ambiguity",
+          "source_refs": [
+            {
+              "quote": "I also want to enjoy a rich trip",
+              "occurrence": 0
+            }
+          ],
+          "quote_status": "located",
+          "related_field": null,
+          "operational_conflict_index": null,
+          "scope": "The meaning of the requested trip quality is unclear."
+        }
+      ]
+    },
+    "visit_requirements": [],
+    "time_protections": [],
+    "operational_conflicts": [],
+    "named_places": [],
+    "requested_place_information": [],
+    "transport_preference": null,
+    "semantic_requirements": [
+      {
+        "experience_goal": {
+          "frequency": "continuing",
+          "count": null,
+          "target": "category",
+          "distinct_dates": false,
+          "explicit_primary_exception": false,
+          "trip_scope": "ordinary"
+        },
+        "local_key": "mountain_climbing",
+        "normalized_text": "The requester likes mountain climbing.",
+        "kind": "preference",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "selected_poi_set",
+        "subject_target": {
+          "kind": "specified",
+          "first_ref": "requester",
+          "additional_refs": []
+        },
+        "source_refs": [
+          {
+            "quote": "I like climbing mountain",
+            "occurrence": 0
+          }
+        ]
+      },
+      {
+        "experience_goal": {
+          "frequency": "one_off",
+          "count": null,
+          "target": "category",
+          "distinct_dates": false,
+          "explicit_primary_exception": false,
+          "trip_scope": "ordinary"
+        },
+        "local_key": "visit_zoo",
+        "normalized_text": "The requester wants to visit a zoo.",
+        "kind": "goal",
+        "polarity": "favor",
+        "strength": "medium",
+        "scope": "whole_trip",
+        "subject_target": {
+          "kind": "specified",
+          "first_ref": "requester",
+          "additional_refs": []
+        },
+        "source_refs": [
+          {
+            "quote": "I want to visit zoo",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "subjects": [
+      {
+        "local_key": "requester",
+        "label": "Requester",
+        "source_refs": [
+          {
+            "quote": "I like climbing mountain",
+            "occurrence": 0
+          }
+        ]
+      }
+    ],
+    "discovery_intents": [
+      {
+        "requirement_refs": [
+          "mountain_climbing"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Mountain climbing"
+      },
+      {
+        "requirement_refs": [
+          "visit_zoo"
+        ],
+        "purpose": "activity_or_category",
+        "query_text": "Zoos"
+      }
+    ],
+    "experience_evidence_requests": [],
+    "extraction_issues": [],
+    "overflow": false
+  }
+}

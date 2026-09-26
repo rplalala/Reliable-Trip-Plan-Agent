@@ -1004,6 +1004,9 @@ def test_scheduled_and_ledger_only_identity_cannot_be_added():
 
 
 def test_needed_discovery_enters_real_projection_and_acceptance_without_changing_original_supply():
+    from backend.tests.services.test_poi_semantics import service
+
+    semantic_service = service()
     original = draft()
     ctx = discovery_context(original_supply_ids=("a",), places=(place(),))
     provider = CandidateSearch(ids=("a", "fresh", "fresh2", "unused"))
@@ -1015,8 +1018,11 @@ def test_needed_discovery_enters_real_projection_and_acceptance_without_changing
         model=model,
         places_provider=provider,
         intent_ids=("discovery_1",),
+        semantic_service=semantic_service,
     )
     assert result.status == "ACCEPTED_COMPLETE", result.reason
+    assert semantic_service.calls == 2
+    assert "fresh" in semantic_service.ledger
     assert provider.searches == 1 and provider.calls == 2
     assert result.counters["original_supply_unused"] == 0
     assert result.final_place_ids == ("a", "fresh")
@@ -1273,9 +1279,11 @@ def test_multiple_targets_reserve_two_total_and_stop_at_available_input_capacity
     )
     base = discovery_context().contract
     ctx = ctx.model_copy(
-        update={"contract": base.model_copy(
-            update={"requirements": ctx.contract.requirements, "time_protections": ()}
-        )}
+        update={
+            "contract": base.model_copy(
+                update={"requirements": ctx.contract.requirements, "time_protections": ()}
+            )
+        }
     )
     provider = CandidateSearch(ids=("fresh", "fresh2", "unused3", "unused4"))
     result = run(

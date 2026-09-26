@@ -85,11 +85,7 @@ async def create_planning_result(
             },
         ) from exc
 
-    return CompletedPlanningResponse(
-        requirements=result.requirements,
-        itinerary=result.itinerary,
-        minimum_daily_coverage=result.minimum_daily_coverage,
-    )
+    return CompletedPlanningResponse(**result.model_dump())
 
 
 @router.get("/planning/date-window")

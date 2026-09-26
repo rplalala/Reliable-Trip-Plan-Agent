@@ -1,5 +1,9 @@
 # V0 design
 
+## Shared semantic guidance implemented — 2026-09-26
+
+V0 shares sourced goal/count/date interpretation and generation guidance while remaining tool-free. It does not call candidate semantic assessment, RAG or Repair. Name-based observations are not reliable canonical/role verification, so absence of external judgments cannot establish semantic policy completion. Independent V0 offline regressions pass; no new live evidence. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26).
+
 Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
 for current configuration, shared ownership and artifact-verified evidence. Earlier dated
 implementation/live statements below retain their original scope. V0 remains tool-free;

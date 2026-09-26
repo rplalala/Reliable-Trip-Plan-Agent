@@ -4,6 +4,7 @@ import unicodedata
 from collections import Counter
 from datetime import timedelta
 
+from backend.app.policies.visit_multiplicity import is_primary_visit
 from backend.app.schemas.generation_diagnostics import (
     DayGenerationDiagnostics,
     GenerationDiagnostics,
@@ -21,6 +22,8 @@ def observe_generation(
     schedule=None,
     places=(),
     blank_policy=None,
+    semantic_assessments=(),
+    named_resolutions=(),
 ):
     """Count only main visits; canonical mode requires the validated supply ledger.
 
@@ -49,6 +52,7 @@ def observe_generation(
             blank_policy or load_runtime_config().v3_repair,
         )
     canonical = supplied_ids is not None
+    semantic_rows = {r.place_id: r for r in semantic_assessments}
     supplied = set(supplied_ids or ())
     by_date = {day.date: day for day in itinerary.days}
     rows, seen = [], set()
@@ -59,12 +63,21 @@ def observe_generation(
         activities = day.activities if day else ()
         roles = Counter(a.activity_kind for a in activities)
         keys = []
-        unclassified = roles["unknown"]
+        unclassified = sum(
+            a.activity_kind == "unknown" and not is_primary_visit(a, semantic_assessments)
+            for a in activities
+        )
         for activity in activities:
-            if activity.activity_kind != "main_poi":
+            if not is_primary_visit(activity, semantic_assessments):
                 continue
             if canonical:
                 key = activity.source_place_id if activity.source_place_id in supplied else None
+                if key in semantic_rows and semantic_rows[key].role == "non_main":
+                    continue  # A known non-main object is not an unknown visit identity.
+                if semantic_rows and (
+                    key not in semantic_rows or not semantic_rows[key].main_eligible
+                ):
+                    key = None
             else:
                 name = unicodedata.normalize("NFKC", activity.place_name or "")
                 key = " ".join(name.split()).casefold() or None
@@ -113,7 +126,29 @@ def observe_generation(
         )
         day_date += timedelta(days=1)
     statuses = Counter(row.target_status for row in rows)
+    from backend.app.policies.poi_semantic_output import goal_progress, semantic_policy_issues
+
+    issues = (
+        semantic_policy_issues(itinerary, contract, semantic_assessments, named_resolutions)
+        if contract
+        else ()
+    )
+    issues += tuple(
+        {"reason": "minimum_daily_coverage_missing", "date": str(r.date)}
+        for r in rows
+        if r.minimum_coverage == "missing"
+    )
     return GenerationDiagnostics(
+        goal_progress=goal_progress(itinerary, contract, semantic_assessments) if contract else (),
+        policy_completion="incomplete"
+        if issues or any(r.minimum_coverage == "missing" for r in rows)
+        else "complete"
+        if semantic_rows
+        and contract
+        and contract.contract_version == "interpreted_requirements_4"
+        and contract.visit_requirements is not None
+        else "unassessed",
+        policy_issues=issues,
         days=tuple(rows),
         days_meeting_default_target=statuses["within_target"],
         days_below_target=statuses["below_target"],

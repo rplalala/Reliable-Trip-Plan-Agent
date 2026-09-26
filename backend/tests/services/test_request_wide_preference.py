@@ -121,8 +121,8 @@ def test_prompt_and_capture_version_wiring():
         in PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
     )
     assert "missing personal attribution" in PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
-    assert "preference_prompt_13" in inspect.getsource(boundary_identity)
-    assert "preference_prompt_13" in inspect.getsource(AzureFoundryStructuredLLMClient._interpret)
+    assert "preference_prompt_16" in inspect.getsource(boundary_identity)
+    assert "preference_prompt_16" in inspect.getsource(AzureFoundryStructuredLLMClient._interpret)
 
 
 def test_mother_hard_and_father_soft_remain_separate():

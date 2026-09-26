@@ -1,5 +1,9 @@
 # V3 design
 
+## Semantic policy and automatic deduplication implemented — 2026-09-26
+
+V3 reuses shared candidate judgments and one-pass requirements. Unauthorized canonical repeats on the same or different dates automatically become product-policy targets, independent of the old repetition-review flag. Exact counts and distinct-date obligations remain protected; historical unassessed multiplicity stays UNKNOWN. Deduplication plus compensation can persist as an unpublished dependency group; only a fully accepted group reaches the adopted itinerary. Role/exception violations are separately scoped product-policy findings. See the [offline checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26). No new live validation or freeze is claimed.
+
 Post-checkpoint correction (2026-09-25): formal transfers use their bound departure's continuous
 free interval; stage summaries compare the original with the adopted itinerary; standalone
 Repair budgets honor injected runtime policy. These corrections have offline evidence only.
@@ -35,7 +39,9 @@ latest adopted itinerary remain distinct. Nearby references never supplement pri
 The existing validator distinguishes diagnostics, CONFIRMED conflicts, NEEDS_REVIEW and
 UNKNOWN. Applicable Google operating windows and route estimates support their specific
 checks; admission, ticketing and future-real-world guarantees remain separate uncertainties.
-Quantity, repetition and overfull reviews default off. Confirmed operating/transfer conflicts
+Quantity review defaults on; overfull review defaults off. The obsolete optional repetition
+review switch has been removed; unauthorized repeats remain automatic policy targets.
+Confirmed operating/transfer conflicts
 are automatic targets. Confirmed/hard obligations precede activated compensation and reviews;
 deferred targets cannot drive current acquisition, authorization or projection.
 

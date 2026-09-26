@@ -104,15 +104,16 @@ def test_rejected_proposal_losses_remain_in_round_not_adopted_stage_summary():
 
 
 def test_later_rejected_deletion_does_not_pollute_earlier_adopted_loss():
+    # Both deletions target confirmed repeats; only the first preserves daily coverage.
     args = setup(
         [
             [
                 visit(pid, pid, start=f"{9 + i:02d}:00", end=f"{9 + i:02d}:30")
                 for i, pid in enumerate("abcdef")
             ],
-            [visit("a2", "a", 1), visit("g", "g", 1, start="12:00", end="13:00")],
+            [visit("a2", "a", 1), visit("f2", "f", 1, start="12:00", end="13:00")],
         ],
-        reviews=("overfull", "repetition"),
+        reviews=("overfull",),
     )
     result, _ = run(args, [[b_edit("delete", "f")], [b_edit("delete", "a2", day=1)]])
     assert result.rounds[0].result.status == "ACCEPTED_PARTIAL"

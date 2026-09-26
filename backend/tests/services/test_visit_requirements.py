@@ -18,6 +18,8 @@ def visit_draft(**changes):
     row = dict(
         place_text="Museum",
         minimum_visits=2,
+        exact_visits=None,
+        distinct_dates=True,
         dates=["2026-09-12", "2026-09-13"],
         status="executable",
         reason=None,

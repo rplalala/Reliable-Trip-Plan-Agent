@@ -230,6 +230,9 @@ async def run_tools_planner(
             extra.update(result_projector(final_state))
         result = result_factory(
             **extra,
+            semantic_assessment=evidence_service.poi_semantics.snapshot()
+            if getattr(evidence_service, "poi_semantics", None)
+            else None,
             generation_diagnostics=final_state["generation_diagnostics"],
             system_version=system_version,
             requirements=requirements,

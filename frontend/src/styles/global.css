@@ -242,10 +242,43 @@ a {
   grid-column: 1 / -1;
 }
 
+.destination-control { position: relative; }
+.destination-control > label { display: grid; gap: 8px; }
+.destination-options { position: absolute; z-index: 12; width: 100%; max-height: 220px;
+  overflow-y: auto; background: var(--paper); border: 1px solid var(--line);
+  border-radius: 8px; box-shadow: 0 12px 28px rgb(55 67 57 / 18%); }
+.destination-options button { display: block; width: 100%; padding: 10px 12px;
+  border: 0; background: transparent; text-align: left; cursor: pointer; }
+.destination-options button:hover,
+.destination-options button[aria-selected="true"] { background: var(--sand); }
+
 .planning-form input {
   min-height: 48px;
   padding: 10px 12px;
 }
+
+.currency-control { display: grid; gap: 8px; }
+.currency-control label { display: grid; gap: 8px; }
+.currency-control select { min-height: 48px; width: 100%; padding: 10px 12px; }
+.currency-search-label { font-size: 13px; }
+.trip-date-control { position: relative; min-width: 0; }
+.trip-date-control > label { display: grid; gap: 8px; }
+.trip-date-control > input,
+.trip-date-control input { width: 100%; }
+.date-trigger { margin-top: 6px; padding: 6px 10px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--paper); color: var(--forest); cursor: pointer; }
+.date-trigger:focus-visible,
+.date-calendar button:focus-visible,
+.currency-control select:focus-visible { outline: 3px solid #359b88; outline-offset: 2px; }
+.date-calendar { position: absolute; z-index: 10; width: min(320px, 100%); padding: 12px;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 12px 28px rgb(55 67 57 / 18%); }
+.date-calendar-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.date-calendar-weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin-top: 8px; text-align: center; font-size: 11px; color: var(--muted); }
+.date-calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; margin-top: 8px; }
+.date-calendar-days button { min-width: 0; padding: 7px 0; }
+.date-calendar-days button[aria-current="date"] { background: var(--forest); color: white; }
 
 .budget-fields {
   margin: 28px 0;
@@ -659,7 +692,21 @@ input:focus {
 .nearby-list { margin: 1rem 0 0 1.25rem; padding-left: 1rem; border-left: 2px solid #809b99; font-size: 0.85em; }
 .nearby-list h5 { font-size: 1em; margin-bottom: 0.5rem; }
 .nearby-list p { margin: 0.3rem 0; }
-.weather-card { padding: 1rem; border: 1px solid #809b99; border-radius: 0.5rem; }
+.weather-strip { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px;
+  min-width: 0; padding: 8px 12px; border: 1px solid #809b99; border-radius: 0.5rem;
+  font-size: 0.85rem; color: var(--muted); }
+.weather-strip strong { color: var(--forest); }
+.weather-metrics { display: flex; flex-wrap: wrap; gap: 4px 12px; min-width: 0; }
+.weather-details[open] { flex-basis: 100%; }
+.weather-details p { margin: 5px 0 0; }
+.preference-assistance { min-width: 0; }
+.preference-assistance-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.preference-preview { margin-top: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.preference-preview p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.preference-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.preference-compare section { min-width: 0; }
+.preference-compare h3 { margin: 0 0 8px; font-size: 1rem; }
+@media (max-width: 560px) { .preference-compare { grid-template-columns: 1fr; } }
 .research-runs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: 1rem; margin-top: 2rem; }
 .research-run { min-width: 0; padding: 1rem; border: 1px solid #809b99; border-radius: 0.5rem; }
 .research-run pre { overflow: auto; max-height: 28rem; white-space: pre-wrap; overflow-wrap: anywhere; }

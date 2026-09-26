@@ -28,6 +28,9 @@ class DayGenerationDiagnostics(BaseModel):
 
 
 class GenerationDiagnostics(BaseModel):
+    policy_completion: Literal["complete", "incomplete", "unassessed"] = "unassessed"
+    policy_issues: tuple[dict, ...] = ()
+    goal_progress: tuple[dict, ...] = ()
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     days: tuple[DayGenerationDiagnostics, ...]

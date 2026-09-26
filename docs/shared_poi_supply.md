@@ -1,5 +1,9 @@
 # Shared POI acquisition and deterministic supply
 
+## Implemented semantic supply extension — 2026-09-26
+
+V1/V2/V3 assess factual-qualified candidate roles and requirement matches through a request-owned bounded LLM service before primary supply. Search origin is not semantic satisfaction. Ordinary exploration opportunities survive admission/Details/supply; themed requests retain their priority. The same Details queue can continue when assessed supply is insufficient, within original counters and deadlines. Semantic unknown role is not established main coverage; unknown operating facts do not disqualify a known role. New calls, cache and judgments are audited; semantic model failures terminate. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26). Existing provider capacities remain unchanged.
+
 ## Default quality_first_1 capacities
 
 <a id="b-03703c8677d9-0"></a>

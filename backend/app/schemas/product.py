@@ -74,6 +74,8 @@ class ProductItinerary(ProductModel):
 
 
 class ProductPlanResult(ProductModel):
+    policy_completion: Literal["complete", "incomplete", "unassessed"] = "unassessed"
+    policy_reasons: tuple[str, ...] = ()
     requirements: TravelRequirements
     itinerary: ProductItinerary
     minimum_daily_coverage: tuple[MinimumDailyCoverage, ...] = ()

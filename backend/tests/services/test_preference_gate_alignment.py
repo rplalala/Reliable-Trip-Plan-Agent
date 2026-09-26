@@ -28,7 +28,13 @@ FIXTURE = Path(__file__).parents[1] / "fixtures/preference_gate/historical_desti
 def historical():
     saved = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assert json.loads(saved["raw_structured_text"]) == saved["payload"]
-    return copy.deepcopy(saved["payload"])
+    payload = copy.deepcopy(saved["payload"])
+    # Synthetic wire-10 adaptation; the historical artifact above remains byte-for-byte intact.
+    for row in payload.get("visit_requirements") or ():
+        row.update(exact_visits=None, distinct_dates=False)
+    for row in payload.get("semantic_requirements") or ():
+        row["experience_goal"] = None
+    return payload
 
 
 def test_historical_index_is_rejected_by_new_wire_and_unchanged_domain():

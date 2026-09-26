@@ -93,6 +93,19 @@ a local documentation coverage test detects a missing path or stale value.
 | Full configuration path | Current YAML value | Type / bounds | Meaning and scope |
 | --- | --- | --- | --- |
 | `schema_version` | `6` | integer; = 6 | Runtime loader schema discriminator; exactly 6. Not a planning version selector. Zero is invalid. |
+| `input_assistance.destination.min_chars` | `2` | integer; = 2 | Minimum trimmed destination prefix length. |
+| `input_assistance.destination.max_chars` | `100` | integer; = 100 | Maximum trimmed destination prefix length. |
+| `input_assistance.destination.result_limit` | `5` | integer; 1..5 | Maximum normalized GeoDB suggestions per request. |
+| `input_assistance.destination.timeout_seconds` | `3` | seconds; > 0, <= 3 | One GeoDB request deadline, with no retry. |
+| `input_assistance.destination.minimum_interval_seconds` | `1.1` | seconds; >= 1.1 | Minimum spacing between outbound requests per process. |
+| `input_assistance.destination.daily_attempts_per_process` | `100` | integer; 1..100 | UTC-day local send cap, including failed sends. |
+| `input_assistance.polishing.source_max_chars` | `4000` | integer; 1..4000 | Maximum source length for optional polishing; normal planning keeps its own limit. |
+| `input_assistance.polishing.source_max_tokens` | `1500` | integer; 1..1500 | Maximum source token count before any model construction. |
+| `input_assistance.polishing.model_input_tokens_per_call` | `8000` | integer; 1..8000 | Prompt, context and schema estimate cap for the single draft call. |
+| `input_assistance.polishing.draft_output_tokens` | `2000` | integer; 1..2000 | Maximum draft response tokens. |
+| `input_assistance.polishing.call_timeout_seconds` | `20` | seconds; > 0, <= 20 | Deadline for each model call. |
+| `input_assistance.polishing.total_timeout_seconds` | `40` | seconds; > 0, <= 40 | End-to-end model operation deadline. |
+| `input_assistance.polishing.daily_operations_per_process` | `20` | integer; 1..20 | UTC-day admitted polishing operations per process. |
 | `reference_discovery.policy_version` | `"nearby_references_1"` | string; = "nearby_references_1" | Final-primary Nearby reference contract identifier. |
 | `reference_discovery.max_requests` | `3` | integer; >= 0, <= 3 | Nearby sending allowance per request, after the whole Repair stage. Zero disables the allowance. |
 | `reference_discovery.max_result_count` | `10` | integer; >= 1, <= 10 | Provider result count per Nearby request. Zero is invalid. |
@@ -174,7 +187,7 @@ a local documentation coverage test detects a missing path or stale value.
 | `development_timeout_seconds` | `600` | integer; >= 1, <= 600 | Maximum permitted explicit development CLI request allowance. Presence alone does not enable this timeout; V3 requires an explicit allowance from entry. Zero is invalid. |
 | `v3_repair.max_rounds` | `5` | integer; >= 1, <= 5 | Total rounds per Repair stage, shared across dates/targets. Each round has at most one model call. Zero is invalid. |
 | `v3_repair.max_model_calls` | `5` | integer; >= 0, <= 5 | Model sending ceiling per entire stage; zero disables Repair model attempts. Must not exceed max_rounds. Zero disables the allowance. |
-| `v3_repair.quantity_review_enabled` | `false` | boolean; schema-validated | Default coverage review-target opt-in. It never turns NEEDS_REVIEW into CONFIRMED. |
+| `v3_repair.quantity_review_enabled` | `true` | boolean; schema-validated | Default coverage review-target activation; CLI can explicitly disable it. It never turns NEEDS_REVIEW into CONFIRMED. |
 | `v3_repair.alternatives_per_gap` | `2` | integer; >= 1 | Distinct alternatives per authorized quantity gap as a preparation reference. Fewer options may still be used. Zero is invalid. |
 | `v3_repair.exploration_positions` | `2` | integer; >= 0, <= 2 | Reusable exploration positions within the same input union across the stage, not extra candidates or per-date quotas. Zero removes reserved presentation opportunities. Zero removes the corresponding tolerance. |
 | `v3_repair.timing.stage_seconds` | `360` | number; > 0, <= 360 | Maximum Repair wall-clock duration, additionally bounded by entry deadline minus Nearby reservation. Zero is invalid. |
@@ -229,13 +242,13 @@ hours are not activated by this checkpoint. No new credentials or CLI overrides 
 
 ## B target and operation policy
 
-These values are loaded once with the existing runtime snapshot. Review flags are independent
-and default off; new B flags are YAML-only (the existing quantity CLI override is unchanged).
+These values are loaded once with the existing runtime snapshot. Quantity review defaults on;
+overfull review defaults off. The quantity CLI override remains available. There is no optional
+repetition-review flag; confirmed unauthorized repeats are automatic targets.
 They change V3 post-primary authorization only, never first-generation supply or prompts.
 
 | Configuration path | Current value | Type / units / behavior |
 | --- | --- | --- |
-| `v3_repair.repetition_review_enabled` | `false` | Boolean, per request. Same-canonical cross-date review; not a fact-conflict declaration. |
 | `v3_repair.overfull_review_enabled` | `false` | Boolean, per request. Independent maximum-count review. |
 | `v3_repair.daily_main_min` | `2` | Integer, 1..5; per-date Repair coverage reference. Zero invalid. |
 | `v3_repair.daily_main_max` | `5` | Integer, 1..10 and >= minimum; per-date Repair upper reference. Exactly this many is allowed. Shared generation diagnostics retain their own 2..5 generation observation. |
@@ -253,7 +266,7 @@ whole-stage coverage waiver field is compatibility-only and no longer grants per
 ## C confirmed operating and transfer obligations
 
 C adds no new adjustable values or review switch. Confirmed opening/transfer targets are
-independent of the three default-off review flags. Rounds prioritize confirmed obligations and
+independent of the optional quantity/overfull review flags. Rounds prioritize confirmed obligations and
 record deferred review target IDs. All C targets and activated coverage children share the same
 `v3_repair` phase totals, deadlines, identity/token ceilings and `move_max_days` boundary.
 There are no new Reviews/Profile or Official Web acquisitions in Repair.
@@ -446,3 +459,36 @@ with 8 reserved for post-proposal work and 32 elements shared by all rounds/mode
 Current values were loaded and hashed during [V3 closeout](../docs/v3_closeout.md).
 No runtime limits changed in that task. The final combined-tree offline regression passed;
 historical live limits retain their original run configurations.
+
+## POI semantics (request-wide)
+
+V1/V2/V3 share one request-owned assessment ledger after normal Details. V0 remains tool-free. All values below are required positive engineering parameters; zero is invalid. Calls and elapsed model seconds accumulate across initial preparation and all Repair rounds; cache reuse spends neither. Failures consume sent calls and terminate the flow, whereas pre-send limits stop unassessed candidates from entering main authorization. Framing reuses `main_generation.framing_tokens`. No new CLI/environment overrides are introduced.
+
+| Path | Current YAML value | Meaning |
+| --- | --- | --- |
+| `poi_semantics.max_calls` | `6` | Model invocations per request, not per stage or round; failures count. Actual HTTP sends are separate provider telemetry. |
+| `poi_semantics.batch_size` | `32` | Distinct canonical identities per batch (at most 32). |
+| `poi_semantics.input_tokens` | `32000` | Per-call engineering input ceiling; system, user, schema and framing. |
+| `poi_semantics.output_tokens` | `8192` | Per-call output token cap. |
+| `poi_semantics.call_timeout_seconds` | `45` | Seconds per call, clipped by remaining phase/request time. |
+| `poi_semantics.total_seconds` | `120` | Cumulative model elapsed seconds per request. |
+| `poi_semantics.exploration_fraction` | `0.3333333333333333` | Share of optional candidate processing opportunities; not an output quota. |
+| `poi_semantics.exception_alternatives` | `2` | Alternatives per requested exception visit, inside existing K. |
+
+Quantity review now defaults to enabled; overfull review remains disabled. The obsolete
+`v3_repair.repetition_review_enabled` field has been removed from configuration and the
+V3 `review_policy` report. Remove this key from custom YAML before loading it; unknown
+keys are rejected. Unauthorized canonical repeats remain automatic policy targets,
+authorized revisits remain protected, and unassessed multiplicity stays UNKNOWN.
+The internal optional review-target list no longer accepts repetition. Historical captures
+retain their original schemas and may require the matching historical code for replay.
+Product and Dev V3 use the same YAML policy; restart existing backend processes to reload
+cached configuration. CLI `--no-repair-quantity-review` still explicitly disables quantity
+review for one run. Budgets, operation permissions and V0-V2 behavior are unchanged.
+Semantic judgments and provenance rules are contracts, not configuration bypass switches.
+
+The complete block is mandatory for current runtime loading, including custom runtime files.
+Omission is a configuration error, not a switch to legacy classification. Old request contracts
+are still readable independently of runtime configuration; no historical files are migrated.
+The immutable effective snapshot and its hash are captured once; each request's semantic ledger
+also reports its policy hash, input hashes, cache hits and per-call reported usage.

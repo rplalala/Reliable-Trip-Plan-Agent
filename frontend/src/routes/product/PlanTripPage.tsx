@@ -48,7 +48,11 @@ export function PlanTripPage() {
       if (active.current === controller && !controller.signal.aborted) {
         setResult(response);
         setProgressState(response.status === "completed" ? "completed" : "paused");
-        setProgress(response.status === "completed" ? "Your itinerary is ready" : "Planning paused. Please review the message below.");
+        setProgress(response.status === "completed"
+          ? response.policy_completion === "incomplete"
+            ? "Planning finished with unmet requirements. Review the itinerary below."
+            : "Your itinerary is ready"
+          : "Planning paused. Please review the message below.");
         if (response.status === "completed") setPosition(1);
       }
     } catch {
@@ -128,7 +132,7 @@ export function PlanTripPage() {
         )}
       </div>
 
-      {result?.status === "completed" && <ItineraryView itinerary={result.itinerary} minimumCoverage={result.minimum_daily_coverage} />}
+      {result?.status === "completed" && <ItineraryView itinerary={result.itinerary} minimumCoverage={result.minimum_daily_coverage} policyCompletion={result.policy_completion} />}
     </div>
   );
 }

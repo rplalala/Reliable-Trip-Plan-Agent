@@ -411,6 +411,8 @@ def build_tools_graph(
             blank_policy=runtime_config.v3_repair if runtime_config else None,
             places=state["place_evidence"],
             supplied_ids=state["review_selection"].policy_result.selected_place_ids,
+            semantic_assessments=state["review_selection"].semantic_assessments,
+            named_resolutions=state["candidate_funnel"].named_place_resolutions,
             related_requirement_ids=tuple(
                 r.requirement_id for r in state["interpreted_requirements"].semantic_requirements
             ),

@@ -1,4 +1,20 @@
 schema_version: 6
+input_assistance:
+  destination:
+    min_chars: 2
+    max_chars: 100
+    result_limit: 5
+    timeout_seconds: 3
+    minimum_interval_seconds: 1.1
+    daily_attempts_per_process: 100
+  polishing:
+    source_max_chars: 4000
+    source_max_tokens: 1500
+    model_input_tokens_per_call: 8000
+    draft_output_tokens: 2000
+    call_timeout_seconds: 20
+    total_timeout_seconds: 40
+    daily_operations_per_process: 20
 reference_discovery:
   policy_version: nearby_references_1
   max_requests: 3
@@ -119,8 +135,7 @@ transport:
 v3_repair:
   max_rounds: 5 # Stage ceiling; shared 360-second deadline may stop earlier.
   max_model_calls: 5 # One call per round; zero disables model attempts.
-  quantity_review_enabled: false # CLI may explicitly override this review policy.
-  repetition_review_enabled: false # Same-canonical review; never a confirmed fact conflict.
+  quantity_review_enabled: true # CLI may explicitly disable this review policy.
   overfull_review_enabled: false # Independent from shortage review.
   daily_main_min: 2 # Application coverage reference, not an unconditional quota.
   daily_main_max: 5 # Review target permits exactly this many distinct main POIs.
@@ -165,3 +180,14 @@ v3_repair:
     fallback_distance_km: 1
     fallback_reserve_minutes: 45 # No-route schedule reserve, not a provider duration or extra API-route buffer.
     daily_added_minutes: 90 # Cumulative per day against the stage-original itinerary.
+
+# Request-wide semantic assessment; shared by primary preparation and all Repair rounds.
+poi_semantics:
+  max_calls: 6
+  batch_size: 32
+  input_tokens: 32000
+  output_tokens: 8192
+  call_timeout_seconds: 45
+  total_seconds: 120
+  exploration_fraction: 0.3333333333333333
+  exception_alternatives: 2

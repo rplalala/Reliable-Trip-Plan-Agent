@@ -25,6 +25,7 @@ class Finding(ValidationModel):
         "route",
         "budget",
         "semantic_requirements",
+        "primary_policy",
     ]
     status: Literal["PASS", "CONFIRMED", "NEEDS_REVIEW", "UNKNOWN"]
     reason: str
@@ -91,6 +92,6 @@ class ValidationPolicy(ValidationModel):
 
     daily_main_min: int = 2
     daily_main_max: int = 5
-    review_targets: frozenset[Literal["coverage", "repetition", "opening", "overfull"]] = Field(
+    review_targets: frozenset[Literal["coverage", "opening", "overfull"]] = Field(
         default_factory=frozenset
     )

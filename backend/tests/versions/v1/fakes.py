@@ -120,11 +120,13 @@ class FakeWeatherProvider:
 
 def _weather_day(value: date, precipitation: int) -> dict[str, object]:
     return {
-        "date": value, "condition": "RAIN" if precipitation > 50 else "CLEAR",
-        "min_temperature_c": 14, "max_temperature_c": 22,
-        "precipitation_probability_percent": precipitation, "max_wind_speed_kph": 18,
+        "date": value,
+        "condition": "RAIN" if precipitation > 50 else "CLEAR",
+        "min_temperature_c": 14,
+        "max_temperature_c": 22,
+        "precipitation_probability_percent": precipitation,
+        "max_wind_speed_kph": 18,
     }
-
 
 
 class FakeRoutesProvider:
@@ -221,7 +223,9 @@ def make_revised_extraction(
     return InterpretationDraft(
         # Synthetic current gate assessment for this offline fixture.
         preference_input_assessment={
-            "input_disposition": "VALID", "safety_disposition": "CLEAR", "issues": []
+            "input_disposition": "VALID",
+            "safety_disposition": "CLEAR",
+            "issues": [],
         },
         named_places=tuple(
             NamedRequirementDraft(
@@ -254,8 +258,10 @@ class RevisedFakeLLM:
         self.delegate = FakeStructuredLLMClient(responses)
         self.calls = self.delegate.calls
 
-    async def generate_structured(self, *, response_schema, user_prompt, system_prompt):
+    async def generate_poi_semantics_structured(self, **kwargs):
+        return await self.delegate.generate_poi_semantics_structured(**kwargs)
 
+    async def generate_structured(self, *, response_schema, user_prompt, system_prompt):
 
         return await self.delegate.generate_structured(
             response_schema=response_schema, user_prompt=user_prompt, system_prompt=system_prompt

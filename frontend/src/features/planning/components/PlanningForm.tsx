@@ -5,9 +5,15 @@ import {
   addCalendarDays,
   type TripDateWindow,
   isDateWithinTripWindow,
+  isValidISODate,
 } from "../datePolicy";
 import { getTripDateWindow } from "../api";
+import { isListedCurrency } from "../currencies";
 import type { ProductPlanningInput } from "../types";
+import { CurrencySelect } from "./CurrencySelect";
+import { DestinationCombobox } from "./DestinationCombobox";
+import { PreferencePolisher } from "./PreferencePolisher";
+import { TripDateInput } from "./TripDateInput";
 
 interface PlanningFormProps {
   isSubmitting: boolean;
@@ -34,7 +40,7 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, refe
   const [endDate, setEndDate] = useState("");
   const [travelerCount, setTravelerCount] = useState("");
   const [budgetAmount, setBudgetAmount] = useState("");
-  const [budgetCurrency, setBudgetCurrency] = useState("");
+  const [budgetCurrency, setBudgetCurrency] = useState("AUD");
   const [additionalPreferences, setAdditionalPreferences] = useState("");
 
   const parsedTravelerCount = Number(travelerCount);
@@ -44,6 +50,8 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, refe
     endDate.length > 0 &&
     Number.isInteger(parsedTravelerCount) &&
     parsedTravelerCount >= 1;
+  const hasValidDateFormat = (!startDate || isValidISODate(startDate)) &&
+    (!endDate || isValidISODate(endDate));
   const hasValidDateRange = !startDate || !endDate || endDate >= startDate;
   const hasValidDateWindow = dateWindow !== null &&
     (!startDate || isDateWithinTripWindow(startDate, dateWindow)) &&
@@ -55,10 +63,12 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, refe
       hasBudgetCurrency &&
       Number.isFinite(Number(budgetAmount)) &&
       Number(budgetAmount) >= 0 &&
-      /^[A-Z]{3}$/.test(budgetCurrency));
-  const hasValidDuration = !startDate || !endDate || !dateWindow || endDate <= addCalendarDays(startDate, dateWindow.maxTripDays - 1);
+      isListedCurrency(budgetCurrency));
+  const hasValidDuration = !startDate || !endDate || !dateWindow || !isValidISODate(startDate) ||
+    endDate <= addCalendarDays(startDate, dateWindow.maxTripDays - 1);
   const canSubmit =
     hasRequiredFields &&
+    hasValidDateFormat &&
     hasValidDuration &&
     hasValidDateRange &&
     hasValidDateWindow &&
@@ -87,50 +97,18 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, refe
   return (
     <form className="planning-form" onSubmit={handleSubmit} onChange={onEdit}>
       <div className="product-form-grid">
-        <label className="field-wide">
-          Destination
-          <input
-            type="text"
-            value={destination}
-            required
-            disabled={isSubmitting}
-            placeholder="Beijing"
-            onChange={(event) => setDestination(event.target.value)}
-          />
-        </label>
-        <label>
-          Start date
-          <input
-            type="date"
-            value={startDate}
-            min={dateWindow?.allowedStart}
-            max={dateWindow?.allowedEnd}
-            required
-            disabled={isSubmitting}
-            aria-describedby={!hasValidDateWindow ? "date-window-error" : undefined}
-            onChange={(event) => setStartDate(event.target.value)}
-          />
-        </label>
-        <label>
-          End date
-          <input
-            type="date"
-            value={endDate}
-            min={startDate || dateWindow?.allowedStart}
-            max={dateWindow ? latestEndDate(startDate, dateWindow) : undefined}
-            required
-            disabled={isSubmitting}
-            aria-describedby={
-              !hasValidDateWindow
-                ? "date-window-error"
-                : !hasValidDateRange
-                  ? "date-range-error"
-                  : undefined
-            }
-            onChange={(event) => setEndDate(event.target.value)}
-          />
-        </label>
+        <DestinationCombobox value={destination} onChange={setDestination}
+          onSelect={onEdit} disabled={isSubmitting} />
+        <TripDateInput label="Start date" value={startDate} onChange={setStartDate} onSelect={onEdit}
+          min={dateWindow?.allowedStart} max={dateWindow?.allowedEnd} disabled={isSubmitting}
+          describedBy={!hasValidDateFormat ? "date-format-error" : !hasValidDateWindow ? "date-window-error" : undefined} />
+        <TripDateInput label="End date" value={endDate} onChange={setEndDate} onSelect={onEdit}
+          min={isValidISODate(startDate) ? startDate : dateWindow?.allowedStart}
+          max={dateWindow ? latestEndDate(startDate, dateWindow) : undefined} disabled={isSubmitting}
+          describedBy={!hasValidDateFormat ? "date-format-error" : !hasValidDateWindow
+            ? "date-window-error" : !hasValidDateRange ? "date-range-error" : undefined} />
         {!dateWindow && <p>{dateError ? "Date limits could not be loaded. Reload to try again." : "Loading date limits…"}</p>}
+        {!hasValidDateFormat && <p className="field-error field-wide" id="date-format-error">Enter real dates in YYYY-MM-DD format.</p>}
         {!hasValidDuration && <p className="field-error">Trips may last at most 10 days, including both dates.</p>}
         {dateWindow && !hasValidDateWindow && (
           <p className="field-error field-wide" id="date-window-error">
@@ -175,23 +153,11 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, refe
               onChange={(event) => setBudgetAmount(event.target.value)}
             />
           </label>
-          <label>
-            Currency
-            <input
-              type="text"
-              value={budgetCurrency}
-              required
-              pattern="[A-Z]{3}"
-              maxLength={3}
-              disabled={isSubmitting}
-              placeholder="AUD"
-              aria-describedby={!hasValidBudget ? "budget-error" : undefined}
-              onChange={(event) => setBudgetCurrency(event.target.value)}
-            />
-          </label>
+          <CurrencySelect value={budgetCurrency} onChange={setBudgetCurrency}
+            disabled={isSubmitting} describedBy={!hasValidBudget ? "budget-error" : undefined} />
           {!hasValidBudget && (
             <p className="field-error field-wide" id="budget-error">
-              Enter a non-negative amount and a three-letter uppercase currency code.
+              Enter a non-negative amount and select a currency.
             </p>
           )}
         </div>
@@ -212,6 +178,16 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, refe
         rows={5}
         disabled={isSubmitting}
       />
+      <PreferencePolisher text={additionalPreferences}
+        context={{
+          ...(destination.trim() && { destination: destination.trim() }),
+          ...(isValidISODate(startDate) && { start_date: startDate }),
+          ...(isValidISODate(endDate) && { end_date: endDate }),
+          ...(Number.isInteger(parsedTravelerCount) && parsedTravelerCount >= 1 && { traveler_count: parsedTravelerCount }),
+          ...(hasValidBudget && { budget: { amount: budgetAmount, currency: budgetCurrency } }),
+        }}
+        disabled={isSubmitting}
+        onApply={(updated) => { setAdditionalPreferences(updated); onEdit?.(); }} />
       <div className="form-actions">
         <button
           className="button button-primary"

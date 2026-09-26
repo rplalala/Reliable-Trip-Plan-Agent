@@ -13,7 +13,7 @@ from backend.app.evidence.experience_models import (
 from backend.app.schemas.request import TravelRequirements
 from backend.app.schemas.trip_intent import RequestedPlaceInformation, TransportPreferenceIntent
 
-CONTRACT_VERSION = "interpreted_requirements_3"
+CONTRACT_VERSION = "interpreted_requirements_4"
 DRAFT_HANDLE_LIMIT = 256
 TemporaryHandle = Annotated[str, StringConstraints(min_length=1, max_length=DRAFT_HANDLE_LIMIT)]
 Strength = Literal["low", "medium", "high", "hard"]
@@ -71,7 +71,27 @@ class UnresolvedTarget(ContractModel):
 SubjectTarget = PartyTarget | SpecifiedTarget | UnresolvedTarget
 
 
+class ExperienceGoal(ContractModel):
+    """Sourced interpretation, not a claim about candidate suitability."""
+
+    frequency: Literal["one_off", "continuing", "exact", "minimum"]
+    count: int | None = Field(default=None, ge=1, le=10)
+    target: Literal["category", "named_place"]
+    distinct_dates: bool
+    explicit_primary_exception: bool
+    trip_scope: Literal["ordinary", "themed", "exclusive"]
+
+    @model_validator(mode="after")
+    def counts(self):
+        if (self.frequency in {"exact", "minimum"}) != (self.count is not None):
+            raise ValueError("Only exact/minimum experience goals carry a count")
+        if self.explicit_primary_exception and self.frequency == "continuing":
+            raise ValueError("A primary exception needs a bounded experience request")
+        return self
+
+
 class SemanticDraft(ContractModel):
+    experience_goal: ExperienceGoal | None = None
     local_key: TemporaryHandle
     normalized_text: str = Field(min_length=1, max_length=320)
     kind: Literal["preference", "constraint", "goal"]
@@ -83,6 +103,7 @@ class SemanticDraft(ContractModel):
 
 
 class SemanticRequirement(ContractModel):
+    experience_goal: ExperienceGoal | None = None
     requirement_id: str = Field(min_length=1, max_length=40)
     normalized_text: str = Field(min_length=1, max_length=320)
     kind: Literal["preference", "constraint", "goal"]
@@ -172,10 +193,18 @@ class VisitRequirementDraft(ContractModel):
     place_text: str = Field(min_length=1, max_length=200)
     access_mode: Literal["venue_entry", "exterior"] | None = None
     minimum_visits: int = Field(ge=1, le=10)
+    exact_visits: int | None = Field(default=None, ge=1, le=10)
+    distinct_dates: bool | None = None
     dates: tuple[date, ...] = Field(max_length=10)
     status: Literal["executable", "unresolved"]
     reason: str | None = Field(max_length=320)
     source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
+
+    @model_validator(mode="after")
+    def exact_count(self):
+        if self.exact_visits is not None and self.exact_visits != self.minimum_visits:
+            raise ValueError("Exact visits and minimum visits must agree")
+        return self
 
     @model_validator(mode="after")
     def valid_scope(self):
@@ -228,9 +257,13 @@ class TimeProtection(TimeProtectionDraft):
 
 
 InputIssueType = Literal[
-    "destination_scope_conflict", "structured_request_conflict",
-    "internal_requirement_contradiction", "unsupported_request_scope",
-    "semantic_ambiguity", "non_travel_control_instruction", "safety_self_harm",
+    "destination_scope_conflict",
+    "structured_request_conflict",
+    "internal_requirement_contradiction",
+    "unsupported_request_scope",
+    "semantic_ambiguity",
+    "non_travel_control_instruction",
+    "safety_self_harm",
     "safety_serious_harm",
 ]
 InputDisposition = Literal["VALID", "CLARIFICATION_REQUIRED", "REWRITE_REQUIRED"]
@@ -350,7 +383,9 @@ class InterpretationDraft(ContractModel):
 
 
 class InterpretedTripRequirements(ContractModel):
-    contract_version: Literal["interpreted_requirements_3"] = CONTRACT_VERSION
+    contract_version: Literal["interpreted_requirements_3", "interpreted_requirements_4"] = (
+        CONTRACT_VERSION
+    )
     request_sha256: str
     input_version: Literal["planning_request_2"] = "planning_request_2"
     structured_input_sha256: str

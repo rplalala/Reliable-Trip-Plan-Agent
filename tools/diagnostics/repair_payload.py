@@ -403,7 +403,7 @@ def b_fixture(kind):
                 update={"time_protections": (), "visit_requirements": ()}
             ),
             "identity_ledger": prep.ledger,
-            "policy": ValidationPolicy(review_targets={"coverage", "repetition", "overfull"}),
+            "policy": ValidationPolicy(review_targets={"coverage", "overfull"}),
         }
     )
     context = context.model_copy(

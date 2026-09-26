@@ -9,6 +9,7 @@ from backend.app.policies.generation_diagnostics import observe_generation
 from backend.app.policies.itinerary_output import validate_output_sources
 from backend.app.policies.poi_funnel import NamedPlaceResolution
 from backend.app.policies.trip_dates import TripDateWindow, validate_itinerary_dates
+from backend.app.policies.visit_multiplicity import is_primary_visit
 from backend.app.schemas.interpreted_requirements import InterpretedTripRequirements
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.versions.v3.models import (
@@ -36,6 +37,7 @@ def validate_draft(
     original_supply_ids: tuple[str, ...] | None = None,
     schedule=None,
     visit_bindings=(),
+    semantic_assessments=(),
 ) -> ValidationReport:
     """Validate already accepted application inputs, without changing even array order.
 
@@ -61,6 +63,8 @@ def validate_draft(
         contract=contract,
         schedule=schedule,
         places=places,
+        semantic_assessments=semantic_assessments,
+        named_resolutions=named_resolutions,
         supplied_ids=supplied_ids,
         related_requirement_ids=tuple(r.requirement_id for r in contract.semantic_requirements),
     )
@@ -92,6 +96,69 @@ def validate_draft(
             )
         )
 
+    judgments = {r.place_id: r for r in semantic_assessments}
+    for issue in diagnostics.policy_issues:
+        if issue["reason"] == "experience_goal_count_unmet":
+            add(
+                "semantic_requirements",
+                "CONFIRMED",
+                issue["reason"],
+                requirement_ids=(issue["requirement_id"],),
+                magnitude=issue["shortfall"],
+                evidence_refs=(f"requirements:{issue['requirement_id']}",),
+                adopted_evidence={"basis": "supported_visit_count_not_operating_fact"},
+            )
+            continue
+        if issue["reason"] not in {
+            "primary_role_unqualified",
+            "primary_exception_allowance_exceeded",
+            "experience_goal_count_exceeded",
+            "experience_goal_dates_unmet",
+        }:
+            continue
+        rid = issue.get("requirement_id")
+        affected = [
+            (d.date, a)
+            for d in itinerary.days
+            for a in d.activities
+            if is_primary_visit(a, semantic_assessments)
+            and (
+                a.activity_id == issue.get("activity_id")
+                or (
+                    rid
+                    and a.source_place_id in judgments
+                    and (
+                        rid in judgments[a.source_place_id].exception_requirement_ids
+                        or (
+                            issue["reason"]
+                            in {"experience_goal_count_exceeded", "experience_goal_dates_unmet"}
+                            and any(
+                                m.requirement_id == rid and m.relation == "supported"
+                                for m in judgments[a.source_place_id].matches
+                            )
+                        )
+                    )
+                )
+            )
+        ]
+        if not affected:
+            continue
+        known = all(
+            a.source_place_id in judgments and judgments[a.source_place_id].role != "unresolved"
+            for _, a in affected
+        )
+        add(
+            "primary_policy",
+            "CONFIRMED" if known else "UNKNOWN",
+            issue["reason"],
+            dates=tuple(sorted({d for d, _ in affected})),
+            activity_ids=tuple(a.activity_id for _, a in affected),
+            place_ids=tuple(sorted({a.source_place_id for _, a in affected if a.source_place_id})),
+            requirement_ids=(rid,) if rid else (),
+            magnitude=issue.get("excess", issue.get("shortfall", 1)),
+            evidence_refs=("application:primary_role_policy_1",),
+            adopted_evidence={"basis": "semantic_judgment_and_product_policy_not_operating_fact"},
+        )
     for row in diagnostics.days:
         count = row.distinct_main_poi_count
         if row.minimum_coverage == "missing":
@@ -161,14 +228,24 @@ def validate_draft(
     scheduled = {a.source_place_id for a in activities if a.source_place_id}
     visits = defaultdict(list)
     for a in activities:
-        if a.activity_kind == "main_poi" and a.source_place_id:
+        if is_primary_visit(a, semantic_assessments) and a.source_place_id:
             visits[a.source_place_id].append(a)
     for pid, items in visits.items():
         if len(items) > 1:
+            from backend.app.policies.visit_multiplicity import excess_visits
+
+            excess = excess_visits(items, contract, named_resolutions, pid)
+            if excess == 0:
+                continue
             add(
                 "repetition",
-                "NEEDS_REVIEW",
-                "repeated_identity_not_proof_of_redundancy",
+                "CONFIRMED" if excess is not None else "UNKNOWN",
+                "unauthorized_repeat_product_policy"
+                if excess is not None
+                else "visit_multiplicity_unassessed",
+                evidence_refs=("product_policy:canonical_visit_multiplicity_1",),
+                adopted_evidence={"basis": "product_policy_not_provider_fact"},
+                magnitude=excess,
                 place_ids=(pid,),
                 activity_ids=tuple(a.activity_id for a in items),
                 dates=tuple(sorted({a.start_time.date() for a in items})),
@@ -227,7 +304,14 @@ def validate_draft(
             )
             continue
         pid = resolution.resolved_place_id
-        present = pid in scheduled
+        present = (
+            any(
+                a.source_place_id == pid and is_primary_visit(a, semantic_assessments)
+                for a in activities
+            )
+            if requirement.inclusion == "REQUIRED"
+            else pid in scheduled
+        )
         conflict = (requirement.inclusion == "REQUIRED" and not present) or (
             requirement.inclusion == "EXCLUDED" and present
         )
@@ -238,10 +322,14 @@ def validate_draft(
         ]
         executable = [v for v in visit_specs if v.status == "executable"]
         actual = [
-            a for a in activities if a.activity_kind == "main_poi" and a.source_place_id == pid
+            a
+            for a in activities
+            if is_primary_visit(a, semantic_assessments) and a.source_place_id == pid
         ]
         obligation_unmet = any(
             len(actual) < v.minimum_visits
+            or (v.exact_visits is not None and len(actual) != v.exact_visits)
+            or (v.distinct_dates and len({a.start_time.date() for a in actual}) < v.minimum_visits)
             or not set(v.dates) <= {a.start_time.date() for a in actual}
             for v in executable
         )

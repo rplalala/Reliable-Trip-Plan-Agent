@@ -227,7 +227,9 @@ def downstream(contract):
         destination_coordinates=(0, 0),
         profiles=profiles,
     )
-    view = planner_supply_projection(SimpleNamespace(policy_result=supply), contract)
+    view = planner_supply_projection(
+        SimpleNamespace(policy_result=supply, semantic_assessments=()), contract
+    )
     return supply.model_dump(exclude={"elapsed_seconds", "cpu_seconds"}), view
 
 
@@ -496,8 +498,10 @@ def test_gate_strict_wire_and_provenance_failures_are_not_user_issues(invalid):
         row = {
             "issue_type": "destination_scope_conflict",
             "source_refs": [{"quote": "I like architecture.", "occurrence": 0}],
-            "quote_status": "located", "related_field": "destination",
-            "operational_conflict_index": None, "scope": "whole_trip",
+            "quote_status": "located",
+            "related_field": "destination",
+            "operational_conflict_index": None,
+            "scope": "whole_trip",
         }
         if invalid == "fabricated":
             row["source_refs"][0]["quote"] = "Invented sentence"
@@ -506,7 +510,8 @@ def test_gate_strict_wire_and_provenance_failures_are_not_user_issues(invalid):
         else:
             row["current_value"] = "Model cannot supply this field"
         data["preference_input_assessment"] = {
-            "input_disposition": "REWRITE_REQUIRED", "safety_disposition": "CLEAR",
+            "input_disposition": "REWRITE_REQUIRED",
+            "safety_disposition": "CLEAR",
             "issues": [row],
         }
     with pytest.raises(RequirementBoundaryError):
@@ -527,7 +532,9 @@ def test_captured_b_draft_reexpressed_in_v2_keeps_meaning_and_party_scope():
     data["operational_conflicts"] = []
     # Synthetic current assessment for wire re-expression, NOT historical evidence.
     data["preference_input_assessment"] = {
-        "input_disposition": "VALID", "safety_disposition": "CLEAR", "issues": []
+        "input_disposition": "VALID",
+        "safety_disposition": "CLEAR",
+        "issues": [],
     }
     assert any(s["subject_id"] == "party" for s in data["subjects"])
     # Explicit test fixture migration, NOT a runtime legacy repair/fallback.
@@ -537,6 +544,7 @@ def test_captured_b_draft_reexpressed_in_v2_keeps_meaning_and_party_scope():
         if s["subject_id"] != "party"
     ]
     for r in data["semantic_requirements"]:
+        r["experience_goal"] = None  # Explicit synthetic migration of historical wire fields.
         refs = r.pop("subject_refs")
         r["subject_target"] = (
             {"kind": "party"}

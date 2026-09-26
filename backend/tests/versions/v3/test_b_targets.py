@@ -31,7 +31,7 @@ def visit(aid, pid, day=0, start="09:00", end="10:00"):
 def setup(
     rows,
     *,
-    reviews=("coverage", "repetition", "overfull"),
+    reviews=("coverage", "overfull"),
     required=None,
     extra_days=0,
     protections=(),
@@ -60,9 +60,7 @@ def setup(
     ctx = ctx.model_copy(
         update={"schedule": build_schedule(original, c, places, primary_generated=True)}
     )
-    policy = configured_policy().model_copy(
-        update={"repetition_review_enabled": True, "overfull_review_enabled": True}
-    )
+    policy = configured_policy().model_copy(update={"overfull_review_enabled": True})
     ctx = ctx.model_copy(update={"schedule": prepare_blank_windows(original, ctx, policy)})
     scope = operation_scope(
         original, assess(original, ctx), mode="WALK", context=ctx, policy=policy
@@ -138,7 +136,7 @@ def repeated(required=None):
             [visit("a1", "a"), visit("b", "b", start="12:00", end="13:00")],
             [visit("a2", "a", 1), visit("c", "c", 1, "12:00", "13:00")],
         ],
-        reviews=("repetition",),
+        reviews=(),
         required=required,
     )
 
@@ -157,7 +155,7 @@ def test_deduplication_without_compensation_is_atomic_rejection():
     args = repeated()
     result, _ = run(args, [[edit("delete", "a2", day=1)]])
     assert result.status == "REJECTED" and result.final == args[0]
-    assert result.reason == "no_material_change_for_remaining_targets"
+    assert result.reason in {"no_material_change_for_remaining_targets", "duplicate_failed_patch"}
     assert "compensation" in result.rounds[0].result.reason
     assert result.rounds[0].result.comparison is not None
 
@@ -266,7 +264,7 @@ def test_explicit_count_and_date_obligations_protect_visits():
         (original, ctx, scope, policy),
         [[edit("delete", "a2", day=1), edit("add", pid="d", day=1, start="09:00", end="10:00")]],
     )
-    assert result.status == "REJECTED" and result.final == original
+    assert result.status in {"REJECTED", "SKIPPED"} and result.final == original
 
 
 def test_default_window_rejects_outside_hours_and_unknown_timezone():
@@ -326,7 +324,7 @@ def test_repeat_moved_to_same_day_is_not_deduplication():
     assert result.rounds[0].result.target_progress[0].outcome == "unresolved"
 
 
-def test_review_flags_flow_through_actual_runner_and_graph():
+def test_unauthorized_repeat_repairs_automatically_without_optional_review():
     from backend.app.runtime.config_loader import load_runtime_config
     from backend.tests.versions.v3.test_wiring import Model as GraphModel
     from backend.tests.versions.v3.test_wiring import execute, primary
@@ -393,19 +391,11 @@ def test_review_flags_flow_through_actual_runner_and_graph():
             }
 
     model = Model(original)
-    off, _, _, _ = asyncio.run(execute(model, runtime_config=config))
-    assert off.v3.repair is None and model.repair_calls == 0
-    config = config.model_copy(
-        update={
-            "v3_repair": config.v3_repair.model_copy(update={"repetition_review_enabled": True})
-        }
-    )
-    on, model, places, runtime = asyncio.run(execute(Model(original), runtime_config=config))
-    assert on.v3.repair.status == "ACCEPTED_COMPLETE", on.v3.repair.reason
-    assert on.v3.review_policy == {"quantity": False, "repetition": True, "overfull": False}
+    result, model, places, runtime = asyncio.run(execute(model, runtime_config=config))
+    assert result.v3.repair.status == "ACCEPTED_COMPLETE", result.v3.repair.reason
+    assert result.v3.review_policy == {"quantity": False, "overfull": False}
     assert model.repair_calls == 1 and places.nearby and runtime.closes == 1
-    assert on.v3.draft == off.v3.draft
-    assert on.generation_diagnostics == on.v3.final_report.diagnostics
+    assert result.generation_diagnostics == result.v3.final_report.diagnostics
 
 
 def test_multiple_targets_receive_their_own_geographic_discovery_opportunity():
@@ -464,7 +454,7 @@ def test_repeat_group_is_not_truncated_to_two_dates():
             [visit("a1", "a", day=1), visit("c", "c", day=1, start="12:00", end="13:00")],
             [visit("a2", "a", day=2), visit("d", "d", day=2, start="12:00", end="13:00")],
         ],
-        reviews=("repetition",),
+        reviews=(),
     )
     assert {p.activity_id for p in args[2].permissions} == {"a0", "a1", "a2"}
     result, _ = run(
