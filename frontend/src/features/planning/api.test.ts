@@ -1,10 +1,22 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { submitPlanningRequest } from "./api";
+import { getDestinationSuggestions, submitPlanningRequest } from "./api";
 
 describe("product planning API", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it("encodes only the typed prefix for the destination proxy", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200,
+      json: () => Promise.resolve({ source: "geodb", suggestions: [] }) });
+    vi.stubGlobal("fetch", fetchMock);
+    const signal = new AbortController().signal;
+    await getDestinationSuggestions("New & York", signal);
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe("/api/input-assistance/destinations?q=New%20%26%20York");
+    expect(init.signal).toBe(signal);
+    expect(init.body).toBeUndefined();
   });
 
   it("submits a version-agnostic product payload", async () => {

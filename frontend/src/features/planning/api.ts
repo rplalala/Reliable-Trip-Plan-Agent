@@ -16,3 +16,22 @@ export function submitPlanningRequest(
 export function getTripDateWindow(): Promise<import("./datePolicy").TripDateWindow> {
   return requestJson("/api/planning/date-window", { method: "GET", cache: "no-store" });
 }
+
+export interface DestinationSuggestion {
+  id: string;
+  city: string;
+  region: string | null;
+  country: string;
+  country_code: string;
+  label: string;
+}
+
+export interface DestinationSuggestionsResponse {
+  source: "geodb";
+  suggestions: DestinationSuggestion[];
+}
+
+export function getDestinationSuggestions(q: string, signal: AbortSignal): Promise<DestinationSuggestionsResponse> {
+  return requestJson(`/api/input-assistance/destinations?q=${encodeURIComponent(q)}`,
+    { method: "GET", cache: "no-store", signal });
+}

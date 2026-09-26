@@ -11,6 +11,7 @@ import { getTripDateWindow } from "../api";
 import { isListedCurrency } from "../currencies";
 import type { ProductPlanningInput } from "../types";
 import { CurrencySelect } from "./CurrencySelect";
+import { DestinationCombobox } from "./DestinationCombobox";
 import { TripDateInput } from "./TripDateInput";
 
 interface PlanningFormProps {
@@ -95,17 +96,8 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, refe
   return (
     <form className="planning-form" onSubmit={handleSubmit} onChange={onEdit}>
       <div className="product-form-grid">
-        <label className="field-wide">
-          Destination
-          <input
-            type="text"
-            value={destination}
-            required
-            disabled={isSubmitting}
-            placeholder="Beijing"
-            onChange={(event) => setDestination(event.target.value)}
-          />
-        </label>
+        <DestinationCombobox value={destination} onChange={setDestination}
+          onSelect={onEdit} disabled={isSubmitting} />
         <TripDateInput label="Start date" value={startDate} onChange={setStartDate} onSelect={onEdit}
           min={dateWindow?.allowedStart} max={dateWindow?.allowedEnd} disabled={isSubmitting}
           describedBy={!hasValidDateFormat ? "date-format-error" : !hasValidDateWindow ? "date-window-error" : undefined} />

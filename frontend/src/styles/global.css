@@ -242,6 +242,16 @@ a {
   grid-column: 1 / -1;
 }
 
+.destination-control { position: relative; }
+.destination-control > label { display: grid; gap: 8px; }
+.destination-options { position: absolute; z-index: 12; width: 100%; max-height: 220px;
+  overflow-y: auto; background: var(--paper); border: 1px solid var(--line);
+  border-radius: 8px; box-shadow: 0 12px 28px rgb(55 67 57 / 18%); }
+.destination-options button { display: block; width: 100%; padding: 10px 12px;
+  border: 0; background: transparent; text-align: left; cursor: pointer; }
+.destination-options button:hover,
+.destination-options button[aria-selected="true"] { background: var(--sand); }
+
 .planning-form input {
   min-height: 48px;
   padding: 10px 12px;

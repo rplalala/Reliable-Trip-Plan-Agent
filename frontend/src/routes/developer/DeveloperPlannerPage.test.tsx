@@ -6,6 +6,7 @@ import { DeveloperPlannerPage } from "./DeveloperPlannerPage";
 vi.mock("../../features/developer-planning/api", () => ({ submitDeveloperPlanningRequest: vi.fn() }));
 vi.mock("../../features/planning/api", () => ({
   getTripDateWindow: vi.fn().mockResolvedValue({ allowedStart: "2026-09-11", allowedEnd: "2026-09-24", maxTripDays: 10 }),
+  getDestinationSuggestions: vi.fn().mockResolvedValue({ source: "geodb", suggestions: [] }),
 }));
 const submit = vi.mocked(submitDeveloperPlanningRequest);
 const panel = (version: string) => within(screen.getByRole("region", { name: `${version} run` }));

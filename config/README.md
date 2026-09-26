@@ -93,6 +93,12 @@ a local documentation coverage test detects a missing path or stale value.
 | Full configuration path | Current YAML value | Type / bounds | Meaning and scope |
 | --- | --- | --- | --- |
 | `schema_version` | `6` | integer; = 6 | Runtime loader schema discriminator; exactly 6. Not a planning version selector. Zero is invalid. |
+| `input_assistance.destination.min_chars` | `2` | integer; = 2 | Minimum trimmed destination prefix length. |
+| `input_assistance.destination.max_chars` | `100` | integer; = 100 | Maximum trimmed destination prefix length. |
+| `input_assistance.destination.result_limit` | `5` | integer; 1..5 | Maximum normalized GeoDB suggestions per request. |
+| `input_assistance.destination.timeout_seconds` | `3` | seconds; > 0, <= 3 | One GeoDB request deadline, with no retry. |
+| `input_assistance.destination.minimum_interval_seconds` | `1.1` | seconds; >= 1.1 | Minimum spacing between outbound requests per process. |
+| `input_assistance.destination.daily_attempts_per_process` | `100` | integer; 1..100 | UTC-day local send cap, including failed sends. |
 | `reference_discovery.policy_version` | `"nearby_references_1"` | string; = "nearby_references_1" | Final-primary Nearby reference contract identifier. |
 | `reference_discovery.max_requests` | `3` | integer; >= 0, <= 3 | Nearby sending allowance per request, after the whole Repair stage. Zero disables the allowance. |
 | `reference_discovery.max_result_count` | `10` | integer; >= 1, <= 10 | Provider result count per Nearby request. Zero is invalid. |

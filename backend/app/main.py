@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict
 
 from backend.app.api.developer.planning import router as developer_planning_router
+from backend.app.api.input_assistance import router as input_assistance_router
 from backend.app.api.product.planning import router as product_planning_router
 
 
@@ -25,6 +26,7 @@ app = FastAPI(
 
 app.include_router(product_planning_router)
 app.include_router(developer_planning_router)
+app.include_router(input_assistance_router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])

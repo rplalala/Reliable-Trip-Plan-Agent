@@ -1,4 +1,12 @@
 schema_version: 6
+input_assistance:
+  destination:
+    min_chars: 2
+    max_chars: 100
+    result_limit: 5
+    timeout_seconds: 3
+    minimum_interval_seconds: 1.1
+    daily_attempts_per_process: 100
 reference_discovery:
   policy_version: nearby_references_1
   max_requests: 3

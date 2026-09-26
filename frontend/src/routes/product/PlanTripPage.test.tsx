@@ -9,6 +9,7 @@ import { PlanTripPage } from "./PlanTripPage";
 vi.mock("../../features/planning/api", () => ({
   submitPlanningRequest: vi.fn(),
   getTripDateWindow: vi.fn(),
+  getDestinationSuggestions: vi.fn().mockResolvedValue({ source: "geodb", suggestions: [] }),
 }));
 
 const submitPlanningMock = vi.mocked(submitPlanningRequest);

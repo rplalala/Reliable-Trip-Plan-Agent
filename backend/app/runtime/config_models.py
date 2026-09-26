@@ -40,6 +40,19 @@ class AppConfig(_ConfigModel):
         return value
 
 
+class DestinationAssistanceConfig(_ConfigModel):
+    min_chars: StrictInt = Field(default=2, ge=2, le=2)
+    max_chars: StrictInt = Field(default=100, ge=100, le=100)
+    result_limit: StrictInt = Field(default=5, ge=1, le=5)
+    timeout_seconds: float = Field(default=3, gt=0, le=3)
+    minimum_interval_seconds: float = Field(default=1.1, ge=1.1)
+    daily_attempts_per_process: StrictInt = Field(default=100, ge=1, le=100)
+
+
+class InputAssistanceConfig(_ConfigModel):
+    destination: DestinationAssistanceConfig = Field(default_factory=DestinationAssistanceConfig)
+
+
 class PlacesBudgetConfig(_ConfigModel):
     destination_search_calls: StrictInt
     candidate_search_calls: StrictInt
@@ -397,6 +410,7 @@ class POISemanticsConfig(_RepairConfigModel):
 
 
 class RuntimeConfig(_ConfigModel):
+    input_assistance: InputAssistanceConfig = Field(default_factory=InputAssistanceConfig)
     poi_semantics: POISemanticsConfig
     transport: TransportPolicyConfig | None = None
     v3_repair: V3RepairConfig | None = None
