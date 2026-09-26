@@ -699,6 +699,14 @@ input:focus {
 .weather-metrics { display: flex; flex-wrap: wrap; gap: 4px 12px; min-width: 0; }
 .weather-details[open] { flex-basis: 100%; }
 .weather-details p { margin: 5px 0 0; }
+.preference-assistance { min-width: 0; }
+.preference-assistance-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.preference-preview { margin-top: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.preference-preview p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.preference-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.preference-compare section { min-width: 0; }
+.preference-compare h3 { margin: 0 0 8px; font-size: 1rem; }
+@media (max-width: 560px) { .preference-compare { grid-template-columns: 1fr; } }
 .research-runs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: 1rem; margin-top: 2rem; }
 .research-run { min-width: 0; padding: 1rem; border: 1px solid #809b99; border-radius: 0.5rem; }
 .research-run pre { overflow: auto; max-height: 28rem; white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -12,6 +12,7 @@ import { isListedCurrency } from "../currencies";
 import type { ProductPlanningInput } from "../types";
 import { CurrencySelect } from "./CurrencySelect";
 import { DestinationCombobox } from "./DestinationCombobox";
+import { PreferencePolisher } from "./PreferencePolisher";
 import { TripDateInput } from "./TripDateInput";
 
 interface PlanningFormProps {
@@ -177,6 +178,16 @@ export function PlanningForm({ isSubmitting, onSubmit, onEdit, submitLabel, refe
         rows={5}
         disabled={isSubmitting}
       />
+      <PreferencePolisher text={additionalPreferences}
+        context={{
+          ...(destination.trim() && { destination: destination.trim() }),
+          ...(isValidISODate(startDate) && { start_date: startDate }),
+          ...(isValidISODate(endDate) && { end_date: endDate }),
+          ...(Number.isInteger(parsedTravelerCount) && parsedTravelerCount >= 1 && { traveler_count: parsedTravelerCount }),
+          ...(hasValidBudget && { budget: { amount: budgetAmount, currency: budgetCurrency } }),
+        }}
+        disabled={isSubmitting}
+        onApply={(updated) => { setAdditionalPreferences(updated); onEdit?.(); }} />
       <div className="form-actions">
         <button
           className="button button-primary"

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getDestinationSuggestions, submitPlanningRequest } from "./api";
+import { getDestinationSuggestions, postPreferencePolish, submitPlanningRequest } from "./api";
 
 describe("product planning API", () => {
   afterEach(() => {
@@ -17,6 +17,24 @@ describe("product planning API", () => {
     expect(url).toBe("/api/input-assistance/destinations?q=New%20%26%20York");
     expect(init.signal).toBe(signal);
     expect(init.body).toBeUndefined();
+  });
+
+  it("posts preference assistance separately from planning with a revision and read-only context", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200,
+      json: () => Promise.resolve({ status: "unchanged", original_text: "Visit a zoo.",
+        suggested_text: null, explanation: "Already clear.", questions: [], client_revision: "3" }) });
+    vi.stubGlobal("fetch", fetchMock);
+    const signal = new AbortController().signal;
+    await postPreferencePolish({ original_text: "Visit a zoo.",
+      context: { destination: "London", budget: { amount: "3000", currency: "AUD" } },
+      client_revision: "3" }, signal);
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe("/api/input-assistance/preferences/polish");
+    expect(init.method).toBe("POST");
+    expect(init.signal).toBe(signal);
+    expect(JSON.parse(String(init.body))).toEqual({ original_text: "Visit a zoo.",
+      context: { destination: "London", budget: { amount: "3000", currency: "AUD" } },
+      client_revision: "3" });
   });
 
   it("submits a version-agnostic product payload", async () => {

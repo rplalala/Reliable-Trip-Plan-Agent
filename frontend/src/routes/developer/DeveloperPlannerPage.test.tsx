@@ -1,14 +1,17 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { submitDeveloperPlanningRequest } from "../../features/developer-planning/api";
+import { postPreferencePolish } from "../../features/planning/api";
 import { DeveloperPlannerPage } from "./DeveloperPlannerPage";
 
 vi.mock("../../features/developer-planning/api", () => ({ submitDeveloperPlanningRequest: vi.fn() }));
 vi.mock("../../features/planning/api", () => ({
   getTripDateWindow: vi.fn().mockResolvedValue({ allowedStart: "2026-09-11", allowedEnd: "2026-09-24", maxTripDays: 10 }),
   getDestinationSuggestions: vi.fn().mockResolvedValue({ source: "geodb", suggestions: [] }),
+  postPreferencePolish: vi.fn(),
 }));
 const submit = vi.mocked(submitDeveloperPlanningRequest);
+const polish = vi.mocked(postPreferencePolish);
 const panel = (version: string) => within(screen.getByRole("region", { name: `${version} run` }));
 async function launch() {
   const view = render(<DeveloperPlannerPage />);
@@ -20,7 +23,30 @@ async function launch() {
   return view;
 }
 describe("four independent research runs", () => {
-  beforeEach(() => { submit.mockReset(); });
+  beforeEach(() => { submit.mockReset(); polish.mockReset(); });
+  it("shares explicit preference polishing and sends only applied text to each version", async () => {
+    polish.mockImplementation(async request => ({ status: "suggested",
+      original_text: request.original_text, suggested_text: "I enjoy local food.",
+      explanation: "Clearer.", questions: [], client_revision: request.client_revision }));
+    submit.mockImplementation(() => new Promise(() => {}));
+    render(<DeveloperPlannerPage />);
+    await act(async () => {});
+    for (const [label, value] of Object.entries({ Destination: "Kyoto", "Start date": "2026-09-12",
+      "End date": "2026-09-12", Travelers: "2", "Budget amount": "2000" })) {
+      fireEvent.change(screen.getByLabelText(label), { target: { value } });
+    }
+    fireEvent.change(screen.getByLabelText("Additional preferences Optional"),
+      { target: { value: "Food!" } });
+    fireEvent.click(screen.getByRole("button", { name: "Polish preferences" }));
+    expect(await screen.findByText("Clearer.")).toBeInTheDocument();
+    expect(submit).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Apply rewrite" }));
+    fireEvent.click(screen.getByRole("button", { name: "Run all versions" }));
+    expect(submit).toHaveBeenCalledTimes(4);
+    for (const [request] of submit.mock.calls) {
+      expect(request.request.additional_preferences).toBe("I enjoy local food.");
+    }
+  });
   it("displays multiple repair rounds, targets and revalidation without mixing versions", async () => {
     submit.mockImplementation(() => new Promise(() => {}));
     await launch();

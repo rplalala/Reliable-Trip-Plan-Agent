@@ -153,6 +153,10 @@ def redact_secrets(value: object) -> object:
                     "system_tokens",
                     "user_tokens",
                     "schema_tokens",
+                    "source_max_tokens",
+                    "model_input_tokens_per_call",
+                    "draft_output_tokens",
+                    "review_output_tokens",
                     "cache_read",
                     "reasoning",
                 }

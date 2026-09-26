@@ -7,6 +7,15 @@ input_assistance:
     timeout_seconds: 3
     minimum_interval_seconds: 1.1
     daily_attempts_per_process: 100
+  polishing:
+    source_max_chars: 4000
+    source_max_tokens: 1500
+    model_input_tokens_per_call: 8000
+    draft_output_tokens: 2000
+    review_output_tokens: 1000
+    call_timeout_seconds: 20
+    total_timeout_seconds: 40
+    daily_operations_per_process: 20
 reference_discovery:
   policy_version: nearby_references_1
   max_requests: 3

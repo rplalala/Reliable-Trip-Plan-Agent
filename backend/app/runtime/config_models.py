@@ -49,8 +49,20 @@ class DestinationAssistanceConfig(_ConfigModel):
     daily_attempts_per_process: StrictInt = Field(default=100, ge=1, le=100)
 
 
+class PreferencePolishingConfig(_ConfigModel):
+    source_max_chars: StrictInt = Field(default=4000, ge=1, le=4000)
+    source_max_tokens: StrictInt = Field(default=1500, ge=1, le=1500)
+    model_input_tokens_per_call: StrictInt = Field(default=8000, ge=1, le=8000)
+    draft_output_tokens: StrictInt = Field(default=2000, ge=1, le=2000)
+    review_output_tokens: StrictInt = Field(default=1000, ge=1, le=1000)
+    call_timeout_seconds: float = Field(default=20, gt=0, le=20)
+    total_timeout_seconds: float = Field(default=40, gt=0, le=40)
+    daily_operations_per_process: StrictInt = Field(default=20, ge=1, le=20)
+
+
 class InputAssistanceConfig(_ConfigModel):
     destination: DestinationAssistanceConfig = Field(default_factory=DestinationAssistanceConfig)
+    polishing: PreferencePolishingConfig = Field(default_factory=PreferencePolishingConfig)
 
 
 class PlacesBudgetConfig(_ConfigModel):

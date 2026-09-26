@@ -35,3 +35,37 @@ export function getDestinationSuggestions(q: string, signal: AbortSignal): Promi
   return requestJson(`/api/input-assistance/destinations?q=${encodeURIComponent(q)}`,
     { method: "GET", cache: "no-store", signal });
 }
+
+export interface PreferencePolishContext {
+  destination?: string;
+  start_date?: string;
+  end_date?: string;
+  traveler_count?: number;
+  budget?: { amount: string; currency: string };
+}
+
+export interface PreferencePolishRequest {
+  original_text: string;
+  context: PreferencePolishContext;
+  client_revision: string;
+}
+
+export interface PreferencePolishResponse {
+  status: "suggested" | "unchanged" | "needs_input";
+  original_text: string;
+  suggested_text: string | null;
+  explanation: string;
+  questions: string[];
+  client_revision: string;
+}
+
+export function postPreferencePolish(
+  request: PreferencePolishRequest,
+  signal: AbortSignal,
+): Promise<PreferencePolishResponse> {
+  return requestJson("/api/input-assistance/preferences/polish", {
+    method: "POST",
+    body: JSON.stringify(request),
+    signal,
+  });
+}
