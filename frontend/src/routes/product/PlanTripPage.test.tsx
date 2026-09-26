@@ -59,7 +59,6 @@ async function fillRequiredFields(user: TestUser, withBudget = true) {
   await user.type(screen.getByLabelText("Travelers"), "1");
   if (withBudget) {
     await user.type(screen.getByLabelText("Budget amount"), "2000");
-    await user.type(screen.getByLabelText("Currency"), "AUD");
   }
 }
 
@@ -73,6 +72,31 @@ describe("PlanTripPage", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+  });
+
+  it("defaults currency to AUD and filters selectable currencies by name", async () => {
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+    expect(screen.getByRole("combobox", { name: "Currency" })).toHaveValue("AUD");
+    await user.type(screen.getByRole("searchbox", { name: "Search currencies" }), "New Zealand");
+    expect(screen.getByRole("option", { name: /NZD.*New Zealand dollar/ })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: /USD.*US dollar/ })).toBeNull();
+    await user.selectOptions(screen.getByRole("combobox", { name: "Currency" }), "NZD");
+    expect(screen.getByRole("combobox", { name: "Currency" })).toHaveValue("NZD");
+  });
+
+  it("does not submit a rolled-over or partial calendar date", async () => {
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+    await user.type(screen.getByLabelText("Destination"), "Kyoto");
+    fireEvent.change(screen.getByLabelText("Start date"), { target: { value: "2026-09-31" } });
+    fireEvent.change(screen.getByLabelText("End date"), { target: { value: "2026-09-31" } });
+    await user.type(screen.getByLabelText("Travelers"), "1");
+    await user.type(screen.getByLabelText("Budget amount"), "2000");
+    expect(screen.getByText("Enter real dates in YYYY-MM-DD format.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
+    fireEvent.change(screen.getByLabelText("Start date"), { target: { value: "2026-09" } });
+    expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
   });
 
   it("shows provider filtering separately and waits for manual resubmission", async () => {
@@ -155,16 +179,7 @@ describe("PlanTripPage", () => {
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
 
     await user.type(screen.getByLabelText("Budget amount"), "2000");
-    expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
-
-    await user.type(screen.getByLabelText("Currency"), "aud");
-    expect(
-      screen.getByText("Enter a non-negative amount and a three-letter uppercase currency code."),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
-
-    await user.clear(screen.getByLabelText("Currency"));
-    await user.type(screen.getByLabelText("Currency"), "AUD");
+    expect(screen.getByRole("combobox", { name: "Currency" })).toHaveValue("AUD");
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeEnabled();
   });
 
@@ -174,10 +189,9 @@ describe("PlanTripPage", () => {
     await fillRequiredFields(user, false);
 
     await user.type(screen.getByLabelText("Budget amount"), "-1");
-    await user.type(screen.getByLabelText("Currency"), "AUD");
 
     expect(
-      screen.getByText("Enter a non-negative amount and a three-letter uppercase currency code."),
+      screen.getByText("Enter a non-negative amount and select a currency."),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Generate itinerary" })).toBeDisabled();
   });
@@ -188,7 +202,7 @@ describe("PlanTripPage", () => {
     render(<PlanTripPage />);
     await fillRequiredFields(user, false);
     await user.type(screen.getByLabelText("Budget amount"), "2000");
-    await user.type(screen.getByLabelText("Currency"), "AUD");
+    await user.selectOptions(screen.getByRole("combobox", { name: "Currency" }), "NZD");
     await user.type(
       screen.getByLabelText("Additional preferences Optional"),
       "Local food and quiet mornings.",
@@ -201,13 +215,30 @@ describe("PlanTripPage", () => {
       start_date: "2026-09-12",
       end_date: "2026-09-12",
       traveler_count: 1,
-      budget: { amount: "2000", currency: "AUD" },
+      budget: { amount: "2000", currency: "NZD" },
       additional_preferences: "Local food and quiet mornings.",
     }, expect.objectContaining({ signal: expect.any(AbortSignal), onEvent: expect.any(Function) }));
     expect(await screen.findByRole("heading", { name: "Kyoto" })).toBeInTheDocument();
     expect(screen.getByText("Visit Fushimi Inari Shrine")).toBeInTheDocument();
-    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Currency" })).toHaveValue("NZD");
     expect(screen.queryByText(/V0|V1|V2|V3/)).not.toBeInTheDocument();
+  });
+
+  it("clears an adopted result when currency or calendar date changes", async () => {
+    submitPlanningMock.mockResolvedValue(completedResult);
+    const user = userEvent.setup();
+    render(<PlanTripPage />);
+    await fillRequiredFields(user);
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    expect(await screen.findByText("Visit Fushimi Inari Shrine")).toBeInTheDocument();
+    await user.selectOptions(screen.getByRole("combobox", { name: "Currency" }), "NZD");
+    expect(screen.queryByText("Visit Fushimi Inari Shrine")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Generate itinerary" }));
+    expect(await screen.findByText("Visit Fushimi Inari Shrine")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Choose Start date" }));
+    await user.click(screen.getByRole("button", { name: "September 13, 2026" }));
+    expect(screen.getByLabelText("Start date")).toHaveValue("2026-09-13");
+    expect(screen.queryByText("Visit Fushimi Inari Shrine")).toBeNull();
   });
 
   it("keeps an incomplete itinerary visible without claiming it is ready", async () => {

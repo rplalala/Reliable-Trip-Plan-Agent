@@ -121,6 +121,21 @@ describe("four independent research runs", () => {
     expect(screen.getByRole("button", { name: "Run all versions" })).toBeEnabled();
   });
 
+  it("submits a selected currency and ISO dates to every independent version", async () => {
+    submit.mockImplementation(() => new Promise(() => {}));
+    await launch();
+    fireEvent.click(screen.getByRole("button", { name: "Stop all" }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Currency" }), { target: { value: "NZD" } });
+    fireEvent.click(screen.getByRole("button", { name: "Run all versions" }));
+    expect(submit.mock.calls.slice(-4).map(([request]) => ({
+      budget: request.request.budget,
+      start: request.request.start_date,
+      end: request.request.end_date,
+    }))).toEqual(Array.from({ length: 4 }, () => ({
+      budget: { amount: "2000", currency: "NZD" }, start: "2026-09-12", end: "2026-09-12",
+    })));
+  });
+
   it("does not mix a stopped group's events into a new input group and reports event loss", async () => {
     submit.mockImplementation(() => new Promise(() => {}));
     await launch();

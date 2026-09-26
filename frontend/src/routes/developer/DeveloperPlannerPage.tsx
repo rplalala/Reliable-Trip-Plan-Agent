@@ -4,6 +4,8 @@ import { RawJsonView } from "../../features/developer-planning/components/RawJso
 import type { DeveloperVersion } from "../../features/developer-planning/types";
 import { getTripDateWindow } from "../../features/planning/api";
 import { PlanningForm } from "../../features/planning/components/PlanningForm";
+import { TripDateInput } from "../../features/planning/components/TripDateInput";
+import { isValidISODate } from "../../features/planning/datePolicy";
 import { ItineraryView } from "../../features/planning/components/ItineraryView";
 import type { Itinerary, ProductPlanningInput } from "../../features/planning/types";
 import { HttpError } from "../../shared/api/http";
@@ -92,10 +94,10 @@ export function DeveloperPlannerPage() {
   return <div>
     <h2>Run all research planners</h2>
     <p>One input, four independent runs. Results are not automatically ranked. Reloading loses this session.</p>
-    <label>Reference date<input type="date" required value={referenceDate} disabled={busy}
-      onChange={event => { setReferenceDate(event.target.value); editInput(); }} /></label>
+    <TripDateInput label="Reference date" value={referenceDate} disabled={busy}
+      onChange={value => { setReferenceDate(value); editInput(); }} />
     {dateError && <p role="alert">Date limits could not be loaded. Reload to try again.</p>}
-    <PlanningForm isSubmitting={busy || !referenceDate} referenceDate={referenceDate} submitLabel="Run all versions"
+    <PlanningForm isSubmitting={busy || !isValidISODate(referenceDate)} referenceDate={isValidISODate(referenceDate) ? referenceDate : undefined} submitLabel="Run all versions"
       onEdit={editInput} onSubmit={request => {
         if (controllers.current.size || !referenceDate) return;
         const input = structuredClone({ request, reference_date: referenceDate });

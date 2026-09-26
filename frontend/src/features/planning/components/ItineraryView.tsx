@@ -3,20 +3,24 @@ import type { Activity, Itinerary, Transfer, MinimumDailyCoverage, ProductWeathe
 
 function WeatherCard({ weather }: { weather: ProductWeather }) {
   const forecast = weather.status === "available" ? weather.forecast : null;
-  return <aside aria-label="Daily weather" className="weather-card">
-    <h4>Weather</h4>
-    {!forecast ? <p>Weather information is unavailable for this day.</p> : <>
-      {forecast.condition && <p>{forecast.condition}</p>}
-      {forecast.min_temperature_c !== null && <p>Low: {forecast.min_temperature_c} °C</p>}
-      {forecast.max_temperature_c !== null && <p>High: {forecast.max_temperature_c} °C</p>}
-      {forecast.precipitation_probability_percent !== null && <p>Chance of rain: {forecast.precipitation_probability_percent}%</p>}
-      {forecast.max_wind_speed_kph !== null && <p>Maximum wind: {forecast.max_wind_speed_kph} km/h</p>}
-      {weather.attribution && <p className="field-help">{weather.attribution}</p>}
-      {weather.source_url === "https://open-meteo.com/" && <p className="field-help">
-        <a href="https://open-meteo.com/">Open-Meteo</a>{" · "}
-        <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
-      </p>}
-      <p className="field-help">Forecasts may change.</p>
+  return <aside aria-label="Daily weather" className="weather-strip">
+    <strong>Weather</strong>
+    {!forecast ? <span>Weather information is unavailable for this day.</span> : <>
+      <div className="weather-metrics">
+        {forecast.condition && <span>{forecast.condition}</span>}
+        {forecast.min_temperature_c !== null && <span>Low: {forecast.min_temperature_c} °C</span>}
+        {forecast.max_temperature_c !== null && <span>High: {forecast.max_temperature_c} °C</span>}
+        {forecast.precipitation_probability_percent !== null && <span>Chance of rain: {forecast.precipitation_probability_percent}%</span>}
+        {forecast.max_wind_speed_kph !== null && <span>Maximum wind: {forecast.max_wind_speed_kph} km/h</span>}
+      </div>
+      {weather.source_url === "https://open-meteo.com/" && <a href="https://open-meteo.com/">Open-Meteo</a>}
+      <details className="weather-details"><summary>Weather details</summary>
+        {weather.attribution && <p>{weather.attribution}</p>}
+        {weather.source_url === "https://open-meteo.com/" && <p>
+          <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+        </p>}
+        <p>Forecasts may change.</p>
+      </details>
     </>}
   </aside>;
 }
