@@ -1,5 +1,17 @@
 # Planning input UX commit proposal
 
+## Later follow-up commits (2026-09-26)
+
+The approved original four-group plan below was executed as recorded. The user later approved
+three additional local groups: `79ca61a` for the free GeoDB HTTPS correction and direct tests,
+`c8b9aa8` for Polish status, independent HTTP client ownership, and the final single-call
+user-preview flow with tests/configuration, and `648d951` for the four previously excluded
+semantic/quantity closeout documents. The shared input UX spec was split by concern between
+the GeoDB and Polish follow-ups. After the final single-call implementation, 1678 backend
+tests passed (9 skipped), 82 frontend tests passed, and targeted Ruff and staged whitespace
+checks passed. No push occurred. This section records the later work without changing the
+original plan's historical scope and approval.
+
 Status: resolved
 Fixed point: 40b0b26 (HEAD before this iteration)
 Approval: The user approved all four groups on 2026-09-26.

@@ -2,7 +2,7 @@
 
 Status: resolved
 Type: task
-Approval: Approved by the delegated scope agent under the user's 2026-09-26 instruction; implemented without live calls or commit.
+Approval: Initial scope approved by the delegated agent; later HTTPS fix approved by the user and committed as 79ca61a.
 Blocked by: Further live UI verification requires separate authorization.
 Spec: [Planning input UX](../spec.md)
 

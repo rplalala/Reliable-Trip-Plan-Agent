@@ -1,5 +1,34 @@
 # Capstone Project Context
 
+## Current planning input UX — 2026-09-26
+
+The shared Product/Dev form now offers GeoDB destination suggestions, a currency selector,
+locale-independent dates and compact weather presentation. Selecting a city submits its
+city/region/country label as the destination string; manual input remains possible. The
+public free GeoDB endpoint is called through FastAPI over HTTPS. An approved two-request
+check observed HTTP 308 to the same-host HTTPS endpoint, then HTTPS 200 with five places;
+the captured payload normalized offline. This is point-in-time provider evidence, not an
+availability guarantee. No RapidAPI account or key is used.
+
+Preference polishing now uses one bounded model call per admitted operation. A schema-valid
+rewrite is displayed for the user's Apply/Dismiss decision and can be undone; the original
+remains available. The prompt requests meaning preservation, while the user reviews the
+candidate and normal planning still executes its Gate. The earlier independent model review
+and local numeric/date/currency suppression were removed by explicit user instruction.
+Each operation owns its model HTTP clients, so a completed or failed request cannot close a
+cached connection used by the next request. The model status schema accepts only supported
+outcomes. Configuration, API errors, admission limits and budgets are documented in the
+[input UX specification](.scratch/planning-input-ux/spec.md) and [config reference](config/README.md).
+
+The final single-call implementation passed 1678 backend tests with 9 skipped, 82 frontend
+tests, targeted Ruff and Standards/Spec review. Earlier bounded live Polish runs with
+mountain-climbing and reading-books inputs passed when the two-call review still existed;
+one input also included animals. These runs do not validate the final single-call behavior
+live or establish improved Gate acceptance. The local backend was restarted and
+direct/proxied health endpoints returned 200. The implementation and prior closeout documents
+were saved in local commits `79ca61a`, `c8b9aa8` and `648d951` on `feature/v3`; no push or
+new version freeze occurred.
+
 ## Current iteration closeout — 2026-09-26
 
 Status: CLOSED by explicit user confirmation. Implementation, bounded development acceptance,

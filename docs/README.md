@@ -35,7 +35,7 @@ records have one responsibility owner instead of being copied into the entry doc
 | [v3_development](v3_development.md) | Chronological checkpoints, tests and bounded live evidence |
 | [v3_milestone](v3_milestone.md) | Current delivery/evidence limits; not an automatic freeze |
 | [development_record](development_record.md) | Cross-version evolution index and complete shared/joint events |
-| [frontend_design](frontend_design.md) | Actual UI/API boundaries and accepted Product V3/four-version Developer MVP backlog; implementation deferred |
+| [frontend_design](frontend_design.md) | Current Product/Developer UI/API boundaries, input assistance, and dated MVP backlog |
 | [frontend_milestone](frontend_milestone.md) | Original frontend acceptance and dated changes |
 
 ## Evaluation design
@@ -72,6 +72,12 @@ Runtime/tool cleanup and evidence relocation are recorded in [the development re
 
 
 ## Current checkpoint navigation
+
+- [Planning input UX specification](../.scratch/planning-input-ux/spec.md): current GeoDB,
+  currency/date, compact-weather and single-call Polish behavior, limits and evidence.
+  [Frontend and API design](frontend_design.md#planning-input-assistance-update-2026-09-26)
+  summarizes the current user and API flow. Historical review and two-call tests are dated
+  in the local task records.
 
 - [POI semantics iteration closeout](poi_semantics_closeout.md): current semantic/quantity
   completed acceptance, user-confirmed iteration closure, remaining boundaries and five executed
