@@ -1,1 +1,1 @@
-"""GeoDB free HTTP service adapter."""
+"""GeoDB free service adapter over HTTPS."""

@@ -1,11 +1,11 @@
-"""One bounded request to the fixed GeoDB public free HTTP endpoint."""
+"""One bounded request to the fixed GeoDB public free HTTPS endpoint."""
 
 from collections.abc import Mapping
 
 import httpx
 from pydantic import BaseModel, ConfigDict, Field
 
-GEODB_PLACES_URL = "http://geodb-free-service.wirefreethought.com/v1/geo/places"
+GEODB_PLACES_URL = "https://geodb-free-service.wirefreethought.com/v1/geo/places"
 
 
 class GeoDBUnavailable(RuntimeError):

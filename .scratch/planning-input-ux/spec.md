@@ -126,7 +126,7 @@ bounded retry-after when known; 503 unavailable configuration/service; 504 elaps
 client_revision is echoed for polish requests when available. A provider/safety block returns
 HTTP 422 with code polishing_blocked and a sanitized message, leaving the original intact;
 it is an error outcome, not a fourth success status or a candidate rewrite. No automatic
-provider/model fallback. GeoDB uses the explicitly selected free HTTP service described below;
+provider/model fallback. GeoDB uses the selected free service over HTTPS as described below;
 this does not change model transport. No new planning endpoint fields are necessary.
 
 ## Proposed budgets (application limits, not provider-plan promises)
@@ -155,36 +155,39 @@ cannot be fixed without the selected model tariff. Existing destination budgets 
 
 ## GeoDB evidence and unresolved activation conditions
 
-Checked 2026-09-26 using official-site search excerpts. Direct page opens timed out; no live
-API request, account login, credential inspection or subscription change was performed.
+Initial research on 2026-09-26 used official-site search excerpts; direct page opens timed out.
+A later separately approved two-request check found HTTP 308 to same-host HTTPS, followed by
+HTTPS 200 with five city records. Offline replay confirmed adapter compatibility. The user
+approved changing the fixed address to HTTPS; no account or subscription change was needed.
 
-- User selected the public free HTTP instance. Proposed backend request:
-  GET http://geodb-free-service.wirefreethought.com/v1/geo/places with namePrefix=q,
+- User selected the public free instance. Current backend request:
+  GET https://geodb-free-service.wirefreethought.com/v1/geo/places with namePrefix=q,
   sort=-population, offset=0, limit=5, languageCode=en and types=CITY.
   No RapidAPI account, subscription, key or authentication headers are required for this route.
   [Test drive](https://geodb-cities-api.wirefreethought.com/docs/guides/getting-started/test-drive)
 - Name-prefix search, population sorting and language-specific matching are supported.
   Region/country metadata disambiguates suggestions; prefix matching is not fuzzy spelling correction.
   [Find Places](https://geodb-cities-api.wirefreethought.com/docs/api/find-places)
-- The official pricing page lists the public free service at 1 request/second, page size 10,
-  population >=40,000 and no HTTPS. Small towns may be absent; manual input remains available.
+- The initial pricing-page evidence listed the public free service at 1 request/second, page
+  size 10, population >=40,000 and no HTTPS. The later runtime check established HTTPS
+  availability for the tested endpoint. Small towns may be absent; manual input remains available.
   [Pricing](https://geodb-cities-api.wirefreethought.com/pricing)
 - Published REST schema lists CITY among the places type filters and population sorting.
-  It describes the RapidAPI host, so free-instance parity and runtime availability remain
-  unverified until a separately approved live check.
+  It describes the RapidAPI host. The later free-instance check validates the tested response
+  only, not complete parity or ongoing availability.
   [REST schema](https://wirefreethought.github.io/geodb-rest-api-docs/)
 
-Frontend calls only the application's backend; FastAPI calls the fixed free HTTP host. This
+Frontend calls only the application's backend; FastAPI calls the fixed free HTTPS host. This
 keeps browser requests on the application's existing origin/transport and avoids browser
-mixed-content calls to GeoDB. The backend-to-GeoDB hop remains unencrypted. Send only the
+mixed-content calls to GeoDB. The backend-to-GeoDB hop uses TLS. Send only the
 destination prefix and fixed search parameters, never preferences, trip facts or credentials.
 Disallow arbitrary hosts and automatic redirects; normalize and validate returned data as
 untrusted plain text. No paid fallback or GEODB_RAPIDAPI_KEY configuration is included.
 
-Before live activation, confirm free-instance availability, response fields, applicable usage
-and attribution terms. No subscription/key approval is needed. Actual latency and coverage
-remain unverified; fixtures are not proof of service availability. Offline implementation can
-proceed after approval. Live calls remain separately gated by the user's no-live instruction.
+The approved address check confirmed point-in-time availability and response compatibility.
+Applicable usage/attribution terms and broader coverage remain unverified. No subscription/key
+approval is needed. Further live calls remain separately gated by user authorization; the HTTPS
+implementation was verified offline without additional provider calls.
 
 ## TDD seams and acceptance
 

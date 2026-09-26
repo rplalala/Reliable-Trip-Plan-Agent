@@ -77,7 +77,7 @@ def test_same_name_cities_keep_region_and_country_and_use_fixed_free_host():
     }
     assert len(seen) == 1
     assert str(seen[0].url).startswith(
-        "http://geodb-free-service.wirefreethought.com/v1/geo/places?"
+        "https://geodb-free-service.wirefreethought.com/v1/geo/places?"
     )
     assert dict(seen[0].url.params) == {
         "namePrefix": "Lon",
@@ -88,6 +88,9 @@ def test_same_name_cities_keep_region_and_country_and_use_fixed_free_host():
         "types": "CITY",
     }
     assert "x-rapidapi-key" not in seen[0].headers
+    assert seen[0].extensions["timeout"] == {
+        "connect": 3, "read": 3, "write": 3, "pool": 3,
+    }
 
 
 def test_short_or_long_prefix_is_rejected_before_provider_send():
@@ -131,12 +134,16 @@ def test_rate_and_daily_guards_count_sent_attempts_even_after_failure():
     [
         (429, None, 429),
         (302, None, 503),
+        (308, None, 503),
         (200, {"data": "invalid"}, 502),
         (200, {"data": [{"id": 1, "name": "London"}]}, 502),
     ],
 )
 def test_provider_errors_are_sanitized_without_following_redirects(status, payload, expected):
+    sends = []
+
     def respond(request):
+        sends.append(request)
         return httpx.Response(status, json=payload, headers={"Location": "https://example.com/"})
 
     service = DestinationSuggestionService(GeoDBClient(transport=httpx.MockTransport(respond)))
@@ -144,6 +151,20 @@ def test_provider_errors_are_sanitized_without_following_redirects(status, paylo
     assert result.status_code == expected
     assert set(result.json()) == {"error"}
     assert "example.com" not in str(result.json())
+    assert len(sends) == 1
+
+
+def test_provider_timeout_remains_504_without_retry():
+    sends = []
+
+    def respond(request):
+        sends.append(request)
+        raise httpx.ReadTimeout("Provider timeout", request=request)
+
+    service = DestinationSuggestionService(GeoDBClient(transport=httpx.MockTransport(respond)))
+    result = asyncio.run(request(service, "Mel"))
+    assert result.status_code == 504
+    assert len(sends) == 1
 
 
 def test_missing_region_and_empty_results_have_safe_public_shapes():
