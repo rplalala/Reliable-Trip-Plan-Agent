@@ -74,7 +74,8 @@ Runtime/tool cleanup and evidence relocation are recorded in [the development re
 ## Current checkpoint navigation
 
 - [POI semantics iteration closeout](poi_semantics_closeout.md): current semantic/quantity
-  acceptance, user decisions, remaining boundaries and proposed uncommitted-work grouping.
+  completed acceptance, user-confirmed iteration closure, remaining boundaries and five executed
+  local commit groups. Iteration closure does not constitute a new version freeze.
 
 [V2 implementation acceptance](v2_milestone.md#current-implementation-acceptance-2026-09-20)
 is supported by the [joint Tokyo/Sydney evidence](development_record.md#v2-current-checkpoint-acceptance).

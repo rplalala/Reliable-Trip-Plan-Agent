@@ -1,8 +1,35 @@
 # POI semantics iteration closeout — 2026-09-26
 
-Status: implementation and bounded development acceptance recorded; documentation/inventory
-closeout complete. Offline browser acceptance passed and local commit execution is authorized.
-No new version freeze or formal evaluation.
+Status: CLOSED by explicit user confirmation on 2026-09-26. Implementation, bounded development
+acceptance, offline browser integration, inventory review and five local commits are complete.
+This is iteration closure, not a new version freeze or formal evaluation.
+
+## Final closure record
+
+The completed sequence on `feature/v3` is `0652222` (workflow), `014c726` (backend),
+`29647ef` (frontend), `9c910b2` (capture/replay tools), and `40b0b26` (documentation).
+All 105 inventoried files were committed in the reviewed groups; the index and nonignored
+worktree were clean after execution. No push, PR or branch switch occurred. The subsequent
+user-requested closure-status documentation update is separate from those five commits.
+
+Final behavior: Product and Dev V3 default to quantity review; the obsolete optional repetition
+switch/report field is removed. Unauthorized-repeat repair and authorized revisit protections
+remain active. Product JSON/SSE preserve completion fields, and incomplete results remain
+visible with appropriate UI wording. Budgets, local addition permissions and V0-V2 boundaries
+are preserved; overfull review remains disabled.
+
+Validation: combined backend 1648 passed / 9 skipped; isolated backend commit tree 1608 passed /
+9 skipped; new tooling group 40 passed; frontend 59 passed and TypeScript/Vite build passed.
+The initial isolated export lacked local test dependencies; supplying the existing virtualenv
+and offline vocabularies resolved those environment failures without production edits.
+Real-browser offline business submissions passed without retries; only synthetic external
+ports were used. Temporary servers were stopped. The detailed sequence below preserves setup
+corrections and earlier live observations without treating them as a formal benchmark.
+
+P3 remains deferred, factual UNKNOWNs remain, and no further Penguin Beach / London Zoo work
+is scheduled. Historical A/B/C/D evidence remains stage-specific, not a single final-code live
+matrix. No new live run, implementation, formal research, version freeze or Git action follows
+automatically from closure. The next stage requires a new user instruction.
 
 ## Delivered scope
 

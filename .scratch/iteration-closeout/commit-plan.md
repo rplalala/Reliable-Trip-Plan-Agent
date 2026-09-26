@@ -1,6 +1,6 @@
-# Reviewed iteration commit groups
+# Executed iteration commit groups
 
-Status: Execution authorized after successful offline browser acceptance; reviewed groups below.
+Status: Completed; all five groups committed and iteration closure confirmed by the user.
 Date: 2026-09-26
 
 ## Execution receipt
@@ -9,20 +9,21 @@ Date: 2026-09-26
 - `014c726`: backend capability, direct regressions and required tool migrations (71 files).
 - `29647ef`: frontend completion presentation and regressions (6 files).
 - `9c910b2`: new capture/replay tools and regressions (6 files).
-- The final `docs: close semantic and quantity validation iteration` commit contains this
-  receipt and the 18-file documentation group. Its hash is reported after creation, rather
-  than embedded in its own content.
+- `40b0b26`: `docs: close semantic and quantity validation iteration` (18 files).
 
 No push, PR or branch switch. Temporary integration hosts were stopped. Runtime artifacts,
 local dependency links, caches and raw captures remain ignored and are not commit candidates.
 
-Inspected branch: `feature/v3`; HEAD: `7748f3e91500b8dd5a6db11bd04900145ab0b83b`.
+Branch: `feature/v3`; pre-iteration base: `7748f3e91500b8dd5a6db11bd04900145ab0b83b`.
+Completed checkpoint: `40b0b26ba0cab0904076ab18a278205a145d685d`.
+Index and nonignored worktree were clean after execution. The later closure-status
+documentation update is not part of these five commits and is not automatically committed.
 Index: empty at closeout. Entry inventory: 71 tracked modifications + 23 untracked files.
-Final planned nonignored inventory: 105 files (includes API and approved review-policy follow-ups).
+Final committed nonignored inventory: 105 files (includes API and approved review-policy follow-ups).
 
 ## Scope and execution boundary
 
-This plan inventories the entire current uncommitted iteration, not just the last D run.
+This record inventories the entire committed iteration, not just the last D run.
 The user authorized reasonable grouping and local commits after offline acceptance without another approval. No branch switch, push or PR is authorized.
 Order: 1, then 2, then 3 and 4 (both depend on 2), then 5. Implementation and direct
 regressions stay together. Group 4 also carries integration regressions across the group 2
@@ -39,7 +40,7 @@ The latest combined backend run is 1648 passed / 9 skipped, including API and re
 The exported backend candidate tree passed 1608 tests / 9 skipped after supplying local
 test dependencies; the separately added tooling group passed its 40 tests. Frontend validation
 was freshly repeated: 59 tests and TypeScript/Vite build passed. Source hashes match the
-passing implementation checkpoint. Staged paths and whitespace are checked before each commit.
+passing implementation checkpoint. Staged paths and whitespace were checked before each commit.
 
 ## Excluded evidence and other work
 

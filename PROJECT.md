@@ -2,11 +2,17 @@
 
 ## Current iteration closeout — 2026-09-26
 
+Status: CLOSED by explicit user confirmation. Implementation, bounded development acceptance,
+offline browser integration and five local commits are complete. Final implementation/documentation
+checkpoint: `40b0b26` on `feature/v3`. The worktree was clean after those commits; this subsequent
+closure-status documentation update is separate and is not automatically committed.
+
 The POI semantics / quantity-reuse iteration is implemented with offline and bounded live
 evidence. The [iteration closeout](docs/poi_semantics_closeout.md) is the current summary;
 the dated checkpoints below retain their historical status. Latest backend validation:
-1648 passed / 9 skipped. Latest frontend validation:59 passed; TypeScript/Vite build passed
-at the preceding API checkpoint (frontend code is unchanged by the review-policy update).
+1648 passed / 9 skipped. Commit-group validation additionally passed 1608 backend tests /
+9 skipped, then 40 new-tooling tests. Frontend validation was repeated before committing:
+59 passed; TypeScript/Vite build passed.
 The subsequent Product API follow-up preserves policy completion/reasons in both JSON and
 SSE responses; incomplete results remain visible without the misleading ready message.
 Offline routing checks confirm the Product frontend uses current V3. This is source/test
@@ -27,8 +33,10 @@ or Git action is authorized by closeout.
 Offline browser integration subsequently passed using synthetic external ports: Product
 quantity repair and incomplete-state presentation, plus Dev's four independent version runs.
 Both V3 paths report quantity review enabled and omit the obsolete repetition flag. Temporary
-servers were stopped. Local commits are now authorized without another grouping approval;
-see the [reviewed commit groups](.scratch/iteration-closeout/commit-plan.md). No push or freeze.
+servers were stopped. All five reviewed groups were committed; see the
+[executed commit record](.scratch/iteration-closeout/commit-plan.md). Nothing was pushed.
+This closes the iteration, not a new version freeze. No further implementation, live run,
+research evaluation or Git action is implied; the next stage requires a new user instruction.
 
 ## Current POI semantics extension — 2026-09-26
 
