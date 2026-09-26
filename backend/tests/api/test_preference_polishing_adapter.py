@@ -40,6 +40,7 @@ def test_draft_uses_required_only_transport_and_enforces_domain_contract():
     assert result.suggested_text == "Visit a zoo."
     assert fake.options == {"method": "json_schema", "strict": True, "max_output_tokens": 2000}
     schema = fake.schema.model_json_schema()
+    assert schema["properties"]["status"]["enum"] == ["suggested", "unchanged", "needs_input"]
     assert set(schema["required"]) == set(schema["properties"])
     assert "default" not in str(schema)
     assert "maxLength" not in str(schema)
@@ -50,3 +51,13 @@ def test_malformed_draft_is_rejected_after_transport_validation():
                          "explanation": "Clarify.", "questions": []})
     with pytest.raises(PolishProviderInvalidResponse):
         asyncio.run(client.draft("system", "input", 2000))
+
+
+@pytest.mark.parametrize("operation,payload", [
+    ("draft", {"status": "rewritten", "suggested_text": "Visit a zoo.",
+               "explanation": "Clearer.", "questions": []}),
+])
+def test_unknown_provider_outcomes_remain_invalid_results(operation, payload):
+    client, _ = adapter(payload)
+    with pytest.raises(PolishProviderInvalidResponse):
+        asyncio.run(getattr(client, operation)("system", "input", 1000))

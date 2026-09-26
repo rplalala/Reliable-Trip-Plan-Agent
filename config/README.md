@@ -101,9 +101,8 @@ a local documentation coverage test detects a missing path or stale value.
 | `input_assistance.destination.daily_attempts_per_process` | `100` | integer; 1..100 | UTC-day local send cap, including failed sends. |
 | `input_assistance.polishing.source_max_chars` | `4000` | integer; 1..4000 | Maximum source length for optional polishing; normal planning keeps its own limit. |
 | `input_assistance.polishing.source_max_tokens` | `1500` | integer; 1..1500 | Maximum source token count before any model construction. |
-| `input_assistance.polishing.model_input_tokens_per_call` | `8000` | integer; 1..8000 | Prompt, context and schema estimate cap for either model call. |
+| `input_assistance.polishing.model_input_tokens_per_call` | `8000` | integer; 1..8000 | Prompt, context and schema estimate cap for the single draft call. |
 | `input_assistance.polishing.draft_output_tokens` | `2000` | integer; 1..2000 | Maximum draft response tokens. |
-| `input_assistance.polishing.review_output_tokens` | `1000` | integer; 1..1000 | Maximum independent review response tokens. |
 | `input_assistance.polishing.call_timeout_seconds` | `20` | seconds; > 0, <= 20 | Deadline for each model call. |
 | `input_assistance.polishing.total_timeout_seconds` | `40` | seconds; > 0, <= 40 | End-to-end model operation deadline. |
 | `input_assistance.polishing.daily_operations_per_process` | `20` | integer; 1..20 | UTC-day admitted polishing operations per process. |

@@ -1,12 +1,14 @@
-"""Dedicated two-schema Microsoft Foundry port for optional preference polishing."""
+"""Dedicated single-call Microsoft Foundry port for optional preference polishing."""
+
+from typing import Literal
 
 from langchain_core.exceptions import OutputParserException
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
-from openai import BadRequestError, RateLimitError
+from openai import BadRequestError, DefaultAsyncHttpxClient, DefaultHttpxClient, RateLimitError
 from pydantic import BaseModel, ConfigDict, ValidationError
 
-from backend.app.schemas.input_assistance import PolishDraft, PolishReview
+from backend.app.schemas.input_assistance import PolishDraft
 from backend.app.versions.v0.config import V0Settings
 
 
@@ -31,17 +33,10 @@ class _DraftWire(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    status: str
+    status: Literal["suggested", "unchanged", "needs_input"]
     suggested_text: str | None
     explanation: str
     questions: list[str]
-
-
-class _ReviewWire(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    verdict: str
-    reason: str
 
 
 class FoundryPolishingClient:
@@ -52,6 +47,9 @@ class FoundryPolishingClient:
             api_key=settings.azure_openai_api_key.get_secret_value(),
             use_responses_api=True,
             max_retries=0,
+            # This operation owns these clients; closing it must not close cached transports.
+            http_client=DefaultHttpxClient(),
+            http_async_client=DefaultAsyncHttpxClient(),
         )
 
     async def aclose(self) -> None:
@@ -84,11 +82,6 @@ class FoundryPolishingClient:
 
     async def draft(self, system_prompt, user_prompt, output_tokens) -> PolishDraft:
         return await self._call(_DraftWire, PolishDraft, system_prompt, user_prompt, output_tokens)
-
-    async def review(self, system_prompt, user_prompt, output_tokens) -> PolishReview:
-        return await self._call(
-            _ReviewWire, PolishReview, system_prompt, user_prompt, output_tokens
-        )
 
 
 def create_foundry_polisher() -> FoundryPolishingClient:

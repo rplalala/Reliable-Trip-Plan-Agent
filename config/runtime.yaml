@@ -12,7 +12,6 @@ input_assistance:
     source_max_tokens: 1500
     model_input_tokens_per_call: 8000
     draft_output_tokens: 2000
-    review_output_tokens: 1000
     call_timeout_seconds: 20
     total_timeout_seconds: 40
     daily_operations_per_process: 20

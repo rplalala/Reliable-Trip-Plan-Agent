@@ -45,11 +45,6 @@ class PolishDraft(_StrictModel):
         return self
 
 
-class PolishReview(_StrictModel):
-    verdict: Literal["preserved", "changed", "uncertain"]
-    reason: str = Field(min_length=1, max_length=500)
-
-
 class PolishResponse(_StrictModel):
     status: Literal["suggested", "unchanged", "needs_input"]
     original_text: str

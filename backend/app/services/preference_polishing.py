@@ -1,9 +1,7 @@
-"""Bounded optional rewrite with independent meaning-preservation review."""
+"""Bounded single-call rewrite presented for user review."""
 
 import asyncio
 import json
-import re
-from collections import Counter
 from collections.abc import Callable
 from datetime import UTC, datetime
 from threading import Lock
@@ -16,11 +14,9 @@ from backend.app.schemas.input_assistance import (
     PolishDraft,
     PolishRequest,
     PolishResponse,
-    PolishReview,
 )
 from backend.app.services.preference_polishing_prompts import (
     DRAFT_SYSTEM_PROMPT,
-    REVIEW_SYSTEM_PROMPT,
 )
 
 
@@ -33,7 +29,7 @@ class PolishingRateLimited(RuntimeError):
 
 
 class PolishingDeadline(RuntimeError):
-    """The optional two-call operation exceeded its bounded deadline."""
+    """The optional single-call operation exceeded its bounded deadline."""
 
 
 class PolishingUnavailable(RuntimeError):
@@ -44,41 +40,11 @@ class PolishingInvalidResponse(RuntimeError):
     """The model produced output that violates the assistance contract."""
 
 
-_ISO_DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
-_NUMBER = re.compile(r"\b\d+(?:\.\d+)?\b")
-_THREE_LETTER_WORD = re.compile(r"\b[A-Za-z]{3}\b")
-_CURRENCY_AFTER_AMOUNT = re.compile(r"\b\d+(?:\.\d+)?\s+([A-Za-z]{3})\b")
-_CURRENCY_BEFORE_AMOUNT = re.compile(r"\b([A-Za-z]{3})\s+\d+(?:\.\d+)?\b")
-_KNOWN_CURRENCIES = frozenset({
-    "AUD", "USD", "EUR", "GBP", "CNY", "JPY", "CAD", "NZD", "SGD", "HKD",
-    "CHF", "KRW", "INR", "THB", "MYR", "IDR", "VND", "PHP", "AED", "ZAR",
-})
-
-
-def _explicit_tokens(text: str) -> Counter[str]:
-    dates = [f"date:{match.group()}" for match in _ISO_DATE.finditer(text)]
-    without_dates = _ISO_DATE.sub(" ", text)
-    numbers = [f"number:{match.group()}" for match in _NUMBER.finditer(without_dates)]
-    currencies = [
-        f"currency:{word.upper()}"
-        for word in _THREE_LETTER_WORD.findall(without_dates)
-        if word.isupper() or word.upper() in _KNOWN_CURRENCIES
-    ]
-    currencies.extend(
-        f"adjacent_currency:{match.group(1).upper()}"
-        for pattern in (_CURRENCY_AFTER_AMOUNT, _CURRENCY_BEFORE_AMOUNT)
-        for match in pattern.finditer(without_dates)
-    )
-    return Counter([*dates, *numbers, *currencies])
-
-
-def _prompt_payload(request: PolishRequest, candidate: str | None = None) -> str:
+def _prompt_payload(request: PolishRequest) -> str:
     data = {
         "original_text": request.original_text,
         "read_only_context": request.context.model_dump(mode="json", exclude_none=True),
     }
-    if candidate is not None:
-        data["candidate_text"] = candidate
     return json.dumps(data, ensure_ascii=False, sort_keys=True)
 
 
@@ -153,24 +119,6 @@ class PreferencePolishingService:
                             client_revision=request.client_revision,
                         )
                     candidate = draft.suggested_text or ""
-                    review_user = _prompt_payload(request, candidate)
-                    if not self._fits_model_input(REVIEW_SYSTEM_PROMPT, review_user, PolishReview):
-                        return self._needs_input(
-                            request, "The proposed wording is too long to verify."
-                        )
-                    review = await asyncio.wait_for(
-                        client.review(
-                            REVIEW_SYSTEM_PROMPT, review_user, self._config.review_output_tokens
-                        ),
-                        timeout=self._config.call_timeout_seconds,
-                    )
-                    review = PolishReview.model_validate(review)
-                    if review.verdict != "preserved" or _explicit_tokens(
-                        original
-                    ) != _explicit_tokens(candidate):
-                        return self._needs_input(
-                            request, "The proposed wording may change your meaning."
-                        )
                     return PolishResponse(
                         status="suggested",
                         original_text=original,
@@ -194,14 +142,3 @@ class PreferencePolishingService:
                         pass
             finally:
                 self._release()
-
-    @staticmethod
-    def _needs_input(request: PolishRequest, explanation: str) -> PolishResponse:
-        return PolishResponse(
-            status="needs_input",
-            original_text=request.original_text,
-            suggested_text=None,
-            explanation=explanation,
-            questions=["Please review the original wording before trying again."],
-            client_revision=request.client_revision,
-        )

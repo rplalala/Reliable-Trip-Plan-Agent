@@ -54,7 +54,6 @@ class PreferencePolishingConfig(_ConfigModel):
     source_max_tokens: StrictInt = Field(default=1500, ge=1, le=1500)
     model_input_tokens_per_call: StrictInt = Field(default=8000, ge=1, le=8000)
     draft_output_tokens: StrictInt = Field(default=2000, ge=1, le=2000)
-    review_output_tokens: StrictInt = Field(default=1000, ge=1, le=1000)
     call_timeout_seconds: float = Field(default=20, gt=0, le=20)
     total_timeout_seconds: float = Field(default=40, gt=0, le=40)
     daily_operations_per_process: StrictInt = Field(default=20, ge=1, le=20)

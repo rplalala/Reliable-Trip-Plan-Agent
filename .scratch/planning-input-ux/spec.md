@@ -96,13 +96,12 @@ Genuine contradictions or missing decisive meaning return needs_input and a focu
 Irrelevant text must not become invented travel wishes. Provider/safety blocks are not repaired
 by euphemisms or repeated calls. Original text remains available on every failure.
 
-Use one draft call and, only for a candidate rewrite, one independent preservation-review
-call over original, candidate and read-only context. The reviewer must explicitly find no
-lost/added/strengthened/weakened meaning; fail closed to needs_input if uncertain. Deterministic
-checks additionally catch length, malformed output and changed explicit numeric/date/currency
-tokens; these are safeguards, not proof of semantic equivalence. Neither model may mutate
-structured fields. Model-based review is fallible: preview remains mandatory, and normal
-planning still executes the unchanged Gate. Do not show Gate passed based on polishing.
+Use one draft call and present every schema-valid suggestion for the user's decision. There
+is no independent model preservation review and no local numeric/date/currency comparison
+that suppresses a candidate. Preserve input limits, output length/schema validation, original
+text and read-only context. Prompt instructions still require preserving meaning. Preview and
+explicit Apply remain mandatory; normal planning executes the unchanged Gate. Polishing does
+not establish semantic equivalence or Gate acceptance.
 
 ## Proposed application interfaces
 
@@ -139,8 +138,8 @@ this does not change model transport. No new planning endpoint fields are necess
 | Destination form allowance | 20 attempts per mounted form session; then manual input remains available; no client cache required |
 | Destination development allowance | 100 outbound attempts per UTC day per backend process, including failed sends; restart resets this local guard |
 | Polish source text | <=4,000 characters and <=1,500 tokens; do not truncate; longer text remains usable by normal planning |
-| Polish model sends | <=2 per click: draft then preservation review; no automatic retries or Gate calls |
-| Polish model tokens | <=8,000 input tokens per call including prompts/context; draft <=2,000 output, review <=1,000; total output <=3,000 |
+| Polish model sends | <=1 per click: draft only; no automatic retries or Gate calls |
+| Polish model tokens | <=8,000 input tokens per call including prompts/context; draft/total output <=2,000 |
 | Polish deadline | 20 s per call within one 40 s end-to-end deadline; disconnect cancels pending work where supported |
 | Polish form/process allowance | 3 clicks per form session; one in-flight request per process; 20 admitted operations per UTC day per process |
 

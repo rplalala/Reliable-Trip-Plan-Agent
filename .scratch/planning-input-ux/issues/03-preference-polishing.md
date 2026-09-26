@@ -1,4 +1,4 @@
-# Gate-aware preference polishing with preservation review
+# Single-call preference polishing with user review
 
 Status: resolved
 Type: task
@@ -22,9 +22,8 @@ planning still runs the unmodified Gate. No changes to shared requirement semant
 
 ## Call budget
 
-<=4,000 source characters / 1,500 tokens, with no truncation. One draft plus at most one
-preservation-review call, no retries, no automatic Gate call or resubmission. <=8,000 total
-input tokens per call, <=2,000 draft output and <=1,000 reviewer output; 20 s/call within
+<=4,000 source characters / 1,500 tokens, with no truncation. One draft call, no retries, no automatic Gate call or resubmission. <=8,000 total
+input tokens per call, <=2,000 draft output; 20 s/call within
 40 s total. Three manual attempts/form, one in-flight/process, 20 operations/day/process.
 Count attempts that already started; missing configuration or invalid input makes no call.
 Input exceeding assistance limits remains available for normal planning under its existing
@@ -32,9 +31,9 @@ larger limit. Cancellation, failure and uncertain fidelity never replace the ori
 
 ## TDD examples and slices
 
-1. Model boundary and API: two calls at most, structured output validation, bounded token
+1. Model boundary and API: one call at most, structured output validation, bounded token
    envelopes/timeouts, no SDK retry, injected late/cancelled response and input budget rejection.
-2. Preservation controls with controlled model fixtures:
+2. Meaning-preservation prompt expectations (not a post-generation blocker):
    - mountain climbing + zoo + rich trip retains those wishes, without indoor substitution,
      mandatory strengthening, invented quotas or a luxury-spending interpretation;
    - exactly two British Museum visits on different dates preserves identity/count/date scope;
@@ -44,7 +43,7 @@ larger limit. Cancellation, failure and uncertain fidelity never replace the ori
    - preference destination/budget conflicting with form context returns needs_input;
    - unsupported mandatory conditions stay mandatory; unclear decisive references ask for input;
    - irrelevant or adversarial instructions cannot alter form fields or generate a Gate-pass claim.
-3. Reviewer rejection/uncertainty and explicit number/date/currency mismatch suppress Apply.
+3. Schema-valid suggestions are presented without model review or local semantic comparisons.
    A model safety/provider block produces a sanitized blocked result, never a bypass rewrite.
 4. UI: original and candidate side by side, explicit Apply/Undo, unchanged/needs_input views,
    edit-during-request and context changes invalidate results, duplicate clicks are prevented,
@@ -78,3 +77,30 @@ development-time testing; no formal benchmark or automatic repeated optimization
   zoo and rich-trip wording; exact named revisit, negation, accessibility, budget scope,
   structured conflict, provider block and uncertain review. No actual model-fidelity or
   Gate-success improvement is claimed.
+- 2026-09-26: Corrected wire status/verdict enums and clarified the draft success response
+  (`preference_polish_2`). One separately approved live operation for mountain climbing and
+  reading books returned a suggested grammatical rewrite and a preserved review.
+- 2026-09-26: Diagnosed repeated-operation 503 responses: closing an operation's default
+  model client invalidated a cached HTTP transport reused by later operations. Each Polish
+  adapter now explicitly owns independent SDK sync/async HTTP clients. A real-adapter offline
+  regression first failed on the second operation with a closed-client error, then passed
+  after the fix. Coverage includes two successes and recovery after an initial provider 503,
+  connection cleanup, bounded sends and unchanged draft/review output budgets. All 75 API
+  tests and targeted Ruff checks passed; Standards and Spec reviews found no issues. No live
+  call was made for the lifecycle fix, and no Gate-success improvement is claimed.
+  Full backend regression: 1680 passed, 9 skipped. The local backend was restarted to load
+  the fix; direct and frontend-proxied health checks both returned 200.
+
+- 2026-09-26: User approved removing independent model review and local preservation blocking.
+  Polish now performs at most one draft call, then displays the candidate for explicit user
+  Apply/Dismiss/Undo. Removed unused review schema, prompt, adapter method and output-token
+  configuration. Input/response validation, 2000 output tokens, timeouts, daily/form quotas,
+  independent connection ownership and normal planning Gate remain. Draft prompt version is
+  preference_polish_3. The one-call API test failed before implementation and passed afterward;
+  updated repeated-operation tests verify one send per operation, including recovery after
+  failure. Historical two-call validation above describes the superseded design.
+  Final verification: 1678 backend tests passed, 9 skipped; 82 frontend tests passed.
+  The first frontend test launch was blocked by temporary-file permissions; rerunning with
+  the required filesystem access passed. Targeted Ruff and diff whitespace checks passed;
+  independent Standards and Spec reviews found no actionable issues. Backend restarted,
+  direct and proxied health checks returned 200. No live model calls or commits were made.

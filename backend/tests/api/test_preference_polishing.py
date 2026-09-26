@@ -52,7 +52,7 @@ async def request(service, body):
         app.dependency_overrides.pop(get_polishing_service, None)
 
 
-def test_suggested_text_requires_independent_preservation_review_and_never_changes_context():
+def test_suggested_text_is_presented_after_one_call_without_changing_context():
     candidate = "I enjoy mountain climbing, would like to visit a zoo, and want a varied trip."
     fake = FakePolisher(
         {
@@ -73,12 +73,12 @@ def test_suggested_text_requires_independent_preservation_review_and_never_chang
         "questions": [],
         "client_revision": "rev-1",
     }
-    assert [call[0] for call in fake.calls] == ["draft", "review"]
-    assert [call[1] for call in fake.calls] == [2000, 1000]
+    assert [call[0] for call in fake.calls] == ["draft"]
+    assert [call[1] for call in fake.calls] == [2000]
     assert '"destination": "London"' in fake.calls[0][2]
 
 
-def test_changed_explicit_number_fails_closed_even_if_reviewer_approves():
+def test_changed_number_is_presented_for_user_decision():
     fake = FakePolisher(
         {
             "status": "suggested",
@@ -95,12 +95,12 @@ def test_changed_explicit_number_fails_closed_even_if_reviewer_approves():
         )
     )
     assert result.status_code == 200
-    assert result.json()["status"] == "needs_input"
-    assert result.json()["suggested_text"] is None
-    assert len(fake.calls) == 2
+    assert result.json()["status"] == "suggested"
+    assert result.json()["suggested_text"] == fake.draft_result["suggested_text"]
+    assert len(fake.calls) == 1
 
 
-def test_reordered_date_and_lowercase_currency_changes_fail_closed():
+def test_date_and_currency_changes_are_presented_for_user_decision():
     fake = FakePolisher(
         {"status": "suggested", "suggested_text": "Visit on 2026-01-10 with 3000 usd.",
          "explanation": "Rephrased.", "questions": []},
@@ -110,11 +110,11 @@ def test_reordered_date_and_lowercase_currency_changes_fail_closed():
         PreferencePolishingService(lambda: fake), payload("Visit on 2026-10-01 with 3000 aud.")
     ))
     assert result.status_code == 200
-    assert result.json()["status"] == "needs_input"
-    assert result.json()["suggested_text"] is None
+    assert result.json()["status"] == "suggested"
+    assert result.json()["suggested_text"] == fake.draft_result["suggested_text"]
 
 
-def test_other_lowercase_three_letter_budget_currency_changes_fail_closed():
+def test_other_currency_changes_are_presented_for_user_decision():
     fake = FakePolisher(
         {"status": "suggested", "suggested_text": "Spend 3000 brl.",
          "explanation": "Rephrased.", "questions": []},
@@ -124,8 +124,8 @@ def test_other_lowercase_three_letter_budget_currency_changes_fail_closed():
         PreferencePolishingService(lambda: fake), payload("Spend 3000 mxn.")
     ))
     assert result.status_code == 200
-    assert result.json()["status"] == "needs_input"
-    assert result.json()["suggested_text"] is None
+    assert result.json()["status"] == "suggested"
+    assert result.json()["suggested_text"] == fake.draft_result["suggested_text"]
 
 
 def test_invalid_model_result_is_502_and_original_is_unmodified():
@@ -194,7 +194,7 @@ def test_invalid_or_oversized_assistance_input_makes_no_model_call():
         ),
     ],
 )
-def test_changed_or_uncertain_meaning_never_returns_an_applicable_rewrite(
+def test_candidate_is_presented_without_consulting_a_reviewer(
     original, candidate, verdict
 ):
     fake = FakePolisher(
@@ -207,9 +207,9 @@ def test_changed_or_uncertain_meaning_never_returns_an_applicable_rewrite(
         {"verdict": verdict, "reason": "Meaning cannot be confirmed."},
     )
     result = asyncio.run(request(PreferencePolishingService(lambda: fake), payload(original)))
-    assert result.json()["status"] == "needs_input"
-    assert result.json()["suggested_text"] is None
-    assert len(fake.calls) <= 2
+    assert result.json()["status"] == "suggested"
+    assert result.json()["suggested_text"] == fake.draft_result["suggested_text"]
+    assert len(fake.calls) == 1
 
 
 def test_conflicting_structured_context_returns_a_question_after_one_call():
