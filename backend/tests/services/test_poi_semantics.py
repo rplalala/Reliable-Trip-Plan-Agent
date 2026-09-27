@@ -25,7 +25,7 @@ class Model:
         data = json.loads(kwargs["user_prompt"])
         rows = [
             dict(
-                place_id=p["place_id"],
+                candidate_ref=p["candidate_ref"],
                 visit_object=p["name"],
                 role="attraction",
                 categories=["museum"],
@@ -64,22 +64,26 @@ def test_batch_cache_and_total_calls():
 
 
 @pytest.mark.parametrize(
-    "mutate",
+    "mutate,expected_calls",
     [
-        lambda rows: rows.pop(),
-        lambda rows: rows.append(rows[0]),
-        lambda rows: rows[0].update(place_id="invented"),
-        lambda rows: rows[0].update(evidence_refs=["invented"]),
-        lambda rows: rows[0].update(role="exception_only", exception_requirement_ids=["invented"]),
+        (lambda rows: rows.pop(), 1),  # Empty output fails the domain schema.
+        (lambda rows: rows.append(rows[0]), 2),
+        (lambda rows: rows[0].update(candidate_ref="invented"), 2),
+        (
+            lambda rows: rows[0].update(
+                role="exception_only", exception_requirement_ids=["invented"]
+            ),
+            2,
+        ),
     ],
 )
-def test_invalid_contract_is_terminal(mutate):
+def test_invalid_contract_is_terminal(mutate, expected_calls):
     svc = service(Model(mutate))
     with pytest.raises(SemanticAssessmentError):
         asyncio.run(svc.assess([place()], contract()))
     with pytest.raises(SemanticAssessmentError, match="already failed"):
         asyncio.run(svc.assess([place()], contract()))
-    assert svc.calls == 1
+    assert svc.calls == expected_calls
 
 
 def test_unknown_operations_do_not_disqualify_role():
@@ -231,9 +235,7 @@ def test_named_exception_requires_application_identity_binding(bound):
         rows[0].update(
             role="exception_only",
             exception_requirement_ids=["named_1"],
-            matches=[
-                dict(requirement_id="named_1", relation="supported", evidence_refs=["places:a"])
-            ],
+            matches=[dict(requirement_id="named_1", relation="supported", evidence_refs=["e01"])],
         )
 
     svc = service(Model(exception))
@@ -253,11 +255,13 @@ def test_details_continue_same_queue_after_semantic_rejection():
 
     async def run():
         acq, rows, provider, requirements, _ = acquisition(32)
-        rejected = {p.candidate.place_id for p in rows[:24]}
+        from backend.tests.services.test_tripworld_discovery import details
+
+        rejected = {details(p.candidate.place_id).display_name for p in rows[:24]}
 
         def classify(items):
             for item in items:
-                item["role"] = "non_main" if item["place_id"] in rejected else "attraction"
+                item["role"] = "non_main" if item["visit_object"] in rejected else "attraction"
 
         svc = service(Model(classify))
 
@@ -370,3 +374,195 @@ def test_exception_alternatives_share_allowance_and_incomplete_output():
         r["reason"] == "primary_exception_allowance_exceeded"
         for r in semantic_policy_issues(itinerary, req, tuple(rows.values()))
     )
+
+
+class CorrectingModel(Model):
+    def __init__(self, *, always_invalid=False):
+        super().__init__()
+        self.inputs = []
+        self.captures = []
+        self.always_invalid = always_invalid
+
+    def capture_poi_semantics(self, stage, payload):
+        self.captures.append((stage, payload))
+
+    async def generate_poi_semantics_structured(self, **kwargs):
+        self.inputs.append(json.loads(kwargs["user_prompt"]))
+        result = await super().generate_poi_semantics_structured(**kwargs)
+        if self.calls == 1 or self.always_invalid:
+            result["assessments"][0]["evidence_refs"] = ["places:invented"]
+        return result
+
+
+def test_reference_failure_is_corrected_once_then_cached():
+    model = CorrectingModel()
+    svc = service(model)
+
+    async def run():
+        assert (await svc.assess([place()], contract()))["a"].main_eligible
+        assert (await svc.assess([place()], contract()))["a"].main_eligible
+
+    asyncio.run(run())
+    assert model.calls == 2
+    assert model.inputs[0]["places"] == model.inputs[1]["places"]
+    feedback = model.inputs[1]["contract_correction"]
+    assert feedback["error"] == "Invalid semantic evidence references"
+    assert feedback["details"]["allowed_refs"] == ["e01"]
+    assert feedback["details"]["offending_refs"] == ["places:invented"]
+    records = svc.snapshot()["records"]
+    assert [r["status"] for r in records] == ["failed", "accepted"]
+    assert records[1]["correction_of"] == records[0]["call_id"]
+    assert [stage for stage, _ in model.captures] == [
+        "input",
+        "output",
+        "outcome",
+        "input",
+        "output",
+        "outcome",
+    ]
+    assert not svc.snapshot()["failed"]
+
+
+def test_exhausted_correction_budget_is_captured_and_never_becomes_partial_success():
+    model = CorrectingModel()
+    svc = service(model, max_calls=1)
+    with pytest.raises(SemanticAssessmentError, match="correction unavailable"):
+        asyncio.run(svc.prepare([place()], contract()))
+    assert model.calls == 1
+    assert svc.snapshot()["assessments"] == []
+    assert svc.snapshot()["failed"]
+    outcome = model.captures[-1][1]
+    assert outcome["status"] == "correction_unavailable"
+    assert outcome["reason"] == "poi_semantics_call_budget_exhausted"
+    assert outcome["correction_of"] == svc.records[0]["call_id"]
+
+
+@pytest.mark.parametrize("boundary", ["deadline", "service_deadline", "total", "input"])
+def test_correction_respects_remaining_time_and_input_budget(monkeypatch, boundary):
+    import backend.app.services.poi_semantics as module
+
+    clock = [0.0]
+    monkeypatch.setattr(module, "perf_counter", lambda: clock[0])
+
+    class SlowInvalid(CorrectingModel):
+        async def generate_poi_semantics_structured(self, **kwargs):
+            result = await super().generate_poi_semantics_structured(**kwargs)
+            clock[0] = 121.0 if boundary == "total" else 11.0
+            return result
+
+    model = SlowInvalid()
+    svc = service(model)
+    if boundary == "service_deadline":
+        svc.deadline = 10.0
+    if boundary == "input":
+        from backend.app.services.poi_semantics_projection import SemanticProjection
+
+        svc = service(
+            model,
+            input_tokens=semantic_input_tokens(
+                SemanticProjection(
+                    [place()], serialize_semantic_input([place()], contract())
+                ).payload,
+                svc.framing,
+            ),
+        )
+    with pytest.raises(SemanticAssessmentError, match="correction unavailable"):
+        asyncio.run(
+            svc.prepare([place()], contract(), deadline=10 if boundary == "deadline" else None)
+        )
+    assert model.calls == 1 and not svc.snapshot()["assessments"]
+    expected = "poi_semantics_input_overflow" if boundary == "input" else "poi_semantics_deadline"
+    assert svc.records[-1]["reason"] == expected
+
+
+@pytest.mark.parametrize("failure", ["cancel", "provider", "invalid"])
+def test_failed_correction_never_retries_or_caches(failure):
+    class Failure(CorrectingModel):
+        async def generate_poi_semantics_structured(self, **kwargs):
+            if self.calls == 1 and failure != "invalid":
+                self.calls += 1
+                if failure == "cancel":
+                    raise asyncio.CancelledError()
+                raise OSError("Synthetic provider failure")
+            return await super().generate_poi_semantics_structured(**kwargs)
+
+    model = Failure(always_invalid=True)
+    svc = service(model)
+    expected = asyncio.CancelledError if failure == "cancel" else SemanticAssessmentError
+    with pytest.raises(expected):
+        asyncio.run(svc.assess([place()], contract()))
+    assert model.calls == 2 and not svc.cache and not svc.ledger
+    with pytest.raises(SemanticAssessmentError, match="already failed"):
+        asyncio.run(svc.assess([place()], contract()))
+    assert model.calls == 2
+
+
+def test_correction_stop_uses_real_capture_writer(tmp_path):
+    from tools.validation.poi_semantics_acceptance import CapturedSemantics
+
+    errors = []
+    svc = service(CapturedSemantics(CorrectingModel(), tmp_path, {}, errors), max_calls=1)
+    with pytest.raises(SemanticAssessmentError):
+        asyncio.run(svc.prepare([place()], contract()))
+    assert errors == []
+    saved = [json.loads(p.read_text()) for p in tmp_path.glob("*.json")]
+    assert any(r.get("status") == "correction_unavailable" for r in saved)
+
+
+def test_smoke_match_typo_corrects_without_changing_canonical_identity():
+    pid = "ChIJJaaNKsZd1moRj_JPUiCyQDE"
+    source = "google_places:" + pid
+    invalid = "google_places:ChIJJaaNKsZd1moRj_J_PUiCyQDE"
+
+    class MatchModel(Model):
+        async def generate_poi_semantics_structured(self, **kwargs):
+            result = await super().generate_poi_semantics_structured(**kwargs)
+            result["assessments"][0]["matches"] = [
+                dict(
+                    requirement_id="named_1",
+                    relation="supported",
+                    evidence_refs=[invalid if self.calls == 1 else "e01"],
+                )
+            ]
+            return result
+
+    svc = service(MatchModel())
+    row = place(pid).model_copy(update={"source_ref": source})
+    result = asyncio.run(svc.assess([row], contract("REQUIRED")))
+    assert result[pid].matches[0].evidence_refs == [source]
+    assert svc.calls == 2
+    assert svc.records[0]["error_details"]["offending_refs"] == [invalid]
+
+
+def test_later_batch_correction_preserves_accepted_batch_and_shared_budget():
+    class LaterFailure(Model):
+        async def generate_poi_semantics_structured(self, **kwargs):
+            result = await super().generate_poi_semantics_structured(**kwargs)
+            if self.calls == 2:
+                result["assessments"][0]["evidence_refs"] = ["wrong"]
+            return result
+
+    model = LaterFailure()
+    svc = service(model, batch_size=1, max_calls=3)
+
+    async def run():
+        result = await svc.assess([place("a"), place("b")], contract())
+        assert set(result) == {"a", "b"}
+        assert set(await svc.assess([place("a"), place("b")], contract())) == {"a", "b"}
+        assert await svc.prepare([place("c")], contract()) == {}
+
+    asyncio.run(run())
+    assert model.calls == 3
+    assert [r["status"] for r in svc.records] == ["accepted", "failed", "accepted", "pre_send_stop"]
+
+
+def test_provider_failure_before_validation_is_not_corrected():
+    class Broken(Model):
+        async def generate_poi_semantics_structured(self, **kwargs):
+            self.calls += 1
+            raise OSError("Synthetic transport error")
+
+    model = Broken()
+    with pytest.raises(SemanticAssessmentError, match="system_failure"):
+        asyncio.run(service(model).assess([place()], contract()))
+    assert model.calls == 1

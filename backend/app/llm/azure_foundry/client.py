@@ -362,7 +362,6 @@ class AzureFoundryStructuredLLMClient:
     ):
         from backend.app.schemas.poi_semantics import (
             FoundrySemanticAssessmentBatch,
-            SemanticAssessmentBatch,
         )
 
         model = self._chat_model.with_structured_output(
@@ -376,7 +375,7 @@ class AzureFoundryStructuredLLMClient:
             **({"config": {"callbacks": [usage_callback]}} if usage_callback else {}),
         )
         dto = FoundrySemanticAssessmentBatch.model_validate(raw)
-        return SemanticAssessmentBatch.model_validate(dto.model_dump())
+        return dto
 
     async def generate_repair_structured(
         self, *, system_prompt, user_prompt, output_tokens=None, usage_callback=None
