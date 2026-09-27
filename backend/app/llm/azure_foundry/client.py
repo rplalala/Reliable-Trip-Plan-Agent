@@ -127,7 +127,7 @@ class AzureFoundryStructuredLLMClient:
             "deployment": deployment,
             "api": "responses/v1",
             "max_retries": 0,
-            "contract": "preference_draft_10",
+            "contract": "preference_draft_11",
         }
         transport_options = {}
         if http_client is not None:
@@ -181,8 +181,8 @@ class AzureFoundryStructuredLLMClient:
             "prompt_hash": digest(system_prompt),
             "schema_hash": digest(wire),
             "config_hash": digest(self._requirement_config),
-            "prompt_version": "preference_prompt_16",
-            "schema_version": "preference_draft_10",
+            "prompt_version": "preference_prompt_17",
+            "schema_version": "preference_draft_11",
             "config": self._requirement_config,
         }
         self.last_call_metadata = {"call_id": call_id, **base, "secondary_errors": []}

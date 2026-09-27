@@ -7,12 +7,11 @@ from backend.app.policies.visit_multiplicity import (
     is_primary_visit,
     named_visit_issues,
 )
+from backend.app.schemas.interpreted_requirements import SoftCoverageTarget, soft_coverage_eligible
 
 
 def goal_progress(itinerary, contract, assessments):
     rows = {r.place_id: r for r in assessments}
-    if not rows:
-        return ()
     visits = [
         (d.date, a)
         for d in itinerary.days
@@ -22,8 +21,12 @@ def goal_progress(itinerary, contract, assessments):
     progress = []
     for req in contract.semantic_requirements:
         goal = req.experience_goal
-        if not goal or goal.frequency == "continuing" or req.polarity != "favor":
+        soft = (req.soft_coverage or SoftCoverageTarget()) if soft_coverage_eligible(req) else None
+        if not goal or req.polarity != "favor" or (goal.frequency == "continuing" and not soft):
             continue
+        if not rows and not soft:
+            continue
+        expected = soft.target if soft else goal.count or 1
         matched = [
             (d, a)
             for d, a in visits
@@ -40,16 +43,47 @@ def goal_progress(itinerary, contract, assessments):
             else len(matched)
         )
         matched_dates = len({d for d, _ in matched})
+        uncertain = not rows or any(
+            a.source_place_id not in rows
+            or rows[a.source_place_id].role == "unresolved"
+            or not any(
+                m.requirement_id == req.requirement_id for m in rows[a.source_place_id].matches
+            )
+            or any(
+                m.requirement_id == req.requirement_id and m.relation == "unresolved"
+                for m in rows[a.source_place_id].matches
+            )
+            for _, a in visits
+        )
+        satisfied = (
+            count >= expected
+            if soft
+            else (count == goal.count if goal.frequency == "exact" else count >= expected)
+            and (not goal.distinct_dates or matched_dates >= expected)
+        )
         progress.append(
             dict(
                 requirement_id=req.requirement_id,
-                expected=goal.count or 1,
+                expected=expected,
                 matched=count,
                 matched_dates=matched_dates,
-                satisfied=(
-                    count == goal.count if goal.frequency == "exact" else count >= (goal.count or 1)
-                )
-                and (not goal.distinct_dates or matched_dates >= (goal.count or 1)),
+                satisfied=satisfied,
+                **(
+                    dict(
+                        soft=True,
+                        preference=req.normalized_text,
+                        target_origin=soft.origin,
+                        focus_source=soft.focus_source.model_dump() if soft.focus_source else None,
+                        remaining=max(0, expected - count),
+                        coverage_status="covered"
+                        if satisfied
+                        else "unassessed"
+                        if uncertain
+                        else "gap",
+                    )
+                    if soft
+                    else {}
+                ),
                 basis="model_semantic_judgment_not_operating_fact",
             )
         )

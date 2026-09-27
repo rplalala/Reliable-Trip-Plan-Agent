@@ -13,6 +13,15 @@ For relevant semantic_requirements, populate experience_goal from the cited sour
 "I want to visit a zoo" is a one_off category goal, count=null; general "I like museums" is
 continuing, not a requirement that every activity be a museum. Explicit themed/exclusive trips
 must be sourced, never inferred from a list of ordinary interests. Irrelevant semantics use null.
+For each semantic requirement, trip_focus_source is null unless exact original text explicitly
+identifies that POI interest as a focus of THIS trip. "This trip is mainly about museums" can
+provide that quote and occurrence; "I especially like museums" and "Maybe museums could be a
+focus" keep null. Emotional intensity, strength=high, and exclusive scope alone are insufficient.
+Ordinary independently interpretable positive POI interests use a category experience_goal;
+whole-trip enjoyment, relaxation, pace and travel burden use no category counting goal.
+The application derives a soft coverage target of one, or two for sourced current-trip focus.
+Never copy those policy numbers into count or user-authored visit requirements. Explicit counts,
+maxima, exclusions and exclusive scopes retain their original meaning and precedence.
 "Visit the same zoo total twice on different days" means exact count=2 and distinct_dates=true;
 "at least twice" means minimum count=2, without inventing an upper bound. Keep named-place visit
 requirements consistent: exact_visits=2 and minimum_visits=2 for exact twice, otherwise exact=null.
@@ -247,7 +256,7 @@ unresolved with a reason rather than inventing an executable scope.
 
 PREFERENCE_INTERPRETATION_SYSTEM_PROMPT += """
 
-Preference Input Gate (preference_prompt_16 / preference_draft_10 / preference_input_2):
+Preference Input Gate (preference_prompt_17 / preference_draft_11 / preference_input_2):
 In this SAME response, return preference_input_assessment with input_disposition
 VALID, CLARIFICATION_REQUIRED, or REWRITE_REQUIRED, safety_disposition CLEAR or
 SAFETY_BLOCK, and at most eight typed issues. Do not add a judge call.

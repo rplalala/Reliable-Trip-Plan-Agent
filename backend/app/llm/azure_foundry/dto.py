@@ -95,6 +95,7 @@ class FoundryExperienceGoalDTO(FoundryTransportDTO):
 
 
 class FoundrySemanticDTO(FoundryTransportDTO):
+    trip_focus_source: FoundrySourceQuoteDTO | None
     experience_goal: FoundryExperienceGoalDTO | None
     local_key: str
     normalized_text: str

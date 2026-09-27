@@ -34,6 +34,7 @@ def historical():
         row.update(exact_visits=None, distinct_dates=False)
     for row in payload.get("semantic_requirements") or ():
         row["experience_goal"] = None
+        row["trip_focus_source"] = None  # Synthetic current-wire migration.
     return payload
 
 

@@ -314,10 +314,17 @@ def apply_patch(
             for r in goal_progress(original, context.contract, context.semantic_assessments)
         }
         for row in goal_progress(result, context.contract, context.semantic_assessments):
+            requirement = next(
+                r
+                for r in context.contract.semantic_requirements
+                if r.requirement_id == row["requirement_id"]
+            )
+            if row.get("soft") and requirement.experience_goal.frequency == "continuing":
+                continue
             previous = before_goals[row["requirement_id"]]
-            if min(row["matched"], row["expected"]) < min(
-                previous["matched"], previous["expected"]
-            ):
+            # Preserve the existing one-off safeguard without protecting a new focus target.
+            expected = 1 if row.get("soft") else row["expected"]
+            if min(row["matched"], expected) < min(previous["matched"], expected):
                 raise ValueError("Sourced experience goal satisfaction decreased")
 
         old = semantic_policy_issues(

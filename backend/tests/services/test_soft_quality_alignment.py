@@ -49,6 +49,9 @@ def positive():
 
 
 async def interpret(payload, request):
+    payload = copy.deepcopy(payload)
+    for row in payload["semantic_requirements"]:
+        row.setdefault("trip_focus_source", None)  # Synthetic current-wire migration.
     sends = []
 
     def handler(http_request):
@@ -72,7 +75,7 @@ async def interpret(payload, request):
 
 def test_quality_wishes_have_an_explicit_nonblocking_instruction_boundary():
     prompt = PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
-    assert "preference_prompt_16" in prompt
+    assert "preference_prompt_17" in prompt
     assert "Ordinary soft quality/style wishes do not require a precise definition" in prompt
     assert (
         "I like climbing mountain, I want to visit zoo, I also want to enjoy a rich trip" in prompt

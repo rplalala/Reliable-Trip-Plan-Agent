@@ -91,6 +91,7 @@ class ExperienceGoal(ContractModel):
 
 
 class SemanticDraft(ContractModel):
+    trip_focus_source: SourceQuote | None = None
     experience_goal: ExperienceGoal | None = None
     local_key: TemporaryHandle
     normalized_text: str = Field(min_length=1, max_length=320)
@@ -102,7 +103,38 @@ class SemanticDraft(ContractModel):
     source_refs: tuple[SourceQuote, ...] = Field(min_length=1, max_length=3)
 
 
+class SoftCoverageTarget(ContractModel):
+    """Product guidance, never a user-authored quantity or verified fact."""
+
+    target: Literal[1, 2] = 1
+    origin: Literal["ordinary_preference", "current_trip_focus"] = "ordinary_preference"
+    focus_source: SourceReference | None = None
+
+    @model_validator(mode="after")
+    def consistent_origin(self):
+        focus = self.origin == "current_trip_focus"
+        if self.target != (2 if focus else 1) or focus != (self.focus_source is not None):
+            raise ValueError("Soft coverage target must agree with its origin and focus source")
+        if self.focus_source and self.focus_source.match_mode != "exact":
+            raise ValueError("Trip focus requires exact original source text")
+        return self
+
+
+def soft_coverage_eligible(requirement):
+    goal = requirement.experience_goal
+    return bool(
+        goal
+        and goal.target == "category"
+        and goal.frequency in {"continuing", "one_off"}
+        and not goal.explicit_primary_exception
+        and requirement.polarity == "favor"
+        and requirement.strength != "hard"
+        and requirement.scope in {"individual_poi", "selected_poi_set"}
+    )
+
+
 class SemanticRequirement(ContractModel):
+    soft_coverage: SoftCoverageTarget | None = None
     experience_goal: ExperienceGoal | None = None
     requirement_id: str = Field(min_length=1, max_length=40)
     normalized_text: str = Field(min_length=1, max_length=320)
@@ -112,6 +144,12 @@ class SemanticRequirement(ContractModel):
     scope: Scope
     subject_refs: tuple[str, ...] = Field(min_length=1, max_length=9)
     source_refs: tuple[SourceReference, ...] = Field(min_length=1, max_length=3)
+
+    @model_validator(mode="after")
+    def valid_soft_coverage(self):
+        if self.soft_coverage and not soft_coverage_eligible(self):
+            raise ValueError("Only soft positive POI interests may carry coverage guidance")
+        return self
 
 
 class NamedRequirementDraft(ContractModel):
@@ -369,6 +407,11 @@ class InterpretationDraft(ContractModel):
         )
         if (
             sum(len(s.quote) for s in sources)
+            + sum(
+                len(r.trip_focus_source.quote)
+                for r in self.semantic_requirements
+                if r.trip_focus_source
+            )
             + sum(map(len, information_sources))
             + transport_length
         ) > 12000:
