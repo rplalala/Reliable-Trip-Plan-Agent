@@ -933,3 +933,13 @@ captures retain the rejected or accepted wire response, and accepted outcomes re
 resolved canonical assessments. Existing redaction, size caps and capture-failure behavior
 apply. No live efficacy, version freeze or formal comparison is claimed by offline tests.
 See `.scratch/semantic-reference-correction/short-reference-spec.md` for scope and results.
+
+
+## Soft preference coverage handoff — 2026-09-27
+
+Ticket 01 adds application-owned one/two soft targets, generation saturation guidance
+and final supported scheduled coverage. See [the current requirement contract](shared_requirements.md#soft-preference-coverage--2026-09-27).
+Missing matches remain unassessed. Explicit goal counts, primary-role admission,
+exception allowances and V3 Repair authority are preserved. This supplies the contract
+for ticket 03; selection still uses its existing opportunities until that ticket is
+implemented. Ticket 02 destination landmark nomination also remains pending.

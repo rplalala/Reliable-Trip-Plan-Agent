@@ -1,5 +1,22 @@
 # Capstone Project Context
 
+## Soft preference coverage implementation — 2026-09-27
+
+The user invoked implement for ticket 01 of the accepted preference/landmark plan.
+Soft target one, or two for a sourced explicit trip focus, is now separate from user
+quantities. Grounded final coverage and Product feedback distinguish supported
+scheduled matches, soft gaps and unassessed relations. V0 receives prompt guidance
+only, with no new tools/stages or canonical coverage claim. Existing explicit
+requirements, primary exceptions, V3 Repair authority and resource ceilings remain.
+
+Final offline validation: 1750 backend tests passed / 9 skipped; 83 frontend tests passed.
+TypeScript, scoped Ruff and Standards/Spec review passed. No live run, commit or freeze.
+
+Ticket 02 (landmark nomination/discovery) and ticket 03 (combined candidate balance)
+remain pending. This implementation does not establish improved live itinerary quality.
+See [current requirements](docs/shared_requirements.md#soft-preference-coverage--2026-09-27)
+and the [ticket](.scratch/preference-landmark-balance/issues/01-soft-preference-coverage.md).
+
 ## Iteration commit checkpoint — 2026-09-27
 
 The user authorized direct logical commits after workspace review, without another grouping

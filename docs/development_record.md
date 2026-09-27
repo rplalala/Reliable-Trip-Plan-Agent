@@ -1,5 +1,45 @@
 # Shared development record
 
+## Soft preference coverage ticket 01 — 2026-09-27
+
+Status: Implemented and offline validated; not live validated or frozen. Base revision
+`8f5e9b3cdb60c4c7f3fbb55f68ebb8a24dd7ac86`, current work remains uncommitted.
+Existing PROJECT/docs changes and prior diagnosis/smoke artifacts were preserved.
+
+Implementation adds separately sourced one/two soft targets, shared generation guidance,
+canonical final coverage for V1-V3, and Product JSON/SSE/UI feedback. V0 keeps its existing
+LLM flow and prompt-only guidance. Counts/restrictions, exception allowances, operational
+budgets and V3 Repair authorization stay unchanged. Ticket 02/03 are not implemented.
+
+TDD first reproduced absent soft targets and final feedback. Exact source validation and
+focus serialization were corrected; sparse legacy wire fixtures explicitly gained null
+focus fields in test construction without changing historical evidence files. Entry-point
+testing caught V0 accidentally receiving canonical progress; the shared observer now guards
+that output by grounded mode. Standards review then found absent requirement matches were
+incorrectly labeled gaps; two failing cases reproduced it and now return unassessed.
+The existing one-off Repair safeguard remains at one visit, without extending it to focus
+or continuing soft targets. New focus quotes consume the existing source-length budget.
+
+Validation sequence: focused coverage/semantic Repair tests passed 46 after the review fix.
+An initial full backend run passed 1748 / 9 skipped; the final run after both added sparse-
+match regressions and review corrections passed **1750 / 9 skipped** (75.23 seconds).
+Frontend full suite passed **83 tests**; TypeScript app and node projects passed no-emit
+checks. Vite's default config loader and TypeScript build-info output initially failed on
+restricted node_modules cache writes; tests used `--configLoader runner`, and typechecks
+used `tsc -p ... --noEmit`. Scoped Ruff lint/format and `git diff --check` passed.
+Standards and Spec review have zero remaining findings after the Standards re-review.
+No configured backend static typechecker exists. No live API calls, commit, push, branch
+change, formal benchmark or freeze occurred.
+
+The tests verify mechanisms with controlled models/providers, not natural-language focus
+accuracy or destination quality. Landmark supply and saturation in actual candidate ranking
+remain ticket 02/03 work. Next recommended task: ticket 02.
+
+Evidence: `backend/tests/services/test_soft_preference_coverage.py`, current Product JSON/SSE
+and ItineraryView tests, and the terminal results recorded in the iteration-2 chat. No raw
+provider output or cost/latency claims are created by these offline tests.
+
+
 > Repository cleanup (2026-09-20): source/document/config recovery snapshots, including
 > `D:/Workspace/Capstone/phase6_source_snapshots`, have been permanently deleted by user approval.
 > Snapshot paths in dated entries describe historical actions, not available recovery locations.

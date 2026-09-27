@@ -73,6 +73,14 @@ Runtime/tool cleanup and evidence relocation are recorded in [the development re
 
 ## Current checkpoint navigation
 
+- [Preference coverage and local landmark balance specification](../.scratch/preference-landmark-balance/spec.md)
+  (2026-09-27): **ticket 01 implemented; tickets 02/03 pending**. Ordinary soft
+  preference targets are one, or two for sourced trip focus. Final grounded coverage
+  and Product feedback distinguish covered/gap/unassessed; V0 remains prompt-only.
+  See [current semantics](shared_requirements.md#soft-preference-coverage--2026-09-27).
+  Destination nomination and actual combined candidate balancing are not implemented.
+  No live quality validation or formal evaluation is claimed.
+
 - [Planning input UX specification](../.scratch/planning-input-ux/spec.md): current GeoDB,
   currency/date, compact-weather and single-call Polish behavior, limits and evidence.
   [Frontend and API design](frontend_design.md#planning-input-assistance-update-2026-09-26)
