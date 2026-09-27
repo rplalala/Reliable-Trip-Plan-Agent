@@ -1,5 +1,49 @@
 # Shared development record
 
+## Landmark nomination ticket 02 - 2026-09-27
+
+Status: Implemented; offline validation recorded below. Base `64dbd4b` on `feature/v3`;
+ticket 02 remains uncommitted. Before starting, approved ticket 01 groups were committed:
+`a04af97 feat: add sourced soft preference coverage`,
+`4e0115e feat: expose soft preference coverage in product`, and
+`64dbd4b docs: record preference coverage implementation`.
+Unrelated historical documentation and scratch work were preserved.
+
+The implementation adds a strict optional nomination model port, request-owned service,
+shared discovery allocation, exact identity reconciliation, model-origin/rank metadata,
+existing qualification integration and an independent compact budget stage. The policy
+for excluding incompatible optional nominations belongs in `policies/planning_supply.py`.
+Full behavior and bounds are in [landmark discovery](shared_landmark_discovery.md).
+
+TDD reproduced absent nomination/metadata, exclusion-scope rejection and missing budget
+accounting. Tests use actual fake send counts through V1/V2/V3 entry points and the narrow
+HTTP-mocked Azure adapter; they cover one-send malformed/provider failures, timeout,
+cancellation, usage/cleanup, cache reuse and the existing search ceiling. A later RAG
+same-name/different-ID case initially retained stale identity; reconciliation after source
+expansion now clears it. Review then reproduced stale degraded status when RAG first
+resolved a unique nominee; reconciliation now restores completed status, preserving
+interrupted status. Both RAG outcomes have entry-point regression coverage.
+
+An initial adapter test filename collided with the service test module during collection;
+the adapter file was renamed. Initial full regression: 1777 passed, 9 skipped, 6 failed.
+Four failures came from old destination/search test doubles not implementing the current
+DTO/execution interface; one came from the diagnostic payload fixture missing landmarks;
+one enforced exact configuration table leaf/value formatting. Fixtures and documentation
+were updated without relaxing production validation. Targeted retesting reached 110 passed
+and exposed a misplaced fixture field; moving it onto the policy result corrected that.
+The sandbox blocked uv's global cache, so checks used installed `.venv/Scripts` executables.
+
+Final full backend regression: **1784 passed / 9 skipped** (89.57 seconds).
+Scoped Ruff lint/format and `git diff --check` passed. Standards and Spec re-review
+confirmed zero remaining findings. No configured backend static typechecker exists;
+frontend was unchanged in this ticket.
+
+No live provider/model calls, frontend changes, formal benchmark, push or freeze. V0-V3
+retain independent entry points; V1/V2 gain no Repair stage. Nomination rank is not factual
+evidence. Live quality/cost/latency remain unmeasured; ticket 03 selection integration is
+pending. An ignored thesis archive preserves this development sequence without claiming
+formal research results.
+
 ## Soft preference coverage ticket 01 — 2026-09-27
 
 Status: Implemented and offline validated; not live validated or frozen. Base revision

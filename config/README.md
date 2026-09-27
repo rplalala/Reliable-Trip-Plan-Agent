@@ -522,3 +522,25 @@ are marked collection_status=incomplete. Missing reported usage stays missing, n
 run.json records budget_summary_status when its own final write succeeds. A budget.json
 write failure does not stop planning or ordinary trace finalization. A pending .tmp file
 is not a finalized summary. Historical runs are not retroactively rewritten.
+
+## Landmark nomination
+
+`landmark_nomination` applies to initial V1-V3 discovery; V0 and V3 Repair do not invoke it.
+It uses the existing model deployment, with independent accounting and the remaining
+request deadline. No retries are added.
+
+| YAML leaf | Default | Valid range / meaning |
+| --- | --- | --- |
+| `landmark_nomination.max_calls` | `1` | Exactly one maximum send |
+| `landmark_nomination.max_names` | `12` | 1-12 ordered names |
+| `landmark_nomination.input_tokens` | `8000` | 1-8000, prompt/schema/framing included |
+| `landmark_nomination.output_tokens` | `2000` | 1-2000 |
+| `landmark_nomination.call_timeout_seconds` | `20` | Greater than zero, at most 20; shortened by deadline |
+| `landmark_nomination.supplementary_searches` | `4` | 0-4 actual sends within the existing candidate-search pool |
+
+User-named searches precede general discovery and supplementary nomination queries.
+Existing exact matches/cache are reused; unused opportunities return to ordinary discovery.
+All existing C/G/K, Details, semantic, RAG, route and Repair ceilings remain unchanged.
+Model-origin rank is selection metadata, not provider fact evidence. Bounds are engineering
+starting values; live quality, latency and cost remain unmeasured. See
+[landmark discovery](../docs/shared_landmark_discovery.md) for identity and fallback behavior.

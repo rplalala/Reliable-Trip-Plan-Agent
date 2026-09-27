@@ -8,8 +8,7 @@ the four independent versions with verified resource and authority boundaries.
 
 **Parent:** [Preference coverage and local landmark balance](../spec.md).
 
-**Blocked by:** 01: Carry soft preference coverage through planning and feedback;
-02: Discover resolved local landmarks within bounded planning resources.
+**Blocked by:** None. Prerequisite tickets 01 and 02 are implemented and offline validated.
 
 Status: ready-for-agent
 Type: task

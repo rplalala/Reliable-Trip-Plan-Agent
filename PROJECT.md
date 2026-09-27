@@ -1,5 +1,22 @@
 # Capstone Project Context
 
+## Landmark nomination implementation - 2026-09-27
+
+Ticket 02 is implemented: V1-V3 initial discovery adds one destination-only model
+nomination, exact provider identity resolution and at most four supplementary sends
+within the existing twelve candidate-search sends. User-named discovery precedes
+others; general discovery retains an opportunity when budget remains. Metadata reaches
+qualified supply/generation; exclusions, exclusive scope and factual checks still apply.
+V0 is unchanged and V3 Repair does not repeat nomination. Ticket 03 remains pending
+for combined soft-target saturation and landmark-aware candidate balance.
+
+The approved ticket 01 commits are `a04af97`, `4e0115e` and `64dbd4b`. Ticket 02 is
+uncommitted. Final backend regression: **1784 passed / 9 skipped**; scoped Ruff and
+Standards/Spec review passed. Validation details and limitations are in the
+[development record](docs/development_record.md#landmark-nomination-ticket-02---2026-09-27);
+[current discovery behavior](docs/shared_landmark_discovery.md) owns the design.
+No live run, push, formal comparison or version freeze occurred.
+
 ## Soft preference coverage implementation — 2026-09-27
 
 The user invoked implement for ticket 01 of the accepted preference/landmark plan.
@@ -12,8 +29,8 @@ requirements, primary exceptions, V3 Repair authority and resource ceilings rema
 Final offline validation: 1750 backend tests passed / 9 skipped; 83 frontend tests passed.
 TypeScript, scoped Ruff and Standards/Spec review passed. No live run, commit or freeze.
 
-Ticket 02 (landmark nomination/discovery) and ticket 03 (combined candidate balance)
-remain pending. This implementation does not establish improved live itinerary quality.
+At the ticket 01 checkpoint, tickets 02 and 03 remained pending. The later ticket 02
+checkpoint above supersedes that implementation status. This implementation does not establish improved live itinerary quality.
 See [current requirements](docs/shared_requirements.md#soft-preference-coverage--2026-09-27)
 and the [ticket](.scratch/preference-landmark-balance/issues/01-soft-preference-coverage.md).
 

@@ -4,6 +4,13 @@ The root README directly introduces the project and quick start. PROJECT directl
 scope/status and next approval. This index routes readers; detailed contracts and experiment
 records have one responsibility owner instead of being copied into the entry documents.
 
+## Current landmark implementation checkpoint - 2026-09-27
+
+Tickets 01 and 02 are implemented and offline validated.
+[Bounded landmark discovery](shared_landmark_discovery.md) describes the destination-only
+model call, shared search allocation, exact identity, fallback and budget observability.
+Ticket 03 remains pending for combined candidate balance; no live quality claim or freeze.
+
 ## Recommended reading order
 
 1. [Shared architecture](shared_architecture.md): version mechanisms and evidence authority.
@@ -74,11 +81,11 @@ Runtime/tool cleanup and evidence relocation are recorded in [the development re
 ## Current checkpoint navigation
 
 - [Preference coverage and local landmark balance specification](../.scratch/preference-landmark-balance/spec.md)
-  (2026-09-27): **ticket 01 implemented; tickets 02/03 pending**. Ordinary soft
+  (2026-09-27): **tickets 01/02 implemented; ticket 03 pending**. Ordinary soft
   preference targets are one, or two for sourced trip focus. Final grounded coverage
   and Product feedback distinguish covered/gap/unassessed; V0 remains prompt-only.
   See [current semantics](shared_requirements.md#soft-preference-coverage--2026-09-27).
-  Destination nomination and actual combined candidate balancing are not implemented.
+  Destination nomination is implemented; combined candidate balancing remains pending.
   No live quality validation or formal evaluation is claimed.
 
 - [Planning input UX specification](../.scratch/planning-input-ux/spec.md): current GeoDB,

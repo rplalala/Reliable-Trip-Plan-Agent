@@ -10,64 +10,64 @@ without discarding otherwise usable planning results.
 
 **Blocked by:** None (can start immediately).
 
-Status: ready-for-agent
+Status: resolved
 Type: task
 
 ## Acceptance criteria
 
-- [ ] After existing input/Gate checks pass and before candidate discovery, V1–V3
+- [x] After existing input/Gate checks pass and before candidate discovery, V1–V3
   can invoke a dedicated nomination service through the existing model abstraction.
   Provider calls remain behind service/client boundaries and use the configured
   deployment. Invalid or rejected inputs do not trigger nomination.
-- [ ] The nomination prompt uses destination identity/context without personal
+- [x] The nomination prompt uses destination identity/context without personal
   positive-interest conditioning. It returns an ordered strict structured list of
   at most twelve representative place names and preserves model-origin rank.
-- [ ] Each request has at most one nomination model send, no retry/correction call,
+- [x] Each request has at most one nomination model send, no retry/correction call,
   an 8,000-token total input bound, a 2,000-token output bound and a twenty-second
   call bound shortened by the remaining request allowance. Schema/framing overhead
   is counted using existing token-accounting conventions.
-- [ ] Nomination uses independent explicit accounting and the existing request time
+- [x] Nomination uses independent explicit accounting and the existing request time
   allowance without resetting deadlines or consuming/enlarging semantic-assessment
   limits. Preserve caller-specific deadline behavior and client ownership/cleanup.
-- [ ] Existing acquired search results are reused for reliable identity matches
+- [x] Existing acquired search results are reused for reliable identity matches
   before supplementary queries. The current exact-name identity boundary remains
   intact: ambiguous/alias-only names stay unresolved, and the first hit or a nearby
   attraction is not automatically substituted.
-- [ ] User-named places have first claim on search sends. General attraction
+- [x] User-named places have first claim on search sends. General attraction
   discovery receives an opportunity even with many preference intents when budget
   remains; exhausted higher-priority work produces an explicit skipped state.
-- [ ] All candidate search sends share the existing total of twelve. Supplementary
+- [x] All candidate search sends share the existing total of twelve. Supplementary
   nomination name searches consume at most four of that total, not four additional
   sends. They cannot displace user-named processing. Cache reuse consumes no actual
   provider send, and unused allocations remain reusable by discovery work.
-- [ ] Nomination candidates enter existing merge, admission, Details, semantic-role
+- [x] Nomination candidates enter existing merge, admission, Details, semantic-role
   and factual-eligibility checks. Their origin and rank survive reliable canonical
   deduplication and remain available to selection/generation. They do not become
   user REQUIRED places or automatically qualify as primary visits.
-- [ ] Exclusions, exclusive scopes and existing role/identity boundaries reject
+- [x] Exclusions, exclusive scopes and existing role/identity boundaries reject
   conflicting nominations. Model rank does not establish opening, admission, ticket,
   suitability, travel-time or cost facts.
-- [ ] Invalid output, timeout, failed nomination or no resolved candidates can fall
+- [x] Invalid output, timeout, failed nomination or no resolved candidates can fall
   back to the available qualified pool with a truthful degraded status. Cancellation
   still propagates, and existing unrelated hard failures are not swallowed.
-- [ ] Trace and compact budget output account for nomination calls, time, reported
+- [x] Trace and compact budget output account for nomination calls, time, reported
   usage, resolution counts and search-allocation stops. Missing billed usage remains
   missing, bounded artifact behavior is preserved, and credentials/raw envelopes
   are not introduced into outputs.
-- [ ] Existing candidate, Details, final-supply, RAG, semantic, route and Repair
+- [x] Existing candidate, Details, final-supply, RAG, semantic, route and Repair
   ceilings remain unchanged. Twelve nominations do not imply twelve successfully
   resolved, selected or scheduled places.
-- [ ] V0 has no new nomination/provider call or candidate-discovery dependency.
+- [x] V0 has no new nomination/provider call or candidate-discovery dependency.
   V1/V2 do not acquire Repair behavior, and V3 can reuse this baseline flow without
   broadening Repair authority or rerunning primary nomination during Repair.
-- [ ] Planning/service tests demonstrate successful nomination through resolved
+- [x] Planning/service tests demonstrate successful nomination through resolved
   eligible candidate use, exact-match reuse, ambiguous resolution, admission
   rejection, many preference intents, user-named precedence, unused-allocation reuse
   and exhausted search budgets. Assertions use actual fake collaborator send counts.
-- [ ] Narrow adapter tests verify strict output/list limits, presend input limits,
+- [x] Narrow adapter tests verify strict output/list limits, presend input limits,
   remaining deadline, one-send behavior on failures, usage propagation and cleanup.
   Cancellation and fallback preserve their distinct external outcomes.
-- [ ] Relevant focused and shared-pipeline regressions, lint/format checks and
+- [x] Relevant focused and shared-pipeline regressions, lint/format checks and
   Standards/Spec review pass. Related design/configuration/observability documentation
   records actual behavior and unmeasured live cost/quality limits.
 
@@ -96,3 +96,11 @@ execution, formal benchmark, Git action or version freeze is included.
 
 - 2026-09-27: The user approved publication as an independent starting ticket, with
   final integration blocked on both tickets 01 and 02.
+
+- 2026-09-27: Implemented and offline validated against base `64dbd4b`; changes remain
+  uncommitted. Full backend: 1784 passed / 9 skipped. Scoped Ruff, diff checks and final
+  Standards/Spec review passed. Tests reproduced and corrected post-RAG identity ambiguity
+  and stale degraded status; legacy fixture/config-documentation failures were corrected.
+  See [design](../../../docs/shared_landmark_discovery.md) and
+  [validation record](../../../docs/development_record.md#landmark-nomination-ticket-02---2026-09-27).
+  No live calls, ranking integration from ticket 03, formal evaluation or freeze.
