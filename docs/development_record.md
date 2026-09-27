@@ -8934,3 +8934,37 @@ budget change. New tests cover fresh CLI processes, public API isolation, compat
 and genuine budget conflicts. Tests:121 backend pass; frontend initial EPERM then16 pass; Ruff
 formatting issues corrected; frontend build pass; affected backend76 pass; final static checks pass.
 No real-model claim: prompt13 and the new user-facing recovery path await separate live approval.
+
+
+## Semantic wire and budget acceptance closeout (2026-09-27)
+
+Status: Implemented and validated within the following development scope; not a version
+freeze or formal benchmark. Local commit checkpoint: `8f5e9b3` on `feature/v3`.
+
+- Three authorized sequential, one-attempt live cases (Sydney V1, Sydney V3, Melbourne V1)
+  returned all requested dates. Four semantic batches passed on their first call; short
+  reference ownership, mapping hashes and canonical restoration passed independent checks.
+  Correction efficacy was not exercised. Original failed smoke results remain historical.
+- Offline V3 budget reconstruction used 212 events and final acquisition ledgers. All 45
+  recorded-limit checks passed. The truncated aggregate trace still cannot supply missing
+  requirement/main-generation billed tokens or a complete monetary cost.
+- Independent bounded `budget.json` is implemented and offline validated. Initial full
+  regression passed 1726 tests / 9 skipped. Review exposed omitted RAG cancellation and
+  resolution counters; a failing regression preceded the correction, then 63 focused tests
+  passed. Final combined-tree regression passed 1727 tests / 9 skipped, with Ruff and diff
+  checks passing. No live run was performed for this observability change.
+- Five authorized local commits: `23c3a46` (workflow), `0b20d58` (acceptance tooling),
+  `fc01a9d` (semantic contract), `dcb71e8` (budget summary), `8f5e9b3` (documentation).
+  Workspace was clean after commit. No push, new freeze or formal evaluation occurred.
+
+Limits: all 38 scheduled activity costs were unknown; V3 retained feasibility UNKNOWNs
+and partial RAG discovery. Sydney V1 had one day below the default quantity target and
+Melbourne V1 had three. Food preference coverage remains an offline diagnostic follow-up;
+these observations are not semantic wire failures or proof of a mandatory quota violation.
+The user now authorizes documentation synchronization and offline diagnosis only, not
+production changes, new live calls or commits.
+
+Evidence: `logs/semantic_short_reference_revalidation_20260927/report.md`,
+`.scratch/semantic-reference-correction/v3-budget-audit.md`, and
+`.scratch/semantic-reference-correction/budget-summary-spec.md`. Raw local artifacts are
+ignored and are not guaranteed to be present in another checkout.

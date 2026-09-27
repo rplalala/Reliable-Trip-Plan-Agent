@@ -128,3 +128,5 @@ implementation and evaluation execution still require separate authorization.
 
 - [V3 final engineering closeout](v3_closeout.md): combined-tree validation, current limits,
   artifact-backed live/offline boundaries and checkpoint restrictions.
+
+- [2026-09-27 semantic wire and budget closeout](development_record.md#semantic-wire-and-budget-acceptance-closeout-2026-09-27): three bounded live cases, offline budget audit, final regression, five local commits and remaining coverage limitations.

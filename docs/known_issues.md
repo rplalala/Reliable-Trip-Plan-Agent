@@ -241,3 +241,28 @@ unavailable was accurate and no valid returned Profile signal was lost. This is 
 confirmed shared correctness defect. No retries, prompt changes or code changes were introduced.
 The user's clarification that the first V2 database was stopped is recorded separately from the
 observed pre-connection factory TypeError; no database repair task remains in this closeout.
+
+
+## Food preference and sparse-day diagnosis (2026-09-27)
+
+Historical prompt-5 diagnosis: the user subsequently deferred this follow-up. It is
+not a current implementation blocker; later shared-preference changes have separate
+dated records. Archiving these observations does not authorize resuming the work.
+
+Offline replay of the three prompt-5 Sydney/Melbourne cases confirms a capability limitation,
+not an established new Spec violation. Food preferences survive interpretation and acquisition,
+but all supported food candidates (10/11/12) are non_main and excluded from named primary
+supply. Generic food stops remain optional and unverified. Continuing preferences are not
+mandatory visit counts or part of quantified goal progress.
+
+Sydney V1 has one below-target date; Melbourne V1 has three. Both received 16 selected main
+candidates and left 7/3 unused respectively. This rules out a raw capacity shortage, not
+date-specific incompatibility. Relaxed pace, unknown facts and the generator's selection
+remain relevant; no counterfactual LLM run established their individual causal effects. V1's
+lack of Repair and complete minimum-coverage status match current version/policy boundaries.
+
+The typed diagnostic replay reproduces recorded counts; one-date counterfactuals confirm
+generic stops cannot inflate main counts. Twelve existing diagnostic/supply tests pass.
+See [the diagnosis and proposed TDD scope](../.scratch/food-sparse-diagnosis/diagnosis.md).
+A shared guidance/transparency improvement is proposed; named non-main food scheduling would
+require a separate role/ledger decision. No production fix, budget increase or live run occurred.

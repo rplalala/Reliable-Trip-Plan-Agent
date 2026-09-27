@@ -138,6 +138,25 @@ checkpoint above supersedes that implementation status. This implementation does
 See [current requirements](docs/shared_requirements.md#soft-preference-coverage--2026-09-27)
 and the [ticket](.scratch/preference-landmark-balance/issues/01-soft-preference-coverage.md).
 
+## Current acceptance and authorized follow-up — 2026-09-27
+
+Semantic wire integration and offline budget-summary implementation are accepted within
+the bounded development evidence in [the closeout record](docs/development_record.md#semantic-wire-and-budget-acceptance-closeout-2026-09-27).
+Five local commits end at `8f5e9b3`; final regression passed 1727 tests / 9 skipped.
+No push or version freeze occurred. Correction efficacy, verified costs and complete
+feasibility are not established by the three successful live cases.
+The current authorization covers documentation synchronization and offline diagnosis of
+food-preference coverage and V1 sparse days using saved evidence. No production changes,
+live calls, budget changes or commits are authorized by this follow-up.
+Offline diagnosis is now complete: food support is excluded from named primary supply by
+the current non_main rule; four V1 sparse days coexist with unused selected candidates.
+Neither observation establishes a new hard Spec violation. See the
+[diagnosis](.scratch/food-sparse-diagnosis/diagnosis.md) for evidence, missing feasibility
+checks and unimplemented proposals. The user subsequently ended this acceptance round and
+explicitly deferred the food/sparse-day follow-up; do not automatically resume it.
+Future iteration ownership transfers to thread `01a0e29d-405e-7d82-b894-d95eb7f67632`;
+see the [handoff](.scratch/iteration2-handoff/handoff.md).
+
 ## Iteration commit checkpoint — 2026-09-27
 
 The user authorized direct logical commits after workspace review, without another grouping
