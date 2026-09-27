@@ -163,6 +163,20 @@ def present_product(result, evidence, introductions=None):
             )
         )
     return ProductPlanResult(
+        preference_coverage=tuple(
+            dict(
+                preference=row["preference"],
+                target=row["expected"],
+                scheduled=row["matched"],
+                remaining=row["remaining"],
+                status=row["coverage_status"],
+                target_origin=row["target_origin"],
+            )
+            for row in result.generation_diagnostics.goal_progress
+            if row.get("soft")
+        )
+        if result.generation_diagnostics
+        else (),
         policy_completion=result.generation_diagnostics.policy_completion
         if result.generation_diagnostics
         else "unassessed",

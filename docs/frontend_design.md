@@ -1,5 +1,18 @@
 # Frontend and API design
 
+## Soft preference coverage presentation — 2026-09-27
+
+Product JSON and SSE now include optional/default-empty `preference_coverage`.
+Each row contains the preference label, soft target (one/two), supported scheduled
+count, remaining count, covered/gap/unassessed status, ordinary/current-trip-focus
+origin and model-semantic basis. The public projection omits source quotations,
+canonical identifiers and internal diagnostics. Historical responses remain usable.
+
+The itinerary shows these rows under Your interests and explains that suggested
+matches do not verify suitability or opening information. Soft gaps do not turn
+`policy_completion` into incomplete or hide the itinerary. That field still describes
+its existing scoped obligations; it is not a global trip-quality certificate.
+
 ## Planning input assistance update (2026-09-26)
 
 Product `/plan` and Developer `/dev` share the current PlanningForm. The destination field

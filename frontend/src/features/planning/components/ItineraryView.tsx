@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import type { Activity, Itinerary, Transfer, MinimumDailyCoverage, ProductWeather } from "../types";
+import type { Activity, Itinerary, Transfer, MinimumDailyCoverage, ProductWeather, PreferenceCoverage } from "../types";
 
 function WeatherCard({ weather }: { weather: ProductWeather }) {
   const forecast = weather.status === "available" ? weather.forecast : null;
@@ -82,7 +82,8 @@ function ActivityCard({ activity }: { activity: Activity }) {
   );
 }
 
-export function ItineraryView({ itinerary, minimumCoverage = [], policyCompletion }: {
+export function ItineraryView({ itinerary, minimumCoverage = [], policyCompletion, preferenceCoverage = [] }: {
+  preferenceCoverage?: PreferenceCoverage[];
   policyCompletion?: "complete" | "incomplete" | "unassessed";
   itinerary: Itinerary; minimumCoverage?: MinimumDailyCoverage[];
 }) {
@@ -100,6 +101,17 @@ export function ItineraryView({ itinerary, minimumCoverage = [], policyCompletio
           {itinerary.start_date} to {itinerary.end_date}
         </p>
       </header>
+      {preferenceCoverage.length > 0 && <section aria-label="Preference coverage">
+        <h3>Your interests</h3>
+        <p>Soft planning goals based on suggested matches, not verified suitability or opening information.</p>
+        <ul>{preferenceCoverage.map((row, index) => <li key={index}>
+          {row.preference}: {row.scheduled} of {row.target} suggested visits arranged
+          {row.target_origin === "current_trip_focus" ? " (trip focus)" : ""}.
+          {row.status === "gap" && ` ${row.remaining} remaining; this is a soft preference gap.`}
+          {row.status === "unassessed" && " Coverage could not be fully assessed."}
+          {row.status === "covered" && " Soft target covered."}
+        </li>)}</ul>
+      </section>}
       {minimumCoverage.filter(row => row.status !== "satisfied").map(row => (
         <p key={row.date} role={row.status === "missing" ? "status" : undefined}>
           {row.date}: {row.status === "missing"

@@ -16,6 +16,17 @@ const suggestion: ReferenceRecommendation = {
   reason: "An extra place to consider", associated_day: null, area: null, uncertainty: null,
 };
 
+it("shows soft preference gaps without labeling the itinerary incomplete", () => {
+  render(<ItineraryView itinerary={base} policyCompletion="complete" preferenceCoverage={[{
+    preference: "Museums", target: 2, scheduled: 1, remaining: 1, status: "gap",
+    target_origin: "current_trip_focus", basis: "model_semantic_judgment_not_operating_fact",
+  }]} />);
+  expect(screen.getByText(/Museums: 1 of 2/)).toBeInTheDocument();
+  expect(screen.getByText(/1 remaining/)).toBeInTheDocument();
+  expect(screen.queryByText(/This itinerary is incomplete/)).toBeNull();
+  expect(screen.getByText(/not verified suitability/)).toBeInTheDocument();
+});
+
 it("shows policy incompleteness without hiding the adopted itinerary", () => {
   render(<ItineraryView itinerary={base} policyCompletion="incomplete" />);
   expect(screen.getByRole("status")).toHaveTextContent("This itinerary is incomplete");

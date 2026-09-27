@@ -132,7 +132,7 @@ export function PlanTripPage() {
         )}
       </div>
 
-      {result?.status === "completed" && <ItineraryView itinerary={result.itinerary} minimumCoverage={result.minimum_daily_coverage} policyCompletion={result.policy_completion} />}
+      {result?.status === "completed" && <ItineraryView itinerary={result.itinerary} minimumCoverage={result.minimum_daily_coverage} policyCompletion={result.policy_completion} preferenceCoverage={result.preference_coverage} />}
     </div>
   );
 }
