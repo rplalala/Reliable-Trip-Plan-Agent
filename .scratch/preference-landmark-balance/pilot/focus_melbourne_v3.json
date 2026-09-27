@@ -1,0 +1,12 @@
+{
+  "input_version": "planning_request_2",
+  "destination": "Melbourne, Australia",
+  "start_date": "2026-10-03",
+  "end_date": "2026-10-05",
+  "traveler_count": 2,
+  "budget": {
+    "amount": "1800",
+    "currency": "AUD"
+  },
+  "additional_preferences": "This trip is mainly about museums. I also enjoy gardens and architecture. Please plan a varied trip at a comfortable pace."
+}

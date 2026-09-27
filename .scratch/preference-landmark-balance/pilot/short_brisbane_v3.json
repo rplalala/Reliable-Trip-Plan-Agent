@@ -1,0 +1,12 @@
+{
+  "input_version": "planning_request_2",
+  "destination": "Brisbane, Australia",
+  "start_date": "2026-10-03",
+  "end_date": "2026-10-03",
+  "traveler_count": 2,
+  "budget": {
+    "amount": "600",
+    "currency": "AUD"
+  },
+  "additional_preferences": "I like museums, gardens, historic architecture, and zoos. I prefer a relaxed day with no more than three main sightseeing visits. Please explain any interests that cannot fit."
+}
