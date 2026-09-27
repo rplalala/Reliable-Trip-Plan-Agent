@@ -1,5 +1,17 @@
 # Capstone Project Context
 
+## Separately authorized Berlin itinerary-only blind review - 2026-09-28
+
+After the original capture gate stopped the batch, the user separately authorized
+judging itinerary quality without that budget/trace evidence gate. One isolated
+simulated traveler ranked anonymous A > C > B > D, mapped after review to
+V0 > V3 > V2 > V1. The reviewer preferred V0's variety and relaxed pacing; it cited
+V3 museum concentration/cross-district travel, V2 sparse final days and V1 repeats.
+This concerns the saved pre-prompt-adjustment Berlin outputs, not the subsequently
+updated V0 transport/Nearby prompt. The original failed capture gate remains unchanged.
+See the [assessment addendum](.scratch/berlin-six-day-smoke/assessment.md).
+This is one subjective judgment, not a formal benchmark or general version ranking.
+
 ## V0 transport and Nearby prompt alignment - 2026-09-28
 
 The user requested transport and Nearby content across versions. V0 now explicitly
@@ -28,6 +40,30 @@ Berlin batch retains its frozen 1 MB configuration and failed evidence gate; no 
 reconstruction is possible from the cap adjustment. Observability/config/V3 wiring
 checks passed (92 tests); synthetic near-limit payload retention, truncation and
 redaction checks passed. This cap adjustment itself adds no live or blind-review run.
+
+## Berlin six-day development smoke outcome - 2026-09-28
+
+All four authorized one-shot V0-V3 applications completed six nonempty days. V1 had
+four unauthorized cross-day repeats and one sparse day; V2 had two sparse days.
+V3 accepted one Repair round, filling three sparse days and leaving zero improvement
+targets, but 22 UNKNOWN validation findings remain. All 61 activity costs are unknown.
+The V3 full run trace exceeded the 1 MB capture cap (6,041,655 bytes before truncation),
+so the frozen batch evidence gate failed despite a complete budget summary. At this
+initial checkpoint no blind review, rerun, fix, commit, or freeze occurred; the later
+separately authorized review and follow-ups are recorded above. See the
+[assessment and proposed offline next scope](.scratch/berlin-six-day-smoke/assessment.md).
+
+## Berlin six-day development smoke preparation - 2026-09-28
+
+The user separately authorized one Berlin V0-V3 attempt per version and the broad
+preference `We want to have an enjoyable trip in this city.` The frozen common scenario
+uses October 3-8, two travelers and EUR 3000. Iteration 2 prepared the
+[plan and conditional blind-review rules](.scratch/berlin-six-day-smoke/plan.md) and
+[dispatch](.scratch/berlin-six-day-smoke/dispatch.md); `smoke tests` executes sequentially.
+Preparation passed six offline launcher checks and fresh-process hash verification;
+no Berlin live attempt has started at this checkpoint. Production code and limits are
+unchanged. Only four complete six-day results permit one isolated anonymous simulated-user
+review. This is development validation, not a formal benchmark or version freeze.
 
 ## Preference and landmark feature closeout - 2026-09-28
 

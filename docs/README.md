@@ -4,6 +4,37 @@ The root README directly introduces the project and quick start. PROJECT directl
 scope/status and next approval. This index routes readers; detailed contracts and experiment
 records have one responsibility owner instead of being copied into the entry documents.
 
+## Berlin development smoke and follow-ups - 2026-09-28
+
+Later, the user separately authorized an itinerary-only blind review despite the
+original capture failure. One simulated traveler ranked V0 > V3 > V2 > V1 on the
+saved outputs, before the V0 prompt adjustment; see the
+[assessment addendum](../.scratch/berlin-six-day-smoke/assessment.md). This does not
+change the original evidence gate or establish a general version ranking.
+
+The subsequent user-requested [V0 transport/Nearby prompt alignment](shared_itinerary_output.md#v0-transport-and-nearby-content-alignment---2026-09-28)
+uses model-estimated transport activities and optional nearby references. V1/V2 already
+include Nearby. Eighty initial offline checks passed. The later authorized
+[single V0 revalidation](../.scratch/v0-transport-nearby/assessment.md) passed with
+17 main visits, 11 estimated transport activities and one Nearby suggestion;
+combined relevant regression passed 176 tests. Real-world facts remain unverified.
+
+Follow-up: the user accepted V1 repeats as a version limitation and authorized the
+current [trace configuration](../config/README.md) increase to 10,000,000 bytes.
+The old batch remains frozen at 1 MB with its missing trace and failed original gate.
+The separately authorized blind review above used itinerary text only. The cap change
+itself added no live run; V1 repeats remain an accepted intermediate-version limitation.
+
+Outcome: all four applications completed, but V3's run trace was truncated and the
+blind-review gate failed. V1 repeated visits; V3 repaired three sparse days while
+retaining UNKNOWN findings. See the [assessment](../.scratch/berlin-six-day-smoke/assessment.md).
+
+The archived [Berlin four-version plan](../.scratch/berlin-six-day-smoke/plan.md)
+and [execution dispatch](../.scratch/berlin-six-day-smoke/dispatch.md) preserve the
+identical six-day input and original limits. All four attempts were consumed; do not
+reuse their commands as fresh authorization. Six offline launcher checks passed.
+This is not a formal benchmark or freeze.
+
 ## Current preference and landmark closeout - 2026-09-28
 
 The user approved [feature closeout](../.scratch/preference-landmark-balance/closeout.md)
