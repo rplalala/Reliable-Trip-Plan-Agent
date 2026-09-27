@@ -1,4 +1,11 @@
 schema_version: 6
+landmark_nomination:
+  max_calls: 1
+  max_names: 12
+  input_tokens: 8000
+  output_tokens: 2000
+  call_timeout_seconds: 20
+  supplementary_searches: 4
 input_assistance:
   destination:
     min_chars: 2
@@ -92,7 +99,7 @@ trace:
   capture_tools: true
   capture_evidence: true
   raw_provider_payloads: false
-  max_payload_bytes: 1000000
+  max_payload_bytes: 10000000
 tripworld_discovery:
   version: tripworld_runtime_1
   top_k: 20

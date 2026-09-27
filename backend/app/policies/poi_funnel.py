@@ -129,6 +129,11 @@ def merge_search_observations(
         merged.append(
             canonical.model_copy(
                 update={
+                    "landmark_nomination": min(
+                        (p.landmark_nomination for p in group if p.landmark_nomination),
+                        key=lambda row: row.rank,
+                        default=None,
+                    ),
                     "query_hits": list(hits),
                     "search_opening_date": dates[0] if dates else None,
                     "search_opening_date_observations": dates,

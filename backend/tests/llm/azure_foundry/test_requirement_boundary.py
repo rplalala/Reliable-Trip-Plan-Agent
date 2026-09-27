@@ -545,6 +545,7 @@ def test_captured_b_draft_reexpressed_in_v2_keeps_meaning_and_party_scope():
     ]
     for r in data["semantic_requirements"]:
         r["experience_goal"] = None  # Explicit synthetic migration of historical wire fields.
+        r["trip_focus_source"] = None  # Synthetic current-wire migration.
         refs = r.pop("subject_refs")
         r["subject_target"] = (
             {"kind": "party"}

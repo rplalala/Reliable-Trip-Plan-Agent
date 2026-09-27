@@ -160,7 +160,7 @@ a local documentation coverage test detects a missing path or stale value.
 | `trace.capture_tools` | `true` | boolean; schema-validated | Tool trace capture category. |
 | `trace.capture_evidence` | `true` | boolean; schema-validated | Normalized evidence trace capture category. |
 | `trace.raw_provider_payloads` | `false` | boolean; schema-validated | Raw provider payload capture switch; remains false. Repair audit does not enable raw responses or internal reasoning. |
-| `trace.max_payload_bytes` | `1000000` | integer; schema-validated | Per-artifact serialized UTF-8 byte ceiling. Redaction applies; missing/truncated Repair artifacts carry explicit status. Zero is invalid. |
+| `trace.max_payload_bytes` | `10000000` | integer; schema-validated | Per-artifact serialized UTF-8 payload threshold (10 MB, decimal). Redaction applies; oversized payloads retain an explicit truncated preview whose JSON wrapper can add bytes. Missing/truncated Repair artifacts carry explicit status. Zero is invalid. |
 | `tripworld_discovery.version` | `"tripworld_runtime_1"` | string; = "tripworld_runtime_1" | RAG runtime contract identifier. |
 | `tripworld_discovery.top_k` | `20` | integer; >= 1, <= 20 | Initial RAG rows per query, not Repair Top-K. Zero is invalid. |
 | `tripworld_discovery.resolution_entities` | `30` | integer; >= 0, <= 30 | Primary RAG canonical resolution work allowance. Zero disables the allowance. |
@@ -492,3 +492,60 @@ Omission is a configuration error, not a switch to legacy classification. Old re
 are still readable independently of runtime configuration; no historical files are migrated.
 The immutable effective snapshot and its hash are captured once; each request's semantic ledger
 also reports its policy hash, input hashes, cache hits and per-call reported usage.
+
+
+POI semantic reference correction (2026-09-27): at most one correction per invalid-reference
+batch shares the above request-owned limits; it does not add a separate allowance or change
+runtime defaults. Feedback counts toward input sizing. Calls, timeouts, absolute deadlines
+and capture caps apply to both attempts. Unavailable or unsuccessful correction is terminal.
+
+The subsequent approved contract-correction expansion also covers identity-set mismatch
+and exception authorization/ownership errors. All supported classes share the same single
+correction per batch; switching error class does not reset it. Prompt 4 clarifies exact
+exception permissions, and bounded feedback remains included in input sizing. No runtime
+default, capture setting or quantity Repair configuration changes accompany this expansion.
+
+The subsequent prompt-5 short-reference wire contract also keeps every default unchanged.
+Canonical IDs and sources are application-owned; pNN/eNN references are batch-local model
+identifiers, not configurable external IDs. Input accounting uses the actual projected
+payload and wire schema. The one-correction allowance is unchanged. Normalized opt-in
+capture now includes a reference mapping/hash/version and retains canonical accepted
+outcomes; existing size caps and redaction still apply. Old capture payloads are historical
+and must not be assumed to use the current wire format.
+
+When file tracing is enabled, finalization also writes budget.json independently of
+trace.max_payload_bytes and optional payload capture flags. The summary uses existing
+numeric runtime events and final primary counters; it does not enable additional API or
+LLM calls. Its fixed 64 KiB metadata ceiling and 32 call records per tracked stage are
+storage limits, not runtime execution limits. Dropped records or exceptional size overflow
+are marked collection_status=incomplete. Missing reported usage stays missing, never zero.
+run.json records budget_summary_status when its own final write succeeds. A budget.json
+write failure does not stop planning or ordinary trace finalization. A pending .tmp file
+is not a finalized summary. Historical runs are not retroactively rewritten.
+
+## Landmark nomination
+
+`landmark_nomination` applies to initial V1-V3 discovery; V0 and V3 Repair do not invoke it.
+It uses the existing model deployment, with independent accounting and the remaining
+request deadline. No retries are added.
+
+| YAML leaf | Default | Valid range / meaning |
+| --- | --- | --- |
+| `landmark_nomination.max_calls` | `1` | Exactly one maximum send |
+| `landmark_nomination.max_names` | `12` | 1-12 ordered names |
+| `landmark_nomination.input_tokens` | `8000` | 1-8000, prompt/schema/framing included |
+| `landmark_nomination.output_tokens` | `2000` | 1-2000 |
+| `landmark_nomination.call_timeout_seconds` | `20` | Greater than zero, at most 20; shortened by deadline |
+| `landmark_nomination.supplementary_searches` | `4` | 0-4 actual sends within the existing candidate-search pool |
+
+User-named searches precede general discovery and supplementary nomination queries.
+Existing exact matches/cache are reused; unused opportunities return to ordinary discovery.
+All existing C/G/K, Details, semantic, RAG, route and Repair ceilings remain unchanged.
+Model-origin rank is selection metadata, not provider fact evidence. Bounds are engineering
+starting values; live quality, latency and cost remain unmeasured. See
+[landmark discovery](../docs/shared_landmark_discovery.md) for identity and fallback behavior.
+
+Ticket 03 (2026-09-28) adds no configuration keys or budget increase. Candidate balancing
+uses the sourced final soft target plus one replacement opportunity; this is a selection
+heuristic, not a final category quota. Existing exploration settings also admit resolved
+landmarks that match preferences. See [supply policy](../docs/shared_poi_supply.md).

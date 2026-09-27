@@ -112,6 +112,15 @@ def validate_canonical_requirements(contract, request: PlanningRequest):
     for item in value.named_places:
         if not any(item.place_text in ref.quote for ref in item.source_refs):
             raise RequirementBoundaryError("named_surface_not_in_source")
+    for item in value.semantic_requirements:
+        focus = item.soft_coverage.focus_source if item.soft_coverage else None
+        if focus and (
+            text[focus.start : focus.end] != focus.quote
+            or locate_source(text, SourceQuote(quote=focus.quote, occurrence=focus.occurrence))
+            != focus
+            or not any(focus.start < r.end and r.start < focus.end for r in item.source_refs)
+        ):
+            raise RequirementBoundaryError("invalid_canonical_focus_source")
     for visit in value.visit_requirements or ():
         matches = [
             n
@@ -211,8 +220,28 @@ def canonicalize_requirements(
             if not set(handles) <= subject_aliases.keys():
                 raise RequirementBoundaryError("unknown_subject_reference")
             subjects = tuple(sorted({subject_aliases[h] for h in handles}))
-        fields = item.model_dump(exclude={"local_key", "source_refs", "subject_target"})
+        fields = item.model_dump(
+            exclude={"local_key", "source_refs", "subject_target", "trip_focus_source"}
+        )
         fields["subject_refs"] = subjects
+        from backend.app.schemas.interpreted_requirements import soft_coverage_eligible
+
+        if soft_coverage_eligible(item):
+            fields["soft_coverage"] = {"target": 1, "origin": "ordinary_preference"}
+            if item.trip_focus_source:
+                focus = locate_source(text, item.trip_focus_source)
+                if focus.match_mode != "exact":
+                    raise RequirementBoundaryError("trip_focus_source_not_exact")
+                if not any(
+                    focus.start < r.end and r.start < focus.end
+                    for r in _sources(item.source_refs, text)
+                ):
+                    raise RequirementBoundaryError("trip_focus_source_not_linked")
+                fields["soft_coverage"] = {
+                    "target": 2,
+                    "origin": "current_trip_focus",
+                    "focus_source": focus.model_dump(),
+                }
         refs = _sources(item.source_refs, text)
         rows.append((item.local_key, fields, refs))
     rows.sort(

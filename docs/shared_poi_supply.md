@@ -1,8 +1,41 @@
 # Shared POI acquisition and deterministic supply
 
+## Preference and landmark balance - 2026-09-28
+
+The initial V1-V3 supply now consumes resolved landmark metadata independently of
+preference support. Admission/Details ordering gives landmark candidates an opportunity
+through the existing exploration lane and uses nomination rank within candidate ordering.
+The lane also accepts landmarks matching personal interests. Final selection retains
+landmark value after soft preference opportunity saturation. Exclusions, factual and
+semantic eligibility, explicit quantities, required identities and capacity remain authoritative.
+Rank is soft model metadata, not feasibility evidence.
+
+A soft target receives candidate priority for target plus one distinct alternative:
+ordinary target one gives two options; sourced trip focus two gives three. This is an
+opportunity heuristic, not a category cap, final fulfillment, guaranteed reserve or extra
+budget. Before semantic assessment, only discovery associations are available; afterward,
+only supported matches count toward this heuristic. Multiple search intents for the same
+requirement cannot reset it. A multi-requirement intent retains priority only for candidates
+actually supporting a still-active requirement. One supported candidate can contribute to
+several interests. Remaining capacity can still admit more matching candidates, particularly
+independent landmarks. Existing explicit-count priority and exception limits are preserved.
+
+Review alignment for a saturated soft requirement no longer keeps adding priority; conflicts
+remain relevant. Final scheduling alone determines soft coverage, with target one/two rather
+than the candidate target-plus-one heuristic. Generation considers dates, route options,
+available time, variety and possible overlapping experiences without fixed category ratios,
+geographic quotas, hard site merging or filling every hour. V0 receives only this shared
+prompt guidance. No new V3 Repair target is introduced.
+
+All C/G/K, Details, RAG, semantic, route, nomination and Repair bounds remain unchanged.
+No new configuration switch is introduced. Offline fixtures establish policy mechanics;
+live itinerary quality, nomination accuracy, cost and latency remain unmeasured. See
+[landmark discovery](shared_landmark_discovery.md) and the
+[scenario evidence map](../.scratch/preference-landmark-balance/verification.md).
+
 ## Implemented semantic supply extension — 2026-09-26
 
-V1/V2/V3 assess factual-qualified candidate roles and requirement matches through a request-owned bounded LLM service before primary supply. Search origin is not semantic satisfaction. Ordinary exploration opportunities survive admission/Details/supply; themed requests retain their priority. The same Details queue can continue when assessed supply is insufficient, within original counters and deadlines. Semantic unknown role is not established main coverage; unknown operating facts do not disqualify a known role. New calls, cache and judgments are audited; semantic model failures terminate. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26). Existing provider capacities remain unchanged.
+V1/V2/V3 assess factual-qualified candidate roles and requirement matches through a request-owned bounded LLM service before primary supply. Search origin is not semantic satisfaction. Ordinary exploration opportunities survive admission/Details/supply; only explicitly exclusive requests bypass general exploration. The same Details queue can continue when assessed supply is insufficient, within original counters and deadlines. Semantic unknown role is not established main coverage; unknown operating facts do not disqualify a known role. New calls, cache and judgments are audited; semantic model failures terminate. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26). Existing provider capacities remain unchanged.
 
 ## Default quality_first_1 capacities
 

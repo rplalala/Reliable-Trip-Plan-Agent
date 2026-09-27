@@ -1,5 +1,392 @@
 # Capstone Project Context
 
+## Separately authorized Berlin itinerary-only blind review - 2026-09-28
+
+After the original capture gate stopped the batch, the user separately authorized
+judging itinerary quality without that budget/trace evidence gate. One isolated
+simulated traveler ranked anonymous A > C > B > D, mapped after review to
+V0 > V3 > V2 > V1. The reviewer preferred V0's variety and relaxed pacing; it cited
+V3 museum concentration/cross-district travel, V2 sparse final days and V1 repeats.
+This concerns the saved pre-prompt-adjustment Berlin outputs, not the subsequently
+updated V0 transport/Nearby prompt. The original failed capture gate remains unchanged.
+See the [assessment addendum](.scratch/berlin-six-day-smoke/assessment.md).
+This is one subjective judgment, not a formal benchmark or general version ranking.
+
+## V0 transport and Nearby prompt alignment - 2026-09-28
+
+The user requested transport and Nearby content across versions. V0 now explicitly
+prompts same-day inter-visit transport activities with estimated times/modes and
+uncertainty, plus one to three suitable nearby model-knowledge recommendations when
+available. It remains one primary generation with no tools or added repair mechanism.
+Transport uses existing activity_kind=transport, not provider-backed transfers;
+references remain optional, unscheduled, capped at three, and empty when unsupported.
+V1/V2 already attach Nearby through their shared post-itinerary service; both produced
+three references in the Berlin run. No V1/V2/V3 behavior change was needed.
+The authorized single Berlin V0 revalidation passed: six days, 17 main visits,
+11 explicitly estimated transport activities and one contextual optional reference.
+All inter-venue legs were represented without overlaps and roles counted separately.
+Standards/Spec: zero findings; combined relevant regression: 176 passed; Ruff passed.
+See the [acceptance record](.scratch/v0-transport-nearby/assessment.md). No real-world
+route/access/cost verification or version freeze is implied.
+
+## Trace capture limit adjustment - 2026-09-28
+
+The user accepted V1 repeat visits as an observation within that version's limited
+scope, not a current repair task, and authorized increasing the runtime trace payload
+threshold to 10 MB (10,000,000 bytes). The configured threshold now applies to trace
+and V3 audit capture; planning behavior and provider budgets are unchanged. Redaction,
+raw-payload exclusion and oversized-payload truncation remain in place. The completed
+Berlin batch retains its frozen 1 MB configuration and failed evidence gate; no trace
+reconstruction is possible from the cap adjustment. Observability/config/V3 wiring
+checks passed (92 tests); synthetic near-limit payload retention, truncation and
+redaction checks passed. This cap adjustment itself adds no live or blind-review run.
+
+## Berlin six-day development smoke outcome - 2026-09-28
+
+All four authorized one-shot V0-V3 applications completed six nonempty days. V1 had
+four unauthorized cross-day repeats and one sparse day; V2 had two sparse days.
+V3 accepted one Repair round, filling three sparse days and leaving zero improvement
+targets, but 22 UNKNOWN validation findings remain. All 61 activity costs are unknown.
+The V3 full run trace exceeded the 1 MB capture cap (6,041,655 bytes before truncation),
+so the frozen batch evidence gate failed despite a complete budget summary. At this
+initial checkpoint no blind review, rerun, fix, commit, or freeze occurred; the later
+separately authorized review and follow-ups are recorded above. See the
+[assessment and proposed offline next scope](.scratch/berlin-six-day-smoke/assessment.md).
+
+## Berlin six-day development smoke preparation - 2026-09-28
+
+The user separately authorized one Berlin V0-V3 attempt per version and the broad
+preference `We want to have an enjoyable trip in this city.` The frozen common scenario
+uses October 3-8, two travelers and EUR 3000. Iteration 2 prepared the
+[plan and conditional blind-review rules](.scratch/berlin-six-day-smoke/plan.md) and
+[dispatch](.scratch/berlin-six-day-smoke/dispatch.md); `smoke tests` executes sequentially.
+Preparation passed six offline launcher checks and fresh-process hash verification;
+no Berlin live attempt has started at this checkpoint. Production code and limits are
+unchanged. Only four complete six-day results permit one isolated anonymous simulated-user
+review. This is development validation, not a formal benchmark or version freeze.
+
+## Preference and landmark feature closeout - 2026-09-28
+
+The user accepted closing this iteration and authorized logical local commits without
+another approval. Tickets 01-03, focus-rule convergence and bounded Melbourne V3
+revalidation are complete. Current behavior is ordinary target 1, sourced focus target 2,
+explicit quantities/exclusions/exclusive restrictions preserved, no inferred themed volume,
+and independent landmark opportunities after preference saturation. V0 remains prompt-only;
+V0-V3 execution paths, resource ceilings and V3 Repair permissions are preserved.
+The earlier Melbourne failure remains historical; the later single-case acceptance passed
+with museum 2/2, architecture 2/1, gardens 1/1 and six scheduled nominated landmarks.
+UNKNOWNs, broader model reliability and explicit maximum enforcement remain bounded limits.
+This is feature closeout, not a version freeze or formal evaluation. No further live runs
+are planned. See [closeout](.scratch/preference-landmark-balance/closeout.md).
+Final combined regression: **1808 passed / 9 skipped (77.43s)**; Ruff/diff checks passed.
+An earlier run stalled in an existing cancellation-test area and was interrupted; the
+16-test file and subsequent full rerun passed without retrieval changes. Local commits
+`4084a2f` (implementation/tests) and `274ab27` (bounded pilot tools/tests) save this capability;
+the related documentation commit completes closeout. Earlier dated status remains historical.
+
+## Melbourne focus live revalidation - 2026-09-28
+
+One separately authorized unchanged-input V3 attempt passed the bounded focus acceptance
+in99.781s, exit0, complete captures and recorded budgets within limits. Museum focus has
+exact sourced soft target2 and final coverage2; architecture2/1 and gardens1/1 are covered.
+Eight resolved/qualified nominees reached supply, six appear among eight final main visits
+(3/3/2 by day). No authorized Repair targets; initial equals final,11 UNKNOWNs remain.
+This is limited live support for the correction, not universal quality, full feasibility,
+formal comparison or freeze. No retries or commit. See [assessment](.scratch/preference-landmark-balance/pilot/focus-revalidation-assessment.md).
+
+## Focus rule convergence - 2026-09-28
+
+The user approved removing inferred themed travel behavior after the Melbourne failure.
+Current prompt18/wire12 and domain scope expose ordinary/exclusive only. Ordinary category
+interests target one, sourced current-trip focus two; explicit quantities/exclusions and
+explicit category-only restrictions retain existing meaning. Whole-trip category labels
+cannot bypass soft coverage, and only exclusive scope bypasses general exploration.
+The targets are not maxima: independent landmark value survives saturation. V0 remains
+prompt-only; V1-V3 share the grounded policies. No budgets or Repair permissions changed.
+See [implementation record](.scratch/preference-landmark-balance/focus-convergence.md).
+The correction is implemented; no new live run or commit. Historic themed payloads remain
+evidence and are rejected by the narrowed current schema. Prior live outcomes below are
+unchanged; real-model reliability after the correction is not yet established.
+Final backend regression: **1807 passed / 9 skipped**; Ruff/diff and Standards/Spec reviews
+passed. Next step is a separately approved bounded Melbourne V3 live verification.
+
+## Preference and landmark V3 live checkpoint - 2026-09-28
+
+The user authorized preparation through three sequential one-shot V3 live cases.
+All completed with complete captures: Sydney 89.890s, Melbourne 118.296s, Brisbane
+67.079s. Sydney retained ordinary target 1 and scheduled seven nominated landmarks
+among eight visits. Brisbane kept three main visits and reported three interests as
+unassessed. Melbourne failed the required focus interpretation: the explicit museum
+focus became `goal/themed` with no soft target 2, and museum-related options dominated.
+Therefore full feature acceptance has **not passed** despite successful execution.
+All three skipped Repair with no authorized targets; UNKNOWN findings remain.
+No repair, rerun, commit or freeze was performed. Recommended next scope is an offline
+regression and correction of focus classification, followed by separately bounded live
+verification. See [pilot assessment](.scratch/preference-landmark-balance/pilot/assessment.md)
+and the [development record](docs/development_record.md) for evidence and limitations.
+
+## Integrated preference and landmark balance - 2026-09-28
+
+Tickets 01-03 are implemented. V1-V3 balance soft-preference candidate opportunities
+with resolved landmark value through admission and final supply. Target plus one keeps
+replacement opportunities; only final distinct scheduled matches count as coverage.
+Explicit restrictions and facts retain authority. V0 remains prompt-only and V3 Repair
+permissions are unchanged. No resource ceilings were increased or live tests run.
+
+Task 02 was committed as `9d25633` (implementation/tests), `e795aab` (budget reporting),
+and `cc4d5a0` (documentation). Task 03 changes remain uncommitted. Current design:
+[shared supply](docs/shared_poi_supply.md#preference-and-landmark-balance---2026-09-28).
+Final validation: **1793 backend tests passed / 9 skipped**; scoped Ruff and both reviews
+passed. Details are in the [development record](docs/development_record.md).
+No freeze or cross-version quality claim. Any live pilot needs a separate approved plan.
+
+## Landmark nomination implementation - 2026-09-27
+
+Ticket 02 is implemented: V1-V3 initial discovery adds one destination-only model
+nomination, exact provider identity resolution and at most four supplementary sends
+within the existing twelve candidate-search sends. User-named discovery precedes
+others; general discovery retains an opportunity when budget remains. Metadata reaches
+qualified supply/generation; exclusions, exclusive scope and factual checks still apply.
+V0 is unchanged and V3 Repair does not repeat nomination. Ticket 03 remains pending
+for combined soft-target saturation and landmark-aware candidate balance.
+
+The approved ticket 01 commits are `a04af97`, `4e0115e` and `64dbd4b`. Ticket 02 is
+uncommitted. Final backend regression: **1784 passed / 9 skipped**; scoped Ruff and
+Standards/Spec review passed. Validation details and limitations are in the
+[development record](docs/development_record.md#landmark-nomination-ticket-02---2026-09-27);
+[current discovery behavior](docs/shared_landmark_discovery.md) owns the design.
+No live run, push, formal comparison or version freeze occurred.
+
+## Soft preference coverage implementation — 2026-09-27
+
+The user invoked implement for ticket 01 of the accepted preference/landmark plan.
+Soft target one, or two for a sourced explicit trip focus, is now separate from user
+quantities. Grounded final coverage and Product feedback distinguish supported
+scheduled matches, soft gaps and unassessed relations. V0 receives prompt guidance
+only, with no new tools/stages or canonical coverage claim. Existing explicit
+requirements, primary exceptions, V3 Repair authority and resource ceilings remain.
+
+Final offline validation: 1750 backend tests passed / 9 skipped; 83 frontend tests passed.
+TypeScript, scoped Ruff and Standards/Spec review passed. No live run, commit or freeze.
+
+At the ticket 01 checkpoint, tickets 02 and 03 remained pending. The later ticket 02
+checkpoint above supersedes that implementation status. This implementation does not establish improved live itinerary quality.
+See [current requirements](docs/shared_requirements.md#soft-preference-coverage--2026-09-27)
+and the [ticket](.scratch/preference-landmark-balance/issues/01-soft-preference-coverage.md).
+
+## Current acceptance and authorized follow-up — 2026-09-27
+
+Semantic wire integration and offline budget-summary implementation are accepted within
+the bounded development evidence in [the closeout record](docs/development_record.md#semantic-wire-and-budget-acceptance-closeout-2026-09-27).
+Five local commits end at `8f5e9b3`; final regression passed 1727 tests / 9 skipped.
+No push or version freeze occurred. Correction efficacy, verified costs and complete
+feasibility are not established by the three successful live cases.
+The current authorization covers documentation synchronization and offline diagnosis of
+food-preference coverage and V1 sparse days using saved evidence. No production changes,
+live calls, budget changes or commits are authorized by this follow-up.
+Offline diagnosis is now complete: food support is excluded from named primary supply by
+the current non_main rule; four V1 sparse days coexist with unused selected candidates.
+Neither observation establishes a new hard Spec violation. See the
+[diagnosis](.scratch/food-sparse-diagnosis/diagnosis.md) for evidence, missing feasibility
+checks and unimplemented proposals. The user subsequently ended this acceptance round and
+explicitly deferred the food/sparse-day follow-up; do not automatically resume it.
+Future iteration ownership transfers to thread `01a0e29d-405e-7d82-b894-d95eb7f67632`;
+see the [handoff](.scratch/iteration2-handoff/handoff.md).
+
+## Iteration commit checkpoint — 2026-09-27
+
+The user authorized direct logical commits after workspace review, without another grouping
+approval. The complete final working tree passed 1727 backend tests with 9 skipped
+(73.39 seconds); scoped Ruff and diff checks passed. Commit groups cover collaboration
+rules, acceptance tooling, semantic correction/short references, compact budget tracing and
+development documentation/audit records. Ignored logs, raw captures, credentials and thesis
+archives are excluded. No new live run, push, merge or version freeze is authorized by this
+checkpoint. Historical validation counts below describe their respective earlier stages.
+
+## Independent budget summary — 2026-09-27
+
+File tracing now writes an independent budget.json on finalization, before large run.json
+serialization. It retains the final primary tool pool plus separate semantic, RAG, Repair,
+Nearby and primary-generation numeric observations and configured limits. Existing reported
+usage is deduplicated by call/round; cumulative counters replace snapshots rather than being
+added. Unavailable requirements/main-generation billed usage remains explicitly missing.
+The summary does not contain itinerary, user text, model labels or raw provider content.
+
+The artifact has a separate 64 KiB ceiling and at most 32 call records per tracked stage;
+capacity loss is marked incomplete. Writes use a pending file and atomic rename. Summary
+failure does not prevent ordinary final trace writing or alter planning. Tracing must be
+enabled and finalized; this change does not add a new runner cancellation/finalization path.
+All API/Repair budgets and V0-V3 planning behavior remain unchanged.
+
+TDD reproduced missing summary and write-failure coupling, then verified both fixes. Full
+backend regression passed 1726 tests with 9 skipped. Spec review identified missing RAG
+cancellation/resolution counters; a failing regression reproduced it, and the small fix
+passed 63 focused trace/RAG/V3 tests. No live calls or commits occurred.
+Both independent review axes have zero remaining findings after re-review. See
+[the summary spec](.scratch/semantic-reference-correction/budget-summary-spec.md).
+
+## Current application-owned semantic references — 2026-09-27
+
+Subsequent authorized prompt-5 live checkpoint: Sydney V1, Sydney V3 and Melbourne V1
+each ran once and returned their complete requested dates. All four semantic batches
+passed on their first call. Independent capture checks verified short-reference coverage,
+same-candidate source ownership, mapping hashes and exact canonical restoration. This
+accepts live wire integration for these cases, not correction efficacy or general semantic
+accuracy. Sydney V3 also accepted one coverage Repair; remaining UNKNOWN findings and all
+38 activity costs being null prevent a fully verified travel/budget claim. V1 sparse-day
+and food-preference observations remain separate follow-up items, not wire failures.
+
+The subsequent offline V3 budget audit reconstructed the recorded call/count budgets from
+212 continuous events, the final result and acquisition ledgers: 45 range checks passed,
+with no recorded overrun. Primary Details were 32/60, baseline routes 4/7 plus 256/400
+elements, alternative routes 16/32; RAG Details 26/30 and fallback 4/4; Repair routes 12/24
+in their separate pool; semantics 2/6 calls and 27.412/120 seconds; Nearby 3/3. Primary
+pre-generation route stops reflected the 16-call reserve, not 96 extra sends or an overrun.
+
+The original run.json remains truncated (4,908,309 original bytes versus a 1,000,000-byte
+limit). Full requirement/main-generation billed usage and per-call latency remain missing;
+recorded-counter compliance is not a provider invoice audit. The next recommended change
+was an independent compact final budget/usage artifact, rather than enlarging the aggregate
+payload alone. The user subsequently approved its implementation, recorded above. See the
+[offline audit](.scratch/semantic-reference-correction/v3-budget-audit.md).
+Evidence: `logs/semantic_short_reference_revalidation_20260927/report.md`. No commits,
+automatic retries, production changes or version freeze occurred during these live cases.
+
+The approved short-reference follow-up uses prompt 5 and wire projection version 1.
+The application assigns batch-local candidate_ref pNN and source_ref/evidence refs eNN;
+the model no longer has to repeat canonical IDs or full source references in its output.
+Responses may be reordered: exact mapping, complete candidate coverage and same-candidate
+evidence ownership are validated before canonical restoration and full domain revalidation.
+Only accepted canonical assessments enter downstream supply or cache. Exception permissions
+and semantic support requirements remain strict; source expansion does not establish truth.
+
+Mappings stay fixed during correction and isolated between batches. Opt-in captures retain
+wire inputs/outputs, mapping/hash/version and canonical accepted results. Canonical mappings
+are not sent in the model prompt. Cache keys include canonical inputs and projection/prompt
+versions; the offline replay tool shares that key implementation. Existing canonical
+downstream schemas, V0, quantity Repair policy and all budgets are unchanged. This phase
+authorizes offline implementation/testing/review only, with no live execution or commits.
+See [the short-reference spec](.scratch/semantic-reference-correction/short-reference-spec.md)
+for validation history. At this implementation checkpoint live integration was unverified;
+the subsequent limited live result is recorded above, without a reliability claim.
+
+Final offline validation: 1721 backend tests passed, 9 skipped. The initial full run exposed
+old SDK mock fields and an offline replay cache-key dependency; both were synchronized,
+their 41 affected tests passed, and the full suite was rerun successfully. Standards/Spec
+review, including these compatibility fixes, found no actionable issues. Scoped Ruff and
+formatting checks passed. No separate static typechecker is configured for the backend.
+
+The preceding prompt-4 live revalidation completed three one-attempt cases: Sydney V1
+corrected an identity error but introduced a match-reference typo on its second call;
+Sydney V3 and Melbourne V1 generated complete date ranges after first-call semantic passes.
+There was no successful live correction. Complete captures and the report are under
+`logs/semantic_contract_revalidation_20260927/`. This evidence motivated the short wire
+contract; it does not validate the new prompt-5 implementation.
+
+## Current semantic contract correction — 2026-09-27
+
+The approved minimum follow-up is implemented and offline validated. Prompt 4 explicitly
+requires favor plus explicit_primary_exception=true, or an exactly bound REQUIRED named
+place, as well as a supported match and exception_only role for primary exceptions.
+Identity-set errors and exception authorization/ownership errors now share the existing
+one-per-batch correction with citation errors. There is no additional allowance per error
+class, silent ID mapping, claim removal or partial invalid-batch acceptance. Full validation
+still precedes cache/ledger admission. Feedback is bounded and captures link both calls.
+
+All defaults remain unchanged: 6 calls/request, 45 seconds/call, 120 seconds total,
+32000 input and 8192 output tokens. Shared V1-V3 behavior changes; V0, quantity Repair and
+unrelated schema/provider-error behavior are unchanged. No live or commit occurred in this
+implementation phase; real-model correction efficacy remains unverified.
+
+TDD first reproduced terminal identity and unauthorized-food failures, then passed after
+the bounded extension. Full backend regression passed 1712 tests with 9 skipped. A subsequent
+test-only expansion covered absent/unresolved named matches; the final focused suite passed
+72 tests, with no production changes after the full run. Independent Standards and Spec
+reviews found no actionable issues. The next step is a separately approved development live
+revalidation executed by the smoke tests conversation; this conversation owns its plan and
+result assessment. See [the approved spec](.scratch/semantic-reference-correction/spec.md).
+
+## Network revalidation and offline diagnosis — 2026-09-27
+
+A subsequent explicitly network-enabled three-case run passed requirement interpretation but
+all three stopped before generation: Sydney V1 claimed unauthorized primary exceptions;
+Sydney V3 and Melbourne V1 returned one changed canonical ID each. No citation correction
+was triggered and no budget ceiling was reached. The preceding restricted-network attempts
+below are historical; the correction still lacks live efficacy evidence.
+
+Offline public-service replay reproduced all three failures and minimized each to one row.
+Sydney V1's ten restaurant exception claims all referenced a continuing food preference with
+explicit authorization false; no named bindings existed. The other cases changed an ID's last
+character and repeated it in citations. Current input serialization roundtrips unchanged.
+Strict rejection is correct. A proposed minimal follow-up would clarify authorization and
+extend the existing one-per-batch correction to these contract errors, without weakening
+validation or adding a new allowance. It was not implemented or approved at that diagnosis
+checkpoint; the subsequent approved implementation is recorded above.
+See [the diagnostic report](.scratch/semantic-reference-correction/non-reference-diagnosis.md)
+and `logs/semantic_reference_network_revalidation_20260927/report.md` (local ignored evidence).
+No production code or live calls were made during diagnosis; no commit or freeze occurred.
+
+## Semantic correction live revalidation blocked — 2026-09-27
+
+The three separately approved one-attempt runs (Sydney V1, Sydney V3, Melbourne V1)
+all stopped in requirement-provider transport, before travel tools, RAG, generation or
+POI semantics. Recorded semantic calls and travel-tool counters were zero. No itinerary
+was returned. The provider diagnostics contain no HTTP status or usage, so the cause,
+provider receipt and cost remain unknown. Execution-history review confirmed all three
+launches used the default restricted sandbox, with no escalated network execution. This
+is a preparation gap and a possible cause, not proof of the transport root cause. This neither validates nor refutes semantic correction. No retry is authorized.
+See `logs/semantic_reference_revalidation_20260927/report.md` (ignored local evidence).
+The following offline checkpoint remains valid; its no-live statement describes the
+implementation checkpoint before these separately authorized attempts.
+
+## Current semantic reference correction — 2026-09-27
+
+Approved shared V1-V3 follow-up: invalid or missing evidence citations now receive at most
+one corrective model assessment of the same batch with bounded diagnostic feedback.
+Prompt 3 retains strict identity, citation and exception validation before caching. Both
+attempts consume the existing 6-call/120-second semantic allowance and 45-second per-call
+limit; correction input includes feedback in token accounting. Failed or unavailable
+correction remains terminal. Ordinary candidate rejection, non-reference errors, V0 and
+quantity Repair behavior are unchanged. Opt-in captures link both calls and pre-send stops.
+
+Offline validation: full backend suite passed 1689 tests with 9 skipped. Two subsequent
+SDK/deadline test additions and isolated boundary assertions passed the final targeted
+suite (53 tests); production implementation was unchanged after the full run. Standards
+and Spec review have no remaining findings. This is uncommitted work based on
+`339e7e4a4a9eac133f2bdff69217b8b35c6990b4`; no live calls or version freeze occurred.
+The Sydney/Melbourne development smoke motivated this change but does not validate it live.
+See [the correction spec](.scratch/semantic-reference-correction/spec.md) and
+[semantic design history](docs/shared_poi_semantics_plan.md).
+
+## Current planning input UX — 2026-09-26
+
+The shared Product/Dev form now offers GeoDB destination suggestions, a currency selector,
+locale-independent dates and compact weather presentation. Selecting a city submits its
+city/region/country label as the destination string; manual input remains possible. The
+public free GeoDB endpoint is called through FastAPI over HTTPS. An approved two-request
+check observed HTTP 308 to the same-host HTTPS endpoint, then HTTPS 200 with five places;
+the captured payload normalized offline. This is point-in-time provider evidence, not an
+availability guarantee. No RapidAPI account or key is used.
+
+Preference polishing now uses one bounded model call per admitted operation. A schema-valid
+rewrite is displayed for the user's Apply/Dismiss decision and can be undone; the original
+remains available. The prompt requests meaning preservation, while the user reviews the
+candidate and normal planning still executes its Gate. The earlier independent model review
+and local numeric/date/currency suppression were removed by explicit user instruction.
+Each operation owns its model HTTP clients, so a completed or failed request cannot close a
+cached connection used by the next request. The model status schema accepts only supported
+outcomes. Configuration, API errors, admission limits and budgets are documented in the
+[input UX specification](.scratch/planning-input-ux/spec.md) and [config reference](config/README.md).
+
+The final single-call implementation passed 1678 backend tests with 9 skipped, 82 frontend
+tests, targeted Ruff and Standards/Spec review. Earlier bounded live Polish runs with
+mountain-climbing and reading-books inputs passed when the two-call review still existed;
+one input also included animals. These runs do not validate the final single-call behavior
+live or establish improved Gate acceptance. The local backend was restarted and
+direct/proxied health endpoints returned 200. The implementation and prior closeout documents
+were saved in local commits `79ca61a`, `c8b9aa8` and `648d951` on `feature/v3`; no push or
+new version freeze occurred.
+
 ## Current iteration closeout — 2026-09-26
 
 Status: CLOSED by explicit user confirmation. Implementation, bounded development acceptance,

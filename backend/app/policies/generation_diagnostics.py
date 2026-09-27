@@ -139,7 +139,9 @@ def observe_generation(
         if r.minimum_coverage == "missing"
     )
     return GenerationDiagnostics(
-        goal_progress=goal_progress(itinerary, contract, semantic_assessments) if contract else (),
+        goal_progress=goal_progress(itinerary, contract, semantic_assessments)
+        if contract and canonical
+        else (),
         policy_completion="incomplete"
         if issues or any(r.minimum_coverage == "missing" for r in rows)
         else "complete"

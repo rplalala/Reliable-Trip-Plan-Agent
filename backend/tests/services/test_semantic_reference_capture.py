@@ -29,7 +29,7 @@ def test_development_capture_redacts_and_reports_cap(tmp_path):
 def test_match_failure_has_bounded_details_and_prevalidation_capture():
     def mutate(rows):
         rows[0]["matches"] = [
-            dict(requirement_id="named_1", relation="supported", evidence_refs=["places:b"])
+            dict(requirement_id="named_1", relation="supported", evidence_refs=["e02"])
         ]
 
     model = Model(mutate)
@@ -38,20 +38,20 @@ def test_match_failure_has_bounded_details_and_prevalidation_capture():
     svc = service(model)
     with pytest.raises(SemanticAssessmentError) as error:
         asyncio.run(svc.assess([place("a"), place("b")], contract("REQUIRED")))
-    assert error.value.details["place_id"] == "a"
-    assert error.value.details["offending_refs"] == ["places:b"]
-    assert [stage for stage, _ in captured] == ["input", "output", "outcome"]
-    assert len({p["call_id"] for _, p in captured}) == 1
-    assert captured[1][1]["output"]["assessments"][0]["matches"][0]["evidence_refs"] == ["places:b"]
+    assert error.value.details["place_id"] == "p01"
+    assert error.value.details["offending_refs"] == ["e02"]
+    assert [stage for stage, _ in captured] == ["input", "output", "outcome"] * 2
+    assert len({p["call_id"] for _, p in captured}) == 2
+    assert captured[1][1]["output"]["assessments"][0]["matches"][0]["evidence_refs"] == ["e02"]
     assert captured[-1][1]["error_details"] == error.value.details
-    assert svc.calls == 1 and not svc.ledger and svc.failed
+    assert svc.calls == 2 and not svc.ledger and svc.failed
 
 
 @pytest.mark.parametrize(
     "refs,relation,message",
     [
-        (["places:a"], "supported", None),
-        (["places:b"], "supported", "Invalid match evidence references"),
+        (["e01"], "supported", None),
+        (["e02"], "supported", "Invalid match evidence references"),
         (["named_1"], "supported", "Invalid match evidence references"),
         (["places:a.primary_type"], "supported", "Invalid match evidence references"),
         ([], "supported", "Supported match requires input evidence"),
@@ -70,12 +70,12 @@ def test_sdk_reference_boundary_and_capture(tmp_path, refs, relation, message):
     for pid in ("a", "b"):
         rows.append(
             dict(
-                place_id=pid,
+                candidate_ref="p01" if pid == "a" else "p02",
                 visit_object=pid,
                 role="attraction",
                 categories=["museum"],
                 reason="Supplied facts",
-                evidence_refs=[f"places:{pid}"],
+                evidence_refs=["e01" if pid == "a" else "e02"],
                 matches=[dict(requirement_id="named_1", relation=relation, evidence_refs=refs)]
                 if pid == "a"
                 else [],
@@ -118,10 +118,10 @@ def test_sdk_reference_boundary_and_capture(tmp_path, refs, relation, message):
         "semantic_output",
         "semantic_outcome",
     }
-    assert len({r["call_id"] for r in records}) == 1
-    assert len({r["input_sha256"] for r in records}) == 1
-    assert all(r["prompt_version"] == "poi_semantics_prompt_2" for r in records)
-    assert len(sends) == 1
+    assert len({r["call_id"] for r in records}) == (2 if message else 1)
+    assert len({r["input_sha256"] for r in records}) == (2 if message else 1)
+    assert all(r["prompt_version"] == "poi_semantics_prompt_5" for r in records)
+    assert len(sends) == (2 if message else 1)
     assert "copy only the exact source_ref" in json.dumps(sends[0])
 
 
@@ -144,7 +144,7 @@ def test_capture_write_failure_does_not_change_rejection(tmp_path, monkeypatch, 
     svc = service(wrapper)
     with pytest.raises(SemanticAssessmentError, match="Invalid match evidence references"):
         asyncio.run(svc.assess([place()], contract("REQUIRED")))
-    assert errors and svc.calls == 1 and not svc.ledger
+    assert errors and svc.calls == 2 and not svc.ledger
 
 
 def test_reference_details_are_bounded():
@@ -233,3 +233,62 @@ def test_partial_write_failures_cannot_bypass_case_cap(tmp_path, monkeypatch):
         wrapper.capture_poi_semantics("output", {"call_id": "fixture", "output": "x" * 900000})
     assert sum(p.stat().st_size for p in tmp_path.glob("*.json")) <= 4 * 1024 * 1024
     assert "semantic_capture_limit" in errors
+
+
+@pytest.mark.parametrize("failure", ["citation", "identity", "exception"])
+def test_sdk_corrected_response_is_accepted_with_linked_capture(tmp_path, failure):
+    import json
+
+    import httpx2 as httpx
+
+    from backend.app.llm.azure_foundry.client import AzureFoundryStructuredLLMClient
+    from backend.tests.llm.azure_foundry.test_requirement_acceptance_harness import response
+
+    sends = []
+
+    def handler(request):
+        sends.append(json.loads(request.content))
+        row = dict(
+            candidate_ref="p01",
+            visit_object="Museum",
+            role="attraction",
+            categories=["museum"],
+            reason="Supplied evidence",
+            evidence_refs=["wrong" if len(sends) == 1 else "e01"],
+            matches=[],
+            exception_requirement_ids=[],
+        )
+        if len(sends) == 1 and failure != "citation":
+            row["evidence_refs"] = ["e01"]
+            if failure == "identity":
+                row["candidate_ref"] = "invented"
+            else:
+                row.update(role="exception_only", exception_requirement_ids=["invented"])
+        return httpx.Response(200, json=response(json.dumps({"assessments": [row]}), 1))
+
+    errors = []
+
+    async def run():
+        client = AzureFoundryStructuredLLMClient(
+            endpoint="https://fixture.invalid/openai/v1",
+            deployment="fixture-model",
+            api_key="fixture-secret",
+            http_async_client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
+            http_client=httpx.Client(transport=httpx.MockTransport(handler)),
+        )
+        try:
+            svc = service(CapturedSemantics(client, tmp_path, {}, errors))
+            assert (await svc.prepare([place()], contract()))["a"].main_eligible
+            assert (await svc.prepare([place()], contract()))["a"].main_eligible
+            assert svc.calls == 2
+        finally:
+            await client.aclose()
+
+    asyncio.run(run())
+    assert len(sends) == 2 and errors == []
+    records = [json.loads(p.read_text()) for p in tmp_path.glob("*.json")]
+    outcomes = [r for r in records if r["validation_stage"] == "semantic_outcome"]
+    failed = next(r for r in outcomes if r["status"] == "failed")
+    accepted = next(r for r in outcomes if r["status"] == "accepted")
+    assert accepted["correction_of"] == failed["call_id"]
+    assert "contract_correction" in json.dumps(sends[1])

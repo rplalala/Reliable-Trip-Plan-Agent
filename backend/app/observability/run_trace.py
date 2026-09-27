@@ -11,6 +11,7 @@ from typing import Protocol, runtime_checkable
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from uuid import UUID
 
+from backend.app.observability.budget_summary import BudgetSummary
 from backend.app.policies.trip_dates import TripDateWindow
 from backend.app.schemas.request import PlanningRequest, TravelRequirements
 
@@ -255,6 +256,7 @@ class FileRunTracer:
         self._payload_sequence = 0
         self._failed = False
         self._requirements: TravelRequirements | None = None
+        self._budget_summary = BudgetSummary(context)
         try:
             self.run_directory.mkdir(parents=True, exist_ok=False)
             for child in ("llm", "tools", "evidence"):
@@ -318,6 +320,10 @@ class FileRunTracer:
         (self.run_directory / "run.json").write_text(self._serialize(value), encoding="utf-8")
 
     def event(self, event_type: str, payload: object | None = None) -> None:
+        try:
+            self._budget_summary.observe(event_type, payload)
+        except Exception:
+            self._budget_summary.incomplete = True
         if self._failed:
             return
         try:
@@ -382,6 +388,7 @@ class FileRunTracer:
         outcome: object | None,
         error: object | None = None,
     ) -> None:
+        budget_status = self._write_budget_summary(status, tool_usage)
         if self._failed:
             return
         try:
@@ -403,9 +410,34 @@ class FileRunTracer:
                 finished_at=finished_at,
                 tool_usage=tool_usage,
                 final_outcome=outcome,
+                budget_summary_status=budget_status,
             )
         except Exception as exc:
             self._disable(exc)
+
+    def _write_budget_summary(self, status, tool_usage):
+        try:
+            value = self._budget_summary.finish(status, tool_usage)
+            serialized = json.dumps(value, ensure_ascii=True, separators=(",", ":"))
+            if len(serialized.encode("utf-8")) > 65536:
+                serialized = json.dumps(
+                    {
+                        "schema_version": 1,
+                        "run_id": str(self.run_id),
+                        "status": value["status"],
+                        "collection_status": "incomplete",
+                        "reason": "summary_size_limit",
+                        "primary_tools": {},
+                        "stages": {},
+                    }
+                )
+            pending = self.run_directory / "budget.json.tmp"
+            pending.write_text(serialized, encoding="utf-8")
+            pending.replace(self.run_directory / "budget.json")
+            return "written"
+        except Exception:
+            LOGGER.warning("Budget summary unavailable after a local collection or write failure")
+            return "unavailable"
 
 
 def create_run_tracer(

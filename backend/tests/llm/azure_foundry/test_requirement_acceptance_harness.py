@@ -157,7 +157,7 @@ class ModelTransport(httpx.MockTransport):
             value = {
                 "assessments": [
                     dict(
-                        place_id=p["place_id"],
+                        candidate_ref=p["candidate_ref"],
                         visit_object=p["name"],
                         role="attraction",
                         categories=["fixture"],

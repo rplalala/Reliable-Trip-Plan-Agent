@@ -1,8 +1,63 @@
 # Shared structured input and semantic requirements
 
+## Focus rule convergence - 2026-09-28
+
+Current interpretation uses `preference_prompt_18` / `preference_draft_12`. Model and
+domain experience-goal scopes accept only `ordinary` and explicitly sourced `exclusive`.
+`themed` is removed; focus is represented solely by exact `trip_focus_source`, producing
+the application target two. Without focus provenance, a count-free positive category
+interest has target one. Whole-trip scope on a category interest no longer bypasses soft
+coverage; enjoyment/pace/relaxation without a category goal remain uncounted. No keyword
+classifier, extra interpretation send, inferred ratio or inferred large count is added.
+
+Explicit quantities, exclusions, HARD handling and explicit category-only restrictions
+retain their existing boundaries. The targets are not maxima; independent landmark value
+survives saturation. V0 uses the shared prompt within its existing LLM-only flow; V1-V3
+also apply shared candidate and final-coverage policies. Historic payloads containing
+`themed` remain evidence artifacts but are not valid inputs to the narrowed current
+schema; they are not silently migrated into new focus claims. The canonical envelope
+remains `interpreted_requirements_4`; prompt/wire identifiers record this tightened scope.
+One unchanged-input Melbourne V3 revalidation subsequently exercised sourced target2
+successfully; broader real-model reliability remains unestablished. See the
+[bounded assessment](../.scratch/preference-landmark-balance/pilot/focus-revalidation-assessment.md).
+
+## Soft preference coverage — 2026-09-27
+
+Ticket 01 adds `preference_prompt_17` / `preference_draft_11` to the existing
+interpreter call. The strict wire requires nullable `trip_focus_source` for every
+semantic requirement. The domain keeps a null default for saved drafts. Canonical
+`interpreted_requirements_4` gains optional `soft_coverage`, separate from explicit
+`ExperienceGoal.count`; saved contracts without it remain readable.
+
+Ordinary positive category interests receive a product target of one distinct
+scheduled POI. An explicit current-trip focus receives two, with exact original
+quote, occurrence and offsets linked to that requirement. Emotional intensity,
+ambiguous focus or exclusive scope alone does not establish focus. Classification
+is model interpretation under the prompt; structural grounding checks do not prove
+that interpretation correct. No keyword classifier or second call is added.
+
+Exact/minimum quantities, exclusions, maxima, exclusive scopes, hard requirements
+and bounded primary exceptions retain their existing meaning. Whole-trip enjoyment,
+pace and relaxation receive no new POI quota. Focus quotations consume the existing
+12,000-character source budget. All operational budgets remain unchanged.
+
+V1-V3 final diagnostics count distinct supported scheduled identities, allowing one
+POI to cover multiple interests. Candidate-only matches and repeated visits do not
+inflate coverage. Missing or unresolved matches leave an unmet target unassessed;
+explicitly assessed misses leave a soft gap. Coverage is model-semantic judgment,
+not operating evidence. Soft gaps neither create CONFIRMED violations nor new Repair
+targets. Existing one-off Repair protection stays capped at its original one visit;
+new continuing/focus targets do not expand protection.
+
+Shared generation guidance saturates preference priority at one/two without imposing
+a category maximum, and encourages classic sights, alternatives and feasible variety.
+Actual candidate balancing is ticket 03. V0 only receives existing-flow prompt guidance;
+it acquires no tools or new stage and exposes no canonical preference coverage.
+Landmark nomination/discovery is ticket 02 and remains pending.
+
 ## Implemented sourced semantic extension — 2026-09-26
 
-The existing interpreter now uses preference_prompt_16 / preference_draft_10 and emits interpreted_requirements_4. Sourced ExperienceGoal distinguishes one-off/continuing/exact/minimum intent, category/named-place scope, distinct dates, themes and explicit primary exceptions; named VisitRequirement retains the authoritative identity/count/date protection. Older version-3 inputs remain readable and multiplicity remains unassessed. No second interpretation call or keyword classifier was added. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26) for migration, tests and evidence limitations.
+At this historical checkpoint, the interpreter used preference_prompt_16 / preference_draft_10 and emits interpreted_requirements_4. Sourced ExperienceGoal distinguishes one-off/continuing/exact/minimum intent, category/named-place scope, distinct dates, themes and explicit primary exceptions; named VisitRequirement retains the authoritative identity/count/date protection. Older version-3 inputs remain readable and multiplicity remains unassessed. No second interpretation call or keyword classifier was added. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26) for migration, tests and evidence limitations.
 
 ## Soft quality preference boundary (2026-09-26)
 

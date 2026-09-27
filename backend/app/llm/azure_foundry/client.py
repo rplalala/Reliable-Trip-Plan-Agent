@@ -127,7 +127,7 @@ class AzureFoundryStructuredLLMClient:
             "deployment": deployment,
             "api": "responses/v1",
             "max_retries": 0,
-            "contract": "preference_draft_10",
+            "contract": "preference_draft_12",
         }
         transport_options = {}
         if http_client is not None:
@@ -181,8 +181,8 @@ class AzureFoundryStructuredLLMClient:
             "prompt_hash": digest(system_prompt),
             "schema_hash": digest(wire),
             "config_hash": digest(self._requirement_config),
-            "prompt_version": "preference_prompt_16",
-            "schema_version": "preference_draft_10",
+            "prompt_version": "preference_prompt_18",
+            "schema_version": "preference_draft_12",
             "config": self._requirement_config,
         }
         self.last_call_metadata = {"call_id": call_id, **base, "secondary_errors": []}
@@ -362,7 +362,6 @@ class AzureFoundryStructuredLLMClient:
     ):
         from backend.app.schemas.poi_semantics import (
             FoundrySemanticAssessmentBatch,
-            SemanticAssessmentBatch,
         )
 
         model = self._chat_model.with_structured_output(
@@ -376,7 +375,24 @@ class AzureFoundryStructuredLLMClient:
             **({"config": {"callbacks": [usage_callback]}} if usage_callback else {}),
         )
         dto = FoundrySemanticAssessmentBatch.model_validate(raw)
-        return SemanticAssessmentBatch.model_validate(dto.model_dump())
+        return dto
+
+    async def generate_landmark_nomination_structured(
+        self, *, system_prompt, user_prompt, output_tokens, usage_callback=None
+    ):
+        from backend.app.schemas.landmark_nomination import LandmarkNominationDraft
+
+        model = self._chat_model.with_structured_output(
+            LandmarkNominationDraft,
+            method="json_schema",
+            strict=True,
+            max_output_tokens=output_tokens,
+        )
+        raw = await model.ainvoke(
+            [SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)],
+            **({"config": {"callbacks": [usage_callback]}} if usage_callback else {}),
+        )
+        return LandmarkNominationDraft.model_validate(raw)
 
     async def generate_repair_structured(
         self, *, system_prompt, user_prompt, output_tokens=None, usage_callback=None

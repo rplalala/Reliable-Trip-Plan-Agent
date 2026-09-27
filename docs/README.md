@@ -4,6 +4,58 @@ The root README directly introduces the project and quick start. PROJECT directl
 scope/status and next approval. This index routes readers; detailed contracts and experiment
 records have one responsibility owner instead of being copied into the entry documents.
 
+## Berlin development smoke and follow-ups - 2026-09-28
+
+Later, the user separately authorized an itinerary-only blind review despite the
+original capture failure. One simulated traveler ranked V0 > V3 > V2 > V1 on the
+saved outputs, before the V0 prompt adjustment; see the
+[assessment addendum](../.scratch/berlin-six-day-smoke/assessment.md). This does not
+change the original evidence gate or establish a general version ranking.
+
+The subsequent user-requested [V0 transport/Nearby prompt alignment](shared_itinerary_output.md#v0-transport-and-nearby-content-alignment---2026-09-28)
+uses model-estimated transport activities and optional nearby references. V1/V2 already
+include Nearby. Eighty initial offline checks passed. The later authorized
+[single V0 revalidation](../.scratch/v0-transport-nearby/assessment.md) passed with
+17 main visits, 11 estimated transport activities and one Nearby suggestion;
+combined relevant regression passed 176 tests. Real-world facts remain unverified.
+
+Follow-up: the user accepted V1 repeats as a version limitation and authorized the
+current [trace configuration](../config/README.md) increase to 10,000,000 bytes.
+The old batch remains frozen at 1 MB with its missing trace and failed original gate.
+The separately authorized blind review above used itinerary text only. The cap change
+itself added no live run; V1 repeats remain an accepted intermediate-version limitation.
+
+Outcome: all four applications completed, but V3's run trace was truncated and the
+blind-review gate failed. V1 repeated visits; V3 repaired three sparse days while
+retaining UNKNOWN findings. See the [assessment](../.scratch/berlin-six-day-smoke/assessment.md).
+
+The archived [Berlin four-version plan](../.scratch/berlin-six-day-smoke/plan.md)
+and [execution dispatch](../.scratch/berlin-six-day-smoke/dispatch.md) preserve the
+identical six-day input and original limits. All four attempts were consumed; do not
+reuse their commands as fresh authorization. Six offline launcher checks passed.
+This is not a formal benchmark or freeze.
+
+## Current preference and landmark closeout - 2026-09-28
+
+The user approved [feature closeout](../.scratch/preference-landmark-balance/closeout.md)
+and logical commits after the correction and bounded revalidation. No version freeze.
+
+The subsequent [focus rule convergence](shared_requirements.md#focus-rule-convergence---2026-09-28)
+removes inferred themed scope and keeps one/two soft targets. See the
+[implementation and regression record](../.scratch/preference-landmark-balance/focus-convergence.md).
+The [one-case Melbourne revalidation](../.scratch/preference-landmark-balance/pilot/focus-revalidation-assessment.md)
+passed bounded focus acceptance in99.781s; it does not rewrite the earlier pilot failure
+or establish universal reliability.
+
+Tickets 01-03 are implemented; [integrated candidate balance](shared_poi_supply.md#preference-and-landmark-balance---2026-09-28) describes the current policy.
+[Bounded landmark discovery](shared_landmark_discovery.md) describes the destination-only
+model call, shared search allocation, exact identity, fallback and budget observability.
+Candidate opportunity and final coverage remain distinct. The
+[three-case V3 pilot assessment](../.scratch/preference-landmark-balance/pilot/assessment.md)
+records successful execution but failed Melbourne focus-target interpretation at that
+earlier checkpoint. The correction and revalidation above supersede that acceptance status.
+No cross-version quality claim or freeze.
+
 ## Recommended reading order
 
 1. [Shared architecture](shared_architecture.md): version mechanisms and evidence authority.
@@ -35,7 +87,7 @@ records have one responsibility owner instead of being copied into the entry doc
 | [v3_development](v3_development.md) | Chronological checkpoints, tests and bounded live evidence |
 | [v3_milestone](v3_milestone.md) | Current delivery/evidence limits; not an automatic freeze |
 | [development_record](development_record.md) | Cross-version evolution index and complete shared/joint events |
-| [frontend_design](frontend_design.md) | Actual UI/API boundaries and accepted Product V3/four-version Developer MVP backlog; implementation deferred |
+| [frontend_design](frontend_design.md) | Current Product/Developer UI/API boundaries, input assistance, and dated MVP backlog |
 | [frontend_milestone](frontend_milestone.md) | Original frontend acceptance and dated changes |
 
 ## Evaluation design
@@ -73,6 +125,22 @@ Runtime/tool cleanup and evidence relocation are recorded in [the development re
 
 ## Current checkpoint navigation
 
+- [Preference coverage and local landmark balance specification](../.scratch/preference-landmark-balance/spec.md)
+  (2026-09-27): **tickets 01-03 implemented**. Ordinary soft
+  preference targets are one, or two for sourced trip focus. Final grounded coverage
+  and Product feedback distinguish covered/gap/unassessed; V0 remains prompt-only.
+  See [current semantics](shared_requirements.md#soft-preference-coverage--2026-09-27).
+  Destination nomination and combined candidate balancing are implemented.
+  Three V3 live cases completed on 2026-09-28; Melbourne failed focus-target interpretation.
+  The later focus correction and one-case revalidation passed; user-approved closeout is
+  recorded above. No formal evaluation or version comparison is claimed.
+
+- [Planning input UX specification](../.scratch/planning-input-ux/spec.md): current GeoDB,
+  currency/date, compact-weather and single-call Polish behavior, limits and evidence.
+  [Frontend and API design](frontend_design.md#planning-input-assistance-update-2026-09-26)
+  summarizes the current user and API flow. Historical review and two-call tests are dated
+  in the local task records.
+
 - [POI semantics iteration closeout](poi_semantics_closeout.md): current semantic/quantity
   completed acceptance, user-confirmed iteration closure, remaining boundaries and five executed
   local commit groups. Iteration closure does not constitute a new version freeze.
@@ -91,3 +159,5 @@ implementation and evaluation execution still require separate authorization.
 
 - [V3 final engineering closeout](v3_closeout.md): combined-tree validation, current limits,
   artifact-backed live/offline boundaries and checkpoint restrictions.
+
+- [2026-09-27 semantic wire and budget closeout](development_record.md#semantic-wire-and-budget-acceptance-closeout-2026-09-27): three bounded live cases, offline budget audit, final regression, five local commits and remaining coverage limitations.

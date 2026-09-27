@@ -2,8 +2,8 @@
 
 Status: resolved
 Type: task
-Approval: Approved by the delegated scope agent under the user's 2026-09-26 instruction; implemented without live calls or commit.
-Blocked by: Real-model Gate-success testing requires separate authorization.
+Approval: Initial scope approved by the delegated agent; later contract, connection and single-call changes approved by the user and committed as c8b9aa8.
+Blocked by: Final single-call flow has no live acceptance or measured Gate-success improvement.
 Spec: [Planning input UX](../spec.md)
 
 ## Scope and interfaces

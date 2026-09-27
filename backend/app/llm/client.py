@@ -27,9 +27,17 @@ class StructuredLLMClient(Protocol):
         ...
 
 
+class LandmarkNominationLLMClient(Protocol):
+    async def generate_landmark_nomination_structured(
+        self, *, system_prompt: str, user_prompt: str, output_tokens: int, usage_callback=None
+    ) -> BaseModel:
+        """One destination-only nomination; caller owns limits and cancellation."""
+        ...
+
+
 class POISemanticLLMClient(Protocol):
     async def generate_poi_semantics_structured(
         self, *, system_prompt: str, user_prompt: str, output_tokens: int, usage_callback=None
     ) -> BaseModel:
-        """One strict semantic batch; the caller owns deadlines and no-retry policy."""
+        """One short-reference wire batch; the caller owns resolution and retry limits."""
         ...

@@ -95,7 +95,8 @@ def setup_case(tmp_path, monkeypatch, payload=None):
     return request_path, sends, clients
 
 
-def test_http_success_then_hard_gate_failure_retains_linked_draft(tmp_path, monkeypatch):
+@pytest.mark.parametrize("version", ["v1", "v3"])
+def test_http_success_then_hard_gate_failure_retains_linked_draft(tmp_path, monkeypatch, version):
     request, sends, clients = setup_case(tmp_path, monkeypatch)
     output = tmp_path / "case"
     result = run_case(
@@ -103,8 +104,10 @@ def test_http_success_then_hard_gate_failure_retains_linked_draft(tmp_path, monk
         output,
         capture_requirements=True,
         reference_date="2026-09-26",
+        version=version,
     )
     assert result["application_exit_code"] == 2
+    assert result["version"] == version
     assert result["capture_status"] == "complete"
     assert len(sends) == 1
     assert clients[0]._chat_model.root_async_client.is_closed()
@@ -118,6 +121,92 @@ def test_http_success_then_hard_gate_failure_retains_linked_draft(tmp_path, monk
     assert outcome["outcome"]["requirement_ids"] == ["semantic_1"]
     assert draft["prompt_sha256"] and draft["runtime_config_sha256"]
     assert not (output / "product.json").exists()
+
+
+@pytest.mark.parametrize("version", ["v1", "v3"])
+def test_independent_runner_wraps_linked_semantic_calls(tmp_path, monkeypatch, version):
+    import tools.validation.poi_semantics_acceptance as entry
+
+    request, sends, _ = setup_case(tmp_path, monkeypatch)
+    call_ids = ("rejected", "corrected")
+
+    def fake_main(argv):
+        assert argv[argv.index("--reference-date") + 1] == "2026-09-26"
+        client = runner.create_foundry_client(runner.V1Settings())
+        for call_id, correction_of in zip(call_ids, (None, call_ids[0]), strict=True):
+            identity = {"call_id": call_id, "correction_of": correction_of}
+            client.capture_poi_semantics("input", identity | {"input": "fixture-secret"})
+            client.capture_poi_semantics("output", identity | {"output": "normalized"})
+            client.capture_poi_semantics("outcome", identity | {"status": "accepted"})
+        asyncio.run(client.aclose())
+        return 1
+
+    monkeypatch.setattr(
+        entry.runner if version == "v1" else entry,
+        "main" if version == "v1" else "v3_main",
+        fake_main,
+    )
+    output = tmp_path / "captured"
+    result = run_case(
+        request,
+        output,
+        capture_semantics=True,
+        reference_date="2026-09-26",
+        version=version,
+    )
+    assert result["application_exit_code"] == 1
+    assert result["semantic_capture_status"] == "complete"
+    assert not sends
+    records = [json.loads(path.read_text()) for path in (output / "semantics").glob("*.json")]
+    assert len(records) == 6
+    assert {record["validation_stage"] for record in records} == {
+        "semantic_input",
+        "semantic_output",
+        "semantic_outcome",
+    }
+    assert {record["call_id"] for record in records} == set(call_ids)
+    assert {record["correction_of"] for record in records} == {None, "rejected"}
+    assert "fixture-secret" not in json.dumps(records)
+
+
+def test_cli_forwards_v1_and_reference_date_without_running_providers(monkeypatch, tmp_path):
+    import sys
+
+    import tools.validation.poi_semantics_acceptance as entry
+
+    received = {}
+
+    def fake_run_case(*args, **kwargs):
+        received.update(kwargs)
+        return {
+            "application_exit_code": 1,
+            "capture_errors": [],
+            "semantic_capture_errors": [],
+            "repair_capture_errors": [],
+        }
+
+    monkeypatch.setattr(entry, "run_case", fake_run_case)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "poi_semantics_acceptance",
+            "--input-json",
+            str(tmp_path / "input.json"),
+            "--output",
+            str(tmp_path / "case"),
+            "--version",
+            "v1",
+            "--reference-date",
+            "2026-09-27",
+            "--capture-semantics",
+            "--execute",
+        ],
+    )
+    assert entry.main() == 1
+    assert received["version"] == "v1"
+    assert received["reference_date"] == "2026-09-27"
+    assert received["capture_semantics"]
 
 
 @pytest.mark.parametrize("failure", ["return_none", "raise"])
@@ -159,7 +248,7 @@ def test_saved_draft_identifies_the_prompt_revision(tmp_path, monkeypatch):
     run_case(request, output, capture_requirements=True, reference_date="2026-09-26")
     records = [json.loads(p.read_text()) for p in (output / "requirements").glob("*.json")]
     draft = next(r for r in records if r["validation_stage"] == "draft_validated")
-    assert draft["prompt_version"] == "preference_prompt_16"
+    assert draft["prompt_version"] == "preference_prompt_18"
 
 
 def test_case_logging_does_not_leave_a_handler_bound_to_closed_output(tmp_path, monkeypatch):

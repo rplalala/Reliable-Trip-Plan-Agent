@@ -1,5 +1,249 @@
 # Shared development record
 
+## Preference and landmark feature closeout - 2026-09-28
+
+The user accepted closing this feature and authorized logical commits without another
+confirmation. Implementation and directly related tests are saved in `4084a2f feat: balance
+soft preferences with landmark opportunities`; pilot/revalidation tools, their tests and
+fixed inputs in `274ab27 test: add bounded landmark pilot and focus revalidation tools`.
+The documentation commit containing this entry completes the grouping. Unrelated historical
+semantic-closeout/food/sparse-day/handoff changes remain unstaged; ignored logs and thesis
+archives are not force-added. No push, merge, new live attempt or version freeze.
+
+Final combined-tree gate: **1808 passed / 9 skipped (77.43s)**, Ruff lint/format and diff
+checks passed. The first pre-commit run stalled near existing HTTP embedding cancellation
+tests and was interrupted. The affected file passed16 independently; a full rerun with
+diagnostic stack dumps passed. A 20ms mock deadline plus unbounded handler-entry wait may
+explain a scheduling race; this remains a hypothesis, not a proven production defect.
+No retrieval implementation or test was changed. Mixed launcher line endings were normalized
+and its11 tests passed again. Earlier1807 excludes the later follow-up launcher test.
+
+Current outcome: ordinary1/focus2 rules and landmark saturation are implemented, the original
+Melbourne failure is preserved, and the subsequent bounded99.781s live acceptance passed.
+UNKNOWNs, unexercised Repair, maximum-as-style and broader quality remain limitations.
+See [self-contained closeout](../.scratch/preference-landmark-balance/closeout.md).
+
+## Melbourne focus live revalidation - 2026-09-28
+
+User separately approved one bounded V3 revalidation after convergence. Same original
+Melbourne input, current dirty source on cc4d5a0, separate frozen manifest and output
+`logs/focus_revalidation_20260928/`. The small wrapper selects only Melbourne and propagates
+that entry to the child process; old exhausted attempts are not reset. A new process-stub
+test initially intercepted Git too; test correction yielded11 launcher/capture passes
+(4.69s), Ruff passed. The full production regression remains1807 passed/9 skipped.
+
+The single attempt exited0 in99.781s with complete captures. Exact museum focus provenance
+produced target2, matched2; architecture matched2/target1 and gardens1/1. Twelve names were
+nominated once, eight resolved/qualified/supplied and six finally scheduled among eight
+main visits (3/3/2). Primary searches7/12, supplements4/4, Details24/60; semantics1 call;
+RAG1 embedding/1 query/20 positions/8 Details/4 fallback. Recorded budgets remained in bounds.
+Requirement/main-generation billed usage remains missing. Initial=final, no authorized
+Repair targets,11 UNKNOWNs remain. No actual Repair efficacy or full feasibility claim.
+
+Iteration2 independently inspected interpreted requirements, Product coverage, itinerary,
+nomination diagnostics and budgets. The bounded focus acceptance passed. This does not
+retroactively change the first pilot or establish causal or cross-version superiority.
+See [assessment](../.scratch/preference-landmark-balance/pilot/focus-revalidation-assessment.md)
+and private report/lineage/Markdown itinerary; thesis archive updated in
+`thesis_notes/V3/events/20260928_focus_revalidation.md`. No retry, commit or freeze.
+
+## Focus rule convergence - 2026-09-28
+
+Status: Implemented and offline Validated, not Frozen; base cc4d5a0 plus the existing
+dirty ticket03/pilot tree. Following the Melbourne failure, the user chose unified soft
+targets and invoked implement. Ordinary/focus category interests use targets one/two;
+inferred themed scope is removed from model/domain enums and admission/Details/selection.
+Only explicitly exclusive scope retains the exploration exception. Whole-trip category
+interests now share soft eligibility; broad style with no category goal stays uncounted.
+Explicit quantities/exclusions/Repair authority and budgets are unchanged; V0 remains
+prompt-only. Prompt18/wire12 and current capture metadata record the change. Historical
+themed payloads are not migrated or rewritten and fail the narrowed current schema.
+
+TDD first reproduced null soft coverage for the Melbourne wording with whole-trip scope;
+eligibility correction passed. DTO/domain rejection tests then failed on themed acceptance
+and passed after enum narrowing. Existing fixtures migrated to ordinary focus, and one
+integration fixture was corrected to schedule an actually supplied synthetic POI. The
+related set passed48. A broader run passed109 but failed the capture-version assertion;
+updating the acceptance tool's prompt17 metadata to18 yielded nine passing file tests.
+Final full backend: **1807 passed / 9 skipped (75.57s)**. Scoped Ruff lint/format and diff
+checks passed. Standards review independently noted the corrected capture metadata;
+zero remaining Standards findings and zero Spec findings. No configured backend typechecker.
+
+See [complete correction record](../.scratch/preference-landmark-balance/focus-convergence.md).
+Archived in `thesis_notes/V3/events/20260928_focus_rule_convergence.md`. No new live calls,
+commit or freeze. Prior pilot remains a failure; the next proposed step is separately
+bounded Melbourne V3 verification. Mocked outputs cannot establish real-model compliance.
+
+## Preference and landmark V3 live pilot - 2026-09-28
+
+Status: three authorized development attempts completed; full feature acceptance failed
+on focus interpretation. Base `cc4d5a0` plus frozen uncommitted ticket 03 and pilot tooling.
+The user superseded the V1-first proposal with V3 and authorized preparation through live
+completion without another approval. The smoke conversation executed only the prepared
+cases; iteration 2 prepared and assessed them. No production edits, retries or extra runs.
+
+The new development-only `tools/validation/landmark_pilot.py` freezes source/input/runtime
+hashes, validates local RAG configuration without network probes, enforces order/one-shot
+markers and outer timeouts, and captures nomination/resolution, supply and initial/final
+states independently of Repair. Review initially identified unisolated capture setup/payload
+failures, actual-byte-cap accounting and missing local RAG prechecks. Corrections passed
+25 focused tests (5.20s), Ruff/diff checks and final Standards/Spec review. Prior production
+regression remains 1793 passed / 9 skipped; the live adapter did not change production code.
+
+Sydney/Melbourne/Brisbane exited 0 in 89.890/118.296/67.079 seconds, all mandatory captures
+complete. Each sent one nomination and used four supplements; primary candidate searches
+were 7/8/7 and primary Details 24/24/16, within existing limits. RAG budgets are recorded
+separately. Billed totals remain incomplete. Initial and final itineraries are equal in all
+three cases; no authorized Repair targets arose. Final UNKNOWN counts are 13/9/5.
+
+Sydney's three ordinary interests retained target 1 and all had supported final matches;
+seven nominated landmarks appear among eight main visits. Melbourne's exact focus example
+became `kind=goal`, `trip_scope=themed`, `soft_coverage=null`, bypassing the expected sourced
+target 2. Its selection trace is museum dominated, with only two of seven qualified nominees
+supplied and one scheduled. This is a concrete spec acceptance failure, not merely an unused
+landmark. Brisbane has three main visits and one covered/three unassessed interests, honestly
+reported. Maximum-three text survives as style preference; numerical output compliance does
+not prove executable maximum validation. No fixes or reruns followed these observations.
+
+See [assessment](../.scratch/preference-landmark-balance/pilot/assessment.md) for judgments,
+diagnosis and remaining scope; private evidence and execution report are under
+`logs/preference_landmark_pilot_20260928/`. Thesis archive event
+`thesis_notes/V3/events/20260928_landmark_pilot_results.md` preserves observed facts versus
+code-supported inference. Next recommended scope: offline focus-classification regression
+and correction, then separately authorized live verification. No formal evaluation,
+cross-version superiority claim, new milestone/freeze or Git commit.
+
+## Integrated candidate balance ticket 03 - 2026-09-28
+
+Status: Implemented and offline Validated; not Frozen. Base `cc4d5a0` on `feature/v3`;
+ticket 03 remains uncommitted. Approved task 02 commits were completed first:
+`9d25633 feat: add bounded landmark nomination and discovery`,
+`e795aab feat: report landmark nomination budgets`, and
+`cc4d5a0 docs: record landmark discovery implementation`.
+The 1784-pass / 9-skip validated task 02 tree was committed in these approved groups.
+Unrelated historical documentation and scratch records remain untouched/uncommitted.
+
+The shared acquisition order and final selector now retain independent landmark value
+and stop extra soft-preference priority after target plus one candidate opportunities.
+That extra option is a replacement heuristic, not a final visit requirement/category cap.
+Discovery associations guide prescreening; supported semantic matches guide final supply.
+The final schedule still uses target one/two and existing coverage reporting. Shared prompt
+guidance explicitly combines soft landmark rank with dates, routes, time and variety.
+V0 gets only prompt guidance. No calls, budgets, Repair authority or source contracts changed.
+
+TDD sequence: dense 63-candidate fixtures in three synthetic destinations first omitted
+all three resolved landmarks, then passed after admission/selection ordering changes.
+A fallback fixture initially selected only two general options while preference buckets
+continued; saturation with retained replacement options corrected that result. Closed
+landmarks remain excluded. One-day/eight-interest fixtures preserve six truthful soft gaps;
+one-day and six-day focus fixtures distinguish selected options from final scheduled matches.
+New fixture construction initially used unsupported fake IDs/wire fields, omitted exact
+focus linkage, and let destination-search fallback names shadow candidate names; those test
+fixtures were corrected without changing production contracts. One temporary test syntax
+error during fixture expansion was corrected before successful retesting.
+
+Standards review found duplicated saturation computation; priority now reuses the current
+round's set. Spec review found a multi-requirement intent could keep rewarding candidates
+supporting only its already-saturated requirement. An entry-point regression reproduced
+all three landmarks being omitted. Active buckets now filter actual supported pending
+requirements; retest passed. Final Standards and Spec re-review each have zero findings.
+
+Validation: 75 related tests passed after the final policy fix. Full backend suite passed
+**1793 tests / 9 skipped** (75.28 seconds), including independent V0-V3 paths, API/presentation
+and budget-summary regressions. Scoped Ruff lint/format and diff checks passed. There is
+no configured backend static typechecker; frontend was unchanged. No live services were
+called. See the [complete scenario evidence map](../.scratch/preference-landmark-balance/verification.md).
+
+Current design is in [shared supply](shared_poi_supply.md#preference-and-landmark-balance---2026-09-28).
+All three tickets are now implemented, not a new version freeze. Fake models establish
+policy mechanics, not reliable live prompt adherence, nomination quality, cost, latency or
+cross-version superiority. A separately approved bounded pilot is the recommended next
+validation step. The ignored thesis event archive preserves this sequence and limitations.
+
+## Landmark nomination ticket 02 - 2026-09-27
+
+Status: Implemented; offline validation recorded below. Base `64dbd4b` on `feature/v3`;
+ticket 02 remains uncommitted. Before starting, approved ticket 01 groups were committed:
+`a04af97 feat: add sourced soft preference coverage`,
+`4e0115e feat: expose soft preference coverage in product`, and
+`64dbd4b docs: record preference coverage implementation`.
+Unrelated historical documentation and scratch work were preserved.
+
+The implementation adds a strict optional nomination model port, request-owned service,
+shared discovery allocation, exact identity reconciliation, model-origin/rank metadata,
+existing qualification integration and an independent compact budget stage. The policy
+for excluding incompatible optional nominations belongs in `policies/planning_supply.py`.
+Full behavior and bounds are in [landmark discovery](shared_landmark_discovery.md).
+
+TDD reproduced absent nomination/metadata, exclusion-scope rejection and missing budget
+accounting. Tests use actual fake send counts through V1/V2/V3 entry points and the narrow
+HTTP-mocked Azure adapter; they cover one-send malformed/provider failures, timeout,
+cancellation, usage/cleanup, cache reuse and the existing search ceiling. A later RAG
+same-name/different-ID case initially retained stale identity; reconciliation after source
+expansion now clears it. Review then reproduced stale degraded status when RAG first
+resolved a unique nominee; reconciliation now restores completed status, preserving
+interrupted status. Both RAG outcomes have entry-point regression coverage.
+
+An initial adapter test filename collided with the service test module during collection;
+the adapter file was renamed. Initial full regression: 1777 passed, 9 skipped, 6 failed.
+Four failures came from old destination/search test doubles not implementing the current
+DTO/execution interface; one came from the diagnostic payload fixture missing landmarks;
+one enforced exact configuration table leaf/value formatting. Fixtures and documentation
+were updated without relaxing production validation. Targeted retesting reached 110 passed
+and exposed a misplaced fixture field; moving it onto the policy result corrected that.
+The sandbox blocked uv's global cache, so checks used installed `.venv/Scripts` executables.
+
+Final full backend regression: **1784 passed / 9 skipped** (89.57 seconds).
+Scoped Ruff lint/format and `git diff --check` passed. Standards and Spec re-review
+confirmed zero remaining findings. No configured backend static typechecker exists;
+frontend was unchanged in this ticket.
+
+No live provider/model calls, frontend changes, formal benchmark, push or freeze. V0-V3
+retain independent entry points; V1/V2 gain no Repair stage. Nomination rank is not factual
+evidence. Live quality/cost/latency remain unmeasured; ticket 03 selection integration is
+pending. An ignored thesis archive preserves this development sequence without claiming
+formal research results.
+
+## Soft preference coverage ticket 01 — 2026-09-27
+
+Status: Implemented and offline validated; not live validated or frozen. Base revision
+`8f5e9b3cdb60c4c7f3fbb55f68ebb8a24dd7ac86`, current work remains uncommitted.
+Existing PROJECT/docs changes and prior diagnosis/smoke artifacts were preserved.
+
+Implementation adds separately sourced one/two soft targets, shared generation guidance,
+canonical final coverage for V1-V3, and Product JSON/SSE/UI feedback. V0 keeps its existing
+LLM flow and prompt-only guidance. Counts/restrictions, exception allowances, operational
+budgets and V3 Repair authorization stay unchanged. Ticket 02/03 are not implemented.
+
+TDD first reproduced absent soft targets and final feedback. Exact source validation and
+focus serialization were corrected; sparse legacy wire fixtures explicitly gained null
+focus fields in test construction without changing historical evidence files. Entry-point
+testing caught V0 accidentally receiving canonical progress; the shared observer now guards
+that output by grounded mode. Standards review then found absent requirement matches were
+incorrectly labeled gaps; two failing cases reproduced it and now return unassessed.
+The existing one-off Repair safeguard remains at one visit, without extending it to focus
+or continuing soft targets. New focus quotes consume the existing source-length budget.
+
+Validation sequence: focused coverage/semantic Repair tests passed 46 after the review fix.
+An initial full backend run passed 1748 / 9 skipped; the final run after both added sparse-
+match regressions and review corrections passed **1750 / 9 skipped** (75.23 seconds).
+Frontend full suite passed **83 tests**; TypeScript app and node projects passed no-emit
+checks. Vite's default config loader and TypeScript build-info output initially failed on
+restricted node_modules cache writes; tests used `--configLoader runner`, and typechecks
+used `tsc -p ... --noEmit`. Scoped Ruff lint/format and `git diff --check` passed.
+Standards and Spec review have zero remaining findings after the Standards re-review.
+No configured backend static typechecker exists. No live API calls, commit, push, branch
+change, formal benchmark or freeze occurred.
+
+The tests verify mechanisms with controlled models/providers, not natural-language focus
+accuracy or destination quality. Landmark supply and saturation in actual candidate ranking
+remain ticket 02/03 work. Next recommended task: ticket 02.
+
+Evidence: `backend/tests/services/test_soft_preference_coverage.py`, current Product JSON/SSE
+and ItineraryView tests, and the terminal results recorded in the iteration-2 chat. No raw
+provider output or cost/latency claims are created by these offline tests.
+
+
 > Repository cleanup (2026-09-20): source/document/config recovery snapshots, including
 > `D:/Workspace/Capstone/phase6_source_snapshots`, have been permanently deleted by user approval.
 > Snapshot paths in dated entries describe historical actions, not available recovery locations.
@@ -8690,3 +8934,37 @@ budget change. New tests cover fresh CLI processes, public API isolation, compat
 and genuine budget conflicts. Tests:121 backend pass; frontend initial EPERM then16 pass; Ruff
 formatting issues corrected; frontend build pass; affected backend76 pass; final static checks pass.
 No real-model claim: prompt13 and the new user-facing recovery path await separate live approval.
+
+
+## Semantic wire and budget acceptance closeout (2026-09-27)
+
+Status: Implemented and validated within the following development scope; not a version
+freeze or formal benchmark. Local commit checkpoint: `8f5e9b3` on `feature/v3`.
+
+- Three authorized sequential, one-attempt live cases (Sydney V1, Sydney V3, Melbourne V1)
+  returned all requested dates. Four semantic batches passed on their first call; short
+  reference ownership, mapping hashes and canonical restoration passed independent checks.
+  Correction efficacy was not exercised. Original failed smoke results remain historical.
+- Offline V3 budget reconstruction used 212 events and final acquisition ledgers. All 45
+  recorded-limit checks passed. The truncated aggregate trace still cannot supply missing
+  requirement/main-generation billed tokens or a complete monetary cost.
+- Independent bounded `budget.json` is implemented and offline validated. Initial full
+  regression passed 1726 tests / 9 skipped. Review exposed omitted RAG cancellation and
+  resolution counters; a failing regression preceded the correction, then 63 focused tests
+  passed. Final combined-tree regression passed 1727 tests / 9 skipped, with Ruff and diff
+  checks passing. No live run was performed for this observability change.
+- Five authorized local commits: `23c3a46` (workflow), `0b20d58` (acceptance tooling),
+  `fc01a9d` (semantic contract), `dcb71e8` (budget summary), `8f5e9b3` (documentation).
+  Workspace was clean after commit. No push, new freeze or formal evaluation occurred.
+
+Limits: all 38 scheduled activity costs were unknown; V3 retained feasibility UNKNOWNs
+and partial RAG discovery. Sydney V1 had one day below the default quantity target and
+Melbourne V1 had three. Food preference coverage remains an offline diagnostic follow-up;
+these observations are not semantic wire failures or proof of a mandatory quota violation.
+The user now authorizes documentation synchronization and offline diagnosis only, not
+production changes, new live calls or commits.
+
+Evidence: `logs/semantic_short_reference_revalidation_20260927/report.md`,
+`.scratch/semantic-reference-correction/v3-budget-audit.md`, and
+`.scratch/semantic-reference-correction/budget-summary-spec.md`. Raw local artifacts are
+ignored and are not guaranteed to be present in another checkout.

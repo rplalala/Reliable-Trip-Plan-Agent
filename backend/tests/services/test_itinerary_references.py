@@ -1,7 +1,7 @@
 """Offline output-role contracts and identity ownership across both engines."""
 
 import asyncio
-from datetime import date
+from datetime import date, timedelta
 from types import SimpleNamespace
 
 import pytest
@@ -103,6 +103,51 @@ def test_v0_source_ownership_and_single_generation():
     for change in ({"source_ref": "forged"}, {"source_place_id": "google-fake"}):
         with pytest.raises(ValueError):
             validate_output_sources(itinerary([reference(**change)]))
+
+
+def test_v0_preserves_model_estimated_transport_and_nearby_without_extra_generation():
+    request = make_request().model_copy(
+        update={"destination": "Kyoto", "end_date": date(2026, 9, 12)}
+    )
+    planned = itinerary([reference(associated_day="2026-09-12", area="Planned district")])
+    first = (
+        planned.days[0]
+        .activities[0]
+        .model_copy(update={"activity_kind": "main_poi", "place_name": "Fushimi Inari Shrine"})
+    )
+    journey = first.model_copy(
+        update={
+            "activity_id": "journey-1",
+            "activity_kind": "transport",
+            "title": "Walk to the next visit",
+            "place_name": None,
+            "source_place_id": None,
+            "estimated_cost": None,
+            "start_time": first.end_time,
+            "end_time": first.end_time + timedelta(minutes=20),
+            "notes": "Model estimate; route and duration have not been checked.",
+        }
+    )
+    second = first.model_copy(
+        update={
+            "activity_id": "visit-2",
+            "title": "Second visit",
+            "place_name": "Second venue",
+            "start_time": journey.end_time,
+            "end_time": journey.end_time + timedelta(hours=1),
+        }
+    )
+    planned.days[0].activities = [first, journey, second]
+    client = FakeStructuredLLMClient([planned])
+
+    result = asyncio.run(run_v0(request, client, reference_date=date(2026, 9, 11)))
+
+    assert len(client.calls) == 1
+    assert result.itinerary.days[0].activities == [first, journey, second]
+    assert result.itinerary.reference_recommendations == planned.reference_recommendations
+    assert result.itinerary.transfers == []
+    assert result.generation_diagnostics.days[0].transport_activity_count == 1
+    assert result.generation_diagnostics.days[0].main_activity_count == 2
 
 
 def test_v1_model_references_rejected_even_for_supplied_ids():

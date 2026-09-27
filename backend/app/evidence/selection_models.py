@@ -7,6 +7,7 @@ from typing import Self
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from backend.app.evidence.models import PlaceCandidate, PlaceEvidence
+from backend.app.schemas.landmark_nomination import LandmarkIdentity
 from backend.app.schemas.named_place_intent import NamedPlaceInclusion, NamedPlaceIntent
 from backend.app.schemas.tripworld_discovery import TripWorldOrigin
 
@@ -92,6 +93,7 @@ class CoordinateState(StrEnum):
 class PlaceSelectionInput(PlaceSelectionModel):
     """Keep search and rating state outside shared V1-B-facing place contracts."""
 
+    landmark_nomination: LandmarkIdentity | None = None
     candidate: PlaceCandidate
     query_hits: list[QueryIntentHit] = Field(default_factory=list)
     discovery_origins: tuple[TripWorldOrigin, ...] = Field(default=(), max_length=80)

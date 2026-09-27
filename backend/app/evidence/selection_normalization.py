@@ -62,6 +62,7 @@ def normalize_place_details_for_selection(
         raise ValueError("Place Details ID does not match the selection candidate")
     return PlaceSelectionInput(
         candidate=selection_input.candidate,
+        landmark_nomination=selection_input.landmark_nomination,
         query_hits=selection_input.query_hits,
         discovery_origins=selection_input.discovery_origins,
         search_opening_date=selection_input.search_opening_date,

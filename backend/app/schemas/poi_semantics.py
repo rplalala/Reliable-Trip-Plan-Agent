@@ -46,6 +46,14 @@ class SemanticAssessmentError(RuntimeError):
         self.details = details or {}
 
 
+class SemanticCorrectableError(SemanticAssessmentError):
+    """Validated-shape output eligible for the shared one-per-batch correction."""
+
+
+class SemanticReferenceError(SemanticCorrectableError):
+    """Invalid evidence citation eligible for one bounded batch correction."""
+
+
 class SemanticPreparationLimit(RuntimeError):
     """Pre-send engineering stop; already assessed material remains usable."""
 
@@ -59,7 +67,7 @@ class FoundryRequirementMatch(BaseModel):
 
 class FoundryPOIAssessment(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    place_id: str
+    candidate_ref: str
     visit_object: str
     role: Literal["attraction", "exception_only", "non_main", "unresolved"]
     categories: list[str]

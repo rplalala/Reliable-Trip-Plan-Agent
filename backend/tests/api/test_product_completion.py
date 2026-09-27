@@ -31,6 +31,19 @@ def test_product_completion_survives_public_response(stream, completion):
                 requirements=request.trip_requirements(),
                 itinerary=make_itinerary(),
                 generation_diagnostics=GenerationDiagnostics(
+                    goal_progress=(
+                        {
+                            "soft": True,
+                            "preference": "Museums",
+                            "expected": 2,
+                            "matched": 1,
+                            "remaining": 1,
+                            "coverage_status": "gap",
+                            "target_origin": "current_trip_focus",
+                            "focus_source": "PRIVATE",
+                            "basis": "model_semantic_judgment_not_operating_fact",
+                        },
+                    ),
                     policy_completion=completion,
                     policy_issues=tuple({"reason": r, "internal": "PRIVATE"} for r in reasons),
                     days=(),
@@ -76,6 +89,17 @@ def test_product_completion_survives_public_response(stream, completion):
     assert calls == ["v3"]
     assert body["status"] == "completed"  # Request succeeded even if obligations remain unmet.
     assert body["policy_completion"] == completion
+    assert body["preference_coverage"] == [
+        {
+            "preference": "Museums",
+            "target": 2,
+            "scheduled": 1,
+            "remaining": 1,
+            "status": "gap",
+            "target_origin": "current_trip_focus",
+            "basis": "model_semantic_judgment_not_operating_fact",
+        }
+    ]
     assert body["policy_reasons"] == reasons
     assert body["itinerary"]["days"]
     assert "PRIVATE" not in response.text and "generation_diagnostics" not in body

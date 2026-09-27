@@ -28,7 +28,7 @@ Do **not** start the following unless I explicitly ask later:
 
 Small development-time pilot scenarios are allowed only to verify that an implementation works.
 
-Historical research-note preservation under `thesis_notes/` is allowed only when I explicitly request thesis/archive work.
+Proactive research-note preservation under `thesis_notes/` is authorized under the Thesis Research Archive rules below.
 This does not authorize formal thesis writing or formal research evaluation.
 
 ## Language Policy
@@ -80,8 +80,8 @@ For every meaningful development task:
    - the implementation approach,
    - tests/checks you plan to run,
    - whether the change could affect any existing V0/V1/V2/V3 behavior.
-3. Wait for my explicit approval.
-4. After approval, implement only the agreed scope.
+3. Obtain my explicit approval for the proposed scope before major changes. An existing explicit approval for that scope remains valid; do not request it again.
+4. Within the approved task, proceed through implementation, relevant tests, code review, necessary corrections, and related documentation updates without separate approval for each step. Honor any explicit exclusions or limits, including live-run budgets and no-live instructions.
 5. Run relevant tests/checks.
 6. When finished, report in Chinese:
    - what was implemented,
@@ -89,7 +89,9 @@ For every meaningful development task:
    - test/check results,
    - important limitations or unresolved issues,
    - recommended next step.
-7. Do not start the next stage without my approval.
+7. Request approval before expanding the agreed scope or starting a separate task. Moving between implementation, testing, review, corrections, and documentation within the approved scope is not a new task.
+
+The separate approval requirements for Git actions, version freezes and progression, and formal research work below still apply.
 
 ### Self-contained documentation update reports
 
@@ -198,13 +200,15 @@ It is **not** a project source of truth.
 
 For normal development tasks:
 
-- Do **not** read or modify `thesis_notes/` unless I explicitly request thesis/archive work.
+- Proactively record meaningful failure diagnoses, architecture decisions, rejected approaches, and development validation results in `thesis_notes/` without requesting separate approval. Read only the relevant archive files needed to place or update the record.
 - Do not use thesis notes to determine current requirements or architecture.
 - Historical notes may contain rejected, superseded, or outdated designs and must never override current project files.
-- If a development task produces a meaningful thesis-relevant experiment, failure, or architecture change, mention it as a possible `Thesis-note candidate`, but do not update the archive automatically.
+- Archive updates are part of the current development task, not a separate stage requiring approval. Summarize any archive updates in the final Chinese report.
 
-When I explicitly request thesis/archive work:
+For all archive updates:
 
+- record the date, relevant code revision and uncommitted-change context, evidence locations, and validation scope or limitations;
+- distinguish observed facts from hypotheses and inferences;
 - preserve historical sequence, including rejected and superseded approaches;
 - distinguish design status such as `Proposed`, `Accepted`, `Implemented`, `Validated`, and `Frozen`;
 - do not invent missing prompts, outputs, logs, latency, tokens, costs, or rationale;
@@ -252,7 +256,17 @@ Normalize data from external providers into internal schemas instead of passing 
 
 Do not call third-party APIs directly from LangGraph nodes when a service/client abstraction is more appropriate.
 
+### Budget and limit tradeoffs
+
+Treat current budgets and limits as tunable engineering choices. When diagnosing a bottleneck, compare a measured increase in the relevant limit with adding mechanisms under the existing limit. Propose a budget adjustment when evidence suggests it is more effective or simpler to maintain. Explain the observed bottleneck, proposed values, expected benefit, cost and latency impact, risks, and bounded validation and rollback criteria. Distinguish resource limits from correctness requirements; increasing a budget does not relax evidence or acceptance checks. Existing task-specific budget restrictions remain in force until the user approves a change.
+
 ## Testing
+
+### Smoke-test coordination
+
+The iteration conversation (`01a0d8d3-b759-7920-957b-a0b144352afe`) owns smoke-test plans, budgets, acceptance criteria, tool adaptation, implementation, offline validation, and result assessment. Delegate only execution of prepared, authorized smoke tests and reporting to the same-project conversation titled `smoke tests`. That conversation must report blockers rather than design solutions or modify code. The user authorizes coordination messages between these conversations for this workflow.
+
+After execution, `smoke tests` must report the process, results, issues requiring fixes or further verification, deviations from the current project spec, and relevant evidence/document paths to the iteration conversation. Distinguish observed facts, inferences, and missing evidence. Delegation does not override live-run approval requirements or existing budgets and exclusions.
 
 Default:
 

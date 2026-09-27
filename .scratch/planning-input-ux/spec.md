@@ -1,7 +1,7 @@
 # Planning input assistance and itinerary presentation
 
-Status: resolved
-Approval: Task 01 approved directly; the user delegated Tasks 02 and 03 scope approval to a sub-agent. All three are implemented offline; the user approved the four local commit groups on 2026-09-26.
+Status: implemented and locally committed; the final single-call Polish flow has offline validation.
+Approval: Task 01 approved directly; the user delegated Tasks 02 and 03 scope approval to a sub-agent. The user separately approved the HTTPS and Polish follow-ups and their three local commit groups on 2026-09-26.
 Date: 2026-09-26
 Type: specification
 
@@ -13,11 +13,12 @@ to the itinerary. The user selected GeoDB, replacing the earlier Google autocomp
 Preference polishing should improve the likelihood of Gate acceptance by expressing the same
 intent more clearly, without weakening requirements or bypassing policy. Acceptance is not guaranteed.
 
-PROJECT.md remains the project source of truth. This is a new proposed iteration after the
-closed semantic/quantity iteration at 40b0b26. Existing uncommitted closure documentation is
-outside these implementation tasks. This specification now records approved offline implementation;
-no real provider call, subscription purchase, live run, version freeze or formal evaluation
-was authorized. The later user approval permits the four local commit groups only.
+PROJECT.md remains the project source of truth. This iteration followed the closed
+semantic/quantity iteration at 40b0b26. The initial three tasks were implemented offline and
+committed in four approved groups. Separate later approvals covered bounded GeoDB address
+verification, one-off Polish live checks under the earlier two-call flow, the HTTPS and Polish
+fixes, and three further local commits. The final single-call Polish flow has offline validation;
+no live result establishes its Gate acceptance rate or a version freeze.
 
 ## Current seams
 
@@ -232,3 +233,12 @@ to commit. Preserve the four existing closure-document modifications.
   9a147d6 (01), 1ec1738 (02), and 31071c9 (03), followed by the local documentation group.
   Intermediate staged snapshots passed their relevant checks. The four prior closeout documents
   were preserved unchanged; no push or live verification was performed.
+- 2026-09-26: Later authorized address verification found HTTP 308 to the same free host over
+  HTTPS and HTTPS 200 with a response the adapter normalized offline. GeoDB now requests that
+  HTTPS address directly; the approved change was committed as 79ca61a.
+- 2026-09-26: The first Polish live checks used the earlier two-call draft/review flow. The
+  user then approved status-contract and connection-lifecycle fixes followed by single-call
+  user-reviewed suggestions. The final implementation was committed as c8b9aa8, with 1678
+  backend tests passed (9 skipped) and 82 frontend tests passed. It has not had a live check
+  since removal of the independent review. The four preserved closeout documents were
+  committed separately as 648d951. No push or new freeze occurred.

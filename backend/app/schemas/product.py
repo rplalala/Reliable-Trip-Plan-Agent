@@ -73,7 +73,20 @@ class ProductItinerary(ProductModel):
     transfers: list[ProductTransfer] = Field(default_factory=list)
 
 
+class PreferenceCoverage(ProductModel):
+    preference: str
+    target: Literal[1, 2]
+    scheduled: int
+    remaining: int
+    status: Literal["covered", "gap", "unassessed"]
+    target_origin: Literal["ordinary_preference", "current_trip_focus"]
+    basis: Literal["model_semantic_judgment_not_operating_fact"] = (
+        "model_semantic_judgment_not_operating_fact"
+    )
+
+
 class ProductPlanResult(ProductModel):
+    preference_coverage: tuple[PreferenceCoverage, ...] = ()
     policy_completion: Literal["complete", "incomplete", "unassessed"] = "unassessed"
     policy_reasons: tuple[str, ...] = ()
     requirements: TravelRequirements

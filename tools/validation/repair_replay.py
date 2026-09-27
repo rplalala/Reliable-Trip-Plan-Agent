@@ -178,12 +178,7 @@ class FrozenSemantics:
 
     async def prepare(self, places, contract, *, deadline=None):
         for place in places:
-            key = digest(
-                poi_semantics.POI_SEMANTICS_PROMPT
-                + poi_semantics.serialize_semantic_input(
-                    [place], contract, self.saved.named_bindings
-                )
-            )
+            key = poi_semantics.semantic_cache_key(place, contract, self.saved.named_bindings)
             row = self.saved.cache.get(key)
             if row is None or self.saved.failed or row.place_id != place.place_id:
                 self.missing.add(place.place_id)

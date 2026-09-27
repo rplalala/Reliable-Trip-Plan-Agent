@@ -1,5 +1,21 @@
 # V0 milestone checkpoints
 
+## Authorized prompt alignment - 2026-09-28
+
+The user requested V0 transport and Nearby content while retaining plain LLM plus
+prompt. The generation prompt now explicitly requests estimated inter-visit transport
+as existing transport activities and suitable nearby references linked to planned
+dates/areas, with model-knowledge uncertainty. No extra call, tool, validator or Repair
+was added; provider-backed transfer records remain outside V0 model output. This is
+a later prompt change, not a rewrite of earlier milestones or a new freeze. The
+[shared output record](shared_itinerary_output.md#v0-transport-and-nearby-content-alignment---2026-09-28)
+documents the contract and initial 80 passing offline checks. Subsequent authorized
+Berlin revalidation returned six days, 17 main visits, 11 estimated transport activities
+and one optional Nearby reference, passing this bounded content check. Standards/Spec
+reviews were clear and the combined regression passed 176 tests. See the
+[acceptance record](../.scratch/v0-transport-nearby/assessment.md). No real-world route,
+opening, price or general quality verification is implied; this is not a new freeze.
+
 Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3_closeout.md)
 for current configuration, shared ownership and artifact-verified evidence. Earlier dated
 implementation/live statements below retain their original scope. V0 remains tool-free;

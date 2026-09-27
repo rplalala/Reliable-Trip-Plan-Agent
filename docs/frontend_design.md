@@ -1,5 +1,45 @@
 # Frontend and API design
 
+## Soft preference coverage presentation — 2026-09-27
+
+Product JSON and SSE now include optional/default-empty `preference_coverage`.
+Each row contains the preference label, soft target (one/two), supported scheduled
+count, remaining count, covered/gap/unassessed status, ordinary/current-trip-focus
+origin and model-semantic basis. The public projection omits source quotations,
+canonical identifiers and internal diagnostics. Historical responses remain usable.
+
+The itinerary shows these rows under Your interests and explains that suggested
+matches do not verify suitability or opening information. Soft gaps do not turn
+`policy_completion` into incomplete or hide the itinerary. That field still describes
+its existing scoped obligations; it is not a global trip-quality certificate.
+
+## Planning input assistance update (2026-09-26)
+
+Product `/plan` and Developer `/dev` share the current PlanningForm. The destination field
+queries `GET /api/input-assistance/destinations` after a bounded prefix; FastAPI calls the
+public free GeoDB endpoint over HTTPS, normalizes city/region/country choices and applies
+per-process rate and daily limits. Selecting a choice copies its full label into the existing
+destination string. Users can still type a destination manually; no GeoDB ID or coordinates
+are passed to planning. The form also uses a currency select and locale-independent ISO date
+input. Weather is compact so the itinerary remains prominent.
+
+`POST /api/input-assistance/preferences/polish` is an optional, separate action. The frontend
+sends the current preference text, read-only form context and a revision token. The backend
+makes at most one model draft call and returns a schema-validated suggestion or a supported
+no-rewrite status. Product and Developer show the original beside any suggested wording;
+Apply, Dismiss and Undo are explicit user actions. Editing the text or form context discards
+stale responses. The prompt requests meaning preservation, but there is no separate model
+review or local semantic comparison blocking display. The normal planning Gate runs only
+when planning is submitted. Polish does not claim Gate acceptance.
+
+Current limits: three Polish clicks per mounted form, 20 admitted operations per UTC day and
+one in flight per backend process, at most one model send per operation, 20 seconds per call
+within a 40-second operation ceiling, and no automatic retries. The full contract is in
+the [input UX specification](../.scratch/planning-input-ux/spec.md). The final single-call
+implementation passed 1678 backend tests (9 skipped) and 82 frontend tests; real-model
+one-off checks preceded the final single-call change, so this current path has offline
+validation only. Older dated sections below preserve their original checkpoint scope.
+
 ## Semantic completion presentation implemented — 2026-09-26
 
 Product results now carry policy_completion and policy_reasons. ItineraryView displays an explicit incomplete-policy message while preserving the latest adopted itinerary and Nearby references. Semantic assessment errors follow the existing system-error path, not preference rewrite. V0/unassessed inputs are not falsely marked semantically verified. Two targeted frontend suites passed (30 tests); direct TypeScript no-emit checks and changed-file ESLint passed. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26).

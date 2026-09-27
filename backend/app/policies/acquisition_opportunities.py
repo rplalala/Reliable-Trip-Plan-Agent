@@ -3,7 +3,7 @@
 from collections import Counter
 from math import ceil
 
-from backend.app.policies.planning_supply import _distance
+from backend.app.policies.planning_supply import _distance, soft_opportunity_limits
 
 
 def opportunity_order(places, required, contract, destination, *, exploration_fraction=0):
@@ -29,25 +29,49 @@ def opportunity_order(places, required, contract, destination, *, exploration_fr
             buckets[(1 if named.inclusion == "REQUIRED" else 2, "party", named.requirement_id)] = {
                 pid for pid, p in by_id.items() if named.requirement_id in p.discovery_intent_ids
             }
+    soft_limits = soft_opportunity_limits(contract)
+    linked = {
+        ref: {
+            pid
+            for pid, place in by_id.items()
+            if any(
+                d.intent_id in place.discovery_intent_ids and ref in d.requirement_refs
+                for d in contract.discovery_intents
+            )
+        }
+        for ref in soft_limits
+    }
+    intent_refs = {d.intent_id: set(d.requirement_refs) for d in contract.discovery_intents}
     subjects, intents = Counter(), Counter()
-    themed = any(
-        r.experience_goal and r.experience_goal.trip_scope in {"themed", "exclusive"}
+    exclusive = any(
+        r.experience_goal and r.experience_goal.trip_scope == "exclusive"
         for r in contract.semantic_requirements
     )
     optional_count = 0
     categories = Counter(by_id[p].candidate.primary_type for p in chosen)
     while len(chosen) < len(by_id):
         remaining = by_id.keys() - set(chosen)
-        active = {key: ids & remaining for key, ids in buckets.items() if ids & remaining}
+        saturated = {
+            ref for ref, limit in soft_limits.items() if len(linked[ref] & set(chosen)) >= limit
+        }
+        active = {
+            key: ids & remaining
+            for key, ids in buckets.items()
+            if ids & remaining and not (intent_refs.get(key[2], {key[2]}) <= saturated)
+        }
         key = (
             min(active, key=lambda k: (k[0], subjects[k[:2]], k[1], intents[k], k[2]))
             if active
             else None
         )
-        cohort = active[key] if key else remaining
+        saturated_members = set().union(*(linked[r] for r in saturated))
+        independent = {pid for pid in remaining if by_id[pid].landmark_nomination}
+        independent |= remaining - saturated_members
+        cohort = active[key] if key else independent or remaining
         general = remaining - set().union(*buckets.values()) if buckets else remaining
+        general |= {pid for pid in remaining if by_id[pid].landmark_nomination}
         if (
-            not themed
+            not exclusive
             and general
             and exploration_fraction
             and (
@@ -59,7 +83,10 @@ def opportunity_order(places, required, contract, destination, *, exploration_fr
 
         def tie(pid):
             candidate = by_id[pid].candidate
+            landmark = by_id[pid].landmark_nomination
             return (
+                0 if landmark else 1,
+                landmark.rank if landmark else 0,
                 categories[candidate.primary_type] if candidate.primary_type else 0,
                 _distance(candidate, (destination.latitude, destination.longitude)),
                 pid,

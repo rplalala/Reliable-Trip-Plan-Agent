@@ -168,7 +168,9 @@ def setup(rows, *, n=6, config=None, fail=False):
             )
         )
     merged = MergedSearchObservations(tuple(observations), n)
-    dest = SimpleNamespace(latitude=-33.86, longitude=151.2)
+    from backend.app.evidence.models import DestinationContext
+
+    dest = DestinationContext(place_id="city", name="Sydney", latitude=-33.86, longitude=151.2)
     return service, projection.requirements, dest, merged, places, runtime
 
 
@@ -428,6 +430,11 @@ def test_rag_competes_under_real_shared_capacities(count, pid, low_rating, expec
         s, contract, dest, merged, places, _ = x
 
         async def observations(*args, **kwargs):
+            from backend.app.services.evidence_acquisition import SearchIntentExecution
+
+            kwargs["intent_executions"].extend(
+                SearchIntentExecution(i.intent_id, "provider_success") for i in kwargs["intents"]
+            )
             return list(merged.places)
 
         s.acq.search_candidate_observations = observations

@@ -1,5 +1,23 @@
 # Development guide
 
+## Current local API and input assistance (2026-09-26)
+
+From the repository root on Windows, start FastAPI with
+`.\.venv\Scripts\python.exe scripts/run_api.py --host 127.0.0.1 --port 8000`.
+The launcher uses a Windows event loop compatible with the project's async PostgreSQL
+driver. Start the frontend separately from `frontend/` with `npm run dev`; Vite proxies
+`/api` and `/health` to FastAPI. Product `/plan` runs V3, while Developer `/dev` exposes
+independent V0–V3 runs. The corresponding CLI entry points are `scripts/run_v0.py` through
+`scripts/run_v3.py`; the dated V0–V2 commands below retain their original evidence context.
+
+Destination suggestions use the public free GeoDB HTTPS endpoint through the backend,
+with one bounded provider request and no automatic retry. Polish preferences is an optional
+single-model-call action. The frontend previews any schema-valid suggestion for the user to
+Apply, Dismiss or Undo; normal planning still performs its Gate. The current limits and
+response contracts are recorded in the [input UX spec](../.scratch/planning-input-ux/spec.md)
+and [config reference](../config/README.md). Local backend health checks and earlier
+two-call live Polish checks do not constitute live acceptance of the final single-call flow.
+
 > Repository cleanup (2026-09-20): source/document/config recovery snapshots, including
 > `D:/Workspace/Capstone/phase6_source_snapshots`, have been permanently deleted by user approval.
 > Snapshot paths in dated entries describe historical actions, not available recovery locations.
