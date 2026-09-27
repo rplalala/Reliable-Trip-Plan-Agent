@@ -1,7 +1,7 @@
 """Offline planning entry tests observe real search sends and final supply metadata."""
 
 import asyncio
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 
@@ -31,10 +31,20 @@ def run_case(
     rejected=(),
     exclusive=False,
     scheduled_id=None,
+    supported_interests=None,
+    closed=(),
+    destination="Sydney",
+    days=2,
+    focus=False,
+    combined_intent=False,
 ):
     text = (
         "; ".join(
-            [*(name for name, inclusion in named), *(f"Interest {i}" for i in range(interests))]
+            [
+                *(name for name, inclusion in named),
+                *(f"Interest {i}" for i in range(interests)),
+                *(["This trip focuses on Interest 0"] if focus else []),
+            ]
         )
         or "Plan a trip"
     )
@@ -68,6 +78,24 @@ def run_case(
         dict(requirement_refs=[f"r{i}"], purpose="activity_or_category", query_text=f"Interest {i}")
         for i in range(interests)
     ]
+    if combined_intent:
+        data["discovery_intents"] = [
+            dict(
+                requirement_refs=[f"r{i}" for i in range(interests)],
+                purpose="activity_or_category",
+                query_text="Interest 0",
+            )
+        ]
+    if focus:
+        data["semantic_requirements"][0]["kind"] = "goal"
+        data["semantic_requirements"][0]["scope"] = "whole_trip"
+        data["semantic_requirements"][0]["trip_focus_source"] = dict(
+            quote="This trip focuses on Interest 0", occurrence=0
+        )
+        data["semantic_requirements"][0]["source_refs"].append(
+            dict(quote="This trip focuses on Interest 0", occurrence=0)
+        )
+        data["semantic_requirements"][0]["experience_goal"]["trip_scope"] = "ordinary"
     draft = InterpretationDraft.model_validate(data)
 
     class Model(RevisedFakeLLM):
@@ -82,6 +110,21 @@ def run_case(
 
         async def generate_poi_semantics_structured(self, **kwargs):
             output = await super().generate_poi_semantics_structured(**kwargs)
+            if supported_interests is not None:
+                import json
+
+                payload = json.loads(kwargs["user_prompt"])
+                for row in output["assessments"]:
+                    row["matches"] = [
+                        dict(
+                            requirement_id=r["requirement_id"],
+                            relation="supported"
+                            if i in supported_interests.get(row["visit_object"], ())
+                            else "mismatch",
+                            evidence_refs=row["evidence_refs"],
+                        )
+                        for i, r in enumerate(payload["requirements"])
+                    ]
             for row in output["assessments"]:
                 if row["visit_object"] in rejected:
                     row["role"] = "non_main"
@@ -107,7 +150,11 @@ def run_case(
 
         async def get_place_details(self, request):
             details = await super().get_place_details(request)
+            if request.place_id in closed:
+                return details.model_copy(update={"business_status": "CLOSED_PERMANENTLY"})
             for search in self.search_requests:
+                if search.location_bias is None:
+                    continue
                 for pid, name in (pools or {}).get(
                     search.text_query, [("poi-0-0", "Old Tower"), ("poi-0-1", "City Museum")]
                 ):
@@ -128,13 +175,29 @@ def run_case(
         }
     )
     trip = make_itinerary()
+    trip.destination = destination
+    trip.end_date = trip.start_date + timedelta(days=days - 1)
+    template = trip.days[0]
+    trip.days = []
+    for i in range(days):
+        day = template.model_copy(deep=True)
+        day.date = trip.start_date + timedelta(days=i)
+        for activity in day.activities:
+            activity.activity_id = f"activity-{i}"
+            activity.start_time += timedelta(days=i)
+            activity.end_time += timedelta(days=i)
+        trip.days.append(day)
     if scheduled_id:
         trip.days[0].activities[0].source_place_id = scheduled_id
         trip.days[0].activities[0].activity_kind = "main_poi"
+        for rows in (pools or {}).values():
+            for pid, name in rows:
+                if pid == scheduled_id:
+                    trip.days[0].activities[0].place_name = name
     model, places = Model([draft, trip]), Places()
     result = asyncio.run(
         run_v1(
-            make_request(text),
+            make_request(text, destination=destination, end_date=trip.end_date),
             model,
             places,
             FakeWeatherProvider(),

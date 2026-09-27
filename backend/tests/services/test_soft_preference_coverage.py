@@ -17,6 +17,61 @@ class PreferenceModel:
         return self.draft
 
 
+def test_trip_focus_cannot_disappear_into_a_whole_trip_category_goal():
+    text = (
+        "This trip is mainly about museums. I also enjoy gardens and architecture. "
+        "Please plan a varied trip at a comfortable pace."
+    )
+    request = make_request(text)
+    data = draft_for(text).model_dump()
+    row = data["semantic_requirements"][0]
+    quote = "This trip is mainly about museums."
+    row.update(
+        kind="goal",
+        scope="whole_trip",
+        source_refs=[dict(quote=quote, occurrence=0)],
+        trip_focus_source=dict(quote=quote, occurrence=0),
+        experience_goal=dict(
+            frequency="continuing",
+            count=None,
+            target="category",
+            distinct_dates=False,
+            explicit_primary_exception=False,
+            trip_scope="ordinary",
+        ),
+    )
+    draft = type(draft_for(text)).model_validate(data)
+    contract = asyncio.run(
+        interpret_preferences(request, request.start_date, PreferenceModel(draft))
+    )
+    requirement = contract.semantic_requirements[0]
+    assert requirement.soft_coverage is not None
+    assert requirement.soft_coverage.target == 2
+    assert requirement.soft_coverage.focus_source.quote == quote
+    assert requirement.experience_goal.count is None
+
+
+@pytest.mark.parametrize("transport", [False, True])
+def test_inferred_theme_is_not_an_available_experience_scope(transport):
+    from pydantic import ValidationError
+
+    from backend.app.llm.azure_foundry.dto import FoundryExperienceGoalDTO
+    from backend.app.schemas.interpreted_requirements import ExperienceGoal
+
+    schema = FoundryExperienceGoalDTO if transport else ExperienceGoal
+    with pytest.raises(ValidationError):
+        schema.model_validate(
+            dict(
+                frequency="continuing",
+                count=None,
+                target="category",
+                distinct_dates=False,
+                explicit_primary_exception=False,
+                trip_scope="themed",
+            )
+        )
+
+
 def test_ordinary_preference_gets_product_target_without_explicit_quantity():
     request = make_request("I like museums")
     draft = draft_for(request.additional_preferences)
@@ -58,7 +113,7 @@ def test_focus_requires_a_separate_exact_source(text, focus, target):
         target="category",
         distinct_dates=False,
         explicit_primary_exception=False,
-        trip_scope="themed" if focus else "ordinary",
+        trip_scope="ordinary",
     )
     semantic["trip_focus_source"] = {"quote": text, "occurrence": 0} if focus else None
     draft = type(draft).model_validate({**draft.model_dump(), "semantic_requirements": [semantic]})
@@ -376,7 +431,7 @@ def test_fabricated_or_casefold_only_focus_cannot_raise_target(focus_quote):
             target="category",
             distinct_dates=False,
             explicit_primary_exception=False,
-            trip_scope="themed",
+            trip_scope="ordinary",
         ),
         trip_focus_source={"quote": focus_quote, "occurrence": 0},
     )

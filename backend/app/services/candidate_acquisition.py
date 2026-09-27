@@ -312,11 +312,11 @@ class CandidateAcquisition:
             qualified = {pid: row for pid, row in rows.items() if row.main_eligible}
             if len(qualified) < capacities.k_final:
                 return False
-            themed = any(
-                r.experience_goal and r.experience_goal.trip_scope in {"themed", "exclusive"}
+            exclusive = any(
+                r.experience_goal and r.experience_goal.trip_scope == "exclusive"
                 for r in contract.semantic_requirements
             )
-            if themed:
+            if exclusive:
                 return True
             from math import ceil
 

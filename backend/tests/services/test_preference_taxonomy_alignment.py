@@ -130,7 +130,7 @@ def test_synthetic_valid_contrasts_are_not_reclassified_by_application(text):
 
 def test_prompt_has_decision_order_without_changing_wire_ownership():
     prompt = PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
-    assert "preference_prompt_17" in prompt
+    assert "preference_prompt_18" in prompt
     assert (
         "Not knowing which clear requirement the user will give up is NOT semantic ambiguity"
         in prompt

@@ -162,7 +162,11 @@ def test_london_historical_search_lanes_retain_exploration_before_details():
         (Path(__file__).parents[1] / "fixtures/poi_semantics_london.json").read_text()
     )
     rows = [
-        SimpleNamespace(candidate=SimpleNamespace(**r), discovery_intent_ids=r["intent_ids"])
+        SimpleNamespace(
+            candidate=SimpleNamespace(**r),
+            discovery_intent_ids=r["intent_ids"],
+            landmark_nomination=None,
+        )
         for r in saved["candidates"]
     ]
     general = {

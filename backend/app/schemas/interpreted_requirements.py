@@ -79,7 +79,7 @@ class ExperienceGoal(ContractModel):
     target: Literal["category", "named_place"]
     distinct_dates: bool
     explicit_primary_exception: bool
-    trip_scope: Literal["ordinary", "themed", "exclusive"]
+    trip_scope: Literal["ordinary", "exclusive"]
 
     @model_validator(mode="after")
     def counts(self):
@@ -129,7 +129,7 @@ def soft_coverage_eligible(requirement):
         and not goal.explicit_primary_exception
         and requirement.polarity == "favor"
         and requirement.strength != "hard"
-        and requirement.scope in {"individual_poi", "selected_poi_set"}
+        and requirement.scope in {"individual_poi", "selected_poi_set", "whole_trip"}
     )
 
 

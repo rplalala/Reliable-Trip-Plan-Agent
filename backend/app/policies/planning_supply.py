@@ -95,6 +95,17 @@ def _distance(candidate, destination):
     return round(12742000 * asin(sqrt(min(1.0, max(0.0, a)))))
 
 
+def soft_opportunity_limits(contract):
+    """Keep one replacement beyond each final soft target; never a category cap."""
+    from backend.app.schemas.interpreted_requirements import soft_coverage_eligible
+
+    return {
+        r.requirement_id: (r.soft_coverage.target if r.soft_coverage else 1) + 1
+        for r in contract.semantic_requirements
+        if soft_coverage_eligible(r)
+    }
+
+
 def nomination_allowed(place, contract, judgment, required):
     """Optional nominations cannot expand explicit scopes or primary permissions."""
     if not place.landmark_nomination or place.candidate.place_id in required:
@@ -177,6 +188,26 @@ def select_planning_supply(
         }
         for subject in subjects:
             buckets[(subject, intent.intent_id)] = members
+    soft_limits = soft_opportunity_limits(contract)
+    supported_by_requirement = {
+        ref: {
+            pid
+            for pid, c in by_id.items()
+            if (
+                any(
+                    m.requirement_id == ref and m.relation == "supported"
+                    for m in semantic_assessments[pid].matches
+                )
+                if semantic_assessments is not None
+                else any(
+                    d.intent_id in c.intent_ids and ref in d.requirement_refs
+                    for d in contract.discovery_intents
+                )
+            )
+        }
+        for ref in soft_limits
+    }
+    intent_refs = {d.intent_id: set(d.requirement_refs) for d in contract.discovery_intents}
     subject_turns = Counter()
     intent_turns = Counter()
     types = Counter(by_id[pid].primary_type for pid in chosen if by_id[pid].primary_type)
@@ -186,10 +217,18 @@ def select_planning_supply(
         rows = relations[pid]
         # One requirement cannot earn multiple rewards through several dimensions.
         conflicts = {r.requirement_id for r in rows if r.relation == "conflict"}
-        aligned = {r.requirement_id for r in rows if r.relation == "alignment"} - conflicts
+        aligned = {r.requirement_id for r in rows if r.relation == "alignment"}
+        aligned -= conflicts | saturated
         category = by_id[pid].primary_type
         repeated = types[category] if category else 0
-        return (len(conflicts), -len(aligned), repeated)
+        landmark = by_id[pid].landmark_nomination
+        return (
+            len(conflicts),
+            -len(aligned),
+            0 if landmark else 1,
+            repeated,
+            landmark.rank if landmark else 0,
+        )
 
     while len(chosen) < target:
         remaining = set(by_id) - set(chosen)
@@ -212,14 +251,34 @@ def select_planning_supply(
             }
         if not remaining:
             break
-        active = {
-            key: members & remaining for key, members in buckets.items() if members & remaining
+        saturated = {
+            ref
+            for ref, limit in soft_limits.items()
+            if len(supported_by_requirement[ref] & set(chosen)) >= limit
         }
+        active = {}
+        for key, members in buckets.items():
+            pending_refs = intent_refs[key[1]] - saturated
+            options = members & remaining
+            if semantic_assessments is not None:
+                options = {
+                    pid
+                    for pid in options
+                    if any(
+                        m.requirement_id in pending_refs and m.relation == "supported"
+                        for m in semantic_assessments[pid].matches
+                    )
+                }
+            if pending_refs and options:
+                active[key] = options
+        saturated_members = set().union(*(supported_by_requirement[r] for r in saturated))
+        independent = {pid for pid in remaining if by_id[pid].landmark_nomination}
+        independent |= remaining - saturated_members
         if active:
             key = min(active, key=lambda k: (subject_turns[k[0]], k[0], intent_turns[k], k[1]))
             cohort = active[key]
         else:
-            key, cohort = None, remaining
+            key, cohort = None, independent or remaining
         count_options = set()
         if semantic_assessments is not None:
             for req in requirements.values():
@@ -247,7 +306,7 @@ def select_planning_supply(
             else:
                 key, cohort = None, count_options
         elif semantic_assessments is not None and not any(
-            r.experience_goal and r.experience_goal.trip_scope in {"themed", "exclusive"}
+            r.experience_goal and r.experience_goal.trip_scope == "exclusive"
             for r in requirements.values()
         ):
             # Once a sourced one-off bucket has an option, diversify its remaining opportunities.
@@ -261,6 +320,7 @@ def select_planning_supply(
                     for m in semantic_assessments[pid].matches
                 )
             }
+            general |= {pid for pid in remaining if by_id[pid].landmark_nomination}
             explored = len(chosen) - len(required)
             due = ceil((explored + 1) * semantic_config.exploration_fraction) > ceil(
                 explored * semantic_config.exploration_fraction

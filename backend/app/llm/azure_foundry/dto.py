@@ -91,7 +91,7 @@ class FoundryExperienceGoalDTO(FoundryTransportDTO):
     target: Literal["category", "named_place"]
     distinct_dates: bool
     explicit_primary_exception: bool
-    trip_scope: Literal["ordinary", "themed", "exclusive"]
+    trip_scope: Literal["ordinary", "exclusive"]
 
 
 class FoundrySemanticDTO(FoundryTransportDTO):
