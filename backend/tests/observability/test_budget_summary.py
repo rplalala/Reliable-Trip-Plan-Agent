@@ -167,3 +167,37 @@ def test_cancelled_rag_retains_recorded_work_without_inventing_usage(tmp_path):
     assert summary["stages"]["rag"]["observed"]["resolution_attempts"] == 3
     assert summary["stages"]["rag"]["observed"]["details_sends"] == 2
     assert summary["stages"]["rag"]["usage_status"] == "missing"
+
+
+def test_nomination_accounting_is_separate_and_does_not_include_names(tmp_path):
+    tracer = FileRunTracer(_context(), root=tmp_path, payload_mode=TracePayloadMode.METADATA)
+    tracer.event(
+        "landmark_nomination",
+        dict(
+            calls=1,
+            call_id="landmark-1",
+            elapsed_seconds=0.2,
+            engineering_tokens=600,
+            nominated=2,
+            names=["PRIVATE"],
+            usage={},
+        ),
+    )
+    tracer.event(
+        "landmark_discovery",
+        dict(
+            resolved=1,
+            unresolved=1,
+            supplementary_sends=1,
+            candidate_search_sends=4,
+            general_status="provider_success",
+        ),
+    )
+    tracer.finish(status="completed", requirements=None, tool_usage={}, outcome=None)
+    data = json.loads((tracer.run_directory / "budget.json").read_text())
+    row = data["stages"]["landmark_nomination"]
+    assert row["observed"]["resolved"] == 1
+    assert row["observed"]["calls"] == 1
+    assert row["calls"][0]["usage_status"] == "missing"
+    assert data["stages"]["semantics"]["calls"] == []
+    assert "PRIVATE" not in json.dumps(data)

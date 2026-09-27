@@ -18,6 +18,11 @@ def select(value, keys):
 
 USAGE_KEYS = ("input_tokens", "output_tokens", "total_tokens")
 LIMITS = {
+    "landmark_nomination": (
+        "landmark_nomination",
+        "max_calls max_names input_tokens output_tokens "
+        "call_timeout_seconds supplementary_searches",
+    ),
     "primary_generation": ("main_generation", "input_tokens output_tokens framing_tokens"),
     "semantics": (
         "poi_semantics",
@@ -71,6 +76,7 @@ class BudgetSummary:
                 "requirements",
                 "primary_generation",
                 "semantics",
+                "landmark_nomination",
                 "rag",
                 "repair",
                 "nearby",
@@ -92,7 +98,52 @@ class BudgetSummary:
     def observe(self, event, payload):
         if not isinstance(payload, dict):
             return
-        if event == "poi_semantic_assessment":
+        if event in {"landmark_nomination", "landmark_discovery"}:
+            name = "landmark_nomination"
+            if event == name and payload.get("calls"):
+                self.call(name, payload.get("call_id"), payload)
+            self.stages[name]["observed"].update(
+                select(
+                    payload,
+                    (
+                        "calls",
+                        "elapsed_seconds",
+                        "engineering_tokens",
+                        "nominated",
+                        "resolved",
+                        "unresolved",
+                        "reused",
+                        "supplementary_sends",
+                        "candidate_search_sends",
+                        "qualified",
+                        "selected",
+                    ),
+                )
+            )
+            self.stages[name]["observed_status"] = "recorded"
+            for key in ("status", "nomination_status", "general_status", "supplementary_stop"):
+                if payload.get(key) in {
+                    "not_started",
+                    "completed",
+                    "empty",
+                    "input_limit",
+                    "deadline",
+                    "unavailable",
+                    "cancelled",
+                    "timeout",
+                    "failed",
+                    "started",
+                    "interrupted",
+                    "degraded",
+                    "not_attempted",
+                    "provider_success",
+                    "provider_failed",
+                    "budget_not_attempted",
+                    "supplementary_limit",
+                    "shared_search_limit",
+                }:
+                    self.stages[name][key] = payload[key]
+        elif event == "poi_semantic_assessment":
             self.call("semantics", payload.get("call_id"), payload)
         elif event == "v3_repair_round":
             index = payload.get("round_index")
