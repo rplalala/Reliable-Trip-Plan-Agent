@@ -121,6 +121,7 @@ def fixtures(days, count, long_text=False):
         optional_canonical_ids=tuple(ids),
         selected_place_ids=tuple(ids),
         shortfall=0,
+        landmarks={},
         profile_relations={pid: profile_relations(contract, profiles, pid) for pid in ids},
     )
     projection = planner_supply_projection(

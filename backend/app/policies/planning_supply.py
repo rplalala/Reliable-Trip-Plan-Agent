@@ -7,6 +7,7 @@ from time import perf_counter, process_time
 from pydantic import BaseModel, ConfigDict, Field
 
 from backend.app.schemas.interpreted_requirements import ClarificationRequired
+from backend.app.schemas.landmark_nomination import LandmarkIdentity
 
 
 class SupplyCandidate(BaseModel):
@@ -19,6 +20,7 @@ class SupplyCandidate(BaseModel):
     latitude: float
     longitude: float
     intent_ids: tuple[str, ...] = ()
+    landmark_nomination: LandmarkIdentity | None = None
 
 
 class ProfileRelation(BaseModel):
@@ -31,6 +33,8 @@ class ProfileRelation(BaseModel):
 
 
 class PlanningSupplyResult(BaseModel):
+    landmarks: dict[str, LandmarkIdentity] = Field(default_factory=dict)
+    nomination_diagnostics: dict = Field(default_factory=dict)
     acquisition_diagnostics: dict = Field(default_factory=dict)
     selected_place_ids: tuple[str, ...]
     required_canonical_ids: tuple[str, ...]
@@ -89,6 +93,32 @@ def _distance(candidate, destination):
     lat2, lon2 = map(radians, destination)
     a = sin((lat2 - lat1) / 2) ** 2 + cos(lat1) * cos(lat2) * sin((lon2 - lon1) / 2) ** 2
     return round(12742000 * asin(sqrt(min(1.0, max(0.0, a)))))
+
+
+def nomination_allowed(place, contract, judgment, required):
+    """Optional nominations cannot expand explicit scopes or primary permissions."""
+    if not place.landmark_nomination or place.candidate.place_id in required:
+        return True
+    exclusive = {
+        r.requirement_id
+        for r in contract.semantic_requirements
+        if r.polarity == "favor"
+        and r.experience_goal
+        and r.experience_goal.trip_scope == "exclusive"
+    }
+    exclusions = {
+        r.requirement_id
+        for r in contract.semantic_requirements
+        if r.polarity == "avoid" and r.kind == "constraint"
+    }
+    supported = (
+        {m.requirement_id for m in judgment.matches if m.relation == "supported"}
+        if judgment
+        else set()
+    )
+    return not supported.intersection(exclusions) and (
+        not exclusive or bool(exclusive.intersection(supported))
+    )
 
 
 def select_planning_supply(

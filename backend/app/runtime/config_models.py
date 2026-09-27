@@ -420,7 +420,17 @@ class POISemanticsConfig(_RepairConfigModel):
         return self
 
 
+class LandmarkNominationConfig(_RepairConfigModel):
+    max_calls: Literal[1] = 1
+    max_names: StrictInt = Field(default=12, ge=1, le=12)
+    input_tokens: StrictInt = Field(default=8000, ge=1, le=8000)
+    output_tokens: StrictInt = Field(default=2000, ge=1, le=2000)
+    call_timeout_seconds: float = Field(default=20, gt=0, le=20)
+    supplementary_searches: StrictInt = Field(default=4, ge=0, le=4)
+
+
 class RuntimeConfig(_ConfigModel):
+    landmark_nomination: LandmarkNominationConfig = Field(default_factory=LandmarkNominationConfig)
     input_assistance: InputAssistanceConfig = Field(default_factory=InputAssistanceConfig)
     poi_semantics: POISemanticsConfig
     transport: TransportPolicyConfig | None = None

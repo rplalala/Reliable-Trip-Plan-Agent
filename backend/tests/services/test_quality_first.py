@@ -134,6 +134,11 @@ def test_quality_pipeline_profile_precedes_supply_and_uses_injected_limits():
         )
 
         async def observations(*args, **kwargs):
+            from backend.app.services.evidence_acquisition import SearchIntentExecution
+
+            kwargs["intent_executions"].extend(
+                SearchIntentExecution(i.intent_id, "provider_success") for i in kwargs["intents"]
+            )
             return rows
 
         acq.search_candidate_observations = observations

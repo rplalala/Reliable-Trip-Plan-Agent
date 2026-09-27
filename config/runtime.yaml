@@ -1,4 +1,11 @@
 schema_version: 6
+landmark_nomination:
+  max_calls: 1
+  max_names: 12
+  input_tokens: 8000
+  output_tokens: 2000
+  call_timeout_seconds: 20
+  supplementary_searches: 4
 input_assistance:
   destination:
     min_chars: 2

@@ -377,6 +377,23 @@ class AzureFoundryStructuredLLMClient:
         dto = FoundrySemanticAssessmentBatch.model_validate(raw)
         return dto
 
+    async def generate_landmark_nomination_structured(
+        self, *, system_prompt, user_prompt, output_tokens, usage_callback=None
+    ):
+        from backend.app.schemas.landmark_nomination import LandmarkNominationDraft
+
+        model = self._chat_model.with_structured_output(
+            LandmarkNominationDraft,
+            method="json_schema",
+            strict=True,
+            max_output_tokens=output_tokens,
+        )
+        raw = await model.ainvoke(
+            [SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)],
+            **({"config": {"callbacks": [usage_callback]}} if usage_callback else {}),
+        )
+        return LandmarkNominationDraft.model_validate(raw)
+
     async def generate_repair_structured(
         self, *, system_prompt, user_prompt, output_tokens=None, usage_callback=None
     ):

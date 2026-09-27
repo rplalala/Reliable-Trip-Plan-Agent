@@ -5,6 +5,7 @@ from dataclasses import dataclass, replace
 from backend.app.policies.planning_supply import (
     PlanningSupplyResult,
     SupplyCandidate,
+    nomination_allowed,
     select_planning_supply,
 )
 from backend.app.policies.poi_capacity import apply_poi_operating_budgets, derive_poi_capacities
@@ -130,6 +131,7 @@ class PlanningCandidateSupplyPipeline:
     ):
         service = getattr(self.acquisition, "poi_semantics", None)
         judgments = service.ledger if service else None
+
         candidates = tuple(
             SupplyCandidate(
                 place_id=p.candidate.place_id,
@@ -142,10 +144,19 @@ class PlanningCandidateSupplyPipeline:
                 latitude=p.structured_evidence.latitude,
                 longitude=p.structured_evidence.longitude,
                 intent_ids=p.discovery_intent_ids,
+                landmark_nomination=p.landmark_nomination,
             )
             for p in rich
-            if judgments is None
-            or (p.candidate.place_id in judgments and judgments[p.candidate.place_id].main_eligible)
+            if (
+                judgments is None
+                or (
+                    p.candidate.place_id in judgments
+                    and judgments[p.candidate.place_id].main_eligible
+                )
+            )
+            and nomination_allowed(
+                p, contract, judgments.get(p.candidate.place_id) if judgments else None, required
+            )
         )
         if judgments is not None and not set(required) <= {c.place_id for c in candidates}:
             from backend.app.schemas.poi_semantics import SemanticPreparationLimit
@@ -163,8 +174,26 @@ class PlanningCandidateSupplyPipeline:
             semantic_assessments=judgments,
             semantic_config=service.config if service else None,
         )
+        landmark_report = dict(getattr(self.acquisition, "landmark_diagnostics", {}))
+        qualified_landmarks = {p.candidate.place_id for p in rich if p.landmark_nomination}
+        qualified_landmarks &= {c.place_id for c in candidates}
+        landmark_report.update(
+            qualified=len(qualified_landmarks),
+            selected=len(qualified_landmarks & set(result.selected_place_ids)),
+        )
+        if landmark_report and not qualified_landmarks:
+            landmark_report["status"] = "degraded"
+        self.tracer.event("landmark_discovery", landmark_report)
         result = result.model_copy(
-            update={"acquisition_diagnostics": getattr(self.acquisition, "details_report", {})}
+            update={
+                "acquisition_diagnostics": getattr(self.acquisition, "details_report", {}),
+                "nomination_diagnostics": landmark_report,
+                "landmarks": {
+                    p.candidate.place_id: p.landmark_nomination
+                    for p in rich
+                    if p.landmark_nomination and p.candidate.place_id in result.selected_place_ids
+                },
+            }
         )
         final = selection_record(
             result.selected_place_ids,
@@ -186,6 +215,7 @@ def planner_supply_projection(selection, contract):
     result = selection.policy_result
     return {
         "contract_version": "planning_supply_1",
+        "landmarks": {pid: row.model_dump() for pid, row in result.landmarks.items()},
         "poi_semantics": [r.model_dump(mode="json") for r in selection.semantic_assessments],
         "required_canonical_ids": result.required_canonical_ids,
         "optional_canonical_ids": result.optional_canonical_ids,

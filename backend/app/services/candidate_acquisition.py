@@ -1,6 +1,6 @@
 """Shared candidate acquisition and evidence preparation for V1 and V2."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from backend.app.evidence.selection_models import (
     PlaceSearchIntent,
@@ -100,7 +100,21 @@ class CandidateAcquisition:
     def __init__(self, acquisition, llm, tracer, llm_identity):
         self.acquisition = acquisition
         self.tracer = tracer
+        from backend.app.runtime.config_models import LandmarkNominationConfig
+        from backend.app.services.landmark_discovery import LandmarkDiscovery
+        from backend.app.services.landmark_nomination import LandmarkNominationService
+
         config = getattr(acquisition, "runtime_config", None)
+        self.landmarks = LandmarkDiscovery(
+            acquisition,
+            LandmarkNominationService(
+                llm,
+                config.landmark_nomination if config else LandmarkNominationConfig(),
+                config.main_generation.framing_tokens if config else 256,
+                tracer=tracer,
+                deadline=getattr(acquisition, "request_deadline", None),
+            ),
+        )
         if config and config.poi_semantics:
             from backend.app.services.poi_semantics import POISemanticsService
 
@@ -197,12 +211,8 @@ class CandidateAcquisition:
                 )
             )
         failures, executions = set(), []
-        observations = await acq.search_candidate_observations(
-            r,
-            destination,
-            intents=intents,
-            failed_intent_ids=failures,
-            intent_executions=executions,
+        observations = await self.landmarks.search(
+            contract, destination, intents, failures, executions
         )
         merged = merge_search_observations(observations)
         resolutions = resolve_named_place_intents(
@@ -243,6 +253,7 @@ class CandidateAcquisition:
         extension = getattr(supply, "discovery_extension", None)
         if extension is not None:
             merged = await extension.extend(contract, destination, merged, excluded)
+            merged = replace(merged, places=tuple(self.landmarks.annotate(merged.places)))
         eligible = [
             p
             for p in merged.places
