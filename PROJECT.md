@@ -1,5 +1,22 @@
 # Capstone Project Context
 
+## V0 transport and Nearby prompt alignment - 2026-09-28
+
+The user requested transport and Nearby content across versions. V0 now explicitly
+prompts same-day inter-visit transport activities with estimated times/modes and
+uncertainty, plus one to three suitable nearby model-knowledge recommendations when
+available. It remains one primary generation with no tools or added repair mechanism.
+Transport uses existing activity_kind=transport, not provider-backed transfers;
+references remain optional, unscheduled, capped at three, and empty when unsupported.
+V1/V2 already attach Nearby through their shared post-itinerary service; both produced
+three references in the Berlin run. No V1/V2/V3 behavior change was needed.
+The authorized single Berlin V0 revalidation passed: six days, 17 main visits,
+11 explicitly estimated transport activities and one contextual optional reference.
+All inter-venue legs were represented without overlaps and roles counted separately.
+Standards/Spec: zero findings; combined relevant regression: 176 passed; Ruff passed.
+See the [acceptance record](.scratch/v0-transport-nearby/assessment.md). No real-world
+route/access/cost verification or version freeze is implied.
+
 ## Trace capture limit adjustment - 2026-09-28
 
 The user accepted V1 repeat visits as an observation within that version's limited

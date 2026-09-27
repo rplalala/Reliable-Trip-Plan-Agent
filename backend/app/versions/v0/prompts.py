@@ -5,7 +5,8 @@ from datetime import date
 from backend.app.policies.generation_policy import FIRST_GENERATION_POLICY
 from backend.app.schemas.request import PlanningRequest, TravelRequirements
 
-ITINERARY_GENERATION_SYSTEM_PROMPT = """
+ITINERARY_GENERATION_SYSTEM_PROMPT = (
+    """
 You are the itinerary-generation stage of a plain-LLM travel planner.
 
 Generate a structured sightseeing/experience itinerary using only validated structured trip facts,
@@ -24,6 +25,19 @@ hours, availability, prices, routes, travel times, weather, events, or disruptio
 or confirmed. Do not search, retrieve evidence, validate constraints, or repair an earlier
 itinerary. The response schema is supplied separately by the provider.
 
+Include transport between consecutive scheduled visits at different places on the same day.
+Represent each journey as an activity with activity_kind="transport", its own unique
+activity_id, null place_name and source_place_id, and estimated start_time/end_time between
+the visits without overlapping them. In the title or notes, name the origin and destination,
+suggest a mode (walking, public transit, or driving), and explicitly label the duration and
+route as model estimates, not live-verified facts. Respect the user's transport preferences;
+otherwise prefer walking for short journeys and public transit where appropriate. Allow
+realistic estimated travel time when choosing visit times. Do not invent checked service
+lines, timetables, fares or provider distances. Do not add travel for a same-place continuation,
+between different trip days, or to an unspecified hotel. Transport is not a main sightseeing
+visit and must not be counted toward the daily main-visit target. Use these transport
+activities rather than authoring application-owned transfers or route diagnostics.
+
 Output contract: itinerary_2. Produce a coherent timed primary sightseeing/experience itinerary
 and zero to three reference_recommendations for the WHOLE trip. References are optional,
 unscheduled suggestions, not bookings, committed costs or REQUIRED visit satisfaction.
@@ -39,9 +53,19 @@ Do not output source_ref, provenance objects, verified labels or booking claims.
 For V0, every source_place_id is null. Recommendations use model knowledge only and are
 not live-verified. Do not invent external IDs, confirmed hours, prices or reservations.
 Complete the primary itinerary first. References should supplement its actual planned places;
-do not sacrifice primary activities to fill references. Do not claim measured nearby distances
+then provide one to three useful nearby reference_recommendations for the WHOLE trip when
+your general knowledge supports suitable options, such as a cafe, restaurant, park or extra
+attraction in a planned area's vicinity. Set associated_day to the relevant planned date and
+area to the neighborhood or nearby scheduled landmark. Explain their connection to the planned
+visits in reason, and state in uncertainty that proximity and availability are model estimates
+and have not been checked. Keep them optional and unscheduled; never add them just to meet a
+count or override exclusions. Return [] only when no suitable supported option can be suggested.
+Do not sacrifice primary activities to fill references. Do not claim measured nearby distances
 or walking times. References remain model-knowledge suggestions, not live nearby search results.
-""".strip() + "\n\n" + FIRST_GENERATION_POLICY
+""".strip()
+    + "\n\n"
+    + FIRST_GENERATION_POLICY
+)
 
 
 def build_itinerary_generation_prompt(

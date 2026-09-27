@@ -1,5 +1,40 @@
 # Shared itinerary output
 
+## V0 transport and Nearby content alignment - 2026-09-28
+
+V0's prompt explicitly requests estimated transport between consecutive different
+scheduled venues on the same day, with origin/destination, suggested mode, travel-time
+allocation and uncertainty. These are existing `activity_kind=transport` activities
+with null place identities, not application-owned `transfers` or verified routing.
+They do not count as main visits. No journeys to unspecified hotels or across trip
+days are requested, and no extra model stage, tool, validation or Repair is added.
+
+After primary planning, the same generation should suggest one to three suitable
+nearby options from model knowledge, linked to a planned day/area with explicit
+unverified proximity/availability. The existing zero-to-three reference schema remains:
+empty is permitted when no supported option exists; exclusions and nonduplication
+remain in force. Recommendations are optional and never scheduled visit credit.
+V1/V2 already use independent post-itinerary Nearby discovery; their Berlin outputs
+each contained three recommendations. V3 retains post-repair discovery. Content roles
+are aligned while the mechanisms and evidence levels remain version-specific.
+
+Offline validation: 80 tests passed across V0, V1 reference stage, V2, Nearby service,
+output roles and provider DTO mapping. A new entry-point fixture checks preservation
+of estimated transport and references with no additional generation, and excludes
+transport from main-visit counts. Its first run exposed an unnamed test venue; the
+fixture was corrected to use a named main venue and the full selected set passed.
+This was a fixture correction, not a production-policy change. Ruff passed. No live
+model run was performed at that offline checkpoint.
+
+The subsequently authorized single V0 Berlin revalidation passed the bounded content
+check: six days with 17 main visits (4/3/3/2/3/2), 11 explicitly estimated transport
+activities connecting every inter-venue pair without overlaps, and one contextual
+optional Nearby reference with unverified proximity/availability. Provider IDs remain
+null; transport is counted separately and no application-owned transfers are invented.
+Standards/Spec reviews had zero findings and the combined regression passed 176 tests.
+See the [acceptance record](../.scratch/v0-transport-nearby/assessment.md). Actual routes,
+opening/access, prices and general model reliability remain unverified; no freeze.
+
 ## Implemented semantic policy output — 2026-09-26
 
 GenerationDiagnostics now exposes policy_completion, policy_issues and goal_progress. ProductPlanResult forwards completion/reason codes; the UI labels incomplete adopted results without hiding the itinerary. This completion scope concerns counted primary roles/multiplicity/minimum coverage, not global feasibility or verified cost/access. Semantic assessment failures remain system errors. The result includes request-wide semantic assessment/config/cache/usage audit. Nearby remains separate. See the [checkpoint](shared_poi_semantics_plan.md#12-implementation-checkpoint--2026-09-26).
