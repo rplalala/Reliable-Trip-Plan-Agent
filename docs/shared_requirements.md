@@ -1,5 +1,26 @@
 # Shared structured input and semantic requirements
 
+## Focus rule convergence - 2026-09-28
+
+Current interpretation uses `preference_prompt_18` / `preference_draft_12`. Model and
+domain experience-goal scopes accept only `ordinary` and explicitly sourced `exclusive`.
+`themed` is removed; focus is represented solely by exact `trip_focus_source`, producing
+the application target two. Without focus provenance, a count-free positive category
+interest has target one. Whole-trip scope on a category interest no longer bypasses soft
+coverage; enjoyment/pace/relaxation without a category goal remain uncounted. No keyword
+classifier, extra interpretation send, inferred ratio or inferred large count is added.
+
+Explicit quantities, exclusions, HARD handling and explicit category-only restrictions
+retain their existing boundaries. The targets are not maxima; independent landmark value
+survives saturation. V0 uses the shared prompt within its existing LLM-only flow; V1-V3
+also apply shared candidate and final-coverage policies. Historic payloads containing
+`themed` remain evidence artifacts but are not valid inputs to the narrowed current
+schema; they are not silently migrated into new focus claims. The canonical envelope
+remains `interpreted_requirements_4`; prompt/wire identifiers record this tightened scope.
+One unchanged-input Melbourne V3 revalidation subsequently exercised sourced target2
+successfully; broader real-model reliability remains unestablished. See the
+[bounded assessment](../.scratch/preference-landmark-balance/pilot/focus-revalidation-assessment.md).
+
 ## Soft preference coverage — 2026-09-27
 
 Ticket 01 adds `preference_prompt_17` / `preference_draft_11` to the existing

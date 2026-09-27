@@ -544,3 +544,8 @@ All existing C/G/K, Details, semantic, RAG, route and Repair ceilings remain unc
 Model-origin rank is selection metadata, not provider fact evidence. Bounds are engineering
 starting values; live quality, latency and cost remain unmeasured. See
 [landmark discovery](../docs/shared_landmark_discovery.md) for identity and fallback behavior.
+
+Ticket 03 (2026-09-28) adds no configuration keys or budget increase. Candidate balancing
+uses the sourced final soft target plus one replacement opportunity; this is a selection
+heuristic, not a final category quota. Existing exploration settings also admit resolved
+landmarks that match preferences. See [supply policy](../docs/shared_poi_supply.md).

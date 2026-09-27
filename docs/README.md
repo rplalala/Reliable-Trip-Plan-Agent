@@ -4,12 +4,26 @@ The root README directly introduces the project and quick start. PROJECT directl
 scope/status and next approval. This index routes readers; detailed contracts and experiment
 records have one responsibility owner instead of being copied into the entry documents.
 
-## Current landmark implementation checkpoint - 2026-09-27
+## Current preference and landmark closeout - 2026-09-28
 
-Tickets 01 and 02 are implemented and offline validated.
+The user approved [feature closeout](../.scratch/preference-landmark-balance/closeout.md)
+and logical commits after the correction and bounded revalidation. No version freeze.
+
+The subsequent [focus rule convergence](shared_requirements.md#focus-rule-convergence---2026-09-28)
+removes inferred themed scope and keeps one/two soft targets. See the
+[implementation and regression record](../.scratch/preference-landmark-balance/focus-convergence.md).
+The [one-case Melbourne revalidation](../.scratch/preference-landmark-balance/pilot/focus-revalidation-assessment.md)
+passed bounded focus acceptance in99.781s; it does not rewrite the earlier pilot failure
+or establish universal reliability.
+
+Tickets 01-03 are implemented; [integrated candidate balance](shared_poi_supply.md#preference-and-landmark-balance---2026-09-28) describes the current policy.
 [Bounded landmark discovery](shared_landmark_discovery.md) describes the destination-only
 model call, shared search allocation, exact identity, fallback and budget observability.
-Ticket 03 remains pending for combined candidate balance; no live quality claim or freeze.
+Candidate opportunity and final coverage remain distinct. The
+[three-case V3 pilot assessment](../.scratch/preference-landmark-balance/pilot/assessment.md)
+records successful execution but failed Melbourne focus-target interpretation at that
+earlier checkpoint. The correction and revalidation above supersede that acceptance status.
+No cross-version quality claim or freeze.
 
 ## Recommended reading order
 
@@ -81,12 +95,14 @@ Runtime/tool cleanup and evidence relocation are recorded in [the development re
 ## Current checkpoint navigation
 
 - [Preference coverage and local landmark balance specification](../.scratch/preference-landmark-balance/spec.md)
-  (2026-09-27): **tickets 01/02 implemented; ticket 03 pending**. Ordinary soft
+  (2026-09-27): **tickets 01-03 implemented**. Ordinary soft
   preference targets are one, or two for sourced trip focus. Final grounded coverage
   and Product feedback distinguish covered/gap/unassessed; V0 remains prompt-only.
   See [current semantics](shared_requirements.md#soft-preference-coverage--2026-09-27).
-  Destination nomination is implemented; combined candidate balancing remains pending.
-  No live quality validation or formal evaluation is claimed.
+  Destination nomination and combined candidate balancing are implemented.
+  Three V3 live cases completed on 2026-09-28; Melbourne failed focus-target interpretation.
+  The later focus correction and one-case revalidation passed; user-approved closeout is
+  recorded above. No formal evaluation or version comparison is claimed.
 
 - [Planning input UX specification](../.scratch/planning-input-ux/spec.md): current GeoDB,
   currency/date, compact-weather and single-call Polish behavior, limits and evidence.

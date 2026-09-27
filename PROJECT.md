@@ -1,5 +1,80 @@
 # Capstone Project Context
 
+## Preference and landmark feature closeout - 2026-09-28
+
+The user accepted closing this iteration and authorized logical local commits without
+another approval. Tickets 01-03, focus-rule convergence and bounded Melbourne V3
+revalidation are complete. Current behavior is ordinary target 1, sourced focus target 2,
+explicit quantities/exclusions/exclusive restrictions preserved, no inferred themed volume,
+and independent landmark opportunities after preference saturation. V0 remains prompt-only;
+V0-V3 execution paths, resource ceilings and V3 Repair permissions are preserved.
+The earlier Melbourne failure remains historical; the later single-case acceptance passed
+with museum 2/2, architecture 2/1, gardens 1/1 and six scheduled nominated landmarks.
+UNKNOWNs, broader model reliability and explicit maximum enforcement remain bounded limits.
+This is feature closeout, not a version freeze or formal evaluation. No further live runs
+are planned. See [closeout](.scratch/preference-landmark-balance/closeout.md).
+Final combined regression: **1808 passed / 9 skipped (77.43s)**; Ruff/diff checks passed.
+An earlier run stalled in an existing cancellation-test area and was interrupted; the
+16-test file and subsequent full rerun passed without retrieval changes. Local commits
+`4084a2f` (implementation/tests) and `274ab27` (bounded pilot tools/tests) save this capability;
+the related documentation commit completes closeout. Earlier dated status remains historical.
+
+## Melbourne focus live revalidation - 2026-09-28
+
+One separately authorized unchanged-input V3 attempt passed the bounded focus acceptance
+in99.781s, exit0, complete captures and recorded budgets within limits. Museum focus has
+exact sourced soft target2 and final coverage2; architecture2/1 and gardens1/1 are covered.
+Eight resolved/qualified nominees reached supply, six appear among eight final main visits
+(3/3/2 by day). No authorized Repair targets; initial equals final,11 UNKNOWNs remain.
+This is limited live support for the correction, not universal quality, full feasibility,
+formal comparison or freeze. No retries or commit. See [assessment](.scratch/preference-landmark-balance/pilot/focus-revalidation-assessment.md).
+
+## Focus rule convergence - 2026-09-28
+
+The user approved removing inferred themed travel behavior after the Melbourne failure.
+Current prompt18/wire12 and domain scope expose ordinary/exclusive only. Ordinary category
+interests target one, sourced current-trip focus two; explicit quantities/exclusions and
+explicit category-only restrictions retain existing meaning. Whole-trip category labels
+cannot bypass soft coverage, and only exclusive scope bypasses general exploration.
+The targets are not maxima: independent landmark value survives saturation. V0 remains
+prompt-only; V1-V3 share the grounded policies. No budgets or Repair permissions changed.
+See [implementation record](.scratch/preference-landmark-balance/focus-convergence.md).
+The correction is implemented; no new live run or commit. Historic themed payloads remain
+evidence and are rejected by the narrowed current schema. Prior live outcomes below are
+unchanged; real-model reliability after the correction is not yet established.
+Final backend regression: **1807 passed / 9 skipped**; Ruff/diff and Standards/Spec reviews
+passed. Next step is a separately approved bounded Melbourne V3 live verification.
+
+## Preference and landmark V3 live checkpoint - 2026-09-28
+
+The user authorized preparation through three sequential one-shot V3 live cases.
+All completed with complete captures: Sydney 89.890s, Melbourne 118.296s, Brisbane
+67.079s. Sydney retained ordinary target 1 and scheduled seven nominated landmarks
+among eight visits. Brisbane kept three main visits and reported three interests as
+unassessed. Melbourne failed the required focus interpretation: the explicit museum
+focus became `goal/themed` with no soft target 2, and museum-related options dominated.
+Therefore full feature acceptance has **not passed** despite successful execution.
+All three skipped Repair with no authorized targets; UNKNOWN findings remain.
+No repair, rerun, commit or freeze was performed. Recommended next scope is an offline
+regression and correction of focus classification, followed by separately bounded live
+verification. See [pilot assessment](.scratch/preference-landmark-balance/pilot/assessment.md)
+and the [development record](docs/development_record.md) for evidence and limitations.
+
+## Integrated preference and landmark balance - 2026-09-28
+
+Tickets 01-03 are implemented. V1-V3 balance soft-preference candidate opportunities
+with resolved landmark value through admission and final supply. Target plus one keeps
+replacement opportunities; only final distinct scheduled matches count as coverage.
+Explicit restrictions and facts retain authority. V0 remains prompt-only and V3 Repair
+permissions are unchanged. No resource ceilings were increased or live tests run.
+
+Task 02 was committed as `9d25633` (implementation/tests), `e795aab` (budget reporting),
+and `cc4d5a0` (documentation). Task 03 changes remain uncommitted. Current design:
+[shared supply](docs/shared_poi_supply.md#preference-and-landmark-balance---2026-09-28).
+Final validation: **1793 backend tests passed / 9 skipped**; scoped Ruff and both reviews
+passed. Details are in the [development record](docs/development_record.md).
+No freeze or cross-version quality claim. Any live pilot needs a separate approved plan.
+
 ## Landmark nomination implementation - 2026-09-27
 
 Ticket 02 is implemented: V1-V3 initial discovery adds one destination-only model

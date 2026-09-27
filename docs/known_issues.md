@@ -1,5 +1,31 @@
 # Known issues and coverage limits
 
+## Focus classification acceptance failure - 2026-09-28
+
+Subsequent implementation: the user chose unified one/two soft targets and removed
+inferred themed scope. Prompt18/wire12, narrowed enums, whole-trip category eligibility
+and exclusive-only exploration exceptions implement that decision. See the
+[correction record](../.scratch/preference-landmark-balance/focus-convergence.md).
+A separately authorized one-case Melbourne revalidation subsequently passed bounded focus
+acceptance (museum2/2, architecture2/1, gardens1/1; six scheduled nominees). The original
+failure below is preserved; broad reliability and full feasibility remain unestablished.
+See [live assessment](../.scratch/preference-landmark-balance/pilot/focus-revalidation-assessment.md).
+
+The authorized Melbourne V3 landmark pilot interpreted the specification's exact example
+`This trip is mainly about museums.` as `goal/whole_trip/themed` with no `soft_coverage`.
+The required sourced target 2 was absent from both the interpreted contract and Product
+coverage. Existing theme branches bypassed soft-opportunity saturation/general exploration;
+only two of seven qualified nominees reached supply, and one reached the museum-dominated
+final itinerary. Acceptance failed at that historical checkpoint; the subsequent correction
+and separately authorized revalidation above addressed this example. The user has approved
+feature closeout while retaining general reliability limits. See
+[pilot assessment](../.scratch/preference-landmark-balance/pilot/assessment.md).
+
+Brisbane's three-visit output obeyed its textual maximum, but the maximum was retained as
+an itinerary-style preference rather than an executable count goal. This run establishes
+output compliance only. Three interests remain honestly `unassessed`; Repair was not
+exercised in any of the three cases. These limits are not new confirmed travel violations.
+
 <a id="b-f91feff05852-0"></a>
 
 Historical issue inventory from the earlier quality_first_1 pair (2026-09-20).

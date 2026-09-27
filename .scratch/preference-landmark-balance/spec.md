@@ -1,8 +1,8 @@
 # Preference coverage and local landmark balance
 
-Status: ready-for-agent
+Status: resolved
 Date: 2026-09-27
-Design status: Accepted decisions; specification published; implementation pending
+Design status: Implemented, offline validated and user-approved closeout after bounded V3 revalidation on 2026-09-28; not frozen
 Baseline revision: 8f5e9b3cdb60c4c7f3fbb55f68ebb8a24dd7ac86
 
 ## Problem Statement
@@ -87,6 +87,14 @@ not prove opening hours, admission, route feasibility or cost.
 
 ### Preference semantics and coverage
 
+- Accepted clarification (2026-09-28, after the V3 pilot): remove inferred `themed`
+  scope. Ordinary and explicitly focused POI interests use soft targets one and two;
+  no inferred high volume, theme ratio or unlimited category priority. Explicit user
+  quantities, exclusions and explicit category-only (`exclusive`) restrictions retain
+  their meanings. One/two are fulfillment targets, not category maxima. An independently
+  valuable same-category landmark can still be selected after saturation. Category
+  interests must not lose soft coverage merely because the model uses whole-trip scope;
+  whole-trip style without a category goal remains uncounted. No additional model calls.
 - Use an application-owned soft coverage target of one per independent POI-based
   positive preference. Use two only for an explicit statement of the current trip's
   focus, such as "This trip is mainly about museums." "I especially like museums"
@@ -296,7 +304,7 @@ implementation or a live execution allowance. Current project documents remain t
 source of truth for implemented behavior until implementation and documentation
 synchronization occur.
 
-Current-code facts relevant to implementation: continuing preferences presently do
+Baseline code facts before tickets 01-03 (historical): continuing preferences presently do
 not have the proposed saturated soft-coverage behavior; selected intent buckets can
 continue rewarding the same preference; general discovery is conditionally appended;
 there is no dedicated classic-landmark rank; the named resolver uses normalized exact

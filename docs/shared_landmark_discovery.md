@@ -46,7 +46,8 @@ to the compact summary. Token engineering estimates are not billed usage.
 
 ## Boundaries and handoff
 
-Ticket 03 remains responsible for soft-target saturation and landmark-aware ranking/balance.
+Ticket 03 integrated soft-target opportunity saturation and landmark-aware supply on
+2026-09-28; see [current supply policy](shared_poi_supply.md#preference-and-landmark-balance---2026-09-28).
 This ticket supplies eligible metadata and opportunities; twelve nominations do not promise
 twelve resolved, selected or scheduled places. Offline mocked validation establishes the
 mechanisms, not live nomination quality, itinerary improvement, latency or cost. No live
