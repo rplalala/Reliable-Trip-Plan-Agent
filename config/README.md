@@ -160,7 +160,7 @@ a local documentation coverage test detects a missing path or stale value.
 | `trace.capture_tools` | `true` | boolean; schema-validated | Tool trace capture category. |
 | `trace.capture_evidence` | `true` | boolean; schema-validated | Normalized evidence trace capture category. |
 | `trace.raw_provider_payloads` | `false` | boolean; schema-validated | Raw provider payload capture switch; remains false. Repair audit does not enable raw responses or internal reasoning. |
-| `trace.max_payload_bytes` | `1000000` | integer; schema-validated | Per-artifact serialized UTF-8 byte ceiling. Redaction applies; missing/truncated Repair artifacts carry explicit status. Zero is invalid. |
+| `trace.max_payload_bytes` | `10000000` | integer; schema-validated | Per-artifact serialized UTF-8 payload threshold (10 MB, decimal). Redaction applies; oversized payloads retain an explicit truncated preview whose JSON wrapper can add bytes. Missing/truncated Repair artifacts carry explicit status. Zero is invalid. |
 | `tripworld_discovery.version` | `"tripworld_runtime_1"` | string; = "tripworld_runtime_1" | RAG runtime contract identifier. |
 | `tripworld_discovery.top_k` | `20` | integer; >= 1, <= 20 | Initial RAG rows per query, not Repair Top-K. Zero is invalid. |
 | `tripworld_discovery.resolution_entities` | `30` | integer; >= 0, <= 30 | Primary RAG canonical resolution work allowance. Zero disables the allowance. |

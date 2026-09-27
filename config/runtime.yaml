@@ -99,7 +99,7 @@ trace:
   capture_tools: true
   capture_evidence: true
   raw_provider_payloads: false
-  max_payload_bytes: 1000000
+  max_payload_bytes: 10000000
 tripworld_discovery:
   version: tripworld_runtime_1
   top_k: 20

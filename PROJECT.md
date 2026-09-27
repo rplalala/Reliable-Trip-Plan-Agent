@@ -1,5 +1,17 @@
 # Capstone Project Context
 
+## Trace capture limit adjustment - 2026-09-28
+
+The user accepted V1 repeat visits as an observation within that version's limited
+scope, not a current repair task, and authorized increasing the runtime trace payload
+threshold to 10 MB (10,000,000 bytes). The configured threshold now applies to trace
+and V3 audit capture; planning behavior and provider budgets are unchanged. Redaction,
+raw-payload exclusion and oversized-payload truncation remain in place. The completed
+Berlin batch retains its frozen 1 MB configuration and failed evidence gate; no trace
+reconstruction is possible from the cap adjustment. Observability/config/V3 wiring
+checks passed (92 tests); synthetic near-limit payload retention, truncation and
+redaction checks passed. This cap adjustment itself adds no live or blind-review run.
+
 ## Preference and landmark feature closeout - 2026-09-28
 
 The user accepted closing this iteration and authorized logical local commits without
