@@ -1,4 +1,4 @@
-"""Opt-in, one-case V3 acceptance with normalized requirement-failure evidence."""
+"""Opt-in, one-case V1/V3 acceptance with normalized development evidence."""
 
 import argparse
 import contextlib
@@ -16,6 +16,7 @@ import yaml
 
 from backend.app.runtime.config_loader import DEFAULT_RUNTIME_CONFIG_PATH, load_runtime_config_file
 from backend.app.schemas.interpreted_requirements import InterpretationDraft
+from backend.app.schemas.planning_supply_result import PlanningSupplyPlanningResult
 from backend.app.services.preference_prompts import PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
 from backend.app.services.product_evidence import ProductEvidenceCollector
 from backend.app.services.product_presentation import present_product
@@ -187,8 +188,13 @@ def run_case(
     capture_repair=False,
     repair_quantity_review=None,
     reference_date=None,
+    version="v3",
 ):
     """Run once in a fresh directory. Application exit status is never rewritten."""
+    if version not in {"v1", "v3"}:
+        raise ValueError("Acceptance version must be v1 or v3")
+    if version == "v1" and (capture_repair or repair_quantity_review is not None):
+        raise ValueError("Repair capture and quantity review are V3-only")
     output = Path(output)
     config_path = Path(runtime_config)
     config = load_runtime_config_file(config_path)
@@ -216,6 +222,7 @@ def run_case(
         output / "manifest.json",
         metadata
         | {
+            "version": version,
             "capture_requirements": capture_requirements,
             "capture_semantics": capture_semantics,
             "capture_repair": capture_repair,
@@ -277,7 +284,7 @@ def run_case(
         patch.object(runner, "create_run_tracer", captured_trace),
         case_logging(),
     ):
-        code = v3_main(argv)
+        code = (runner.main if version == "v1" else v3_main)(argv)
     trace_directories = [
         str(directory)
         for collector in collectors
@@ -293,6 +300,7 @@ def run_case(
     if capture_repair and not any(c.attempted for c in repair_captures):
         repair_errors.append("repair_snapshot_not_reached")
     status = {
+        "version": version,
         "application_exit_code": code,
         "elapsed_seconds": monotonic() - started,
         "capture_status": "disabled"
@@ -314,12 +322,15 @@ def run_case(
         else ("available" if trace_available else "unavailable"),
     }
     if code == 0:
-        result = V3PlanningResult.model_validate_json(
-            (output / "result.json").read_text(encoding="utf-8")
-        )
-        write_json(
-            output / "product.json", present_product(result, collectors[0]).model_dump(mode="json")
-        )
+        result_json = (output / "result.json").read_text(encoding="utf-8")
+        if version == "v3":
+            result = V3PlanningResult.model_validate_json(result_json)
+            write_json(
+                output / "product.json",
+                present_product(result, collectors[0]).model_dump(mode="json"),
+            )
+        else:
+            PlanningSupplyPlanningResult.model_validate_json(result_json)
     if errors or semantic_errors or repair_errors:
         status["acceptance_status"] = "evidence_incomplete"
     write_json(output / "execution.json", status)
@@ -330,6 +341,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-json", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--version", choices=("v1", "v3"), default="v3")
+    parser.add_argument("--reference-date")
     parser.add_argument("--runtime-config", type=Path, default=DEFAULT_RUNTIME_CONFIG_PATH)
     parser.add_argument("--rag-env-file", type=Path)
     parser.add_argument("--capture-requirements", action="store_true")
@@ -342,6 +355,10 @@ def main():
     args = parser.parse_args()
     if not args.execute:
         parser.error("Execution requires --execute and separate user authorization")
+    if args.version == "v1" and args.rag_env_file:
+        parser.error("RAG environment file is V3-only")
+    if args.version == "v1" and (args.capture_repair or args.repair_quantity_review is not None):
+        parser.error("Repair capture and quantity review are V3-only")
     if args.rag_env_file:
         from dotenv import load_dotenv
 
@@ -354,6 +371,8 @@ def main():
         capture_semantics=args.capture_semantics,
         capture_repair=args.capture_repair,
         repair_quantity_review=args.repair_quantity_review,
+        reference_date=args.reference_date,
+        version=args.version,
     )
     print(json.dumps(result))
     return result["application_exit_code"] or (
