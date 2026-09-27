@@ -1,5 +1,170 @@
 # Capstone Project Context
 
+## Iteration commit checkpoint — 2026-09-27
+
+The user authorized direct logical commits after workspace review, without another grouping
+approval. The complete final working tree passed 1727 backend tests with 9 skipped
+(73.39 seconds); scoped Ruff and diff checks passed. Commit groups cover collaboration
+rules, acceptance tooling, semantic correction/short references, compact budget tracing and
+development documentation/audit records. Ignored logs, raw captures, credentials and thesis
+archives are excluded. No new live run, push, merge or version freeze is authorized by this
+checkpoint. Historical validation counts below describe their respective earlier stages.
+
+## Independent budget summary — 2026-09-27
+
+File tracing now writes an independent budget.json on finalization, before large run.json
+serialization. It retains the final primary tool pool plus separate semantic, RAG, Repair,
+Nearby and primary-generation numeric observations and configured limits. Existing reported
+usage is deduplicated by call/round; cumulative counters replace snapshots rather than being
+added. Unavailable requirements/main-generation billed usage remains explicitly missing.
+The summary does not contain itinerary, user text, model labels or raw provider content.
+
+The artifact has a separate 64 KiB ceiling and at most 32 call records per tracked stage;
+capacity loss is marked incomplete. Writes use a pending file and atomic rename. Summary
+failure does not prevent ordinary final trace writing or alter planning. Tracing must be
+enabled and finalized; this change does not add a new runner cancellation/finalization path.
+All API/Repair budgets and V0-V3 planning behavior remain unchanged.
+
+TDD reproduced missing summary and write-failure coupling, then verified both fixes. Full
+backend regression passed 1726 tests with 9 skipped. Spec review identified missing RAG
+cancellation/resolution counters; a failing regression reproduced it, and the small fix
+passed 63 focused trace/RAG/V3 tests. No live calls or commits occurred.
+Both independent review axes have zero remaining findings after re-review. See
+[the summary spec](.scratch/semantic-reference-correction/budget-summary-spec.md).
+
+## Current application-owned semantic references — 2026-09-27
+
+Subsequent authorized prompt-5 live checkpoint: Sydney V1, Sydney V3 and Melbourne V1
+each ran once and returned their complete requested dates. All four semantic batches
+passed on their first call. Independent capture checks verified short-reference coverage,
+same-candidate source ownership, mapping hashes and exact canonical restoration. This
+accepts live wire integration for these cases, not correction efficacy or general semantic
+accuracy. Sydney V3 also accepted one coverage Repair; remaining UNKNOWN findings and all
+38 activity costs being null prevent a fully verified travel/budget claim. V1 sparse-day
+and food-preference observations remain separate follow-up items, not wire failures.
+
+The subsequent offline V3 budget audit reconstructed the recorded call/count budgets from
+212 continuous events, the final result and acquisition ledgers: 45 range checks passed,
+with no recorded overrun. Primary Details were 32/60, baseline routes 4/7 plus 256/400
+elements, alternative routes 16/32; RAG Details 26/30 and fallback 4/4; Repair routes 12/24
+in their separate pool; semantics 2/6 calls and 27.412/120 seconds; Nearby 3/3. Primary
+pre-generation route stops reflected the 16-call reserve, not 96 extra sends or an overrun.
+
+The original run.json remains truncated (4,908,309 original bytes versus a 1,000,000-byte
+limit). Full requirement/main-generation billed usage and per-call latency remain missing;
+recorded-counter compliance is not a provider invoice audit. The next recommended change
+was an independent compact final budget/usage artifact, rather than enlarging the aggregate
+payload alone. The user subsequently approved its implementation, recorded above. See the
+[offline audit](.scratch/semantic-reference-correction/v3-budget-audit.md).
+Evidence: `logs/semantic_short_reference_revalidation_20260927/report.md`. No commits,
+automatic retries, production changes or version freeze occurred during these live cases.
+
+The approved short-reference follow-up uses prompt 5 and wire projection version 1.
+The application assigns batch-local candidate_ref pNN and source_ref/evidence refs eNN;
+the model no longer has to repeat canonical IDs or full source references in its output.
+Responses may be reordered: exact mapping, complete candidate coverage and same-candidate
+evidence ownership are validated before canonical restoration and full domain revalidation.
+Only accepted canonical assessments enter downstream supply or cache. Exception permissions
+and semantic support requirements remain strict; source expansion does not establish truth.
+
+Mappings stay fixed during correction and isolated between batches. Opt-in captures retain
+wire inputs/outputs, mapping/hash/version and canonical accepted results. Canonical mappings
+are not sent in the model prompt. Cache keys include canonical inputs and projection/prompt
+versions; the offline replay tool shares that key implementation. Existing canonical
+downstream schemas, V0, quantity Repair policy and all budgets are unchanged. This phase
+authorizes offline implementation/testing/review only, with no live execution or commits.
+See [the short-reference spec](.scratch/semantic-reference-correction/short-reference-spec.md)
+for validation history. At this implementation checkpoint live integration was unverified;
+the subsequent limited live result is recorded above, without a reliability claim.
+
+Final offline validation: 1721 backend tests passed, 9 skipped. The initial full run exposed
+old SDK mock fields and an offline replay cache-key dependency; both were synchronized,
+their 41 affected tests passed, and the full suite was rerun successfully. Standards/Spec
+review, including these compatibility fixes, found no actionable issues. Scoped Ruff and
+formatting checks passed. No separate static typechecker is configured for the backend.
+
+The preceding prompt-4 live revalidation completed three one-attempt cases: Sydney V1
+corrected an identity error but introduced a match-reference typo on its second call;
+Sydney V3 and Melbourne V1 generated complete date ranges after first-call semantic passes.
+There was no successful live correction. Complete captures and the report are under
+`logs/semantic_contract_revalidation_20260927/`. This evidence motivated the short wire
+contract; it does not validate the new prompt-5 implementation.
+
+## Current semantic contract correction — 2026-09-27
+
+The approved minimum follow-up is implemented and offline validated. Prompt 4 explicitly
+requires favor plus explicit_primary_exception=true, or an exactly bound REQUIRED named
+place, as well as a supported match and exception_only role for primary exceptions.
+Identity-set errors and exception authorization/ownership errors now share the existing
+one-per-batch correction with citation errors. There is no additional allowance per error
+class, silent ID mapping, claim removal or partial invalid-batch acceptance. Full validation
+still precedes cache/ledger admission. Feedback is bounded and captures link both calls.
+
+All defaults remain unchanged: 6 calls/request, 45 seconds/call, 120 seconds total,
+32000 input and 8192 output tokens. Shared V1-V3 behavior changes; V0, quantity Repair and
+unrelated schema/provider-error behavior are unchanged. No live or commit occurred in this
+implementation phase; real-model correction efficacy remains unverified.
+
+TDD first reproduced terminal identity and unauthorized-food failures, then passed after
+the bounded extension. Full backend regression passed 1712 tests with 9 skipped. A subsequent
+test-only expansion covered absent/unresolved named matches; the final focused suite passed
+72 tests, with no production changes after the full run. Independent Standards and Spec
+reviews found no actionable issues. The next step is a separately approved development live
+revalidation executed by the smoke tests conversation; this conversation owns its plan and
+result assessment. See [the approved spec](.scratch/semantic-reference-correction/spec.md).
+
+## Network revalidation and offline diagnosis — 2026-09-27
+
+A subsequent explicitly network-enabled three-case run passed requirement interpretation but
+all three stopped before generation: Sydney V1 claimed unauthorized primary exceptions;
+Sydney V3 and Melbourne V1 returned one changed canonical ID each. No citation correction
+was triggered and no budget ceiling was reached. The preceding restricted-network attempts
+below are historical; the correction still lacks live efficacy evidence.
+
+Offline public-service replay reproduced all three failures and minimized each to one row.
+Sydney V1's ten restaurant exception claims all referenced a continuing food preference with
+explicit authorization false; no named bindings existed. The other cases changed an ID's last
+character and repeated it in citations. Current input serialization roundtrips unchanged.
+Strict rejection is correct. A proposed minimal follow-up would clarify authorization and
+extend the existing one-per-batch correction to these contract errors, without weakening
+validation or adding a new allowance. It was not implemented or approved at that diagnosis
+checkpoint; the subsequent approved implementation is recorded above.
+See [the diagnostic report](.scratch/semantic-reference-correction/non-reference-diagnosis.md)
+and `logs/semantic_reference_network_revalidation_20260927/report.md` (local ignored evidence).
+No production code or live calls were made during diagnosis; no commit or freeze occurred.
+
+## Semantic correction live revalidation blocked — 2026-09-27
+
+The three separately approved one-attempt runs (Sydney V1, Sydney V3, Melbourne V1)
+all stopped in requirement-provider transport, before travel tools, RAG, generation or
+POI semantics. Recorded semantic calls and travel-tool counters were zero. No itinerary
+was returned. The provider diagnostics contain no HTTP status or usage, so the cause,
+provider receipt and cost remain unknown. Execution-history review confirmed all three
+launches used the default restricted sandbox, with no escalated network execution. This
+is a preparation gap and a possible cause, not proof of the transport root cause. This neither validates nor refutes semantic correction. No retry is authorized.
+See `logs/semantic_reference_revalidation_20260927/report.md` (ignored local evidence).
+The following offline checkpoint remains valid; its no-live statement describes the
+implementation checkpoint before these separately authorized attempts.
+
+## Current semantic reference correction — 2026-09-27
+
+Approved shared V1-V3 follow-up: invalid or missing evidence citations now receive at most
+one corrective model assessment of the same batch with bounded diagnostic feedback.
+Prompt 3 retains strict identity, citation and exception validation before caching. Both
+attempts consume the existing 6-call/120-second semantic allowance and 45-second per-call
+limit; correction input includes feedback in token accounting. Failed or unavailable
+correction remains terminal. Ordinary candidate rejection, non-reference errors, V0 and
+quantity Repair behavior are unchanged. Opt-in captures link both calls and pre-send stops.
+
+Offline validation: full backend suite passed 1689 tests with 9 skipped. Two subsequent
+SDK/deadline test additions and isolated boundary assertions passed the final targeted
+suite (53 tests); production implementation was unchanged after the full run. Standards
+and Spec review have no remaining findings. This is uncommitted work based on
+`339e7e4a4a9eac133f2bdff69217b8b35c6990b4`; no live calls or version freeze occurred.
+The Sydney/Melbourne development smoke motivated this change but does not validate it live.
+See [the correction spec](.scratch/semantic-reference-correction/spec.md) and
+[semantic design history](docs/shared_poi_semantics_plan.md).
+
 ## Current planning input UX — 2026-09-26
 
 The shared Product/Dev form now offers GeoDB destination suggestions, a currency selector,

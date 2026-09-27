@@ -868,3 +868,68 @@ were respected and retrieval resources closed. No retries, production edits, P3 
 staging or commits. A proposed next step is offline diagnosis of sparse-day generation
 and supply/review boundaries, requiring separate approval before changes.
 Evidence and report: `artifacts/poi_semantics_acceptance/20260926_D_semantic_capture_retest/`.
+
+
+## Bounded reference correction — 2026-09-27
+
+The approved follow-up supersedes earlier no-retry statements only for evidence-reference
+validation errors. Each failed batch may receive one corrective assessment using unchanged
+candidates and requirements plus bounded error feedback. Prompt 3 preserves exact same-place
+citations and strict semantic authorization. Valid negative classifications, provider errors,
+identity/schema failures and unauthorized exceptions do not trigger this correction.
+Both calls consume existing semantic budgets; failed correction or unavailable correction
+budget remains terminal. Nothing unvalidated enters supply. Input/output/outcome captures
+remain opt-in and bounded; records link corrections and pre-send stops to the original call.
+V1-V3 share this behavior; V0 and quantity Repair are unchanged. No live validation occurred.
+See `.scratch/semantic-reference-correction/spec.md` for scope and validation requirements.
+
+## Bounded contract correction expansion — 2026-09-27
+
+The subsequent approved implementation extends the preceding citation-only checkpoint to
+identity-set mismatch (missing, unexpected, duplicate IDs), unauthorized exception claims
+and exception-role ownership. All classes share one corrective assessment per batch.
+Prompt 4 and bounded `contract_correction` feedback require a complete response using the
+same candidates, requirements and bindings. No deterministic ID remapping, claim dropping
+or partial invalid-batch admission is performed. Every corrected response passes all existing
+validation before becoming available to Candidate Details continuation or the ledger/cache.
+
+Primary exceptions require a supported match plus either favor with explicit authorization
+or a REQUIRED named requirement bound to the exact place; their role must be exception_only.
+Ordinary continuing food preferences do not grant permission. Valid negative judgments,
+unrelated schema errors and provider failures retain their previous behavior.
+
+Call/time/token/deadline limits and opt-in capture policy are unchanged; original and
+correction calls share the same allowance, even when the second error is a different class.
+V1-V3 use the shared service; V0 and quantity Repair are unaffected. Full backend tests
+passed 1712 with 9 skipped; subsequent test-only boundary coverage passed 72 focused tests.
+Independent Standards/Spec review found no actionable issues. No live efficacy claim,
+commit or freeze follows from this offline checkpoint. See the local correction spec.
+
+## Application-owned canonical references — 2026-09-27
+
+After prompt-4 live correction fixed an identity but introduced a new citation typo, the
+user approved option B: shorten the wire representation rather than add another correction.
+Prompt 5 and poi_semantics_wire_1 use candidate_ref pNN and evidence refs eNN. An explicit
+SemanticProjection owns the batch-local mapping; its canonical mapping is retained only
+in application memory and opt-in local captures, not injected into the model prompt.
+The model still selects evidence and makes semantic judgments; the application never
+fills missing support, guesses malformed IDs or binds by response order.
+
+The entire wire batch must have unique complete known candidates and evidence belonging
+to each candidate. After those checks, deterministic expansion restores canonical IDs and
+sources, then the ordinary domain validator runs before atomic cache/ledger admission.
+Named permissions are projected only for candidates in the batch; no batch may inherit
+another batch's p01 authorization. Corrections keep their original mapping, and all error
+classes continue to share a single corrective call within unchanged request/time budgets.
+
+The Foundry boundary returns the wire DTO; downstream canonical schemas remain unchanged.
+Actual wire input, wire response schema, prompt, framing and corrective feedback count
+toward input limits. Cache fingerprints include projection/prompt versions and canonical
+input; offline FrozenSemantics replay uses the same cache-key function. Historical captures
+retain their historical wire formats and are not rewritten to appear current.
+
+Opt-in input captures include reference_mapping and mapping_sha256/wire_version, output
+captures retain the rejected or accepted wire response, and accepted outcomes retain the
+resolved canonical assessments. Existing redaction, size caps and capture-failure behavior
+apply. No live efficacy, version freeze or formal comparison is claimed by offline tests.
+See `.scratch/semantic-reference-correction/short-reference-spec.md` for scope and results.

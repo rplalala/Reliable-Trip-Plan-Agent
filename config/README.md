@@ -492,3 +492,33 @@ Omission is a configuration error, not a switch to legacy classification. Old re
 are still readable independently of runtime configuration; no historical files are migrated.
 The immutable effective snapshot and its hash are captured once; each request's semantic ledger
 also reports its policy hash, input hashes, cache hits and per-call reported usage.
+
+
+POI semantic reference correction (2026-09-27): at most one correction per invalid-reference
+batch shares the above request-owned limits; it does not add a separate allowance or change
+runtime defaults. Feedback counts toward input sizing. Calls, timeouts, absolute deadlines
+and capture caps apply to both attempts. Unavailable or unsuccessful correction is terminal.
+
+The subsequent approved contract-correction expansion also covers identity-set mismatch
+and exception authorization/ownership errors. All supported classes share the same single
+correction per batch; switching error class does not reset it. Prompt 4 clarifies exact
+exception permissions, and bounded feedback remains included in input sizing. No runtime
+default, capture setting or quantity Repair configuration changes accompany this expansion.
+
+The subsequent prompt-5 short-reference wire contract also keeps every default unchanged.
+Canonical IDs and sources are application-owned; pNN/eNN references are batch-local model
+identifiers, not configurable external IDs. Input accounting uses the actual projected
+payload and wire schema. The one-correction allowance is unchanged. Normalized opt-in
+capture now includes a reference mapping/hash/version and retains canonical accepted
+outcomes; existing size caps and redaction still apply. Old capture payloads are historical
+and must not be assumed to use the current wire format.
+
+When file tracing is enabled, finalization also writes budget.json independently of
+trace.max_payload_bytes and optional payload capture flags. The summary uses existing
+numeric runtime events and final primary counters; it does not enable additional API or
+LLM calls. Its fixed 64 KiB metadata ceiling and 32 call records per tracked stage are
+storage limits, not runtime execution limits. Dropped records or exceptional size overflow
+are marked collection_status=incomplete. Missing reported usage stays missing, never zero.
+run.json records budget_summary_status when its own final write succeeds. A budget.json
+write failure does not stop planning or ordinary trace finalization. A pending .tmp file
+is not a finalized summary. Historical runs are not retroactively rewritten.
