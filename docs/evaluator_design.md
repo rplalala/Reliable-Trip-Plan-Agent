@@ -1,5 +1,7 @@
 # RTPEval evaluator research design
 
+Shared terminology: [Evaluation glossary](evaluation_glossary.md).
+
 Status: **ACCEPTED WITH SPECIFICATION ITEMS OPEN**
 
 Decision recorded: 2026-09-24.
@@ -12,8 +14,9 @@ architecture is settled; remaining work concerns explicit specification items, n
 overall redesign.
 
 This is **not Benchmark Frozen**, not a completed evaluation specification, and not
-implementation authorization. V3 engineering is still in progress. Acceptance of this design
-does not freeze V3 or any earlier version, demonstrate a research result, or authorize formal
+implementation authorization. V3 engineering closed on 2026-09-25; later shared and V0
+changes are recorded in PROJECT.md. Acceptance of this design does not freeze V3 or any
+earlier version, demonstrate a research result, or authorize formal
 experiments or thesis writing.
 
 [PROJECT.md](../PROJECT.md) remains the current project-level source of truth. This document
@@ -21,13 +24,14 @@ owns the accepted evaluation design and its open decisions. Current implementati
 checked again at the final engineering checkpoint; historical proposals and development
 captures do not override the actual code or current project context.
 
-Before V3 finishes, separately requested specification design may proceed for opening,
+Separately requested specification design may proceed for opening,
 routes, requirements, identity adjudication, run outcomes, controlled cases, human presentation,
 and the analysis plan. Do not implement an evaluator, create formal benchmark cases, run
 experiments, or modify planning algorithms to accommodate evaluation under this approval.
 
-After V3 engineering finishes, the first step is an **Evaluation Readiness Audit** against the
-final actual checkpoint. Resolve the open items into a formal RTPEval v1 Specification, obtain
+With V3 engineering closed, the first step is an **Evaluation Readiness Audit** against the
+current actual checkpoint. The [2026-09-28 audit](evaluation_readiness_audit.md) begins that
+work. Resolve the open items into a formal RTPEval v1 Specification, obtain
 approval for implementation and development dry runs, and freeze the resulting rules and
 analysis plan before held-out execution. This design does not authorize those later steps.
 
@@ -55,6 +59,9 @@ V3 outputs as the main benchmark result.
 
 These are comparisons of the implemented version mechanisms under recorded conditions, not
 proof that every observed difference is attributable to one isolated causal factor.
+Present the final V3 system first and use the independent V0-V3 runs as incremental system
+comparisons. Use the existing independently runnable V0-V3 paths; no additional strict
+single-module ablation study is planned.
 
 ### 2.1 Supplementary comparison: V3 vs Codex + Travel Planning Skill
 
@@ -65,8 +72,7 @@ systems perform travel-planning tasks. It complements the main V0-V3 study; it d
 replace that study or establish a pure causal effect of harness differences.
 
 For now, only this comparison direction is accepted. Tool access, environment isolation,
-sample size, and execution configuration remain open and will be determined after V3
-engineering is complete, starting with the Evaluation Readiness Audit. This addition does
+sample size, and execution configuration remain open for later specification. This addition does
 not freeze the benchmark or authorize skill/evaluator implementation or experiments.
 
 ## 3. Stable design principles
@@ -78,7 +84,10 @@ not freeze the benchmark or authorize skill/evaluator implementation or experime
 - Google is frozen external evidence, not absolute real-world truth.
 - Human-reviewed benchmark requirements are evaluation inputs, not injected E2E planner inputs.
 - Report multiple metrics; do not create a primary weighted composite score.
-- Report all-run outcomes and quality conditional on an itinerary being produced.
+- Dimension subscores and an auxiliary reliability/constraint-compliance total may be designed for presentation;
+  their normalization, weights, coverage gates and missingness rules must be fixed before
+  held-out results are revealed. They do not replace the primary metric vector.
+- Score only groups where all four versions completed their prescribed workflows; disclose all attempts and exclusions separately from benchmark scores.
 - Use request-level paired comparison; visits and legs are nested observations.
 - Combine E2E, controlled Repair, V3 pre/post, and complementary human evaluation.
 - Separate development/regression from held-out evaluation.
@@ -134,7 +143,7 @@ correct in the real world." Full factual-source independence is not claimed.
 
 | Component | Responsibility |
 | --- | --- |
-| Run Collector | Preserve full requests/results, outcomes, provenance, configuration, usage, timing, and failures without changing planning decisions |
+| Batch Intake | Validate a user-submitted batch and its artifact integrity; consume benchmark-owned collection records without rerunning workflow eligibility |
 | Evaluation Adapter | Map outputs to a common representation while retaining original roles, timestamps, identities, amounts, notes, and uncertainty |
 | Requirement Specification | Independently reviewed request semantics, established during benchmark design rather than copied from the planner interpreter |
 | Identity Resolver | Resolve place references, retain alternatives, and route ambiguous/high-impact items to adjudication |
@@ -162,61 +171,34 @@ periods, overnight and 24-hour schedules, DST, successful empty route status obj
 conditions, fallback, invalid/negative durations, and direction. Shared mapping errors must
 not silently contaminate both planner and evaluator.
 
-## 6. Benchmark composition and sampling
+## 6. Batch handoff and scope boundary
 
-### 6.1 Development and city eligibility
+Each group delivers four separate complete result files: `v0_result.json`, `v1_result.json`, `v2_result.json`, and `v3_result.json`. Do not combine four results into one JSON file. The manifest references each file and hash; the adapter extracts its itinerary while isolating internal findings from quality scoring and human presentation.
 
-Tokyo, Sydney, London, and Melbourne are development/regression cities. Use them for
-evaluator dry runs, historical case studies, and mechanism diagnostics, not as the sole
-generalization evidence.
+RequirementSpec is prepared during benchmark construction from the original Input, with assistant drafting permitted and explicit user review required. Evaluation only consumes the reviewed artifact: it does not generate, infer, repair or silently complete obligations. Missing, unreviewed or structurally invalid specifications produce intake diagnostics for upstream correction; explicitly recorded unresolved semantics remain unresolved.
 
-Maintain city exposure categories such as mentioned, fixture-only, smoke, debugging, tuning,
-and held-out eligible. A city name occurring in a unit fixture is not equivalent to
-itinerary-level targeted tuning.
+[Benchmark construction](benchmark_design.md) owns input design, planner execution,
+workflow-completion admission, failure reasons and iteration recommendations. Only the user
+can authorize planner iteration. Sample counts and construction policy are outside this module.
 
-Final held-out cities remain OPEN. Selection should consider itinerary-level exposure,
-basic Places/Routes operability, reasonable but not necessarily optimal TripWorld coverage,
-geographic/timezone support, and geographic/urban diversity. Do not select cities using V3
-scores. Do not silently require cross-city travel or choose only the richest RAG coverage.
+Evaluation starts after the user has curated and handed over a versioned batch of qualifying
+groups; it is not triggered whenever one group qualifies. Each group supplies the original
+input and four final itineraries. Human-reviewed requirements support independent checks;
+optional usage and V3 draft artifacts support additional reports. The detailed contract is in
+the [module specification](../.scratch/rtpeval/spec.md).
 
-### 6.2 E2E design target
-
-The current design target is six cities with six request types each: **36 unique requests**.
-The types are Basic, Soft Preference, REQUIRED, REQUIRED + EXCLUDED, Pace/Spatial, and Complex.
-Basic still contains the mandatory structured budget. Complex must not always mean long trip.
-
-Proposed length strata are 12 requests of 2-3 days, 18 of 4-5 days, and six of 7-10 days.
-Cross length with query type rather than confounding the two.
-
-Independent analysis tags may include REQUIRED dates/counts, explicit revisits, OPTIONAL,
-EXCLUDED, exterior/venue-entry intent, fixed unavailable time, explicit transport preference,
-relaxed/tight pacing, whole-party preferences, supported subgroup preferences, long trips,
-and constrained budgets. Tags do not activate case-specific scoring rules.
-
-Unsupported, contradictory, ambiguous, or demonstrably unsatisfiable requests require
-explicit boundary-case semantics. Their inclusion and allocation remain specification items;
-do not silently mix them into normal successful-itinerary expectations or require the planner
-to act as a complete infeasibility solver.
-
-### 6.3 Optional repeats: OPEN
-
-One run of each version on each request gives **36 x 4 = 144 planner runs**. An optional
-second run for 12 preselected requests adds 48, giving **192 planner runs**.
-
-Do not currently prioritize repeats over additional unique requests. After V3 finishes,
-use approved development observations of per-run cost, latency, provider usage, failure rate,
-and actual run-to-run variation to decide the final 144/192 plan. Select repeat requests before
-formal outcomes are known. Repeats are sensitivity observations, not new independent requests
-and not double-weighted main results. Live-data repeats measure run-to-run sensitivity, not
-pure model variance unless external inputs are also controlled.
+Evaluation validates delivered materials and integrity, not execution eligibility. Missing or
+invalid mandatory materials produce an intake diagnostic and require a corrected batch; the
+module does not silently drop groups, run planners, fill missing results or select replacements.
+Controlled Repair remains a separate V3-only evaluation track, outside the four-version gate.
 
 ## 7. Requests, identity, and common scoring semantics
 
 ### 7.1 Human-reviewed requirements
 
 The evaluation specification must independently state relevant named identities, inclusion
-rules, mandatory dates, visit counts, fixed unavailable intervals, transport requirements,
-and exterior/entry intent. It must follow the actual request, not the planner's interpretation.
+rules, mandatory dates, visit counts, fixed unavailable intervals and supported transport requirements,
+without distinguishing exterior viewing from venue entry. It must follow the actual request, not the planner's interpretation.
 It is not injected into E2E planning.
 
 Distinguish minimum count, exact count, and date obligations. Exceeding a minimum is not a
@@ -224,6 +206,11 @@ revisit violation. If exact-count or other semantics exceed the final product co
 record that boundary rather than silently treating them as supported.
 
 ### 7.2 Identity adjudication
+
+The [identity contract draft](../.scratch/rtpeval/identity-contract.md) specifies provider
+capabilities, adjudication records and uncertainty propagation. An adjudicated named venue
+may support downstream checks despite a conflicting supplied ID, but the ID error is
+reported separately and the original output is not corrected. Uncertain identity remains UNKNOWN.
 
 Independent evaluation may resolve V0's name-based places using Google. This does not give
 V0 tools at planning time. Do not automatically accept the first search result, and do not
@@ -243,9 +230,13 @@ generic_activity or unknown. Do not invent POI roles through unvalidated keyword
 
 ### 7.3 Denominators and missingness
 
+The [activity scope contract draft](../.scratch/rtpeval/activity-scope-contract.md) separates
+visit counts from time occupancy and route legs. Uncommitted locationless free-time use and same-canonical route N/A are accepted.
+Inter-day travel is outside v1 route scope; no planner role summary determines the independent denominators.
+
 For each applicable metric retain raw counts, numerator, denominator, unknown/not-applicable
-counts, and reason distributions. Do not turn UNKNOWN into zero or an empty denominator into
-100 percent compliance.
+counts, and reason distributions. Do not turn UNKNOWN into an observed zero value, a FAIL or an empty-denominator
+100 percent compliance. UNKNOWN earns no verified-success credit under the accepted score formula.
 
 - Structural evaluability: can the relevant visit/transition/check be defined from the output?
 - Evidence coverage: is usable independent evidence available for that defined check?
@@ -261,14 +252,14 @@ claiming those unresolved visits are false places.
 
 ## 8. Independent evidence snapshots
 
-For each matched request block, run all four versions under a prebalanced or randomized
-execution order, collect their outputs, construct the evaluation union, acquire independent
-evidence, and then score offline. Do not always run V0, V1, V2, V3 in that order.
+Benchmark construction owns planner execution and its balanced/randomized order. After the
+user submits a curated batch, Evaluation constructs each group's union, acquires independent
+evidence and scores offline. It does not run planners; preserve planner-to-oracle lag.
 
 The union includes V0/V1/V2 finals, V3 final_primary, V3 pre-repair draft, and specification
 identities needed for REQUIRED/EXCLUDED checks. Include round proposals/adopted outputs only
-if independent round-level scoring is separately specified. Failed runs do not prevent
-scoring available outputs from the other versions.
+if independent round-level scoring is separately specified. Only admitted four-version
+groups enter snapshot acquisition and comparative benchmark scoring.
 
 Deduplicate Places by canonical identity. Route request keys must distinguish direction,
 mode, departure/time context, endpoint coordinates/version, and routing options. Preserve
@@ -292,6 +283,11 @@ facts. Explicit evidence-time sensitivity analyses are separate outputs.
 
 ### 9.1 Opening
 
+The [opening contract draft](../.scratch/rtpeval/opening-contract.md) captures interval and
+evidence semantics. Zero grace is accepted: ending exactly at closing is compliant,
+and any positive overrun remains recorded. A known special-date exception without usable applicable hours yields UNKNOWN, with a
+specific explanation and evidence references; regular hours cannot silently replace it.
+
 Report current/date-specific evidence, regular weekly fallback, and unavailable/uninterpretable
 evidence separately. Compliance means full scheduled-interval containment in adopted hours;
 it does not establish ticket ownership, reservations, eligibility, or special-area access.
@@ -301,11 +297,28 @@ periods are not missing. Longer trips naturally extend beyond the current-hours 
 report evidence basis rather than treating regular fallback as equally date-specific.
 
 Freeze rules for timezone/offset conflicts, multiple periods, overnight visits, special-date
-fallback, missing/invalid/closed evidence, exterior intent, and boundary precision/tolerance.
+fallback, missing/invalid/closed evidence, and boundary precision/tolerance.
+Entry/exterior distinctions are outside v1; do not infer an opening exemption from access wording.
 Public Activity currently has no general per-visit access-mode field, so evaluation assumptions
 must be explicit and version-neutral rather than borrowed from V3 bindings.
 
 ### 9.2 Routes
+
+Use valid Google-returned route durations even when traffic calculation falls back; retain
+fallback metadata but do not introduce a separate traffic-fidelity UNKNOWN. This does not
+permit wrong endpoints/modes or fabricated durations. No-route and service-failure rules,
+product DRIVE reserve and the two five-minute tolerances remain unchanged.
+
+Successful applicable evidence explicitly reporting no route is FAIL; provider failure,
+timeout or incomplete evidence is UNKNOWN with reasons. No-route FAIL has no invented
+numeric deficit. A five-minute Routes tolerance applies separately to both mode duration caps and schedule
+deficits, never as a summed ten-minute allowance. Preserve raw values; it does not change
+Opening's zero-grace rule, WALK distance limits or the product DRIVE reserve.
+
+The [route contract draft](../.scratch/rtpeval/route-contract.md) records checked adapter
+capabilities and continuous interval/evidence semantics. Stated-mode evaluation and zero
+extra evaluator buffer are accepted. Reconstruct the two-POI window independently, using
+the single unblocked interval at the actual departure rather than summing fragments.
 
 Compare usable provider duration with an applicable continuous travel interval. Do not sum
 disjoint free intervals across fixed commitments. Freeze departure and waiting semantics,
@@ -316,7 +329,9 @@ free_time versus protected rest; explicit transport activities; unknown-location
 route-not-found versus provider failure, invalid status and fallback; same canonical versus
 same-address places; overnight transitions; and any evaluator transfer buffer.
 
-Do not copy V3's spatial reserves or acceptance thresholds as independent quality truth.
+Apply only explicitly accepted, frozen product thresholds independently across all versions.
+Include the product DRIVE reserve of 10 minutes, with zero additional evaluator buffer;
+report it separately from provider duration. Do not reuse V3 verdicts as ground truth.
 If mode is an evaluation assumption rather than an output claim, label the resulting metric
 as feasibility under that assumption. Missing routes never contribute zero minutes.
 
@@ -325,6 +340,9 @@ complete trip burden. Exact adjacency, eligibility, batching, departure applicab
 evidence conflict rules remain OPEN.
 
 ## 10. Controlled Repair
+
+This retained V3-only mechanism study is separate from the four-version E2E benchmark.
+It does not require four-version-complete groups and does not contribute to their scores.
 
 The accepted composition is **24 target cases + 8 control cases**, subject to final
 capability verification. Eight target families with three examples each are sparse day,
@@ -336,7 +354,7 @@ and Overfull are not automatically confirmed defects. Three examples per family 
 mechanism diagnosis, not a precise family-level success estimate.
 
 Controls cover no authorized modification, explicit revisits, legitimate relaxed low density,
-reasonable high density, exterior visits, missing opening evidence, missing route evidence,
+reasonable high density, opening-boundary cases, missing opening evidence, missing route evidence,
 and protected content. Specify expected invariants for each control; do not universally
 equate any modification with failure. Missing evidence cannot justify fabricated certainty,
 but it does not prohibit every otherwise authorized edit.
@@ -365,8 +383,8 @@ because it cannot be checked. Exact fixture/provider coverage remains a specific
 Compare V3 pre-repair draft with final_primary under the same evaluation snapshot. Do not
 call the draft an independent V2 run. Do not include Nearby as a repaired primary visit.
 
-Every V3 attempt enters run-outcome reporting. Only runs with both valid before and after
-artifacts enter paired analysis. Identical outputs have delta zero; missing pairs are
+Every V3 attempt is retained in the execution ledger. Within admitted E2E groups, only
+runs with both valid before and after artifacts enter paired analysis. Identical outputs have delta zero; missing pairs are
 unavailable, not zero. No-repair, skipped, and rejected cases remain eligible when both
 artifacts exist. Do not select only accepted improvements.
 
@@ -383,25 +401,85 @@ their underlying counts. Undefined metrics do not acquire numeric deltas by impu
 
 ## 12. Human evaluation
 
-Retain **12 unique held-out cases**, comparing V2 and V3, with one rater and **three hidden
-duplicate tasks** for intra-rater consistency. This is complementary exploratory subjective
+### Automatic checks and human judgment
+
+Programs perform explicit, reproducible checks; raters judge preference fit, pace appropriateness and practical usefulness. The Evaluation module supports both tracks, but does not replace the rater's subjective judgment with an inferred numerical proxy.
+
+| Area | Automatic responsibility | Human responsibility |
+| --- | --- | --- |
+| Explicit requirements | Reviewed required/excluded visits, dates, minimum/exact counts and supported explicit time constraints | No routine recounting or compliance audit requested from the rater |
+| Schedule and evidence | Overlap, date coverage, independently resolved identity, opening and route checks under frozen rules; preserve UNKNOWN where evidence is insufficient | No external fact lookup or route arithmetic required |
+| Pace and preference | Descriptive POIs/day, occupied time, observed transfers and supported categories; no inferred preference PASS | Judge preference match and whether the plan's pace fits the original request |
+| Practical usefulness | Report relevant observations without equating compliance with usefulness | Holistic usefulness ranking from original input and anonymous plans |
+| Resources | Aggregate reported tokens, measured latency and provider usage; retain missingness | Not part of the rater's task |
+| Ambiguity | Identify unresolved evidence/identity and retain audit records | Separate adjudication may resolve ambiguous identities or review requirements; this is not the blinded preference task |
+
+A numerical description is not automatically a quality score. For example, fewer POIs, fewer transfers or fewer repeats need not be better. Do not translate "relaxed" into an invented daily cap or "distinctive architecture" into a fabricated deterministic label. Explicit quantitative constraints can be checked only when reviewed and supported by a specified rule. Rule applicability, evidence coverage and compliance remain separate.
+
+Blind presentation withholds the automatic scores and RequirementSpec. Rankings use preference match, pace and usefulness with ties; unable-to-judge and N/A remain distinct. Human answers never supply missing opening/route facts or feed the auxiliary automatic total.
+
+
+### Illustrative division of work
+
+Example request: "Plan three days in Paris. I must visit the Louvre, do not include Versailles, and prefer a relaxed trip."
+
+| Program checks | Rater judgments |
+| --- | --- |
+| Requested date coverage; whether the Louvre is scheduled and Versailles is excluded | How well the itinerary matches the stated preferences |
+| Activity overlap, opening compliance and route feasibility against the frozen evidence | Whether the itinerary feels appropriately relaxed |
+| Recorded tokens, elapsed time and tool usage | Which plan would be more useful to follow |
+
+The program may describe "three POIs per day and 50 observed transfer minutes," but those numbers alone do not establish that the plan is relaxed. The rater makes that judgment from the original request and anonymously presented itinerary. Unavailable external evidence remains UNKNOWN; the rater is not asked to look it up. This is a documentation example, not a benchmark case, collected observation or evaluation result.
+
+The 2026-09-28 decision expands human evaluation to **V0-V3**, superseding the V2/V3-only
+pairwise design. Use one rater and support hidden duplicate tasks for intra-rater consistency.
+The earlier 12-case/three-duplicate proposal is a sampling reference, not a module quota. This is complementary exploratory subjective
 evidence, not population-level user preference evidence. Report the rater's relationship to
 the project and the limits of single-rater assessment. Do not report inter-rater agreement.
 
 Preselect cases using stated strata. Choose the compared run deterministically in advance
-rather than selecting the best repeat. Missing pairs remain reported; do not silently replace
-them with successful cases. Duplicates reverse A/B presentation where specified, are spaced
-apart, and never count twice toward win rates. Compare consistency in underlying plan identity.
+rather than selecting the best repeat. Human assessment consumes the same submitted batch as automatic evaluation (Section 6),
+then applies an explicitly supplied sampling policy without independently selecting successful runs.
+All four versions must complete their prescribed workflows. Normal V3 stopping can remain
+eligible despite unresolved quality problems; cap-truncated pending Repair cannot.
+Report attempted, excluded and retained counts separately from benchmark scores. Human and
+automatic conclusions both concern the selected complete-group cohort. Internal workflow
+completion determines admission, not independent quality judgments.
 
-Use a fixed complete presentation of dates, times, places, notes, and displayed amounts.
+Anonymous labels and display order must be reassigned across cases
+and hidden duplicates; freeze a balanced/randomized assignment procedure. Space duplicate tasks
+apart and never count them twice toward results. Compare consistency by underlying plan identity.
+
+The rater receives only the original request and uniformly presented anonymous itineraries;
+do not reveal version mechanisms, hypotheses, automatic scores, oracle evidence or internal
+RequirementSpec. Use a fixed complete presentation of dates, times, places, notes, and displayed amounts.
 Hide version labels, canonical IDs, provider metadata, findings, repair status, and Nearby.
 Do not rewrite with an LLM, remove meaningful uncertainty, fix false claims, or omit dates.
 Blinding reduces label bias but cannot guarantee that style/content never reveals a version.
 
 Ask which plan better matches preferences, requested pace/travel style, and practical usefulness.
-Use A/Tie/B, with N/A where a dimension is not meaningfully applicable. Report unique case
-counts, V2 wins, ties, V3 wins, unavailable/N/A counts, and raw duplicate consistency. Consistency
-is not proof of validity. Exact presentation and sample allocation remain specification work.
+The accepted response format is a simple HTML questionnaire. Each request forms one group
+of four anonymously labelled itineraries A/B/C/D. The rater ranks all four separately for
+preference match, pace, and practical usefulness, allowing ties (for example A = C > B > D).
+Keep the labels consistent across the three dimensions within a group and reassign them
+across groups. Keep the version mapping outside the rater-facing HTML and exported answers.
+Preserve ties, unable-to-judge responses and N/A as distinct states. Derive per-version-pair
+wins/ties/losses separately for each dimension, stating evaluable denominators. Do not turn
+unable-to-judge or N/A into ties. Multiple pair comparisons from one group are correlated,
+not independent request samples. Hidden duplicates contribute only to consistency checks.
+Report unique-case counts and raw duplicate consistency, which is not proof of validity.
+Answer persistence and export details remain specification items.
+
+Development failures may guide later authorized planner changes. A request used to diagnose
+or tune a planner becomes development-exposed; it cannot retain untouched held-out status.
+If formal runs expose a genuine bug, record the checkpoint and affected slice under Section 17,
+retain original outcomes, and distinguish reruns. Do not mix old/new checkpoints or tune on
+excluded test cases and present only the subsequent successes as original held-out evidence.
+
+The user's example of 20 inputs means 20 groups and 80 itineraries, not 80 independent
+request samples. This is a scale illustration, not a replacement of the current 12-case
+earlier sample proposals. Final counts and selection are supplied by later benchmark design.
+HTML implementation and participant assessment are not authorized by this design decision.
 
 ## 13. Official Evidence Audit
 
@@ -429,13 +507,23 @@ This audit does not measure the overall accuracy of Google or completeness of un
 
 ## 14. Metrics register
 
+A separate [score profile proposal](../.scratch/rtpeval/score-profile.md) describes candidate
+five accepted equal-weight dimensions and accepted PASS/(PASS+FAIL+UNKNOWN) verified
+credit. Unknown rate is UNKNOWN/N; verification coverage is (PASS+FAIL)/N. Group-wide N/A removes a dimension jointly; single-version no-check N/A contributes zero
+under the shared weights, without becoming FAIL; no total is implemented or retrospectively fitted to results.
+
+The [unified metrics contract](../.scratch/rtpeval/metrics-contract.md) expands this overview
+with sources, units, denominators, states and accepted tolerances. It records OPEN aggregation
+and score formulas rather than inventing them. Qualified primary visits have one POI and an
+explicit time interval; multi-POI blocks are intake diagnostics, not automatically split visits.
+
 READY means the current contract provides a usable basis, **not** that an evaluator exists.
 OPEN requires specification and/or recording work. DEFER excludes a verified v1 result until
 separately authorized. REMOVE means excluded as a primary RTPEval v1 metric.
 
 | Metric group | Status | Data and interpretation |
 | --- | --- | --- |
-| Run outcomes | OPEN | Collector; produced, clarification, invalid input, timeout, model/provider/schema/internal failure, cancellation; degradation is an additional attribute, not double-counted completion |
+| Run outcomes | EXTERNAL INPUT | Benchmark-owned ledger; produced, clarification, invalid input, timeout, model/provider/schema/internal failure, cancellation; degradation is an additional attribute, not double-counted completion |
 | Date coverage and raw activity counts | READY | Request/output; distinguish day present, any activity, main visits, and empty day; empty is not automatic failure |
 | Canonical grounding | OPEN | Independent identity mapping; verified, ambiguous, unresolved, wrong association; role/adjudication rules pending |
 | REQUIRED/EXCLUDED and date/count obligations | OPEN | Independent requirement specification and identity; no runtime interpreter ground truth |
@@ -451,12 +539,13 @@ separately authorized. REMOVE means excluded as a primary RTPEval v1 metric.
 | V3 pre/post artifacts | READY | Successful result retains draft/final_primary; collector must preserve both and record unavailable pairs |
 | RAG exposure | READY | Initialization, embedding/retrieval status, degradation, candidate fates; distinguish RAG-only and mixed-source identities, not causal contribution |
 | Calls/tokens/provider elements/latency | OPEN | Unified actual-call accounting; missing usage is not zero; avoid round/aggregate double counting |
-| Human pairwise | READY | Accepted single-rater design; exact presentation and sampling pending |
+| Human four-version blind assessment | OPEN | V0-V3; HTML groups A/B/C/D with per-dimension rankings allowing ties; per-pair wins/ties/losses accepted; presentation details and sample selection remain open |
 | Official evidence audit | OPEN | Accepted-and-exposed or rule-used fact provenance and independent audit |
 | Verified travel cost/budget | DEFER | No verified coverage, subtotal, or whole-trip PASS as v1 main metrics; model amounts may be descriptive |
 | Small factual claim audit | DEFER | Optional exploratory human work, not required v1 scope |
 | Automated False Certainty/public access accuracy | REMOVE | No adequate common assertion/access contract; do not add fictional fields |
-| Whole-trip budget PASS/composite score | REMOVE | Not primary metrics |
+| Auxiliary reliability/constraint subscores and total | DESIGN ACCEPTED | Five equal-weight verified-compliance scores, shared N/A mask and individual N/A zero contribution; implementation/technical applicability and analysis plan not frozen |
+| Whole-trip budget PASS | REMOVE | Not a primary metric |
 
 Any future factual claim audit must distinguish supported, unsupported by evaluation evidence,
 contradicted, and evidence conflict. Unsupported does not mean false.
@@ -465,6 +554,13 @@ Do not collapse verification coverage across unrelated checks into a single qual
 Opening, routes, identities, and requirements have different units and applicability.
 
 ## 15. Resource accounting and observability
+
+The accepted handoff contains separate `v0_usage.json` through `v3_usage.json` alongside
+results. Benchmark execution must supply uniform collection; this remains an engineering
+gap, not implemented functionality. Evaluation reads and aggregates records, distinguishing
+missing observations from zero and Repair subsets from totals. The detailed delivery and
+collection requirements are in the module specification and benchmark design. Missing usage
+is a resource diagnostic, not a new planner-completion or itinerary-quality decision.
 
 Keep planner and evaluator costs separate. Record interpretation, primary generation,
 Reviews/ExperienceProfile, Web/reasoning, embedding, repair, and Nearby work where applicable.
@@ -495,13 +591,14 @@ causal effects from added logs. Missing provider metadata remains unavailable.
 
 ## 16. Analysis plan and result reporting
 
-The request is the paired comparison unit. The 36 requests' first run per version constitute
-the proposed main analysis; optional repeats are a separate sensitivity analysis. Visits and
+The request is the paired comparison unit. Selected primary runs are declared in the supplied
+batch manifest; optional repeats, if specified, are a separate sensitivity analysis. Visits and
 legs may contribute descriptive micro-counts but are not independent experimental samples.
 
-Report all-run outcomes alongside conditional itinerary quality. For paired quality differences,
-state which pairs are available and how missingness affects interpretation; do not hide a
-version's failures by presenting only the common successful subset.
+Report benchmark quality only for admitted four-version-complete groups. Separately disclose
+all attempted groups and exclusions, without scoring excluded outputs or treating them as zero.
+For paired quality differences, state available pairs and missingness within the admitted
+cohort. Selection limits all quality claims to that cohort; it does not establish all-request superiority.
 
 Use city, length, and query type for stratified descriptions. Account for repeated requests
 and city clustering in the chosen uncertainty method, without claiming precise generalization
@@ -511,7 +608,7 @@ are revealed. Development data and predefined applicability rules may inform tha
 Post-result additions are exploratory, not retrospectively preregistered.
 
 Planned reporting groups are run outcomes, E2E quality, computational cost, repair mechanism
-and independent outcomes, V3 pre/post, human pairwise, and qualifying official-fact audit.
+and independent outcomes, V3 pre/post, four-version human blind assessment, and qualifying official-fact audit.
 Do not include a verified travel-budget table as a v1 main result. Preserve raw denominators
 and reason distributions alongside aggregated rates, medians/IQRs, or means where meaningful.
 
@@ -555,23 +652,23 @@ After formal execution begins:
 | --- | --- |
 | Final engineering checkpoint | Readiness audit after V3 completion; no current version freeze implied |
 | E2E/default and controlled capability configuration | Final supported operations, review flags, limits and deadlines |
-| Opening contract | Timezone, periods, overnight, exceptions, exterior, precision and unknown states |
+| Opening contract | Timezone, periods, overnight, exceptions, precision and unknown states |
 | Route contract | Mode, occupancy, continuous intervals, departure/waiting, statuses, fallback, buffers and partial evidence |
 | Requirement specification | Independent format, exact/minimum/date obligations and unsupported semantics |
 | Place-bearing roles and identity | Eligibility, resolution, adjudication budget, automatic-match audit and correspondence |
 | Run outcomes | Mutually understandable terminal categories, degraded attributes and missing-artifact handling |
 | Controlled targets/controls | Actual V3 entry boundary, fixtures, permitted invariants and evidence coverage |
-| Held-out cities and requests | Exposure/coverage eligibility, request/length/tag allocation and boundary-case policy |
-| Optional repeats | Development-based choice of 144 or 192 runs; no current priority over more unique cases |
+| Benchmark construction | External responsibility; see the separate benchmark design |
+| Batch membership | Supplied by the user; no evaluator sample-size quota or automatic replenishment |
 | Evidence acquisition | Snapshot budget, batching, retries, time lag, failure records and persistence |
 | Official audit | Accepted-and-exposed/rule-used extraction, provenance and independent audit workflow |
-| Human presentation | Exact renderer, preselected 12 cases/run choice, three duplicates and unavailable/N/A handling |
+| Human presentation | Exact renderer/storage and supplied sampling configuration; benchmark design owns final counts |
 | Analysis plan | Main paired comparisons, aggregation, missingness, city/repeat handling and uncertainty methods |
 | Observability | Complete artifacts, actual usage/timing, provider metadata and integrity checks |
 | Date batch and hashes | Materialization, validity window, artifact identities and reproducibility manifest |
 
-The next post-engineering task is **Evaluation Readiness Audit**, followed by an approved
-RTPEval v1 Specification. Implementation and development dry runs require subsequent approval.
+The readiness audit has a recorded checkpoint; the current task is to complete the
+RTPEval v1 module specification and resolve its explicitly OPEN contracts. Implementation and development dry runs require subsequent approval.
 
 ## 19. Relevant current repository references
 
@@ -591,3 +688,21 @@ RTPEval v1 Specification. Implementation and development dry runs require subseq
 
 These references describe implementation evidence, not independent evaluation ground truth.
 Their existence does not mean RTPEval has been implemented or validated.
+
+## 20. Technical contract checkpoint — 2026-09-28
+
+[Artifact and human-answer contract](../.scratch/rtpeval/artifact-contract.md) defines batch integrity, per-version result/usage linkage, RequirementSpec serialization, report states and blinded ranking persistence. [Evidence and time contract](../.scratch/rtpeval/evidence-time-contract.md) defines timezone/period parsing and independent route-response classification with provider references.
+
+Use valid returned Google route durations, including traffic-calculation fallback, with the accepted product caps/reserve and tolerances. Generic no-POI activities are free-time/transition-like; protected time and concretely named unresolved visits retain their separate meaning. No additional quality dimension is introduced.
+
+Core contracts can now support task decomposition. Usage instrumentation, identity acceptance/audit validation, transport correspondence, mechanism extraction and Controlled Repair invariants remain dependent work. No evaluator, renderer, fixtures, benchmark or experiments were implemented by this documentation pass; the specification is not frozen.
+
+## 21. Published work plan and pause checkpoint — 2026-09-28
+
+The user approved the [12-ticket work plan](../.scratch/rtpeval/ticket-breakdown.md); individual issues are published. Nine retain needs-info; 06, 08 and 09 have specification-ready status but unresolved predecessor dependencies. Neither status nor publication authorizes implementation.
+
+Before each implementation, resolve its technical information gaps using current code and accepted contracts. Ask the user only for decisions that affect result meaning and cannot be derived from existing agreements. Common definitions must be settled before dependent modules diverge; dependency waiting alone belongs in Blocked by. No broad redesign or repeated interview is required.
+
+Resource reports supply objective measurements and descriptive comparisons for the researcher's later thesis/presentation analysis. They are not a new non-blind human rating stage, an efficiency PASS threshold or part of the itinerary quality total. The rater sees only original Input and anonymous plans; formal analysis and thesis writing remain separately authorized work.
+
+The user requested a pause after documentation updates. Next intended work is specification closure for Ticket 01; it has not started. No evaluator implementation, formal cases, live acquisition, experiments or freeze occurred. Historical design records are preserved separately under thesis_notes/evaluation and thesis_notes/benchmark; current authority remains PROJECT.md and the active design/specification documents.
