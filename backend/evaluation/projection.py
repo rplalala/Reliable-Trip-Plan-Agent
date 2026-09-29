@@ -96,9 +96,10 @@ def classify(raw, review):
     return "unresolved", "unresolved", "role_review_required"
 
 
-def project(itinerary, context, prefix="/itinerary", reviews=()):
+def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
     """Return inventory and uncertainties; never compute metric verdicts."""
     require(isinstance(itinerary, dict), prefix, "Expected an itinerary object")
+    require(version in ("v0", "v1", "v2", "v3"), prefix, "Unknown planner version")
     wire = itinerary.get("output_version", "itinerary_1")
     require(
         wire in ("itinerary_1", "itinerary_2"),
@@ -111,6 +112,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=()):
     review_map = {r["pointer"]: r for r in reviews}
     consumed = set()
     records, legs, claims, diagnostics = [], [], [], []
+    ignored_transport = []
     ids, dates = set(), set()
 
     def report(reason, refs, explanation):
@@ -155,6 +157,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=()):
                 "role_status": status,
                 "reason": reason,
                 "review": review,
+                "transport_applicable": role == "transport" and version == "v0",
             }
             records.append(rec)
             day_records.append(rec)
@@ -245,6 +248,10 @@ def project(itinerary, context, prefix="/itinerary", reviews=()):
             "start": raw.get("departure_time"),
             "end": raw.get("arrival_time"),
         }
+        if version == "v0":
+            ignored_transport.append(claim)
+            report("ignored_transport_source", [ref], "V0 transport uses model activities only")
+            continue
         matches = [
             leg
             for leg in legs
@@ -278,6 +285,14 @@ def project(itinerary, context, prefix="/itinerary", reviews=()):
             "start": raw.get("start_time"),
             "end": raw.get("end_time"),
         }
+        if version != "v0":
+            ignored_transport.append(claim)
+            report(
+                "ignored_transport_source",
+                [rec["source"]],
+                "V1-V3 transport uses application transfers only; no activity fallback",
+            )
+            continue
         candidates = [leg for leg in legs if leg["declared_day"] == rec["declared_day"]]
         if review and "from_activity_id" in review:
             matches = [
@@ -342,6 +357,9 @@ def project(itinerary, context, prefix="/itinerary", reviews=()):
         "context": context,
         "projection": prefix,
         "wire_version": wire,
+        "planner_version": version,
+        "transport_source": "activity" if version == "v0" else "transfer",
+        "ignored_transport": ignored_transport,
         "absent_fields": [
             k
             for k in ("output_version", "transfers", "reference_recommendations")

@@ -253,7 +253,7 @@ def test_duplicate_and_conflicting_transport(batch, kind, agreement):
     t = transfer() if kind == "same" else transfer("10:05", "10:25", "DRIVE")
     if kind == "missing":
         t = transfer(end=None)
-    results["v1"]["itinerary"]["transfers"] = [t]
+    results["v1"]["itinerary"]["transfers"] = [transfer(), t]
     out = final(load_batch(write("v1")), "v1")
     journey = out["legs"][0]["journey"]
     assert journey["agreement"] == agreement
@@ -266,6 +266,68 @@ def test_duplicate_and_conflicting_transport(batch, kind, agreement):
     assert "validation_state" not in json.dumps(out)
     assert "planner-private" not in json.dumps(out)
     assert out["legs"][0]["claims"][0]["original"]["origin_place_id"] == "wrong-id"
+
+
+@pytest.mark.parametrize("version", ["v1", "v2", "v3"])
+@pytest.mark.parametrize("has_transfer", [True, False])
+def test_tool_versions_never_use_model_transport_fallback(batch, version, has_transfer):
+    _, results, write, _, _ = batch
+    if has_transfer:
+        results[version]["itinerary"]["transfers"] = [transfer("10:05", "10:25", "DRIVE")]
+    out = final(load_batch(write(version)), version)
+    claims = out["legs"][0]["claims"]
+    assert [c["kind"] for c in claims] == (["transfer"] if has_transfer else [])
+    assert out["unbound_transport"] == []
+    ignored = out["ignored_transport"]
+    assert ignored[0]["original"]["activity_id"] == "t"
+    assert ignored[0]["source"]["pointer"] == "/itinerary/days/0/activities/1"
+    assert any(d["reason"] == "ignored_transport_source" for d in out["diagnostics"])
+    assert out["activities"][1]["transport_applicable"] is False
+
+
+def test_v0_ignores_transfer_and_preserves_model_transport(batch):
+    _, results, write, _, _ = batch
+    results["v0"]["itinerary"]["transfers"] = [transfer("10:05", "10:25", "DRIVE")]
+    out = final(load_batch(write("v0")))
+    assert [c["kind"] for c in out["legs"][0]["claims"]] == ["activity"]
+    assert out["legs"][0]["journey"]["occupancy"][0]["mode"] == "WALK"
+    assert out["activities"][1]["transport_applicable"] is True
+    assert out["ignored_transport"][0]["source"]["pointer"] == "/itinerary/transfers/0"
+
+
+def test_v3_optional_projections_use_transfers_only(batch):
+    _, results, write, _, _ = batch
+    it = results["v3"]["itinerary"]
+    it["transfers"] = [transfer("10:05", "10:25", "DRIVE")]
+    results["v3"]["v3"] = {"draft": copy.deepcopy(it), "final_primary": copy.deepcopy(it)}
+    result = load_batch(write("v3")).to_dict()
+    run = result["inventory"][0]["runs"]["v3"]
+    for key in ("draft", "final_primary"):
+        out = run["optional"][key]
+        assert [c["kind"] for c in out["legs"][0]["claims"]] == ["transfer"]
+        assert out["ignored_transport"][0]["source"]["pointer"].startswith("/v3/" + key)
+
+
+def test_repeated_actual_journeys_keep_distinct_occurrence_sources(batch):
+    _, results, write, _, _ = batch
+    it = results["v1"]["itinerary"]
+    it["days"][0]["activities"].extend(
+        [
+            activity("a2", "Museum A", "12:00", "13:00", place="Museum A"),
+            activity("b2", "Museum B", "13:30", "14:30", place="Museum B"),
+        ]
+    )
+    later = transfer("13:00", "13:20")
+    later.update(from_activity_id="a2", to_activity_id="b2")
+    it["transfers"] = [transfer(), later]
+    out = final(load_batch(write("v1")), "v1")
+    assert len(out["legs"]) == 3
+    assert [len(leg["claims"]) for leg in out["legs"]] == [1, 0, 1]
+    assert out["legs"][0]["from_source"] != out["legs"][2]["from_source"]
+    assert (
+        out["legs"][0]["journey"]["occupancy"][0]["start"]
+        != (out["legs"][2]["journey"]["occupancy"][0]["start"])
+    )
 
 
 def test_review_replay_and_source_order(batch):
@@ -344,7 +406,7 @@ def test_dangling_transfer_is_not_retargeted(batch):
     results["v2"]["itinerary"]["transfers"] = [t]
     out = final(load_batch(write("v2")), "v2")
     assert out["unbound_transport"][0]["original"]["from_activity_id"] == "absent"
-    assert len(out["legs"][0]["claims"]) == 1
+    assert out["legs"][0]["claims"] == []
 
 
 def test_segments_remain_segments(batch):

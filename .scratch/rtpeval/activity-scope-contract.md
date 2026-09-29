@@ -75,3 +75,19 @@ The latest user decision supersedes excluding generic no-POI activities from ben
 ## Ticket 01 specialization — 2026-09-29
 
 The [intake/projection contract](intake-projection-contract.md) now defines source-stable projection, role-review records, candidate adjacency and transport correspondence. These replace the OPEN role/projection/deduplication details above for Ticket 01. Time interpretation follows evidence-time-contract.md. Metric-specific denominator and occupancy verdicts remain owned by their scoring tickets. No planner schedule/classification output becomes independent ground truth.
+
+
+## Superseding transport-source decision - 2026-09-30
+
+Accepted user decision: V0 has no Routes API and uses model-generated transport activities as its submitted transport claims. V1-V3 use application-owned `transfers`; model-generated transport activities in these versions must not supply evaluated transport mode, time, occupancy or fallback evidence. Preserve those original records for traceability and an ignored-source diagnostic, without treating them as additional transport commitments or merging them with authoritative transfers. Missing/incomplete V1-V3 transfers stay missing/incomplete; do not substitute an LLM transport activity. This authority selects the submitted transport representation, not factual route truth: independent snapshot evidence still determines route evaluation.
+
+This supersedes the earlier version-neutral rule that Activity and Transfer representations have equal authority and must be reconciled with neither preferred. Repeated actual journeys between different visit occurrences remain separate. The earlier question about merging conflicting Activity/Transfer representations into one UNKNOWN commitment is superseded for V1-V3 by the user's source-selection rule.
+
+Implementation status: decision accepted; existing Ticket 01 projection still reconciles both representations and requires correction before Ticket 05 occupancy scoring. Existing acceptance tests describe the previous behavior and must be revised with the implementation. No implementation or corrective test execution is claimed by this documentation update.
+
+
+## Transport responsibility correction - 2026-09-30
+
+Implemented in the current uncommitted workspace. Projection now requires the selected planner version independently of immutable source context. V0 uses transport activities only; V1-V3 use transfers only, including V3 draft/final_primary. `transport_source` identifies the selected representation; `ignored_transport` preserves allowlisted source records and `ignored_transport_source` diagnostics. Activities retain independently assigned roles and a `transport_applicable` flag, which is true only for V0 transport records. Ignored transport records must not supply occupancy, mode, time, fallback or an additional commitment. Ambiguous activity roles still require independent review; this is not automatic semantic recognition of disguised transport prose. Missing transfers remain missing. Same-source duplicate/conflicting claims retain reconciliation; journeys between different visit occurrences remain distinct. Earlier acceptance results and the preceding pending-status note describe historical checkpoints.
+
+Generation now has a V1-V3-only structured activity schema excluding transport, explicit initial/Repair prompt prohibitions, and shared output acceptance rejecting declared model transport before initial transfer binding. V0 keeps its transport schema and version-specific transport instructions; the shared policy no longer suggests transport roles to tool-backed versions. Existing Repair patch permissions already prohibit arbitrary activity/transfer authoring. Visits may be spaced using supplied route evidence; application route selection and transfer binding remain unchanged. No extra model call or automatic repair is introduced.

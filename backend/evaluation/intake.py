@@ -335,6 +335,7 @@ def load_batch(manifest_path):
                     result.get("itinerary"),
                     context,
                     reviews=[r for r in relevant if r["pointer"].startswith("/itinerary/")],
+                    version=version,
                 )
                 require(
                     version == "v3"
@@ -352,6 +353,7 @@ def load_batch(manifest_path):
                             context,
                             prefix,
                             [r for r in relevant if r["pointer"].startswith(prefix + "/")],
+                            version=version,
                         )
                     except (MaterialError, TypeError, KeyError, ValueError) as exc:
                         optional[key] = None
