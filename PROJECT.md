@@ -1000,3 +1000,45 @@ Ticket 01/02 follow-up (2026-09-30): authorized corrections add required selecte
 ## Evaluation branch checkpoint - 2026-09-30
 
 The user authorized creating `feature/evaluation` from `feature/v3` and committing the current RTPEval work. Tickets 01-03 and their review corrections are grouped by intake/projection, usage capture/reporting, and identity/adjudication, with cross-ticket documentation recorded separately. Pre-commit offline regression across evaluation, observability/runtime, Foundry/integrations, retrieval/runtime and V0-V3: **1006 passed, 1 skipped** (native Windows symlink privilege limit). Ruff and diff whitespace checks passed. Earlier uncommitted-context statements remain historical. Ignored research archives remain local; no push, live call, formal benchmark/experiment or version freeze is implied. Ticket 04 still needs its own approved scope.
+
+
+## Evaluation Ticket 04 offline snapshots - 2026-09-30
+
+Under explicit user approval, Ticket 04 now supplies two-stage independent identity/canonical evidence plans, bounded acquisition through a caller-injected async transport, raw-byte snapshots and deterministic offline replay. Requests are deduplicated without merging occurrences; available V3 paired projections are opt-in. Directed route contexts are explicit and preserve mode/departure/coordinate provenance; missing contexts remain pending. No departure-selection/scoring policy is implemented ahead of Ticket 07.
+
+Timestamp-integrity review findings were corrected with regression tests. Snapshot suite: 35 passed; full backend suite: **1957 passed, 10 skipped** (nine opt-in database tests, one Windows symlink privilege case). Ruff/format/compile checks pass; Standards/Spec final reviews have zero remaining findings. See [contract](.scratch/rtpeval/snapshot-contract.md), [guide](backend/evaluation/README.md) and [acceptance](.scratch/rtpeval/ticket-04-acceptance.md).
+
+This is an injected-transport/offline implementation, not a ready-to-run Google network client or verified live coverage. Provider serialization/applicability, operational retention and live budgets require separate authorization. No real provider/model/database calls, formal benchmark/experiment, commit/push or freeze occurred. Planner paths and capture adapters are unchanged. Ticket 05 scope inspection is a recommended next step; no dependent work is automatically started.
+
+
+Evaluation scope clarification (2026-09-30): the user specified that V0 transport claims come from model-generated transport activities, while V1-V3 transport claims must use application-owned transfers exclusively. LLM transport activities in V1-V3 are retained as source records but cannot provide transport occupancy/fallback. Independent oracle evidence still decides factual feasibility. This supersedes the earlier equal-authority Activity/Transfer reconciliation contract. Ticket 01 projection has not yet been corrected for this decision; it is a prerequisite for Ticket 05 occupancy scoring. The user also accepted merging same-scope overlapping protected intervals into one blocker while checking the original obligations separately. Ticket 05 implementation remains pending; Ticket 04 uncommitted work is preserved.
+
+
+## Transport responsibility correction - 2026-09-30
+
+Implemented in the current workspace: V0 retains model-estimated transport activities. V1-V3 share a primary generation schema excluding transport and an output acceptance check rejecting declared transport activities; both initial and Repair prompts explicitly reserve transport selection and transfer times to the application. Supplied route evidence can inform visit spacing. Existing Routes selection/binding and Repair operation permissions remain unchanged. A forbidden declared activity fails generation without adding a retry. Semantic transport disguised under another role cannot be comprehensively detected mechanically.
+
+Independent evaluation now selects transport sources by planner version: V0 activities, V1-V3 transfers, including optional V3 projections. Ignored records retain source pointers and diagnostics but supply no evaluated transport occupancy/fallback; missing transfers stay missing. Source identity tuples are unchanged. `transport_source`, `ignored_transport` and activity `transport_applicable` expose this distinction for later scoring. Independent evidence remains the factual oracle. Same-source duplicate/conflict handling and distinct visit occurrences are preserved. This supersedes the historical equal-authority Activity/Transfer reconciliation checkpoint. Ticket 05 scoring and protected-time union implementation remain pending. No live calls, formal experiments, commit/push or freeze are included.
+
+
+Transport correction validation: final backend suite **1973 passed, 10 skipped (85.49s)**; nine opt-in database cases and one Windows symlink privilege case were skipped. New boundary tests first reproduced forbidden-source acceptance. DTO fixture mismatches and a test nesting error were corrected. Spec review caught a contradictory shared prompt instruction, removed while retaining V0's explicit transport instruction; follow-up reviews have zero remaining findings. The first full run stalled and was interrupted; its runtime retrieval file passed separately (16 tests). The next full run exposed five superseded V3 transport expectations; updated boundary tests passed (119), followed by the successful final full run. Ruff, compilation and diff checks passed. See the transport correction acceptance record under .scratch/rtpeval for the complete sequence and limitations.
+
+## Transport smoke and workspace closeout - 2026-09-30
+
+The separately authorized Berlin three-day smoke completed once per V0-V3. All
+dates were delivered; V0 supplied six explicitly estimated transport activities,
+while V1/V2/V3 supplied zero model transport activities and complete application
+bindings for 8/6/5 cross-place adjacencies. V3 had no authorized Repair targets;
+its live Repair path remains untested by this batch. RAG was partial and missing
+billed usage remains unknown. This is development boundary validation, not an
+independent feasibility verdict or formal comparison. See
+[acceptance and execution history](docs/transport_responsibility_smoke.md).
+
+The user authorized classifying and committing the eligible workspace changes
+without another approval. Git writes waited until all live processes ended and
+the frozen hashes were verified.
+Pre-commit combined regression: **1983 passed, 10 skipped**; Ruff and diff checks
+passed. Earlier no-commit/no-live statements describe their dated checkpoints.
+Ticket 04 remains an injected-transport/offline implementation; Ticket 05 remains
+pending. Runtime evidence, credentials and research archives remain local and ignored.
+No push, new ticket, extra live run or version freeze is authorized by this closeout.

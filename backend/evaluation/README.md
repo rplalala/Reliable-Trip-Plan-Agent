@@ -73,3 +73,39 @@ Ticket 03 follow-up (2026-09-30): the details-only shortcut recognizes only a ma
 
 
 Ticket 01/02 follow-up (2026-09-30): overlapping visit intervals produce source-linked `overlapping_visit_intervals` diagnostics and mark affected candidate adjacency unresolved; display sorting does not repair chronology. Available/partial usage envelopes require explicit model/provider/cache event arrays (empty is valid, absent is not). Duplicate cache IDs are rejected like model/provider duplicates. Repair token subtotal is null when no Repair token value was observed; a measured zero stays zero and partial known values remain an observed subtotal.
+
+
+## Ticket 04: independent snapshots
+
+The snapshot module provides offline request preparation, acquisition through an explicitly injected async transport, and immutable local replay. It has no built-in Google client, credentials, database, planner cache, or live CLI. See [snapshot contract](../../.scratch/rtpeval/snapshot-contract.md) for the exact wire and [acceptance](../../.scratch/rtpeval/ticket-04-acceptance.md) for verification.
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.snapshot_cli identity-plan C:/batch/manifest.json --paired
+.venv/Scripts/python.exe -m backend.evaluation.snapshot_cli replay C:/snapshots/identity --expected-plan C:/batch/identity-plan.json
+.venv/Scripts/python.exe -m backend.evaluation.snapshot_cli identity-evidence C:/snapshots/identity
+.venv/Scripts/python.exe -m backend.evaluation.snapshot_cli evidence-plan C:/batch/manifest.json C:/batch/identity-report.json C:/batch/route-contexts.json --paired
+```
+
+Commands write JSON to stdout. Exit 0 means a valid plan/replay, not complete evidence or a quality PASS; exit 2 means material/snapshot correction is needed. An empty contexts array is valid and leaves candidate legs explicitly pending. Replay never performs acquisition.
+
+Python API: `build_identity_plan`, `build_evidence_plan`, `acquire_snapshot`, `load_snapshot`, and `identity_evidence`. Acquisition requires `AcquisitionPolicy(max_sends=...)` and a caller-owned async callable receiving a detached request descriptor and returning `Response(status_code, body_bytes)`. Return exact raw bytes; raise `TransportFailure` with a supported safe category for a failed dispatch. Credentials and network serialization remain in the separately authorized transport integration. Programming errors/cancellation abort without publishing a manifest; interrupted directories cannot be reused or replayed automatically.
+
+Workflow: prepare identity requests, acquire to a fresh directory with a separately authorized transport, replay to an identity envelope, run Ticket 03 adjudication/audit, then prepare canonical details and explicit route contexts. Available V3 draft/final_primary projections are included only when paired is requested. Unresolved references and unrequested legs remain inventoried. Identical requests share evidence without merging occurrences. One-cell route matrices avoid full union cross products. Current/regular hours, timezone, coordinates and unrounded duration strings remain in raw evidence for later offline scorers.
+
+The oracle ledger records sends, retry sends and requested matrix elements separately from planner usage. Snapshot deduplication is local to one plan; future reruns use a new directory. Collection times form an interval. Planner-to-oracle lag is explicitly unavailable until independent planner times exist. Provider applicability, operational storage/retention settings, live budgets and factual accuracy are not established by synthetic acceptance.
+
+
+## Transport responsibility correction - 2026-09-30
+
+Implemented in the current workspace: V0 retains model-estimated transport activities. V1-V3 share a primary generation schema excluding transport and an output acceptance check rejecting declared transport activities; both initial and Repair prompts explicitly reserve transport selection and transfer times to the application. Supplied route evidence can inform visit spacing. Existing Routes selection/binding and Repair operation permissions remain unchanged. A forbidden declared activity fails generation without adding a retry. Semantic transport disguised under another role cannot be comprehensively detected mechanically.
+
+Independent evaluation now selects transport sources by planner version: V0 activities, V1-V3 transfers, including optional V3 projections. Ignored records retain source pointers and diagnostics but supply no evaluated transport occupancy/fallback; missing transfers stay missing. Source identity tuples are unchanged. `transport_source`, `ignored_transport` and activity `transport_applicable` expose this distinction for later scoring. Independent evidence remains the factual oracle. Same-source duplicate/conflict handling and distinct visit occurrences are preserved. This supersedes the historical equal-authority Activity/Transfer reconciliation checkpoint. Ticket 05 scoring and protected-time union implementation remain pending. No live calls, formal experiments, commit/push or freeze are included.
+
+
+Transport correction validation: final backend suite **1973 passed, 10 skipped (85.49s)**; nine opt-in database cases and one Windows symlink privilege case were skipped. New boundary tests first reproduced forbidden-source acceptance. DTO fixture mismatches and a test nesting error were corrected. Spec review caught a contradictory shared prompt instruction, removed while retaining V0's explicit transport instruction; follow-up reviews have zero remaining findings. The first full run stalled and was interrupted; its runtime retrieval file passed separately (16 tests). The next full run exposed five superseded V3 transport expectations; updated boundary tests passed (119), followed by the successful final full run. Ruff, compilation and diff checks passed. See the transport correction acceptance record under .scratch/rtpeval for the complete sequence and limitations.
+
+
+Subsequent checkpoint (2026-09-30): the separately authorized planner smoke and
+workspace commit closeout are recorded in [development acceptance](../../docs/transport_responsibility_smoke.md).
+Earlier uncommitted/no-live statements describe their dated implementation scopes;
+the planner smoke does not validate independent oracle acquisition or scoring.

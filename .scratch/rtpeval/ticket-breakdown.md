@@ -75,19 +75,19 @@ Usage collection is an upstream supporting capability and cannot become evaluato
 
 **Blocked by:** 03
 
-**Specification status:** needs-info
+**Specification status:** resolved (approved offline scope implemented and validated)
 
 **What to build:** Acquire or replay a shared, versioned evidence snapshot for the batch venue union and each required directed route context.
 
-**Readiness gate:** Specify bounded acquisition settings, retry/completeness behavior and persistence constraints; no live acquisition is authorized by ticket drafting or offline implementation.
+**Readiness gate:** Closed by [snapshot contract](snapshot-contract.md) and [offline acceptance](ticket-04-acceptance.md); live acquisition remains separately authorized.
 
 **Acceptance criteria:**
 
-- [ ] Include available V3 drafts when paired scoring is requested; union collection does not merge visit occurrences.
-- [ ] Use evaluation-owned cache/evidence; preserve raw provider provenance, request context, retrieval times, failures and hashes.
-- [ ] Route keys distinguish endpoints, direction, mode and departure context; do not substitute planner baseline evidence or reverse-leg estimates.
-- [ ] Frozen snapshot replay performs no network calls; partial provider failures remain recorded rather than silently shrinking denominators.
-- [ ] Mock acquisition demonstrates deduplication, missing matrix elements, retry accounting, corruption detection and deterministic replay.
+- [x] Include available V3 drafts when paired scoring is requested; union collection does not merge visit occurrences.
+- [x] Use evaluation-owned cache/evidence; preserve raw provider provenance, request context, retrieval times, failures and hashes.
+- [x] Route keys distinguish endpoints, direction, mode and departure context; do not substitute planner baseline evidence or reverse-leg estimates.
+- [x] Frozen snapshot replay performs no network calls; partial provider failures remain recorded rather than silently shrinking denominators.
+- [x] Mock acquisition demonstrates deduplication, missing matrix elements, retry accounting, corruption detection and deterministic replay.
 
 ### 05. Requirement and schedule metrics
 
@@ -240,7 +240,7 @@ Usage collection is an upstream supporting capability and cannot become evaluato
 | [01: Batch intake and independent schedule projection](issues/01-batch-intake-projection.md) | None | resolved |
 | [02: Symmetric usage capture and resource report](issues/02-usage-capture-report.md) | None | resolved |
 | [03: Identity resolution, adjudication and grounding report](issues/03-identity-adjudication.md) | 01 | resolved |
-| [04: Independent snapshot acquisition and offline replay](issues/04-evidence-snapshot.md) | 03 | needs-info |
+| [04: Independent snapshot acquisition and offline replay](issues/04-evidence-snapshot.md) | 03 | resolved |
 | [05: Requirement and schedule metrics](issues/05-requirement-schedule-metrics.md) | 01, 03 | needs-info |
 | [06: Opening checks from frozen evidence](issues/06-opening-checks.md) | 04 | ready-for-agent |
 | [07: Same-day route checks from frozen evidence](issues/07-route-checks.md) | 04 | needs-info |
@@ -279,3 +279,6 @@ User authorized specification closure, implementation and offline acceptance wit
 ## Ticket 03 implementation closeout — 2026-09-29
 
 The user accepted a strict two-path identity boundary and requested offline implementation after scope review. Ticket 03 is resolved; Tickets 01-03 are complete, 06/08/09 remain specification-ready subject to dependencies, and six tickets still need technical closure. See the [identity implementation contract](identity-implementation-contract.md) and [offline acceptance](ticket-03-acceptance.md). Supplied-ID and name-only references use the same conservative association standard, high-impact/ambiguous cases go to versioned review, and automatic proposals receive deterministic audit sampling. No live Google acquisition, formal case, experiment, commit, push or freeze was authorized or performed. Ticket 04 is the next dependent acquisition task and retains its own needs-info gate.
+
+
+2026-09-30: Ticket 04 is resolved for the approved injected-transport/offline scope. Snapshot planning, bounded fake acquisition, raw persistence, identity handoff and deterministic replay are implemented. Final full backend suite: 1957 passed / 10 skipped. See ticket-04-acceptance.md for failure/correction sequence and live integration limits. Later tickets remain separately authorized.

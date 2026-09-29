@@ -175,7 +175,7 @@ implementation and evaluation execution still require separate authorization.
 
 - [Evaluation glossary](evaluation_glossary.md): shared benchmark/evaluation terminology; not project-wide context.
 
-- [Evaluation implementation work plan](../.scratch/rtpeval/ticket-breakdown.md): 12 approved tickets with current statuses; Tickets 01-03 are resolved offline.
+- [Evaluation implementation work plan](../.scratch/rtpeval/ticket-breakdown.md): 12 approved tickets with current statuses; Tickets 01-04 are resolved for their approved offline scopes.
 - Local historical design archives: `thesis_notes/evaluation/` and `thesis_notes/benchmark/` (Git-ignored; not included in a fresh checkout). These are historical records, not project authority or formal research results.
 
 - [Ticket 01 intake/projection contract](../.scratch/rtpeval/intake-projection-contract.md) (2026-09-29): implemented offline; preserves independent role/transport uncertainty.
@@ -185,3 +185,9 @@ implementation and evaluation execution still require separate authorization.
 - [Ticket 02 capture/report guide](../backend/app/observability/USAGE.md) and [acceptance](../.scratch/rtpeval/ticket-02-acceptance.md): opt-in benchmark-side usage collection and independent researcher reports; no live experiment.
 
 - [Ticket 03 identity contract](../.scratch/rtpeval/identity-implementation-contract.md), [guide](../backend/evaluation/README.md) and [acceptance](../.scratch/rtpeval/ticket-03-acceptance.md): offline identity association, adjudication replay and grounding report; independent live acquisition remains Ticket 04.
+
+- [Ticket 04 snapshot contract](../.scratch/rtpeval/snapshot-contract.md), [guide](../backend/evaluation/README.md) and [acceptance](../.scratch/rtpeval/ticket-04-acceptance.md): injected acquisition, raw persistence and offline replay; no built-in live Google client.
+
+- [Transport responsibility smoke and workspace closeout](transport_responsibility_smoke.md):
+  three-day Berlin V0-V3 source/binding verification, unexercised live Repair,
+  partial RAG/usage limits and the subsequent authorized commit checkpoint.
