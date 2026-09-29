@@ -1,6 +1,6 @@
 # Independent identity resolution contract — draft
 
-Status: Independence and adjudicated ID/name-conflict handling accepted; exact automatic acceptance thresholds and detailed scoring contracts remain OPEN. No implementation or live acquisition.
+Status: Historical design checkpoint. Ticket 03 automatic acceptance and offline implementation are specialized in [identity-implementation-contract.md](identity-implementation-contract.md); no live acquisition or benchmark freeze.
 Date: 2026-09-28.
 Source checkpoint: 8a435e2db0198e4fc8928b85e333b45b66c0c981; uncommitted design documents.
 
@@ -63,3 +63,7 @@ These are documentation examples only, not benchmark cases or observed provider 
 ## Future verification
 
 Independent fixtures must cover name-only resolution, valid matching ID, wrong-ID/right-name conflict, multilingual/alias ambiguity, same-name branches, wrong-city retrieval under bias, malformed candidate filtering, provider failure, closed-but-identifiable venues, colocated distinct IDs, role ambiguity and adjudication replay. Test that changing a V3 verdict cannot change resolution. No fixtures, queries or tests were run in this design task.
+
+## Ticket 03 specialization — 2026-09-29
+
+The user accepted separate strict paths for supplied-ID details and name-only search, common to V0-V3. Exact normalized name, destination/address association, no observed competition and a predeclared automatic-acceptance audit are required; aliases, branches, ID/name conflicts, insufficient evidence and potential REQUIRED/EXCLUDED matches go to factual review. The [implementation contract](identity-implementation-contract.md) fixes the offline wire, review replay, conservative acceptance rules and grounding/claimed-ID report. This section records a later implementation decision; the draft statements above remain historical. Ticket 04 still owns real independent acquisition and snapshot persistence, and Ticket 05 owns obligation scoring.
