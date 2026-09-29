@@ -71,3 +71,7 @@ A provider matrix may contain candidate pairs before scheduling; that does not e
 ## Generic no-POI activities: superseding user decision
 
 The latest user decision supersedes excluding generic no-POI activities from benchmark delivery: treat such items as free_time/transition-like for evaluation, without counting them as primary visits or inventing a venue. Preserve the original output role/text and record the evaluation classification. This does not erase explicit user-protected time or reclassify a concretely named but unresolved POI as free time. Ordinary no-POI placeholders alone do not disqualify a group.
+
+## Ticket 01 specialization — 2026-09-29
+
+The [intake/projection contract](intake-projection-contract.md) now defines source-stable projection, role-review records, candidate adjacency and transport correspondence. These replace the OPEN role/projection/deduplication details above for Ticket 01. Time interpretation follows evidence-time-contract.md. Metric-specific denominator and occupancy verdicts remain owned by their scoring tickets. No planner schedule/classification output becomes independent ground truth.

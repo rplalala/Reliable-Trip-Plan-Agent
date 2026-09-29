@@ -58,3 +58,16 @@ Researcher-side aggregation joins the private mapping after response validation.
 ## Verification seams
 
 Future offline checks cover source hashes and path integrity, missing optional usage, N/A contribution arithmetic, role/transfer projection, ranking partition validation, answer revisions, private-key absence from HTML/export and deterministic label replay. No schema code, HTML, benchmark artifact or tests were created by this design document.
+
+## Projection specialization — 2026-09-29
+
+[intake-projection-contract.md](intake-projection-contract.md) specifies Ticket 01's material diagnostics, tolerant wire reading, independent role review and transport correspondence. A required usage envelope may explicitly declare observations unavailable. Source identity is artifact hash plus JSON pointer within batch/group/run, not a potentially reused activity ID alone. No provider duration is silently converted into a claimed arrival during projection.
+
+## Ticket 02 implementation specialization — 2026-09-29
+
+[Usage capture contract](usage-capture-contract.md) and [capture guide](../../backend/app/observability/USAGE.md) define the implemented producer-owned sidecar. Distinct model/provider/cache event arrays and stage/Repair subsets retain provenance. Exact result-byte serialization supplies the hash. Collection can be partial even when timing is available; custom adapter coverage is not inferred. Resource comparison requires all four selected envelopes and never feeds quality scoring.
+
+
+## Selected-run provenance wire - 2026-09-30
+
+Every selected run requires an available `provenance_ref` using the normal relative-path, exact-byte SHA-256 and JSON media/schema checks. Its object has `schema_version=rtpeval_provenance_1`, `group_id`, `run_id`, `version`, `input_sha256` and `result_sha256`. These fields must exactly match the selected group/run/version and complete input/result file hashes. Missing or contradictory provenance is a batch material error. Additional configuration fields may remain explicit metadata. This validates producer-supplied linkage, not the truth of an unobserved execution or a recomputation of qualification. Legacy deliveries without this association must supply the sidecar; intake does not infer it from file names or itinerary content.

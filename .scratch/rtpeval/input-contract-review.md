@@ -46,3 +46,7 @@ The CLI scripts delegate to version runners; results are printed as complete ser
 V1-V3 tracing is best-effort and size-bounded; a successful result does not guarantee a trace. Oversized trace payloads can become truncated previews. V3 adds request_resources after shared planner finalization and retrieval shutdown, so the earlier trace final_outcome is not a replacement for the returned result. Trace timing begins after some input/configuration work and cannot be labelled complete attempt latency. Preserve measured scope for every duration; absent actual usage is missing, not zero.
 
 Source anchors: V0 runner serialization and main; V1 shared runner serialization/main and run_tools_planner; V3 runner finalization at lines 130-138. The shared trace format exposes system_version; its legacy system_stage label must not be used to identify the evaluated version. No capture behavior was executed in this review.
+
+## Intake policy closure — 2026-09-29
+
+Rechecked at 364f91f. The [intake/projection contract](intake-projection-contract.md) distinguishes fatal material errors from represented content uncertainty, provides versioned tolerant reading and stable source identifiers, and defines independent activity/transport projection. This closes the earlier Ticket 01 parsing gap; it does not implement an adapter or resolve other scoring tickets.
