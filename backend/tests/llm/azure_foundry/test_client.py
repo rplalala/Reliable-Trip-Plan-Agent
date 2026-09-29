@@ -169,7 +169,7 @@ def test_client_v1_projects_range_cost_in_one_call_without_changing_v0_binding(
         destination="Kyoto",
         start_date="2026-10-01",
         end_date="2026-10-01",
-        days=[FoundryItineraryDayDTO(date="2026-10-01", activities=[activity])],
+        days=[{"date": "2026-10-01", "activities": [activity.model_dump()]}],
     )
     client = make_client(monkeypatch)
 

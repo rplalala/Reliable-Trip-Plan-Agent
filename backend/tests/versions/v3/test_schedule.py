@@ -392,18 +392,17 @@ def test_fixed_occupancy_cannot_be_credited_as_transfer_time():
     )
 
 
-def test_unbound_explicit_transport_is_neither_erased_nor_credited():
-    original, ctx, scope = setup(
-        [
-            activity(start="09:00", end="10:00"),
-            activity("ride", None, "10:00", "11:00", activity_kind="transport"),
-            activity("free", None, "11:00", "17:00", activity_kind="free_time", place_name=None),
-        ]
-    )
-    result = execute(original, ctx, scope, [addition()])
-    assert not result.status.startswith("ACCEPTED")
-    assert result.final == original
-    assert "ride" in [a.activity_id for a in ordered_activities(original.days[0], ctx.schedule)]
+def test_model_transport_is_rejected_before_schedule_repair():
+    with pytest.raises(ValueError, match="transport activities"):
+        setup(
+            [
+                activity(start="09:00", end="10:00"),
+                activity("ride", None, "10:00", "11:00", activity_kind="transport"),
+                activity(
+                    "free", None, "11:00", "17:00", activity_kind="free_time", place_name=None
+                ),
+            ]
+        )
 
 
 def test_scope_cannot_expand_root_authorization_and_direct_placeholder_edit_is_rejected():

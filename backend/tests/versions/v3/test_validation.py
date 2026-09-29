@@ -198,11 +198,15 @@ def test_repetition_does_not_prove_unreasonable_repeat():
 
 
 @pytest.mark.parametrize("kind", ["transport", "free_time", "generic_activity", "unknown"])
-def test_other_roles_and_nearby_do_not_inflate_main_count(kind):
+def test_other_roles_are_uncounted_or_transport_rejected(kind):
     itinerary = draft(
         [activity(activity_kind=kind)],
         [{"place_name": "b", "source_place_id": "b", "reason": "Optional nearby"}],
     )
+    if kind == "transport":
+        with pytest.raises(ValueError, match="transport activities"):
+            run(itinerary=itinerary)
+        return
     report = run(itinerary=itinerary)
     assert report.diagnostics.days[0].distinct_main_poi_count == 0
     assert report.diagnostics.unused_supply == 3

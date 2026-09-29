@@ -227,6 +227,27 @@ def test_named_v1_activity_needs_supplied_identity(identifier):
         )
 
 
+def test_model_transport_is_v0_only_at_output_acceptance():
+    data = itinerary().model_dump()
+    data["days"][0]["activities"][0].update(
+        activity_kind="transport", title="Walking", place_name=None, source_place_id=None
+    )
+    value = Itinerary.model_validate(data)
+    assert validate_output_sources(value).days[0].activities[0].activity_kind == "transport"
+    with pytest.raises(ValueError, match="transport activities"):
+        validate_output_sources(value, places=[], supplied_ids=[])
+
+
+def test_model_transport_is_v0_only_in_generation_schema():
+    data = make_dto().model_dump()
+    data["days"][0]["activities"][0]["activity_kind"] = "transport"
+    value = FoundryItineraryDTO.model_validate(data)
+    assert value.days[0].activities[0].activity_kind == "transport"
+    del data["reference_recommendations"]
+    with pytest.raises(ValidationError):
+        FoundryPrimaryItineraryDTO.model_validate(data)
+
+
 def test_scheduled_required_cafe_counts_by_id_without_name_guessing():
     data = itinerary().model_dump()
     data["days"][0]["activities"][0].update(place_name="Model spelling", source_place_id="cafe")

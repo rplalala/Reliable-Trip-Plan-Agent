@@ -82,6 +82,7 @@ class Model:
 
     async def generate_repair_structured(self, **kwargs):
         self.calls += 1
+        self.system_prompt = kwargs["system_prompt"]
         self.input = json.loads(kwargs["user_prompt"])
         if self.error:
             raise self.error
@@ -185,6 +186,23 @@ def test_time_only_repair_needs_no_new_candidates_and_preserves_protected_fields
     assert provider.calls == 0 and result.counters["model"] == 1
     assert result.original_supply_ids == ("a", "b", "c")
     assert result.final_place_ids == ("a", "b")
+
+
+def test_repair_keeps_transport_application_owned():
+    model = Model()
+    result = run(model=model)
+    assert result.status == "ACCEPTED_COMPLETE"
+    assert "Do not add transport activities" in model.system_prompt
+    assert "Do not edit transfers directly" in model.system_prompt
+    assert all(a.activity_kind != "transport" for d in result.final.days for a in d.activities)
+
+
+@pytest.mark.parametrize("extra", [{"activity_kind": "transport"}, {"travel_mode": "DRIVE"}])
+def test_repair_rejects_model_authored_transport_fields(extra):
+    original = overlap_draft()
+    result = run(original=original, model=Model([{**edit(), **extra}]))
+    assert result.status == "REJECTED"
+    assert result.final == original
 
 
 def test_partial_overlap_improvement_retains_confirmed_conflict():

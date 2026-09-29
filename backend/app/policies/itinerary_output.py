@@ -76,6 +76,10 @@ def validate_output_sources(itinerary, *, places=None, supplied_ids=()):
         return normalize_activity_order(itinerary)
     if references:
         raise ValueError("V1 model references are not allowed; use post-itinerary discovery")
+    if any(a.activity_kind == "transport" for a in activities):
+        raise ValueError(
+            "V1-V3 model transport activities are not allowed; use application transfers"
+        )
     ledger = {p.place_id: p for p in places if p.place_id in supplied_ids}
     for activity in activities:
         if activity.source_place_id is not None and activity.source_place_id not in ledger:

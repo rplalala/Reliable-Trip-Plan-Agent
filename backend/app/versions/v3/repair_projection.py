@@ -50,6 +50,8 @@ Use target_worksheet and report a brief target disposition; explanations are not
 WALK is a soft preference, then TRANSIT, then DRIVE. Existing usable DRIVE does not require a
 TRANSIT call. The application chooses and verifies authorized per-leg options, never you invent
 durations or distances. Leave unsupported targets unresolved. Do not edit transfers directly.
+Do not add transport activities or disguise transport as another activity role. Propose visit
+arrangements only; the application owns transport selection and transfer times.
 """
 
 
