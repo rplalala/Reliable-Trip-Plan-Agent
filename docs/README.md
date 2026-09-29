@@ -97,14 +97,14 @@ completion screening, failure records and iteration recommendations. The user de
 iteration and submits a curated batch to Evaluation; candidate admission does not trigger scoring.
 
 [RTPEval evaluator research design](evaluator_design.md) owns the accepted evaluation design
-with specification items still open. It includes the supplementary **V3 vs Codex + Travel
-Planning Skill** comparison direction alongside the main V0-V3 study. Execution details
-remain open; this is not a benchmark freeze or implementation/experiment authorization.
+with some specification items still open. It includes the supplementary **V3 vs Codex + Travel
+Planning Skill** comparison direction alongside the main V0-V3 study. Tickets 01-03 have
+separate offline implementation records; no benchmark freeze or formal experiment is implied.
 The [readiness audit](evaluation_readiness_audit.md) checks the 2026-09-28 code checkpoint;
 the [draft module specification](../.scratch/rtpeval/spec.md) records interfaces and remaining
 rules. The [specification closeout audit](../.scratch/rtpeval/closeout-audit.md) separates
-accepted scoring decisions from remaining contract and usage-capture work. None authorizes
-implementation or a formal run.
+accepted scoring decisions from remaining contracts. These design documents alone do not
+authorize later-ticket implementation or a formal run.
 
 ## Maintenance policy
 
@@ -171,9 +171,17 @@ implementation and evaluation execution still require separate authorization.
 
 - [2026-09-27 semantic wire and budget closeout](development_record.md#semantic-wire-and-budget-acceptance-closeout-2026-09-27): three bounded live cases, offline budget audit, final regression, five local commits and remaining coverage limitations.
 
-- RTPEval technical drafts: [artifact and human answers](../.scratch/rtpeval/artifact-contract.md), [evidence and time parsing](../.scratch/rtpeval/evidence-time-contract.md). Design only; implementation and formal runs are not authorized.
+- RTPEval technical contracts: [artifact and human answers](../.scratch/rtpeval/artifact-contract.md), [evidence and time parsing](../.scratch/rtpeval/evidence-time-contract.md). Some offline modules are implemented; formal runs remain unauthorized.
 
 - [Evaluation glossary](evaluation_glossary.md): shared benchmark/evaluation terminology; not project-wide context.
 
-- [Evaluation implementation work plan](../.scratch/rtpeval/ticket-breakdown.md): 12 approved tickets; no implementation authorization. Resume with Ticket 01 specification closure after the user's break.
+- [Evaluation implementation work plan](../.scratch/rtpeval/ticket-breakdown.md): 12 approved tickets with current statuses; Tickets 01-03 are resolved offline.
 - Local historical design archives: `thesis_notes/evaluation/` and `thesis_notes/benchmark/` (Git-ignored; not included in a fresh checkout). These are historical records, not project authority or formal research results.
+
+- [Ticket 01 intake/projection contract](../.scratch/rtpeval/intake-projection-contract.md) (2026-09-29): implemented offline; preserves independent role/transport uncertainty.
+
+- [Ticket 01 implementation guide](../backend/evaluation/README.md) and [offline acceptance](../.scratch/rtpeval/ticket-01-acceptance.md): batch preparation only; 38 passed, 1 platform-dependent skip. No scoring or live acquisition.
+
+- [Ticket 02 capture/report guide](../backend/app/observability/USAGE.md) and [acceptance](../.scratch/rtpeval/ticket-02-acceptance.md): opt-in benchmark-side usage collection and independent researcher reports; no live experiment.
+
+- [Ticket 03 identity contract](../.scratch/rtpeval/identity-implementation-contract.md), [guide](../backend/evaluation/README.md) and [acceptance](../.scratch/rtpeval/ticket-03-acceptance.md): offline identity association, adjudication replay and grounding report; independent live acquisition remains Ticket 04.

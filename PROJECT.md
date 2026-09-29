@@ -971,3 +971,32 @@ London Zoo are distinct IDs on the same day, exposing a site-level richness limi
 beyond canonical nonrepetition. Final validation retains26 UNKNOWNs; no mountain-climbing
 fulfillment or verified cost/access claim is implied. No rerun, production-default change,
 P3 work, commit or freeze. See the [pilot report](artifacts/poi_semantics_acceptance/20260926_D_quantity_review/report.md).
+
+## Evaluation Ticket 01 offline intake — 2026-09-29
+
+Under separate user authorization, Ticket 01 implements an independent, standard-library-only batch intake/projection package. It validates delivered artifact linkage, preserves immutable source references, supports independent role/transport review, reconciles duplicate/segment/conflicting journey claims, and exposes a read-only local CLI. It does not run planners or import their validation decisions. V0-V3 execution paths and algorithms are unchanged.
+
+Offline acceptance: 38 passed, one native symlink test skipped because host creation privileges are unavailable; literal traversal and simulated resolved-path escape checks passed. Ruff and CLI help passed. See [implementation guide](backend/evaluation/README.md) and [acceptance](.scratch/rtpeval/ticket-01-acceptance.md). This is evaluation preparation only, not scoring, provider acquisition, a formal benchmark or a freeze. All subsequent work remains subject to its own authorization.
+
+## Evaluation Ticket 02 usage capture — 2026-09-29
+
+Separately authorized Ticket 02 now provides opt-in benchmark-owned attempt capture through cleanup, exact result-hash linkage, model token observations, scoped HTTP send hooks, cache reuse/lookup observations, inclusive stage spans and Repair subsets. The evaluator's resource report consumes four selected usage envelopes and reports descriptive differences/ratios/medians without changing quality scores. Existing scripts must explicitly use the capture wrapper; no automatic formal run or sidecar creation is enabled.
+
+Shared adapter changes are observational: prompts, budgets, retries and V0-V3 planning behavior are unchanged. Four initial requirement-harness failures exposed HTTP hook lifecycle residue; corrected with scoped removal/concurrent ownership. Relevant broad offline regression: 944 passed, one Ticket 01 native symlink test skipped for host privilege limits. Latest usage/evaluation subset: 51 passed, same skip; Ruff passed. See [guide](backend/app/observability/USAGE.md) and [acceptance](.scratch/rtpeval/ticket-02-acceptance.md). This is not live coverage validation, a benchmark freeze or permission to execute formal cases.
+
+## Evaluation Ticket 03 offline identity resolution — 2026-09-29
+
+Under the user's strict two-path decision, Ticket 03 now resolves source-linked primary visits and relevant RequirementSpec subjects against independently supplied offline Places observations. Supplied IDs require details association; name-only references require a bounded full-page search. Aliases, branches, ID/name conflicts, weak evidence and potential REQUIRED/EXCLUDED matches enter factual review. A predeclared deterministic audit sample of automatic proposals is held pending review. Versioned decisions replay against evidence hashes. Grounding coverage and claimed-ID consistency remain separate, so a reviewed intended venue can resolve without erasing a wrong supplied ID.
+
+The [contract](.scratch/rtpeval/identity-implementation-contract.md), [package guide](backend/evaluation/README.md) and [offline acceptance](.scratch/rtpeval/ticket-03-acceptance.md) record the wire, rule and limits. Final evaluation suite: **58 passed, 1 skipped** (the existing native Windows symlink privilege skip); Ruff and CLI checks passed. V0-V3 planner paths are unchanged. No real Google/model/database call, raw evidence snapshot collection, formal benchmark, experiment, commit, push or freeze occurred. Ticket 04 remains the next dependent acquisition boundary and needs separate scope/authorization.
+
+
+Ticket 03 follow-up (2026-09-30): review exposed four acceptance gaps despite the earlier passing suite. Authorized corrections prevent generic address components from bypassing branch checks, route Search/Details name/address contradictions and unverified title claims to adjudication, and contain malformed optional IDs to individual references. Twenty added regression cases bring offline evaluation coverage to **78 passed, 1 skipped** (unchanged Windows symlink privilege limit); Ruff/format checks and Standards/Spec follow-up reviews pass. Narrow English numbered-street/title recognition and strict address equality can increase manual review; no general semantic parser or live coverage is claimed. Earlier acceptance history is preserved. Planner behavior, no-live/no-benchmark limits and Ticket 04 authorization boundary remain unchanged.
+
+
+Ticket 01/02 follow-up (2026-09-30): authorized corrections add required selected-run provenance validation (`rtpeval_provenance_1`, complete input/result hashes and group/run/version), explicit overlap diagnostics with uncertain adjacency, and report validation for missing event arrays/duplicate cache IDs. Repair token absence remains null rather than zero. Twenty-two regression cases were added; final evaluation/capture suite is **113 passed, 1 skipped** (unchanged Windows symlink privilege limitation), with Ruff checks passing. Existing deliveries without provenance must supply the explicit sidecar; linkage validation does not prove an unobserved execution. Earlier acceptance records remain historical. No capture adapter/planner changes, live calls, formal experiment, commit/push or freeze occurred; Ticket 04 remains separately scoped.
+
+
+## Evaluation branch checkpoint - 2026-09-30
+
+The user authorized creating `feature/evaluation` from `feature/v3` and committing the current RTPEval work. Tickets 01-03 and their review corrections are grouped by intake/projection, usage capture/reporting, and identity/adjudication, with cross-ticket documentation recorded separately. Pre-commit offline regression across evaluation, observability/runtime, Foundry/integrations, retrieval/runtime and V0-V3: **1006 passed, 1 skipped** (native Windows symlink privilege limit). Ruff and diff whitespace checks passed. Earlier uncommitted-context statements remain historical. Ignored research archives remain local; no push, live call, formal benchmark/experiment or version freeze is implied. Ticket 04 still needs its own approved scope.

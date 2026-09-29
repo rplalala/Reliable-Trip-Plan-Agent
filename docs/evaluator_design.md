@@ -525,7 +525,7 @@ separately authorized. REMOVE means excluded as a primary RTPEval v1 metric.
 | --- | --- | --- |
 | Run outcomes | EXTERNAL INPUT | Benchmark-owned ledger; produced, clarification, invalid input, timeout, model/provider/schema/internal failure, cancellation; degradation is an additional attribute, not double-counted completion |
 | Date coverage and raw activity counts | READY | Request/output; distinguish day present, any activity, main visits, and empty day; empty is not automatic failure |
-| Canonical grounding | OPEN | Independent identity mapping; verified, ambiguous, unresolved, wrong association; role/adjudication rules pending |
+| Canonical grounding | OFFLINE IMPLEMENTED | Ticket 03 independent identity replay reports verified, unresolved and supplied-ID conflict counts; live evidence acquisition remains Ticket 04 |
 | REQUIRED/EXCLUDED and date/count obligations | OPEN | Independent requirement specification and identity; no runtime interpreter ground truth |
 | Fixed-time satisfaction | OPEN | Specification intervals and activity semantics |
 | Overlap | OPEN | Independent interval calculation; report affected requests, pairs, and union conflict duration rather than summed pairwise minutes as actual elapsed overlap |
@@ -646,7 +646,7 @@ After formal execution begins:
 - Oracle acquisition bug: version the correction, restore matched evidence consistency,
   and document temporal limitations of recollection; never silently change one version's facts.
 
-## 18. Open-item register and next step
+## 18. Open-item register and next step — 2026-09-28 checkpoint
 
 | Open item | Required resolution |
 | --- | --- |
@@ -667,8 +667,9 @@ After formal execution begins:
 | Observability | Complete artifacts, actual usage/timing, provider metadata and integrity checks |
 | Date batch and hashes | Materialization, validity window, artifact identities and reproducibility manifest |
 
-The readiness audit has a recorded checkpoint; the current task is to complete the
-RTPEval v1 module specification and resolve its explicitly OPEN contracts. Implementation and development dry runs require subsequent approval.
+At this checkpoint, the intended task was to complete the RTPEval v1 module specification
+and resolve its explicitly OPEN contracts. Later Ticket 01-03 offline implementation states
+are recorded in Sections 22-25; formal runs still require separate authorization.
 
 ## 19. Relevant current repository references
 
@@ -687,7 +688,7 @@ RTPEval v1 module specification and resolve its explicitly OPEN contracts. Imple
 - [Runtime configuration](../config/runtime.yaml)
 
 These references describe implementation evidence, not independent evaluation ground truth.
-Their existence does not mean RTPEval has been implemented or validated.
+At this design checkpoint, their existence did not mean RTPEval had been implemented or validated.
 
 ## 20. Technical contract checkpoint — 2026-09-28
 
@@ -706,3 +707,29 @@ Before each implementation, resolve its technical information gaps using current
 Resource reports supply objective measurements and descriptive comparisons for the researcher's later thesis/presentation analysis. They are not a new non-blind human rating stage, an efficiency PASS threshold or part of the itinerary quality total. The rater sees only original Input and anonymous plans; formal analysis and thesis writing remain separately authorized work.
 
 The user requested a pause after documentation updates. Next intended work is specification closure for Ticket 01; it has not started. No evaluator implementation, formal cases, live acquisition, experiments or freeze occurred. Historical design records are preserved separately under thesis_notes/evaluation and thesis_notes/benchmark; current authority remains PROJECT.md and the active design/specification documents.
+
+## 22. Ticket 01 specification closure — 2026-09-29
+
+The user authorized closing the batch intake/projection specification. The [contract](../.scratch/rtpeval/intake-projection-contract.md) defines material errors versus content uncertainty, versioned source-preserving reading, role-review records and same-day transport association. V0 text-based transport and application-owned Transfer are supported without granting either privileged truth. Clearly corresponding duplicate journeys count once; segments and conflicting claims retain their meaning and provenance. Unclear roles/associations remain reviewable or unresolved rather than silently dropped.
+
+Ticket 01 is now specification-ready. This supersedes the earlier pause for specification work only; no implementation or tests were performed, and the overall RTPEval specification is still not frozen. Remaining scoring/identity/usage/Repair contracts retain their own readiness gates.
+
+## 23. Ticket 01 offline implementation — 2026-09-29
+
+The user separately approved Ticket 01 implementation. [Offline intake and projection](../backend/evaluation/README.md) now reads a curated batch, validates material linkage, preserves immutable source references and projects independent roles/transport claims. It does not import planner judgments or run any planner/provider. Independent review handles ambiguous prose; this is not automatic semantic understanding of every itinerary.
+
+[Acceptance](../.scratch/rtpeval/ticket-01-acceptance.md): 38 tests passed, one native Windows symlink test skipped because creation privileges are unavailable; traversal/resolved-path guard checks passed. Ruff and CLI checks passed. Ticket 01 is resolved. No quality scoring, oracle acquisition, usage instrumentation, blind HTML, formal cases or experiment was implemented. Subsequent tickets and benchmark freeze remain separately authorized.
+
+## 24. Usage capture and resource reports — 2026-09-29
+
+Ticket 02 is implemented under separate authorization. The [producer capture guide](../backend/app/observability/USAGE.md) provides one opt-in invocation/cleanup boundary across versions, exact-byte result linkage, request-local model/provider/cache events and Repair subsets. Tokens are provider-reported or explicitly derived; missing usage is not zero. Client hooks are active only during capture and restore existing client state after the last capture owner ends.
+
+Researcher reports compare the four selected envelopes per request with differences, ratios and descriptive medians. Missing/zero baselines and incompatible scope remain explicit; usage does not affect quality scores or blind rankings. Ordinary scripts do not automatically create sidecars; benchmark construction must enable capture and verify saved artifacts.
+
+[Offline acceptance](../.scratch/rtpeval/ticket-02-acceptance.md): initial four hook-cleanup regression failures were corrected. Broad retest passed 944 with one Ticket 01 native symlink skip; latest usage/evaluation subset passed 51 with the same skip. No provider/model/database service was used and no benchmark was frozen. Arbitrary injected client coverage and live completeness remain unverified.
+
+## 25. Ticket 03 offline identity implementation — 2026-09-29
+
+The user approved strict, version-neutral identity association: supplied IDs require independent details checking of returned ID, name and destination; name-only references use independent search with exact name, sufficient destination/address evidence and no observed competition. Alias/translation, branches, ID/name conflicts, insufficient evidence and potential REQUIRED/EXCLUDED matches require factual review. A predeclared audit plan selects automatic proposals for manual checking. The [implementation contract](../.scratch/rtpeval/identity-implementation-contract.md) records conservative search scope, review replay and report semantics.
+
+Ticket 03 now replays offline independent observation files against Ticket 01 source-linked primary visits and reviewed requirement subjects. It separates grounding from supplied-ID consistency, keeps sampled automatic proposals pending until review, and reports UNKNOWN with reasons. A human-confirmed named venue may be used downstream while the wrong planner ID remains a reported conflict; original output is unchanged. No V0-V3 planning code was modified. [Acceptance](../.scratch/rtpeval/ticket-03-acceptance.md): 58 evaluation tests passed, one existing native Windows symlink test skipped for host privileges; Ruff and local CLI checks passed. This does not establish live Google coverage or human-review accuracy. Ticket 04 still owns acquisition/snapshot persistence; Ticket 05 owns requirement outcomes. No formal case, experiment, version freeze, commit or push occurred.

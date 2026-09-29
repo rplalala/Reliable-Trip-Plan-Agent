@@ -78,3 +78,13 @@ The user approved the 12-ticket granularity/dependencies and requested a documen
 needs-info denotes a bounded missing technical definition, not necessarily a question awaiting the user. Before implementing each ticket, inspect current relevant code, resolve factual gaps, document the contract and acceptance criteria, and ask the user only about unresolved choices affecting result meaning. Settle cross-cutting rules before dependent implementations. Waiting for another ticket is expressed by Blocked by; specification readiness does not remove that dependency or grant implementation authorization.
 
 The next intended work is Ticket 01's independent activity-role classification, transport/Transfer correspondence and source linkage. Do not decide those details during this pause checkpoint. Usage capture remains a supporting prerequisite for usable resource comparisons, not a prerequisite for itinerary quality scoring or blinded review.
+
+## Ticket 01 specification closure — 2026-09-29
+
+The user authorized this closure after the pause. Read-only inspection at 364f91f confirmed text-based V0 transport versus activity-linked application Transfer, lack of schema endpoint validation, and planner-owned schedule classification. The [intake/projection contract](intake-projection-contract.md) closes independent classification/correspondence and intake boundaries with explicit ambiguity paths. Ticket 01 is specification-ready, not implemented/tested. Eight tickets still need information; 06/08/09 remain blocked by implementation dependencies. Full module readiness and freeze are unchanged.
+
+Ticket 01 was subsequently implemented with explicit user authorization on 2026-09-29. See [offline acceptance](ticket-01-acceptance.md): 38 passed, 1 native symlink test skipped. This supersedes earlier not-implemented statements for Ticket 01 only; other module contracts and formal readiness remain unchanged.
+
+## Ticket 02 implementation checkpoint — 2026-09-29
+
+The earlier missing collector is now implemented as an opt-in benchmark-owned wrapper and observation hooks; see [acceptance](ticket-02-acceptance.md). Final broad relevant regression: 944 passed, 1 native symlink skip; final usage/evaluation subset: 51 passed, 1 skipped. This closes Ticket 02, not actual benchmark capture or live coverage. Tickets 01/02 are resolved; seven need technical closure and three remain specification-ready subject to their predecessors.

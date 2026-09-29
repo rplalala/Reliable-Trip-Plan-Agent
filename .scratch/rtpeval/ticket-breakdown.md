@@ -1,9 +1,9 @@
 # Evaluation implementation ticket breakdown — approved
 
-Publication: Approved; 12 local tickets published; implementation not authorized.
+Publication: Approved; 12 local tickets published. Later ticket implementation states are recorded below.
 Date: 2026-09-28
 
-The user approved the 12-item granularity and dependencies. Individual tickets are published below. No task is claimed or implemented; the parent specification status remains unchanged.
+The user approved the 12-item granularity and dependencies. The original publication preceded implementation; current ticket states are recorded in the table below. The parent specification is not frozen.
 
 ## Sources and boundaries
 
@@ -21,11 +21,11 @@ Usage collection is an upstream supporting capability and cannot become evaluato
 
 **Blocked by:** None (subject to specification closure and separate implementation approval)
 
-**Specification status:** needs-info
+**Specification status:** resolved (implementation accepted offline)
 
 **What to build:** Submit a curated four-version batch and obtain either an immutable evaluation inventory or actionable intake diagnostics, without running or requalifying planners.
 
-**Readiness gate:** Exact independent activity-role and transport/Transfer correspondence rules must be completed before implementation; use current artifacts and schema, not V3 lineage.
+**Readiness gate:** Closed by the [intake/projection contract](intake-projection-contract.md) on 2026-09-29; implementation was separately approved and completed; see ticket-01-acceptance.md.
 
 **Acceptance criteria:**
 
@@ -39,7 +39,7 @@ Usage collection is an upstream supporting capability and cannot become evaluato
 
 **Blocked by:** None (subject to specification closure and separate implementation approval)
 
-**Specification status:** needs-info
+**Specification status:** resolved (implemented and validated offline)
 
 **What to build:** An independently invoked planner attempt can produce linked usage observations and a resource report with comparable outer timing across V0-V3.
 
@@ -57,19 +57,19 @@ Usage collection is an upstream supporting capability and cannot become evaluato
 
 **Blocked by:** 01
 
-**Specification status:** needs-info
+**Specification status:** resolved (implemented and validated offline)
 
 **What to build:** Convert submitted venue references into independently evidenced identities, review queues and a grounding/ID-consistency report.
 
-**Readiness gate:** Specify conservative automatic acceptance, role review and preselected audit sampling using development fixtures before implementing or enabling automatic acceptance.
+**Readiness gate:** Closed by the [Ticket 03 implementation contract](identity-implementation-contract.md), accepted strict two-path rule and [offline acceptance](ticket-03-acceptance.md). Ticket 01 role review is reused. No live evidence acquisition is implied.
 
 **Acceptance criteria:**
 
-- [ ] Name-only and supplied-ID references receive independent association checks; provider rank and ID retrieval alone cannot prove a match.
-- [ ] Ambiguity, ID/name conflict and high-impact requirement matches enter adjudication; unresolved decisions retain reasons.
-- [ ] Preserve claimed-ID conflict even when a reviewed named venue supplies downstream identity; do not rewrite planner output.
-- [ ] Persist versioned review decisions and replay them; audit selection cannot depend on favorable version results.
-- [ ] Fixtures cover branches, wrong cities, aliases, malformed candidates, wrong IDs and unavailable evidence; changing V3 findings cannot change grounding.
+- [x] Name-only and supplied-ID references receive independent association checks; provider rank and ID retrieval alone cannot prove a match.
+- [x] Ambiguity, ID/name conflict and high-impact requirement matches enter adjudication; unresolved decisions retain reasons.
+- [x] Preserve claimed-ID conflict even when a reviewed named venue supplies downstream identity; do not rewrite planner output.
+- [x] Persist versioned review decisions and replay them; audit selection cannot depend on favorable version results.
+- [x] Fixtures cover branches, wrong cities, aliases, malformed candidates, wrong IDs and unavailable evidence; changing V3 findings cannot change grounding.
 
 ### 04. Independent snapshot acquisition and offline replay
 
@@ -237,9 +237,9 @@ Usage collection is an upstream supporting capability and cannot become evaluato
 
 | Ticket | Blocked by | Status |
 | --- | --- | --- |
-| [01: Batch intake and independent schedule projection](issues/01-batch-intake-projection.md) | None | needs-info |
-| [02: Symmetric usage capture and resource report](issues/02-usage-capture-report.md) | None | needs-info |
-| [03: Identity resolution, adjudication and grounding report](issues/03-identity-adjudication.md) | 01 | needs-info |
+| [01: Batch intake and independent schedule projection](issues/01-batch-intake-projection.md) | None | resolved |
+| [02: Symmetric usage capture and resource report](issues/02-usage-capture-report.md) | None | resolved |
+| [03: Identity resolution, adjudication and grounding report](issues/03-identity-adjudication.md) | 01 | resolved |
 | [04: Independent snapshot acquisition and offline replay](issues/04-evidence-snapshot.md) | 03 | needs-info |
 | [05: Requirement and schedule metrics](issues/05-requirement-schedule-metrics.md) | 01, 03 | needs-info |
 | [06: Opening checks from frozen evidence](issues/06-opening-checks.md) | 04 | ready-for-agent |
@@ -250,7 +250,7 @@ Usage collection is an upstream supporting capability and cannot become evaluato
 | [11: Controlled Repair replay and outcome report](issues/11-controlled-repair.md) | 10 | needs-info |
 | [12: Mechanism and official-evidence audit reports](issues/12-mechanism-official-audit.md) | 01 | needs-info |
 
-Nine tickets retain needs-info; 06, 08 and 09 are specification-ready but still blocked by dependencies. No implementation is authorized. Subsequent specification closure should start with 01's role/transport correspondence; 02's usage hook mapping is an independent supporting task. Human ranking does not wait for Google or scoring. Quality reporting does not wait for usage, Controlled Repair or mechanism reports.
+After Ticket 01 specification closure on 2026-09-29, eight tickets retain needs-info. Tickets 01, 06, 08 and 09 are specification-ready; 06, 08 and 09 still have predecessor dependencies. No implementation is authorized. Ticket 02 usage-hook mapping is an independent supporting specification task. Human ranking does not wait for Google or scoring. Quality reporting does not wait for usage, Controlled Repair or mechanism reports.
 
 ## Approval and clarification record
 
@@ -263,3 +263,19 @@ The user approved the 12-ticket granularity/dependencies and requested a documen
 needs-info denotes a bounded missing technical definition, not necessarily a question awaiting the user. Before implementing each ticket, inspect current relevant code, resolve factual gaps, document the contract and acceptance criteria, and ask the user only about unresolved choices affecting result meaning. Settle cross-cutting rules before dependent implementations. Waiting for another ticket is expressed by Blocked by; specification readiness does not remove that dependency or grant implementation authorization.
 
 The next intended work is Ticket 01's independent activity-role classification, transport/Transfer correspondence and source linkage. Do not decide those details during this pause checkpoint. Usage capture remains a supporting prerequisite for usable resource comparisons, not a prerequisite for itinerary quality scoring or blinded review.
+
+## Ticket 01 specification closure — 2026-09-29
+
+The user resumed and approved specification closure, superseding the preceding pause for this documentation task only. Ticket 01 is now specification-ready; all implementation acceptance criteria remain unexecuted. See the [intake/projection contract](intake-projection-contract.md). Other tickets and the parent specification are not declared complete or frozen. Next implementation action requires explicit approval.
+
+## Ticket 01 implementation closeout — 2026-09-29
+
+Ticket 01 was separately approved, implemented and validated offline: 38 passed, 1 platform-dependent symlink test skipped. It is resolved; eight tickets remain needs-info and three remain specification-ready. Completion removes Ticket 01's dependency edge for its successors, but does not authorize them or resolve their own technical gates. Historical no-implementation statements above describe earlier checkpoints. See [acceptance](ticket-01-acceptance.md).
+
+## Ticket 02 implementation closeout — 2026-09-29
+
+User authorized specification closure, implementation and offline acceptance without repeated routine approvals. Ticket 02 is resolved; 01/02 are complete, 06/08/09 remain specification-ready subject to dependencies, and seven tickets still need technical closure. See [usage contract](usage-capture-contract.md) and [acceptance](ticket-02-acceptance.md). Coverage is opt-in at the benchmark-owned invocation; ordinary scripts do not silently gain a sidecar. This does not start Ticket 03 or authorize live experiments.
+
+## Ticket 03 implementation closeout — 2026-09-29
+
+The user accepted a strict two-path identity boundary and requested offline implementation after scope review. Ticket 03 is resolved; Tickets 01-03 are complete, 06/08/09 remain specification-ready subject to dependencies, and six tickets still need technical closure. See the [identity implementation contract](identity-implementation-contract.md) and [offline acceptance](ticket-03-acceptance.md). Supplied-ID and name-only references use the same conservative association standard, high-impact/ambiguous cases go to versioned review, and automatic proposals receive deterministic audit sampling. No live Google acquisition, formal case, experiment, commit, push or freeze was authorized or performed. Ticket 04 is the next dependent acquisition task and retains its own needs-info gate.

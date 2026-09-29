@@ -240,3 +240,15 @@ Accepted simplification: use the valid route duration returned by Google for the
 ## Technical contract documentation — 2026-09-28
 
 Drafted artifact-contract.md and evidence-time-contract.md; linked current specifications and corrected stale generic-activity exclusion text. Preserved the accepted valid-Google-return policy and existing scoring arithmetic. This pass specifies future serialization/parser/answer-storage behavior; it does not implement or validate those capabilities. Public provider documentation is cited in the evidence contract. Remaining technical dependencies are named in closeout-audit.md; no new broad research-design interview is required.
+
+## Ticket 01 closure — 2026-09-29
+
+User authorized specification closure only. Inspected current public schemas, prompts, shared route binding and schedule/output policies at 364f91f. Added intake-projection-contract.md and updated Ticket 01 to specification-ready. Initial policy-path lookup failed; file discovery corrected the path before inspection. No planner/helper was executed. No new user decision was needed: independent review/unresolved paths apply existing uncertainty rules. No code, live calls, benchmark cases, commits or tests were authorized by this closure.
+
+## Ticket 01 implementation review — 2026-09-29
+
+Performed local Standards/Spec review without delegated agents. Confirmed no shared planner changes or application imports; checked source-boundary isolation, duplicate transport treatment, missing optional artifacts and uncertainty handling. Corrected mode-negation and rich-prose positional-binding risks and added regression checks. Final offline results and known limits are recorded in ticket-01-acceptance.md. No commit or subsequent ticket execution is authorized.
+
+## Ticket 02 closure and implementation — 2026-09-29
+
+User authorized end-to-end Ticket 02 work without repeated routine approvals. Closed technical seams, implemented opt-in event capture and descriptive reports, and ran offline regressions. Four initial requirement-harness failures exposed persistent HTTP hooks; fixed with scoped removal/concurrent ownership without altering the existing tests. Final verification and limits are in ticket-02-acceptance.md. No research decision was silently changed and no live experiment ran.
