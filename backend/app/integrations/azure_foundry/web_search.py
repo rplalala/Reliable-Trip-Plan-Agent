@@ -16,6 +16,7 @@ from backend.app.integrations.web.models import (
     WebSearchObservation,
     WebUsageObservation,
 )
+from backend.app.observability.usage import install_http_hooks, observe_sdk
 from backend.app.runtime.config_models import WebEvidenceConfig
 
 
@@ -234,6 +235,8 @@ class AzureFoundryWebEvidenceProvider:
                 max_retries=0,
                 timeout=config.timeout_seconds,
             )
+        if self._owned_client is not None:
+            install_http_hooks(self._owned_client._client, "azure_foundry", "official_search")
         self._responses = (
             responses_client if responses_client is not None else self._owned_client.responses
         )
@@ -249,7 +252,10 @@ class AzureFoundryWebEvidenceProvider:
 
     async def search(self, request: WebEvidenceSearchRequest) -> WebSearchObservation:
         started = time.monotonic()
-        raw = await self._responses.create(
+        raw = await observe_sdk(
+            self._responses.create,
+            usage_operation="official_search",
+            usage_provider="azure_foundry",
             model=self._deployment,
             input=request.task_instruction,
             tools=[

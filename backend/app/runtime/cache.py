@@ -5,6 +5,7 @@ from collections.abc import Awaitable, Callable
 from typing import TypeVar, cast
 
 from backend.app.integrations.dispatch import ProviderNotSentError, send_observer
+from backend.app.observability.usage import cache_hit
 
 ValueT = TypeVar("ValueT")
 _MISSING = object()
@@ -26,6 +27,7 @@ class RequestCache:
 
         cached = self._values.get(key, _MISSING)
         if cached is not _MISSING:
+            cache_hit(key[0] if key else "cache")
             return cast(ValueT, cached), True
 
         value = await factory()
@@ -38,6 +40,8 @@ class RequestCache:
     def lookup(self, key: tuple[object, ...]) -> tuple[object | None, bool]:
         """Inspect request-local state without reserving or creating work."""
         value = self._values.get(key, _MISSING)
+        if value is not _MISSING:
+            cache_hit(key[0] if key else "cache", kind="cache_lookup_hit")
         return (None, False) if value is _MISSING else (value, True)
 
     def terminal_attempt(self, key):

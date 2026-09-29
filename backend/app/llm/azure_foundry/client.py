@@ -25,6 +25,7 @@ from backend.app.llm.azure_foundry.mapping import (
 )
 from backend.app.llm.azure_foundry.provider_diagnostics import failure_category, normalize
 from backend.app.llm.client import StructuredModelT, StructuredOutputError
+from backend.app.observability.usage import install_http_hooks, staged
 from backend.app.runtime.fingerprints import digest
 from backend.app.schemas.interpreted_requirements import InterpretationDraft
 from backend.app.schemas.itinerary import Itinerary
@@ -143,6 +144,12 @@ class AzureFoundryStructuredLLMClient:
             **transport_options,
         )
 
+        install_http_hooks(
+            getattr(getattr(self._chat_model, "root_async_client", None), "_client", None),
+            "azure_foundry",
+            "model_http",
+        )
+
     async def aclose(self):
         """Release SDK clients when the application owns this adapter."""
         try:
@@ -173,6 +180,7 @@ class AzureFoundryStructuredLLMClient:
                     "capture_failure:" + type(exc).__name__
                 )
 
+    @staged("requirements")
     async def _interpret(self, system_prompt, user_prompt):
         call_id = uuid4().hex
         wire = requirement_wire_format()
@@ -309,6 +317,7 @@ class AzureFoundryStructuredLLMClient:
             capture(stage, error.as_dict())
             raise error from exc
 
+    @staged("structured_generation")
     async def generate_structured(
         self,
         *,
@@ -357,6 +366,7 @@ class AzureFoundryStructuredLLMClient:
         """Per-call settings, without mutating a shared client or other tasks."""
         return await self.generate_structured(**kwargs, _generation_config=generation_config)
 
+    @staged("semantics")
     async def generate_poi_semantics_structured(
         self, *, system_prompt, user_prompt, output_tokens, usage_callback=None
     ):
@@ -377,6 +387,7 @@ class AzureFoundryStructuredLLMClient:
         dto = FoundrySemanticAssessmentBatch.model_validate(raw)
         return dto
 
+    @staged("landmark_nomination")
     async def generate_landmark_nomination_structured(
         self, *, system_prompt, user_prompt, output_tokens, usage_callback=None
     ):
@@ -394,6 +405,7 @@ class AzureFoundryStructuredLLMClient:
         )
         return LandmarkNominationDraft.model_validate(raw)
 
+    @staged("repair_model")
     async def generate_repair_structured(
         self, *, system_prompt, user_prompt, output_tokens=None, usage_callback=None
     ):

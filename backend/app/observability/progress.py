@@ -10,6 +10,7 @@ from time import monotonic
 from uuid import uuid4
 
 from backend.app.observability.run_trace import NullRunTracer
+from backend.app.observability.usage import usage_stage
 
 _current = ContextVar("planning_progress", default=None)
 _parent = ContextVar("planning_progress_parent", default=None)
@@ -185,7 +186,8 @@ def observed(stage):
         async def asynchronous(*args, **kwargs):
             context = start()
             try:
-                result = await function(*args, **kwargs)
+                with usage_stage(stage, kwargs.get("round_index")):
+                    result = await function(*args, **kwargs)
             except BaseException as exc:
                 finish(context, error=exc)
                 raise
@@ -196,7 +198,8 @@ def observed(stage):
         def synchronous(*args, **kwargs):
             context = start()
             try:
-                result = function(*args, **kwargs)
+                with usage_stage(stage, kwargs.get("round_index")):
+                    result = function(*args, **kwargs)
             except BaseException as exc:
                 finish(context, error=exc)
                 raise
