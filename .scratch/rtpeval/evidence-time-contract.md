@@ -1,5 +1,12 @@
 # Evidence and time parsing contract
 
+Current follow-up, 2026-10-02: [Ticket 06 preflight](ticket-06-preflight.md) supplies
+checked provider field-presence facts and concrete time/snapshot integration rules for
+opening. The subsequent approved offline opening implementation is recorded in the final
+checkpoint below; provider acquisition remains unauthorized. Existing Ticket 05 neutral time behavior is preserved.
+The 2026-09-28 statements below describe their original checkpoint; later transport
+authority follows the version-specific projection contract, not historical reconciliation.
+
 Status: Technical design following accepted rules; fixture implementation and provider acquisition remain unauthorized.
 Date: 2026-09-28.
 
@@ -61,3 +68,32 @@ Generic no-POI items are free-time/transition-like per user instruction. Named b
 Author independent synthetic fixtures for each table row, DST folds/gaps, overnight periods, sparse matrix elements and exact tolerance boundaries before implementing dependent rules. Primary-document inspection is not a live API test and supplies no coverage guarantee. Snapshot storage/retention settings must be checked for the intended provider environment before operational acquisition; this document does not assert unrestricted raw-data retention.
 
 No fixtures, provider responses, executable parser or benchmark cases were created in this step.
+
+## Opening technical follow-up — 2026-10-02
+
+The [preflight](ticket-06-preflight.md) narrows the historical empty-collection row:
+an original explicit empty `OpeningHours.periods` list has documented closed meaning
+for its applicable basis. Missing/null periods and derived empty collections stay
+unavailable. Optional endpoint day/hour/minute fields require actual values, including
+explicit zero; the non-optional omitted truncation flag defaults false. Regular always-
+open sentinel, current request-local window and literal truncated bounds are distinct.
+Opening time may cross explicit dates through an opt-in path; no next-day end is invented.
+
+Known closed, known open and unknown spans remain separate; incomplete period collections
+do not establish a closed complement without bounded completeness. Detailed source/time
+rules and future fixtures are owned by the preflight/opening contract. The user confirmed
+that any known closure within a visit yields FAIL; such partial decisive FAIL enters the
+PASS / (PASS + FAIL) conditional compliance denominator. Full evidence coverage and exact
+duration availability remain separate; missing evidence alone remains UNKNOWN. Existing
+half-open/zero-grace boundaries apply. This update does not implement opening or alter routes.
+
+
+## Ticket 06 implemented time/evidence checkpoint — 2026-10-02
+
+[Acceptance](ticket-06-acceptance.md) records the approved offline parser/scorer and
+fixtures. Neutral identity/context validation is shared with Ticket 05, and the time
+helper adds only opt-in explicit cross-date support. Exact current applicability is
+request-local; each selected observation remains linked to raw bytes and attempt times.
+Actual installed IANA zone-file hashes and provider versions are distinct provenance.
+Collection-date uncertainty and literal truncated boundaries do not invent closure.
+This implements opening only, with no live acquisition or route metric change.

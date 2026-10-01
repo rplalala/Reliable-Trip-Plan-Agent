@@ -216,7 +216,20 @@ implementation and evaluation execution still require separate authorization.
 
 - [Ticket 04 snapshot contract](../.scratch/rtpeval/snapshot-contract.md), [guide](../backend/evaluation/README.md) and [acceptance](../.scratch/rtpeval/ticket-04-acceptance.md): injected acquisition, raw persistence and offline replay; no built-in live Google client.
 - [Ticket 05 requirement/schedule contract](../.scratch/rtpeval/requirement-schedule-contract.md), [guide](../backend/evaluation/README.md) and [acceptance](../.scratch/rtpeval/ticket-05-acceptance.md): offline requirement/non-overlap scoring, independent time and occupancy review, descriptive schedule metrics; no five-dimension total or live execution.
+- [Ticket 06 specification/interface preflight](../.scratch/rtpeval/ticket-06-preflight.md): checked opening provider encodings, existing snapshot/identity/time seams and proposed offline scope; accepted partial decisive-FAIL compliance denominator with separate evidence completeness. This preserves the pre-implementation inspection; the completed implementation is linked below.
 
 - [Transport responsibility smoke and workspace closeout](transport_responsibility_smoke.md):
   three-day Berlin V0-V3 source/binding verification, unexercised live Repair,
   partial RAG/usage limits and the subsequent authorized commit checkpoint.
+
+
+## Ticket 06 opening implementation — 2026-10-02
+
+[Offline opening acceptance](../.scratch/rtpeval/ticket-06-acceptance.md) records the
+implemented scope and actual failures/corrections/validation.
+[Opening CLI and report wire](../backend/evaluation/README.md#ticket-06-offline-opening-compliance)
+defines frozen-evidence replay, decisive partial FAIL, complete/partial coverage and
+exact/lower-bound duration semantics. The
+[preflight](../.scratch/rtpeval/ticket-06-preflight.md) preserves the original approved
+interface audit. Current implementation/docs are local and unpublished; later tickets,
+live evidence and formal evaluation still need separate approval.

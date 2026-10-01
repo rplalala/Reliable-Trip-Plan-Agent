@@ -1,6 +1,6 @@
-# Offline evaluation preparation and metrics (Tickets 01-05)
+# Offline evaluation preparation and metrics (Tickets 01-06)
 
-Ticket 01 prepares a user-curated batch; Ticket 03 replays independent identity observations; Ticket 05 scores requirements and submitted schedule occupancy. The package does not run planners, acquire live evidence through a built-in client, calculate the auxiliary quality total, render blind tasks or call an external service from its offline commands. It imports no planner modules and uses the Python standard library.
+Ticket 01 prepares a user-curated batch; Ticket 03 replays independent identity observations; Ticket 05 scores requirements and submitted schedule occupancy; Ticket 06 scores opening from verified snapshots. The package does not run planners, acquire live evidence through a built-in client, calculate the auxiliary quality total, render blind tasks or call an external service from its offline commands. It imports no planner modules and uses the Python standard library plus the already installed `tzdata` for timezone provenance.
 
 ## Entry points
 
@@ -192,3 +192,92 @@ visit days, extra dates are diagnostic, and unknown identities preserve repetiti
 lower bounds. Revisit quotas are displayed without an invented repetition penalty.
 Opening/route feasibility, five-dimension totals, blind tasks and Repair comparison
 remain separate tickets. V0-V3 planning behavior and execution paths are unchanged.
+
+
+## Ticket 06: offline opening compliance
+
+Invoke from the repository root using accepted intake and an independently replayed
+identity report. The snapshot must be an evidence-phase snapshot matching both:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.opening_cli C:/batch/manifest.json C:/batch/identity-report.json C:/batch/evidence-snapshot --context C:/batch/schedule-context.json --expected-plan C:/batch/trusted-plan.json
+```
+
+`--context` and `--expected-plan` are optional. `--paired` includes available V3 draft
+and final_primary projections independently, with the same paired snapshot scope.
+No Repair delta or route verdict is calculated. Library entry:
+`score_opening(intake, identity_report, snapshot_directory, schedule_context=None,
+*, paired=False, expected_plan=None)` returns immutable `OpeningResult`.
+Schema: `rtpeval_opening_report_1`; rules: `rtpeval_opening_rules_1`.
+
+Exit 0 means complete processing, including visit FAIL/UNKNOWN; exit 2 means material
+correction or identity replay. JSON is printed to stdout. Preparation file hashes,
+canonical intake/identity/context/rule hashes, snapshot manifest hash and expected/
+actual plan hashes remain auditable. Submitted bytes are never rewritten. Save the
+report outside its source artifacts. CLI constructs no provider/model/database client.
+
+Whole-batch source/policy validation precedes scoring. Source corruption, stale phase/
+paired scope or incomplete request linkage returns no partial cohort. Identity policy,
+references, review/audit metadata and source mismatch requires identity replay.
+Valid but failed observations and missing/malformed hours produce visit UNKNOWN.
+Mixed snapshots keep supplied route contexts and verify their linkage without choosing
+routes. Optional trusted full-plan equality includes those routes; canonical opening
+references/details are checked even without that optional plan.
+
+One check is emitted per primary occurrence. Repeated canonical places remain repeated
+checks; Nearby and requirement-subject-only records add no visit. Nonapplicable
+activities and unresolved roles retain source/reason records. Applicable counts are
+known occurrences; `applicable_denominator` is null while roles are unresolved.
+Full-scope percentages, including conditional compliance, are then unavailable.
+`counts` covers primary checks; nonapplicable records carry their own N/A/UNKNOWN states.
+Empty applicable scope has state N/A and unavailable rates, never 100 percent.
+
+Every check records original start/end, normalized UTC interval, declared date, source,
+canonical identity, independent timezone/origin, provider timezone version when supplied,
+actual installed zone-file hash/basis, selected details attempts/raw hashes, reasons and
+explanation. Clock evaluability and identity availability are separate. Explicit offset/
+date contradictions, naive DST folds/gaps and precision beyond six fractional digits
+remain UNKNOWN. `allow_cross_date=True` is opening's explicit opt-in; Ticket 05's
+same-date time behavior remains unchanged. Reversed same-date clocks are never repaired.
+
+Opening uses original raw `currentOpeningHours` and `regularOpeningHours`. It retains
+field presence, weekly/dated endpoint meaning and literal truncation. Optional endpoint
+day/hour/minute require actual integer values; absence is not zero. Explicit applicable
+`periods: []` means closed, while missing/null/invalid values remain unavailable.
+Regular Sunday 00:00/no-close is the documented always-open sentinel; arbitrary current
+missing-close periods do not imply continuous access. Split periods retain lunch gaps;
+overnight and previous-day contributions and weekly rollover are supported.
+
+Current applicability uses the selected attempt's place-local request date plus six
+calendar dates. Post-trip current hours cannot become historical evidence. Applicable
+current defects block regular substitution; eligible outside dates use weaker regular
+fallback. Known special dates lacking usable applicable current evidence remain UNKNOWN
+with the exceptional-hours explanation. Collection crossing local midnight retains
+uncertainty, while consistent literal dated spans may still prove opening. A truncated
+23:59 close does not invent closure or opening in the final minute. Each date segment
+records `selected_basis` and factual `basis`; unusable evidence has basis unavailable.
+A visit's factual basis is current, regular, mixed or unavailable.
+
+Half-open containment has zero grace: ending at close can PASS; any positive known
+closure overlap yields FAIL even with other unknown time. Partial valid spans may prove
+PASS containment but cannot establish a closed complement without bounded completeness.
+Verdict, complete/partial/missing evidence, clock/identity availability and basis counts
+are separate. Conditional compliance is PASS/(PASS+FAIL), including partial FAIL;
+complete-evidence coverage and verdict-decidable coverage use the applicable population.
+Two PASS plus one partial FAIL gives compliance 2/3, complete coverage 2/3 and decisive
+coverage 1 when the first two visits are complete.
+
+`outside_seconds` is exact only when all time is known; otherwise null.
+`confirmed_outside_lower_bound_seconds`, `known_open_seconds`, `unknown_seconds` and
+open/closed/unknown segment intervals preserve what is established. Missing visit
+magnitude stays null; known zero stays zero. Integer microsecond interval measurement
+prevents floating subtraction from hiding a fractional conflict. Duration summaries
+are labelled observed per-visit subtotals with observed/missing counts; they do not
+claim complete full-batch magnitudes or a global-time union.
+
+[Acceptance](../../.scratch/rtpeval/ticket-06-acceptance.md) records the actual development
+failures, corrections, retests and review. [Preflight](../../.scratch/rtpeval/ticket-06-preflight.md)
+retains the approved decisions and original inspection checkpoint. Opening fixtures are
+offline/synthetic; separately authorized local database/native checks are recorded in
+acceptance and acquire no provider evidence. No provider availability, future factual certainty or booking/access
+claim follows from this implementation. V0-V3 planner paths remain unchanged.

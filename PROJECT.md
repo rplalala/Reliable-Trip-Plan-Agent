@@ -106,7 +106,8 @@ validation, caches and internal decisions are not independent factual ground tru
 | 03: Identity/adjudication | Implemented and offline-validated; strict supplied-ID and name-search paths, manual review and automatic-result audit |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented and offline-validated; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed; local code publication pending |
-| 06-12 | Later approved work-plan tickets; no implementation is claimed here |
+| 06: Opening checks | Offline parser/scorer/CLI implemented under the 2026-10-02 approval; offline acceptance complete; Standards/Spec reviews clear, full regression 2148 passed / 10 skipped; all ten skips passed in subsequently approved scoped supplements; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) closed as completed; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) |
+| 07-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
@@ -146,12 +147,19 @@ Current contracts and task links: [work index](.scratch/rtpeval/ticket-breakdown
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/development_guide.md) owns commands.
 
-Latest recorded backend regression: **2063 passed, 10 skipped** on 2026-10-02 for
-Ticket 05 offline acceptance; Ruff and compilation passed, and Standards/Spec review
-findings were resolved. See [acceptance](.scratch/rtpeval/ticket-05-acceptance.md)
-for the initial failures, corrections and retests. Skips were disabled opt-in database tests and a Windows
-symlink-privilege case. This is a dated validation checkpoint, not a permanent
+Latest recorded backend regression: **2148 passed, 10 skipped** on 2026-10-02 for
+Ticket 06 offline acceptance; Ruff and compilation passed, and Standards/Spec review
+findings were resolved. See [acceptance](.scratch/rtpeval/ticket-06-acceptance.md)
+for the initial failures, corrections and retests. The earlier Ticket 05 checkpoint
+remains in [its acceptance record](.scratch/rtpeval/ticket-05-acceptance.md). Skips were disabled opt-in database tests and a Windows
+symlink-privilege case. All ten subsequently passed in user-approved scoped supplements,
+including one UAC-elevated symlink test; no combined full-suite rerun is claimed.
+This is a dated validation checkpoint, not a permanent
 claim about all later workspaces.
+
+Ticket 06 local commit preparation on 2026-10-02: **327 passed, 10 deselected**
+in the evaluation/database-unit subset; previously validated native/database checks
+were not repeated. Backend Ruff, evaluation compilation and opening CLI help passed.
 
 The authorized Berlin three-day smoke ran V0-V3 once each. V0 produced six estimated
 transport activities. V1/V2/V3 produced no model transport activities and application
@@ -171,32 +179,32 @@ are evidence records, not current project authority or guaranteed fresh-clone as
 
 ## 6. Next work and authorization boundary
 
-Ticket 05 ([GitHub #17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17))
-has user approval on 2026-10-02 for offline implementation and acceptance; see the
-[requirement/schedule contract](.scratch/rtpeval/requirement-schedule-contract.md).
-Its implementation includes requirement checks, independent time/occupancy preparation
-and offline JSON report/CLI, tests, Standards/Spec review and corrections. Offline
-acceptance is complete. Next proposed task: inspect Ticket 06 opening-hours scope and
-resolve its remaining specification boundaries before requesting implementation approval.
-Routes and the auxiliary total retain separate tickets. The subsequent 2026-10-02
-closeout approval covers current documentation, the local thesis archive, Issue updates
-and one user-approved local commit grouping:
-`feat: add offline requirement and schedule evaluation`.
-Ticket 05 #17 is closed as completed, and parent #12 records Tickets 01-05 complete.
-See the [completion record](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17#issuecomment-5935469356).
-Code/document updates are local and unpublished; this closeout includes no push.
-No live run, formal benchmark, experiment or later-ticket implementation is authorized.
+Ticket 06 ([#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18))
+completed its approved offline parser/scorer/CLI, tests, Standards/Spec reviews and
+corrections. The [preflight](.scratch/rtpeval/ticket-06-preflight.md) preserves accepted
+interface decisions; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) preserves the
+implementation and database/UAC supplementary failure, correction and retest sequence.
+All ten originally skipped checks passed in scoped supplements; the original full-suite
+checkpoint remains unchanged. No persistent Windows security setting changed.
 
-Previously approved snapshot, transport and smoke closeout changes have been committed.
-The earlier approved documentation commits and branch push also completed. Issue
-publication and tracker activation are complete. This repository revision contains
-the active configuration, Issue mapping and acceptance records. The user separately
-authorized a 2026-10-02 commit/push closeout and removal of redundant issue-drafts;
-original drafts remain in Git history. That closeout did not authorize Ticket 05;
-the subsequent implementation approval covered its offline scope. The later Ticket 05
-closeout authorization is recorded above; the original no-Git implementation boundary
-remains historical. Ignored thesis archives are updated locally without force-add.
-See AGENTS.md for the approval workflow.
+On 2026-10-02 the user authorized Ticket 06 workspace cleanup, current documentation,
+local research archive, Issue #18/parent #12 synchronization and local commits, then
+explicitly approved the three logical commit groups. The implementation and directly
+related tests are committed at ee085d3; the independent database-test path correction
+is committed at f62c07f. The third group records current contracts, preflight, acceptance
+and project/package documentation. These commits remain local and unpublished.
+Ticket 05 is committed locally at ed4c9a9; earlier migration/closeout approvals are
+historical and do not grant additional Git actions in this task. Ignored research notes,
+credentials, source payloads, logs and generated files are excluded from staging.
+
+Next proposed task: Ticket 07 route specification closure
+([#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19)), followed by
+separately approved offline implementation. Its deterministic continuous interval,
+protected-time, explicit transport correspondence, departure/mode and aggregation
+boundaries still require technical closure. Ticket 08 depends on its completion.
+Ticket 07+ work is not authorized by this closeout. No push, branch switch, version
+freeze, live provider/model run, production data operation or formal evaluation is
+included. V0-V3 planner behavior and independent entry points remain unchanged.
 
 ## 7. Keeping this file current
 

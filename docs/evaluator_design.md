@@ -804,3 +804,82 @@ as completed; parent #12 reflects Tickets 01-05 complete. The acceptance record
 preserves implementation failures/corrections, review results and closeout checks.
 Current code/documents remain local and unpublished; no push or later-ticket
 implementation is authorized. This closeout changes status, not evaluation semantics.
+
+## Ticket 06 specification/interface preflight — 2026-10-02
+
+The user authorized opening preflight after Ticket 05 closeout. The
+[preflight record](../.scratch/rtpeval/ticket-06-preflight.md) checks raw canonical-details
+snapshot replay, current identity scope, independent IANA time and provider field presence.
+Opening's explicit cross-date path must preserve Ticket 05 default behavior. Documented
+original empty periods differ from absent data; malformed periods do not create a known
+closed complement. Exact outside durations remain distinct from partial lower bounds.
+
+The user subsequently confirmed that any known closure within a visit establishes FAIL,
+including partial evidence. Conditional compliance includes that decisive FAIL, using
+PASS / (PASS + FAIL); complete-evidence coverage and exact/lower-bound durations remain
+separate. Unknown spans do not prove closure. Zero grace, half-open boundaries and
+special-date UNKNOWN remain adopted. No result-meaning blocker remains for this scope.
+Existing snapshot/time regression passed 48 tests, not new opening parser acceptance.
+No implementation, live acquisition, formal case/experiment, Git or Issue mutation occurred.
+
+
+## Ticket 06 offline opening implementation — 2026-10-02
+
+The approved independent scorer now replays canonical details from verified local
+snapshots, with current identity/source policy checks and optional exact trusted-plan
+matching. Raw current/regular field presence, periods, literal dates/truncation and
+place-local request windows drive verdicts; planner opening findings never do. Shared
+neutral identity/time-context checks preserve Ticket 05 behavior; explicit cross-date
+normalization is opt-in. Original sources, observations, zone-data basis and rules remain
+hashed and auditable. No live client or route judgment is introduced.
+
+Known closure within any positive part of a visit yields FAIL, including partial
+observations. Ending exactly at close can PASS under zero grace. Decisive compliance,
+complete coverage, exact outside seconds and confirmed lower bounds stay separate.
+Unknown roles prevent a reduced population percentage. Special-date uncertainty,
+collection crossing midnight, post-trip current data, DST and malformed endpoints retain
+explicit UNKNOWN explanations. Per-date selected and factual bases distinguish missing
+candidate data from usable evidence. Magnitudes are observed per-visit subtotals.
+
+[Acceptance](../.scratch/rtpeval/ticket-06-acceptance.md) owns failures/corrections/retests
+and review; [package guide](../backend/evaluation/README.md#ticket-06-offline-opening-compliance)
+owns the CLI/report wire. Code and detailed documentation remain local/unpublished.
+This is offline development validation, with no formal benchmark, experiment, freeze,
+commit/push or authorization for Ticket 07+; V0-V3 planner entry points are unchanged.
+
+
+Ticket 06 final offline gate: **2148 passed, 10 skipped (149.88s)**. Initial Standards
+review found a stale PROJECT status row and duplicate date validation, both corrected.
+Spec review found prior-week DST uncertainty leaking to unrelated dates; the public
+scorer reproduced and corrected it, including a follow-up exact-midnight half-open
+case. Final reviews have no remaining findings. Ruff/compilation/document checks pass.
+Skips are disabled opt-in database tests and a Windows symlink-privilege case. These
+checks are development validation and do not establish live provider/venue correctness.
+
+## Ticket 06 supplements and Git closeout preparation — 2026-10-02
+
+The user subsequently authorized isolated database and Windows permission checks.
+Nine database checks passed across an 8-pass/one-stale-path failure and a corrected
+one-test retest. The real symlink test then passed in a UAC-elevated process, with no
+persistent OS security change. All ten original skips are covered by these scoped
+supplements; the original full-suite count is preserved, not relabelled as a new run.
+
+The user now authorized workspace cleanup, documentation/Issue updates and local
+commits. Fresh closeout regression: 327 passed, 10 previously validated checks
+deselected; Ruff, compilation and CLI help passed. Parent #12 is synchronized to
+Tickets 01-06 completed and #18 remains completed. Commit grouping approval and
+execution are pending. Current updates remain local/unpublished, with no push,
+formal evaluation, version freeze or Ticket 07+ authorization. The
+[acceptance record](../.scratch/rtpeval/ticket-06-acceptance.md) owns the exact sequence.
+
+
+## Ticket 06 approved local Git closeout — 2026-10-02
+
+The user subsequently approved the three logical commits. Implementation and directly
+related tests are committed at ee085d3; the independent migration-test path fix at
+f62c07f. This documentation group records contracts, preflight, acceptance, current
+scope and the package/index/design guides. All remain local and unpublished; no push,
+freeze or later-ticket execution is authorized. The acceptance record preserves the
+original failing/corrected/retested sequence and distinguishes earlier pending states
+from this approved closeout. Development validation is unchanged and not a formal
+benchmark or claim of live factual coverage.

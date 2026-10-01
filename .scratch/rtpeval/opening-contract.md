@@ -1,4 +1,13 @@
-# Opening evaluator contract — draft
+# Opening evaluator contract
+
+Current follow-up, 2026-10-02: the user approved Ticket 06 offline implementation
+after [the preflight](ticket-06-preflight.md). The scorer/parser/CLI and synthetic
+fixtures are implemented; [acceptance](ticket-06-acceptance.md) owns actual validation.
+The preflight preserves the source-linked interface audit and accepted technical rules.
+The user confirmed that a known closure
+within a visit establishes FAIL, including partial evidence; such FAIL enters conditional
+compliance. Complete-evidence coverage and exact/partial duration stay separate.
+The original 2026-09-28 statements below retain their historical design status.
 
 Status: Accepted principles consolidated; zero-grace boundary handling accepted; special-date UNKNOWN with explicit reasons accepted. Provider encoding and timezone edge rules remain OPEN. No implementation or live calls.
 Date: 2026-09-28.
@@ -65,3 +74,44 @@ Every opening UNKNOWN includes a machine-readable reason, a concise human-readab
 Illustrative report: "UNKNOWN — the frozen evidence marks this visit date as having exceptional hours, but provides no usable schedule for that date. Regular Monday hours (09:00-17:00) do not confirm the planned 10:00-12:00 visit." Exact reason-code spelling belongs to the report schema; distinct causes such as missing hours, invalid periods, unresolved identity and timezone ambiguity must remain distinguishable.
 
 Provider encoding and time interpretation are specified in [evidence-time-contract.md](evidence-time-contract.md). Public documentation has been checked; independent fixtures remain future implementation work, not completed validation.
+
+## Ticket 06 preflight clarification — 2026-10-02
+
+The [preflight](ticket-06-preflight.md) derives concrete provider presence, weekly/current
+encoding, current request-local applicability and explicit cross-date parsing rules from
+accepted decisions, preserved snapshot payloads and primary documentation. Opening's
+cross-date path must not change Ticket 05's default same-date time behavior.
+An original applicable `periods: []` now has verified closed meaning; absent/null fields
+and normalizer-created empty lists do not. Optional point day/hour/minute components
+cannot be filled with zero merely by invoking generic ProtoJSON defaults.
+
+Partial evidence can already establish a FAIL with lower-bound duration under the adopted
+truth table. Complete evidence and a decisive verdict therefore need separate counters.
+The user subsequently confirmed that closure inside the scheduled interval establishes
+FAIL. Any positive overlap with a known closed span suffices, even when the remaining
+visit evidence is partial. Conditional compliance uses PASS / (PASS + FAIL), including
+that decisive partial FAIL; complete-evidence coverage remains a separate metric. Missing
+evidence alone stays UNKNOWN. The existing zero-grace boundary, special-date UNKNOWN
+and full-interval containment rules remain. This supersedes the historical ambiguous
+"fully adjudicable" wording above; no UNKNOWN span becomes an invented closed duration.
+No new parser, live acquisition, formal fixture/case or GitHub status update occurred.
+
+
+## Ticket 06 offline implementation wire — 2026-10-02
+
+Status: Implemented in the approved receiving conversation; acceptance/review evidence
+is recorded in [Ticket 06 acceptance](ticket-06-acceptance.md). This later checkpoint
+supersedes historical pending implementation statements without rewriting their dates.
+The executable schema/rules and field semantics are documented in the
+[package guide](../../backend/evaluation/README.md#ticket-06-offline-opening-compliance).
+The public scorer verifies a local evidence snapshot, current identity policy and source
+linkage; it does not accept unchecked provider/planner dictionaries as factual evidence.
+
+Per-visit PASS/FAIL/UNKNOWN and nonapplicable records, structural/identity availability,
+complete/partial/missing evidence, current/regular/mixed/unavailable basis and per-date
+segments are retained. Decisive partial FAIL remains in PASS/(PASS+FAIL). Complete
+coverage is separate. Exact outside seconds are null when incomplete; confirmed lower
+bounds and unknown seconds remain. Unresolved roles suppress full-scope percentages;
+empty denominators are unavailable. Duration totals are observed per-visit subtotals.
+These wire rules close the Ticket 06 historical partial-duration aggregation item;
+auxiliary scoring and formal cross-request aggregation remain outside this ticket.

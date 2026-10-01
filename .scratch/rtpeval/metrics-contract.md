@@ -37,8 +37,8 @@ Where a denominator cannot yet be established, report the unresolved structural 
 | Activity overlap | P, independent occupancy; timed commitment pair/day/request | Positive intersection pair count, affected requests and union duration where >=2 distinct commitments overlap | Touching endpoints do not overlap. Deduplicate transport activity/Transfer representations; union minutes are not the sum of overlapping pairs. Occupancy role details remain OPEN. |
 | Scheduled occupied time | P, independent occupancy; day | Union of applicable scheduled commitment intervals, in minutes/hours | Descriptive; avoid double-counting overlaps or transport representations. Flexible free_time is distinguished from fixed occupancy. Final inclusion rules OPEN. |
 | Opening structural evaluability | P, R, E; applicable main visit | Structurally evaluable visits / applicable visits, with reasons for excluded or unclear scope | Distinguish identity/clock/role uncertainty from absence of provider hours. |
-| Opening evidence coverage | E, P; applicable main visit | Fully adjudicable visits / applicable visits; retain structural breakdown | Separate current/date-specific basis, regular fallback and unavailable basis; partial coverage cannot masquerade as full evidence. |
-| Opening compliance | P, E; fully adjudicable visit | Contained visits / fully adjudicable visits | Zero grace; departure exactly at close is allowed. Known exceptional date without usable applicable hours is UNKNOWN with reason. |
+| Opening evidence coverage | E, P; applicable main visit | Complete-evidence visits / applicable visits; separately verdict-decidable coverage and structural breakdown | Separate current/date-specific basis, regular fallback and unavailable basis; partial decisive FAIL does not become complete evidence. |
+| Opening compliance | P, E; verdict-decidable visit | PASS / (PASS + FAIL), including partial decisive FAIL under the 2026-10-02 clarification | Positive overlap with a known closed span yields FAIL; zero grace and departure exactly at close are retained. Missing evidence without containment/conflict proof stays UNKNOWN. |
 | Opening conflicts and outside minutes | P, E; visit/time | Confirmed conflicts and visit duration outside union of adopted open intervals | Includes early arrival and within-visit closure. Partial evidence can support labelled lower bounds, not invented closed minutes; exact partial aggregation OPEN. |
 | Route structural evaluability | P, R, E; same-day candidate leg | Defined/evaluable legs / applicable candidate legs, with structural unknowns | Exclude inter-day travel and confirmed same-venue connections as N/A. Unresolved endpoints/mode/occupancy remain visible. Do not silently skip unknown intermediate locations. |
 | Route evidence coverage | P, E; applicable same-day leg | Applicable independently adjudicable responses / applicable legs; expose duration-available count separately | Successful applicable explicit no-route is adjudicable evidence, not a provider outage, although it has no usable duration. |
@@ -100,3 +100,26 @@ obligation or logical commitment per score unit and reports unresolved denominat
 availability explicitly. No non-required repetition defect ratio is adopted.
 Opening and route provider rules, total/mask export, human and Controlled Repair work
 retain their own contracts/tickets. No metric implementation or experiment occurred.
+
+## Ticket 06 preflight metric clarification — 2026-10-02
+
+[Ticket 06 preflight](ticket-06-preflight.md) identifies an ambiguity in the historical
+phrase "fully adjudicable": complete evidence coverage and a decisive visit verdict are
+different when partial evidence proves FAIL. The user confirmed that any known closure
+inside the scheduled interval yields FAIL, including incomplete evidence. Conditional
+compliance includes that decisive FAIL: PASS / (PASS + FAIL). Full evidence coverage,
+verdict-decidable coverage, raw states, exact duration and confirmed lower bounds remain
+separate. Unknown spans do not become closed time. Established half-open/zero-grace
+boundaries remain unchanged. Auxiliary total arithmetic remains Ticket 08, outside this task.
+
+
+## Ticket 06 executable measurements — 2026-10-02
+
+[Acceptance](ticket-06-acceptance.md) and the
+[package wire](../../backend/evaluation/README.md#ticket-06-offline-opening-compliance)
+record the implemented opening subset. Complete-evidence and verdict-decidable coverage
+are separate; partial decisive FAIL contributes to PASS/(PASS+FAIL). Unknown portions
+stay unknown. Exact outside duration is null when incomplete, with confirmed lower-bound
+and unknown seconds retained. Aggregation is an observed per-visit subtotal with counts,
+not global-time union or formal cross-request analysis. Unresolved role populations and
+empty denominators suppress percentages. Auxiliary total/masks remain Ticket 08.
