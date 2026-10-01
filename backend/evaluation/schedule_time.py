@@ -85,13 +85,17 @@ def _timestamp(value) -> tuple[datetime | None, str | None]:
 
 
 def normalize_interval(
-    start, end, declared_day, timezone=None, *, allow_day_end=False
+    start, end, declared_day, timezone=None, *, allow_day_end=False, allow_cross_date=False
 ) -> IntervalResult:
     """Preserve missingness and civil-date disagreement separately from valid instants."""
     parsed = [_timestamp(value) for value in (start, end)]
 
     def matches_day(value, index):
         return value.date().isoformat() == declared_day or (
+            index == 1
+            and allow_cross_date
+            and value.date() > date.fromisoformat(declared_day)
+        ) or (
             index == 1
             and allow_day_end
             and value.date() == date.fromisoformat(declared_day) + timedelta(days=1)

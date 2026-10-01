@@ -82,3 +82,13 @@ def test_dst_duration_uses_elapsed_instants():
         "2020-03-29T01:30:00+01:00", "2020-03-29T03:30:00+02:00", "2020-03-29", "Europe/Berlin"
     )
     assert result.span.seconds == 3600
+
+
+def test_cross_date_is_opt_in_and_never_repairs_a_reversed_same_date():
+    args = ("2020-01-01T23:30Z", "2020-01-02T00:30Z", "2020-01-01")
+    assert normalize_interval(*args).reasons == ("declared_date_mismatch",)
+    assert normalize_interval(*args, allow_cross_date=True).span.seconds == 3600
+    reversed_clock = normalize_interval(
+        "2020-01-01T23:30Z", "2020-01-01T00:30Z", "2020-01-01", allow_cross_date=True
+    )
+    assert reversed_clock.reasons == ("nonpositive_interval",)

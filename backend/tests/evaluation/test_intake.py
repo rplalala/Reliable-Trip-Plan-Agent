@@ -596,6 +596,9 @@ def test_no_planner_import_or_network_on_intake(batch, monkeypatch):
         "unicodedata",
         "asyncio",
         "zoneinfo",
+        "decimal",
+        "importlib",
+        "tzdata",
     }
     for path in Path("backend/evaluation").glob("*.py"):
         tree = ast.parse(path.read_text(encoding="utf-8"))
