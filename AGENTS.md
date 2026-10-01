@@ -53,7 +53,7 @@ This includes:
 - database column names,
 - API field names,
 - README and project documentation,
-- Git commit messages when commits are explicitly requested.
+- Git commit messages.
 
 Do not write Chinese text inside project files unless I explicitly request Chinese for a specific user-facing feature.
 
@@ -81,7 +81,7 @@ For every meaningful development task:
    - tests/checks you plan to run,
    - whether the change could affect any existing V0/V1/V2/V3 behavior.
 3. Obtain my explicit approval for the proposed scope before major changes. An existing explicit approval for that scope remains valid; do not request it again.
-4. Within the approved task, proceed through implementation, relevant tests, code review, necessary corrections, and related documentation updates without separate approval for each step. Honor any explicit exclusions or limits, including live-run budgets and no-live instructions.
+4. Within the approved task, proceed through implementation, relevant tests, local commits, code review, necessary corrections, and related documentation updates without separate approval for each step. Follow the Git Commit Policy for commit/review order. Honor any explicit exclusions or limits, including live-run budgets and no-live instructions.
 5. Run relevant tests/checks.
 6. When finished, report in Chinese:
    - what was implemented,
@@ -91,7 +91,7 @@ For every meaningful development task:
    - recommended next step.
 7. Request approval before expanding the agreed scope or starting a separate task. Moving between implementation, testing, review, corrections, and documentation within the approved scope is not a new task.
 
-The separate approval requirements for Git actions, version freezes and progression, and formal research work below still apply.
+The separate approval requirements for publication and other restricted Git actions, version freezes and progression, and formal research work below still apply. Local commits follow the Git Commit Policy.
 
 ### Self-contained documentation update reports
 
@@ -108,14 +108,34 @@ on the web, where local repository links and files are not available.
 
 ## Git Commit Policy
 
-Only create commits when I explicitly ask.
+Within an approved task, create local commits without requesting separate approval for
+each commit or its grouping, unless I explicitly require approval, defer commits or
+prohibit them. Implementation scope still requires approval; permission to commit does
+not authorize another ticket, a broader change or a live run.
 
 Before committing:
 
 1. Inspect the relevant diff.
-2. Propose a logical commit grouping in Chinese.
-3. Wait for my approval unless the grouping has already been approved.
-4. Run relevant tests/checks; if they fail, stop and report.
+2. Briefly explain the logical commit grouping in Chinese; this is informational unless I require approval.
+3. Run relevant tests/checks. Commit only after they pass; resolve failures within the approved scope or report a blocker.
+4. Stage only the current task's intended files/hunks, preserving unrelated pre-existing work.
+
+### Implementation, review and correction sequence
+
+For implementation tasks, follow Matt's `implement` flow with `tdd` and `code-review`,
+using this repository's commit order:
+
+1. Record the starting commit before implementation as the review fixed point, unless I specify another base.
+2. Implement with TDD at the agreed seams and complete relevant validation.
+3. Commit the implementation and its directly related tests in logical groups **before code review**.
+4. Run `code-review` against the recorded fixed point through the committed implementation, on both Standards and Spec axes. Include the task's commit list so the full change is reviewed.
+5. If review finds issues, fix them within the approved scope, run relevant checks, and create additional commits such as `fix: correct route boundary handling`. Use `test:` or `docs:` when the correction only changes tests or documentation. Recheck the affected findings; repeat correction and commit as needed.
+6. Commit necessary final documentation/acceptance updates in a coherent group and report the implementation and correction history.
+
+This order overrides a skill's default commit-after-review order. Preserve the original
+implementation commits and separate review-fix commits; do not amend, squash or rewrite
+them merely to absorb review corrections. Routine in-scope corrections and their commits
+need no additional approval. Scope expansion and task-specific exclusions still apply.
 
 Prefer small, logically coherent commits grouped by responsibility or capability.
 
@@ -185,7 +205,7 @@ When I explicitly approve a version freeze:
 3. Preserve historical accuracy; do not rewrite later changes as if they existed in the original milestone.
 4. Do not document future/unimplemented features as part of the frozen version.
 5. Do not begin the next version until the documentation update is complete and I approve moving forward.
-6. Do not force-add ignored documentation files or commit/push unless explicitly authorized.
+6. Commit tracked freeze documentation under the Git Commit Policy. Force-adding ignored documentation and pushing still require explicit authorization.
 
 Examples:
 
@@ -283,7 +303,7 @@ Do not repeatedly read or test unrelated parts of the repository without a reaso
 - Avoid unrelated refactors.
 - Avoid unnecessary complexity.
 - Do not implement future-stage mechanisms early.
-- Do not automatically commit or push unless explicitly asked.
+- Follow the Git Commit Policy for local commits and explicitly authorized publication.
 - Keep explanations concise unless I ask for more detail.
 
 ## Agent skills
@@ -297,7 +317,8 @@ Do not repeatedly read or test unrelated parts of the repository without a reaso
 - Clarify repository ideas with `grill-with-docs`. For a small, clear task, use
   `implement`; for a multi-session build, use `to-spec` -> `to-tickets` ->
   `implement` per ticket, resolving blockers first. `implement` uses `tdd` and
-  closes with `code-review` against both project standards and the spec.
+  `code-review` against both project standards and the spec; commit/review/correction
+  order follows the Git Commit Policy above.
 - Use `prototype` when a design question needs runnable evidence, and `handoff`
   when moving findings between directories or sessions.
 - Route raw incoming requests through `triage`; tickets from `to-tickets` are
