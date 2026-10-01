@@ -8951,7 +8951,7 @@ freeze or formal benchmark. Local commit checkpoint: `8f5e9b3` on `feature/v3`.
 - Independent bounded `budget.json` is implemented and offline validated. Initial full
   regression passed 1726 tests / 9 skipped. Review exposed omitted RAG cancellation and
   resolution counters; a failing regression preceded the correction, then 63 focused tests
-  passed. Final combined-tree regression passed 1727 tests / 9 skipped, with Ruff and diff
+  passed. Final combined-tree regression passed 1727 tests / 9 skipped in 73.39 seconds, with Ruff and diff
   checks passing. No live run was performed for this observability change.
 - Five authorized local commits: `23c3a46` (workflow), `0b20d58` (acceptance tooling),
   `fc01a9d` (semantic contract), `dcb71e8` (budget summary), `8f5e9b3` (documentation).
@@ -8968,3 +8968,29 @@ Evidence: `logs/semantic_short_reference_revalidation_20260927/report.md`,
 `.scratch/semantic-reference-correction/v3-budget-audit.md`, and
 `.scratch/semantic-reference-correction/budget-summary-spec.md`. Raw local artifacts are
 ignored and are not guaranteed to be present in another checkout.
+
+## Project context cleanup — 2026-09-30
+
+Documentation-only closeout, authorized by the user, based on commit `4736002` with
+uncommitted PROJECT/index cleanup. PROJECT is a concise current-state entry point;
+existing documents retain detailed contracts and dated evidence. The original 47
+sections remain recoverable from `4736002:PROJECT.md`. The intermediate categorized
+copy and migration helpers were removed after checking coverage against existing
+owners; they are not another documentation authority.
+
+| Content | Existing responsibility owner |
+| --- | --- |
+| Architecture, version boundaries and shared behavior | Shared design documents and V0–V3 design/milestone/development records indexed in [README](README.md) |
+| Development failures, corrections and historical validation | This development record; [POI semantics implementation](shared_poi_semantics_plan.md) and [closeout](poi_semantics_closeout.md) |
+| Berlin, V0 transport and preference/landmark pilots | `.scratch/berlin-six-day-smoke/`, `.scratch/v0-transport-nearby/`, `.scratch/preference-landmark-balance/` |
+| Semantic correction and budget evidence | `.scratch/semantic-reference-correction/` contracts, diagnosis and acceptance records |
+| RTPEval Tickets 01–04 and transport correction | `.scratch/rtpeval/` contracts and acceptance records; [evaluator design](evaluator_design.md) |
+| Three-day transport development smoke | [Transport smoke record](transport_responsibility_smoke.md) |
+
+The audit retained the 73.39-second semantic-closeout regression duration here,
+D's 26.9-km observation and restricted replay provenance in the semantic implementation
+record, the earlier transport-blocked attempt outcome in its acceptance plan, and the
+1006-pass/1-skip pre-commit checkpoint in the RTPEval closeout audit. These are recovered
+historical statements, not new test results. Existing design/acceptance records retain
+failures, authorization boundaries and later superseding decisions. No implementation,
+configuration, new experiment, live call, commit or version freeze belongs to this cleanup.

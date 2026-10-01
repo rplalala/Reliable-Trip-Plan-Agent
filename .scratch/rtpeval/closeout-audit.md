@@ -89,6 +89,21 @@ Ticket 01 was subsequently implemented with explicit user authorization on 2026-
 
 The earlier missing collector is now implemented as an opt-in benchmark-owned wrapper and observation hooks; see [acceptance](ticket-02-acceptance.md). Final broad relevant regression: 944 passed, 1 native symlink skip; final usage/evaluation subset: 51 passed, 1 skipped. This closes Ticket 02, not actual benchmark capture or live coverage. Tickets 01/02 are resolved; seven need technical closure and three remain specification-ready subject to their predecessors.
 
+## Historical evaluation branch checkpoint — 2026-09-30
+
+Recovered from `4736002:PROJECT.md` during the documentation cleanup; no tests or
+Git writes were repeated for this record. The user authorized creating
+`feature/evaluation` from `feature/v3` and committing RTPEval work. Tickets 01–03
+and review corrections were grouped by intake/projection, usage capture/reporting,
+and identity/adjudication, with cross-ticket documentation separate. Pre-commit
+offline regression across evaluation, observability/runtime, Foundry/integrations,
+retrieval/runtime and V0–V3 passed **1006 tests, 1 skipped** (native Windows symlink
+privilege limit). Ruff and diff whitespace checks passed. Earlier uncommitted-context
+statements describe earlier checkpoints. Ignored archives remained local; this did
+not imply a push, live call, formal benchmark/experiment or version freeze.
+Ticket 04 still required its own approved scope at that point; its subsequent
+[acceptance record](ticket-04-acceptance.md) records later implementation.
+
 ## Ticket 05 specification closure — 2026-10-01
 
 The user authorized scope closure and accepted protection-as-blocker scoring and the

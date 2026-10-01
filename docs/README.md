@@ -4,6 +4,16 @@ The root README directly introduces the project and quick start. PROJECT directl
 scope/status and next approval. This index routes readers; detailed contracts and experiment
 records have one responsibility owner instead of being copied into the entry documents.
 
+## Current context and detailed records
+
+Start with [PROJECT.md](../PROJECT.md) for current scope, version boundaries,
+RTPEval status and next work. Existing design documents own behavior contracts;
+development records and `.scratch/` acceptance records own dated evidence.
+The entries below include historical checkpoints: their Current/Next labels do
+not override the current project summary. The original pre-cleanup PROJECT text
+remains available in Git at `4736002:PROJECT.md`; the documentation cleanup is
+recorded in [the development record](development_record.md#project-context-cleanup--2026-09-30).
+
 ## Berlin development smoke and follow-ups - 2026-09-28
 
 Later, the user separately authorized an itinerary-only blind review despite the
@@ -98,8 +108,11 @@ iteration and submits a curated batch to Evaluation; candidate admission does no
 
 [RTPEval evaluator research design](evaluator_design.md) owns the accepted evaluation design
 with some specification items still open. It includes the supplementary **V3 vs Codex + Travel
-Planning Skill** comparison direction alongside the main V0-V3 study. Tickets 01-03 have
-separate offline implementation records; no benchmark freeze or formal experiment is implied.
+Planning Skill** comparison direction alongside the main V0-V3 study. Tickets 01-04 have
+separate offline implementation records. Ticket 05
+[requirement/schedule specification](../.scratch/rtpeval/requirement-schedule-contract.md)
+is ready; its implementation approval is pending. No benchmark freeze or formal
+experiment is implied.
 The [readiness audit](evaluation_readiness_audit.md) checks the 2026-09-28 code checkpoint;
 the [draft module specification](../.scratch/rtpeval/spec.md) records interfaces and remaining
 rules. The [specification closeout audit](../.scratch/rtpeval/closeout-audit.md) separates

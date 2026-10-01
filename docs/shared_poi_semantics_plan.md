@@ -943,3 +943,35 @@ Missing matches remain unassessed. Explicit goal counts, primary-role admission,
 exception allowances and V3 Repair authority are preserved. This supplies the contract
 for ticket 03; selection still uses its existing opportunities until that ticket is
 implemented. Ticket 02 destination landmark nomination also remains pending.
+
+## Historical D sparse-day diagnosis provenance — 2026-09-26
+
+Recovered from `4736002:PROJECT.md` during the 2026-09-30 documentation audit.
+These observations precede the later full-comparison-pool replay and quantity-review
+policy changes in [the iteration closeout](poi_semantics_closeout.md).
+The initial blocked D report was
+`artifacts/poi_semantics_acceptance/20260926_D_captured/report.md`.
+The prompt-16 retest failed with
+`SemanticAssessmentError: Invalid match evidence references`; raw downstream output
+was not captured at that stage.
+
+After the user accepted the dual-capture semantic result (not a version freeze),
+offline diagnosis found 16/16 selected supply from 37 eligible candidates, 14 used
+identities and unchanged initial/final itineraries. The two unused choices were
+animal venues; one was about 26.9 km from the destination anchor. Insertion feasibility
+was unestablished. Four sparse dates were NEEDS_REVIEW, not missing minimum coverage.
+Quantity review was disabled, so Repair did not run; round/time exhaustion was not
+the cause. Pure validator replay enabled four review targets without proving repairs
+feasible. The evidence root was
+`artifacts/poi_semantics_acceptance/20260926_D_semantic_capture_retest/`, with
+`diagnosis/report.md` and `diagnosis/repair_scope_report.md` beneath it (ignored local).
+
+The original-supply-only scope replay allowed additions on those four dates without
+moves, retiming, deletion, replacement or revisits. Penguin Beach was the sole
+preliminary new identity for October 4 and 7; other dates and Eagle Heights failed
+geographic screening. Saved WALK routes exceeded limits and matching motor-route
+facts were absent. This restricted replay excluded the full comparison pool and
+performed no acquisition, model call or adoption. It did not prove insertion feasible
+or show that review/round increases alone could complete four days. Defaults and
+budgets were unchanged at this diagnosis checkpoint. Later full-pool findings do not
+retroactively broaden this replay's evidence.

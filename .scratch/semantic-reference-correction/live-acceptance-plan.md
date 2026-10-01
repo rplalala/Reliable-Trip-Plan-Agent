@@ -192,3 +192,20 @@ Never rerun prepare or any started case. Inspect the recorded counters and provi
 between cases for the plan's global stop conditions; the local launcher is not a replacement
 for that assessment. If a tooling blocker appears, stop and report it to iteration without
 editing code or inventing an alternative execution path.
+
+## Historical execution outcome — 2026-09-27
+
+Recovered during the 2026-09-30 documentation audit from `4736002:PROJECT.md`;
+this records earlier observations, not a new execution or retry authorization.
+The three separately approved one-attempt runs (Sydney V1, Sydney V3, Melbourne V1)
+all stopped in requirement-provider transport before travel tools, RAG, generation
+or POI semantics. Recorded semantic and travel-tool counters were zero; no itinerary
+was returned. Diagnostics contain neither HTTP status nor usage, leaving cause,
+provider receipt and cost unknown. Execution-history review found default restricted
+sandbox launches without escalated network execution. That preparation gap is a
+possible cause, not proof of the root cause; these attempts neither validate nor
+refute semantic correction. No retry was authorized at this checkpoint.
+Evidence: `logs/semantic_reference_revalidation_20260927/report.md` (ignored local).
+The later separately network-enabled attempts and offline diagnosis are recorded in
+[non-reference-diagnosis.md](non-reference-diagnosis.md); their batch report is
+`logs/semantic_reference_network_revalidation_20260927/report.md` (ignored local).
