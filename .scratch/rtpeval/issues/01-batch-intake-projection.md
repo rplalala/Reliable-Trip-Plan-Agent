@@ -1,3 +1,15 @@
+# Historical RTPEval Ticket 01 snapshot
+
+Imported 2026-10-01. Live task state, labels, dependencies and discussion are owned by
+[GitHub Issue #13](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13).
+The original local ticket is preserved verbatim below. Its Status, dates and comments
+are historical and must not be maintained as a second live tracker.
+Repository contracts and acceptance records retain their detailed authority.
+
+<!-- RTPEVAL-HISTORICAL-SOURCE:RTPEVAL-01 -->
+
+---
+
 # 01: Batch intake and independent schedule projection
 
 Blocked by: None. Ticket 01 implementation was separately approved and completed.

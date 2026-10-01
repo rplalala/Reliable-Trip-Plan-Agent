@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-07 draft-sha256:2f90c187ad142ff704a889b03a6a2f12f0b89909555e15ca2c8ed24e99c1eceb -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 07; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 07. Published GitHub Issue: [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `needs-info`.
 - Intended GitHub state: `open`.
-- Dependency history: [Ticket 04]({{ISSUE_T04_URL}}).
+- Dependency history: [Ticket 04](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16).
 - Implementation authorization: pending. Specification readiness and dependency completion do not grant approval.
 
 Needs technical specification closure: deterministic continuous-interval/departure selection remains open. Ticket 04 is completed offline; that dependency completion does not close this gate or authorize implementation.
@@ -21,9 +21,9 @@ Needs technical specification closure: deterministic continuous-interval/departu
 
 ## Contract and evidence
 
-- [route-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/route-contract.md)
-- [activity-scope-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/activity-scope-contract.md)
-- [evidence-time-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/evidence-time-contract.md)
+- [route-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/route-contract.md)
+- [activity-scope-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/activity-scope-contract.md)
+- [evidence-time-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/evidence-time-contract.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -46,7 +46,7 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T07 -->
 # 07: Same-day route checks from frozen evidence
 
-Blocked by: [04: Independent snapshot acquisition and offline replay]({{ISSUE_T04_URL}})
+Blocked by: [04: Independent snapshot acquisition and offline replay](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16)
 
 Status: needs-info
 Type: task

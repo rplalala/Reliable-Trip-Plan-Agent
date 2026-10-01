@@ -1,3 +1,62 @@
+# RTPEval GitHub Issues migration
+
+Published and tracker activated 2026-10-01 (Australia/Sydney) under separate explicit
+authorization. [Parent Issue #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12) and all 12 child Issues
+are live. GitHub owns task state/discussion; repository contracts and acceptance records
+own detailed meaning. Source tickets are preserved historical snapshots.
+
+## Verified publication and records
+
+- [Migration acceptance](migration-acceptance.md): scope, sequence, results and limitations.
+- [Actual mapping and execution journal](migration-manifest.json): IDs, URLs and original hashes.
+- [Authenticated publication readback](publication-verification.json): 13 bodies/states/labels,
+  12 native parent-child relationships and 13 native dependency edges, including completed predecessors.
+- [Local activation verification](activation-verification.json): configuration, source preservation,
+  navigation and Git invariants.
+- Original approved [body drafts](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/00-rtpeval-parent.md) are retained in Git at preparation commit 8a82354;
+  working-tree issue-drafts were removed during the authorized 2026-10-02 closeout.
+  Actual rendered bodies and completion comments remain permanent publication evidence
+  in published-bodies/.
+- Pinned document checkpoint: a6aff13a00af35467b9c88ec2906d10a96095f04; all 29 reference
+  files were verified through the GitHub Contents API before publication.
+- [Active tracker](../../docs/agents/issue-tracker.md) and
+  [labels](../../docs/agents/triage-labels.md) are applied. This repository revision contains the activation/configuration
+  and post-publication records; the 2026-10-02 closeout separately authorizes commit/push.
+
+| Project Ticket | GitHub Issue | Original predecessors |
+| --- | --- | --- |
+| 01 | [#13](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13) | None |
+| 02 | [#14](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/14) | None |
+| 03 | [#15](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/15) | 01 |
+| 04 | [#16](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16) | 03 |
+| 05 | [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) | 01, 03 |
+| 06 | [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) | 04 |
+| 07 | [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) | 04 |
+| 08 | [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) | 05, 06, 07 |
+| 09 | [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) | 01 |
+| 10 | [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) | 08 |
+| 11 | [#23](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) | 10 |
+| 12 | [#24](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24) | 01 |
+
+Migration outcome: Tickets 01-04 were closed/completed using imported offline acceptance;
+05/06/08/09 retained ready-for-agent and 07/10/11/12 retained needs-info. These are
+migration-time observations; consult GitHub for later changes. Ticket 05 implementation
+remains pending separate approval. No live travel/model/database run, benchmark, commit,
+push, PR or version freeze occurred in the publication/activation task.
+
+## Git closeout and preserved preparation history
+
+The original preparation record below describes earlier checkpoints. Its pending
+publication/configuration statements were superseded by this activation and acceptance.
+
+Original draft links below now point to the preparation commit. The manifest retains
+original draft hashes, Git blob identities and historical URLs, with actual Issue
+mappings and acceptance evidence unchanged. The earlier pending/uncommitted statements
+remain dated history. See cleanup-verification.json for closeout checks.
+
+<details>
+<summary>Pre-migration record (historical; not current task state)</summary>
+
 # RTPEval GitHub Issues migration draft
 
 Prepared 2026-10-01 (Australia/Sydney). Status: Draft and four documentation commits/
@@ -19,7 +78,7 @@ tokens remain templates for the later authorized Issue-publication step.
 
 ## Review entry points
 
-- [Parent Issue body](issue-drafts/00-rtpeval-parent.md): plan, scope and 12 child links.
+- [Parent Issue body](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/00-rtpeval-parent.md): plan, scope and 12 child links.
 - [Mapping/metadata](migration-manifest.json): original/draft hashes, states, labels,
   dependencies and null future GitHub identifiers. Null does not mean publication.
 - [Document link audit](link-audit.md): local availability and remote publication gates.
@@ -34,18 +93,18 @@ tokens remain templates for the later authorized Issue-publication step.
 
 | Local ticket | Body draft | Specification status | GitHub state | Predecessors | Actual Issue |
 | --- | --- | --- | --- | --- | --- |
-| 01 | [draft](issue-drafts/01-batch-intake-projection.md) | resolved | closed | None | Pending |
-| 02 | [draft](issue-drafts/02-usage-capture-report.md) | resolved | closed | None | Pending |
-| 03 | [draft](issue-drafts/03-identity-adjudication.md) | resolved | closed | 01 | Pending |
-| 04 | [draft](issue-drafts/04-evidence-snapshot.md) | resolved | closed | 03 | Pending |
-| 05 | [draft](issue-drafts/05-requirement-schedule-metrics.md) | ready-for-agent | open | 01, 03 | Pending |
-| 06 | [draft](issue-drafts/06-opening-checks.md) | ready-for-agent | open | 04 | Pending |
-| 07 | [draft](issue-drafts/07-route-checks.md) | needs-info | open | 04 | Pending |
-| 08 | [draft](issue-drafts/08-quality-report-scores.md) | ready-for-agent | open | 05, 06, 07 | Pending |
-| 09 | [draft](issue-drafts/09-blinded-ranking.md) | ready-for-agent | open | 01 | Pending |
-| 10 | [draft](issue-drafts/10-v3-pre-post.md) | needs-info | open | 08 | Pending |
-| 11 | [draft](issue-drafts/11-controlled-repair.md) | needs-info | open | 10 | Pending |
-| 12 | [draft](issue-drafts/12-mechanism-official-audit.md) | needs-info | open | 01 | Pending |
+| 01 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/01-batch-intake-projection.md) | resolved | closed | None | Pending |
+| 02 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/02-usage-capture-report.md) | resolved | closed | None | Pending |
+| 03 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/03-identity-adjudication.md) | resolved | closed | 01 | Pending |
+| 04 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/04-evidence-snapshot.md) | resolved | closed | 03 | Pending |
+| 05 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/05-requirement-schedule-metrics.md) | ready-for-agent | open | 01, 03 | Pending |
+| 06 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/06-opening-checks.md) | ready-for-agent | open | 04 | Pending |
+| 07 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/07-route-checks.md) | needs-info | open | 04 | Pending |
+| 08 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/08-quality-report-scores.md) | ready-for-agent | open | 05, 06, 07 | Pending |
+| 09 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/09-blinded-ranking.md) | ready-for-agent | open | 01 | Pending |
+| 10 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/10-v3-pre-post.md) | needs-info | open | 08 | Pending |
+| 11 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/11-controlled-repair.md) | needs-info | open | 10 | Pending |
+| 12 | [draft](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/8a82354c885300eb7c952403ce37da1ccf8e4191/.scratch/rtpeval-github-migration/issue-drafts/12-mechanism-official-audit.md) | needs-info | open | 01 | Pending |
 
 Four completed tickets become closed/completed after evidence is recorded. Four ready
 specifications (05/06/08/09) and four needs-info specifications (07/10/11/12) stay open.
@@ -155,3 +214,5 @@ was applied to active AGENTS. Activation requires separate approval, exact sourc
 hash verification and the --unidiff-zero flag. This corrects the earlier draft
 checker, which had not validated the hunk count. Strict whitespace checks now apply
 to every migration file, including the patch. The old/new hashes are recorded.
+
+</details>

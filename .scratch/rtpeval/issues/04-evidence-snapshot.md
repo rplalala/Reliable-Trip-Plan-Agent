@@ -1,3 +1,15 @@
+# Historical RTPEval Ticket 04 snapshot
+
+Imported 2026-10-01. Live task state, labels, dependencies and discussion are owned by
+[GitHub Issue #16](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16).
+The original local ticket is preserved verbatim below. Its Status, dates and comments
+are historical and must not be maintained as a second live tracker.
+Repository contracts and acceptance records retain their detailed authority.
+
+<!-- RTPEVAL-HISTORICAL-SOURCE:RTPEVAL-04 -->
+
+---
+
 # 04: Independent snapshot acquisition and offline replay
 
 Blocked by: [03: Identity resolution, adjudication and grounding report](03-identity-adjudication.md)

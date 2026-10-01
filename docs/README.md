@@ -113,6 +113,16 @@ separate offline implementation records. Ticket 05
 [requirement/schedule specification](../.scratch/rtpeval/requirement-schedule-contract.md)
 is ready; its implementation approval is pending. No benchmark freeze or formal
 experiment is implied.
+
+RTPEval task state and discussion moved to [GitHub parent Issue #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12)
+and its 12 children on 2026-10-01. Repository contracts/acceptance remain authoritative
+for detailed meaning; local tickets are preserved historical snapshots. The
+[migration acceptance](../.scratch/rtpeval-github-migration/migration-acceptance.md)
+records actual mappings, state/label checks, 12 parent-child relations and 13 dependency
+edges. This repository revision contains the tracker activation records. Other local
+feature trackers are unchanged. [Ticket 05 #17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17)
+implementation remains pending separate approval.
+
 The [readiness audit](evaluation_readiness_audit.md) checks the 2026-09-28 code checkpoint;
 the [draft module specification](../.scratch/rtpeval/spec.md) records interfaces and remaining
 rules. The [specification closeout audit](../.scratch/rtpeval/closeout-audit.md) separates
@@ -188,7 +198,7 @@ implementation and evaluation execution still require separate authorization.
 
 - [Evaluation glossary](evaluation_glossary.md): shared benchmark/evaluation terminology; not project-wide context.
 
-- [Evaluation implementation work plan](../.scratch/rtpeval/ticket-breakdown.md): 12 approved tickets with current statuses; Tickets 01-04 are resolved for their approved offline scopes.
+- [Evaluation implementation work index](../.scratch/rtpeval/ticket-breakdown.md): live GitHub links for all 12 Tickets and the preserved pre-migration breakdown. GitHub owns current task state; repository acceptance records retain the approved offline scope.
 - Local historical design archives: `thesis_notes/evaluation/` and `thesis_notes/benchmark/` (Git-ignored; not included in a fresh checkout). These are historical records, not project authority or formal research results.
 
 - [Ticket 01 intake/projection contract](../.scratch/rtpeval/intake-projection-contract.md) (2026-09-29): implemented offline; preserves independent role/transport uncertainty.

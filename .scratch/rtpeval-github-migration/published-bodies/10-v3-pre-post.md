@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-10 draft-sha256:e931a01a7127dde3f8c5d7b8b682493043446c3e9ef118afb627689423ebcc8f -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 10; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 10. Published GitHub Issue: [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `needs-info`.
 - Intended GitHub state: `open`.
-- Dependency history: [Ticket 08]({{ISSUE_T08_URL}}).
+- Dependency history: [Ticket 08](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20).
 - Implementation authorization: pending. Specification readiness and dependency completion do not grant approval.
 
 Needs specification closure and is blocked by unfinished Ticket 08. Activity correspondence, denominator changes and independent obligation/conflict tracking must be defined before implementation.
@@ -21,8 +21,8 @@ Needs specification closure and is blocked by unfinished Ticket 08. Activity cor
 
 ## Contract and evidence
 
-- [metrics-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/metrics-contract.md)
-- [spec](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/spec.md)
+- [metrics-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/metrics-contract.md)
+- [spec](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/spec.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -45,7 +45,7 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T10 -->
 # 10: Independent V3 before/after report
 
-Blocked by: [08: Multimetric report and auxiliary scores]({{ISSUE_T08_URL}})
+Blocked by: [08: Multimetric report and auxiliary scores](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20)
 
 Status: needs-info
 Type: task

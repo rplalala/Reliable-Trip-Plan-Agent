@@ -1,3 +1,15 @@
+# Historical RTPEval Ticket 02 snapshot
+
+Imported 2026-10-01. Live task state, labels, dependencies and discussion are owned by
+[GitHub Issue #14](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/14).
+The original local ticket is preserved verbatim below. Its Status, dates and comments
+are historical and must not be maintained as a second live tracker.
+Repository contracts and acceptance records retain their detailed authority.
+
+<!-- RTPEVAL-HISTORICAL-SOURCE:RTPEVAL-02 -->
+
+---
+
 # 02: Symmetric usage capture and resource report
 
 Blocked by: None. User authorized closure, implementation and offline acceptance on 2026-09-29.

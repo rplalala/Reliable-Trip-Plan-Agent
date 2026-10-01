@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-08 draft-sha256:5b5874de7968727305ba4166a7b3dd968a48d0c7314b06bc9f8e70357fe9aa67 -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 08; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 08. Published GitHub Issue: [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `ready-for-agent`.
 - Intended GitHub state: `open`.
-- Dependency history: [Ticket 05]({{ISSUE_T05_URL}}); [Ticket 06]({{ISSUE_T06_URL}}); [Ticket 07]({{ISSUE_T07_URL}}).
+- Dependency history: [Ticket 05](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17); [Ticket 06](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18); [Ticket 07](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19).
 - Implementation authorization: pending. Specification readiness and dependency completion do not grant approval.
 
 Specification-ready but blocked by unfinished Tickets 05, 06 and 07. The accepted common-mask five-dimension arithmetic must preserve UNKNOWN, denominator availability and separate descriptive/resource/human tracks. Implementation approval is pending.
@@ -21,9 +21,9 @@ Specification-ready but blocked by unfinished Tickets 05, 06 and 07. The accepte
 
 ## Contract and evidence
 
-- [metrics-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/metrics-contract.md)
-- [score-profile](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/score-profile.md)
-- [artifact-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/artifact-contract.md)
+- [metrics-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/metrics-contract.md)
+- [score-profile](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/score-profile.md)
+- [artifact-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/artifact-contract.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -46,7 +46,7 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T08 -->
 # 08: Multimetric report and auxiliary scores
 
-Blocked by: [05: Requirement and schedule metrics]({{ISSUE_T05_URL}}); [06: Opening checks from frozen evidence]({{ISSUE_T06_URL}}); [07: Same-day route checks from frozen evidence]({{ISSUE_T07_URL}})
+Blocked by: [05: Requirement and schedule metrics](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17); [06: Opening checks from frozen evidence](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18); [07: Same-day route checks from frozen evidence](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19)
 
 Status: ready-for-agent
 Type: task

@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-06 draft-sha256:616252aa5ba228c3b7aea08fa974f8ccc9248a0663e10ce3568a45887374033f -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 06; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 06. Published GitHub Issue: [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `ready-for-agent`.
 - Intended GitHub state: `open`.
-- Dependency history: [Ticket 04]({{ISSUE_T04_URL}}).
+- Dependency history: [Ticket 04](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16).
 - Implementation authorization: pending. Specification readiness and dependency completion do not grant approval.
 
 Specification-ready; predecessor Ticket 04 is completed offline. Implementation approval is still pending. Opening judgments require independent time/evidence parsing and zero grace, with partial/exception evidence retained honestly.
@@ -21,8 +21,8 @@ Specification-ready; predecessor Ticket 04 is completed offline. Implementation 
 
 ## Contract and evidence
 
-- [opening-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/opening-contract.md)
-- [evidence-time-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/evidence-time-contract.md)
+- [opening-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/opening-contract.md)
+- [evidence-time-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/evidence-time-contract.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -45,7 +45,7 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T06 -->
 # 06: Opening checks from frozen evidence
 
-Blocked by: [04: Independent snapshot acquisition and offline replay]({{ISSUE_T04_URL}})
+Blocked by: [04: Independent snapshot acquisition and offline replay](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16)
 
 Status: ready-for-agent
 Type: task

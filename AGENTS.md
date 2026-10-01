@@ -322,11 +322,11 @@ Do not repeatedly read or test unrelated parts of the repository without a reaso
 
 ### Issue tracker
 
-Project issues and specs live under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+Track RTPEval and new work in GitHub Issues after the approved migration; keep detailed specs and acceptance records in the repository. For legacy local trackers and operations, see `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
-Use the default five triage roles as local issue `Status:` values. See `docs/agents/triage-labels.md`.
+Use the default five triage roles as GitHub labels after migration; retain local `Status:` values for unmigrated trackers. See `docs/agents/triage-labels.md`.
 
 ### Project documentation
 

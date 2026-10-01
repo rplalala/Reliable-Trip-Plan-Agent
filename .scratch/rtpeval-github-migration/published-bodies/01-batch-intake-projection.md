@@ -1,9 +1,9 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-01 draft-sha256:3afc047bef3298b451e8cecb82708886a30f52f3c70a6fdb05c1dbfdca9a7c6f -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 01; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 01. Published GitHub Issue: [#13](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `resolved`.
 - Intended GitHub state: `closed`; closure reason: completed.
 - Dependency history: None.
@@ -21,9 +21,9 @@ Completed under the approved offline scope: immutable batch intake, original-inp
 
 ## Contract and evidence
 
-- [intake-projection-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/intake-projection-contract.md)
-- [ticket-01-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/ticket-01-acceptance.md)
-- [transport-correction-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/transport-correction-acceptance.md)
+- [intake-projection-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/intake-projection-contract.md)
+- [ticket-01-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/ticket-01-acceptance.md)
+- [transport-correction-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/transport-correction-acceptance.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -53,7 +53,7 @@ Type: task
 
 **What to build:** Submit a curated four-version batch and obtain either an immutable evaluation inventory or actionable intake diagnostics, without running or requalifying planners.
 
-**Readiness gate:** Specification closed on 2026-09-29 in the [intake/projection contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/intake-projection-contract.md). Independent source linkage, role review, transport association/deduplication and uncertainty paths are defined. Implementation and offline acceptance were subsequently approved and completed; see the acceptance record.
+**Readiness gate:** Specification closed on 2026-09-29 in the [intake/projection contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/intake-projection-contract.md). Independent source linkage, role review, transport association/deduplication and uncertainty paths are defined. Implementation and offline acceptance were subsequently approved and completed; see the acceptance record.
 
 **Acceptance criteria:**
 
@@ -79,7 +79,7 @@ The original publication did not authorize implementation. On 2026-09-29 the use
 
 ## Answer
 
-Implemented independent batch intake and source-preserving projection, with immutable output and a local CLI. See [Ticket 01 acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/ticket-01-acceptance.md). Validation: 38 passed, 1 skipped (native Windows symlink creation unavailable); Ruff and CLI help passed. No shared planning algorithms changed; no provider/model/database calls, formal benchmark cases or commits. The skip remains an explicit platform limitation.
+Implemented independent batch intake and source-preserving projection, with immutable output and a local CLI. See [Ticket 01 acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/ticket-01-acceptance.md). Validation: 38 passed, 1 skipped (native Windows symlink creation unavailable); Ruff and CLI help passed. No shared planning algorithms changed; no provider/model/database calls, formal benchmark cases or commits. The skip remains an explicit platform limitation.
 
 
 2026-09-30: Follow-up review findings corrected under explicit user approval. Related regression suite: 113 passed / one existing Windows symlink privilege skip; Ruff checks pass. See the acceptance follow-up for failure-before/fix-after evidence and updated input boundaries. Status remains resolved for the offline scope only.

@@ -1,3 +1,15 @@
+# Historical RTPEval Ticket 10 snapshot
+
+Imported 2026-10-01. Live task state, labels, dependencies and discussion are owned by
+[GitHub Issue #22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22).
+The original local ticket is preserved verbatim below. Its Status, dates and comments
+are historical and must not be maintained as a second live tracker.
+Repository contracts and acceptance records retain their detailed authority.
+
+<!-- RTPEVAL-HISTORICAL-SOURCE:RTPEVAL-10 -->
+
+---
+
 # 10: Independent V3 before/after report
 
 Blocked by: [08: Multimetric report and auxiliary scores](08-quality-report-scores.md)

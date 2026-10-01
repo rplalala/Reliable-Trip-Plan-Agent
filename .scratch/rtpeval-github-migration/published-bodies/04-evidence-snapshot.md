@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-04 draft-sha256:e9fa06465d41f6ffd53b93cf96ef9580b51715d2ddd527c97a126ba82f2ff893 -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 04; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 04. Published GitHub Issue: [#16](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `resolved`.
 - Intended GitHub state: `closed`; closure reason: completed.
-- Dependency history: [Ticket 03]({{ISSUE_T03_URL}}).
+- Dependency history: [Ticket 03](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/15).
 - Historical offline implementation and acceptance completed; new extensions/live execution remain separately authorized.
 
 Completed under the approved injected-transport/offline scope: independent snapshot planning, bounded persistence and integrity-checked replay. This completion does not supply a built-in operational Google client or authorize live acquisition.
@@ -21,8 +21,8 @@ Completed under the approved injected-transport/offline scope: independent snaps
 
 ## Contract and evidence
 
-- [snapshot-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/snapshot-contract.md)
-- [ticket-04-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/ticket-04-acceptance.md)
+- [snapshot-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/snapshot-contract.md)
+- [ticket-04-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/ticket-04-acceptance.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -45,14 +45,14 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T04 -->
 # 04: Independent snapshot acquisition and offline replay
 
-Blocked by: [03: Identity resolution, adjudication and grounding report]({{ISSUE_T03_URL}})
+Blocked by: [03: Identity resolution, adjudication and grounding report](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/15)
 
 Status: resolved
 Type: task
 
 **What to build:** Acquire or replay a shared, versioned evidence snapshot for the batch venue union and each required directed route context.
 
-**Readiness gate:** Closed by [snapshot contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/snapshot-contract.md) under explicit offline implementation approval; live acquisition remains unauthorized.
+**Readiness gate:** Closed by [snapshot contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/snapshot-contract.md) under explicit offline implementation approval; live acquisition remains unauthorized.
 
 **Acceptance criteria:**
 
@@ -76,7 +76,7 @@ The original publication authorized the breakdown only. The user subsequently ap
 
 ## Answer
 
-Implemented [snapshot planning/acquisition/replay](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/backend/evaluation/snapshot.py), [offline CLI](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/backend/evaluation/snapshot_cli.py), and [35 synthetic tests](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/backend/tests/evaluation/test_snapshot.py). See [contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/snapshot-contract.md) and [acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/ticket-04-acceptance.md). Final full backend validation: 1957 passed, 10 skipped; Ruff/format/compile checks pass. Timestamp integrity findings were corrected; Standards and Spec final reviews each have zero outstanding findings. This resolves only the approved injected-transport/offline scope; live Google serialization/acquisition, operational retention approval and formal evaluation are not claimed.
+Implemented [snapshot planning/acquisition/replay](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/backend/evaluation/snapshot.py), [offline CLI](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/backend/evaluation/snapshot_cli.py), and [35 synthetic tests](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/backend/tests/evaluation/test_snapshot.py). See [contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/snapshot-contract.md) and [acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/ticket-04-acceptance.md). Final full backend validation: 1957 passed, 10 skipped; Ruff/format/compile checks pass. Timestamp integrity findings were corrected; Standards and Spec final reviews each have zero outstanding findings. This resolves only the approved injected-transport/offline scope; live Google serialization/acquisition, operational retention approval and formal evaluation are not claimed.
 <!-- END IMPORTED SOURCE T04 -->
 
 </details>

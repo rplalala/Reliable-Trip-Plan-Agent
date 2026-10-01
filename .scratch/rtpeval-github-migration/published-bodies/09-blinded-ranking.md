@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-09 draft-sha256:9dc0a8b8bbd7f2ea1b17a057b5a68bd80703f9c0ea07c5a1db8e7d0213b5c416 -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 09; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 09. Published GitHub Issue: [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `ready-for-agent`.
 - Intended GitHub state: `open`.
-- Dependency history: [Ticket 01]({{ISSUE_T01_URL}}).
+- Dependency history: [Ticket 01](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13).
 - Implementation authorization: pending. Specification readiness and dependency completion do not grant approval.
 
 Specification-ready; predecessor Ticket 01 is completed offline. Implementation approval is pending. This slice can be scheduled independently of automatic scoring once authorized; no real rater session is approved.
@@ -21,8 +21,8 @@ Specification-ready; predecessor Ticket 01 is completed offline. Implementation 
 
 ## Contract and evidence
 
-- [artifact-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/artifact-contract.md)
-- [intake-projection-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/intake-projection-contract.md)
+- [artifact-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/artifact-contract.md)
+- [intake-projection-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/intake-projection-contract.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -45,7 +45,7 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T09 -->
 # 09: Four-plan blinded ranking workflow
 
-Blocked by: [01: Batch intake and independent schedule projection]({{ISSUE_T01_URL}})
+Blocked by: [01: Batch intake and independent schedule projection](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13)
 
 Status: ready-for-agent
 Type: task

@@ -1,3 +1,45 @@
+# RTPEval implementation work index
+
+Activated 2026-10-01. [Parent Issue #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12)
+and its child Issues own live task state, dependencies, assignments and discussion.
+This index contains links, not a separate current-status table. Detailed meaning stays
+in repository contracts; PROJECT.md owns current project scope and approval boundaries.
+
+## Live ticket index
+
+| Project Ticket | Live GitHub Issue | Local historical snapshot | Original predecessors |
+| --- | --- | --- | --- |
+| 01 | [#13](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13) | [snapshot](issues/01-batch-intake-projection.md) | None |
+| 02 | [#14](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/14) | [snapshot](issues/02-usage-capture-report.md) | None |
+| 03 | [#15](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/15) | [snapshot](issues/03-identity-adjudication.md) | 01 |
+| 04 | [#16](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16) | [snapshot](issues/04-evidence-snapshot.md) | 03 |
+| 05 | [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) | [snapshot](issues/05-requirement-schedule-metrics.md) | 01, 03 |
+| 06 | [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) | [snapshot](issues/06-opening-checks.md) | 04 |
+| 07 | [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) | [snapshot](issues/07-route-checks.md) | 04 |
+| 08 | [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) | [snapshot](issues/08-quality-report-scores.md) | 05, 06, 07 |
+| 09 | [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) | [snapshot](issues/09-blinded-ranking.md) | 01 |
+| 10 | [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) | [snapshot](issues/10-v3-pre-post.md) | 08 |
+| 11 | [#23](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) | [snapshot](issues/11-controlled-repair.md) | 10 |
+| 12 | [#24](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24) | [snapshot](issues/12-mechanism-official-audit.md) | 01 |
+
+## Specification and acceptance owners
+
+Use the current [specification](spec.md), [closeout audit](closeout-audit.md),
+[metrics contract](metrics-contract.md), [requirement/schedule contract](requirement-schedule-contract.md)
+and [design](../../docs/evaluator_design.md), with each Issue pointing to its detailed
+contract and acceptance record. Pinned GitHub links identify the reviewed publication
+checkpoint; local updates need separate Git authorization to become accessible remotely.
+Read the live Issue and relevant comments before starting an approved implementation.
+
+## Preserved breakdown and dated closeouts
+
+The complete pre-migration breakdown follows as a historical record, including its
+old status table and dated updates. Its Current/Next/Status statements are snapshots,
+not current task state or renewed authorization. Original content is retained.
+
+<details>
+<summary>Pre-migration record (historical; not current task state)</summary>
+
 # Evaluation implementation ticket breakdown — approved
 
 Publication: Approved; 12 local tickets published. Later ticket implementation states are recorded below.
@@ -282,3 +324,5 @@ The user accepted a strict two-path identity boundary and requested offline impl
 
 
 2026-09-30: Ticket 04 is resolved for the approved injected-transport/offline scope. Snapshot planning, bounded fake acquisition, raw persistence, identity handoff and deterministic replay are implemented. Final full backend suite: 1957 passed / 10 skipped. See ticket-04-acceptance.md for failure/correction sequence and live integration limits. Later tickets remain separately authorized.
+
+</details>

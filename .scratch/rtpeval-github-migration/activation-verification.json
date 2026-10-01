@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-02",
+  "status": "passed",
+  "source_tickets_preserved_verbatim": 12,
+  "approved_issue_drafts_unchanged": 13,
+  "rendered_issue_bodies_match_recorded_hashes": 13,
+  "historical_navigation_records_preserved": 4,
+  "AGENTS_pointer_changes": 2,
+  "domain_owner_unchanged": true,
+  "other_local_trackers_unchanged": true,
+  "tracked_paths_changed": 22,
+  "local_markdown_link_occurrences_checked": 223,
+  "diff_check": "passed",
+  "HEAD": "8a82354c885300eb7c952403ce37da1ccf8e4191",
+  "branch": "feature/evaluation",
+  "index_empty": true,
+  "new_commit_or_push": false,
+  "runtime_source_changes": 0,
+  "backend_or_live_tests_run": false,
+  "active_configuration_hashes": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "cd00ddf77f547936c3143cc3d5b0f7ce8c03f1e5c16e465a4fb887d63b9cc837"
+    },
+    {
+      "path": "docs/agents/issue-tracker.md",
+      "sha256": "ad436c45fee4cce01d7fdc1068f7712e8d51ca84f01718099405b846c541118e"
+    },
+    {
+      "path": "docs/agents/triage-labels.md",
+      "sha256": "e3e89aebde22e0ded9958f55dfb836c3bd010a9908eebcfa7985a8310668842b"
+    },
+    {
+      "path": "docs/agents/domain.md",
+      "sha256": "7cc28cae3cb493425daf45b37c28deec75588ce0a2d693c74e4d8f2cfd55bc60"
+    }
+  ]
+}

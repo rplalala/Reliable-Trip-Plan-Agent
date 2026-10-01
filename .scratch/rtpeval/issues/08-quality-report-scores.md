@@ -1,3 +1,15 @@
+# Historical RTPEval Ticket 08 snapshot
+
+Imported 2026-10-01. Live task state, labels, dependencies and discussion are owned by
+[GitHub Issue #20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20).
+The original local ticket is preserved verbatim below. Its Status, dates and comments
+are historical and must not be maintained as a second live tracker.
+Repository contracts and acceptance records retain their detailed authority.
+
+<!-- RTPEVAL-HISTORICAL-SOURCE:RTPEVAL-08 -->
+
+---
+
 # 08: Multimetric report and auxiliary scores
 
 Blocked by: [05: Requirement and schedule metrics](05-requirement-schedule-metrics.md); [06: Opening checks from frozen evidence](06-opening-checks.md); [07: Same-day route checks from frozen evidence](07-route-checks.md)

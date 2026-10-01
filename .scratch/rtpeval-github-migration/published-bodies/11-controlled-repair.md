@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-11 draft-sha256:404e3cf38bbf8fa72c9676c06797c6cfcd095ba62b6c3fd8f1ce6f6fe252f87a -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 11; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 11. Published GitHub Issue: [#23](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `needs-info`.
 - Intended GitHub state: `open`.
-- Dependency history: [Ticket 10]({{ISSUE_T10_URL}}).
+- Dependency history: [Ticket 10](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22).
 - Implementation authorization: pending. Specification readiness and dependency completion do not grant approval.
 
 Needs specification closure and is blocked by unfinished Ticket 10. Controlled replay capability/control invariants remain open; publishing this issue does not generate formal cases or authorize experiments.
@@ -21,8 +21,8 @@ Needs specification closure and is blocked by unfinished Ticket 10. Controlled r
 
 ## Contract and evidence
 
-- [spec](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/spec.md)
-- [metrics-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/metrics-contract.md)
+- [spec](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/spec.md)
+- [metrics-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/metrics-contract.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -45,7 +45,7 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T11 -->
 # 11: Controlled Repair replay and outcome report
 
-Blocked by: [10: Independent V3 before/after report]({{ISSUE_T10_URL}})
+Blocked by: [10: Independent V3 before/after report](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22)
 
 Status: needs-info
 Type: task

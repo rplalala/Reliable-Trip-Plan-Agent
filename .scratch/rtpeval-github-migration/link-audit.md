@@ -1,3 +1,12 @@
+# Historical preparation checkpoint
+
+This document records preparation before Issue publication and tracker activation.
+Its pending/unauthorized/remote-absence statements describe that checkpoint only.
+Current outcome: [migration acceptance](migration-acceptance.md) and
+[actual mapping](migration-manifest.json); RTPEval is published and activated on 2026-10-01.
+
+---
+
 # Draft link audit
 
 Date: 2026-10-01. Local HEAD: `473600254023f7d41648eed02215b6ab84e4ff03`.

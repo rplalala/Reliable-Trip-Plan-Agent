@@ -1,9 +1,9 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-02 draft-sha256:ebf7b91ffd854a9137da43473a44ad1f54b6429d109bccd5cf6fb0ca63567dbe -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 02; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 02. Published GitHub Issue: [#14](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/14).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `resolved`.
 - Intended GitHub state: `closed`; closure reason: completed.
 - Dependency history: None.
@@ -25,8 +25,8 @@ Completed under the approved offline scope: opt-in attempt capture and linked re
 
 ## Contract and evidence
 
-- [usage-capture-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/usage-capture-contract.md)
-- [ticket-02-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/ticket-02-acceptance.md)
+- [usage-capture-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/usage-capture-contract.md)
+- [ticket-02-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/ticket-02-acceptance.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -56,7 +56,7 @@ Type: task
 
 **What to build:** An independently invoked planner attempt can produce linked usage observations and a resource report with comparable outer timing across V0-V3.
 
-**Readiness gate:** Closed by [usage capture contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/usage-capture-contract.md). Implemented as opt-in producer instrumentation, not evaluator-owned planner execution. See [acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/ticket-02-acceptance.md).
+**Readiness gate:** Closed by [usage capture contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/usage-capture-contract.md). Implemented as opt-in producer instrumentation, not evaluator-owned planner execution. See [acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/ticket-02-acceptance.md).
 
 **Acceptance criteria:**
 

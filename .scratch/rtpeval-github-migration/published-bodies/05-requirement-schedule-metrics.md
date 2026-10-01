@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-05 draft-sha256:3484c96af5f007c72e6d547504e83eb56e98591d06cf829fd9ef5291ad1b52c2 -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 05; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 05. Published GitHub Issue: [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `ready-for-agent`.
 - Intended GitHub state: `open`.
-- Dependency history: [Ticket 01]({{ISSUE_T01_URL}}); [Ticket 03]({{ISSUE_T03_URL}}).
+- Dependency history: [Ticket 01](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13); [Ticket 03](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/15).
 - Implementation authorization: pending. Specification readiness and dependency completion do not grant approval.
 
 Specification-ready after the 2026-10-01 correction; no scoring implementation is approved or completed. A reviewed explicit named required visit without stated count or repetition means exact one for the trip, including fixed-time-only obligations. Only sourced explicit repetition enables at-least-one time matching; explicit total/date quotas remain binding. Planner choices and soft interests do not create hard visit obligations. Protections are blockers, not additional non-overlap units.
@@ -21,9 +21,9 @@ Specification-ready after the 2026-10-01 correction; no scoring implementation i
 
 ## Contract and evidence
 
-- [requirement-schedule-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/requirement-schedule-contract.md)
-- [requirement-spec-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/requirement-spec-contract.md)
-- [score-profile](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/score-profile.md)
+- [requirement-schedule-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/requirement-schedule-contract.md)
+- [requirement-spec-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/requirement-spec-contract.md)
+- [score-profile](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/score-profile.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -46,14 +46,14 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T05 -->
 # 05: Requirement and schedule metrics
 
-Blocked by: [01: Batch intake and independent schedule projection]({{ISSUE_T01_URL}}); [03: Identity resolution, adjudication and grounding report]({{ISSUE_T03_URL}})
+Blocked by: [01: Batch intake and independent schedule projection](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13); [03: Identity resolution, adjudication and grounding report](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/15)
 
 Status: ready-for-agent
 Type: task
 
 **What to build:** Score reviewed obligations and schedule structure, and report date coverage, overlap, density and repetition from independent records.
 
-**Readiness gate:** Closed by the [requirement/schedule contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/requirement-schedule-contract.md) on 2026-10-01. One parent obligation is one check; protected intervals are blockers, not extra activity units. Implementation approval remains pending.
+**Readiness gate:** Closed by the [requirement/schedule contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/requirement-schedule-contract.md) on 2026-10-01. One parent obligation is one check; protected intervals are blockers, not extra activity units. Implementation approval remains pending.
 
 **Acceptance criteria:**
 
@@ -83,7 +83,7 @@ Time-operator/wire closure and the concrete implementation scope remain pending.
 
 2026-09-30 transport prerequisite update: version-specific source selection and generation boundaries are implemented in the uncommitted workspace. See the transport correction sections of the projection contract and PROJECT.md. Ticket 05 scoring, time-operator closure and protected-time blocker union remain unimplemented; this prerequisite does not authorize starting them.
 
-Transport prerequisite acceptance: [correction record](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/transport-correction-acceptance.md), final backend 1973 passed / 10 skipped. Ticket 05 remains needs-info; no scoring was implemented.
+Transport prerequisite acceptance: [correction record](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/transport-correction-acceptance.md), final backend 1973 passed / 10 skipped. Ticket 05 remains needs-info; no scoring was implemented.
 
 ## Specification closure — 2026-10-01
 
@@ -94,7 +94,7 @@ with explicit repetition required for at-least-one matching). Dependencies 01/03
 are resolved, and the transport prerequisite has committed acceptance; the earlier
 uncommitted/pending statements above are historical.
 
-The [contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/requirement-schedule-contract.md) defines typed payloads, conservative
+The [contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/requirement-schedule-contract.md) defines typed payloads, conservative
 identity/count bounds, one-parent weighting, explicit protection scopes, independent
 time/occupancy review, descriptive repetition and unresolved-denominator reporting.
 It identifies missing executable validation in intake, incomplete/alternative traffic

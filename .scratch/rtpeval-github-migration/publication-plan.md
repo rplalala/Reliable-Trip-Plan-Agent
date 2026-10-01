@@ -1,3 +1,12 @@
+# Historical preparation checkpoint
+
+This document records preparation before Issue publication and tracker activation.
+Its pending/unauthorized/remote-absence statements describe that checkpoint only.
+Current outcome: [migration acceptance](migration-acceptance.md) and
+[actual mapping](migration-manifest.json); RTPEval is published and activated on 2026-10-01.
+
+---
+
 # RTPEval publication readiness and proposed commit grouping
 
 Date: 2026-10-01 (Australia/Sydney).

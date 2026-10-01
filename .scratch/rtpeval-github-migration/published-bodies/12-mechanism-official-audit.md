@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-12 draft-sha256:93f9d7e73c3670301e68572fe9f48f7bc1a6ab8cc3d6d36565d841d3c68d904c -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 12; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 12. Published GitHub Issue: [#24](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `needs-info`.
 - Intended GitHub state: `open`.
-- Dependency history: [Ticket 01]({{ISSUE_T01_URL}}).
+- Dependency history: [Ticket 01](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13).
 - Implementation authorization: pending. Specification readiness and dependency completion do not grant approval.
 
 Needs technical closure of mechanism denominators and accepted/exposed/rule-used evidence provenance. Predecessor Ticket 01 is completed offline; independent quality judgment remains separate.
@@ -21,8 +21,8 @@ Needs technical closure of mechanism denominators and accepted/exposed/rule-used
 
 ## Contract and evidence
 
-- [spec](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/spec.md)
-- [metrics-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/metrics-contract.md)
+- [spec](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/spec.md)
+- [metrics-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/metrics-contract.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -45,7 +45,7 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T12 -->
 # 12: Mechanism and official-evidence audit reports
 
-Blocked by: [01: Batch intake and independent schedule projection]({{ISSUE_T01_URL}})
+Blocked by: [01: Batch intake and independent schedule projection](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13)
 
 Status: needs-info
 Type: task

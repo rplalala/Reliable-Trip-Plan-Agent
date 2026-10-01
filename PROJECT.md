@@ -1,6 +1,6 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-10-01.
+Current source of truth. Updated 2026-10-02.
 Detailed design, development and acceptance records are indexed in
 [docs/README.md](docs/README.md).
 
@@ -99,13 +99,13 @@ Details: [shared output](docs/shared_itinerary_output.md),
 Evaluation is independently run over a curated, source-linked batch. Planner
 validation, caches and internal decisions are not independent factual ground truth.
 
-| Ticket | Current status |
+| Ticket | Implementation checkpoint |
 | --- | --- |
 | 01: Intake/projection | Implemented and offline-validated, including provenance and transport-source corrections |
 | 02: Usage capture/report | Implemented and offline-validated; opt-in attempt capture, no automatic formal run |
 | 03: Identity/adjudication | Implemented and offline-validated; strict supplied-ID and name-search paths, manual review and automatic-result audit |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; not a built-in operational Google client |
-| 05: Requirement/schedule metrics | `ready-for-agent`; specification closed, implementation approval pending |
+| 05: Requirement/schedule metrics | Specification closed; implementation approval pending; live task: [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) |
 | 06-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
@@ -122,10 +122,18 @@ counts permit exactly one visit for the trip, including fixed-time-only obligati
 Only explicit repeated-visit permission enables at-least-one time matching; explicit
 count/date quotas still apply. These rules are not yet implemented.
 
-Current contracts and dependencies: [work plan](.scratch/rtpeval/ticket-breakdown.md),
+RTPEval migrated to [GitHub parent Issue #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12)
+on 2026-10-01 under explicit publication/tracker authorization. All 12 Tickets are
+published as #13-#24; 01-04 were closed/completed using their existing offline evidence.
+GitHub owns live task state, dependencies and discussion. Detailed contracts and
+acceptance records remain in the repository; local source tickets and the old
+breakdown are preserved as historical snapshots. Other local feature trackers
+retain their authority. See the [migration acceptance](.scratch/rtpeval-github-migration/migration-acceptance.md).
+
+Current contracts and task links: [work index](.scratch/rtpeval/ticket-breakdown.md),
 [evaluator design](docs/evaluator_design.md),
 [package guide](backend/evaluation/README.md), and
-[Ticket 05](.scratch/rtpeval/issues/05-requirement-schedule-metrics.md).
+[Ticket 05](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17).
 
 ## 5. Configuration, evidence and limitations
 
@@ -157,7 +165,8 @@ are evidence records, not current project authority or guaranteed fresh-clone as
 
 ## 6. Next work and authorization boundary
 
-Ticket 05 specification closure is complete; see the
+Ticket 05 ([GitHub #17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17))
+specification closure is complete; see the
 [requirement/schedule contract](.scratch/rtpeval/requirement-schedule-contract.md).
 Next proposed task: approve and implement its typed requirement checks, independent
 time/occupancy preparation and offline report/CLI, including focused tests and
@@ -165,8 +174,13 @@ Standards/Spec review. Opening, routes and the auxiliary total retain separate t
 No Ticket 05 implementation or additional live run is currently authorized.
 
 Previously approved snapshot, transport and smoke closeout changes have been committed.
-That authorization does not authorize future Git writes, pushes, formal experiments
-or version freezes. See AGENTS.md for the approval workflow.
+The earlier approved documentation commits and branch push also completed. Issue
+publication and tracker activation are complete. This repository revision contains
+the active configuration, Issue mapping and acceptance records. The user separately
+authorized a 2026-10-02 commit/push closeout and removal of redundant issue-drafts;
+original drafts remain in Git history. This closeout does not authorize Ticket 05
+implementation, further live runs, formal experiments or version freezes.
+See AGENTS.md for the approval workflow.
 
 ## 7. Keeping this file current
 

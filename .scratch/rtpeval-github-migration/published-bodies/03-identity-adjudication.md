@@ -1,12 +1,12 @@
-<!-- Draft only. Resolve every migration token before approved publication. -->
+<!-- RTPEVAL-MIGRATION:RTPEVAL-03 draft-sha256:cd126c1ba90b5bd362b1e81df5c29b098382ed0181ccee47eb34b5422248357f -->
 
 ## Current status at migration preparation
 
-- Project ticket: RTPEval 03; GitHub issue number/URL pending.
-- Parent: [RTPEval implementation]({{ISSUE_PARENT_URL}}).
+- Project ticket: RTPEval 03. Published GitHub Issue: [#15](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/15).
+- Parent: [RTPEval implementation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
 - Local specification status: `resolved`.
 - Intended GitHub state: `closed`; closure reason: completed.
-- Dependency history: [Ticket 01]({{ISSUE_T01_URL}}).
+- Dependency history: [Ticket 01](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13).
 - Historical offline implementation and acceptance completed; new extensions/live execution remain separately authorized.
 
 Completed under the approved offline scope: independent supplied-ID/name-only association, factual adjudication, predeclared automatic-result audit and grounding/ID-consistency reports. Follow-up regression is recorded below; live Google evidence completeness is not claimed. The planned Ticket 05 fixed-time subject extension remains future work.
@@ -21,8 +21,8 @@ Completed under the approved offline scope: independent supplied-ID/name-only as
 
 ## Contract and evidence
 
-- [identity-implementation-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/identity-implementation-contract.md)
-- [ticket-03-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/ticket-03-acceptance.md)
+- [identity-implementation-contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/identity-implementation-contract.md)
+- [ticket-03-acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/ticket-03-acceptance.md)
 
 Detailed contracts remain versioned repository documents. Their URLs use the reviewed
 publication commit; the migration draft is not evidence that these documents are online.
@@ -45,7 +45,7 @@ and linked current contracts describe this migration snapshot.
 <!-- BEGIN IMPORTED SOURCE T03 -->
 # 03: Identity resolution, adjudication and grounding report
 
-Blocked by: [01: Batch intake and independent schedule projection]({{ISSUE_T01_URL}})
+Blocked by: [01: Batch intake and independent schedule projection](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13)
 
 Status: resolved
 Type: task
@@ -74,7 +74,7 @@ At publication, the approved breakdown did not authorize implementation. The cur
 
 ## Answer
 
-Implemented the [offline identity contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/identity-implementation-contract.md), [replay module](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/backend/evaluation/identity.py), [CLI](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/backend/evaluation/identity_cli.py) and [synthetic acceptance tests](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/backend/tests/evaluation/test_identity.py). [Acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/{{DOCUMENTATION_COMMIT}}/.scratch/rtpeval/ticket-03-acceptance.md) records 58 passed, one platform-dependent skip, Ruff/CLI checks, review corrections and remaining evidence-acquisition limits. Ticket 04 remains responsible for independent live snapshot collection under separate authorization.
+Implemented the [offline identity contract](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/identity-implementation-contract.md), [replay module](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/backend/evaluation/identity.py), [CLI](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/backend/evaluation/identity_cli.py) and [synthetic acceptance tests](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/backend/tests/evaluation/test_identity.py). [Acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/.scratch/rtpeval/ticket-03-acceptance.md) records 58 passed, one platform-dependent skip, Ruff/CLI checks, review corrections and remaining evidence-acquisition limits. Ticket 04 remains responsible for independent live snapshot collection under separate authorization.
 
 
 2026-09-30 follow-up: four review defects were reproduced, corrected and covered by 20 additional offline regression cases after user authorization. Latest acceptance is 78 passed / one Windows symlink privilege skip, with Ruff/format checks passing and zero actionable Standards/Spec follow-up findings. Status remains resolved for the offline scope only; see the acceptance follow-up for exact conservative address/title rules and limits.
