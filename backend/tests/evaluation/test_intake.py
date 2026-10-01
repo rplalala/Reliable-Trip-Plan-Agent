@@ -597,6 +597,7 @@ def test_no_planner_import_or_network_on_intake(batch, monkeypatch):
         "asyncio",
         "zoneinfo",
         "decimal",
+        "fractions",
         "importlib",
         "tzdata",
     }
