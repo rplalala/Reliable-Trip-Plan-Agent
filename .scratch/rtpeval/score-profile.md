@@ -54,3 +54,16 @@ Five dimensions, equal weighting, PASS/(PASS+FAIL+UNKNOWN), common-N/A exclusion
 For N = PASS + FAIL + UNKNOWN > 0, report verified-compliance score = 100*PASS/N, verification coverage = 100*(PASS+FAIL)/N, unknown rate = 100*UNKNOWN/N, and confirmed violation rate = 100*FAIL/N. Unknown rate is not verification coverage; they sum to 100 percent. Verification coverage includes confirmed failures because their outcomes are known. Verified-compliance score plus confirmed violation rate plus unknown rate sums to 100 percent.
 
 If called reliability in presentation, label it verified reliability/verified compliance, not unconditional real-world reliability. Conditional compliance remains 100*PASS/(PASS+FAIL) when that denominator is nonzero and is not the auxiliary-score input. For a zero-applicability dimension, raw rates are N/A; the separate accepted common-mask/zero-contribution rule determines the auxiliary accounting.
+
+## Ticket 05 unit specialization — 2026-10-01
+
+Use the [requirement/schedule contract](requirement-schedule-contract.md) for requirement
+and non-overlap units. One obligation retains one weight despite multiple count/date/time
+components. An applicable recognized obligation with unresolved/unsupported execution
+remains UNKNOWN. One logical journey retains one weight despite segments or duplicate
+sources. Protected intervals are conflict boundaries and original requirement checks;
+they are not extra non-overlap score units. Confirmed conflicts override uncertainty;
+otherwise possible conflicts prevent a verified PASS. Unknown unit applicability or
+unresolved duplicate grouping yields `denominator_unresolved`, not a guessed rate or
+true N/A. Ticket 08 must preserve that diagnostic. This does not change the accepted
+five-dimension formula or authorize its aggregate implementation.

@@ -252,3 +252,12 @@ Performed local Standards/Spec review without delegated agents. Confirmed no sha
 ## Ticket 02 closure and implementation — 2026-09-29
 
 User authorized end-to-end Ticket 02 work without repeated routine approvals. Closed technical seams, implemented opt-in event capture and descriptive reports, and ran offline regressions. Four initial requirement-harness failures exposed persistent HTTP hooks; fixed with scoped removal/concurrent ownership without altering the existing tests. Final verification and limits are in ticket-02-acceptance.md. No research decision was silently changed and no live experiment ran.
+
+## Superseding named-visit default — 2026-10-01
+
+The earlier accepted unqualified minimum-one decision above is superseded by the user's
+clarification: unstated counts mean exact one for a named visit obligation. Preparation
+writes and reviews that value; Evaluation does not infer it. Fixed-time matching uses
+single-visit semantics unless the source explicitly permits repeated visits, as specified
+in [the Ticket 05 contract](requirement-schedule-contract.md). Explicit total/date quotas
+remain binding. This changes evaluation specification only, not planner behavior.

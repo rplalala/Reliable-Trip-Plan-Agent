@@ -71,3 +71,14 @@ Future offline checks cover source hashes and path integrity, missing optional u
 ## Selected-run provenance wire - 2026-09-30
 
 Every selected run requires an available `provenance_ref` using the normal relative-path, exact-byte SHA-256 and JSON media/schema checks. Its object has `schema_version=rtpeval_provenance_1`, `group_id`, `run_id`, `version`, `input_sha256` and `result_sha256`. These fields must exactly match the selected group/run/version and complete input/result file hashes. Missing or contradictory provenance is a batch material error. Additional configuration fields may remain explicit metadata. This validates producer-supplied linkage, not the truth of an unobserved execution or a recomputation of qualification. Legacy deliveries without this association must supply the sidecar; intake does not infer it from file names or itinerary content.
+
+## Ticket 05 semantic wire specialization — 2026-10-01
+
+[Requirement/schedule](requirement-schedule-contract.md) defines executable fields on
+`rtpeval_requirements_1`, independent time-context and occupancy-review envelopes,
+and `rtpeval_requirement_schedule_report_1`. Required source/review envelopes remain
+unchanged; the current intake's accepted status is not typed scoring validation.
+Scorer preflight must report malformed executable payloads/known contradictions as
+material correction while retaining semantic/time/identity uncertainty in reports.
+Independent schedule context is optional; absence does not infer a timezone.
+No parser, metric report or CLI from this specialization is implemented yet.

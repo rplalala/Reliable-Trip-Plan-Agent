@@ -54,7 +54,7 @@ Trip dates and destination originate in Input; do not hand-copy a competing set 
 
 RequirementSpec contains reviewed executable obligations, descriptive preferences and explicit unresolved/unsupported items in separate collections. The distinction follows the original request's meaning, not the ease of producing a score. Evaluation never rewrites prose into new constraints.
 
-- A clear must-visit maps to minimum one unless an explicit count/date obligation says otherwise; the benchmark author writes this before review.
+- A clear named must-visit without explicit repeat/count meaning maps to exact one for the requested trip under the user correction of 2026-10-01; the benchmark author writes this before review. Explicit counts/dates retain their reviewed semantics.
 - An explicit dated clock interval or full day that must remain unscheduled is suitable for a protected_time check. Exact activity-role inclusion, boundaries and timezone interpretation belong to the time rule, not hidden defaults in this file.
 - "Wednesday afternoon" does not by itself specify clock boundaries. Unless an independently justified interpretation is reviewed upstream, retain the time ambiguity; the evaluator must not silently define afternoon as 14:00-17:00.
 - "Relaxed", "interesting architecture" and "small museums" remain source-grounded preferences for human judgment. Descriptive densities, categories and transfers may be reported but do not automatically prove preference satisfaction.
@@ -79,10 +79,31 @@ Planner TimeProtection supports full-day or same-day local intervals with fixed/
 
 ## Accepted simplifications — 2026-09-28
 
-1. An explicit unqualified must-visit statement is authored as an explicit minimum-one obligation during benchmark preparation and reviewed by the user. Evaluation does not supply this default. Ambiguous count language remains unresolved.
+1. Historical decision (superseded on 2026-10-01): an unqualified must-visit was authored as minimum one. The current default is explicit exact one unless the original request specifies repeat/count meaning. Evaluation consumes the reviewed payload rather than supplying defaults. Ambiguous count language remains unresolved.
 2. RequirementSpec v1 does not distinguish venue entry from exterior viewing. Do not add access_intent/access_mode, separate satisfaction rules, or infer the distinction from itinerary prose or V3 bindings. The delivered itinerary does not reliably express this distinction. Original request wording is preserved for provenance and blind presentation, but independent scoring assesses the scheduled place visit without claiming verified interior access.
 3. Opening applicability is defined uniformly in the separate opening contract. No exemption or additional penalty is inferred solely from entry/exterior phrasing. Explicit access-mode-specific evaluation is outside v1.
 
 ## Future acceptance checks
 
 Check exact versus minimum, multiple date duties, contradictory total/date counts, source linkage, missing approval, unresolved semantics, unsupported time constraints, and independent namespace for subject/obligation IDs. Verify evaluator does not generate a new obligation when the corresponding reviewed field is absent. Also check reviewed empty obligations, missing versus unresolved content, ambiguous afternoon wording, and that qualitative preferences never create automatic hard thresholds. These checks have not been implemented or run.
+
+## Ticket 05 executable specialization — 2026-10-01
+
+The [requirement/schedule contract](requirement-schedule-contract.md) now closes the
+previously pending typed count/date/protection fields and the supported fixed-visit-time
+operators. It defines one parent check per obligation, conservative potential-match
+bounds and explicit unsupported/unresolved states. Protection scopes are primary visits
+or all scheduled commitments; fixed-time conditions use a reviewed single-visit
+selector by default, with source-gated at-least-one matching only for explicit repetition.
+Time conditions have zero grace. This specialization supersedes earlier pending-field
+statements for Ticket 05 only. Source/review ownership and entry/exterior limitations
+remain as accepted. Specification-ready does not mean implemented or frozen.
+
+## Superseding visit cardinality — 2026-10-01
+
+The user clarified that unspecified visit counts permit exactly one occurrence, not
+unbounded repeats. Upstream authoring records exact one for named REQUIRED obligations;
+fixed-time-only obligations encode the same trip-wide count inside `match=single_visit`.
+Explicit multiple-visit requests can use source-backed `match=at_least_one` for the time
+conditions, while their total exact/minimum/date counts remain independently binding.
+No new hard obligation is generated for a planner-selected venue or soft interest.

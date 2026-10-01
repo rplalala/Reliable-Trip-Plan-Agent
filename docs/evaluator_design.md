@@ -756,3 +756,24 @@ Subsequent checkpoint (2026-09-30): the separately authorized planner smoke and
 workspace commit closeout are recorded in [development acceptance](transport_responsibility_smoke.md).
 Earlier uncommitted/no-live statements describe their dated implementation scopes;
 the planner smoke does not validate independent oracle acquisition or scoring.
+
+## Ticket 05 specification closure — 2026-10-01
+
+The user authorized specification closure; the [requirement/schedule contract](../.scratch/rtpeval/requirement-schedule-contract.md)
+now defines the executable count/date/time wire, source-linked conservative matching,
+commitment units, protected blockers and descriptive schedule/repetition reporting.
+One reviewed obligation retains one weight. Protections union only within identical
+scope, retain original checks, and do not inflate the non-overlap activity denominator.
+Fixed-time checks support explicit dated exact starts, full-window containment and
+minimum/exact durations, with zero grace. Under the subsequent user correction,
+unspecified named-visit counts mean exactly one for the trip; fixed-time-only checks
+use the same single-visit rule. At-least-one time matching is allowed only with sourced
+explicit repetition, and does not weaken an explicit total/date quota. Unsupported quantifiers/overnight/vague constraints retain
+UNKNOWN/unresolved reasons. Unknown applicability/counts never become guessed rates.
+
+Current intake does not yet validate executable payloads; transport occupancy can be
+incomplete despite an empty projected interval list; fixed-time-only subjects need the
+existing independent identity review path. These are explicit implementation seams.
+Ticket 05 is ready-for-agent with implementation approval pending. No scoring, planner
+change, backend test, live call, formal case, experiment or Git action occurred in this
+specification task. Later opening, route, aggregate and Repair tickets retain their scope.

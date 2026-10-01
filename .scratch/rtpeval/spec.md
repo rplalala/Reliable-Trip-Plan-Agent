@@ -214,7 +214,7 @@ The [field mapping review](input-contract-review.md) records checked schema fact
 
 ### RequirementSpec field proposal — 2026-09-28
 
-The [RequirementSpec contract draft](requirement-spec-contract.md) separates input/review linkage, subjects, explicit obligations, soft preferences and unresolved clauses. It preserves the accepted upstream authorship boundary. Accepted: benchmark preparation writes unqualified required visits as explicit minimum-one obligations for user review. RequirementSpec v1 omits entry/exterior distinctions; scoring does not infer access intent or use it to exempt visits from opening checks. Detailed field structure and time semantics are not frozen.
+The [RequirementSpec contract draft](requirement-spec-contract.md) separates input/review linkage, subjects, explicit obligations, soft preferences and unresolved clauses. It preserves the accepted upstream authorship boundary. Current rule (user correction, 2026-10-01): benchmark preparation writes unqualified named required visits as explicit exact-one obligations for user review, superseding the earlier minimum-one default. RequirementSpec v1 omits entry/exterior distinctions; scoring does not infer access intent or use it to exempt visits from opening checks. Detailed field structure and time semantics are not frozen.
 
 
 ### Identity contract draft — 2026-09-28
@@ -277,3 +277,13 @@ Accepted simplification: use the valid route duration returned by Google for the
 - [Evidence and time contract](evidence-time-contract.md): timezone interpretation, opening-period precedence/completeness and per-leg Routes truth tables, with official provider references.
 
 These drafts support contract-first task decomposition. They do not establish implemented collectors, tested parsers, frozen identity thresholds or complete Controlled Repair reporting. No new user decision is required for the already accepted route fallback and generic-activity boundaries. Dependent tasks must resolve the specific remaining technical definitions before being marked implementation-ready.
+
+## Ticket 05 specification specialization — 2026-10-01
+
+[Requirement/schedule](requirement-schedule-contract.md) now closes Ticket 05's executable
+obligations, supported explicit time operators, commitment/protection units, uncertainty
+and descriptive schedule metrics. It supersedes general pending RequirementSpec/time
+wording for this slice only. User-reviewed single-visit fixed-time defaults, source-backed
+at-least-one matching for explicit repetition, and protection-as-boundary scoring are accepted. Opening/routes and later report/mechanism
+contracts remain separate. Ticket 05 is specification-ready, with implementation
+approval pending; the overall module is not implemented/frozen by this update.

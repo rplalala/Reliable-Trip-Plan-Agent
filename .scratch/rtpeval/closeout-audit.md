@@ -88,3 +88,23 @@ Ticket 01 was subsequently implemented with explicit user authorization on 2026-
 ## Ticket 02 implementation checkpoint — 2026-09-29
 
 The earlier missing collector is now implemented as an opt-in benchmark-owned wrapper and observation hooks; see [acceptance](ticket-02-acceptance.md). Final broad relevant regression: 944 passed, 1 native symlink skip; final usage/evaluation subset: 51 passed, 1 skipped. This closes Ticket 02, not actual benchmark capture or live coverage. Tickets 01/02 are resolved; seven need technical closure and three remain specification-ready subject to their predecessors.
+
+## Ticket 05 specification closure — 2026-10-01
+
+The user authorized scope closure and accepted protection-as-blocker scoring and the
+bounded dated at-least-one fixed-visit-time operator set. The [contract](requirement-schedule-contract.md)
+closes the remaining semantic/wire gate with conservative count bounds, explicit scopes,
+time/occupancy preparation, parent check weighting, denominator diagnostics and
+future offline acceptance slices. Ticket 05 is ready-for-agent; implementation approval
+is pending. Existing intake does not validate these executable payloads and identity
+preparation does not yet include fixed-time-only subjects. This is documentation
+validation, not scoring/backend test acceptance or a formal benchmark freeze.
+
+## Superseding Ticket 05 cardinality clarification — 2026-10-01
+
+The user corrected the initial at-least-one default: unspecified named visit counts
+mean exact one, including fixed-time-only obligations. Explicit repetition enables
+source-backed at-least-one time matching while keeping explicit count/date checks.
+The current [contract](requirement-schedule-contract.md) and PROJECT reflect this
+correction. The earlier minimum-one authoring and initial Q2 selector are historical;
+no scoring implementation or test result is claimed.

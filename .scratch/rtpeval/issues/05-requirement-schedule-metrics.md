@@ -2,12 +2,12 @@
 
 Blocked by: [01: Batch intake and independent schedule projection](01-batch-intake-projection.md); [03: Identity resolution, adjudication and grounding report](03-identity-adjudication.md)
 
-Status: needs-info
+Status: ready-for-agent
 Type: task
 
 **What to build:** Score reviewed obligations and schedule structure, and report date coverage, overlap, density and repetition from independent records.
 
-**Readiness gate:** Finish supported time-operator boundaries and metric unit enumeration, including the non-overlap subscore; explicit counts must not be diluted by arbitrary extra subchecks.
+**Readiness gate:** Closed by the [requirement/schedule contract](../requirement-schedule-contract.md) on 2026-10-01. One parent obligation is one check; protected intervals are blockers, not extra activity units. Implementation approval remains pending.
 
 **Acceptance criteria:**
 
@@ -19,7 +19,7 @@ Type: task
 
 ## Authorization and verification boundary
 
-Publication records the approved breakdown only. This ticket is not claimed and implementation is not authorized. Specification readiness does not mean dependencies are complete or execution is permitted. Acceptance checks are future work, not test results. Use offline fixtures/mocks only after implementation approval; live services, formal cases, experiments, commits and freezes require separate authorization. Resolve technical facts from current code/contracts; ask only about unresolved choices affecting result meaning.
+The specification is ready after the approved closure and Q1/Q2 decisions on 2026-10-01. This ticket is not claimed and implementation is not authorized. Specification readiness does not mean dependencies are complete or execution is permitted. Acceptance checks are future work, not test results. Use offline fixtures/mocks only after implementation approval; live services, formal cases, experiments, commits and freezes require separate authorization. Resolve technical facts from current code/contracts; ask only about unresolved choices affecting result meaning.
 
 ## Comments
 
@@ -38,3 +38,43 @@ Time-operator/wire closure and the concrete implementation scope remain pending.
 2026-09-30 transport prerequisite update: version-specific source selection and generation boundaries are implemented in the uncommitted workspace. See the transport correction sections of the projection contract and PROJECT.md. Ticket 05 scoring, time-operator closure and protected-time blocker union remain unimplemented; this prerequisite does not authorize starting them.
 
 Transport prerequisite acceptance: [correction record](../transport-correction-acceptance.md), final backend 1973 passed / 10 skipped. Ticket 05 remains needs-info; no scoring was implemented.
+
+## Specification closure — 2026-10-01
+
+The user authorized specification closure, then accepted Q1 (protected intervals do
+not add non-overlap units) and Q2 (dated start/containment/minimum-or-exact duration,
+the initial at-least-one selector, subsequently corrected to single-visit default
+with explicit repetition required for at-least-one matching). Dependencies 01/03
+are resolved, and the transport prerequisite has committed acceptance; the earlier
+uncommitted/pending statements above are historical.
+
+The [contract](../requirement-schedule-contract.md) defines typed payloads, conservative
+identity/count bounds, one-parent weighting, explicit protection scopes, independent
+time/occupancy review, descriptive repetition and unresolved-denominator reporting.
+It identifies missing executable validation in intake, incomplete/alternative traffic
+claims and fixed-time subject coverage as implementation seams. No scorer was built.
+
+Implementation scope proposed: requirement validator/scorer, shared time and occupancy
+helpers, fixed-time subject participation in existing identity preparation, an offline
+JSON CLI, focused tests, package/acceptance documentation and Standards/Spec review.
+Opening, route verdicts/departure selection, totals/masks and Repair deltas are separate
+tickets. Existing workspace changes are preserved; no Git or live-run approval follows.
+
+Additional future acceptance checks:
+
+- [ ] Exact start/whole-window/minimum-or-exact duration use zero grace and one matching
+  occurrence for the whole conjunction; unsupported quantifiers remain UNKNOWN.
+- [ ] Protected unions retain original checks, scopes and correspondence provenance;
+  blockers do not inflate non-overlap denominators.
+- [ ] Time/role/association uncertainty never becomes empty occupancy, zero duration or
+  a denominator silently reduced to only known units.
+
+## User cardinality correction — 2026-10-01
+
+Unstated named visit counts are exact one for the trip, including fixed-time-only
+requirements. Only explicit repeat permission/count meaning enables at-least-one time
+matching; explicit exact/minimum/date quotas are not relaxed. The updated contract
+requires source-backed repeat permission and same-subject selector/count consistency.
+This supersedes the initial Q2 default and the older default minimum-one authoring
+rule. Future acceptance must verify second confirmed/potential occurrences and both
+selectors. Status remains specification-ready; implementation approval is pending.

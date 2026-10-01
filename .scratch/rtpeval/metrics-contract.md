@@ -31,7 +31,7 @@ Where a denominator cannot yet be established, report the unresolved structural 
 | Main visits and density | P, independent role record; visit/day | Visit occurrences per requested day; counts below 2, within 2-5, above 5; requested days include empty days | Descriptive guidance, not <2 or >5 hard failure. Count visits and unique canonical venues separately. |
 | Canonical grounding | P, E; main visit | Independently resolved main visits / applicable main visits, retaining identity-UNKNOWN visits in the latter | Verified fraction, not a hallucination rate. Ambiguity or failed lookup does not prove fabrication. Uncertain role counts remain visible. |
 | Claimed-ID consistency | P, E; visit with supplied ID | Consistent/conflicting/unverifiable association counts among supplied-ID visits; absent-ID count separately | V0 absent IDs are not errors. Confidently adjudicated named venue can support downstream checks while supplied-ID error remains recorded. No extra auxiliary penalty is currently included; retain raw consistency counts. |
-| REQUIRED fulfillment | R, P, E; reviewed obligation | PASS / (PASS+FAIL) among decidable obligations, plus decided/applicable coverage and all raw states | Minimum/exact/date conditions determine outcome; do not count individual subconditions as extra independent obligations. Relevant unresolved identities can prevent definitive omission/count judgments. Default minimum one is written upstream. |
+| REQUIRED fulfillment | R, P, E; reviewed obligation | PASS / (PASS+FAIL) among decidable obligations, plus decided/applicable coverage and all raw states | Minimum/exact/date conditions determine outcome; do not count individual subconditions as extra independent obligations. Relevant unresolved identities can prevent definitive omission/count judgments. Unstated named-visit counts use explicit exact one upstream under the 2026-10-01 correction; stated count/date semantics remain binding. |
 | EXCLUDED violation | R, P, E; reviewed prohibition | FAIL / (PASS+FAIL), with obligation coverage and raw states | Confirmed scheduled match violates; unresolved potential matches can prevent a clean PASS. Nearby does not satisfy or violate main-visit obligations under accepted scope. |
 | Protected/fixed-time compliance | R, P; supported reviewed time obligation | PASS / decidable applicable obligations; conflicting intervals/duration separately | Explicit time constraints only. Unresolved meanings/unsupported operators retain availability reasons. Exact role/boundary logic remains OPEN; no inferred clock range for vague afternoon. |
 | Activity overlap | P, independent occupancy; timed commitment pair/day/request | Positive intersection pair count, affected requests and union duration where >=2 distinct commitments overlap | Touching endpoints do not overlap. Deduplicate transport activity/Transfer representations; union minutes are not the sum of overlapping pairs. Occupancy role details remain OPEN. |
@@ -88,3 +88,15 @@ A leg contributes only one route verdict even if both duration cap and schedule 
 ## E. Remaining decisions and technical work
 
 This table makes the accepted rules inspectable but does not close timezone/DST semantics, role/occupancy ambiguity, departure/fallback provider semantics, repeated-visit attribution, exact controlled-case definitions, score aggregation or wire schemas. Freeze these before dependent implementation and held-out analysis. No new benchmark cases, test fixtures, code or experiments are authorized here.
+
+## Ticket 05 specification closure — 2026-10-01
+
+[Requirement/schedule](requirement-schedule-contract.md) supersedes the OPEN time-operator,
+occupancy inclusion, non-overlap units and repetition-attribution details above for
+Ticket 05. It closes typed minimum/exact/date checks, supported explicit dated time
+operators, protected scopes and blocker union, conservative uncertainty, pair/union
+conflict measurements and descriptive schedule/repetition definitions. It retains one
+obligation or logical commitment per score unit and reports unresolved denominator
+availability explicitly. No non-required repetition defect ratio is adopted.
+Opening and route provider rules, total/mask export, human and Controlled Repair work
+retain their own contracts/tickets. No metric implementation or experiment occurred.

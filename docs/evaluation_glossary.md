@@ -15,3 +15,18 @@ _Avoid_: Automatically evaluated candidate stream
 **Requirement Specification**: Human-reviewed obligations derived independently from the original request. It is distinct from a planner's interpretation of that request.
 
 **Evaluation snapshot**: Preserved independent external evidence used consistently to assess the submitted itineraries. It is an evidence basis, not absolute real-world truth.
+
+## Requirement and schedule units
+
+**Obligation check**: One outcome for one independently reviewed requirement, with
+all of its explicit count, date and time conditions retained as components.
+
+**Schedule commitment**: One distinct scheduled visit, journey or fixed activity whose
+occupied time is assessed independently; uncertain timing does not erase the commitment.
+
+**Protected blocker**: A reviewed interval restricting specified kinds of scheduled
+commitments. Overlapping protections can share a blocked span while remaining separate
+user obligations.
+
+**Potential match**: A source-preserved occurrence whose unresolved role or identity
+could affect a reviewed place obligation; it is not a confirmed visit to that place.

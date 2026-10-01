@@ -93,11 +93,11 @@ Usage collection is an upstream supporting capability and cannot become evaluato
 
 **Blocked by:** 01, 03
 
-**Specification status:** needs-info
+**Specification status:** ready-for-agent (specification closed; implementation approval pending)
 
 **What to build:** Score reviewed obligations and schedule structure, and report date coverage, overlap, density and repetition from independent records.
 
-**Readiness gate:** Finish supported time-operator boundaries and metric unit enumeration, including the non-overlap subscore; explicit counts must not be diluted by arbitrary extra subchecks.
+**Readiness gate:** Closed by the [requirement/schedule contract](requirement-schedule-contract.md) on 2026-10-01 after accepted Q1/Q2 decisions. Parent-obligation weighting and commitment/blocker units are explicit; no scorer is implemented.
 
 **Acceptance criteria:**
 

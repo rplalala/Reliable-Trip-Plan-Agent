@@ -91,3 +91,16 @@ Implementation status: decision accepted; existing Ticket 01 projection still re
 Implemented in the current uncommitted workspace. Projection now requires the selected planner version independently of immutable source context. V0 uses transport activities only; V1-V3 use transfers only, including V3 draft/final_primary. `transport_source` identifies the selected representation; `ignored_transport` preserves allowlisted source records and `ignored_transport_source` diagnostics. Activities retain independently assigned roles and a `transport_applicable` flag, which is true only for V0 transport records. Ignored transport records must not supply occupancy, mode, time, fallback or an additional commitment. Ambiguous activity roles still require independent review; this is not automatic semantic recognition of disguised transport prose. Missing transfers remain missing. Same-source duplicate/conflicting claims retain reconciliation; journeys between different visit occurrences remain distinct. Earlier acceptance results and the preceding pending-status note describe historical checkpoints.
 
 Generation now has a V1-V3-only structured activity schema excluding transport, explicit initial/Repair prompt prohibitions, and shared output acceptance rejecting declared model transport before initial transfer binding. V0 keeps its transport schema and version-specific transport instructions; the shared policy no longer suggests transport roles to tool-backed versions. Existing Repair patch permissions already prohibit arbitrary activity/transfer authoring. Visits may be spaced using supplied route evidence; application route selection and transfer binding remain unchanged. No extra model call or automatic repair is introduced.
+
+## Ticket 05 occupancy specialization — 2026-10-01
+
+The [requirement/schedule contract](requirement-schedule-contract.md) closes commitment,
+protected-blocker and non-overlap units. Established primary visits, source-selected
+journeys and reviewed fixed generic activities supply commitments. Flexible placeholders
+supply no occupancy. Protections retain their scopes/original obligations and union by
+same scope; they do not add non-overlap units. Unknown roles/association/flexibility
+retain denominator-availability diagnostics. Empty projected journey occupancy does not
+establish absence. Date coverage, density and canonical repetition remain descriptive;
+this version does not introduce a non-required repetition defect ratio. Ticket 07
+still owns route/departure evaluation. These are ready specifications, not implemented
+scoring behavior or renewed live authorization.

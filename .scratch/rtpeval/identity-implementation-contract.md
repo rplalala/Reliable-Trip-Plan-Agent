@@ -43,3 +43,13 @@ Each identity record has resolution (`resolved`/`unresolved`), reason, adopted c
 ## Verification and limits
 
 Offline fixtures cover strict ID/name paths, wrong cities, aliases, branches, wrong IDs, malformed/failed evidence, reviewed conflict, high-impact routing, versioned review replay, audit determinism and V3-finding isolation. The provider namespace is still Google Places, so this is consistency with recorded evidence, not absolute real-world truth. The search adapter has no pagination/alias guarantee, and `requested_page_size=20` only limits one known truncation risk. Human adjudication can remain unresolved. No live coverage, formal benchmark or model/database behavior is established by these fixtures.
+
+## Ticket 05 subject-scope extension — specification only, 2026-10-01
+
+The accepted [fixed-visit-time contract](requirement-schedule-contract.md) makes resolved
+`fixed_visit_time.subject_ref` another high-impact independent requirement subject,
+even when no separate REQUIRED/EXCLUDED entry exists. The future Ticket 05 change must
+include it in `identity_references` and preserve the existing strict association,
+manual review, automatic audit and source/revision linkage. Unresolved/unsupported
+subjects remain uncertainty rather than fabricated identities. No identity code or
+acceptance result is changed by this specification update.
