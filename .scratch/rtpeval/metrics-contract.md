@@ -43,8 +43,8 @@ Where a denominator cannot yet be established, report the unresolved structural 
 | Route structural evaluability | P, R, E; same-day candidate leg | Defined/evaluable legs / applicable candidate legs, with structural unknowns | Exclude inter-day travel and confirmed same-venue connections as N/A. Unresolved endpoints/mode/occupancy remain visible. Do not silently skip unknown intermediate locations. |
 | Route evidence coverage | P, E; applicable same-day leg | Applicable independently adjudicable responses / applicable legs; expose duration-available count separately | Successful applicable explicit no-route is adjudicable evidence, not a provider outage, although it has no usable duration. |
 | Route availability/compliance | P, E; leg | Context-specific no-route FAIL counts; time/cap compliance reported separately below | No route under valid endpoints/mode/departure is FAIL. Provider failure, timeout, malformed/incomplete response is UNKNOWN. Do not switch mode to force PASS. |
-| Mode-threshold compliance | P, E, frozen product rules; duration-supported leg | Passing legs / legs with enough evidence for the applicable cap; raw nominal overruns retained | WALK <=3 km and nominal45+5 minutes; TRANSIT nominal45+5; DRIVE nominal30+5. No distance tolerance. A known failing component establishes violation; incomplete components cannot establish PASS. Exact component-state aggregation OPEN. |
-| Scheduled route feasibility | P, R, E; time-adjudicable leg | Legs with duration + reserve <= continuous available time +300 seconds / time-adjudicable legs | DRIVE reserve600 seconds, others0; no extra buffer. Preserve raw deficit, even for tolerance PASS. Explicit no-route is a separate route FAIL, not a fabricated numerical deficit. |
+| Mode-threshold compliance | P, E, frozen product rules; cap-adjudicable leg | PASS / (PASS+FAIL), with full-evidence and decisive coverage separately; raw nominal overruns retained | WALK <=3 km and nominal45+5 minutes; TRANSIT nominal45+5; DRIVE nominal30+5. No distance tolerance. Any independently proven component failure establishes FAIL, including missing other components; all required components must pass for PASS, otherwise UNKNOWN. |
+| Scheduled route feasibility | P, R, E; time-adjudicable leg | Compare duration + reserve to one selected continuous interval; zero grace at a hard boundary, otherwise +300 seconds at the next-visit deadline | Without explicit departure select the longest known free fragment before route evidence; valid explicit departure controls. DRIVE reserve600 seconds, others0; no extra buffer or crossing protected non-travel time. Preserve raw deficit even for tolerance PASS. Explicit no-route is a separate route FAIL, not a fabricated numerical deficit. |
 | Transfer deficit | P, E, R; duration-supported leg | max(0, provider_duration + product_reserve - available_interval), in seconds | Report raw value and tolerance-based verdict separately. Do not add cap tolerance to schedule tolerance to obtain ten minutes. |
 | Observed transfer burden | E, P; observed leg/day | Provider-duration subtotal, median and maximum with observed/applicable counts; product reserve separately | Partial evidence yields observed subtotal/maximum, not full-trip travel burden. Unknown is not zero. |
 | Canonical repetition | P, E, R; visit/day | Within/across-day canonical counts and repeated occurrences; authorized obligations shown alongside | Descriptive repetition is not automatically a defect. Extra visits beyond a minimum are not automatically violations. Exact non-required ratio denominator and authorization attribution remain OPEN. |
@@ -123,3 +123,41 @@ stay unknown. Exact outside duration is null when incomplete, with confirmed low
 and unknown seconds retained. Aggregation is an observed per-visit subtotal with counts,
 not global-time union or formal cross-request analysis. Unresolved role populations and
 empty denominators suppress percentages. Auxiliary total/masks remain Ticket 08.
+
+## Ticket 07 specification preflight closure — 2026-10-02
+
+The user accepted longest continuous free-fragment selection for unstated departure,
+zero grace at applicable protected non-travel boundaries, and decisive FAIL whenever
+an independently proven distance/time component exceeds its limit. The
+[route contract](route-contract.md) and [preflight](ticket-07-preflight.md) supersede
+historical OPEN aggregation and unqualified schedule-tolerance wording for Ticket 07.
+Explicit departure remains controlling; selection is independent of provider outcomes.
+Provider duration and the single DRIVE reserve are assessed against the selected
+fragment, never the sum of disjoint gaps. The separate duration-cap tolerance remains.
+
+Partial decisive FAIL enters conditional P/(P+F) without becoming complete evidence.
+Keep structural, applicable response, full component, decisive and duration-available
+coverage separate; no-route is decisive with null duration. Observed transfer sum,
+median and maximum retain missing counts and reserve separately. Unknown travel is
+not zero, repeated occurrences remain separate units and unresolved populations/empty
+denominators suppress full-scope percentages. Auxiliary arithmetic stays Ticket 08.
+At the preflight checkpoint the concrete proposal awaited implementation-scope approval;
+that inspection did not implement metrics or run formal cases/experiments. The user
+subsequently approved the offline implementation described below.
+
+## Ticket 07 executable route measurements — 2026-10-02
+
+[Acceptance](ticket-07-acceptance.md) records the implemented public preparation/scorer/CLI
+and its actual failure/correction/retest sequence. Separate component, structural,
+applicable-response, full-component, decisive and duration-available coverage is executable.
+Partial component FAIL enters P/(P+F) without establishing full-component completeness;
+explicit no-route FAILs with null duration. Unknown or inapplicable evidence cannot prove
+a factual over-limit component. An occurrence contributes one combined route verdict.
+
+Raw deficit is max(0, provider duration + one DRIVE reserve - selected continuous time).
+Hard deadlines have zero grace; only next-visit deadlines use 300 seconds. Duration-cap
+tolerance remains independent. Observed duration sum/median/max retain missing counts and
+reserve separately. Unresolved potential leg populations suppress complete burden globally
+and on affected dates, while preserving observed subtotals. Empty/unknown denominators
+produce null rates. This does not implement auxiliary total/masks, V3 deltas, formal
+cross-request analysis or comparative conclusions; those retain their own tickets.

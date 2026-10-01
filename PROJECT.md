@@ -107,7 +107,8 @@ validation, caches and internal decisions are not independent factual ground tru
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented and offline-validated; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed; local code publication pending |
 | 06: Opening checks | Offline parser/scorer/CLI implemented under the 2026-10-02 approval; offline acceptance complete; Standards/Spec reviews clear, full regression 2148 passed / 10 skipped; all ten skips passed in subsequently approved scoped supplements; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) closed as completed; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) |
-| 07-12 | Later approved work-plan tickets; no implementation is claimed here |
+| 07: Route checks | Offline preparation/scorer/CLI implemented and validated; longest unstated-departure fragment, zero-grace hard boundaries and decisive partial FAIL; Standards/Spec reviews clear; 86 dedicated tests passed; approved existing-test repair removes the former exclusion, latest unfiltered backend gate 2234 passed / 10 skipped / zero deselections; implementation and repair committed locally under the approved three-group closeout; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) closed/completed; [acceptance](.scratch/rtpeval/ticket-07-acceptance.md) |
+| 08-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
@@ -147,19 +148,21 @@ Current contracts and task links: [work index](.scratch/rtpeval/ticket-breakdown
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/development_guide.md) owns commands.
 
-Latest recorded backend regression: **2148 passed, 10 skipped** on 2026-10-02 for
-Ticket 06 offline acceptance; Ruff and compilation passed, and Standards/Spec review
-findings were resolved. See [acceptance](.scratch/rtpeval/ticket-06-acceptance.md)
-for the initial failures, corrections and retests. The earlier Ticket 05 checkpoint
-remains in [its acceptance record](.scratch/rtpeval/ticket-05-acceptance.md). Skips were disabled opt-in database tests and a Windows
-symlink-privilege case. All ten subsequently passed in user-approved scoped supplements,
-including one UAC-elevated symlink test; no combined full-suite rerun is claimed.
-This is a dated validation checkpoint, not a permanent
-claim about all later workspaces.
-
-Ticket 06 local commit preparation on 2026-10-02: **327 passed, 10 deselected**
-in the evaluation/database-unit subset; previously validated native/database checks
-were not repeated. Backend Ruff, evaluation compilation and opening CLI help passed.
+Latest recorded backend gate, 2026-10-02, after the approved existing timeout-test repair:
+**2234 passed, 10 skipped in 196.39s, zero deselections**. Both previously excluded
+parameters now participate and pass; independent cold-process checks and all **16** runtime
+retrieval tests also pass. The same actual-source red/green loop confirms the handshake
+hang is fixed. The only executable follow-up change is that existing test function;
+production budgets/behavior remain unchanged. Backend Ruff, changed-test compilation,
+English/link and diff checks pass; Standards and Spec reviews each have zero findings.
+Dedicated Ticket 07 route/CLI results remain **86 passed**. See
+[repair acceptance](.scratch/timeout-test-diagnosis/repair-acceptance.md) and
+[Ticket 07 acceptance](.scratch/rtpeval/ticket-07-acceptance.md) for the distinct historical
+filtered/pre-boundary gates, original failures, corrections and retests.
+The ten skips are nine opt-in database tests and one host symlink-privilege case;
+Ticket 06 approved supplements do not count as Ticket 07 verification. Earlier results
+remain in [Ticket 06 acceptance](.scratch/rtpeval/ticket-06-acceptance.md) and
+[Ticket 05 acceptance](.scratch/rtpeval/ticket-05-acceptance.md).
 
 The authorized Berlin three-day smoke ran V0-V3 once each. V0 produced six estimated
 transport activities. V1/V2/V3 produced no model transport activities and application
@@ -197,14 +200,55 @@ Ticket 05 is committed locally at ed4c9a9; earlier migration/closeout approvals 
 historical and do not grant additional Git actions in this task. Ignored research notes,
 credentials, source payloads, logs and generated files are excluded from staging.
 
-Next proposed task: Ticket 07 route specification closure
-([#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19)), followed by
-separately approved offline implementation. Its deterministic continuous interval,
-protected-time, explicit transport correspondence, departure/mode and aggregation
-boundaries still require technical closure. Ticket 08 depends on its completion.
-Ticket 07+ work is not authorized by this closeout. No push, branch switch, version
-freeze, live provider/model run, production data operation or formal evaluation is
-included. V0-V3 planner behavior and independent entry points remain unchanged.
+On 2026-10-02 the user authorized Ticket 07 route specification preflight
+([#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19)). Current interfaces
+and primary provider documentation were checked; 59 existing snapshot/occupancy/time
+regressions passed. The [preflight](.scratch/rtpeval/ticket-07-preflight.md) preserves
+initial proposals, explanatory clarification and all three accepted user decisions:
+allow waiting/use the longest continuous fragment when departure is unstated; honor
+explicit departure; zero grace at applicable non-travel protections; independently
+proved distance/time failure is decisive even with another UNKNOWN component.
+
+The consolidated proposal defines deterministic ties, source-selected claims, independent
+request mode review, exact query/time/endpoint applicability, raw provider precision,
+preparation/scorer/CLI interfaces and separate component/coverage/burden reporting.
+Specification preflight is complete; the user subsequently approved its concrete offline
+implementation scope. Ticket 07 is implemented and offline-validated with clear reviews;
+its original existing-test exception and subsequent approved correction are recorded in
+[acceptance](.scratch/rtpeval/ticket-07-acceptance.md).
+Preparation, raw interpretation, coverage and observed burden preserve missing evidence;
+no planner path or Ticket 05/06 policy was changed. The original implementation/repair
+validation used base 3427784b plus uncommitted changes. Issue #19 is closed/completed and parent #12
+records 01-07 completed; subsequent tracker supplements retain historical validation and
+record the corrected unfiltered gate. The user separately approved diagnosis and repair
+of the existing embedding timeout-test hang.
+[Diagnosis](.scratch/timeout-test-diagnosis/diagnosis.md) confirms an unbounded handler
+handshake after a 20ms timeout expires during SDK cold preparation. The approved patch
+is now applied to only that test function: direct timeout observation, bounded handshake,
+child-task cleanup, ten-second scenario watchdog and five-second test-only SDK deadline.
+[Repair acceptance](.scratch/timeout-test-diagnosis/repair-acceptance.md) records cold-process,
+module and unfiltered full regression, and clear reviews. Production Retrieval budgets
+and V0-V3 behavior remain unchanged. Ticket 08 specification preflight/implementation
+requires separate approval; no next-ticket work is included.
+
+The implementation approval covers offline route preparation/scoring/CLI, synthetic TDD,
+relevant/full offline regressions, Standards/Spec review/corrections and related
+documentation/archive/Issue updates. No formal case, real provider/model/database call,
+commit/push, branch switch, freeze or Ticket 08+ work was included in that approval.
+V0-V3 planner behavior and independent entry points remain unchanged.
+
+On 2026-10-02 the user separately approved Ticket 07 closeout and three local commit
+groups. Route implementation and directly related tests are committed at 2b66c9f;
+the independent timeout-test repair is committed at b18daef. The approved third group
+records current contracts, preflight, acceptance, diagnosis and project/package docs.
+Before committing, the route/CLI, shared requirement/schedule and runtime retrieval
+subset passed **166 tests in 34.26s**, with backend Ruff and diff checks passing.
+The earlier full gate remains **2234 passed / 10 skipped / zero deselections**; no code
+changed after that validation. No database/native supplement, live call, push, branch
+switch, freeze or Ticket 08 work was added. Ignored archives, credentials, provider
+payloads, runtime logs and generated pytest files are excluded from all three groups.
+The [acceptance closeout](.scratch/rtpeval/ticket-07-acceptance.md#approved-local-git-closeout--2026-10-02)
+preserves the actual commit responsibilities and pre-commit validation.
 
 ## 7. Keeping this file current
 

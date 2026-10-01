@@ -233,3 +233,33 @@ exact/lower-bound duration semantics. The
 [preflight](../.scratch/rtpeval/ticket-06-preflight.md) preserves the original approved
 interface audit. Current implementation/docs are local and unpublished; later tickets,
 live evidence and formal evaluation still need separate approval.
+
+
+## Ticket 07 offline route implementation — 2026-10-02
+
+[Preflight](../.scratch/rtpeval/ticket-07-preflight.md) records current source authority,
+snapshot/occupancy/time interfaces and independently checked provider semantics.
+[Route contract](../.scratch/rtpeval/route-contract.md) retains accepted caps/reserve
+and the accepted longest-interval/hard-protection/decisive-failure rules. The initial
+59-test seam checkpoint preceded explicit implementation approval and remains historical.
+[Offline acceptance](../.scratch/rtpeval/ticket-07-acceptance.md) records the implemented
+preparation/scorer/CLI, actual failures/corrections, regression results and clear
+Standards/Spec reviews. The
+[package guide](../backend/evaluation/README.md#ticket-07-offline-same-day-routes) owns
+route review/coordinate preparation, query applicability and report wire. Unknown
+populations, partial decisive FAIL and observed burden remain separate from completeness.
+The approved implementation/test closeout is committed locally and unpublished;
+its [commit record](../.scratch/rtpeval/ticket-07-acceptance.md#approved-local-git-closeout--2026-10-02)
+preserves three responsibility groups and the additional 166-test pre-commit check.
+No live acquisition, formal evaluation,
+auxiliary total, freeze or later-ticket implementation is included.
+
+[Existing embedding timeout-test diagnosis](../.scratch/timeout-test-diagnosis/diagnosis.md)
+records the subsequent diagnosis-only authorization, bounded reproduction, SDK cold-start
+trigger and unbounded test-handshake defect. The user subsequently approved the single
+test-function repair. [Repair acceptance](../.scratch/timeout-test-diagnosis/repair-acceptance.md)
+records actual-source red/green, separate cold-process checks, 16 module tests passed,
+clear reviews and **2234 passed / 10 skipped / zero deselections** in the full offline
+backend gate. The original excluded-test checkpoint remains historical. No production
+budget/behavior, live execution or later-ticket work changed. The separately approved
+local test commit is b18daef; documentation accompanies the approved third group.

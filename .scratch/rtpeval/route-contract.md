@@ -1,6 +1,17 @@
 # Route evaluator contract — draft
 
-Status: Accepted independence/coverage principles consolidated; stated-mode policy, product DRIVE reserve of 10 minutes and zero additional evaluator buffer accepted; five-minute tolerance applies separately to duration caps and schedule feasibility. Detailed adjacency and provider applicability remain OPEN. No implementation, live queries or experiments.
+Current follow-up, 2026-10-02: the user authorized
+[Ticket 07 specification/interface preflight](ticket-07-preflight.md). Existing
+projection, occupancy, raw snapshot and time interfaces are checked; 59 existing seam
+tests passed. The user selected waiting and the longest continuous interval when departure is
+unstated (Q1); this supersedes the historical A.end default. Protection-boundary
+tolerance is now Accepted as zero grace at non-travel protection (Q2); Q3 is Accepted: any proven distance/time failure is decisive even with another
+UNKNOWN component. The consolidated offline interface proposal is specification-ready
+for implementation scope approval; no route code exists yet. Issue #19 remains
+open/ready-for-agent; implementation approval remains pending. Historical accepted caps/reserve/tolerances below remain in force;
+no route implementation or live acquisition is claimed.
+
+Historical status (2026-09-28): Accepted independence/coverage principles consolidated; stated-mode policy, product DRIVE reserve of 10 minutes and zero additional evaluator buffer accepted; five-minute tolerance applies separately to duration caps and schedule feasibility. Detailed adjacency and provider applicability remained OPEN at that checkpoint. No implementation, live queries or experiments.
 Date: 2026-09-28.
 Source checkpoint: 8a435e2db0198e4fc8928b85e333b45b66c0c981 with uncommitted evaluation documentation.
 
@@ -119,3 +130,72 @@ The latest user decision supersedes excluding generic no-POI activities from ben
 Accepted simplification: use the valid route duration returned by Google for the queried endpoints, direction and stated travel mode, including a fallback traffic-calculation result. Do not classify a valid result UNKNOWN solely because traffic awareness differs from the requested routing preference. Preserve requested/returned context and fallbackInfo for traceability, without adding a separate traffic-fidelity score or promising future road conditions. Do not silently switch endpoints, direction, travel mode or query date. Explicit no-route remains FAIL; provider failure, invalid status or no usable duration remains UNKNOWN. Existing duration thresholds, DRIVE product reserve and five-minute tolerances remain unchanged.
 
 Per-element status/duration parsing and temporal context follow [evidence-time-contract.md](evidence-time-contract.md). Public documentation verification is separate from future parser tests and does not imply real API execution.
+
+
+## Accepted default departure selection — 2026-10-02
+
+The user chose waiting and the longest continuous free interval when the submitted
+itinerary does not state an authoritative departure. Select the interval from independent
+itinerary occupancy/protections before using route evidence; departure is its start.
+Do not concatenate intervals, trial different provider departures until a route passes,
+or switch modes. An explicitly stated departure is honored instead of choosing another
+fragment. The former immediate A.end proposal is superseded for unstated departure.
+
+Equal-longest ties use earliest UTC start. Unknown blockers or unresolved adjacency
+remain uncertain. The Q2/Q3 decisions below subsequently resolved protected-boundary
+tolerance and partial-evidence verdicts. This section records specification decisions;
+the implementation checkpoint below records executable behavior.
+
+
+## Accepted hard protection boundary — 2026-10-02
+
+Applicable non-travel protections are hard boundaries with zero route grace. A selected
+fragment ending at a scheduled_commitments protection or independently fixed commitment
+must accommodate provider duration plus the DRIVE reserve before that boundary. No
+300-second allowance crosses it. The separate 300-second schedule tolerance applies
+only to the next scheduled visit deadline; mode duration-cap tolerance is unchanged.
+primary_visits-only protection does not itself block traffic. This supersedes the
+historical unqualified use of five-minute tolerance at every interval deadline.
+
+
+## Accepted decisive failure and technical preflight closure — 2026-10-02
+
+The user confirmed that distance or time beyond its applicable limit establishes FAIL,
+even if another component is unavailable. Complete evidence and decisive outcome are
+separate. Conditional compliance is P/(P+F), including such decisive FAIL; all required
+components must pass for combined PASS, otherwise UNKNOWN. Applicable explicit no-route
+retains FAIL without invented duration. Invalid/foreign context cannot prove a factual
+component failure. These rules close the historical combined component/partial evidence
+aggregation item for the Ticket 07 subset; auxiliary total remains Ticket 08.
+
+The [preflight](ticket-07-preflight.md) defines longest-fragment deterministic selection
+before route evidence, explicit departure authority, zero-grace hard boundaries,
+source-linked request mode review, mode/provider/time applicability, exact raw precision,
+public preparation/scorer/CLI proposals and separate coverage/burden measures. Historical
+A.end default and universal interval-deadline tolerance are superseded by Q1/Q2. Existing
+planner/RequirementSpec behavior is unchanged. At that preflight checkpoint the
+specification was ready for scope approval; no implementation, live acquisition,
+formal case or Git action had occurred. The user subsequently approved implementation.
+
+## Executable offline route checkpoint — 2026-10-02
+
+`prepare_routes`, `score_routes` and the local route CLI implement the approved subset;
+see [acceptance](ticket-07-acceptance.md) for actual validation and review corrections,
+and the [package guide](../../backend/evaluation/README.md#ticket-07-offline-same-day-routes)
+for supplied review/coordinate wires and query defaults. Longest-fragment selection
+precedes observations; explicit departure controls. V0 Activity/V1-V3 Transfer authority,
+same-day occurrence scoring, source provenance and independent snapshot replay remain
+binding. No real acquisition or planner policy change is introduced.
+
+Fixed other occupancy and scheduled_commitments protection delimit zero-grace fragments.
+All-known disjoint alternative occupancies are irrelevant to another route; a guaranteed
+shared occupation at its deadline is a hard boundary. A merely possible boundary stays
+UNKNOWN and cannot borrow 300 seconds. primary_visits-only protection does not block traffic.
+
+Raw nanosecond duration, provider distance, single DRIVE reserve, nominal cap and separate
+tolerances remain visible. Malformed or inapplicable evidence stays UNKNOWN; valid returned
+fallback remains usable. Any independently proved component FAIL is decisive without
+claiming all components known. No-route has null duration. Coverage and observed daily/trip
+burden are separate, with missing and unresolved-population counts; no auxiliary total,
+formal case/experiment, version comparison or freeze is included. Changes remain local,
+uncommitted and unpublished at base 3427784b on feature/evaluation.
