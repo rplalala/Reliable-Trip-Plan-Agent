@@ -288,6 +288,38 @@ Do not repeatedly read or test unrelated parts of the repository without a reaso
 
 ## Agent skills
 
+### Matt skills workflow
+
+- Invoke `$ask-matt` with the task, constraints, and expected result when unsure
+  which skill fits, or invoke a specific skill such as `$diagnosing-bugs`.
+  Read its `SKILL.md` before use. Matt's `/skill-name` notation refers to the
+  corresponding skill; use the invocation supported by the current client.
+- Clarify repository ideas with `grill-with-docs`. For a small, clear task, use
+  `implement`; for a multi-session build, use `to-spec` -> `to-tickets` ->
+  `implement` per ticket, resolving blockers first. `implement` uses `tdd` and
+  closes with `code-review` against both project standards and the spec.
+- Use `prototype` when a design question needs runnable evidence, and `handoff`
+  when moving findings between directories or sessions.
+- Route raw incoming requests through `triage`; tickets from `to-tickets` are
+  already prepared. Use `diagnosing-bugs` for hard bugs: reproduce the failure,
+  then fix it with a regression test.
+- Use `wayfinder` for large efforts with unresolved direction, then return to
+  `to-spec` -> `to-tickets` -> `implement` once decisions are clear.
+- Use `improve-codebase-architecture` to find improvement candidates,
+  `codebase-design` for module interfaces and test seams, `domain-modeling` for
+  terminology and ADRs, and `writing-for-agents` for agent-facing documents.
+- Keep clarification, spec, and ticket creation in one context when practical;
+  start each self-contained implementation ticket with fresh context. Continue,
+  clear, hand off, or compact at phase boundaries as needed. Delegate only when
+  applicable instructions explicitly authorize it.
+- Verify skill availability and the tracker, triage, and documentation
+  conventions below before an engineering flow. If setup is missing, use
+  `setup-matt-pocock-skills` within an approved scope. Report unavailable skills
+  and use an available equivalent, or ask before installing them.
+- These workflows follow this file's approval, Git, live-run, research, and
+  version rules. `PROJECT.md` remains the current source of truth; skill-generated
+  context, ADRs, and specs must stay aligned with it.
+
 ### Issue tracker
 
 Project issues and specs live under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
