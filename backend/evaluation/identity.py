@@ -1,18 +1,18 @@
 """Offline, source-linked identity preparation for independent evaluation."""
 
-import hashlib
-import json
 import re
 import unicodedata
 from collections.abc import Mapping
 from dataclasses import dataclass
 
 from .records import IntakeResult, freeze, text, thaw
+from .records import canonical_digest as _digest
 
 IDENTITY_VERSION = "rtpeval_identity_1"
 EVIDENCE_VERSION = "rtpeval_identity_evidence_1"
 REVIEW_VERSION = "rtpeval_identity_reviews_1"
 AUDIT_VERSION = "rtpeval_identity_audit_1"
+SUBJECT_SCOPE_VERSION = "required_excluded_fixed_time_1"
 VERSIONS = ("v0", "v1", "v2", "v3")
 
 
@@ -25,12 +25,6 @@ class IdentityResult:
 
     def to_dict(self):
         return {"status": self.status, **thaw(self.data)}
-
-
-def _digest(value):
-    return hashlib.sha256(
-        json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
-    ).hexdigest()
 
 
 def _intake_dict(intake):
@@ -52,7 +46,7 @@ def identity_references(intake):
         relevant_subjects = {
             item["subject_ref"]
             for item in spec["obligations"]
-            if item.get("kind") in ("required_visit", "excluded_visit")
+            if item.get("kind") in ("required_visit", "excluded_visit", "fixed_visit_time")
             and item.get("resolution") == "resolved"
             and text(item.get("subject_ref"))
         }
@@ -609,6 +603,8 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
         freeze(
             {
                 "schema_version": IDENTITY_VERSION,
+                "subject_scope_version": SUBJECT_SCOPE_VERSION,
+                "reference_set_digest": _digest(refs),
                 "batch_id": prepared["batch_id"],
                 "batch_revision": prepared["revision"],
                 "source_hashes": prepared["source_hashes"],

@@ -287,3 +287,23 @@ wording for this slice only. User-reviewed single-visit fixed-time defaults, sou
 at-least-one matching for explicit repetition, and protection-as-boundary scoring are accepted. Opening/routes and later report/mechanism
 contracts remain separate. Ticket 05 is specification-ready, with implementation
 approval pending; the overall module is not implemented/frozen by this update.
+
+## Ticket 05 implementation follow-up — 2026-10-02
+
+The subsequent user approval covers offline implementation, tests, review/corrections
+and acceptance without real services or Git actions. Requirement and submitted-schedule
+metrics are implemented in the uncommitted workspace; see
+[Ticket 05 acceptance](ticket-05-acceptance.md) and the
+[package guide](../../backend/evaluation/README.md). This follow-up supersedes the
+pending implementation status for this slice only. Opening/routes, aggregate scores,
+blind rating and Repair comparison retain their separate tickets and authorization.
+
+## Ticket 05 closeout follow-up — 2026-10-02
+
+After offline acceptance, the user separately authorized documentation/archive/Issue
+closeout and approved one local feature commit grouping. Ticket 05 #17 is
+closed as completed and parent #12 reflects Tickets 01-05 complete. The
+[acceptance record](ticket-05-acceptance.md) links the self-contained online completion
+comment. Implementation and current documents are local and unpublished; no push,
+live service or later-ticket implementation is included. Migration snapshots and
+earlier authorization statements retain their historical meaning.

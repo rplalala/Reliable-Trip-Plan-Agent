@@ -9,6 +9,13 @@ from types import MappingProxyType
 PROJECTION_VERSION = "rtpeval_projection_1"
 
 
+def canonical_digest(value):
+    """Shared compact JSON digest for independent preparation/replay policy records."""
+    return hashlib.sha256(
+        json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
 def freeze(value):
     if isinstance(value, dict):
         return MappingProxyType({key: freeze(item) for key, item in value.items()})

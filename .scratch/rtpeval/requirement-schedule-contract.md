@@ -1,5 +1,13 @@
 # Ticket 05 requirement and schedule contract
 
+Current follow-up, 2026-10-02: offline implementation and acceptance are complete.
+The user subsequently authorized documentation/archive/Issue closeout and requested a
+local commit, then approved one coherent feature grouping. [Ticket 05 #17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17)
+is closed as completed; code and updated documents remain local and unpublished.
+See [Ticket 05 acceptance](ticket-05-acceptance.md) for implementation, review corrections,
+validation and closeout evidence. No live service or push is authorized. The following
+2026-10-01 specification checkpoints retain their original authorization and history.
+
 Date: 2026-10-01. Code checkpoint: `473600254023f7d41648eed02215b6ab84e4ff03`.
 Status: Specification-ready after the user accepted Q1 and Q2 on 2026-10-01.
 Implementation scope is proposed for separate approval. No scoring implementation

@@ -123,6 +123,36 @@ def visit(refs, version, name="Museum A"):
     )
 
 
+def test_fixed_time_subject_participates_in_identity_policy_and_reference_digest(intake_batch):
+    manifest, _, write, save, root = intake_batch
+    spec = json.loads((root / "requirements.json").read_text(encoding="utf-8"))
+    spec["subjects"] = [{"subject_id": "timed-a", "place_name": "Museum A"}]
+    spec["obligations"] = [
+        {
+            "obligation_id": "at-nine",
+            "kind": "fixed_visit_time",
+            "resolution": "resolved",
+            "subject_ref": "timed-a",
+            "date": "2020-01-01",
+            "match": "single_visit",
+            "conditions": {"start_at": "09:00"},
+            "source_refs": [{"field_path": "additional_preferences", "quote": "architecture"}],
+        }
+    ]
+    manifest["groups"][0]["requirement_spec_ref"] = save(
+        "requirements.json", spec, spec["schema_version"]
+    )
+    intake = load_batch(write())
+    refs = identity_references(intake)
+    assert [r["source"]["subject_id"] for r in refs if r["kind"] == "requirement_subject"] == [
+        "timed-a"
+    ]
+    report = resolve_identities(intake, evidence(intake, []), audit_plan=plan(intake)).to_dict()
+    assert report["subject_scope_version"] == "required_excluded_fixed_time_1"
+    assert report["reference_set_digest"] == _digest(refs)
+    assert all(r["high_impact"] for r in report["records"] if r["kind"] == "requirement_subject")
+
+
 def test_name_only_and_supplied_id_paths_use_same_strict_evidence(intake_batch):
     def add_id(_, results, _save, _root):
         results["v1"]["itinerary"]["days"][0]["activities"][0]["source_place_id"] = "place-a"

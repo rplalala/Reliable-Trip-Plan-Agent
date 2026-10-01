@@ -777,3 +777,30 @@ existing independent identity review path. These are explicit implementation sea
 Ticket 05 is ready-for-agent with implementation approval pending. No scoring, planner
 change, backend test, live call, formal case, experiment or Git action occurred in this
 specification task. Later opening, route, aggregate and Repair tickets retain their scope.
+
+## Ticket 05 offline implementation — 2026-10-02
+
+The user subsequently approved offline implementation and acceptance. The workspace
+now implements reviewed count/date/exclusion and bounded fixed-time checks, independent
+IANA time normalization, source-selected commitments, scope-preserving protected unions,
+per-commitment non-overlap checks and descriptive coverage/density/repetition. Protection
+does not increase the activity denominator. Content uncertainty and incomplete unit
+applicability preserve UNKNOWN or metric unavailability; invalid executable material
+returns the whole batch for correction. Identity preparation includes fixed-time-only
+subjects and requires replay when source/reference/policy scope is stale.
+
+The offline JSON CLI consumes existing preparation only. It produces raw pair/union
+duration measures and hashes without running planners or acquiring evidence. See the
+[guide](../backend/evaluation/README.md) and
+[acceptance](../.scratch/rtpeval/ticket-05-acceptance.md) for actual test/review evidence
+and limitations. Earlier pending-status statements describe their dated checkpoints.
+This task does not implement opening/routes, the auxiliary total, blind tasks or Repair
+comparison; it includes no live service, formal experiment, commit/push or version freeze.
+
+Subsequent closeout, 2026-10-02: the user authorized current documentation, local thesis
+archive and Issue updates, then approved one local feature commit grouping.
+[Ticket 05 #17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) is closed
+as completed; parent #12 reflects Tickets 01-05 complete. The acceptance record
+preserves implementation failures/corrections, review results and closeout checks.
+Current code/documents remain local and unpublished; no push or later-ticket
+implementation is authorized. This closeout changes status, not evaluation semantics.

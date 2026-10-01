@@ -105,7 +105,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | 02: Usage capture/report | Implemented and offline-validated; opt-in attempt capture, no automatic formal run |
 | 03: Identity/adjudication | Implemented and offline-validated; strict supplied-ID and name-search paths, manual review and automatic-result audit |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; not a built-in operational Google client |
-| 05: Requirement/schedule metrics | Specification closed; implementation approval pending; live task: [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) |
+| 05: Requirement/schedule metrics | Implemented and offline-validated; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed; local code publication pending |
 | 06-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
@@ -120,7 +120,11 @@ additional non-overlap score units. Explicit dated fixed-visit checks support ex
 start, whole-window containment and minimum/exact duration. Unstated named-visit
 counts permit exactly one visit for the trip, including fixed-time-only obligations.
 Only explicit repeated-visit permission enables at-least-one time matching; explicit
-count/date quotas still apply. These rules are not yet implemented.
+count/date quotas still apply. Ticket 05 implements these rules after accepted intake;
+see its [offline acceptance](.scratch/rtpeval/ticket-05-acceptance.md). Unknown
+applicability, identity, date/time or journey correspondence remains visible rather
+than shrinking a denominator. Old identity reports require offline replay for the
+extended fixed-time subject policy.
 
 RTPEval migrated to [GitHub parent Issue #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12)
 on 2026-10-01 under explicit publication/tracker authorization. All 12 Tickets are
@@ -142,8 +146,10 @@ Current contracts and task links: [work index](.scratch/rtpeval/ticket-breakdown
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/development_guide.md) owns commands.
 
-Latest recorded closeout regression: **1983 passed, 10 skipped** on 2026-09-30;
-Ruff and diff checks passed. Skips were optional database tests and a Windows
+Latest recorded backend regression: **2063 passed, 10 skipped** on 2026-10-02 for
+Ticket 05 offline acceptance; Ruff and compilation passed, and Standards/Spec review
+findings were resolved. See [acceptance](.scratch/rtpeval/ticket-05-acceptance.md)
+for the initial failures, corrections and retests. Skips were disabled opt-in database tests and a Windows
 symlink-privilege case. This is a dated validation checkpoint, not a permanent
 claim about all later workspaces.
 
@@ -166,20 +172,30 @@ are evidence records, not current project authority or guaranteed fresh-clone as
 ## 6. Next work and authorization boundary
 
 Ticket 05 ([GitHub #17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17))
-specification closure is complete; see the
+has user approval on 2026-10-02 for offline implementation and acceptance; see the
 [requirement/schedule contract](.scratch/rtpeval/requirement-schedule-contract.md).
-Next proposed task: approve and implement its typed requirement checks, independent
-time/occupancy preparation and offline report/CLI, including focused tests and
-Standards/Spec review. Opening, routes and the auxiliary total retain separate tickets.
-No Ticket 05 implementation or additional live run is currently authorized.
+Its implementation includes requirement checks, independent time/occupancy preparation
+and offline JSON report/CLI, tests, Standards/Spec review and corrections. Offline
+acceptance is complete. Next proposed task: inspect Ticket 06 opening-hours scope and
+resolve its remaining specification boundaries before requesting implementation approval.
+Routes and the auxiliary total retain separate tickets. The subsequent 2026-10-02
+closeout approval covers current documentation, the local thesis archive, Issue updates
+and one user-approved local commit grouping:
+`feat: add offline requirement and schedule evaluation`.
+Ticket 05 #17 is closed as completed, and parent #12 records Tickets 01-05 complete.
+See the [completion record](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17#issuecomment-5935469356).
+Code/document updates are local and unpublished; this closeout includes no push.
+No live run, formal benchmark, experiment or later-ticket implementation is authorized.
 
 Previously approved snapshot, transport and smoke closeout changes have been committed.
 The earlier approved documentation commits and branch push also completed. Issue
 publication and tracker activation are complete. This repository revision contains
 the active configuration, Issue mapping and acceptance records. The user separately
 authorized a 2026-10-02 commit/push closeout and removal of redundant issue-drafts;
-original drafts remain in Git history. This closeout does not authorize Ticket 05
-implementation, further live runs, formal experiments or version freezes.
+original drafts remain in Git history. That closeout did not authorize Ticket 05;
+the subsequent implementation approval covered its offline scope. The later Ticket 05
+closeout authorization is recorded above; the original no-Git implementation boundary
+remains historical. Ignored thesis archives are updated locally without force-add.
 See AGENTS.md for the approval workflow.
 
 ## 7. Keeping this file current

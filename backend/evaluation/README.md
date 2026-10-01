@@ -1,6 +1,6 @@
-# Offline evaluation preparation (Tickets 01 and 03)
+# Offline evaluation preparation and metrics (Tickets 01-05)
 
-Ticket 01 prepares a user-curated batch; Ticket 03 replays independent identity observations against it. The package does not run planners, acquire live evidence, calculate the auxiliary quality total, render blind tasks or call an external service. It imports no planner modules and uses the Python standard library.
+Ticket 01 prepares a user-curated batch; Ticket 03 replays independent identity observations; Ticket 05 scores requirements and submitted schedule occupancy. The package does not run planners, acquire live evidence through a built-in client, calculate the auxiliary quality total, render blind tasks or call an external service from its offline commands. It imports no planner modules and uses the Python standard library.
 
 ## Entry points
 
@@ -55,7 +55,7 @@ Nearby is a separate unscheduled source inventory. The future renderer must hide
 
 The [Ticket 03 contract](../../.scratch/rtpeval/identity-implementation-contract.md) defines `rtpeval_identity_evidence_1`, `rtpeval_identity_audit_1` and `rtpeval_identity_reviews_1`. V0 name-only claims can resolve through strict independent name search; supplied IDs require independent details association. Missing/ambiguous evidence, aliases, competing candidates, ID/name conflicts and high-impact requirement matches go to factual review. The preselected audit sample also stays pending until reviewed. The reviewer queue hides version labels; researcher records retain source linkage. A reviewed intended place can resolve while its incorrect supplied ID remains a separate conflict. No provider rank or V3 finding decides identity.
 
-The module consumes previously recorded observations only. Ticket 04 must acquire/persist real evidence under its own authorization and connect it to this handoff. An empty review queue means workflow completion, not that every place is grounded: reviewed unresolved identities remain UNKNOWN. Grounding fractions are verified coverage, not hallucination rates. Requirement, opening, route, auxiliary-score and formal comparison work belong to later tickets.
+The module consumes previously recorded observations only. Ticket 04 acquires/persists evidence through separately authorized injected transport. An empty review queue means workflow completion, not that every place is grounded: reviewed unresolved identities remain UNKNOWN. Grounding fractions are verified coverage, not hallucination rates. Ticket 05 consumes these identities; opening, route, auxiliary-score and formal comparison work retain separate tickets.
 
 ## Validation
 
@@ -99,7 +99,7 @@ The oracle ledger records sends, retry sends and requested matrix elements separ
 
 Implemented in the current workspace: V0 retains model-estimated transport activities. V1-V3 share a primary generation schema excluding transport and an output acceptance check rejecting declared transport activities; both initial and Repair prompts explicitly reserve transport selection and transfer times to the application. Supplied route evidence can inform visit spacing. Existing Routes selection/binding and Repair operation permissions remain unchanged. A forbidden declared activity fails generation without adding a retry. Semantic transport disguised under another role cannot be comprehensively detected mechanically.
 
-Independent evaluation now selects transport sources by planner version: V0 activities, V1-V3 transfers, including optional V3 projections. Ignored records retain source pointers and diagnostics but supply no evaluated transport occupancy/fallback; missing transfers stay missing. Source identity tuples are unchanged. `transport_source`, `ignored_transport` and activity `transport_applicable` expose this distinction for later scoring. Independent evidence remains the factual oracle. Same-source duplicate/conflict handling and distinct visit occurrences are preserved. This supersedes the historical equal-authority Activity/Transfer reconciliation checkpoint. Ticket 05 scoring and protected-time union implementation remain pending. No live calls, formal experiments, commit/push or freeze are included.
+Independent evaluation now selects transport sources by planner version: V0 activities, V1-V3 transfers, including optional V3 projections. Ignored records retain source pointers and diagnostics but supply no evaluated transport occupancy/fallback; missing transfers stay missing. Source identity tuples are unchanged. `transport_source`, `ignored_transport` and activity `transport_applicable` expose this distinction for later scoring. Independent evidence remains the factual oracle. Same-source duplicate/conflict handling and distinct visit occurrences are preserved. This supersedes the historical equal-authority Activity/Transfer reconciliation checkpoint. Ticket 05 scoring and protected-time union were pending at this 2026-09-30 checkpoint; see the subsequent implementation below. No live calls, formal experiments, commit/push or freeze were included in that correction task.
 
 
 Transport correction validation: final backend suite **1973 passed, 10 skipped (85.49s)**; nine opt-in database cases and one Windows symlink privilege case were skipped. New boundary tests first reproduced forbidden-source acceptance. DTO fixture mismatches and a test nesting error were corrected. Spec review caught a contradictory shared prompt instruction, removed while retaining V0's explicit transport instruction; follow-up reviews have zero remaining findings. The first full run stalled and was interrupted; its runtime retrieval file passed separately (16 tests). The next full run exposed five superseded V3 transport expectations; updated boundary tests passed (119), followed by the successful final full run. Ruff, compilation and diff checks passed. See the transport correction acceptance record under .scratch/rtpeval for the complete sequence and limitations.
@@ -109,3 +109,86 @@ Subsequent checkpoint (2026-09-30): the separately authorized planner smoke and
 workspace commit closeout are recorded in [development acceptance](../../docs/transport_responsibility_smoke.md).
 Earlier uncommitted/no-live statements describe their dated implementation scopes;
 the planner smoke does not validate independent oracle acquisition or scoring.
+
+## Ticket 05: offline requirement and schedule metrics
+
+The [contract](../../.scratch/rtpeval/requirement-schedule-contract.md) defines the
+reviewed executable payloads; [acceptance](../../.scratch/rtpeval/ticket-05-acceptance.md)
+records implementation validation. Invoke from the repository root:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.requirement_schedule_cli C:/batch/manifest.json C:/batch/identity-report.json --context C:/batch/schedule-context.json --occupancy-reviews C:/batch/occupancy-reviews.json
+```
+
+The optional flags may be omitted. `--paired` evaluates available V3 `draft` and
+`final_primary` projections independently; it does not calculate Repair deltas.
+Library entry: `score_requirement_schedule(intake, identity_report,
+schedule_context=None, occupancy_reviews=None, paired=False)` returns an immutable
+result. CLI output is JSON on stdout, with input file hashes; input files are never
+rewritten. Exit 0 means a complete analysis, including content UNKNOWN or FAIL;
+exit 2 means material correction or identity replay is required. Save output separately.
+
+Report schema is `rtpeval_requirement_schedule_report_1`. Executable semantic
+validation follows accepted intake without changing Ticket 01's tolerant reader.
+Invalid operators/types/sources and detectable contradictory quotas return
+`needs_material_correction` with no partial result cohort. A stale, incomplete or
+previous-scope identity report returns `identity_replay_required`. Re-run the offline
+identity resolver using retained evidence/reviews/audit: newly prepared reports include
+`subject_scope_version=required_excluded_fixed_time_1` and `reference_set_digest`.
+Fixed-time-only subjects use the same high-impact adjudication policy. An intact
+`needs_adjudication` report is permitted; its unresolved identities remain uncertainty.
+
+Requirements use explicit reviewed counts: exact/minimum, optional distinct dates and
+dated quotas remain components of one parent check. Unstated named-visit cardinality
+is authored upstream as exact one; evaluation never reads planner requirement prose.
+`fixed_visit_time.match=single_visit` includes trip-wide exact one; `at_least_one`
+requires verified original-input `repeat_permission_refs`. One visit must satisfy the
+complete time conjunction. Unlinked/unclassified annotations or unresolved unknown
+kinds make the requirement denominator unavailable; linked annotations and reviewed
+soft preferences add no weighted checks. Empty reviewed hard requirements give N/A
+only when completeness is established.
+
+Time context uses `rtpeval_schedule_context_1`, nonempty string `batch_id`/`revision`
+and `groups`. Each group provides exact `group_id`/`input_sha256`, IANA `timezone`,
+nonempty string `source_ref`, `reviewer_ref` and offset-aware `reviewed_at`.
+`source_ref` references independently collected or reviewed factual evidence; a
+reference/hash establishes linkage, not authenticity. Missing groups are permitted
+as missing context. No host/planner zone is inferred. Aware intervals retain instants
+without a zone; local-clock checks need one. Naive DST folds/gaps and offset/date
+conflicts remain UNKNOWN. Fractional timestamp precision up to six digits is retained;
+greater precision is explicitly unsupported rather than truncated. Protection uses
+local midnight to next local midnight, including 23/25-hour DST days.
+
+Occupancy review schema is `rtpeval_occupancy_reviews_1`, with string `batch_id`/
+`revision` and `records`. Each record supplies the exact activity `source` object
+from intake, string `revision`, reviewer/time/rationale, `occupancy=committed|uncommitted|unresolved`,
+and optional `protected_obligation_refs`. It decides flexibility/correspondence,
+never roles, identities, transport endpoints or alternatives. Unknown/stale/duplicate
+links and known contradictory correspondence require correction. Role-ambiguous
+activities still require Ticket 01 role preparation. Named visits remain commitments;
+unreviewed generic locationless placeholders are automatically flexible only when
+notes supply no further commitment claim. Nonempty unclear notes conservatively need
+review. A protection placeholder is excluded only through an exact reviewed link;
+uncertain correspondence keeps applicability and the denominator unresolved.
+
+Protection union preserves date and scope and never adds a score unit. Each primary
+visit, reviewed fixed generic activity and source-selected logical journey supplies
+one non-overlap check. V0 disjoint segments preserve gaps; duplicate sources share
+one journey; V1-V3 use Transfers without model-activity fallback. Mode uncertainty
+alone does not erase explicit occupancy. Same-journey conflicts are alternatives;
+all alternatives may prove a conflict, while their common interval evidence remains
+a lower bound. Unbound claims and unresolved roles/flexibility preserve candidate units
+and prevent a full-scope rate. Missing journeys affect structure coverage, not an
+invented occupancy interval. Non-overlap covers all submitted commitments, including
+extra output dates; requirement counts and descriptive denominators use requested dates.
+
+Reports distinguish positive unordered pair intersections, their summed seconds,
+commitment-conflict union, protection-conflict union and combined conflict union.
+Scheduled occupancy and protected reservations remain separate. Unknown duration is
+null, never a fabricated zero. Daily attribution needs independent time context;
+whole-request known instants remain available without it. Date coverage, density and
+adopted-canonical repetition are descriptive; missing requested days remain zero known
+visit days, extra dates are diagnostic, and unknown identities preserve repetition
+lower bounds. Revisit quotas are displayed without an invented repetition penalty.
+Opening/route feasibility, five-dimension totals, blind tasks and Repair comparison
+remain separate tickets. V0-V3 planning behavior and execution paths are unchanged.

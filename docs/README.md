@@ -111,7 +111,8 @@ with some specification items still open. It includes the supplementary **V3 vs 
 Planning Skill** comparison direction alongside the main V0-V3 study. Tickets 01-04 have
 separate offline implementation records. Ticket 05
 [requirement/schedule specification](../.scratch/rtpeval/requirement-schedule-contract.md)
-is ready; its implementation approval is pending. No benchmark freeze or formal
+has an approved offline implementation and [acceptance record](../.scratch/rtpeval/ticket-05-acceptance.md).
+No benchmark freeze or formal
 experiment is implied.
 
 RTPEval task state and discussion moved to [GitHub parent Issue #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12)
@@ -121,7 +122,11 @@ for detailed meaning; local tickets are preserved historical snapshots. The
 records actual mappings, state/label checks, 12 parent-child relations and 13 dependency
 edges. This repository revision contains the tracker activation records. Other local
 feature trackers are unchanged. [Ticket 05 #17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17)
-implementation remains pending separate approval.
+is closed as completed after offline acceptance. Its
+[completion comment](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17#issuecomment-5935469356)
+and parent progress are updated; code and current acceptance documents remain local
+and unpublished until a separately authorized push. The user approved one local
+Ticket 05 feature commit; ignored thesis archives are retained locally.
 
 The [readiness audit](evaluation_readiness_audit.md) checks the 2026-09-28 code checkpoint;
 the [draft module specification](../.scratch/rtpeval/spec.md) records interfaces and remaining
@@ -210,6 +215,7 @@ implementation and evaluation execution still require separate authorization.
 - [Ticket 03 identity contract](../.scratch/rtpeval/identity-implementation-contract.md), [guide](../backend/evaluation/README.md) and [acceptance](../.scratch/rtpeval/ticket-03-acceptance.md): offline identity association, adjudication replay and grounding report; independent live acquisition remains Ticket 04.
 
 - [Ticket 04 snapshot contract](../.scratch/rtpeval/snapshot-contract.md), [guide](../backend/evaluation/README.md) and [acceptance](../.scratch/rtpeval/ticket-04-acceptance.md): injected acquisition, raw persistence and offline replay; no built-in live Google client.
+- [Ticket 05 requirement/schedule contract](../.scratch/rtpeval/requirement-schedule-contract.md), [guide](../backend/evaluation/README.md) and [acceptance](../.scratch/rtpeval/ticket-05-acceptance.md): offline requirement/non-overlap scoring, independent time and occupancy review, descriptive schedule metrics; no five-dimension total or live execution.
 
 - [Transport responsibility smoke and workspace closeout](transport_responsibility_smoke.md):
   three-day Berlin V0-V3 source/binding verification, unexercised live Repair,
