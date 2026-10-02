@@ -98,3 +98,15 @@ axes are clear. Current native target is public-clear-answers-final/review.html 
 the same ignored Ticket 09 artifact directory. User report establishes items 1-2 on
 the preceding renderer; item 3 remains pending against this updated package. Earlier
 unchecked/no-result statements remain their original chronological checkpoints.
+
+## User-confirmed completion - 2026-10-02
+
+At clean documentation base ff00057, the user explicitly reported checklist item 3
+passed after receiving the final clearing-enabled renderer. Earlier reports confirmed
+items 1-2. The accepted recovery sequence is submission/refresh, JSON download,
+confirmed clear/blank refresh and JSON reimport restoring answers/revisions. Combined
+with retained offline gates and clear Standards/Spec rechecks, Ticket 09 acceptance
+is complete. Native observations are user reports; no independent tool browser pass
+or additional test run is claimed. Previous pending statements remain their original
+checkpoints. Issue #21 closed/completed, parent #12 marks 01-09 completed and stays
+open for 10-12; source commits/documents remain local/unpublished, no push or freeze.

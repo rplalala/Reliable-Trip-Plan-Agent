@@ -151,3 +151,25 @@ completed predecessors are byte-identical. No comments, assignment, label, close
 push action. Browser-dependent boxes and the parent Ticket 09 box remain unchecked.
 Details: [clearing acceptance](ticket-09-clear-answers.md). Updated final renderer
 supersedes earlier manual-check examples; commits and records remain local/unpublished.
+
+## Completed native acceptance and Issue closure - 2026-10-02
+
+At clean base ff00057 the user explicitly confirmed the third native checklist item
+passed after receiving the final clearing-enabled package. Earlier user reports
+confirmed items 1-2. The approved development acceptance is complete using these
+user reports plus existing offline test/package/CLI evidence and clear final reviews.
+No new runtime changes or implementation test run; no independent browser pass claimed.
+
+Read #21/#12, updated only the current summaries and live completion criteria through
+the GitHub connector. Marked all five live #21 criteria complete and closed with reason
+completed. Marked the parent Ticket 09 checkbox complete; #12 remains open for10-12.
+Independent fetches exactly matched intended bodies, #21 closed/completed and #12 open,
+original titles/labels/comment counts. Imported source/history and pinned links remain
+unchanged; only the explicitly intended live boxes/parent row were updated. No comments
+or assignment/label action, push, code publication, freeze or later-ticket execution.
+
+Closeout document checks passed: seven English files, 198 local Markdown target
+occurrences, documentation-only scope, exact preserved historical sequences, completed
+current status and diff whitespace. Existing code/test/review evidence is reused at
+d514508; this update introduces no new runtime/test execution. Generated acceptance
+metadata and research archive remain ignored and excluded from the docs commit.

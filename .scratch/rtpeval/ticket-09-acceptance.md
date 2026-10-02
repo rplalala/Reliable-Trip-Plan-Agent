@@ -1,16 +1,25 @@
 # Ticket 09 implementation acceptance
 
-## Current clearing-enabled acceptance - 2026-10-02
+## Completed acceptance - 2026-10-02
 
-The user confirmed native display/time-zone and narrow-window checklist items 1-2
-on public-no-hints, then requested Clear answers to test item 3. The
-[clearing addition](ticket-09-clear-answers.md) commits implementation at 3a2e3d9
+At clean documentation base ff00057, the user reported the third browser checklist
+item passed after receiving public-clear-answers-final/review.html. Together with
+previous user-confirmed display/time-zone and narrow-window items 1-2, this completes
+native development acceptance. Evidence is explicit user reports, not independent
+browser tool observation; file:// restrictions were never circumvented.
+
+The [clearing addition](ticket-09-clear-answers.md) commits implementation at 3a2e3d9
 before review, followed by separate pending-import P2 fix d514508. Final frontend
-98 passed / 13 files in 32.64s; TypeScript/blind build/lint passed. Both final review
-axes are clear. Source/public bytes/mapping and answer/report schemas remain unchanged.
-Current ignored renderer: artifacts/rtpeval/ticket09/public-clear-answers-final/review.html.
-Submit/refresh/download/clear/refresh/reimport and a brief updated-display check still
-require the user; Issue #21 and parent #12 remain open. Earlier sections are history.
+98 passed / 13 files in 32.64s; TypeScript/blind build/lint passed; both final review
+axes are clear. Earlier backend full and scoped package/CLI checks remain separate
+retained evidence. No new implementation test run for this documentation closeout.
+Source/public bytes/mapping, answer/report schemas and V0-V3 paths remain unchanged.
+
+Current accepted synthetic renderer: artifacts/rtpeval/ticket09/public-clear-answers-final/review.html.
+Issue #21 is closed/completed; parent #12 marks 01-09 completed and remains open for
+10-12. Local commits remain unpublished. No real rater, formal comparison, live service/
+native test supplement, push, freeze or later-ticket implementation is included.
+Earlier incomplete/no-result sections below preserve their historical checkpoints.
 
 ## Latest scoped acceptance - 2026-10-02
 

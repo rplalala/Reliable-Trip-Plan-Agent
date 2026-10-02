@@ -71,3 +71,15 @@ target occurrences, final generated package/public-byte/asset-hash/CSP checks, a
 source scope and diff whitespace. Issue #21/#12 exact-body/open-state/unchanged-label/
 comment/history checks passed. No pending native-check result is inferred from these
 checks; final documentation is a separate local commit without generated/ignored data.
+
+## User-confirmed completion - 2026-10-02
+
+At clean documentation base ff00057, the user explicitly reported checklist item 3
+passed after receiving the final clearing-enabled renderer. Earlier reports confirmed
+items 1-2. The accepted recovery sequence is submission/refresh, JSON download,
+confirmed clear/blank refresh and JSON reimport restoring answers/revisions. Combined
+with retained offline gates and clear Standards/Spec rechecks, Ticket 09 acceptance
+is complete. Native observations are user reports; no independent tool browser pass
+or additional test run is claimed. Previous pending statements remain their original
+checkpoints. Issue #21 closed/completed, parent #12 marks 01-09 completed and stays
+open for 10-12; source commits/documents remain local/unpublished, no push or freeze.

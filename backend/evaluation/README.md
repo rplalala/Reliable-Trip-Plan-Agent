@@ -478,23 +478,25 @@ preserves the original no-implementation checkpoint and subsequent scope approva
 ## Ticket 09 local blinded ranking workflow
 
 Current acceptance checkpoint (2026-10-02): implementation and offline Standards/Spec
-reviews are complete; actual native direct-file browser acceptance remains pending.
+reviews are complete; native direct-file browser acceptance is complete by user report.
 Latest UI gate passed 98 tests, TypeScript/blind-review build/lint; the earlier backend
 2299-pass/10-skip gate remains a separate run. The earlier
 [scoped acceptance recheck](../../.scratch/rtpeval/ticket-09-final-acceptance.md) passed
 26 backend and 11 frontend tests, package integrity and synthetic CLI revision replay.
-Issue #21 and parent #12 remain open pending native checks; commits remain local.
+Issue #21 is closed/completed; parent #12 marks 01-09 completed and remains open.
+Native evidence is user-reported; this documentation closeout reruns no code tests.
+Commits remain local/unpublished, with no real rater session or formal evaluation.
 
-For the current synthetic manual check, open
+To reproduce the accepted synthetic check, open
 `artifacts/rtpeval/ticket09/public-clear-answers-final/review.html` directly in a local browser.
 Older generated renderer packages are preserved checkpoints. Verify original request
 and complete A/B/C/D itineraries, time-zone switching and HH:mm dates/clocks, narrow
 layout, submitted-answer/draft recovery after refresh and JSON download/reimport.
 The checks must retain labelled Inferred arrival while showing no Original timestamp
-control or dedicated uncertainty/item/time-warning hints. Report actual results before
-closing acceptance; automated DOM checks alone do not establish native file:// behavior.
-The user confirmed display/time-zone/narrow-window checks on the prior renderer;
-submission/refresh/JSON recovery remains pending on the updated renderer.
+control or dedicated uncertainty/item/time-warning hints. Automated DOM checks alone
+do not establish native file:// behavior. The user confirmed display/time-zone/narrow
+checks on the prior renderer and then confirmed recovery item 3 after the clearing
+addition. These reports complete the manual development acceptance.
 
 Clear answers offers confirmation to erase all local answers, drafts and revisions for
 this review package/rater and return to the first task with a blank form. Download a
@@ -505,7 +507,7 @@ are unchanged. To test recovery: submit, refresh, download JSON, confirm Clear a
 refresh to verify blank answers, then use Import answers JSON to restore the backup.
 Starting fresh does not erase earlier researcher-held revisions; existing contradictory
 same-revision imports remain errors. [Clearing scope and validation](../../.scratch/rtpeval/ticket-09-clear-answers.md)
-records the implementation, separate review fix and remaining native check.
+records the implementation, separate review fix and subsequent user acceptance.
 
 The human track is independent of automatic reports. It reads accepted, exact-byte-linked
 final v0-v3 material and needs neither route/opening snapshots nor complete resource

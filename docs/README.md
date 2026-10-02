@@ -291,17 +291,17 @@ authorization and a reduced metadata payload using the same GitHub interface. Is
 is closed/completed; parent #12 marks 01-08 completed and remains open. Local source/
 documentation commits remain unpublished; no push occurred.
 
-## Ticket 09 blinded ranking: current display and pending acceptance - 2026-10-02
+## Ticket 09 blinded ranking: completed acceptance - 2026-10-02
 
 The independent offline anonymous package, revision-aware answer import, descriptive
 pair/duplicate reports and React renderer are implemented. Current display uses a
 UTC-default IANA selector, converted dates and HH:mm clocks. Original timestamp
 controls and dedicated uncertainty/item/time-warning hints are removed; Inferred
 arrival labels, ordinary source notes/preferences and frozen source facts remain.
-Public/private hashes, answers/scoring and V0-V3 behavior are unchanged.
+Public/private hashes, answer/report schemas, scoring and V0-V3 behavior are unchanged.
 
 Use [package usage](../backend/evaluation/README.md#ticket-09-local-blinded-ranking-workflow)
-for preparation/import/report commands and remaining manual checks.
+for preparation/import/report commands and reproducing the accepted synthetic checks.
 [Consolidated acceptance](../.scratch/rtpeval/ticket-09-acceptance.md) owns the current
 status and preserved validation history. Linked records distinguish
 [preflight](../.scratch/rtpeval/ticket-09-preflight.md),
@@ -318,12 +318,16 @@ Current ignored synthetic package is `artifacts/rtpeval/ticket09/public-clear-an
 package local answers, preserves backups and handles failed writes/late imports.
 Implementation precedes review; the pending-import P2 was fixed separately and both
 rechecks are clear. User-reported display/time-zone/narrow checks passed on the prior
-package. Updated-renderer submit/refresh/clear/JSON recovery still awaits manual
-verification after Browser Use's protocol-policy rejection; no workaround was attempted. Issue #21 and parent #12 stay open; local commits/documents remain unpublished.
+package; the user subsequently confirmed item 3 on the clearing-enabled workflow,
+including submit/refresh, JSON download, clear/blank refresh and JSON reimport.
+Native results are user reports, not independent tool observation; Browser Use's
+file:// rejection was not circumvented. Ticket 09 acceptance is complete; Issue #21
+is closed/completed, parent #12 marks 01-09 completed and remains open for 10-12.
+Local commits/documents remain unpublished; this closeout reruns no implementation tests.
 No real rater session, formal result, live/native supplement, push, freeze or later-ticket
 implementation is included. An earlier
 [scoped acceptance recheck](../.scratch/rtpeval/ticket-09-final-acceptance.md) passed
 26 backend and 11 frontend tests plus exact package/asset and synthetic CLI replay
 checks. Initial backend temporary-directory permissions were resolved using an
-isolated workspace root/cache-disabled rerun; no runtime code changed. Full native
-browser acceptance still awaits the user checklist result.
+isolated workspace root/cache-disabled rerun; no runtime code changed during that
+recheck. The complete observed sequence remains in the linked acceptance records.
