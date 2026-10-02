@@ -1,0 +1,18 @@
+.blind-review { max-width: 1600px; margin: 0 auto; padding: 24px; color: #17263b; background: #f5f7fa; font-family: system-ui, sans-serif; line-height: 1.5; }
+.blind-review * { box-sizing: border-box; }
+.blind-review h1, .blind-review h2, .blind-review h3 { margin-top: 0; }
+.blind-review nav, .blind-review footer, .blind-review .ranks { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+.blind-review .plans { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 24px 0; }
+.blind-review article, .blind-review fieldset, .blind-review section[aria-label="Original request"] { padding: 16px; border: 1px solid #c4cedc; border-radius: 8px; background: white; min-width: 0; }
+.blind-review .item { border-top: 1px solid #dce2eb; padding: 12px 0; }
+.blind-review dl { margin: 8px 0; overflow-wrap: anywhere; }
+.blind-review dt { font-weight: 600; text-transform: capitalize; font-size: .85rem; }
+.blind-review dd { margin: 0 0 8px; white-space: pre-wrap; }
+.blind-review label { display: grid; gap: 4px; }
+.blind-review button, .blind-review select, .blind-review textarea, .blind-review input { font: inherit; padding: 8px; }
+.blind-review textarea { width: 100%; min-height: 60px; }
+.blind-review fieldset { margin-bottom: 12px; }
+.blind-review .uncertainty { background: #fff6df; padding: 6px; font-size: .9rem; }
+.blind-review [role="alert"] { background: #ffe4e0; padding: 12px; }
+@media (max-width: 1100px) { .blind-review .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 650px) { .blind-review { padding: 12px; } .blind-review .plans { grid-template-columns: 1fr; } }
