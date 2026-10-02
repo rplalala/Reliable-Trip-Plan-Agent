@@ -1,10 +1,17 @@
 """Offline, source-linked identity preparation for independent evaluation."""
 
-import re
 import unicodedata
 from collections.abc import Mapping
 from dataclasses import dataclass
 
+from ._addresses import (
+    addresses_agree,
+    components,
+    destination_matches,
+    location_matches,
+    numbered_street,
+)
+from ._claims import competing_title
 from .records import IntakeResult, freeze, text, thaw
 from .records import canonical_digest as _digest
 
@@ -13,6 +20,7 @@ EVIDENCE_VERSION = "rtpeval_identity_evidence_1"
 REVIEW_VERSION = "rtpeval_identity_reviews_1"
 AUDIT_VERSION = "rtpeval_identity_audit_1"
 SUBJECT_SCOPE_VERSION = "required_excluded_fixed_time_1"
+ASSOCIATION_POLICY_VERSION = "structural_claims_typed_addresses_2"
 VERSIONS = ("v0", "v1", "v2", "v3")
 
 
@@ -139,13 +147,6 @@ def _normal(value):
     return " ".join(unicodedata.normalize("NFC", value).casefold().split())
 
 
-def _destination_in_address(destination, address):
-    target = _normal(destination)
-    if target is None or not text(address):
-        return False
-    return target in {_normal(piece) for piece in re.split(r"[,;]", address)}
-
-
 def _candidate(raw):
     if not isinstance(raw, dict):
         return None
@@ -162,6 +163,9 @@ def _candidate(raw):
         "display_name": raw["display_name"],
         "formatted_address": raw["formatted_address"],
         "business_status": raw.get("business_status"),
+        **(
+            {"address_components": raw["address_components"]} if "address_components" in raw else {}
+        ),
     }
 
 
@@ -272,10 +276,7 @@ def _automatic_candidate(ref, record, high_impact):
     if not text(ref["name"]):
         return None, "missing_place_name"
     if ref["name_source"] == "place_name" and text(ref["original_title"]):
-        # Only transparent wording is safe without interpreting free-form prose.
-        title = _normal(ref["original_title"])
-        name = _normal(ref["name"])
-        if title not in (name, "visit " + name):
+        if competing_title(ref["original_title"], ref["name"]):
             return None, "title_association_unverified"
     if ref["claimed_place_id"] is not None and not text(ref["claimed_place_id"]):
         return None, "malformed_claimed_id"
@@ -283,6 +284,11 @@ def _automatic_candidate(ref, record, high_impact):
         return None, "evidence_unavailable"
     details, search = record.get("details"), record.get("search")
     detail_candidate, search_candidates = _evidence_candidates(record)
+    try:
+        for item in ([detail_candidate] if detail_candidate else []) + search_candidates:
+            components(item)
+    except ValueError:
+        return None, "malformed_address_components"
     claimed = ref["claimed_place_id"]
     if text(claimed):
         if not isinstance(details, dict) or details.get("status") != "available":
@@ -294,19 +300,13 @@ def _automatic_candidate(ref, record, high_impact):
         if detail_candidate["place_id"] != claimed:
             return None, "id_response_mismatch"
         candidate = detail_candidate
-        if text(ref["location"]) and not _destination_in_address(
-            ref["location"], candidate["formatted_address"]
-        ):
+        if text(ref["location"]) and not location_matches(ref["location"], candidate):
             return None, "location_association_unverified"
         specific_location = (
             text(ref["location"])
-            and re.fullmatch(
-                r"\d+[a-z]?(?:[-/]\d+[a-z]?)?\s+.+\s+"
-                r"(?:street|st|road|rd|avenue|ave|lane|ln|drive|dr|boulevard|blvd|way|court|ct)\.?",
-                _normal(ref["location"]),
-            )
+            and numbered_street(ref["location"])
             and _normal(ref["location"]) != _normal(ref["destination"])
-            and _destination_in_address(ref["location"], candidate["formatted_address"])
+            and location_matches(ref["location"], candidate)
         )
         if not specific_location:
             if not isinstance(search, dict) or search.get("status") != "available":
@@ -325,9 +325,9 @@ def _automatic_candidate(ref, record, high_impact):
             ):
                 return None, "competing_candidate"
             if any(
-                _normal(item[field]) != _normal(candidate[field])
+                _normal(item["display_name"]) != _normal(candidate["display_name"])
+                or not addresses_agree(item, candidate)
                 for item in search_candidates
-                for field in ("display_name", "formatted_address")
             ):
                 return None, "contradictory_search_evidence"
     else:
@@ -345,11 +345,9 @@ def _automatic_candidate(ref, record, high_impact):
         candidate = search_candidates[0]
     if _normal(candidate["display_name"]) != _normal(ref["name"]):
         return None, "name_mismatch_or_alias"
-    if not _destination_in_address(ref["destination"], candidate["formatted_address"]):
+    if not destination_matches(ref["destination"], candidate):
         return None, "destination_unverified"
-    if text(ref["location"]) and not _destination_in_address(
-        ref["location"], candidate["formatted_address"]
-    ):
+    if text(ref["location"]) and not location_matches(ref["location"], candidate):
         return None, "location_association_unverified"
     return candidate, "strict_association"
 
@@ -604,6 +602,7 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
             {
                 "schema_version": IDENTITY_VERSION,
                 "subject_scope_version": SUBJECT_SCOPE_VERSION,
+                "association_policy_version": ASSOCIATION_POLICY_VERSION,
                 "reference_set_digest": _digest(refs),
                 "batch_id": prepared["batch_id"],
                 "batch_revision": prepared["revision"],

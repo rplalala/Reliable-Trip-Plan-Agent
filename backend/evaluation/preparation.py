@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from .identity import SUBJECT_SCOPE_VERSION, identity_references
+from .identity import ASSOCIATION_POLICY_VERSION, SUBJECT_SCOPE_VERSION, identity_references
 from .records import canonical_digest as stable_id
 from .records import require, text
 
@@ -15,6 +15,7 @@ def identity_ready(intake, identity):
         identity.get("status") not in ("complete", "needs_adjudication")
         or identity.get("schema_version") != "rtpeval_identity_1"
         or identity.get("subject_scope_version") != SUBJECT_SCOPE_VERSION
+        or identity.get("association_policy_version") != ASSOCIATION_POLICY_VERSION
         or identity.get("reference_set_digest") != stable_id(refs)
         or identity.get("source_hashes") != intake["source_hashes"]
         or (identity.get("batch_id"), identity.get("batch_revision"))

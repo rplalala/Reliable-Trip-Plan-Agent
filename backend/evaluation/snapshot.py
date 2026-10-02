@@ -410,6 +410,7 @@ def _place(raw):
         "display_name": name.get("text") if isinstance(name, dict) else None,
         "formatted_address": raw.get("formattedAddress"),
         "business_status": raw.get("businessStatus"),
+        **({"address_components": raw["addressComponents"]} if "addressComponents" in raw else {}),
     }
 
 
@@ -466,12 +467,13 @@ def identity_evidence(snapshot):
 
 def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
     """Inventory canonical venues and candidate legs without choosing departure semantics."""
-    from .identity import IDENTITY_VERSION
+    from .identity import ASSOCIATION_POLICY_VERSION, IDENTITY_VERSION
 
     prepared = _prepared(intake)
     report = identity_report.to_dict() if hasattr(identity_report, "to_dict") else identity_report
     if (
         report.get("schema_version") != IDENTITY_VERSION
+        or report.get("association_policy_version") != ASSOCIATION_POLICY_VERSION
         or report.get("batch_id") != prepared["batch_id"]
         or report.get("batch_revision") != prepared["revision"]
         or report.get("source_hashes") != prepared["source_hashes"]

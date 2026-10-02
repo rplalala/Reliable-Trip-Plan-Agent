@@ -123,6 +123,133 @@ def visit(refs, version, name="Museum A"):
     )
 
 
+@pytest.mark.parametrize(
+    "title", ["Morning at Museum A", "Walking tour of Museum A", "A relaxing morning"]
+)
+@pytest.mark.parametrize("version", ["v0", "v1"])
+def test_structured_place_claim_does_not_require_title_equivalence(intake_batch, title, version):
+    def change(_, results, _save, _root):
+        activity = results[version]["itinerary"]["days"][0]["activities"][0]
+        activity["title"] = title
+        if version != "v0":
+            activity["source_place_id"] = "place-a"
+        return version
+
+    intake = prepared(intake_batch, change)
+    ref = visit(identity_references(intake), version)
+    observation = search(ref, "Museum A")
+    if version != "v0":
+        observation.update(details(ref, "Museum A"))
+    report = resolve_identities(intake, evidence(intake, [observation]), audit_plan=plan(intake))
+    record = next(
+        r for r in report.to_dict()["records"] if r["reference_id"] == ref["reference_id"]
+    )
+    assert record["reason"] == "audit_pending"
+
+
+def address_components(city="Example City", number="10"):
+    return [
+        {"longText": value, "shortText": short, "types": [kind]}
+        for kind, value, short in (
+            ("street_number", number, number),
+            ("route", "Main Street", "Main St"),
+            ("locality", city, city),
+            ("administrative_area_level_1", "State", "ST"),
+            ("country", "Country", "CC"),
+            ("postal_code", "2000", "2000"),
+        )
+    ]
+
+
+def test_independent_address_components_resolve_combined_city_format(intake_batch):
+    intake = prepared(intake_batch)
+    ref = visit(identity_references(intake), "v0")
+    observation = search(ref, "Museum A", address="Example City ST 2000")
+    observation["search"]["candidates"][0]["address_components"] = address_components()
+    report = resolve_identities(intake, evidence(intake, [observation]), audit_plan=plan(intake))
+    record = next(
+        r for r in report.to_dict()["records"] if r["reference_id"] == ref["reference_id"]
+    )
+    assert record["reason"] == "audit_pending"
+
+
+@pytest.mark.parametrize("conflict", [None, "street_number", "postal_code", "missing_route"])
+def test_typed_addresses_compare_facts_across_search_details_formats(intake_batch, conflict):
+    def change(_, results, _save, _root):
+        results["v1"]["itinerary"]["days"][0]["activities"][0].update(
+            source_place_id="place-a", location="10 Main St"
+        )
+        return "v1"
+
+    intake = prepared(intake_batch, change)
+    ref = visit(identity_references(intake), "v1")
+    observation = details(ref, "Museum A")
+    observation["details"]["place"].update(
+        formatted_address="10 Main Street, Example City ST 2000, Country",
+        address_components=address_components(),
+    )
+    observation["search"] = search(ref, "Museum A")["search"]
+    candidate = observation["search"]["candidates"][0]
+    candidate["address_components"] = list(reversed(address_components()))
+    for component in candidate["address_components"]:
+        if conflict in component["types"]:
+            component.update(longText="9999", shortText="9999")
+    if conflict == "missing_route":
+        candidate["address_components"] = [
+            c for c in candidate["address_components"] if "route" not in c["types"]
+        ]
+    report = resolve_identities(intake, evidence(intake, [observation]), audit_plan=plan(intake))
+    record = next(
+        r for r in report.to_dict()["records"] if r["reference_id"] == ref["reference_id"]
+    )
+    assert record["reason"] == (
+        "audit_pending" if conflict is None else "contradictory_search_evidence"
+    )
+
+
+def test_structured_street_conflict_cannot_take_legacy_shortcut(intake_batch):
+    def change(_, results, _save, _root):
+        results["v1"]["itinerary"]["days"][0]["activities"][0].update(
+            source_place_id="place-a", location="10 Main St"
+        )
+        return "v1"
+
+    intake = prepared(intake_batch, change)
+    ref = visit(identity_references(intake), "v1")
+    observation = details(ref, "Museum A")
+    observation["details"]["place"]["address_components"] = address_components(number="20")
+    report = resolve_identities(intake, evidence(intake, [observation]), audit_plan=plan(intake))
+    record = next(
+        r for r in report.to_dict()["records"] if r["reference_id"] == ref["reference_id"]
+    )
+    assert record["reason"] == "location_association_unverified"
+
+
+@pytest.mark.parametrize(
+    "fault,expected",
+    [
+        ("other_city", "destination_unverified"),
+        ("malformed", "malformed_address_components"),
+        ("missing_city", "destination_unverified"),
+    ],
+)
+def test_address_words_do_not_replace_typed_locality(intake_batch, fault, expected):
+    intake = prepared(intake_batch)
+    ref = visit(identity_references(intake), "v0")
+    observation = search(ref, "Museum A", address="Other City ST 2000")
+    candidate = observation["search"]["candidates"][0]
+    typed = address_components(city="Other City")
+    typed[1].update(longText="Example City Road", shortText="Example City Rd")
+    if fault == "missing_city":
+        typed = [c for c in typed if "locality" not in c["types"]]
+    candidate["address_components"] = {} if fault == "malformed" else typed
+    report = resolve_identities(intake, evidence(intake, [observation]), audit_plan=plan(intake))
+    record = next(
+        r for r in report.to_dict()["records"] if r["reference_id"] == ref["reference_id"]
+    )
+    assert record["reason"] == expected
+
+
 def test_fixed_time_subject_participates_in_identity_policy_and_reference_digest(intake_batch):
     manifest, _, write, save, root = intake_batch
     spec = json.loads((root / "requirements.json").read_text(encoding="utf-8"))

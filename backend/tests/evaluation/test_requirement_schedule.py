@@ -88,6 +88,13 @@ def first(report, version="v0"):
     return next(item for item in report["results"] if item["version"] == version)
 
 
+def test_identity_report_requires_current_association_policy(scenario):
+    intake, identity, _ = scenario()
+    stale = identity.to_dict()
+    stale.pop("association_policy_version", None)
+    assert score_requirement_schedule(intake, stale).status == "identity_replay_required"
+
+
 def test_empty_reviewed_requirements_are_na_and_identity_replay_is_explicit(scenario):
     intake, identity, _ = scenario()
     report = score_requirement_schedule(intake, identity).to_dict()

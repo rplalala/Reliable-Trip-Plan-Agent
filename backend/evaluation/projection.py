@@ -3,6 +3,7 @@
 import re
 from datetime import date, datetime
 
+from ._claims import movement_claim, normalized, transport_endpoints
 from .records import require, source, text
 
 ACTIVITY_FIELDS = (
@@ -81,7 +82,7 @@ def classify(raw, review):
     role = raw.get("activity_kind", "unknown")
     place = text(raw.get("place_name")) or text(raw.get("source_place_id"))
     title = raw["title"].strip().casefold()
-    movement_title = bool(re.match(r"(?:walk|walking|drive|driving|take .*|transit)\b", title))
+    movement_title = bool(movement_claim(title))
     visit_title = bool(re.match(r"(?:visit|tour|explore museum)\b", title))
     if (role == "transport" and visit_title) or (role == "main_poi" and movement_title):
         return "unresolved", "unresolved", "role_review_required"
@@ -337,6 +338,21 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
                     and contains(leg["gap_start"], leg["gap_end"], claim["start"], claim["end"])
                 ]
             )
+            endpoints = transport_endpoints(raw)
+            if endpoints:
+                names = {
+                    r["original"]["activity_id"]: normalized(
+                        r["original"].get("place_name") or r["original"]["title"]
+                    )
+                    for r in records
+                }
+                matches = [
+                    leg
+                    for leg in candidates
+                    if leg["adjacency_status"] != "unresolved"
+                    and (names[leg["from_activity_id"]], names[leg["to_activity_id"]]) == endpoints
+                    and contains(leg["gap_start"], leg["gap_end"], claim["start"], claim["end"])
+                ]
         attach(claim, matches, claims)
         if len(matches) != 1:
             report(
@@ -355,6 +371,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
     require(consumed == set(review_map), prefix, "Review points to no activity in this projection")
     return {
         "context": context,
+        "policy_version": "structural_claims_directed_occurrences_2",
         "projection": prefix,
         "wire_version": wire,
         "planner_version": version,

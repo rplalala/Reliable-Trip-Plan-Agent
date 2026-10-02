@@ -167,6 +167,68 @@ def resolved_batch(batch):
     return intake, resolve_identities(intake, envelope, reviews, plan(intake)).to_dict()
 
 
+@pytest.mark.parametrize("component_state", ["available", "absent", "malformed"])
+def test_address_snapshot_replay_never_backfills_or_adds_requests(batch, tmp_path, component_state):
+    from backend.evaluation.identity import resolve_identities
+    from backend.evaluation.snapshot import (
+        AcquisitionPolicy,
+        Response,
+        acquire_snapshot,
+        identity_evidence,
+        load_snapshot,
+    )
+    from backend.tests.evaluation.test_identity import address_components
+    from backend.tests.evaluation.test_identity import plan as audit_plan
+
+    intake = load_batch(batch[2]())
+    request_plan = build_identity_plan(intake)
+    assert len(request_plan["requests"]) == 2
+    sends = []
+
+    async def transport(request):
+        sends.append(request)
+        name = request["parameters"]["query"]
+        place = {
+            "id": name,
+            "displayName": {"text": name},
+            "formattedAddress": "10 Main St, Example City ST 2000, Country",
+        }
+        if component_state != "absent":
+            place["addressComponents"] = (
+                address_components() if component_state == "available" else None
+            )
+        return Response(200, json.dumps({"places": [place]}).encode())
+
+    path = tmp_path / "addresses"
+    asyncio.run(acquire_snapshot(request_plan, path, transport, AcquisitionPolicy(max_sends=2)))
+    before = {p.name: p.read_bytes() for p in (path / "raw").iterdir()}
+    snapshot = load_snapshot(path, expected_plan=request_plan)
+    report = resolve_identities(
+        intake, identity_evidence(snapshot), audit_plan=audit_plan(intake)
+    ).to_dict()
+    reasons = {r["reason"] for r in report["records"]}
+    if component_state == "available":
+        assert sum(r["resolution"] == "resolved" for r in report["records"]) == 7
+        assert reasons == {"strict_association", "audit_pending"}
+    else:
+        assert reasons == {
+            "destination_unverified"
+            if component_state == "absent"
+            else "malformed_address_components"
+        }
+    assert len(sends) == snapshot["ledger"]["actual_sends"] == 2
+    assert before == {p.name: p.read_bytes() for p in (path / "raw").iterdir()}
+
+
+def test_evidence_planning_requires_current_identity_policy(batch):
+    from backend.evaluation.snapshot import build_evidence_plan
+
+    intake, identity = resolved_batch(batch)
+    identity.pop("association_policy_version")
+    with pytest.raises(ValueError, match="Identity report"):
+        build_evidence_plan(intake, identity, [])
+
+
 def test_evidence_union_retains_legs_without_departure_guessing(batch):
     from backend.evaluation.snapshot import build_evidence_plan
 

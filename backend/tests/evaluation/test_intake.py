@@ -149,6 +149,52 @@ def final(result, version="v0"):
     return result.to_dict()["inventory"][0]["runs"][version]["final"]
 
 
+@pytest.mark.parametrize("in_notes", [False, True])
+def test_explicit_v0_endpoints_bind_unique_occurrence_gap(batch, in_notes):
+    _, results, write, _, _ = batch
+    travel = results["v0"]["itinerary"]["days"][0]["activities"][1]
+    travel["notes" if in_notes else "title"] = "Walking from Museum A to Museum B"
+    out = final(load_batch(write("v0")))
+    assert not out["unbound_transport"]
+    assert len(out["legs"][0]["claims"]) == 1
+    assert out["legs"][0]["claims"][0]["mode"] == "WALK"
+
+
+@pytest.mark.parametrize("title", ["Walking tour of Museum A", "A relaxing morning", "Rest"])
+def test_structured_visit_role_survives_descriptive_title(batch, title):
+    _, results, write, _, _ = batch
+    results["v1"]["itinerary"]["days"][0]["activities"][0]["title"] = title
+    out = final(load_batch(write("v1")), "v1")
+    assert out["activities"][0]["evaluation_role"] == "primary_visit"
+    assert len(out["legs"]) == 1
+
+
+@pytest.mark.parametrize(
+    "title,notes,bound",
+    [
+        ("Walking from Museum A to Museum B", "Model estimate; not live verified", True),
+        ("Walking from Museum B to Museum A", "Model estimate", False),
+        ("Walking from Museum A to Museum B", "From Museum B to Museum A", False),
+        ("Walking from Museum A to Museum B Annex", None, False),
+        ("Walking between Museum A and Museum B", None, False),
+    ],
+)
+def test_v0_endpoint_claims_respect_direction_complete_names_and_notes(batch, title, notes, bound):
+    _, results, write, _, _ = batch
+    acts = results["v0"]["itinerary"]["days"][0]["activities"]
+    acts[1].update(title=title, notes=notes)
+    acts.extend(
+        [
+            activity("a2", "Museum A", "12:00", "13:00", place="Museum A"),
+            activity("b2", "Museum B", "13:30", "14:30", place="Museum B"),
+        ]
+    )
+    out = final(load_batch(write("v0")))
+    assert bool(out["legs"][0]["claims"]) is bound
+    assert bool(out["unbound_transport"]) is not bound
+    assert not out["legs"][-1]["claims"]
+
+
 def test_complete_batch_preserves_sources_and_uncertainty(batch):
     _, _, write, _, _ = batch
     result = load_batch(write())
@@ -333,7 +379,7 @@ def test_repeated_actual_journeys_keep_distinct_occurrence_sources(batch):
 def test_review_replay_and_source_order(batch):
     manifest, results, write, save, _ = batch
     acts = results["v0"]["itinerary"]["days"][0]["activities"]
-    acts[1]["title"] = "Walk from Museum A to Museum B"
+    acts[1]["title"] = "A scenic walk between Museum A and Museum B"
     acts.reverse()
     write("v0")
     result = load_batch(write())
