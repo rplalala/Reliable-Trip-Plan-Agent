@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { complete, dimensions, importAnswers, labels, latestAnswer } from "./answers";
 import type { Answer, Bundle, Dimension, Presentation, Response } from "./answers";
+import { DisplayTime, TimeZonePicker } from "./DisplayTime";
 import "./review.css";
 
 type Storage = Pick<globalThis.Storage, "getItem" | "setItem">;
@@ -33,8 +34,10 @@ const names: Record<string, string> = {
   duration_seconds: "Travel duration (seconds)", distance_meters: "Distance (meters)",
   reserve_seconds: "Reserve (seconds)", unknowns: "Uncertainty", calculation_basis: "Duration basis",
 };
-function Fields({ fields }: { fields: Record<string, unknown> }) {
-  return <dl>{Object.entries(fields).map(([key, value]) => <div key={key}><dt>{names[key] ?? key.replaceAll("_", " ")}</dt><dd>{display(value)}</dd></div>)}</dl>;
+const timeFields = new Set(["start_time", "end_time", "departure_time", "arrival_time", "inferred_arrival"]);
+function Fields({ fields, zone }: { fields: Record<string, unknown>; zone: string }) {
+  return <dl>{Object.entries(fields).map(([key, value]) => <div key={key}><dt>{names[key] ?? key.replaceAll("_", " ")}</dt>
+    <dd>{timeFields.has(key) ? <DisplayTime value={value} zone={zone} /> : display(value)}</dd></div>)}</dl>;
 }
 function download(bundle: Bundle) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" }));
@@ -43,6 +46,7 @@ function download(bundle: Bundle) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 export function BlindReview({ presentation, storage }: { presentation: Presentation; storage?: Storage }) {
+  const [zone, setZone] = useState("UTC");
   const key = `blind-review:${presentation.presentation_id}:${presentation.presentation_hash}:${presentation.rater_ref}`;
   const [initial] = useState(() => {
     try {
@@ -90,13 +94,15 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
   }
   return <main className="blind-review">
     <header><h1>Travel plan review</h1><p>Compare the four plans against the original request. Position 1 is best; assign the same position for a tie.</p>
-      <p>Use Unable to judge for insufficient information and Not applicable when a dimension does not apply. Save drafts before changing tasks; download JSON before closing.</p></header>
+      <p>Use Unable to judge for insufficient information and Not applicable when a dimension does not apply. Save drafts before changing tasks; download JSON before closing.</p>
+      <TimeZonePicker value={zone} onChange={setZone} /><p>Times with supplied offsets are shown in {zone} using a 24-hour HH-mm clock and the converted date.
+        Source day headings retain the original grouping. Expand Original timestamp to inspect source values.</p></header>
     <nav aria-label="Task navigation"><button disabled={index === 0} onClick={() => navigate(index - 1)}>Previous task</button>
       <strong>Task {index + 1} of {presentation.tasks.length}</strong><button disabled={index === presentation.tasks.length - 1} onClick={() => navigate(index + 1)}>Next task</button></nav>
-    <section aria-label="Original request"><h2>Original request</h2><Fields fields={task.input} /></section>
+    <section aria-label="Original request"><h2>Original request</h2><Fields fields={task.input} zone={zone} /></section>
     <div className="plans">{labels.map(label => <article key={label} aria-label={`Plan ${label}`}><h2>Plan {label}</h2>
-      {task.plans[label].days.map((day, i) => <section key={i}><h3>{day.date}</h3>{day.items.map((item, n) => <div className="item" key={n}>
-        <strong>{item.kind === "travel" ? "Travel" : "Activity"}</strong><Fields fields={item.fields} />
+      {task.plans[label].days.map((day, i) => <section key={i}><h3>Source day: {day.date}</h3>{day.items.map((item, n) => <div className="item" key={n}>
+        <strong>{item.kind === "travel" ? "Travel" : "Activity"}</strong><Fields fields={item.fields} zone={zone} />
         {item.notices.map((text, j) => <p className="uncertainty" key={j}>{text}</p>)}</div>)}</section>)}</article>)}</div>
     <section aria-label="Your rankings"><h2>Your rankings</h2>{dimensions.map(d => <fieldset key={d}><legend>{d === "preference" ? "Preference match" : d === "pace" ? "Pace" : "Practical usefulness"}</legend>
       <label>Response <select aria-label={`${d}: response`} value={form[d].status} onChange={e => setForm({ ...form, [d]: { ...form[d], status: e.target.value as Response["status"] } })}>
