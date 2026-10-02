@@ -58,7 +58,7 @@ it("travel rows use a neutral heading and explicitly labelled inferred arrival",
   expect(screen.getByText("Travel")).toBeInTheDocument();
   expect(screen.getByText("Inferred arrival")).toBeInTheDocument();
   expect(screen.getByText("Travel duration (seconds)")).toBeInTheDocument();
-  expect(screen.getByText("2020-01-01 10-30")).toBeInTheDocument();
+  expect(screen.getByText("2020-01-01 10:30")).toBeInTheDocument();
 });
 
 it("rater can choose a time zone and see converted clocks and cross-day dates", () => {
@@ -69,11 +69,11 @@ it("rater can choose a time zone and see converted clocks and cross-day dates", 
   render(<BlindReview presentation={material} storage={{ getItem: () => null, setItem: () => {} }} />);
   expect(screen.getByLabelText("Time zone")).toHaveValue("UTC");
   const plan = within(screen.getByRole("article", { name: "Plan A" }));
-  expect(plan.getByText("2020-01-01 21-30")).toBeInTheDocument();
-  expect(plan.getByText("2020-01-01 22-00")).toBeInTheDocument();
+  expect(plan.getByText("2020-01-01 21:30")).toBeInTheDocument();
+  expect(plan.getByText("2020-01-01 22:00")).toBeInTheDocument();
   fireEvent.change(screen.getByLabelText("Time zone"), { target: { value: "Asia/Shanghai" } });
-  expect(plan.getByText("2020-01-02 05-30")).toBeInTheDocument();
-  expect(plan.getByText("2020-01-02 06-00")).toBeInTheDocument();
+  expect(plan.getByText("2020-01-02 05:30")).toBeInTheDocument();
+  expect(plan.getByText("2020-01-02 06:00")).toBeInTheDocument();
   expect(plan.getByText("Source day: 2020-01-01")).toBeInTheDocument();
   expect(material.tasks[0].plans.A.days[0].items[0].fields.start_time).toBe("2020-01-01T23:30:00+02:00");
 });
@@ -86,8 +86,8 @@ it("selected time zone handles daylight saving for departure and inferred arriva
   render(<BlindReview presentation={material} storage={{ getItem: () => null, setItem: () => {} }} />);
   fireEvent.change(screen.getByLabelText("Time zone"), { target: { value: "America/New_York" } });
   const plan = within(screen.getByRole("article", { name: "Plan A" }));
-  expect(plan.getByText("2024-03-10 01-30")).toBeInTheDocument();
-  expect(plan.getByText("2024-03-10 03-30")).toBeInTheDocument();
+  expect(plan.getByText("2024-03-10 01:30")).toBeInTheDocument();
+  expect(plan.getByText("2024-03-10 03:30")).toBeInTheDocument();
   expect(plan.getByText("Inferred arrival")).toBeInTheDocument();
   expect(plan.getByText("Arrival not supplied; inferred time is display arithmetic only")).toBeInTheDocument();
 });
@@ -103,8 +103,8 @@ it("missing zones and invalid timestamps remain explicit without invented conver
   render(<BlindReview presentation={material} storage={{ getItem: () => null, setItem: () => {} }} />);
   fireEvent.change(screen.getByLabelText("Time zone"), { target: { value: "Australia/Sydney" } });
   const plan = within(screen.getByRole("article", { name: "Plan A" }));
-  expect(plan.getByText("2024-03-10 09-15")).toBeInTheDocument();
-  expect(plan.getByText("10-20")).toBeInTheDocument();
+  expect(plan.getByText("2024-03-10 09:15")).toBeInTheDocument();
+  expect(plan.getByText("10:20")).toBeInTheDocument();
   expect(plan.getAllByText("Time zone not supplied; not converted")).toHaveLength(2);
   expect(plan.getAllByText("Time unavailable for conversion; original value retained")).toHaveLength(2);
   expect(plan.getByText("Not supplied")).toBeInTheDocument();
@@ -118,11 +118,11 @@ it("midnight uses zero hours and fractional-offset zones retain minutes", () => 
   }, notices: [] }];
   render(<BlindReview presentation={material} storage={{ getItem: () => null, setItem: () => {} }} />);
   const plan = within(screen.getByRole("article", { name: "Plan A" }));
-  expect(plan.getByText("2024-01-02 00-00")).toBeInTheDocument();
+  expect(plan.getByText("2024-01-02 00:00")).toBeInTheDocument();
   const india = screen.getByRole("option", { name: /^Asia\/(Kolkata|Calcutta)$/ }) as HTMLOptionElement;
   fireEvent.change(screen.getByLabelText("Time zone"), { target: { value: india.value } });
-  expect(plan.getByText("2024-01-02 05-30")).toBeInTheDocument();
-  expect(plan.getByText("2024-01-02 06-00")).toBeInTheDocument();
+  expect(plan.getByText("2024-01-02 05:30")).toBeInTheDocument();
+  expect(plan.getByText("2024-01-02 06:00")).toBeInTheDocument();
 });
 
 it("explicit offsets convert without exposing an original timestamp control", () => {
@@ -133,8 +133,8 @@ it("explicit offsets convert without exposing an original timestamp control", ()
   render(<BlindReview presentation={material} storage={{ getItem: () => null, setItem: () => {} }} />);
   fireEvent.change(screen.getByLabelText("Time zone"), { target: { value: "Asia/Shanghai" } });
   const plan = within(screen.getByRole("article", { name: "Plan A" }));
-  expect(plan.getByText("2024-01-02 05-30")).toBeInTheDocument();
-  expect(plan.getByText("2024-01-02 06-00")).toBeInTheDocument();
+  expect(plan.getByText("2024-01-02 05:30")).toBeInTheDocument();
+  expect(plan.getByText("2024-01-02 06:00")).toBeInTheDocument();
   expect(screen.queryAllByText("Original timestamp")).toHaveLength(0);
   expect(plan.queryByText("2024-01-01T23:30:00+0200")).not.toBeInTheDocument();
   expect(plan.queryByText("2024-01-02T00:00:00+02")).not.toBeInTheDocument();

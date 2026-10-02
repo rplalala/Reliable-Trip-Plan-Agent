@@ -95,7 +95,7 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
   return <main className="blind-review">
     <header><h1>Travel plan review</h1><p>Compare the four plans against the original request. Position 1 is best; assign the same position for a tie.</p>
       <p>Use Unable to judge for insufficient information and Not applicable when a dimension does not apply. Save drafts before changing tasks; download JSON before closing.</p>
-      <TimeZonePicker value={zone} onChange={setZone} /><p>Times with supplied offsets are shown in {zone} using a 24-hour HH-mm clock and the converted date.
+      <TimeZonePicker value={zone} onChange={setZone} /><p>Times with supplied offsets are shown in {zone} using a 24-hour HH:mm clock and the converted date.
         Source day headings retain the original grouping.</p></header>
     <nav aria-label="Task navigation"><button disabled={index === 0} onClick={() => navigate(index - 1)}>Previous task</button>
       <strong>Task {index + 1} of {presentation.tasks.length}</strong><button disabled={index === presentation.tasks.length - 1} onClick={() => navigate(index + 1)}>Next task</button></nav>

@@ -36,3 +36,23 @@ passed. The same regression verifies compact/hour-only offset conversion remains
 correct without exposing valid raw ISO strings. No backend or product-route change.
 Implementation/direct tests and this scope record are committed before review;
 review and final package evidence will be appended at their actual checkpoints.
+
+## Subsequent user clock-format correction
+
+During closeout, the user explicitly corrected the desired clock format to HH:mm.
+This supersedes the earlier HH-mm request for current display. Use colon-separated
+24-hour clocks for converted timestamps and valid missing-zone local clocks; retain
+dates, source grouping, uncertainty, parsing and Original timestamp removal. Original
+source strings, artifacts, answer schemas and scoring remain unchanged. The existing
+UI test's expected literals were updated; the selected inferred-arrival regression
+first failed for 10:30 because the UI still displayed 10-30 (1 failed, 7 not selected).
+The renderer and its instruction now use HH:mm. Actual final results will be recorded
+after validation; the earlier 94-test removal gate is a separate checkpoint.
+
+Original timestamp removal commit 6725071 received independent Standards/Spec reviews:
+zero documented/actionable Standards findings and zero Spec findings. The Spec reviewer
+independently checked converted offsets, missing zones, invalid values and removed raw
+valid strings; no full-test rerun or browser acceptance by reviewers is claimed.
+After the user format correction, final full frontend: 94 passed / 13 files in 36.49s.
+TypeScript, final blind build and lint passed. The format change/direct expected literals
+and this accepted correction record are committed separately before its final review.
