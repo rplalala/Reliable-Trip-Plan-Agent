@@ -322,9 +322,15 @@ browser acceptance remains pending against public-timezone-final/review.html.
 
 Subsequent [user-requested display cleanup](../.scratch/rtpeval/ticket-09-display-cleanup.md)
 removes Original timestamp controls/instructions and adopts the corrected HH:mm format.
-Frozen source material and source-travel uncertainty/inferred-arrival notices remain.
+Frozen source material and source-travel uncertainty/inferred-arrival records remain.
 Use its latest synthetic package and actual validation/review record for current display;
 the earlier time-zone package is a preserved checkpoint.
 Current cleanup: frontend 94 tests passed, TypeScript/blind build/lint passed, both
 review axes clear. Final synthetic package is public-display-final/review.html;
 actual direct-file/responsive/refresh/export/import evidence remains pending.
+
+Latest [user uncertainty-hint removal](../.scratch/rtpeval/ticket-09-uncertainty-display.md)
+hides dedicated unknowns, item notices and time-warning text while retaining source
+material, ordinary notes/preferences, Inferred arrival label and HH:mm/time-zone display.
+Frontend 94 tests, TypeScript/blind build/lint passed; Standards/Spec reviews clear.
+Current synthetic renderer: public-no-hints/review.html; actual browser acceptance pending.

@@ -36,3 +36,32 @@ TypeScript, blind build and lint passed. Existing regressions verify inference/t
 DST/compact-offset/unknown-zone/raw-invalid values and answer revision behavior.
 Implementation/direct tests/scope are committed before Standards/Spec review; actual
 review, final artifact and tracker closeout results will be appended when available.
+
+## Committed review and closeout checkpoint
+
+f1f0cc0 (fix: hide uncertainty hints in blinded review) commits implementation/direct
+tests/scope before review. Standards: zero documented breaches and actionable heuristics.
+Spec: zero missing/wrong/unrequested behaviors under the new user request. Spec independently
+rendered the real UI and observed hidden fields/notices/time warnings, retained inferred
+label/local clocks/raw-invalid/missing values/source notes/preferences/duration basis,
+and unchanged presentation JSON. Reviews were read-only; no repeated full/browser pass.
+
+Generated ignored artifacts/rtpeval/ticket09/public-no-hints/review.html with final
+renderer. validation-no-hints.json records code/asset hashes and hidden-hint flags;
+exact public JSON bytes/hash and private mapping remain unchanged. Previous packages
+remain preserved. Actual complete direct-file/responsive/refresh/export/import evidence
+is still pending; the final package supersedes earlier manual-check examples.
+
+Issue #21 and parent #12 updates were independently fetched to verify intended exact
+bodies, open states and original labels. The live first renderer criterion now records
+retained source uncertainty in frozen material and explicitly user-requested UI hint
+suppression; imported historical criteria/source and pinned links are unchanged.
+Browser-dependent criteria and parent Ticket 09 checkbox remain unchecked. New public
+summaries omit detailed local revision/test metadata. No comment, assignment, close,
+push, live/native supplement, formal study, freeze or later-ticket execution occurred.
+
+Final closeout checks: seven English documents and 196 local Markdown target
+occurrences passed, as did diff whitespace. Backend executable code, scripts and
+dependency manifests have no diff against the review base. Final documentation is
+a separate local commit; ignored renderer/validation/archive files are excluded.
+No automated result completes the pending actual browser gate.

@@ -514,8 +514,8 @@ their converted date and a 24-hour HH:mm clock, including midnight and daylight-
 changes. Source day headings retain original grouping; they are not converted dates.
 Following the user's display-cleanup request, the optional Original timestamp control
 and its instructions are removed. Exact source strings remain in the frozen material.
-Local timestamps/clocks without a supplied offset are not converted and state the missing zone;
-invalid dates/clocks remain original values with a conversion-unavailable notice.
+Local timestamps/clocks without a supplied offset are not converted; invalid dates/
+clocks remain original values and missing values display Not supplied.
 Date-only request values and free-text notes are unchanged. Zone selection is a view
 preference for the current window; it does not rewrite frozen public/private artifacts,
 answer revisions/exports or automatic reports. Runtime time-zone names/rules come from
@@ -524,6 +524,13 @@ local Intl data; the renderer makes no external request or inferred destination 
 records this separately approved extension.
 [Display cleanup](../../.scratch/rtpeval/ticket-09-display-cleanup.md) records the user's
 subsequent timestamp-control removal and HH:mm format correction.
+
+The user's subsequent [uncertainty hint removal](../../.scratch/rtpeval/ticket-09-uncertainty-display.md)
+hides the dedicated Uncertainty/unknowns field, all item notices and time-conversion
+warning text. Inferred arrival remains labelled, while HH:mm clocks, dates and the
+time-zone selector remain. Ordinary source notes/preferences and duration basis remain
+source text. Frozen public/private material still retains unknowns/notices and exact
+hashes; UI suppression neither verifies a claim nor rewrites answers/scoring.
 
 Preparation is researcher-only. Its `fields` list records `field_ref`, exact source-file
 `source_sha256`, source pointer, `original`, canonical `original_sha256` and likely leakage

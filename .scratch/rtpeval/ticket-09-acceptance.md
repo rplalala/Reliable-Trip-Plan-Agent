@@ -166,3 +166,13 @@ Current ignored synthetic public-display-final/review.html supersedes previous p
 for pending manual browser acceptance. Source bytes/hashes, public/mapping and answers
 are unchanged. Source travel uncertainty and the distinct inferred-arrival notice remain;
 the screenshot is not full visual/resume/export/import evidence. Issue #21 remains open.
+
+## Subsequent explicit uncertainty-hint removal
+
+[Current display acceptance](ticket-09-uncertainty-display.md) records the user's request
+to hide dedicated unknowns/item/time-warning hints. Source JSON and ordinary notes,
+inference labels, times and answers remain. The selected UI regression first failed
+because Uncertainty still rendered; final full frontend 94 passed / 13 files in 25.49s,
+TypeScript/blind build/lint passed. f1f0cc0 precedes independent clear Standards/Spec
+reviews. Current ignored public-no-hints/review.html supersedes earlier examples;
+actual complete file:// browser acceptance remains pending. No new backend/live run.

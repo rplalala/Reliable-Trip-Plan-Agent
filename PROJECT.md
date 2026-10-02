@@ -332,13 +332,23 @@ actual direct-file browser acceptance remains pending and Issue #21 remains open
 The user's subsequent [display cleanup](.scratch/rtpeval/ticket-09-display-cleanup.md)
 removes Original timestamp controls/helper text and corrects the clock separator to
 HH:mm. Source strings remain in frozen artifacts; missing/invalid evidence and the
-distinct source-travel uncertainty/inferred-arrival notices remain visible. No source,
+source-travel uncertainty/inferred-arrival records remain in frozen material. No source,
 answer or scorer rewrite is included. The current synthetic package and exact final
 tests/review/commit checkpoint are recorded in the cleanup acceptance.
 Removal and formatting were locally committed at 6725071/7809b33 before their reviews;
 both review axes are clear. Final cleanup frontend 94 passed / 13 files in 36.49s,
 TypeScript/blind build/lint passed. Current ignored public-display-final/review.html
 supersedes older synthetic renderer examples; actual browser acceptance is still pending.
+
+The user subsequently requested [uncertainty hint removal](.scratch/rtpeval/ticket-09-uncertainty-display.md).
+Current renderer hides the dedicated unknowns field, item notices and time warnings;
+ordinary source notes, Inferred arrival label, HH:mm clocks and time-zone behavior remain.
+Unknown-zone times stay local and invalid/missing values are not fabricated. Original
+source/public/private uncertainty data, hashes, answers/reports and V0-V3 behavior are
+unchanged. Implementation/direct tests committed at f1f0cc0 before clear Standards/Spec
+reviews. Current frontend gate: 94 passed / 13 files in 25.49s; TypeScript/blind build/
+lint passed. Current synthetic package is public-no-hints/review.html; actual browser
+acceptance remains pending, and Issue #21 stays open. No push or live/native supplement.
 
 ## 7. Keeping this file current
 

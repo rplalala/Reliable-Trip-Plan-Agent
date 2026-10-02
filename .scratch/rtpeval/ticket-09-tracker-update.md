@@ -84,3 +84,15 @@ Existing source/history/pinned links/criteria and completed predecessors are unc
 browser-dependent criteria and the parent Ticket 09 box remain unchecked. Detailed
 code/test metadata remain local. Final synthetic display package is the new pending
 manual-check target. No push or publication of code/documents occurred.
+
+## Explicit uncertainty-hint removal synchronization — 2026-10-02
+
+At code f1f0cc0 with final documentation uncommitted, inspected current #21/#12 bodies
+and unchanged prior comment context. Updated them through the GitHub connector with
+the user's dedicated hint suppression, retained source data/time labels, passing
+frontend checks and clear independent reviews. Adjusted only the live first renderer
+criterion to the superseding UI request; imported source criteria/history, published
+links and completed predecessors remain intact. Independent reads matched exact intended
+bodies, open states and original labels. Browser-dependent criteria remain unchecked.
+No comment/assignment/close action or code publication; commits remain local, no push.
+Detailed actual evidence: [current acceptance](ticket-09-uncertainty-display.md).

@@ -196,3 +196,13 @@ times and source uncertainty/inferred-arrival notices retain their explicit evid
 No source, public/private schema, presentation hash, answer or scorer change is made.
 [Cleanup acceptance](ticket-09-display-cleanup.md) records the superseding UI rules and
 actual validation; earlier inspectable-control/HH-mm records remain historical.
+
+## Subsequent user uncertainty-hint removal — 2026-10-02
+
+The user explicitly requested no dedicated uncertainty-factor hints. Current renderer
+suppresses unknowns fields, all item notice blocks and displayed-time warning text.
+Inferred arrival label, date/HH:mm/time-zone behavior, local unknown-zone clocks and
+raw invalid/missing values remain; ordinary source notes/preferences are not rewritten.
+Frozen public/private/source JSON retains uncertainty/notices and exact hashes; answer/
+report/scorer schemas and facts are unchanged. This supersedes earlier hint-visibility
+UI rules only. [Current acceptance](ticket-09-uncertainty-display.md) records validation.
