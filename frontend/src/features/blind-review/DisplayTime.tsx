@@ -45,6 +45,5 @@ export function DisplayTime({ value, zone }: { value: unknown; zone: string }) {
   if (value === null || value === undefined) return <>Not supplied</>;
   if (typeof value !== "string") return <>{JSON.stringify(value)} <span className="uncertainty">Time unavailable for conversion</span></>;
   const result = formattedTime(value, zone);
-  return <><span>{result.text}</span>{result.notice && <p className="uncertainty">{result.notice}</p>}
-    <details className="original-time"><summary>Original timestamp</summary>{value}</details></>;
+  return <><span>{result.text}</span>{result.notice && <p className="uncertainty">{result.notice}</p>}</>;
 }

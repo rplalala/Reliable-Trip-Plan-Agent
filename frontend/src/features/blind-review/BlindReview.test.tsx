@@ -125,7 +125,7 @@ it("midnight uses zero hours and fractional-offset zones retain minutes", () => 
   expect(plan.getByText("2024-01-02 06-00")).toBeInTheDocument();
 });
 
-it("explicit compact and hour-only offsets convert while original strings remain inspectable", () => {
+it("explicit offsets convert without exposing an original timestamp control", () => {
   const material = structuredClone(presentation);
   material.tasks[0].plans.A.days[0].items = [{ kind: "activity", fields: {
     start_time: "2024-01-01T23:30:00+0200", end_time: "2024-01-02T00:00:00+02",
@@ -135,6 +135,7 @@ it("explicit compact and hour-only offsets convert while original strings remain
   const plan = within(screen.getByRole("article", { name: "Plan A" }));
   expect(plan.getByText("2024-01-02 05-30")).toBeInTheDocument();
   expect(plan.getByText("2024-01-02 06-00")).toBeInTheDocument();
-  expect(plan.getByText("2024-01-01T23:30:00+0200")).toBeInTheDocument();
-  expect(plan.getByText("2024-01-02T00:00:00+02")).toBeInTheDocument();
+  expect(screen.queryAllByText("Original timestamp")).toHaveLength(0);
+  expect(plan.queryByText("2024-01-01T23:30:00+0200")).not.toBeInTheDocument();
+  expect(plan.queryByText("2024-01-02T00:00:00+02")).not.toBeInTheDocument();
 });
