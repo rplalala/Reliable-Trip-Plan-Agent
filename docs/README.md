@@ -300,5 +300,14 @@ the latest valid complete submitted revision as the effective answer. Original t
 facts and uncertainty remain; older answers are audit-only. Missing arrivals may additionally
 show explicitly labelled source-departure-plus-duration inference, preserving the absent
 original field and never becoming scorer input. Preflight is complete; implementation
-scope approval is pending. Existing intake checks passed 56 tests / 1 host symlink skip.
-No Ticket 09 implementation, renderer prototype, rater session or formal result exists.
+scope approval was subsequently granted for independent offline implementation and local
+commits without push. [Acceptance](../.scratch/rtpeval/ticket-09-acceptance.md) and
+[package usage](../backend/evaluation/README.md#ticket-09-local-blinded-ranking-workflow)
+describe implemented source-linked display review, separate public/private packages,
+effective answer revisions and mapped pair/duplicate reports. Dedicated backend/frontend
+checks passed 26/6 tests; final full backend 2299 passed/10 skipped and frontend 89 passed,
+with both builds/Ruff/lint passing. Implementation commits 6095877/d36b52d precede review;
+Spec found one transport representation leak, corrected by separate fix 5f43b5d.
+Both review rechecks are clear. Actual file:// browser acceptance
+is pending user verification after Browser Use's protocol-policy rejection. No workaround,
+real rater session, formal result, live/native supplement, push or freeze occurred.

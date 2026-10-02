@@ -157,3 +157,21 @@ inference notice. No new route evidence/provider call, timezone assumption or hi
 reserve is added. The source arrival remains absent, and the computed display value
 never becomes a planner claim or scorer input. A supplied arrival is never overwritten.
 This specializes blind display only; it does not relax quality projection rules.
+
+## Ticket 09 executable wire — 2026-10-02
+
+The approved offline seams now implement `rtpeval_human_preparation_1`,
+`rtpeval_human_config_1`, `rtpeval_human_display_reviews_1`, `rtpeval_human_package_1`,
+`rtpeval_human_mapping_1`, `rtpeval_human_answer_1`, `rtpeval_human_answers_1`,
+`rtpeval_human_import_1` and `rtpeval_human_report_1`. Answer records retain
+answer_schema_version; bundle/package/report roots use schema_version. Public batch
+identifiers are opaque aliases and presentation_hash links exact frozen public content.
+The private mapping retains source hashes, prospective preparation, complete display
+review, actual label assignments and duplicate references. New complete submitted
+answer_revision supersedes old effective answers while draft/history records remain
+separate. Import conflicts reject the whole requested material rather than reducing it.
+Mapped pair counters/missingness and duplicate consistency remain descriptive outputs.
+Use explicit aware generated_at for pure report replay; CLI may generate UTC metadata.
+[Package usage](../../backend/evaluation/README.md#ticket-09-local-blinded-ranking-workflow)
+documents executable fields/commands. [Acceptance](ticket-09-acceptance.md) owns actual
+validation/review/browser status; implementation does not authorize real assessment.

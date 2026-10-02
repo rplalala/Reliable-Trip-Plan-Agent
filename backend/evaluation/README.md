@@ -474,3 +474,66 @@ source/report hashes may change, and stale evidence remains invalid.
 [Acceptance](../../.scratch/rtpeval/ticket-08-acceptance.md) records actual red/green,
 regression, review, commits and limits. The [preflight](../../.scratch/rtpeval/ticket-08-preflight.md)
 preserves the original no-implementation checkpoint and subsequent scope approval.
+
+## Ticket 09 local blinded ranking workflow
+
+The human track is independent of automatic reports. It reads accepted, exact-byte-linked
+final v0-v3 material and needs neither route/opening snapshots nor complete resource
+observations. Use only synthetic development material until real assessment is approved.
+
+Configuration uses `schema_version=rtpeval_human_config_1`, three opaque 32-character
+lowercase hexadecimal identifiers (`public_batch_id`, `presentation_id`, `rater_ref`),
+positive integer `revision`, explicit integer `seed`, positive `duplicate_min_gap` and
+an ordered `tasks` array. A main entry is `{"group_id":"g"}`; a duplicate entry adds
+`"duplicate_of":0`, the zero-based original main-task index. Repeated main groups,
+references to duplicates, unknown groups and insufficient spacing are errors. There
+are no fixed task/sample quotas. Seeded shuffled Latin blocks balance version/label
+positions across all shown tasks; main/duplicate/combined counts are private diagnostics.
+Use a fresh presentation identifier/revision when preparing a new assessment.
+
+```powershell
+npm --prefix frontend run build:blind-review
+.venv/Scripts/python.exe -m backend.evaluation.human_cli prepare delivery/manifest.json selection.json --out preparation.json
+.venv/Scripts/python.exe -m backend.evaluation.human_cli package delivery/manifest.json selection.json display-review.json --out public-review --private-out private-mapping.json --renderer-js frontend/dist-blind-review/review.js --renderer-css frontend/dist-blind-review/review.css
+.venv/Scripts/python.exe -m backend.evaluation.human_cli import public-review/presentation.json private-mapping.json answers.json --out imported-revisions.json
+.venv/Scripts/python.exe -m backend.evaluation.human_cli report public-review/presentation.json private-mapping.json answers.json --generated-at 2026-10-02T10:00:00+10:00 --out human-report.json
+```
+
+All output paths must be new. The public directory contains only `review.html` and
+`presentation.json`; keep mapping/preparation/review files outside it and give only the
+public files to the rater. Open `review.html` directly in a local browser; no server,
+account, CDN, hosted submission or database is needed. Runtime CSP blocks network access.
+Source text renders as inert text and dates/offsets are preserved. Missing arrivals may
+add an explicitly labelled inferred arrival from supplied valid departure/duration;
+the original arrival remains absent and inference never feeds automatic scoring.
+
+Preparation is researcher-only. Its `fields` list records `field_ref`, exact source-file
+`source_sha256`, source pointer, `original`, canonical `original_sha256` and likely leakage
+flags. A review has `schema_version=rtpeval_human_display_reviews_1`, the exact
+`preparation_hash`, `reviewer_ref`, aware `reviewed_at`,
+`preserves_facts_and_uncertainty=true`, `redactions` and `allowed_flags` arrays.
+Each redaction names the field and both hashes, with `display_text` and `reason`.
+Only remove explicit version/provider/internal-review identifiers; keep travel facts
+and uncertainty. An allowed flag uses the same field/hash linkage and reason for a
+legitimate name or meaning resembling an identifier; it is not permission to expose
+version metadata. Review the entire prospective material, including unflagged prose;
+lexical checks cannot guarantee semantic blinding. Unresolved flagged text blocks delivery.
+Changing original bytes requires relinking the delivered batch and repeating review.
+
+Rank each dimension with positions 1-4, equal positions for ties, or an explicit
+unable-to-judge/N/A response. Save drafts before navigating and download JSON before
+closing. Local storage is best-effort; a failure is visible and portable JSON remains
+available. Import is atomic and validates the exact presentation/rater, states and
+rank partition. Corrections create a higher complete submitted revision; it supersedes
+old effective answers while old revisions stay audit-only. Drafts do not supersede
+submissions; importing identical revisions is idempotent and contradictory same-revision
+content blocks processing. Multiple answer files can be supplied to import/report.
+
+The researcher report preserves effective revisions/hashes, all retained revisions,
+six mapped pair outcomes per assessable dimension, available denominators and distinct
+missing/unjudgeable/N/A/draft-only counts. Hidden duplicates contribute version-based
+consistency only; no comparable pairs yields null agreement. Pairs from one request
+are correlated. No overall human score, inferential analysis or automatic-quality
+integration is supplied. Frozen mapping hashes verify integrity, not cryptographic
+authorship. [Acceptance](../../.scratch/rtpeval/ticket-09-acceptance.md) records actual
+test/review/browser evidence and remaining limitations.

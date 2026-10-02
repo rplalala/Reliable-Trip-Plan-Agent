@@ -258,3 +258,11 @@ are selected for a local docs commit; the ignored historical archive is not forc
 No implementation review is claimed for this documentation-only preflight. Implementation
 approval would activate TDD, bounded synthetic checks, commit-before-dual-review and
 separate correction commits; it would not authorize push or actual rater assessment.
+
+## Subsequent implementation approval — 2026-10-02
+
+The user explicitly approved implementation within this preflight scope, automatic local
+commits and no push. Earlier no-implementation/approval-pending statements describe the
+preflight checkpoint. [Implementation acceptance](ticket-09-acceptance.md) now owns actual
+red/green, regressions, separate implementation commits, Standards/Spec review and remaining
+browser evidence. This approval does not grant real rater assessment or formal comparison.

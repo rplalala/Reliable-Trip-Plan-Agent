@@ -109,7 +109,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | 06: Opening checks | Offline parser/scorer/CLI implemented under the 2026-10-02 approval; offline acceptance complete; Standards/Spec reviews clear, full regression 2148 passed / 10 skipped; all ten skips passed in subsequently approved scoped supplements; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) closed as completed; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) |
 | 07: Route checks | Offline preparation/scorer/CLI implemented and validated; longest unstated-departure fragment, zero-grace hard boundaries and decisive partial FAIL; Standards/Spec reviews clear; 86 dedicated tests passed; approved existing-test repair removes the former exclusion, latest unfiltered backend gate 2234 passed / 10 skipped / zero deselections; implementation and repair committed locally under the approved three-group closeout; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) closed/completed; [acceptance](.scratch/rtpeval/ticket-07-acceptance.md) |
 | 08: Multimetric report | Approved offline report/CLI implemented; 39 dedicated tests passed; full offline gate 2273 passed / 10 skipped / zero deselections; committed at 5625f81 before clear Standards/Spec reviews; exact shared-mask verified scores and separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) closed/completed; [acceptance](.scratch/rtpeval/ticket-08-acceptance.md) |
-| 09: Blinded ranking | Specification preflight complete; researcher display preparation, labelled display-only inferred arrival and latest-submitted-answer rules accepted; [preflight](.scratch/rtpeval/ticket-09-preflight.md); implementation scope approval pending |
+| 09: Blinded ranking | Approved independent offline package/import/report and React renderer implemented; dedicated backend 26 passed and frontend 6 passed; final offline gates 2299 backend passed / 10 skipped and 89 frontend passed; pre-review implementation commits and separate privacy fix retained; both reviews clear after correction; actual file:// browser acceptance pending; [acceptance](.scratch/rtpeval/ticket-09-acceptance.md); Issue #21 stays open |
 | 10-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
@@ -284,8 +284,8 @@ Local implementation/docs are unpublished; no push or freeze occurred during Tic
 
 ### Ticket 09 specification preflight — 2026-10-02
 
-The user authorized [specification preflight](.scratch/rtpeval/ticket-09-preflight.md),
-not implementation. Existing product itinerary rendering exposes provenance and can
+The user completed [specification preflight](.scratch/rtpeval/ticket-09-preflight.md)
+and subsequently approved implementation with local commits and no push. Existing product itinerary rendering exposes provenance and can
 omit unbound transfers; the proposed local anonymous renderer requires a separate
 source-preserving display boundary. Researcher preparation/redaction is accepted,
 with private source linkage and preserved travel facts/uncertainty. New complete
@@ -293,10 +293,24 @@ submitted answer revisions supersede old effective answers; older revisions rema
 audit-only, drafts do not supersede submissions, and same-revision conflicts are errors.
 Missing source arrivals may additionally show explicitly labelled departure-plus-duration
 inference; this preserves the missing original field and never becomes scorer input.
-The independent offline package/import/report interfaces and bounded synthetic checks
-remain proposed until implementation scope approval. Existing offline intake regression
-passed 56 tests / 1 host symlink skip; no new module, frontend, browser build, real rater,
-formal comparison, live/native supplement or planner/scorer change is claimed.
+The independent offline package/import/report and React renderer now implement these
+rules, frozen balanced anonymous assignments, source-authoritative transport display,
+ties/unjudgeable/N/A/drafts, save/resume and JSON backup/import, effective submitted
+revisions, six mapped pairs and separate hidden-duplicate consistency. Original source
+bytes, product routes and planner/scorer behavior remain unchanged. Dedicated checks
+passed 26 backend and 6 frontend tests. Final committed post-review full gates passed
+2299 backend tests / 10 skipped and 89 frontend tests; both static builds, Ruff,
+compilation and lint passed. Implementation commits 6095877/d36b52d precede dual review;
+Spec's single P1 exposed transport-source display differences. Separate fix 5f43b5d
+unifies neutral Travel/time/duration fields and private batch-alias linkage. Standards
+and Spec rechecks have no residual findings. Human reports remain independent of the
+automatic quality report; V0-V3 behavior and execution paths remain unchanged.
+
+Browser Use explicitly rejected file:// navigation; no workaround was attempted.
+Manual synthetic direct-file display/narrow layout/refresh/download/reimport acceptance
+is pending. [Acceptance](.scratch/rtpeval/ticket-09-acceptance.md) owns the actual sequence,
+limits and local commit/review record. Issue #21 and parent #12 remain open. No actual
+rater session, formal comparison, live/native supplement, push or freeze is authorized.
 
 ## 7. Keeping this file current
 

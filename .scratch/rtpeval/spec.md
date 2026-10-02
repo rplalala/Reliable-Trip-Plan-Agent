@@ -307,3 +307,14 @@ closed as completed and parent #12 reflects Tickets 01-05 complete. The
 comment. Implementation and current documents are local and unpublished; no push,
 live service or later-ticket implementation is included. Migration snapshots and
 earlier authorization statements retain their historical meaning.
+
+## Ticket 09 approved offline implementation — 2026-10-02
+
+Following completed [preflight](ticket-09-preflight.md), the user approved independent
+offline anonymous presentation, source-linked researcher display preparation, labelled
+arrival inference, revision-aware answer import and researcher-only pair/duplicate reports.
+[Executable wire](artifact-contract.md#ticket-09-executable-wire--2026-10-02) and
+[package usage](../../backend/evaluation/README.md#ticket-09-local-blinded-ranking-workflow)
+define implemented interfaces; [acceptance](ticket-09-acceptance.md) records actual checks
+and remaining browser evidence. No planner/scorer change, real rater session, formal
+comparison, live acquisition, freeze, push or later ticket is included.

@@ -33,3 +33,28 @@ not authorize implementation, real assessment, formal analysis or publication.
 
 Detailed local meaning remains in [preflight](ticket-09-preflight.md), the artifact/
 projection contracts and PROJECT.md. No push, PR, branch switch or freeze occurred.
+
+## Subsequent approved implementation synchronization — 2026-10-02
+
+After explicit implementation approval, current code is locally committed through
+4be6e01; documentation/acceptance updates remain uncommitted at this checkpoint.
+Read both current Issues and their comments, then updated Issue #21 and parent #12
+through the GitHub connector within the approved related-tracker scope. New public
+summaries record implemented independent package/import/report/UI, passing offline
+checks and commit-before-review with a separate transport-display correction and clear
+rechecks. Detailed test/revision metadata remain local rather than newly published.
+
+Both writes succeeded without approval rejection. Independent fetches matched each
+intended body exactly and retained open states and original labels. Issue #21 marks
+the first three implementation criteria checked; save/resume/export/import and the
+pair-report/visual-inspection criterion remain unchecked pending actual direct-file
+browser acceptance. Pair derivation, duplicate handling and public metadata inspection
+already passed offline validation; no real rating or visual pass is inferred.
+Parent Ticket 09 remains unchecked and identifies implemented/reviewed offline work
+with manual browser acceptance pending. Completed Tickets 01-08 remain unchanged.
+
+Migration markers, original imported source bytes, pinned links and historical checkpoints
+were preserved. No comment, assignment, label change, duplicate Issue, close action or
+code publication occurred. User manual verification targets only the final synthetic
+package documented in [acceptance](ticket-09-acceptance.md). No push or later ticket
+execution occurred; these tracker writes do not complete the missing browser gate.
