@@ -1,6 +1,5 @@
 """Offline, source-linked identity preparation for independent evaluation."""
 
-import unicodedata
 from collections.abc import Mapping
 from dataclasses import dataclass
 
@@ -11,7 +10,8 @@ from ._addresses import (
     location_matches,
     numbered_street,
 )
-from ._claims import competing_title
+from ._claims import claim_evidence, competing_title
+from ._claims import normalized as _normal
 from .records import IntakeResult, freeze, text, thaw
 from .records import canonical_digest as _digest
 
@@ -139,12 +139,6 @@ def identity_references(intake):
                         }
                     )
     return refs
-
-
-def _normal(value):
-    if not text(value):
-        return None
-    return " ".join(unicodedata.normalize("NFC", value).casefold().split())
 
 
 def _candidate(raw):
@@ -569,6 +563,11 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
                 )
             ),
         }
+        competing = competing_title(ref["original_title"], ref["name"])
+        if competing:
+            record["competing_claim"] = claim_evidence(
+                ref["original_title"], competing, ref["source"]
+            )
         records.append(record)
         if latest is None and status == "unresolved":
             detail, search = _evidence_candidates(observation)
@@ -582,6 +581,7 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
                     "claimed_place_id": ref["claimed_place_id"],
                     "original_request": request_contexts[ref["group_id"]],
                     "reason": reason,
+                    **({"competing_claim": record["competing_claim"]} if competing else {}),
                     "candidates": ([detail] if detail else []) + search,
                     "observation_id": observation.get("observation_id") if observation else None,
                     "observation_context": {

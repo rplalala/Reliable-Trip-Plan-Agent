@@ -26,9 +26,13 @@ def directed_claim(value):
 
 def movement_claim(value):
     value = normalized(value) or ""
-    return directed_claim(value) or re.fullmatch(
+    pair = directed_claim(value)
+    if pair:
+        return {"kind": "movement", "origin": pair[0], "destination": pair[1]}
+    match = re.fullmatch(
         r"(?:walk|walking|drive|driving|transit|public transit|transfer|travel) to (.+)", value
     )
+    return {"kind": "movement", "destination": match[1]} if match else None
 
 
 def competing_title(value, place_name):
@@ -36,13 +40,22 @@ def competing_title(value, place_name):
     title, name = normalized(value), normalized(place_name)
     if not title or not name or title == name:
         return None
-    if movement_claim(title):
-        return title
+    movement = movement_claim(title)
+    if movement:
+        return movement
     if title.startswith("visit ") and title[6:] != name:
-        return title[6:]
+        return {"kind": "visit", "destination": title[6:]}
     if title.startswith(name + " and "):
-        return title[len(name) + 5 :]
+        return {"kind": "additional_place", "destination": title[len(name) + 5 :]}
     return None
+
+
+def claim_evidence(value, parsed, source):
+    return {"source": source, "field": "title", "original": value, "parsed": parsed}
+
+
+def has_endpoint_claim(value):
+    return bool(re.search(r"\b(from|to|towards|between)\b|[\u2192>]|\u5230|\u81f3", value, re.I))
 
 
 def transport_endpoints(raw):
@@ -51,7 +64,7 @@ def transport_endpoints(raw):
     for field in ("title", "notes"):
         value = normalized(raw.get(field)) or ""
         for clause in value.split(";"):
-            if re.search(r"\b(from|to|towards|between)\b|[\u2192>]|\u5230|\u81f3", clause):
+            if has_endpoint_claim(clause):
                 pair = directed_claim(clause)
                 if pair is None:
                     return None

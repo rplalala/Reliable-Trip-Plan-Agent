@@ -69,6 +69,9 @@ def location_matches(value, candidate):
         return target in street_forms(typed)
     if target in street_forms(typed) or any(target in values for values in typed.values()):
         return True
+    if "locality" in typed:
+        # Typed city evidence cannot be overridden by an untyped address token.
+        return False
     return legacy_match(value, candidate)
 
 

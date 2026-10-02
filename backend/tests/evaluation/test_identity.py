@@ -698,6 +698,29 @@ def test_title_claim_must_agree_before_automatic_binding(intake_batch, version, 
     record = next(r for r in report["records"] if r["reference_id"] == ref["reference_id"])
     assert record["reason"] == expected
     assert record["canonical_place_id"] is None
+    if expected == "title_association_unverified":
+        claim = record["competing_claim"]
+        assert claim["source"] == ref["source"]
+        assert claim["field"] == "title"
+        assert claim["original"] == title
+        assert claim["parsed"]["destination"] == "national aviation museum"
+
+
+def test_typed_locality_cannot_be_overridden_by_legacy_location(intake_batch):
+    def change(_, results, _save, _root):
+        results["v0"]["itinerary"]["days"][0]["activities"][0]["location"] = "Other City"
+        return "v0"
+
+    intake = prepared(intake_batch, change)
+    ref = visit(identity_references(intake), "v0")
+    observation = search(ref, "Museum A", address="Other City")
+    observation["search"]["candidates"][0]["address_components"] = address_components()
+    report = resolve_identities(
+        intake, evidence(intake, [observation]), audit_plan=plan(intake)
+    ).to_dict()
+    record = next(r for r in report["records"] if r["reference_id"] == ref["reference_id"])
+    assert record["reason"] == "location_association_unverified"
+    assert record["canonical_place_id"] is None
 
 
 @pytest.mark.parametrize("claimed", [{"bad": "id"}, ["bad-id"]])

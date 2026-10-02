@@ -688,6 +688,20 @@ def test_resolved_escape_is_rejected_without_opening(batch, monkeypatch):
     assert "escapes" in result.data["material_diagnostics"][0]["explanation"]
 
 
+def test_movement_role_conflict_exposes_parsed_source(batch):
+    _, results, write, _, _ = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][0]["title"] = (
+        "Walking from Museum A to Museum B"
+    )
+    activity = final(load_batch(write("v0")))["activities"][0]
+    assert activity["reason"] == "role_review_required"
+    claim = activity["competing_claim"]
+    assert claim["source"] == activity["source"]
+    assert claim["field"] == "title"
+    assert claim["original"] == "Walking from Museum A to Museum B"
+    assert claim["parsed"] == {"kind": "movement", "origin": "museum a", "destination": "museum b"}
+
+
 def test_optional_corrupt_draft_does_not_reject_final(batch):
     _, results, write, _, _ = batch
     results["v3"]["v3"] = {"draft": {"output_version": []}, "final_primary": None}

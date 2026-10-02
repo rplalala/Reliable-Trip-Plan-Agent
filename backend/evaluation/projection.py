@@ -3,7 +3,13 @@
 import re
 from datetime import date, datetime
 
-from ._claims import movement_claim, normalized, transport_endpoints
+from ._claims import (
+    claim_evidence,
+    has_endpoint_claim,
+    movement_claim,
+    normalized,
+    transport_endpoints,
+)
 from .records import require, source, text
 
 ACTIVITY_FIELDS = (
@@ -150,8 +156,14 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
                     not review.get("multi_poi"), ap, "Reviewed multi-POI block", "multi_poi_block"
                 )
             role, status, reason = classify(raw, review)
+            movement = movement_claim(raw["title"])
             rec = {
                 "source": source(context, ap),
+                **(
+                    {"competing_claim": claim_evidence(raw["title"], movement, source(context, ap))}
+                    if movement and raw.get("activity_kind") == "main_poi"
+                    else {}
+                ),
                 "declared_day": day["date"],
                 "original": {k: raw[k] for k in ACTIVITY_FIELDS if k in raw},
                 "evaluation_role": role,
@@ -305,9 +317,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
         else:
             # Endpoint prose is never interpreted as a trusted binding by a keyword guess.
             prose = str(raw.get("title", "")) + " " + str(raw.get("notes") or "")
-            has_endpoint_prose = bool(
-                re.search(r"\b(from|to|towards|between)\b|[\u2192>]|\u5230|\u81f3", prose, re.I)
-            )
+            has_endpoint_prose = has_endpoint_claim(prose)
             plain_title = raw.get("title", "").strip().casefold() in {
                 "walk",
                 "walking",
