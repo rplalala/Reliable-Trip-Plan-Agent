@@ -51,3 +51,39 @@ blind-review build, product build and lint passed. No new dependency or backend 
 Implementation/direct tests and this approved scope record will be committed before
 Standards/Spec review; review results and the final synthetic artifact remain pending.
 No new full backend run is claimed for this frontend-only extension.
+
+## Committed review, correction and final acceptance checkpoint
+
+f600315 (feat: add time zone selection to blinded review) commits implementation,
+direct UI tests and the accepted scope before independent review. Standards: zero
+documented breaches and zero actionable heuristics. Spec: one P2, explicit compact
+offsets accepted at the existing projection boundary were not converted by the UI.
+New UI regression failed for +0200/+02 before correction; offset normalization now
+converts both while retaining exact original strings. Separate fix 29df5fd preserves
+implementation history. Related 11 UI/answer tests passed in 4.44s; TypeScript,
+blind build and lint passed. Final committed full frontend: 94 passed / 13 files
+in 39.39s. Earlier 93-test gate above is a separate pre-correction run.
+
+Both reviewers rechecked f600315...29df5fd: original P2 resolved, zero residual findings
+on either axis. Spec independently checked positive/negative compact/hour offsets,
+existing colon/Z offsets, invalid offsets and missing-zone behavior. No edits or
+full-test rerun by reviewers are claimed.
+
+Generated ignored artifacts/rtpeval/ticket09/public-timezone-final/review.html with
+the final renderer; exact public JSON bytes, presentation hash and private mapping
+remain unchanged from public-final. Separate validation-timezone-final.json records
+renderer hashes, revision and the pending browser gate. Earlier renderer checkpoints
+remain unchanged. Manual check request now targets this final package, including zone
+switching, HH-mm/date/inference display, narrow layout, refresh and JSON backup/import.
+Browser Use's file:// prohibition is unchanged; no circumvention or actual browser pass.
+
+Issue #21 and parent #12 were updated with approved extension and review/fix status,
+then independently fetched to verify exact bodies, unchanged labels and open states.
+The browser-dependent acceptance criteria/parent checkbox remain unchecked. No push,
+branch switch, planner/scorer change, source/answer rewrite or later-ticket work occurred.
+
+Final documentation checks: eight English documents and 195 local Markdown target
+occurrences passed; diff whitespace passed. Backend executable code, scripts and
+frontend dependency files have no diff against the review base. Final documentation
+is a separate coherent local commit; ignored renderer/validation/archive files are
+excluded. Pending manual browser acceptance is not converted into a completion claim.

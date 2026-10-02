@@ -312,6 +312,23 @@ is pending. [Acceptance](.scratch/rtpeval/ticket-09-acceptance.md) owns the actu
 limits and local commit/review record. Issue #21 and parent #12 remain open. No actual
 rater session, formal comparison, live/native supplement, push or freeze is authorized.
 
+### Ticket 09 approved time-zone display extension — 2026-10-02
+
+The user separately approved [the display extension](.scratch/rtpeval/ticket-09-timezone-display.md):
+Time zone dropdown (default UTC), selected-zone dates and 24-hour HH-mm clocks for
+supplied-offset activity/transport/inferred timestamps, with explicit original-day
+grouping and inspectable source timestamps. Missing zones are not guessed; invalid
+dates/clocks remain explicit, and date-only requests/free text remain unchanged.
+The display choice does not rewrite sources, frozen presentations/mappings, answers,
+automatic reports or V0-V3 behavior. Implementation/direct UI tests are committed at
+f600315 before review. Spec found one compact-offset omission, corrected separately
+at 29df5fd with a failing-then-passing UI regression; both review rechecks are clear.
+Final post-fix frontend gate: 94 passed across 13 files; TypeScript, both builds and
+lint passed. Earlier backend 2299/10-skip validation remains a separate
+Ticket 09 gate; no backend tests or live/native supplement were rerun for this UI-only
+extension. The final synthetic renderer is in ignored public-timezone-final/review.html;
+actual direct-file browser acceptance remains pending and Issue #21 remains open.
+
 ## 7. Keeping this file current
 
 This file owns current scope, version boundaries, status, limitations and next work.

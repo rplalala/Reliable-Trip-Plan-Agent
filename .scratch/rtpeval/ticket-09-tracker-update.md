@@ -58,3 +58,17 @@ were preserved. No comment, assignment, label change, duplicate Issue, close act
 code publication occurred. User manual verification targets only the final synthetic
 package documented in [acceptance](ticket-09-acceptance.md). No push or later ticket
 execution occurred; these tracker writes do not complete the missing browser gate.
+
+## Approved time-zone display extension synchronization — 2026-10-02
+
+At code 29df5fd with extension/usage/project documentation uncommitted, read the current
+Issue bodies and existing comment context. Updated #21/#12 through the GitHub connector
+with the separately approved UTC-default IANA dropdown/HH-mm display, passing frontend
+checks, committed implementation followed by independent review and compact-offset
+fix/rechecks. New public summaries omit local code hashes, paths and detailed test metadata.
+Independent fetches exactly matched intended bodies, unchanged labels and open states.
+Existing criteria/checkpoints, imported history, pinned links and completed predecessors
+remain intact. No comment, assignment or close action was created. Browser-dependent
+criteria remain unchecked; new final synthetic renderer is the manual-check target.
+No push or code publication occurred; exact local validation is in
+[extension acceptance](ticket-09-timezone-display.md).

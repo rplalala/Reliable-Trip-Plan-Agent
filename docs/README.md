@@ -311,3 +311,11 @@ Spec found one transport representation leak, corrected by separate fix 5f43b5d.
 Both review rechecks are clear. Actual file:// browser acceptance
 is pending user verification after Browser Use's protocol-policy rejection. No workaround,
 real rater session, formal result, live/native supplement, push or freeze occurred.
+
+The separately approved [time-zone display extension](../.scratch/rtpeval/ticket-09-timezone-display.md)
+adds an IANA dropdown (default UTC) and converted dates/24-hour HH-mm clocks while
+preserving original-day grouping, inspectable source timestamps and unknown-zone
+uncertainty. No data/scoring/answer schema changes. Extension post-fix frontend gate:
+94 tests passed, both builds and lint passed. Spec's compact-offset omission was
+corrected in a separate fix commit; both review rechecks are clear. Actual file://
+browser acceptance remains pending against public-timezone-final/review.html.

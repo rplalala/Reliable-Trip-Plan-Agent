@@ -266,3 +266,12 @@ commits and no push. Earlier no-implementation/approval-pending statements descr
 preflight checkpoint. [Implementation acceptance](ticket-09-acceptance.md) now owns actual
 red/green, regressions, separate implementation commits, Standards/Spec review and remaining
 browser evidence. This approval does not grant real rater assessment or formal comparison.
+
+## Subsequent time-zone display approval — 2026-10-02
+
+The user separately approved [time-zone selection and HH-mm display](ticket-09-timezone-display.md).
+This specializes the source-clock display rule: supplied offset timestamps may display
+selected-zone clocks and converted dates while source grouping/strings remain inspectable.
+Missing zones are never guessed. Source material, frozen mappings, answer revisions and
+automatic scorer semantics remain unchanged. Earlier original-display statements retain
+their preflight meaning; current extension scope owns actual follow-up validation.

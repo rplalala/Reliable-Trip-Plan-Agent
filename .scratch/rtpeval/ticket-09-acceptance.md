@@ -134,3 +134,21 @@ supplied; functional implementation/automated checks do not complete the visual 
 V0-V3 independent paths, planner budgets, scored transport policy and automatic quality
 reports remain unchanged. No formal comparison, real rater session, recruitment, live
 acquisition, version freeze or Ticket 10+ work is authorized.
+
+## Subsequently approved time-zone display extension
+
+The user requested and approved an IANA-zone dropdown, default UTC, with converted
+dates and 24-hour HH-mm clocks. Source day grouping and inspectable timestamps remain;
+missing zones are never guessed, invalid values retain explicit uncertainty, and
+presentation/mapping/source/answer/scorer data remain unchanged. Current extension
+scope and actual red/green/gate/review evidence are recorded separately in
+[time-zone display](ticket-09-timezone-display.md), review base dfe2695, implementation
+f600315. The initial 89-test frontend gate above remains a distinct historical run;
+extension final post-fix full frontend passed 94 tests across 13 files with builds/lint.
+No backend regression or live/native supplement was repeated for this UI-only change.
+New ignored synthetic public-timezone-final/review.html supersedes public-final for the
+remaining browser gate, with unchanged public JSON bytes/presentation hash/private
+mapping and separately retained renderer hashes. No actual browser pass is claimed.
+Spec's compact-offset omission was fixed separately at 29df5fd; both review rechecks
+have zero residual findings. Detailed red/green and separate gate counts remain in
+the extension record; no earlier checkpoint is rewritten as a post-fix pass.

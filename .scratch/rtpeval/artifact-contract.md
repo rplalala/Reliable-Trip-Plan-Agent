@@ -175,3 +175,14 @@ Use explicit aware generated_at for pure report replay; CLI may generate UTC met
 [Package usage](../../backend/evaluation/README.md#ticket-09-local-blinded-ranking-workflow)
 documents executable fields/commands. [Acceptance](ticket-09-acceptance.md) owns actual
 validation/review/browser status; implementation does not authorize real assessment.
+
+## Ticket 09 approved time-zone display extension — 2026-10-02
+
+The user approved an independent renderer dropdown, default UTC, converting supplied
+offset-aware activity/transport/inferred timestamps with local browser Intl into
+selected IANA-zone dates and 24-hour HH-mm clocks. Source days remain original groups,
+source timestamps remain inspectable, missing zones are never guessed and invalid
+values retain explicit uncertainty. Date-only/free-text values remain unchanged.
+Public/mapping/answer schema versions, original source bytes and presentation hashes
+are unchanged; display choice is not added to answer records or scoring input.
+[Scope and acceptance](ticket-09-timezone-display.md) owns actual extension evidence.
