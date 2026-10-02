@@ -110,7 +110,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | 07: Route checks | Offline preparation/scorer/CLI implemented and validated; longest unstated-departure fragment, zero-grace hard boundaries and decisive partial FAIL; Standards/Spec reviews clear; 86 dedicated tests passed; approved existing-test repair removes the former exclusion, latest unfiltered backend gate 2234 passed / 10 skipped / zero deselections; implementation and repair committed locally under the approved three-group closeout; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) closed/completed; [acceptance](.scratch/rtpeval/ticket-07-acceptance.md) |
 | 08: Multimetric report | Approved offline report/CLI implemented; 39 dedicated tests passed; full offline gate 2273 passed / 10 skipped / zero deselections; committed at 5625f81 before clear Standards/Spec reviews; exact shared-mask verified scores and separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) closed/completed; [acceptance](.scratch/rtpeval/ticket-08-acceptance.md) |
 | 09: Blinded ranking | Independent offline package/import/report and React renderer implemented and reviewed; current display uses IANA time-zone selection and HH:mm, without Original timestamp controls or dedicated uncertainty hints; confirmed local-answer clearing implemented; latest frontend 98 passed, TypeScript/blind build/lint passed; earlier backend gate 2299 passed / 10 skipped remains separate; native browser acceptance completed by user report; [acceptance](.scratch/rtpeval/ticket-09-acceptance.md); [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) closed/completed |
-| 10: V3 before/after | Specification preflight and complete shared understanding confirmed; pair mask, simple-auto/complex-reviewed correspondence and review-first local uncertainty accepted; [preflight](.scratch/rtpeval/ticket-10-preflight.md); implementation remains unauthorized, no implementation test or tracker mutation |
+| 10: V3 before/after | Specification preflight confirmed and source-driven correspondence revision approved; validated activity IDs/adopted edits/split sources precede content fallback and residual review; paired mask and valid aggregate availability retained; [preflight](.scratch/rtpeval/ticket-10-preflight.md); implementation remains unauthorized, no implementation test or tracker mutation |
 | 11-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
@@ -351,18 +351,26 @@ No tracker was edited.
 
 Current scorers support paired snapshots and optional V3 draft/final_primary rows, while
 Ticket 08 quality aggregation explicitly remains final-only. The user accepted a separate
-two-stage common mask for paired diagnostics, preserving existing four-version final
-arithmetic and behavior. After examples, the user accepted simple automatic correspondence
-and independent human review for complex edits. After further clarification, the user accepted
-supplementing review before retaining local unresolved continuity while preserving valid
-independent aggregate deltas. The user confirmed the complete specification without approving
-implementation. Source facts confirm replacement can retain activity_id and sorted arrays
-can move pointers; internal
-target resolution/removal is not independent proof of repair. Preflight runs no implementation
-tests or live provider/model/database calls. English/local-link/content/diff checks cover the
-documentation-only closeout; the preflight/current-status/index/glossary form one local docs
-commit, excluding the ignored historical archive. Implementation, GitHub updates, formal work,
-later tickets, push and freeze remain separately authorized actions.
+two-stage common mask and preservation of valid aggregate deltas despite residual local
+correspondence uncertainty, then confirmed the complete specification without implementation.
+Initial content-first matching/complex-edit review was committed at a0675d7.
+
+The user subsequently approved revising correspondence to use existing connections first:
+validate same-run activity IDs, actually adopted round/component edits and split-fragment
+sources against observed stage snapshots; account for final ordering/name normalization and
+transfer refresh. Repeated venues, cross-day moves and recorded splits are no longer automatic
+human-review cases. Source lineage establishes what changed; independent identity/scorers
+still decide venue continuity and compliance. Missing/inconsistent embedded lineage receives
+diagnostics and content fallback/residual review without disabling valid aggregate scores.
+An accepted round may include rejected components, so status or a summary patch alone is
+insufficient. Internal resolved/target disappearance never proves independent repair success.
+
+The revised proposal adds an offline reader over exact-linked original result bytes, without
+changing existing intake output, planner behavior or Ticket 08. No such reader is implemented.
+English/local-link/content/diff checks cover documentation only; no implementation test or
+provider/model/database call is included. Local documentation commits exclude ignored research
+archives. Implementation, GitHub updates, formal work, later tickets, push and freeze remain
+separately authorized actions.
 
 ## 7. Keeping this file current
 

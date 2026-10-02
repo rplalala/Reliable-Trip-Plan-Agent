@@ -67,13 +67,18 @@ not an independently executed V2 itinerary.
 a dimension is omitted only when neither stage has applicable or unresolved units.
 It is separate from the four-version final report's mask.
 
-**Occurrence correspondence**: An independently established relation between activities
-in the two V3 stages. A shared activity ID does not by itself establish the same venue
-or prove that a conflict was repaired.
+**Edit provenance**: Source-linked evidence of transformations actually adopted between
+V3 stages, including retained activity IDs and parent/fragment relations. It describes
+editing history without establishing independent quality or venue identity.
+
+**Occurrence correspondence**: A validated relation between activities in the two V3
+stages, established first through edit provenance and then through source-content or
+reviewed evidence where needed. Edit continuity is distinct from venue continuity.
 
 **Correspondence review**: Source-linked human verification of an ambiguous or complex
-cross-stage relation. It establishes which occurrences are related, while independent
-quality checks determine their compliance.
+cross-stage relation remaining after provenance validation and content fallback. Complexity
+alone does not require review when validated sources establish the relation; independent
+quality checks determine compliance.
 
 ## Blinded ranking concepts
 

@@ -204,9 +204,10 @@ implementation and evaluation execution still require separate authorization.
 - [Evaluation glossary](evaluation_glossary.md): shared benchmark/evaluation terminology; not project-wide context.
 
 - [Ticket 10 V3 before/after preflight](../.scratch/rtpeval/ticket-10-preflight.md):
-  current source/interface audit and accepted pair-mask/correspondence/review-first local
-  uncertainty decisions, with complete specification confirmation. Implementation approval
-  remains separate; no paired report is implemented.
+  confirmed pair-mask/availability rules and the approved source-driven correspondence
+  revision: validated activity IDs, actually adopted edits and split sources precede content
+  fallback/residual review, while quality remains independently scored. Implementation approval
+  remains separate; no provenance reader or paired report is implemented.
 
 - [Evaluation implementation work index](../.scratch/rtpeval/ticket-breakdown.md): live GitHub links for all 12 Tickets and the preserved pre-migration breakdown. GitHub owns current task state; repository acceptance records retain the approved offline scope.
 - Local historical design archives: `thesis_notes/evaluation/` and `thesis_notes/benchmark/` (Git-ignored; not included in a fresh checkout). These are historical records, not project authority or formal research results.
