@@ -96,3 +96,26 @@ links and completed predecessors remain intact. Independent reads matched exact 
 bodies, open states and original labels. Browser-dependent criteria remain unchecked.
 No comment/assignment/close action or code publication; commits remain local, no push.
 Detailed actual evidence: [current acceptance](ticket-09-uncertainty-display.md).
+
+## Consolidated current documentation synchronization - 2026-10-02
+
+At documentation base b232ae0, initially clean tree/index on feature/evaluation, the
+user requested related documentation and Issue updates. Consolidated PROJECT/index/
+package guidance and the acceptance header in place: current UTC-default IANA/HH:mm
+display, removed timestamp controls/dedicated hints, retained source data and explicit
+native browser checklist. Earlier validation/review sequences and packages remain
+historical; no implementation change or new code test run is claimed.
+
+Read current #21/#12 through the GitHub connector; their bodies matched the prior
+checkpoint. Replaced only the current top summaries with implemented/offline-reviewed
+status and remaining direct-file/time-zone/narrow-layout/refresh/JSON acceptance.
+Independent fetches exactly matched intended bodies, open states, unchanged titles,
+labels and comment counts. The remaining body suffix, including imported history,
+pinned links, existing acceptance boxes and completed predecessors, is byte-identical.
+Browser-dependent boxes and the parent Ticket 09 box remain unchecked. No comments,
+assignment, label or state changes; no push or code/document publication occurred.
+
+Documentation checks passed: five English files, 187 local Markdown target occurrences,
+exact preserved historical acceptance, current package/status consistency and git diff
+whitespace. Changed tracked files are documentation only. These checks validate the
+consolidation; they do not constitute a new frontend/backend or native browser run.

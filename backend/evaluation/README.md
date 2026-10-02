@@ -477,6 +477,21 @@ preserves the original no-implementation checkpoint and subsequent scope approva
 
 ## Ticket 09 local blinded ranking workflow
 
+Current acceptance checkpoint (2026-10-02): implementation and offline Standards/Spec
+reviews are complete; actual native direct-file browser acceptance remains pending.
+Latest UI gate passed 94 tests, TypeScript/blind-review build/lint; the earlier backend
+2299-pass/10-skip gate remains a separate run. This documentation consolidation does
+not rerun either suite. Issue #21 and parent #12 remain open; commits remain local.
+
+For the current synthetic manual check, open
+`artifacts/rtpeval/ticket09/public-no-hints/review.html` directly in a local browser.
+Older generated renderer packages are preserved checkpoints. Verify original request
+and complete A/B/C/D itineraries, time-zone switching and HH:mm dates/clocks, narrow
+layout, submitted-answer/draft recovery after refresh and JSON download/reimport.
+The checks must retain labelled Inferred arrival while showing no Original timestamp
+control or dedicated uncertainty/item/time-warning hints. Report actual results before
+closing acceptance; automated DOM checks alone do not establish native file:// behavior.
+
 The human track is independent of automatic reports. It reads accepted, exact-byte-linked
 final v0-v3 material and needs neither route/opening snapshots nor complete resource
 observations. Use only synthetic development material until real assessment is approved.

@@ -109,7 +109,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | 06: Opening checks | Offline parser/scorer/CLI implemented under the 2026-10-02 approval; offline acceptance complete; Standards/Spec reviews clear, full regression 2148 passed / 10 skipped; all ten skips passed in subsequently approved scoped supplements; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) closed as completed; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) |
 | 07: Route checks | Offline preparation/scorer/CLI implemented and validated; longest unstated-departure fragment, zero-grace hard boundaries and decisive partial FAIL; Standards/Spec reviews clear; 86 dedicated tests passed; approved existing-test repair removes the former exclusion, latest unfiltered backend gate 2234 passed / 10 skipped / zero deselections; implementation and repair committed locally under the approved three-group closeout; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) closed/completed; [acceptance](.scratch/rtpeval/ticket-07-acceptance.md) |
 | 08: Multimetric report | Approved offline report/CLI implemented; 39 dedicated tests passed; full offline gate 2273 passed / 10 skipped / zero deselections; committed at 5625f81 before clear Standards/Spec reviews; exact shared-mask verified scores and separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) closed/completed; [acceptance](.scratch/rtpeval/ticket-08-acceptance.md) |
-| 09: Blinded ranking | Approved independent offline package/import/report and React renderer implemented; dedicated backend 26 passed and frontend 6 passed; final offline gates 2299 backend passed / 10 skipped and 89 frontend passed; pre-review implementation commits and separate privacy fix retained; both reviews clear after correction; actual file:// browser acceptance pending; [acceptance](.scratch/rtpeval/ticket-09-acceptance.md); Issue #21 stays open |
+| 09: Blinded ranking | Independent offline package/import/report and React renderer implemented and reviewed; current display uses IANA time-zone selection and HH:mm, without Original timestamp controls or dedicated uncertainty hints; latest frontend 94 passed, TypeScript/blind build/lint passed; earlier backend gate 2299 passed / 10 skipped remains separate; actual file:// browser acceptance pending; [acceptance](.scratch/rtpeval/ticket-09-acceptance.md); [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) stays open |
 | 10-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
@@ -282,73 +282,49 @@ were read back exactly. The [tracker record](.scratch/rtpeval/ticket-08-tracker-
 preserves that sequence without treating local files/commits as published source.
 Local implementation/docs are unpublished; no push or freeze occurred during Ticket 08.
 
-### Ticket 09 specification preflight — 2026-10-02
+### Ticket 09 current implementation and acceptance - 2026-10-02
 
-The user completed [specification preflight](.scratch/rtpeval/ticket-09-preflight.md)
-and subsequently approved implementation with local commits and no push. Existing product itinerary rendering exposes provenance and can
-omit unbound transfers; the proposed local anonymous renderer requires a separate
-source-preserving display boundary. Researcher preparation/redaction is accepted,
-with private source linkage and preserved travel facts/uncertainty. New complete
-submitted answer revisions supersede old effective answers; older revisions remain
-audit-only, drafts do not supersede submissions, and same-revision conflicts are errors.
-Missing source arrivals may additionally show explicitly labelled departure-plus-duration
-inference; this preserves the missing original field and never becomes scorer input.
-The independent offline package/import/report and React renderer now implement these
-rules, frozen balanced anonymous assignments, source-authoritative transport display,
-ties/unjudgeable/N/A/drafts, save/resume and JSON backup/import, effective submitted
-revisions, six mapped pairs and separate hidden-duplicate consistency. Original source
-bytes, product routes and planner/scorer behavior remain unchanged. Dedicated checks
-passed 26 backend and 6 frontend tests. Final committed post-review full gates passed
-2299 backend tests / 10 skipped and 89 frontend tests; both static builds, Ruff,
-compilation and lint passed. Implementation commits 6095877/d36b52d precede dual review;
-Spec's single P1 exposed transport-source display differences. Separate fix 5f43b5d
-unifies neutral Travel/time/duration fields and private batch-alias linkage. Standards
-and Spec rechecks have no residual findings. Human reports remain independent of the
-automatic quality report; V0-V3 behavior and execution paths remain unchanged.
+The approved independent offline package/import/report and React renderer are
+implemented. Researcher preparation links manually reviewed/redacted display text to
+exact source bytes; public packages show the original request and anonymous A/B/C/D
+plans, while mappings and preparation stay private. Balanced seeded assignments,
+ties/unjudgeable/N/A/drafts, JSON backup/import, latest valid complete submitted
+revisions, six mapped pair outcomes and separate hidden-duplicate consistency are
+implemented. Older revisions remain audit-only; drafts do not replace submissions.
+Human reports remain separate from automatic quality scores.
 
-Browser Use explicitly rejected file:// navigation; no workaround was attempted.
-Manual synthetic direct-file display/narrow layout/refresh/download/reimport acceptance
-is pending. [Acceptance](.scratch/rtpeval/ticket-09-acceptance.md) owns the actual sequence,
-limits and local commit/review record. Issue #21 and parent #12 remain open. No actual
-rater session, formal comparison, live/native supplement, push or freeze is authorized.
+Current display uses an IANA Time zone dropdown (default UTC), converted dates and
+24-hour HH:mm clocks for supplied-offset timestamps, including explicitly labelled
+Inferred arrival arithmetic. Source-day grouping remains. Original timestamp controls,
+dedicated Uncertainty/unknowns fields, item notices and time-warning text are removed.
+Ordinary source notes/preferences and duration basis remain; no claim is made that all
+uncertain prose is erased. Unknown-zone clocks stay local, invalid values stay raw and
+missing values display Not supplied. Frozen source/public/private material, hashes,
+answers, scoring and independently runnable V0-V3 paths remain unchanged.
 
-### Ticket 09 approved time-zone display extension — 2026-10-02
+Latest UI validation at f1f0cc0: **94 passed / 13 files in 25.49s**; TypeScript,
+blind-review build and lint passed. Implementation/direct tests precede independent
+Standards/Spec reviews; both latest reviews are clear. Earlier backend validation
+remains **2299 passed / 10 skipped / zero deselections in 150.85s**, a separate run;
+nine database opt-ins and one native symlink case were not supplemented for Ticket 09.
+This documentation consolidation reruns no implementation tests. The
+[acceptance record](.scratch/rtpeval/ticket-09-acceptance.md) preserves actual failures,
+corrections, retests and commit/review history. Supplementary accepted records cover
+[preflight](.scratch/rtpeval/ticket-09-preflight.md),
+[time-zone conversion](.scratch/rtpeval/ticket-09-timezone-display.md),
+[timestamp cleanup](.scratch/rtpeval/ticket-09-display-cleanup.md) and
+[hint suppression](.scratch/rtpeval/ticket-09-uncertainty-display.md).
 
-The user separately approved [the display extension](.scratch/rtpeval/ticket-09-timezone-display.md):
-Time zone dropdown (default UTC), selected-zone dates and 24-hour HH:mm clocks for
-supplied-offset activity/transport/inferred timestamps, with explicit original-day
-grouping and source timestamp preservation in frozen artifacts. Missing zones are not guessed; invalid
-dates/clocks remain explicit, and date-only requests/free text remain unchanged.
-The display choice does not rewrite sources, frozen presentations/mappings, answers,
-automatic reports or V0-V3 behavior. Implementation/direct UI tests are committed at
-f600315 before review. Spec found one compact-offset omission, corrected separately
-at 29df5fd with a failing-then-passing UI regression; both review rechecks are clear.
-Final post-fix frontend gate: 94 passed across 13 files; TypeScript, both builds and
-lint passed. Earlier backend 2299/10-skip validation remains a separate
-Ticket 09 gate; no backend tests or live/native supplement were rerun for this UI-only
-extension. The final synthetic renderer is in ignored public-timezone-final/review.html;
-actual direct-file browser acceptance remains pending and Issue #21 remains open.
-
-The user's subsequent [display cleanup](.scratch/rtpeval/ticket-09-display-cleanup.md)
-removes Original timestamp controls/helper text and corrects the clock separator to
-HH:mm. Source strings remain in frozen artifacts; missing/invalid evidence and the
-source-travel uncertainty/inferred-arrival records remain in frozen material. No source,
-answer or scorer rewrite is included. The current synthetic package and exact final
-tests/review/commit checkpoint are recorded in the cleanup acceptance.
-Removal and formatting were locally committed at 6725071/7809b33 before their reviews;
-both review axes are clear. Final cleanup frontend 94 passed / 13 files in 36.49s,
-TypeScript/blind build/lint passed. Current ignored public-display-final/review.html
-supersedes older synthetic renderer examples; actual browser acceptance is still pending.
-
-The user subsequently requested [uncertainty hint removal](.scratch/rtpeval/ticket-09-uncertainty-display.md).
-Current renderer hides the dedicated unknowns field, item notices and time warnings;
-ordinary source notes, Inferred arrival label, HH:mm clocks and time-zone behavior remain.
-Unknown-zone times stay local and invalid/missing values are not fabricated. Original
-source/public/private uncertainty data, hashes, answers/reports and V0-V3 behavior are
-unchanged. Implementation/direct tests committed at f1f0cc0 before clear Standards/Spec
-reviews. Current frontend gate: 94 passed / 13 files in 25.49s; TypeScript/blind build/
-lint passed. Current synthetic package is public-no-hints/review.html; actual browser
-acceptance remains pending, and Issue #21 stays open. No push or live/native supplement.
+Current synthetic manual-check target:
+`artifacts/rtpeval/ticket09/public-no-hints/review.html` (ignored development artifact).
+Earlier renderer packages are historical checkpoints. Actual direct-file display,
+time-zone switching, narrow layout, submit/save/refresh recovery and JSON download/
+reimport acceptance remain pending. Browser Use rejected file:// navigation; no
+workaround was attempted, and a cropped user screenshot does not establish full
+acceptance. [Issue #21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21)
+and [parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12) stay open.
+Local code/document commits are unpublished. No real rater session, formal comparison,
+live/native supplement, push, freeze or later-ticket implementation is included.
 
 ## 7. Keeping this file current
 

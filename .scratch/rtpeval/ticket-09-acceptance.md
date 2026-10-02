@@ -1,5 +1,39 @@
 # Ticket 09 implementation acceptance
 
+## Current consolidated status - 2026-10-02
+
+Documentation checkpoint: b232ae0 on feature/evaluation, initially clean tree/index;
+this update changes documentation and tracker summaries only. Implementation and
+offline review are complete; full native browser acceptance is pending. Issue #21
+and parent #12 remain open. Sections below preserve their original observed sequence;
+their earlier display rules/packages are superseded by the current checkpoint.
+
+Current display: UTC-default IANA selector, converted dates and 24-hour HH:mm clocks;
+no Original timestamp controls, dedicated Uncertainty/unknowns fields, item notices or
+time-warning text. Inferred arrival labels, ordinary source notes/preferences and
+duration basis remain. Unknown-zone clocks stay local, invalid values stay raw and
+missing values display Not supplied. Original source/public/private data, hashes,
+answer revisions, reports and V0-V3 behavior are unchanged.
+
+Latest implementation f1f0cc0 precedes independent Standards/Spec reviews, both clear.
+The selected hint-removal regression first failed (1 failed / 7 not selected); the
+correction passed the full frontend suite (94 passed / 13 files in 25.49s), TypeScript,
+blind-review build and lint. Earlier backend 2299 passed / 10 skipped / zero deselections
+in 150.85s remains a separate gate; nine database opt-ins and one symlink case were
+not supplemented for Ticket 09. No implementation tests are rerun for this docs update.
+Detailed later display history is in [time-zone acceptance](ticket-09-timezone-display.md),
+[timestamp cleanup](ticket-09-display-cleanup.md) and
+[hint removal](ticket-09-uncertainty-display.md).
+
+Current ignored synthetic renderer: artifacts/rtpeval/ticket09/public-no-hints/review.html;
+validation-no-hints.json links renderer hashes to f1f0cc0 and preserves pending browser
+status. Remaining manual checks cover direct-file display/time-zone switching, narrow
+layout, submit/save/refresh recovery and JSON download/reimport. Static/jsdom checks
+and the user's cropped screenshot do not establish that full acceptance. No push,
+live/native supplement, real rater session, formal comparison, freeze or Ticket 10+ work.
+
+## Original implementation checkpoint
+
 Date: 2026-10-02, Australia/Sydney. Review base:
 `541c684a4ae58001b513a9508b65a1d99507b0bf`, branch `feature/evaluation`.
 Initial worktree/index were clean. The user explicitly approved implementation within

@@ -291,46 +291,32 @@ authorization and a reduced metadata payload using the same GitHub interface. Is
 is closed/completed; parent #12 marks 01-08 completed and remains open. Local source/
 documentation commits remain unpublished; no push occurred.
 
-### Ticket 09 specification preflight
+## Ticket 09 blinded ranking: current display and pending acceptance - 2026-10-02
 
-[Blinded ranking preflight](../.scratch/rtpeval/ticket-09-preflight.md) records the
-source/projection/UI audit and proposed independent offline renderer/answer/report seams.
-The user accepted researcher preparation of source-linked redacted display content and
-the latest valid complete submitted revision as the effective answer. Original travel
-facts and uncertainty remain; older answers are audit-only. Missing arrivals may additionally
-show explicitly labelled source-departure-plus-duration inference, preserving the absent
-original field and never becoming scorer input. Preflight is complete; implementation
-scope approval was subsequently granted for independent offline implementation and local
-commits without push. [Acceptance](../.scratch/rtpeval/ticket-09-acceptance.md) and
-[package usage](../backend/evaluation/README.md#ticket-09-local-blinded-ranking-workflow)
-describe implemented source-linked display review, separate public/private packages,
-effective answer revisions and mapped pair/duplicate reports. Dedicated backend/frontend
-checks passed 26/6 tests; final full backend 2299 passed/10 skipped and frontend 89 passed,
-with both builds/Ruff/lint passing. Implementation commits 6095877/d36b52d precede review;
-Spec found one transport representation leak, corrected by separate fix 5f43b5d.
-Both review rechecks are clear. Actual file:// browser acceptance
-is pending user verification after Browser Use's protocol-policy rejection. No workaround,
-real rater session, formal result, live/native supplement, push or freeze occurred.
+The independent offline anonymous package, revision-aware answer import, descriptive
+pair/duplicate reports and React renderer are implemented. Current display uses a
+UTC-default IANA selector, converted dates and HH:mm clocks. Original timestamp
+controls and dedicated uncertainty/item/time-warning hints are removed; Inferred
+arrival labels, ordinary source notes/preferences and frozen source facts remain.
+Public/private hashes, answers/scoring and V0-V3 behavior are unchanged.
 
-The separately approved [time-zone display extension](../.scratch/rtpeval/ticket-09-timezone-display.md)
-adds an IANA dropdown (default UTC) and converted dates/24-hour HH:mm clocks while
-preserving original-day grouping, source timestamps in frozen artifacts and unknown-zone
-uncertainty. No data/scoring/answer schema changes. Extension post-fix frontend gate:
-94 tests passed, both builds and lint passed. Spec's compact-offset omission was
-corrected in a separate fix commit; both review rechecks are clear. Actual file://
-browser acceptance remains pending against public-timezone-final/review.html.
+Use [package usage](../backend/evaluation/README.md#ticket-09-local-blinded-ranking-workflow)
+for preparation/import/report commands and remaining manual checks.
+[Consolidated acceptance](../.scratch/rtpeval/ticket-09-acceptance.md) owns the current
+status and preserved validation history. Linked records distinguish
+[preflight](../.scratch/rtpeval/ticket-09-preflight.md),
+[time-zone conversion](../.scratch/rtpeval/ticket-09-timezone-display.md),
+[timestamp-control/HH:mm cleanup](../.scratch/rtpeval/ticket-09-display-cleanup.md),
+[uncertainty hint suppression](../.scratch/rtpeval/ticket-09-uncertainty-display.md) and
+[tracker synchronization](../.scratch/rtpeval/ticket-09-tracker-update.md).
 
-Subsequent [user-requested display cleanup](../.scratch/rtpeval/ticket-09-display-cleanup.md)
-removes Original timestamp controls/instructions and adopts the corrected HH:mm format.
-Frozen source material and source-travel uncertainty/inferred-arrival records remain.
-Use its latest synthetic package and actual validation/review record for current display;
-the earlier time-zone package is a preserved checkpoint.
-Current cleanup: frontend 94 tests passed, TypeScript/blind build/lint passed, both
-review axes clear. Final synthetic package is public-display-final/review.html;
-actual direct-file/responsive/refresh/export/import evidence remains pending.
-
-Latest [user uncertainty-hint removal](../.scratch/rtpeval/ticket-09-uncertainty-display.md)
-hides dedicated unknowns, item notices and time-warning text while retaining source
-material, ordinary notes/preferences, Inferred arrival label and HH:mm/time-zone display.
-Frontend 94 tests, TypeScript/blind build/lint passed; Standards/Spec reviews clear.
-Current synthetic renderer: public-no-hints/review.html; actual browser acceptance pending.
+Latest UI gate: **94 passed / 13 files in 25.49s**, TypeScript/blind-review build/lint
+passed and both review axes clear. Earlier backend gate: **2299 passed / 10 skipped /
+zero deselections**; these are separate runs, with no new backend/native supplement.
+Current ignored synthetic package is `artifacts/rtpeval/ticket09/public-no-hints/review.html`.
+Earlier packages and acceptance sections remain historical. Actual file:// display,
+zone switching, narrow layout, submit/save/refresh and JSON download/reimport await
+manual verification after Browser Use's protocol-policy rejection; no workaround was
+attempted. Issue #21 and parent #12 stay open; local commits/documents remain unpublished.
+No real rater session, formal result, live/native supplement, push, freeze or later-ticket
+implementation is included. This consolidation changes documentation only.
