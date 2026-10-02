@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 import { BlindReview } from "./BlindReview";
 import type { Presentation } from "./answers";
@@ -144,4 +144,84 @@ it("explicit offsets convert without exposing an original timestamp control", ()
   expect(screen.queryAllByText("Original timestamp")).toHaveLength(0);
   expect(plan.queryByText("2024-01-01T23:30:00+0200")).not.toBeInTheDocument();
   expect(plan.queryByText("2024-01-02T00:00:00+02")).not.toBeInTheDocument();
+});
+
+it("clearing requires confirmation and resets only this review package", () => {
+  const storage = new Map<string, string>([["another-package", "other answers"]]);
+  const persistence = { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => { storage.set(key, value); } };
+  const material = structuredClone(presentation);
+  material.tasks.push({ ...structuredClone(material.tasks[0]), task_id: "task-2" });
+  const first = render(<BlindReview presentation={material} storage={persistence} />);
+  for (const d of material.dimensions) fireEvent.change(screen.getByLabelText(`${d}: response`), { target: { value: "unable_to_judge" } });
+  fireEvent.click(screen.getByRole("button", { name: "Submit answer" }));
+  fireEvent.click(screen.getByRole("button", { name: "Next task" }));
+  fireEvent.change(screen.getByLabelText("pace: reason"), { target: { value: "Unsaved note" } });
+  fireEvent.change(screen.getByLabelText("Time zone"), { target: { value: "Asia/Shanghai" } });
+  fireEvent.click(screen.getByRole("button", { name: "Clear answers" }));
+  expect(screen.getByText(/Download a JSON backup first/)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Cancel clear" }));
+  expect(screen.getByLabelText("pace: reason")).toHaveValue("Unsaved note");
+  expect(screen.getByText("Task 2 of 2")).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Clear answers" }));
+  fireEvent.click(screen.getByRole("button", { name: "Confirm clear" }));
+  expect(screen.getByText("Task 1 of 2")).toBeInTheDocument();
+  expect(screen.queryByText("Submitted revision 1")).not.toBeInTheDocument();
+  expect(screen.getByLabelText("pace: reason")).toHaveValue("");
+  expect(screen.getByRole("button", { name: "Submit answer" })).toBeDisabled();
+  expect(screen.getByLabelText("Time zone")).toHaveValue("Asia/Shanghai");
+  expect(storage.get("another-package")).toBe("other answers");
+  first.unmount();
+  render(<BlindReview presentation={material} storage={persistence} />);
+  expect(screen.queryByText("Submitted revision 1")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Submit answer" })).toBeDisabled();
+});
+
+it("failed local clearing preserves submitted answers and unsaved edits", () => {
+  const storage = new Map<string, string>();
+  let denied = false;
+  const persistence = { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => {
+    if (denied) throw Error("Denied"); storage.set(key, value);
+  } };
+  render(<BlindReview presentation={presentation} storage={persistence} />);
+  for (const d of presentation.dimensions) fireEvent.change(screen.getByLabelText(`${d}: response`), { target: { value: "not_applicable" } });
+  fireEvent.click(screen.getByRole("button", { name: "Submit answer" }));
+  const saved = [...storage.values()];
+  fireEvent.change(screen.getByLabelText("pace: reason"), { target: { value: "Keep this unsaved edit" } });
+  denied = true;
+  fireEvent.click(screen.getByRole("button", { name: "Clear answers" }));
+  fireEvent.click(screen.getByRole("button", { name: "Confirm clear" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("Local clear failed. Answers are unchanged");
+  expect(screen.getByText("Submitted revision 1")).toBeInTheDocument();
+  expect(screen.getByLabelText("pace: reason")).toHaveValue("Keep this unsaved edit");
+  expect(screen.getByRole("button", { name: "Download answers JSON" })).toBeEnabled();
+  expect([...storage.values()]).toEqual(saved);
+});
+
+it("downloaded JSON restores submitted and draft revisions after confirmed clearing", async () => {
+  const storage = new Map<string, string>();
+  const persistence = { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => { storage.set(key, value); } };
+  let backup: Blob | undefined;
+  vi.stubGlobal("URL", { createObjectURL: (blob: Blob) => { backup = blob; return "blob:backup"; }, revokeObjectURL: () => {} });
+  const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+  try {
+    render(<BlindReview presentation={presentation} storage={persistence} />);
+    for (const d of presentation.dimensions) fireEvent.change(screen.getByLabelText(`${d}: response`), { target: { value: "unable_to_judge" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save draft" }));
+    fireEvent.click(screen.getByRole("button", { name: "Submit answer" }));
+    fireEvent.click(screen.getByRole("button", { name: "Download answers JSON" }));
+    expect(click).toHaveBeenCalledOnce();
+    const text = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = () => reject(Error("Read failed"));
+      reader.readAsText(backup!);
+    });
+    const original = JSON.parse(text);
+    expect(original.answers.map((a: { answer_revision: number; state: string }) => [a.answer_revision, a.state])).toEqual([[1, "draft"], [2, "submitted"]]);
+    fireEvent.click(screen.getByRole("button", { name: "Clear answers" }));
+    fireEvent.click(screen.getByRole("button", { name: "Confirm clear" }));
+    expect(screen.queryByText("Submitted revision 2")).not.toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Import answers JSON"), { target: { files: [new File([text], "answers.json", { type: "application/json" })] } });
+    await waitFor(() => expect(screen.getByText("Submitted revision 2")).toBeInTheDocument());
+    expect(JSON.parse([...storage.values()][0])).toEqual(original);
+    expect(screen.getByLabelText("pace: response")).toHaveValue("unable_to_judge");
+  } finally { click.mockRestore(); vi.unstubAllGlobals(); }
 });

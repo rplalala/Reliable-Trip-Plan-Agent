@@ -60,6 +60,7 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
   const [form, setForm] = useState(() => draft(latestAnswer(initial.answers, task.task_id)));
   const [error, setError] = useState(initial.error);
   const [notice, setNotice] = useState("");
+  const [clearRequested, setClearRequested] = useState(false);
   const submitted = latestAnswer(answers, task.task_id, true);
   const currentResponses = responses(form);
   function persist(next: Answer[]) {
@@ -80,6 +81,15 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
   }
   function navigate(next: number) {
     setIndex(next); setForm(draft(latestAnswer(answers, presentation.tasks[next].task_id))); setNotice("");
+  }
+  function clearAnswers() {
+    try {
+      (storage ?? window.localStorage).setItem(key, JSON.stringify({ schema_version: "rtpeval_human_answers_1", answers: [] }));
+    } catch {
+      setError("Local clear failed. Answers are unchanged; download JSON before closing."); setNotice(""); return;
+    }
+    setAnswers([]); setIndex(0); setForm(draft()); setClearRequested(false); setError("");
+    setNotice("Answers cleared for this review package.");
   }
   async function read(file?: File) {
     if (!file) return;
@@ -116,6 +126,12 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
     {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
     <footer><button onClick={() => save("draft")}>Save draft</button><button disabled={!complete(currentResponses)} onClick={() => save("submitted")}>Submit answer</button>
       <button onClick={() => download({ schema_version: "rtpeval_human_answers_1", answers })}>Download answers JSON</button>
-      <label>Import answers JSON<input type="file" accept="application/json,.json" onChange={e => { void read(e.target.files?.[0]); e.target.value = ""; }} /></label></footer>
+      <label>Import answers JSON<input type="file" accept="application/json,.json" onChange={e => { void read(e.target.files?.[0]); e.target.value = ""; }} /></label>
+      <button onClick={() => setClearRequested(true)}>Clear answers</button></footer>
+    {clearRequested && <section aria-label="Clear answers confirmation">
+      <p>This clears all answers, drafts and revisions for this review package in this browser. Download a JSON backup first.
+        Downloaded files and other review packages are unchanged.</p>
+      <button onClick={() => setClearRequested(false)}>Cancel clear</button>{" "}<button onClick={clearAnswers}>Confirm clear</button>
+    </section>}
   </main>;
 }
