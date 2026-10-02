@@ -43,3 +43,16 @@ it("storage failure is visible and downloadable answers remain available", () =>
   expect(screen.getByRole("alert")).toHaveTextContent("Local save failed");
   expect(screen.getByRole("button", { name: "Download answers JSON" })).toBeEnabled();
 });
+
+it("travel rows use a neutral heading and explicitly labelled inferred arrival", () => {
+  const material = structuredClone(presentation);
+  material.tasks[0].plans.A.days[0].items = [{ kind: "travel", fields: {
+    departure_time: "2020-01-01T10:00:00+00:00", duration_seconds: 1800,
+    inferred_arrival: "2020-01-01T10:30:00+00:00",
+  }, notices: ["Arrival not supplied; inferred time is display arithmetic only"] }];
+  render(<BlindReview presentation={material} storage={{ getItem: () => null, setItem: () => {} }} />);
+  expect(screen.getByText("Travel")).toBeInTheDocument();
+  expect(screen.getByText("Inferred arrival")).toBeInTheDocument();
+  expect(screen.getByText("Travel duration (seconds)")).toBeInTheDocument();
+  expect(screen.getByText("2020-01-01T10:30:00+00:00")).toBeInTheDocument();
+});

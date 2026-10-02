@@ -186,9 +186,16 @@ def _material(manifest_path, config, replacements=None):
                         continue
                     items.append(
                         {
-                            "kind": "activity",
+                            "kind": "travel" if roles[base] == "transport" else "activity",
                             "fields": {
-                                k: display(activity[k], key, base + "/" + k, raw_hash)
+                                (
+                                    {
+                                        "start_time": "departure_time",
+                                        "end_time": "arrival_time",
+                                    }.get(k, k)
+                                    if roles[base] == "transport"
+                                    else k
+                                ): display(activity[k], key, base + "/" + k, raw_hash)
                                 for k in ACTIVITY_FIELDS
                                 if k in activity
                             },
@@ -215,9 +222,11 @@ def _material(manifest_path, config, replacements=None):
                         isinstance(transfer, dict), base, "Malformed transfer requires correction"
                     )
                     row = {
-                        "kind": "transfer",
+                        "kind": "travel",
                         "fields": {
-                            k: display(transfer[k], key, base + "/" + k, raw_hash)
+                            {"provider_duration_seconds": "duration_seconds"}.get(k, k): display(
+                                transfer[k], key, base + "/" + k, raw_hash
+                            )
                             for k in TRANSFER_FIELDS
                             if k in transfer
                         },
@@ -333,6 +342,7 @@ def _material(manifest_path, config, replacements=None):
         "schema_version": "rtpeval_human_preparation_1",
         "config": config,
         "source_hashes": sources,
+        "source_batch": {"batch_id": intake["batch_id"], "revision": intake["revision"]},
         "groups": candidates,
         "fields": fields,
     }

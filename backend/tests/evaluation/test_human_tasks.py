@@ -100,7 +100,7 @@ def test_unbound_transfer_is_visible_with_labelled_display_only_arrival(batch):
     result = build_human_package(path, config(), review(prepared))
     label = next(k for k, v in result["private"]["tasks"][0]["labels"].items() if v == "v1")
     items = result["public"]["tasks"][0]["plans"][label]["days"][0]["items"]
-    transfer = next(i for i in items if i["kind"] == "transfer")
+    transfer = next(i for i in items if i["kind"] == "travel")
     assert transfer["fields"]["inferred_arrival"] == "2020-01-02T00:20:00+10:00"
     assert transfer["fields"].get("arrival_time") is None
     assert "Arrival not supplied; inferred time is display arithmetic only" in transfer["notices"]
@@ -185,7 +185,7 @@ def test_duplicate_journey_retains_distinct_uncertainty_once_and_conflict_stays_
     material = build_human_package(path, config(), review(prepare_human_material(path, config())))
     label = next(k for k, v in material["private"]["tasks"][0]["labels"].items() if v == "v1")
     items = material["public"]["tasks"][0]["plans"][label]["days"][0]["items"]
-    transfers = [i for i in items if i["kind"] == "transfer"]
+    transfers = [i for i in items if i["kind"] == "travel"]
     assert len(transfers) == 1
     assert transfers[0]["fields"]["unknowns"] == ["Estimated duration", "Access uncertain"]
     second["arrival_time"] = "2020-01-01T10:25:00+00:00"
@@ -195,7 +195,7 @@ def test_duplicate_journey_retains_distinct_uncertainty_once_and_conflict_stays_
     transfers = [
         i
         for i in material["public"]["tasks"][0]["plans"][label]["days"][0]["items"]
-        if i["kind"] == "transfer"
+        if i["kind"] == "travel"
     ]
     assert len(transfers) == 2
     assert all(
@@ -223,3 +223,33 @@ def test_missing_or_invalid_operands_do_not_invent_arrival(batch, duration, depa
     encoded = json.dumps(material["public"])
     assert "inferred_arrival" not in encoded
     assert "inference unavailable" in encoded
+
+
+def test_transport_display_uses_one_neutral_shape_and_keeps_private_batch_alias(batch):
+    _, results, write, _, _ = batch
+    results["v1"]["itinerary"]["transfers"] = [
+        {
+            "from_activity_id": "a",
+            "to_activity_id": "b",
+            "mode": "WALK",
+            "departure_time": "2020-01-01T10:00:00+00:00",
+            "arrival_time": "2020-01-01T10:20:00+00:00",
+            "provider_duration_seconds": 1200,
+        }
+    ]
+    path = write("v1")
+    material = build_human_package(path, config(), review(prepare_human_material(path, config())))
+    public = material["public"]
+    for version in ("v0", "v1"):
+        label = next(
+            k for k, v in material["private"]["tasks"][0]["labels"].items() if v == version
+        )
+        rows = public["tasks"][0]["plans"][label]["days"][0]["items"]
+        travel = next(row for row in rows if row["kind"] == "travel")
+        assert travel["fields"]["departure_time"] == "2020-01-01T10:00:00+00:00"
+        assert travel["fields"]["arrival_time"] == "2020-01-01T10:20:00+00:00"
+    assert "provider_duration_seconds" not in json.dumps(public)
+    assert material["private"]["preparation"]["source_batch"] == {
+        "batch_id": "batch",
+        "revision": "1",
+    }

@@ -30,7 +30,7 @@ const names: Record<string, string> = {
   additional_preferences: "Original preferences", start_date: "Start date", end_date: "End date",
   traveler_count: "Travelers", estimated_cost: "Displayed cost", place_name: "Place", start_time: "Start",
   end_time: "End", departure_time: "Departure", arrival_time: "Supplied arrival", inferred_arrival: "Inferred arrival",
-  provider_duration_seconds: "Travel duration (seconds)", distance_meters: "Distance (meters)",
+  duration_seconds: "Travel duration (seconds)", distance_meters: "Distance (meters)",
   reserve_seconds: "Reserve (seconds)", unknowns: "Uncertainty", calculation_basis: "Duration basis",
 };
 function Fields({ fields }: { fields: Record<string, unknown> }) {
@@ -96,7 +96,7 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
     <section aria-label="Original request"><h2>Original request</h2><Fields fields={task.input} /></section>
     <div className="plans">{labels.map(label => <article key={label} aria-label={`Plan ${label}`}><h2>Plan {label}</h2>
       {task.plans[label].days.map((day, i) => <section key={i}><h3>{day.date}</h3>{day.items.map((item, n) => <div className="item" key={n}>
-        <strong>{item.kind === "transfer" ? "Travel" : "Activity"}</strong><Fields fields={item.fields} />
+        <strong>{item.kind === "travel" ? "Travel" : "Activity"}</strong><Fields fields={item.fields} />
         {item.notices.map((text, j) => <p className="uncertainty" key={j}>{text}</p>)}</div>)}</section>)}</article>)}</div>
     <section aria-label="Your rankings"><h2>Your rankings</h2>{dimensions.map(d => <fieldset key={d}><legend>{d === "preference" ? "Preference match" : d === "pace" ? "Pace" : "Practical usefulness"}</legend>
       <label>Response <select aria-label={`${d}: response`} value={form[d].status} onChange={e => setForm({ ...form, [d]: { ...form[d], status: e.target.value as Response["status"] } })}>
