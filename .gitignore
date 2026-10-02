@@ -45,3 +45,6 @@ Thumbs.db
 
 # Local presentation slides
 /slides/
+
+# Local planning scratch; durable contracts and evidence summaries belong in docs/
+/.scratch/

@@ -3,7 +3,7 @@
 Activated 2026-10-01 with the approved GitHub tracker switch. The five canonical roles
 are unchanged; GitHub label readiness remains separate from authorization and blockers.
 
-| Role | GitHub label | Legacy local Status | Meaning |
+| Role | GitHub label | Historical local Status | Meaning |
 | --- | --- | --- | --- |
 | needs-triage | needs-triage | needs-triage | Incoming work awaiting triage |
 | needs-info | needs-info | needs-info | Specification has a bounded information gap |
@@ -18,3 +18,6 @@ on an open issue, not a readiness label granting permission. A ready ticket with
 open blocker stays ready-for-agent and blocked; a needs-info ticket with no open blocker
 still needs specification closure. `rtpeval` is a feature grouping label, not a sixth
 triage role. Existing labels must be inspected before any approved creation/update.
+
+Local Status fields are historical only. GitHub Issues own formal specifications and
+live lifecycle; optional ignored drafts never become a parallel tracker.

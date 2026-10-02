@@ -19,7 +19,7 @@ from backend.app.schemas.request import PlanningRequest
 from tools.validation.requirement_capture import DevelopmentRequirementCapture
 
 ROOT = Path(__file__).resolve().parents[2]
-INPUTS = ROOT / ".scratch/preference-landmark-balance/pilot"
+INPUTS = ROOT / "tools/validation/packets/preference-landmark-balance/pilot"
 OUTPUT = ROOT / "logs/preference_landmark_pilot_20260928"
 CASES = ("ordinary_sydney_v3", "focus_melbourne_v3", "short_brisbane_v3")
 CHILD_MODULE = "tools.validation.landmark_pilot"

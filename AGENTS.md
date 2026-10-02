@@ -209,8 +209,8 @@ When I explicitly approve a version freeze:
 
 Examples:
 
-- V0 → `docs/v0_milestone.md`
-- V1 → `docs/v1_design.md` and any V1 milestone/final-status document
+- V0 → `docs/records/v0-v3/v0-milestone.md`
+- V1 → the numbered core architecture and `docs/records/v0-v3/v1-milestone.md`
 - V2/V3 → corresponding version documentation
 
 ## Thesis Research Archive
@@ -343,12 +343,12 @@ Do not repeatedly read or test unrelated parts of the repository without a reaso
 
 ### Issue tracker
 
-Track RTPEval and new work in GitHub Issues after the approved migration; keep detailed specs and acceptance records in the repository. For legacy local trackers and operations, see `docs/agents/issue-tracker.md`.
+Use GitHub Issues for specifications, parent/child tickets, task state and discussion. Keep durable detailed contracts and acceptance records in tracked core `docs/` contracts and dated `docs/records/` documents. `.scratch/` is optional ignored drafting space, never the formal specification or issue-tracker location. See `docs/agents/issue-tracker.md` for skill operations and published-link rules.
 
 ### Triage labels
 
-Use the default five triage roles as GitHub labels after migration; retain local `Status:` values for unmigrated trackers. See `docs/agents/triage-labels.md`.
+Use the existing default five triage roles as GitHub labels. Local `Status:` fields are historical snapshots, not live task state. See `docs/agents/triage-labels.md`.
 
 ### Project documentation
 
-Use `PROJECT.md` for current project state and `docs/README.md` to find relevant design documents. See `docs/agents/domain.md`.
+Use `PROJECT.md` for current project state and `docs/README.md` to find tracked design and acceptance documents. GitHub specs link to published documentation revisions; published files must not depend on ignored/local-only files. Preserve the single-context project layout and current source-of-truth hierarchy. See `docs/agents/domain.md`.

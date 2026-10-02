@@ -456,7 +456,7 @@ with 8 reserved for post-proposal work and 32 elements shared by all rounds/mode
 
 ## Engineering closeout (2026-09-25)
 
-Current values were loaded and hashed during [V3 closeout](../docs/v3_closeout.md).
+Current values were loaded and hashed during [V3 closeout](../docs/records/v0-v3/v3-closeout.md).
 No runtime limits changed in that task. The final combined-tree offline regression passed;
 historical live limits retain their original run configurations.
 
@@ -543,9 +543,9 @@ Existing exact matches/cache are reused; unused opportunities return to ordinary
 All existing C/G/K, Details, semantic, RAG, route and Repair ceilings remain unchanged.
 Model-origin rank is selection metadata, not provider fact evidence. Bounds are engineering
 starting values; live quality, latency and cost remain unmeasured. See
-[landmark discovery](../docs/shared_landmark_discovery.md) for identity and fallback behavior.
+[landmark discovery](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/shared_landmark_discovery.md) for identity and fallback behavior.
 
 Ticket 03 (2026-09-28) adds no configuration keys or budget increase. Candidate balancing
 uses the sourced final soft target plus one replacement opportunity; this is a selection
 heuristic, not a final category quota. Existing exploration settings also admit resolved
-landmarks that match preferences. See [supply policy](../docs/shared_poi_supply.md).
+landmarks that match preferences. See [supply policy](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/shared_poi_supply.md).

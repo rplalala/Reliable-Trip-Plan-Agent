@@ -1,85 +1,64 @@
-# Issue tracker: GitHub with legacy local records
+# Issue tracker and local planning workflow
 
-Activated 2026-10-01 after explicit authorization and successful publication verification.
-RTPEval parent: [#12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12). Resolve all Ticket numbers through
-[the migration manifest](../../.scratch/rtpeval-github-migration/migration-manifest.json).
-This repository revision contains the activated configuration. The migration record
-preserves original approval/publication checkpoints and historical draft references.
-Target repository: `rplalala/Reliable-Trip-Plan-Agent`. Use the `gh` CLI with an explicit repository argument.
+GitHub Issues in `rplalala/Reliable-Trip-Plan-Agent` own live task state,
+dependencies, assignments and discussion. [PROJECT.md](../../PROJECT.md) owns
+current project scope and authorization; tracked docs own detailed contracts and
+acceptance. See the [migration and legacy mapping](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/36#issuecomment-5956795623).
 
-## Ownership
+## Specifications and child tickets
 
-- GitHub Issues own migrated RTPEval task state, dependencies, assignments and discussion,
-  and approved new work. Read the issue body and relevant comments before implementation.
-- Repository `.scratch/<feature>/` contracts/specs and acceptance records remain their
-  detailed owners. PROJECT.md owns current project scope, status and authorization.
-- `.scratch/rtpeval/issues/` is a historical migration snapshot with actual Issue
-  links and a mapping record; its old Status fields are not a second live tracker.
-- Existing non-RTPEval local trackers retain their current authority until explicitly
-  migrated. This RTPEval migration does not publish or close those tasks.
-- Specification labels, open/closed state and dependency completion do not grant task,
-  Git, live-run or research approval. Follow AGENTS.md's authorization boundaries.
+Matt's `to-spec` publishes a GitHub spec/parent Issue; `to-tickets` creates its
+GitHub child Issues. `triage`, `implement` and `wayfinder` read and update those
+Issues. "Publish to the issue tracker" means create/update a GitHub Issue, and
+"fetch the relevant ticket" means read that Issue and its comments. A wayfinding
+map is a parent Issue holding Notes, Decisions-so-far and Fog; claims use assignment,
+and resolved answers belong in the child Issue and parent progress summary.
 
-## Operations
+Optional local drafts may retain a spec and its child-ticket files. Migrated copies
+record the GitHub URL and are historical planning aids, never the formal spec owner
+or a second live tracker. Local-only files may link to each other. `.scratch/` is
+ignored scratch space, not the default output of any publishing skill operation.
 
-- Publish an approved task: `gh issue create --repo rplalala/Reliable-Trip-Plan-Agent --title "..." --body-file <file>`.
-  Provide labels and parent/dependency links after validating local CLI support.
-- Fetch a ticket: `gh issue view <number> --repo rplalala/Reliable-Trip-Plan-Agent --comments`; obtain state, labels,
-  assignments and linked current contract versions. Resolve project Ticket numbers
-  through the retained mapping; do not assume Ticket 05 means GitHub #5.
-- Update discussion with a reviewed English comment file using `--body-file`; update
-  labels/state only within approved work. Imported dates/authors are quoted history.
-- Resolve: record implementation/acceptance evidence, then close with reason completed.
-  Unimplemented tickets remain open even when their specifications are ready.
-- PRs as a request surface: no. Issue migration does not expand triage scope to PRs.
+Promote accepted requirements, decisions and acceptance evidence into an existing
+core design/contract document under docs/, or a dated evidence document under docs/records/.
+Use sections/anchors for related tickets instead of duplicating specs across many
+files. A GitHub parent Issue maps to the spec; child Issues map to its slices.
+Use native sub-issues when the available API supports them; otherwise keep explicit
+reciprocal parent/child links and identify that fallback. Preserve dependencies.
 
-## Dependency and claim rules
+## GitHub operations
 
-Retain the approved predecessor graph using native blocked-by relationships. Preserve
-references to completed blockers even when GitHub's open-blocker count becomes zero.
-Use a body `Blocked by` reference only as a documented fallback if native relationships
-are unavailable. Issue numbers and API database IDs are separate identifiers.
-A ready ticket is actionable only when its blockers are completed and the human has
-approved that scope. Claim via an assignment/current-scope comment after approval;
-state and assignment never imply blanket authorization for another ticket.
+Use `gh` with an explicit repository argument when authenticated; the connected
+GitHub tools are an alternative. Fetch body and relevant comments before updating.
+Check existing issues before creation. Use the five roles in
+[triage-labels.md](triage-labels.md); readiness and completion never grant scope,
+live-run, publication or freeze approval. PRs are not a triage request surface.
 
-## Documentation updates
+Publish only authorized issue work. Keep English bodies self-contained and link
+only to accessible published revisions or Issues. Do not link an Issue to a local
+file, ignored scratch draft or unpublished commit. During unpublished changes,
+describe the new state inline and label older pinned links as historical evidence.
+Do not rewrite old pinned URLs to a new path in an old commit.
 
-Update the authoritative contract/acceptance record in the repository; record the
-substantive change and accessible document revision on its Issue. Git commit/push
-requires explicit approval, so local documentation is not automatically published.
-During an unpublished revision, mark its availability explicitly instead of presenting
-an old GitHub link as the new approved meaning. Final reports remain self-contained.
+For a completed legacy task, preserve actual validation and remaining limitations,
+map its local spec/child ticket, then close the Issue as completed. Unimplemented
+work stays open. Retiring a local tracker does not mean its feature was implemented.
+Re-read the remote outcome after every mutation. Native dependencies and issue
+numbers/API database IDs are different concepts.
 
-## Migration records
+## RTPEval mapping
 
-The migration directory retains preparation hashes and actual publication mappings.
-After successful activation, keep source tickets as dated snapshots with GitHub links;
-replace dynamic status copies in the old breakdown with pointers to Issue state.
-Resumption first checks the live mapping and existing Issues to avoid duplicate creation.
+[Parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12) owns
+Tickets 01-12, mapped respectively to #13-#24. See the
+[historical migration acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12#issuecomment-5956797691)
+and [planning record](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12). Tickets 10-12 and the parent
+remain open; this documentation migration does not implement or close them.
 
-## Legacy local operations (unmigrated features only)
+## Commit and publication boundary
 
-These retained operations apply only to local trackers that have not migrated.
-
-### Conventions
-
-- One feature per directory: `.scratch/<feature-slug>/`.
-- The spec is `.scratch/<feature-slug>/spec.md`.
-- Implementation issues are separate files at `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`.
-- Record triage state in a `Status:` line near the top of each issue file, using `docs/agents/triage-labels.md`.
-- Append conversation history under `## Comments`.
-
-### Skill operations
-
-- "Publish to the issue tracker": create the appropriate spec or issue file under `.scratch/<feature-slug>/`.
-- "Fetch the relevant ticket": read the referenced issue file.
-
-### Wayfinding operations
-
-- Map: `.scratch/<effort>/map.md`, containing Notes, Decisions-so-far, and Fog.
-- Child ticket: `.scratch/<effort>/issues/<NN>-<slug>.md`. Record its type in `Type:` (`research`, `prototype`, `grilling`, or `task`).
-- Blocking: record `Blocked by: NN, NN` near the top. A ticket is unblocked when each referenced ticket is resolved.
-- Frontier: scan open, unblocked, unclaimed child tickets; take the first by number.
-- Claim: set `Status: claimed` and save before starting work.
-- Resolve: append the answer under `## Answer`, set `Status: resolved`, and add a short context pointer and link to the map's Decisions-so-far.
+Local commits within approved scope follow AGENTS.md without repeated permission.
+Push, merge, PR creation and branch switching require explicit authorization.
+Validate tracked links using the Git index, not merely filesystem existence:
+remote documents must not depend on ignored files. Repository-relative links to
+tracked assets resolve on GitHub after publication. Local-only evidence paths are
+labelled historical identifiers rather than clickable dependencies.
