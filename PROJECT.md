@@ -109,7 +109,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | 06: Opening checks | Offline parser/scorer/CLI implemented under the 2026-10-02 approval; offline acceptance complete; Standards/Spec reviews clear, full regression 2148 passed / 10 skipped; all ten skips passed in subsequently approved scoped supplements; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) closed as completed; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) |
 | 07: Route checks | Offline preparation/scorer/CLI implemented and validated; longest unstated-departure fragment, zero-grace hard boundaries and decisive partial FAIL; Standards/Spec reviews clear; 86 dedicated tests passed; approved existing-test repair removes the former exclusion, latest unfiltered backend gate 2234 passed / 10 skipped / zero deselections; implementation and repair committed locally under the approved three-group closeout; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) closed/completed; [acceptance](.scratch/rtpeval/ticket-07-acceptance.md) |
 | 08: Multimetric report | Approved offline report/CLI implemented; 39 dedicated tests passed; full offline gate 2273 passed / 10 skipped / zero deselections; committed at 5625f81 before clear Standards/Spec reviews; exact shared-mask verified scores and separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) closed/completed; [acceptance](.scratch/rtpeval/ticket-08-acceptance.md) |
-| 09: Blinded ranking | Independent offline package/import/report and React renderer implemented and reviewed; current display uses IANA time-zone selection and HH:mm, without Original timestamp controls or dedicated uncertainty hints; latest frontend 94 passed, TypeScript/blind build/lint passed; earlier backend gate 2299 passed / 10 skipped remains separate; actual file:// browser acceptance pending; [acceptance](.scratch/rtpeval/ticket-09-acceptance.md); [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) stays open |
+| 09: Blinded ranking | Independent offline package/import/report and React renderer implemented and reviewed; current display uses IANA time-zone selection and HH:mm, without Original timestamp controls or dedicated uncertainty hints; confirmed local-answer clearing implemented; latest frontend 98 passed, TypeScript/blind build/lint passed; earlier backend gate 2299 passed / 10 skipped remains separate; actual file:// browser acceptance pending; [acceptance](.scratch/rtpeval/ticket-09-acceptance.md); [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) stays open |
 | 10-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
@@ -300,14 +300,19 @@ dedicated Uncertainty/unknowns fields, item notices and time-warning text are re
 Ordinary source notes/preferences and duration basis remain; no claim is made that all
 uncertain prose is erased. Unknown-zone clocks stay local, invalid values stay raw and
 missing values display Not supplied. Frozen source/public/private material, hashes,
-answers, scoring and independently runnable V0-V3 paths remain unchanged.
+answer/report schemas, scoring and independently runnable V0-V3 paths remain unchanged.
+[Clear answers](.scratch/rtpeval/ticket-09-clear-answers.md) now requires confirmation,
+resets only the current review package/rater local answers and form, and preserves
+other packages and downloaded backups. Failed clearing preserves current answers;
+successful clearing invalidates older pending imports. JSON backups restore revisions.
 
-Latest UI validation at f1f0cc0: **94 passed / 13 files in 25.49s**; TypeScript,
+Latest UI validation at d514508: **98 passed / 13 files in 32.64s**; TypeScript,
 blind-review build and lint passed. Implementation/direct tests precede independent
-Standards/Spec reviews; both latest reviews are clear. Earlier backend validation
-remains **2299 passed / 10 skipped / zero deselections in 150.85s**, a separate run;
+Standards/Spec reviews; Spec identified a pending-import race, separately fixed with
+a failing-then-passing regression. Both final review rechecks are clear. Earlier backend
+validation remains **2299 passed / 10 skipped / zero deselections in 150.85s**, a separate run;
 nine database opt-ins and one native symlink case were not supplemented for Ticket 09.
-The subsequent [scoped acceptance recheck](.scratch/rtpeval/ticket-09-final-acceptance.md)
+An earlier [scoped acceptance recheck](.scratch/rtpeval/ticket-09-final-acceptance.md)
 passed 26 backend and 11 frontend tests, exact package/asset checks and a synthetic CLI
 revision/import/report replay. Its first backend attempt failed at temporary-directory
 setup; a workspace-contained temporary root and disabled inaccessible cache resolved
@@ -320,12 +325,12 @@ corrections, retests and commit/review history. Supplementary accepted records c
 [hint suppression](.scratch/rtpeval/ticket-09-uncertainty-display.md).
 
 Current synthetic manual-check target:
-`artifacts/rtpeval/ticket09/public-no-hints/review.html` (ignored development artifact).
-Earlier renderer packages are historical checkpoints. Actual direct-file display,
-time-zone switching, narrow layout, submit/save/refresh recovery and JSON download/
-reimport acceptance remain pending. Browser Use rejected file:// navigation; no
-workaround was attempted, and a cropped user screenshot does not establish full
-acceptance. [Issue #21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21)
+`artifacts/rtpeval/ticket09/public-clear-answers-final/review.html` (ignored development artifact).
+Earlier renderer packages are historical checkpoints. The user confirmed direct-file
+display/time-zone switching and narrow layout for the preceding package. Submission/
+refresh/clear/JSON recovery and a brief updated-renderer display check remain pending.
+Browser Use rejected file:// navigation; no workaround was attempted. Native results
+are user-reported and do not establish the still-untested recovery gate. [Issue #21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21)
 and [parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12) stay open.
 Local code/document commits are unpublished. No real rater session, formal comparison,
 live/native supplement, push, freeze or later-ticket implementation is included.

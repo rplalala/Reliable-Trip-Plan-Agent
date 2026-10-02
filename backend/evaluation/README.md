@@ -479,20 +479,33 @@ preserves the original no-implementation checkpoint and subsequent scope approva
 
 Current acceptance checkpoint (2026-10-02): implementation and offline Standards/Spec
 reviews are complete; actual native direct-file browser acceptance remains pending.
-Latest UI gate passed 94 tests, TypeScript/blind-review build/lint; the earlier backend
-2299-pass/10-skip gate remains a separate run. A subsequent
+Latest UI gate passed 98 tests, TypeScript/blind-review build/lint; the earlier backend
+2299-pass/10-skip gate remains a separate run. The earlier
 [scoped acceptance recheck](../../.scratch/rtpeval/ticket-09-final-acceptance.md) passed
 26 backend and 11 frontend tests, package integrity and synthetic CLI revision replay.
 Issue #21 and parent #12 remain open pending native checks; commits remain local.
 
 For the current synthetic manual check, open
-`artifacts/rtpeval/ticket09/public-no-hints/review.html` directly in a local browser.
+`artifacts/rtpeval/ticket09/public-clear-answers-final/review.html` directly in a local browser.
 Older generated renderer packages are preserved checkpoints. Verify original request
 and complete A/B/C/D itineraries, time-zone switching and HH:mm dates/clocks, narrow
 layout, submitted-answer/draft recovery after refresh and JSON download/reimport.
 The checks must retain labelled Inferred arrival while showing no Original timestamp
 control or dedicated uncertainty/item/time-warning hints. Report actual results before
 closing acceptance; automated DOM checks alone do not establish native file:// behavior.
+The user confirmed display/time-zone/narrow-window checks on the prior renderer;
+submission/refresh/JSON recovery remains pending on the updated renderer.
+
+Clear answers offers confirmation to erase all local answers, drafts and revisions for
+this review package/rater and return to the first task with a blank form. Download a
+backup first. Cancel and failed local writes preserve current answers/edits; successful
+clearing prevents an older pending import from restoring them. Other review packages,
+time-zone selection, source/private mapping, downloaded files and researcher reports
+are unchanged. To test recovery: submit, refresh, download JSON, confirm Clear answers,
+refresh to verify blank answers, then use Import answers JSON to restore the backup.
+Starting fresh does not erase earlier researcher-held revisions; existing contradictory
+same-revision imports remain errors. [Clearing scope and validation](../../.scratch/rtpeval/ticket-09-clear-answers.md)
+records the implementation, separate review fix and remaining native check.
 
 The human track is independent of automatic reports. It reads accepted, exact-byte-linked
 final v0-v3 material and needs neither route/opening snapshots nor complete resource

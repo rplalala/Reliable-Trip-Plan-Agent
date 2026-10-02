@@ -86,3 +86,15 @@ needs a clear/reset button to repeat submission/refresh/JSON recovery from empty
 The user requested that button; its narrowly scoped implementation will have separate
 TDD/review/commit evidence. Full acceptance remains pending item 3 and checking the
 updated renderer; the earlier no-result statements above preserve their checkpoint.
+
+## Clearing-enabled follow-up
+
+The requested [Clear answers addition](ticket-09-clear-answers.md) now has confirmed
+package-scoped persistence reset, failure preservation and backup restoration.
+Implementation 3a2e3d9 precedes review; independent Spec found one pending-import
+race, separately corrected at d514508 with a red/green regression. Full frontend
+98 passed / 13 files in 32.64s; TypeScript/blind build/lint passed; both final review
+axes are clear. Current native target is public-clear-answers-final/review.html under
+the same ignored Ticket 09 artifact directory. User report establishes items 1-2 on
+the preceding renderer; item 3 remains pending against this updated package. Earlier
+unchecked/no-result statements remain their original chronological checkpoints.

@@ -1,5 +1,17 @@
 # Ticket 09 implementation acceptance
 
+## Current clearing-enabled acceptance - 2026-10-02
+
+The user confirmed native display/time-zone and narrow-window checklist items 1-2
+on public-no-hints, then requested Clear answers to test item 3. The
+[clearing addition](ticket-09-clear-answers.md) commits implementation at 3a2e3d9
+before review, followed by separate pending-import P2 fix d514508. Final frontend
+98 passed / 13 files in 32.64s; TypeScript/blind build/lint passed. Both final review
+axes are clear. Source/public bytes/mapping and answer/report schemas remain unchanged.
+Current ignored renderer: artifacts/rtpeval/ticket09/public-clear-answers-final/review.html.
+Submit/refresh/download/clear/refresh/reimport and a brief updated-display check still
+require the user; Issue #21 and parent #12 remain open. Earlier sections are history.
+
 ## Latest scoped acceptance - 2026-10-02
 
 At clean base 290ef20 the user requested acceptance. The

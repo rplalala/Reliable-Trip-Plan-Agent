@@ -310,16 +310,18 @@ status and preserved validation history. Linked records distinguish
 [uncertainty hint suppression](../.scratch/rtpeval/ticket-09-uncertainty-display.md) and
 [tracker synchronization](../.scratch/rtpeval/ticket-09-tracker-update.md).
 
-Latest UI gate: **94 passed / 13 files in 25.49s**, TypeScript/blind-review build/lint
+Latest UI gate: **98 passed / 13 files in 32.64s**, TypeScript/blind-review build/lint
 passed and both review axes clear. Earlier backend gate: **2299 passed / 10 skipped /
 zero deselections**; these are separate runs, with no new backend/native supplement.
-Current ignored synthetic package is `artifacts/rtpeval/ticket09/public-no-hints/review.html`.
-Earlier packages and acceptance sections remain historical. Actual file:// display,
-zone switching, narrow layout, submit/save/refresh and JSON download/reimport await
-manual verification after Browser Use's protocol-policy rejection; no workaround was
-attempted. Issue #21 and parent #12 stay open; local commits/documents remain unpublished.
+Current ignored synthetic package is `artifacts/rtpeval/ticket09/public-clear-answers-final/review.html`.
+[Confirmed clearing](../.scratch/rtpeval/ticket-09-clear-answers.md) clears only current
+package local answers, preserves backups and handles failed writes/late imports.
+Implementation precedes review; the pending-import P2 was fixed separately and both
+rechecks are clear. User-reported display/time-zone/narrow checks passed on the prior
+package. Updated-renderer submit/refresh/clear/JSON recovery still awaits manual
+verification after Browser Use's protocol-policy rejection; no workaround was attempted. Issue #21 and parent #12 stay open; local commits/documents remain unpublished.
 No real rater session, formal result, live/native supplement, push, freeze or later-ticket
-implementation is included. The subsequent
+implementation is included. An earlier
 [scoped acceptance recheck](../.scratch/rtpeval/ticket-09-final-acceptance.md) passed
 26 backend and 11 frontend tests plus exact package/asset and synthetic CLI replay
 checks. Initial backend temporary-directory permissions were resolved using an

@@ -134,3 +134,20 @@ acceptance checkboxes and completed predecessors, is byte-identical. No comment,
 assignment, label, close or push action. Detailed actual evidence remains local in
 [scoped acceptance](ticket-09-final-acceptance.md); original broad gates/reviews remain
 separate evidence. Application code, dependencies and V0-V3 behavior did not change.
+
+## User browser feedback and clearing synchronization - 2026-10-02
+
+The user confirmed native checklist items 1-2 (display/time-zone and narrow layout)
+on the preceding renderer, left item 3 untested and requested Clear answers. At
+committed d514508 with final documents uncommitted, read current #21/#12 and updated
+only their top summary through the GitHub connector: scoped confirmed clearing,
+backup recovery, initial Spec pending-import P2 and separate fix/red-green/rechecks,
+full frontend/build/lint success, and remaining native recovery checklist. Source/
+private material and answer/report schemas are unchanged; no full acceptance claimed.
+
+Independent reads exactly matched intended bodies, open states, original labels and
+comment counts. Historical suffixes, imported source, pinned links, old criteria and
+completed predecessors are byte-identical. No comments, assignment, label, close or
+push action. Browser-dependent boxes and the parent Ticket 09 box remain unchecked.
+Details: [clearing acceptance](ticket-09-clear-answers.md). Updated final renderer
+supersedes earlier manual-check examples; commits and records remain local/unpublished.

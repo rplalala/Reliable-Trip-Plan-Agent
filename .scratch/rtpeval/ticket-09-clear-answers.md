@@ -38,3 +38,36 @@ lint passed. No new backend run is claimed for this frontend-only addition. Earl
 scoped backend 26-pass and native user-reported items 1-2 remain separate evidence.
 Implementation/direct tests and this accepted scope are committed before dual review;
 review outcomes and final regenerated renderer will be recorded afterward.
+
+## Initial committed review and correction
+
+Implementation/direct tests committed at 3a2e3d9 before review. Standards reported
+zero documented breaches/actionable heuristics. Spec reported one P2: pending
+FileReader import could complete after a confirmed clear and re-persist old answers.
+The delayed-import regression reproduced this (1 failed / 11 not selected, 2.46s).
+A local import generation increments only after successful empty-bundle persistence;
+earlier read successes/errors are ignored afterward. Failed or canceled clears do
+not invalidate imports. Selected regression passed (1 passed / 11 not selected, 2.59s).
+This is a required clearing-correctness fix, not a general import redesign.
+
+## Final committed rechecks and package
+
+d514508 commits the delayed-import correction and direct regression separately.
+Post-fix full frontend: **98 passed / 13 files in 32.64s**; TypeScript via blind-review
+build and lint passed. Standards recheck: zero documented breaches/actionable
+heuristics. Spec recheck: original P2 resolved, zero remaining findings; reviews
+were read-only and did not independently rerun the suite.
+
+Current ignored synthetic renderer: artifacts/rtpeval/ticket09/public-clear-answers-final/
+review.html. validation-clear-answers-final.json records code/asset hashes, unchanged
+public JSON bytes and valid existing private mapping. Older renderer packages remain
+historical. User-confirmed display/time-zone/narrow-window items 1-2 apply to the
+previous public-no-hints package; the new button and final item 3 still need native
+checking on this updated renderer. No tool file:// workaround or completed gate is
+claimed; Issue #21 and parent #12 remain open.
+
+Final closeout checks passed: seven English documentation files, 198 local Markdown
+target occurrences, final generated package/public-byte/asset-hash/CSP checks, approved
+source scope and diff whitespace. Issue #21/#12 exact-body/open-state/unchanged-label/
+comment/history checks passed. No pending native-check result is inferred from these
+checks; final documentation is a separate local commit without generated/ignored data.
