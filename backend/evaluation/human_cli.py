@@ -44,9 +44,9 @@ def render_human_html(public, javascript, css):
         f'<meta http-equiv="Content-Security-Policy" content="{policy}">'
         f"<title>Travel plan review</title><style>{css}</style></head><body>"
         '<div id="root"></div><noscript>JavaScript is required for local ranking '
-        'and JSON backup.</noscript>'
+        "and JSON backup.</noscript>"
         f'<script id="human-data" type="application/json">{data}</script>'
-        f'<script>{javascript}</script></body></html>'
+        f"<script>{javascript}</script></body></html>"
     )
 
 
