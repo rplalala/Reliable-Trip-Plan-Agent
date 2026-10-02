@@ -315,9 +315,9 @@ rater session, formal comparison, live/native supplement, push or freeze is auth
 ### Ticket 09 approved time-zone display extension — 2026-10-02
 
 The user separately approved [the display extension](.scratch/rtpeval/ticket-09-timezone-display.md):
-Time zone dropdown (default UTC), selected-zone dates and 24-hour HH-mm clocks for
+Time zone dropdown (default UTC), selected-zone dates and 24-hour HH:mm clocks for
 supplied-offset activity/transport/inferred timestamps, with explicit original-day
-grouping and inspectable source timestamps. Missing zones are not guessed; invalid
+grouping and source timestamp preservation in frozen artifacts. Missing zones are not guessed; invalid
 dates/clocks remain explicit, and date-only requests/free text remain unchanged.
 The display choice does not rewrite sources, frozen presentations/mappings, answers,
 automatic reports or V0-V3 behavior. Implementation/direct UI tests are committed at
@@ -328,6 +328,17 @@ lint passed. Earlier backend 2299/10-skip validation remains a separate
 Ticket 09 gate; no backend tests or live/native supplement were rerun for this UI-only
 extension. The final synthetic renderer is in ignored public-timezone-final/review.html;
 actual direct-file browser acceptance remains pending and Issue #21 remains open.
+
+The user's subsequent [display cleanup](.scratch/rtpeval/ticket-09-display-cleanup.md)
+removes Original timestamp controls/helper text and corrects the clock separator to
+HH:mm. Source strings remain in frozen artifacts; missing/invalid evidence and the
+distinct source-travel uncertainty/inferred-arrival notices remain visible. No source,
+answer or scorer rewrite is included. The current synthetic package and exact final
+tests/review/commit checkpoint are recorded in the cleanup acceptance.
+Removal and formatting were locally committed at 6725071/7809b33 before their reviews;
+both review axes are clear. Final cleanup frontend 94 passed / 13 files in 36.49s,
+TypeScript/blind build/lint passed. Current ignored public-display-final/review.html
+supersedes older synthetic renderer examples; actual browser acceptance is still pending.
 
 ## 7. Keeping this file current
 

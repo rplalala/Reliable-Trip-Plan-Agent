@@ -186,3 +186,13 @@ values retain explicit uncertainty. Date-only/free-text values remain unchanged.
 Public/mapping/answer schema versions, original source bytes and presentation hashes
 are unchanged; display choice is not added to answer records or scoring input.
 [Scope and acceptance](ticket-09-timezone-display.md) owns actual extension evidence.
+
+## Subsequent user display cleanup — 2026-10-02
+
+The user removed the optional Original timestamp UI requirement and corrected current
+clocks to 24-hour HH:mm. The dropdown/converted dates/source day grouping remain.
+Original timestamp strings are retained in frozen artifacts, while missing/invalid
+times and source uncertainty/inferred-arrival notices retain their explicit evidence.
+No source, public/private schema, presentation hash, answer or scorer change is made.
+[Cleanup acceptance](ticket-09-display-cleanup.md) records the superseding UI rules and
+actual validation; earlier inspectable-control/HH-mm records remain historical.

@@ -313,9 +313,18 @@ is pending user verification after Browser Use's protocol-policy rejection. No w
 real rater session, formal result, live/native supplement, push or freeze occurred.
 
 The separately approved [time-zone display extension](../.scratch/rtpeval/ticket-09-timezone-display.md)
-adds an IANA dropdown (default UTC) and converted dates/24-hour HH-mm clocks while
-preserving original-day grouping, inspectable source timestamps and unknown-zone
+adds an IANA dropdown (default UTC) and converted dates/24-hour HH:mm clocks while
+preserving original-day grouping, source timestamps in frozen artifacts and unknown-zone
 uncertainty. No data/scoring/answer schema changes. Extension post-fix frontend gate:
 94 tests passed, both builds and lint passed. Spec's compact-offset omission was
 corrected in a separate fix commit; both review rechecks are clear. Actual file://
 browser acceptance remains pending against public-timezone-final/review.html.
+
+Subsequent [user-requested display cleanup](../.scratch/rtpeval/ticket-09-display-cleanup.md)
+removes Original timestamp controls/instructions and adopts the corrected HH:mm format.
+Frozen source material and source-travel uncertainty/inferred-arrival notices remain.
+Use its latest synthetic package and actual validation/review record for current display;
+the earlier time-zone package is a preserved checkpoint.
+Current cleanup: frontend 94 tests passed, TypeScript/blind build/lint passed, both
+review axes clear. Final synthetic package is public-display-final/review.html;
+actual direct-file/responsive/refresh/export/import evidence remains pending.

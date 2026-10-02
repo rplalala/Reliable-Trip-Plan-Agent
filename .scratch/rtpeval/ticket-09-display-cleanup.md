@@ -56,3 +56,33 @@ valid strings; no full-test rerun or browser acceptance by reviewers is claimed.
 After the user format correction, final full frontend: 94 passed / 13 files in 36.49s.
 TypeScript, final blind build and lint passed. The format change/direct expected literals
 and this accepted correction record are committed separately before its final review.
+
+## Final local closeout checkpoint
+
+7809b33 (fix: display blinded review times as HH:mm) preserves the user's format
+correction as a separate commit after 6725071 (fix: remove original timestamp controls
+from blinded review). Both Standards and Spec reviewed 6725071...7809b33 and report
+zero residual findings. Spec independently rendered converted/local clocks, missing
+zones, invalid values and removed controls; no full test or browser pass is inferred.
+
+Generated ignored artifacts/rtpeval/ticket09/public-display-final/review.html from final
+assets; validation-display-final.json records HH:mm, removed control, renderer hashes
+and code revision. Exact public JSON bytes/presentation hash and private mapping match
+the earlier frozen material. Older package checkpoints remain unchanged. This new
+package supersedes earlier examples for the remaining manual browser acceptance.
+The user's cropped screenshot shows source uncertainty and inference notice text only;
+it does not establish the full package's responsive/persistence/export/import gate.
+
+Issue #21 and parent #12 were updated with removal, format correction and clear final
+reviews, then independently fetched to verify exact bodies, unchanged labels and open
+states. Browser-dependent acceptance remains unchecked. Source uncertainty explains
+the uncertain traffic duration; the separate missing-arrival notice identifies display
+arithmetic, not a verified arrival. Neither claim was altered to suppress uncertainty.
+No backend/planner/scorer/dependency/source/answer change, push, live/native supplement,
+real rater session, formal comparison, freeze or later-ticket work occurred.
+
+Final closeout checks: eight English documents and 191 local Markdown target
+occurrences passed, along with diff whitespace. Backend executable code, scripts and
+dependency manifests are unchanged against the review base. Documentation is a
+separate coherent local commit; generated package/validation and the development
+archive remain ignored. Manual acceptance is not inferred from automated checks.

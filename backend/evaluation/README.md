@@ -510,10 +510,11 @@ the original arrival remains absent and inference never feeds automatic scoring.
 The approved time-zone display extension adds a Time zone dropdown, default UTC, using
 the browser's available IANA zones (a small common-zone fallback on older runtimes).
 Explicit-offset start/end/departure/supplied-arrival/inferred-arrival timestamps display
-their converted date and a 24-hour HH-mm clock, including midnight and daylight-saving
+their converted date and a 24-hour HH:mm clock, including midnight and daylight-saving
 changes. Source day headings retain original grouping; they are not converted dates.
-Expand Original timestamp to inspect exact source strings. Local timestamps/clocks
-without a supplied offset are not converted and explicitly state the missing zone;
+Following the user's display-cleanup request, the optional Original timestamp control
+and its instructions are removed. Exact source strings remain in the frozen material.
+Local timestamps/clocks without a supplied offset are not converted and state the missing zone;
 invalid dates/clocks remain original values with a conversion-unavailable notice.
 Date-only request values and free-text notes are unchanged. Zone selection is a view
 preference for the current window; it does not rewrite frozen public/private artifacts,
@@ -521,6 +522,8 @@ answer revisions/exports or automatic reports. Runtime time-zone names/rules com
 local Intl data; the renderer makes no external request or inferred destination zone.
 [Time-zone scope and validation](../../.scratch/rtpeval/ticket-09-timezone-display.md)
 records this separately approved extension.
+[Display cleanup](../../.scratch/rtpeval/ticket-09-display-cleanup.md) records the user's
+subsequent timestamp-control removal and HH:mm format correction.
 
 Preparation is researcher-only. Its `fields` list records `field_ref`, exact source-file
 `source_sha256`, source pointer, `original`, canonical `original_sha256` and likely leakage

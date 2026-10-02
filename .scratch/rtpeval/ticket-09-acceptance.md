@@ -152,3 +152,17 @@ mapping and separately retained renderer hashes. No actual browser pass is claim
 Spec's compact-offset omission was fixed separately at 29df5fd; both review rechecks
 have zero residual findings. Detailed red/green and separate gate counts remain in
 the extension record; no earlier checkpoint is rewritten as a post-fix pass.
+
+## Subsequent user display cleanup and HH:mm correction
+
+[Cleanup acceptance](ticket-09-display-cleanup.md) records explicit removal of the
+Original timestamp control and the subsequent HH:mm format correction. Removal at
+6725071 and formatting at 7809b33 were independently committed before their reviews;
+Standards and Spec are clear on both. Removal regression first failed for two surviving
+controls; format regression first failed for the old dash clock. Separate actual full
+frontend gates passed 94/13 files in 38.28s and then 36.49s; final TypeScript, blind
+build and lint passed. No backend or product-route behavior changed.
+Current ignored synthetic public-display-final/review.html supersedes previous packages
+for pending manual browser acceptance. Source bytes/hashes, public/mapping and answers
+are unchanged. Source travel uncertainty and the distinct inferred-arrival notice remain;
+the screenshot is not full visual/resume/export/import evidence. Issue #21 remains open.

@@ -87,3 +87,11 @@ occurrences passed; diff whitespace passed. Backend executable code, scripts and
 frontend dependency files have no diff against the review base. Final documentation
 is a separate coherent local commit; ignored renderer/validation/archive files are
 excluded. Pending manual browser acceptance is not converted into a completion claim.
+
+## Subsequent explicit display corrections
+
+The user requested removal of the Original timestamp UI and corrected clocks to HH:mm.
+[Display cleanup](ticket-09-display-cleanup.md) supersedes the inspectable-control and
+HH-mm UI requirements above. Source strings remain frozen in artifacts, and malformed/
+unknown values, original day grouping and distinct uncertainty/inference notices remain.
+Earlier gate/review records apply to their original renderer revisions and are preserved.
