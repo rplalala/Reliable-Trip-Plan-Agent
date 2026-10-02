@@ -307,7 +307,11 @@ blind-review build and lint passed. Implementation/direct tests precede independ
 Standards/Spec reviews; both latest reviews are clear. Earlier backend validation
 remains **2299 passed / 10 skipped / zero deselections in 150.85s**, a separate run;
 nine database opt-ins and one native symlink case were not supplemented for Ticket 09.
-This documentation consolidation reruns no implementation tests. The
+The subsequent [scoped acceptance recheck](.scratch/rtpeval/ticket-09-final-acceptance.md)
+passed 26 backend and 11 frontend tests, exact package/asset checks and a synthetic CLI
+revision/import/report replay. Its first backend attempt failed at temporary-directory
+setup; a workspace-contained temporary root and disabled inaccessible cache resolved
+that environment failure without code changes. These are separate scoped runs. The
 [acceptance record](.scratch/rtpeval/ticket-09-acceptance.md) preserves actual failures,
 corrections, retests and commit/review history. Supplementary accepted records cover
 [preflight](.scratch/rtpeval/ticket-09-preflight.md),

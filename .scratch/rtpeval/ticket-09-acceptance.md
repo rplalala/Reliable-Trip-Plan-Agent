@@ -1,5 +1,16 @@
 # Ticket 09 implementation acceptance
 
+## Latest scoped acceptance - 2026-10-02
+
+At clean base 290ef20 the user requested acceptance. The
+[scoped recheck](ticket-09-final-acceptance.md) records 11 frontend tests passed,
+initial backend temporary-directory permission setup failures, then the same 26
+backend tests passed with an isolated workspace temporary root and inaccessible cache
+disabled. Exact package/private/source/asset linkage and actual synthetic CLI import/
+report checks passed. No application code changed. Full native browser acceptance
+still awaits the user's direct-file/zone/narrow-window/refresh/JSON checklist result;
+Issue #21 and parent #12 stay open. Earlier sections retain their observed sequence.
+
 ## Current consolidated status - 2026-10-02
 
 Documentation checkpoint: b232ae0 on feature/evaluation, initially clean tree/index;

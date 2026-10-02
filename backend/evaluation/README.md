@@ -480,8 +480,10 @@ preserves the original no-implementation checkpoint and subsequent scope approva
 Current acceptance checkpoint (2026-10-02): implementation and offline Standards/Spec
 reviews are complete; actual native direct-file browser acceptance remains pending.
 Latest UI gate passed 94 tests, TypeScript/blind-review build/lint; the earlier backend
-2299-pass/10-skip gate remains a separate run. This documentation consolidation does
-not rerun either suite. Issue #21 and parent #12 remain open; commits remain local.
+2299-pass/10-skip gate remains a separate run. A subsequent
+[scoped acceptance recheck](../../.scratch/rtpeval/ticket-09-final-acceptance.md) passed
+26 backend and 11 frontend tests, package integrity and synthetic CLI revision replay.
+Issue #21 and parent #12 remain open pending native checks; commits remain local.
 
 For the current synthetic manual check, open
 `artifacts/rtpeval/ticket09/public-no-hints/review.html` directly in a local browser.

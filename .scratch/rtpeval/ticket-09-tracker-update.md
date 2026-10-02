@@ -119,3 +119,18 @@ Documentation checks passed: five English files, 187 local Markdown target occur
 exact preserved historical acceptance, current package/status consistency and git diff
 whitespace. Changed tracked files are documentation only. These checks validate the
 consolidation; they do not constitute a new frontend/backend or native browser run.
+
+## Scoped acceptance synchronization - 2026-10-02
+
+At clean base 290ef20 the user requested Ticket 09 acceptance. With acceptance
+documentation uncommitted, current #21/#12 bodies were read and their top summaries
+updated through the GitHub connector to record fresh offline test/package/CLI checks,
+the initial temporary-directory setup failure and successful isolated rerun.
+Actual native checklist response is still pending; no full acceptance/closure is claimed.
+
+Independent fetches exactly match intended bodies, open states, original labels and
+comment counts. The entire historical suffix, including imported source, pinned links,
+acceptance checkboxes and completed predecessors, is byte-identical. No comment,
+assignment, label, close or push action. Detailed actual evidence remains local in
+[scoped acceptance](ticket-09-final-acceptance.md); original broad gates/reviews remain
+separate evidence. Application code, dependencies and V0-V3 behavior did not change.

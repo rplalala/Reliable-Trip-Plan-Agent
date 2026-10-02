@@ -319,4 +319,9 @@ zone switching, narrow layout, submit/save/refresh and JSON download/reimport aw
 manual verification after Browser Use's protocol-policy rejection; no workaround was
 attempted. Issue #21 and parent #12 stay open; local commits/documents remain unpublished.
 No real rater session, formal result, live/native supplement, push, freeze or later-ticket
-implementation is included. This consolidation changes documentation only.
+implementation is included. The subsequent
+[scoped acceptance recheck](../.scratch/rtpeval/ticket-09-final-acceptance.md) passed
+26 backend and 11 frontend tests plus exact package/asset and synthetic CLI replay
+checks. Initial backend temporary-directory permissions were resolved using an
+isolated workspace root/cache-disabled rerun; no runtime code changed. Full native
+browser acceptance still awaits the user checklist result.
