@@ -66,6 +66,11 @@ When a unique transport activity and Transfer describe the same leg consistently
 
 Keep transport activity intervals and Transfer departure/arrival separately as claims even when grouped. Do not synthesize a planned arrival from provider duration, reserve or Google evidence during projection. A missing Transfer arrival means incomplete claimed occupancy, not zero-length travel. The route checker can still assess available POI-to-POI time under its own contract.
 
+The accepted 2026-10-02 [Ticket 09 display specialization](ticket-09-preflight.md) may
+add an explicitly labelled inferred arrival from supplied departure plus duration to
+the anonymous display. It retains the missing source field and uncertainty, does not
+change this projection, and never supplies a claimed arrival or quality scorer input.
+
 A consistent duplicate journey supplies one logical occupancy record, so its two representations cannot overlap each other. Segmented journeys retain their explicit intervals; conflicting same-leg intervals remain alternatives with unresolved occupancy, not a union asserting both happened. Other independent timed commitments are retained. This records uncertainty for later overlap/route rules rather than inventing new pass/fail semantics. Explicit user-protected time is preserved once by obligation reference, not duplicated by an output placeholder describing the same protection.
 
 For blinded display, a consistent group becomes one transport entry without provider badges or certainty upgrades. Preserve source uncertainty and explicit content. Ambiguous associations remain separate original entries with a neutral ambiguity notice; do not hide inconvenient content or create a fictional merged route. Identity/adjudication results and evaluator judgments are not shown to the rater. Exact renderer styling belongs to Ticket 09.

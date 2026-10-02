@@ -51,7 +51,7 @@ Render the original request fields and the same dated activity fields for all ve
 
 Answers are JSON with answer_schema_version, batch_id/revision, presentation_id, task_id, rater_ref, answer_revision, updated_at and one response per dimension. A ranked response uses ordered tie_groups (for example [[A,C],[B],[D]]); every label occurs exactly once. Alternative states are unable_to_judge or not_applicable with optional reason and no fabricated ordering. Support pending/incomplete drafts separately from submitted complete answers.
 
-Save local progress keyed by presentation/task; provide explicit JSON download/import so browser storage is not the only copy. No server, account system or remote submission is assumed. Import validates IDs, presentation revision, allowed labels, group completeness and duplicate submissions. Retain revisions and select an explicitly identified final submission, not an accidental last filesystem write.
+Save local progress keyed by presentation/task; provide explicit JSON download/import so browser storage is not the only copy. No server, account system or remote submission is assumed. Import validates IDs, presentation revision, allowed labels, group completeness and duplicate submissions. Retain revisions and identify the effective submission reproducibly, not by an accidental last filesystem write. The accepted 2026-10-02 correction rule below supersedes the earlier manually selected final-submission proposal.
 
 Researcher-side aggregation joins the private mapping after response validation. Derive six correlated pair outcomes from a complete four-plan ranking per dimension: earlier tie group wins; same group ties. Report wins/ties/losses and available denominators separately per dimension. Unassessable/N/A answers do not become ties. Duplicate consistency is descriptive agreement of each underlying pair's win/tie/loss between original and duplicate, with comparable pair count; no inter-rater statistic or extra main-result weight.
 
@@ -132,3 +132,28 @@ even with FAIL/UNKNOWN or null totals; material/replay correction uses exit 2 an
 groups. A valid paired snapshot is unsupported scope, not corruption. Resource/human/
 mechanism report availability remains separate from source usage/optional projection
 metadata. Earlier proposed/not-implemented statements retain their historical dates.
+
+## Ticket 09 preflight decisions — 2026-10-02
+
+[Preflight](ticket-09-preflight.md) records source/UI inspection and accepted decisions;
+no human package, answer importer or report has been implemented. The researcher reviews
+prospective display content before delivery. Explicit version/provider/internal-review
+text requires source-linked manual redaction that preserves travel facts and uncertainty;
+original bytes and private original/display/reviewer linkage remain intact. Unsafe
+unresolved leakage blocks delivery. The rater receives anonymous content and independently
+ranks it. Structural allowlists and escaping do not replace free-text review.
+
+The user accepts answer corrections: a new complete submitted revision supersedes the
+previous effective answer. Use the highest valid submitted answer_revision per task/rater,
+retain earlier revisions for audit only, and record the effective revision/content hash.
+Drafts do not replace submitted answers. Identical imports are idempotent; differing
+content with the same revision is a conflict, not a last-import-wins rule.
+
+For a missing source arrival, the user accepts an additional explicitly labelled inferred
+display time from the selected source's valid unambiguous departure plus duration. Retain
+the original departure/duration and missing-arrival notice; preserve estimate/unknown
+wording, offsets and cross-date rollover. Missing/ambiguous operands give an unavailable
+inference notice. No new route evidence/provider call, timezone assumption or hidden
+reserve is added. The source arrival remains absent, and the computed display value
+never becomes a planner claim or scorer input. A supplied arrival is never overwritten.
+This specializes blind display only; it does not relax quality projection rules.

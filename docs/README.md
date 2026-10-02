@@ -290,3 +290,15 @@ resolved the initial automatic approval rejection through verified existing trac
 authorization and a reduced metadata payload using the same GitHub interface. Issue #20
 is closed/completed; parent #12 marks 01-08 completed and remains open. Local source/
 documentation commits remain unpublished; no push occurred.
+
+### Ticket 09 specification preflight
+
+[Blinded ranking preflight](../.scratch/rtpeval/ticket-09-preflight.md) records the
+source/projection/UI audit and proposed independent offline renderer/answer/report seams.
+The user accepted researcher preparation of source-linked redacted display content and
+the latest valid complete submitted revision as the effective answer. Original travel
+facts and uncertainty remain; older answers are audit-only. Missing arrivals may additionally
+show explicitly labelled source-departure-plus-duration inference, preserving the absent
+original field and never becoming scorer input. Preflight is complete; implementation
+scope approval is pending. Existing intake checks passed 56 tests / 1 host symlink skip.
+No Ticket 09 implementation, renderer prototype, rater session or formal result exists.

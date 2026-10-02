@@ -109,7 +109,8 @@ validation, caches and internal decisions are not independent factual ground tru
 | 06: Opening checks | Offline parser/scorer/CLI implemented under the 2026-10-02 approval; offline acceptance complete; Standards/Spec reviews clear, full regression 2148 passed / 10 skipped; all ten skips passed in subsequently approved scoped supplements; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) closed as completed; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) |
 | 07: Route checks | Offline preparation/scorer/CLI implemented and validated; longest unstated-departure fragment, zero-grace hard boundaries and decisive partial FAIL; Standards/Spec reviews clear; 86 dedicated tests passed; approved existing-test repair removes the former exclusion, latest unfiltered backend gate 2234 passed / 10 skipped / zero deselections; implementation and repair committed locally under the approved three-group closeout; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) closed/completed; [acceptance](.scratch/rtpeval/ticket-07-acceptance.md) |
 | 08: Multimetric report | Approved offline report/CLI implemented; 39 dedicated tests passed; full offline gate 2273 passed / 10 skipped / zero deselections; committed at 5625f81 before clear Standards/Spec reviews; exact shared-mask verified scores and separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) closed/completed; [acceptance](.scratch/rtpeval/ticket-08-acceptance.md) |
-| 09-12 | Later approved work-plan tickets; no implementation is claimed here |
+| 09: Blinded ranking | Specification preflight complete; researcher display preparation, labelled display-only inferred arrival and latest-submitted-answer rules accepted; [preflight](.scratch/rtpeval/ticket-09-preflight.md); implementation scope approval pending |
+| 10-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
@@ -279,7 +280,23 @@ while remaining open. Initial automatic approval rejection was resolved after ch
 the approved tracker scope/remote and reducing newly published metadata; final bodies
 were read back exactly. The [tracker record](.scratch/rtpeval/ticket-08-tracker-update.md)
 preserves that sequence without treating local files/commits as published source.
-Local implementation/docs are unpublished; no push, freeze or Ticket 09 work occurred.
+Local implementation/docs are unpublished; no push or freeze occurred during Ticket 08.
+
+### Ticket 09 specification preflight — 2026-10-02
+
+The user authorized [specification preflight](.scratch/rtpeval/ticket-09-preflight.md),
+not implementation. Existing product itinerary rendering exposes provenance and can
+omit unbound transfers; the proposed local anonymous renderer requires a separate
+source-preserving display boundary. Researcher preparation/redaction is accepted,
+with private source linkage and preserved travel facts/uncertainty. New complete
+submitted answer revisions supersede old effective answers; older revisions remain
+audit-only, drafts do not supersede submissions, and same-revision conflicts are errors.
+Missing source arrivals may additionally show explicitly labelled departure-plus-duration
+inference; this preserves the missing original field and never becomes scorer input.
+The independent offline package/import/report interfaces and bounded synthetic checks
+remain proposed until implementation scope approval. Existing offline intake regression
+passed 56 tests / 1 host symlink skip; no new module, frontend, browser build, real rater,
+formal comparison, live/native supplement or planner/scorer change is claimed.
 
 ## 7. Keeping this file current
 

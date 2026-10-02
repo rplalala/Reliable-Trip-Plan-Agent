@@ -56,3 +56,38 @@ occupation boundary that permits no schedule grace, including the DRIVE reserve.
 **Decisive route verdict**: A combined outcome established by all required PASS components
 or any independently proven FAIL. A partial decisive FAIL does not establish complete
 component evidence; missing components remain separately visible.
+
+## Blinded ranking concepts
+
+**Anonymous plan label**: A public A/B/C/D identifier whose plan association remains
+fixed across the three ranking dimensions within one assessment task.
+
+**Private label mapping**: The researcher-only association between anonymous labels
+and selected source versions, retained outside the rater package and answer export.
+
+**Display preparation**: Researcher review of prospective anonymous content, including
+source-linked removal of identity/provenance identifiers while preserving travel facts
+and uncertainty. It is separate from the rater's assessment.
+
+**Tie group**: A set of plan labels judged equally for one dimension. Ordered tie
+groups in a submitted ranking partition all four labels exactly once.
+
+**Unable-to-judge response**: A whole-dimension response indicating insufficient basis
+to rank the plans. It does not mean the plans are tied or that the dimension is inapplicable.
+
+**Not-applicable response**: A whole-dimension response indicating that the dimension
+does not apply to this task. It does not supply an ordering.
+
+**Effective answer revision**: The highest valid complete submitted revision for one
+task/rater. Earlier revisions remain audit records; drafts are not effective answers.
+
+**Inferred display arrival**: A separately labelled clock time computed from supplied
+departure and duration when the itinerary omits arrival. It is not a submitted arrival
+claim, independent evidence or an input to quality scoring.
+
+**Hidden duplicate task**: A repeated source group presented under an independent
+anonymous assignment, used for within-rater consistency and excluded from main counts.
+
+**Comparable pair**: A version pair with a ranked outcome in both an original task and
+its hidden duplicate for the same dimension. No comparable pairs means consistency
+is unavailable, not perfect agreement.
