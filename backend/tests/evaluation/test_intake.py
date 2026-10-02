@@ -598,6 +598,7 @@ def test_no_planner_import_or_network_on_intake(batch, monkeypatch):
         "zoneinfo",
         "decimal",
         "fractions",
+        "random",
         "importlib",
         "tzdata",
     }
