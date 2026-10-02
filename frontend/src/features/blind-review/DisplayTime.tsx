@@ -9,10 +9,13 @@ export function TimeZonePicker({ value, onChange }: { value: string; onChange: (
 }
 
 function formattedTime(value: string, zone: string): { text: string; notice?: string } {
-  const match = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?(Z|[+-]\d{2}:\d{2})?$/.exec(value);
+  const match = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?(Z|[+-]\d{2}(?::?\d{2})?)?$/.exec(value);
   if (match && validDate(match[1]) && validClock(match[2], match[3], match[4])) {
     if (!match[5]) return { text: `${match[1]} ${match[2]}-${match[3]}`, notice: "Time zone not supplied; not converted" };
-    const instant = new Date(value.replace(" ", "T"));
+    const suppliedOffset = match[5];
+    const offset = suppliedOffset === "Z" || suppliedOffset.includes(":") ? suppliedOffset :
+      `${suppliedOffset.slice(0, 3)}:${suppliedOffset.slice(3) || "00"}`;
+    const instant = new Date(value.replace(" ", "T").slice(0, -suppliedOffset.length) + offset);
     if (Number.isFinite(instant.getTime())) {
       const parts = new Intl.DateTimeFormat("en-GB", {
         timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit",

@@ -124,3 +124,17 @@ it("midnight uses zero hours and fractional-offset zones retain minutes", () => 
   expect(plan.getByText("2024-01-02 05-30")).toBeInTheDocument();
   expect(plan.getByText("2024-01-02 06-00")).toBeInTheDocument();
 });
+
+it("explicit compact and hour-only offsets convert while original strings remain inspectable", () => {
+  const material = structuredClone(presentation);
+  material.tasks[0].plans.A.days[0].items = [{ kind: "activity", fields: {
+    start_time: "2024-01-01T23:30:00+0200", end_time: "2024-01-02T00:00:00+02",
+  }, notices: [] }];
+  render(<BlindReview presentation={material} storage={{ getItem: () => null, setItem: () => {} }} />);
+  fireEvent.change(screen.getByLabelText("Time zone"), { target: { value: "Asia/Shanghai" } });
+  const plan = within(screen.getByRole("article", { name: "Plan A" }));
+  expect(plan.getByText("2024-01-02 05-30")).toBeInTheDocument();
+  expect(plan.getByText("2024-01-02 06-00")).toBeInTheDocument();
+  expect(plan.getByText("2024-01-01T23:30:00+0200")).toBeInTheDocument();
+  expect(plan.getByText("2024-01-02T00:00:00+02")).toBeInTheDocument();
+});
