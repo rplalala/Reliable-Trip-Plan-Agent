@@ -8,10 +8,10 @@ export function TimeZonePicker({ value, onChange }: { value: string; onChange: (
   </select></label>;
 }
 
-function formattedTime(value: string, zone: string): { text: string; notice?: string } {
+function formattedTime(value: string, zone: string): string {
   const match = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?(Z|[+-]\d{2}(?::?\d{2})?)?$/.exec(value);
   if (match && validDate(match[1]) && validClock(match[2], match[3], match[4])) {
-    if (!match[5]) return { text: `${match[1]} ${match[2]}:${match[3]}`, notice: "Time zone not supplied; not converted" };
+    if (!match[5]) return `${match[1]} ${match[2]}:${match[3]}`;
     const suppliedOffset = match[5];
     const offset = suppliedOffset === "Z" || suppliedOffset.includes(":") ? suppliedOffset :
       `${suppliedOffset.slice(0, 3)}:${suppliedOffset.slice(3) || "00"}`;
@@ -22,12 +22,12 @@ function formattedTime(value: string, zone: string): { text: string; notice?: st
         hour: "2-digit", minute: "2-digit", hourCycle: "h23",
       }).formatToParts(instant);
       const fields = Object.fromEntries(parts.map(p => [p.type, p.value]));
-      return { text: `${fields.year.padStart(4, "0")}-${fields.month}-${fields.day} ${fields.hour}:${fields.minute}` };
+      return `${fields.year.padStart(4, "0")}-${fields.month}-${fields.day} ${fields.hour}:${fields.minute}`;
     }
   }
   const clock = /^(\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?$/.exec(value);
-  if (clock && validClock(clock[1], clock[2], clock[3])) return { text: `${clock[1]}:${clock[2]}`, notice: "Time zone not supplied; not converted" };
-  return { text: value, notice: "Time unavailable for conversion; original value retained" };
+  if (clock && validClock(clock[1], clock[2], clock[3])) return `${clock[1]}:${clock[2]}`;
+  return value;
 }
 
 function validClock(hour: string, minute: string, second = "0"): boolean {
@@ -43,7 +43,6 @@ function validDate(date: string): boolean {
 
 export function DisplayTime({ value, zone }: { value: unknown; zone: string }) {
   if (value === null || value === undefined) return <>Not supplied</>;
-  if (typeof value !== "string") return <>{JSON.stringify(value)} <span className="uncertainty">Time unavailable for conversion</span></>;
-  const result = formattedTime(value, zone);
-  return <><span>{result.text}</span>{result.notice && <p className="uncertainty">{result.notice}</p>}</>;
+  if (typeof value !== "string") return <>{JSON.stringify(value)}</>;
+  return <span>{formattedTime(value, zone)}</span>;
 }

@@ -48,17 +48,21 @@ it("storage failure is visible and downloadable answers remain available", () =>
   expect(screen.getByRole("button", { name: "Download answers JSON" })).toBeEnabled();
 });
 
-it("travel rows use a neutral heading and explicitly labelled inferred arrival", () => {
+it("travel rows show inferred arrival without uncertainty fields or notice blocks", () => {
   const material = structuredClone(presentation);
   material.tasks[0].plans.A.days[0].items = [{ kind: "travel", fields: {
     departure_time: "2020-01-01T10:00:00+00:00", duration_seconds: 1800,
     inferred_arrival: "2020-01-01T10:30:00+00:00",
+    unknowns: "Travel time uncertain",
   }, notices: ["Arrival not supplied; inferred time is display arithmetic only"] }];
   render(<BlindReview presentation={material} storage={{ getItem: () => null, setItem: () => {} }} />);
   expect(screen.getByText("Travel")).toBeInTheDocument();
   expect(screen.getByText("Inferred arrival")).toBeInTheDocument();
   expect(screen.getByText("Travel duration (seconds)")).toBeInTheDocument();
   expect(screen.getByText("2020-01-01 10:30")).toBeInTheDocument();
+  expect(screen.queryByText("Uncertainty")).not.toBeInTheDocument();
+  expect(screen.queryByText("Travel time uncertain")).not.toBeInTheDocument();
+  expect(screen.queryByText("Arrival not supplied; inferred time is display arithmetic only")).not.toBeInTheDocument();
 });
 
 it("rater can choose a time zone and see converted clocks and cross-day dates", () => {
@@ -89,7 +93,7 @@ it("selected time zone handles daylight saving for departure and inferred arriva
   expect(plan.getByText("2024-03-10 01:30")).toBeInTheDocument();
   expect(plan.getByText("2024-03-10 03:30")).toBeInTheDocument();
   expect(plan.getByText("Inferred arrival")).toBeInTheDocument();
-  expect(plan.getByText("Arrival not supplied; inferred time is display arithmetic only")).toBeInTheDocument();
+  expect(plan.queryByText("Arrival not supplied; inferred time is display arithmetic only")).not.toBeInTheDocument();
 });
 
 it("missing zones and invalid timestamps remain explicit without invented conversion", () => {
@@ -105,8 +109,10 @@ it("missing zones and invalid timestamps remain explicit without invented conver
   const plan = within(screen.getByRole("article", { name: "Plan A" }));
   expect(plan.getByText("2024-03-10 09:15")).toBeInTheDocument();
   expect(plan.getByText("10:20")).toBeInTheDocument();
-  expect(plan.getAllByText("Time zone not supplied; not converted")).toHaveLength(2);
-  expect(plan.getAllByText("Time unavailable for conversion; original value retained")).toHaveLength(2);
+  expect(plan.queryByText("Time zone not supplied; not converted")).not.toBeInTheDocument();
+  expect(plan.queryByText("Time unavailable for conversion; original value retained")).not.toBeInTheDocument();
+  expect(plan.getByText("2024-02-30T10:00:00Z")).toBeInTheDocument();
+  expect(plan.getByText("25:70")).toBeInTheDocument();
   expect(plan.getByText("Not supplied")).toBeInTheDocument();
   expect(within(screen.getByRole("region", { name: "Original request" })).getByText("2024-03-10")).toBeInTheDocument();
 });

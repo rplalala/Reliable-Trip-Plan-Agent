@@ -12,7 +12,6 @@
 .blind-review button, .blind-review select, .blind-review textarea, .blind-review input { font: inherit; padding: 8px; }
 .blind-review textarea { width: 100%; min-height: 60px; }
 .blind-review fieldset { margin-bottom: 12px; }
-.blind-review .uncertainty { background: #fff6df; padding: 6px; font-size: .9rem; }
 .blind-review [role="alert"] { background: #ffe4e0; padding: 12px; }
 .blind-review .time-zone { max-width: 360px; margin: 16px 0; }
 .blind-review .time-zone select { width: 100%; min-width: 0; }

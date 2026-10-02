@@ -32,11 +32,11 @@ const names: Record<string, string> = {
   traveler_count: "Travelers", estimated_cost: "Displayed cost", place_name: "Place", start_time: "Start",
   end_time: "End", departure_time: "Departure", arrival_time: "Supplied arrival", inferred_arrival: "Inferred arrival",
   duration_seconds: "Travel duration (seconds)", distance_meters: "Distance (meters)",
-  reserve_seconds: "Reserve (seconds)", unknowns: "Uncertainty", calculation_basis: "Duration basis",
+  reserve_seconds: "Reserve (seconds)", calculation_basis: "Duration basis",
 };
 const timeFields = new Set(["start_time", "end_time", "departure_time", "arrival_time", "inferred_arrival"]);
 function Fields({ fields, zone }: { fields: Record<string, unknown>; zone: string }) {
-  return <dl>{Object.entries(fields).map(([key, value]) => <div key={key}><dt>{names[key] ?? key.replaceAll("_", " ")}</dt>
+  return <dl>{Object.entries(fields).filter(([key]) => key !== "unknowns").map(([key, value]) => <div key={key}><dt>{names[key] ?? key.replaceAll("_", " ")}</dt>
     <dd>{timeFields.has(key) ? <DisplayTime value={value} zone={zone} /> : display(value)}</dd></div>)}</dl>;
 }
 function download(bundle: Bundle) {
@@ -103,7 +103,7 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
     <div className="plans">{labels.map(label => <article key={label} aria-label={`Plan ${label}`}><h2>Plan {label}</h2>
       {task.plans[label].days.map((day, i) => <section key={i}><h3>Source day: {day.date}</h3>{day.items.map((item, n) => <div className="item" key={n}>
         <strong>{item.kind === "travel" ? "Travel" : "Activity"}</strong><Fields fields={item.fields} zone={zone} />
-        {item.notices.map((text, j) => <p className="uncertainty" key={j}>{text}</p>)}</div>)}</section>)}</article>)}</div>
+      </div>)}</section>)}</article>)}</div>
     <section aria-label="Your rankings"><h2>Your rankings</h2>{dimensions.map(d => <fieldset key={d}><legend>{d === "preference" ? "Preference match" : d === "pace" ? "Pace" : "Practical usefulness"}</legend>
       <label>Response <select aria-label={`${d}: response`} value={form[d].status} onChange={e => setForm({ ...form, [d]: { ...form[d], status: e.target.value as Response["status"] } })}>
         <option value="ranked">Rank plans</option><option value="unable_to_judge">Unable to judge</option><option value="not_applicable">Not applicable</option></select></label>
