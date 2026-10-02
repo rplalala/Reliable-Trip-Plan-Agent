@@ -108,7 +108,8 @@ validation, caches and internal decisions are not independent factual ground tru
 | 05: Requirement/schedule metrics | Implemented and offline-validated; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed; local code publication pending |
 | 06: Opening checks | Offline parser/scorer/CLI implemented under the 2026-10-02 approval; offline acceptance complete; Standards/Spec reviews clear, full regression 2148 passed / 10 skipped; all ten skips passed in subsequently approved scoped supplements; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) closed as completed; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) |
 | 07: Route checks | Offline preparation/scorer/CLI implemented and validated; longest unstated-departure fragment, zero-grace hard boundaries and decisive partial FAIL; Standards/Spec reviews clear; 86 dedicated tests passed; approved existing-test repair removes the former exclusion, latest unfiltered backend gate 2234 passed / 10 skipped / zero deselections; implementation and repair committed locally under the approved three-group closeout; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) closed/completed; [acceptance](.scratch/rtpeval/ticket-07-acceptance.md) |
-| 08-12 | Later approved work-plan tickets; no implementation is claimed here |
+| 08: Multimetric report | Approved offline report/CLI implemented; 39 dedicated tests passed; full offline gate 2273 passed / 10 skipped / zero deselections; committed at 5625f81 before clear Standards/Spec reviews; exact shared-mask verified scores and separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) closed/completed; [acceptance](.scratch/rtpeval/ticket-08-acceptance.md) |
+| 09-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
@@ -249,6 +250,36 @@ switch, freeze or Ticket 08 work was added. Ignored archives, credentials, provi
 payloads, runtime logs and generated pytest files are excluded from all three groups.
 The [acceptance closeout](.scratch/rtpeval/ticket-07-acceptance.md#approved-local-git-closeout--2026-10-02)
 preserves the actual commit responsibilities and pre-commit validation.
+
+Ticket 08 [preflight](.scratch/rtpeval/ticket-08-preflight.md) was initially authorized
+without implementation; its 275-test seam regression remains historical. The user then
+explicitly approved the concrete offline implementation and local commits without push,
+using the updated commit-before-review workflow. The review base is f1d6ecf.
+
+Ticket 08 now implements a thin offline quality report/CLI over current scorers,
+validated primary-visit identities and frozen evidence. Five verified scores use exact
+P/(P+F+U), one mask/equal rational weights per request, true no-check zero contribution
+and null unresolved-denominator scores/affected totals. Raw checks, magnitude/basis/
+coverage/descriptive/burden records and exact source/rule hashes remain separate.
+Label/content conflicts retain existing role-review diagnostics; there is no new
+classifier/label penalty. Resource/human/mechanism reports remain not integrated, with
+source usage/optional V3 availability distinct from actual analytical report availability.
+Final v0-v3 reports only; paired deltas, formal comparisons and later tickets remain
+separately authorized work. Planner/scorer policies and V0-V3 entry points are unchanged.
+
+[Acceptance](.scratch/rtpeval/ticket-08-acceptance.md) owns actual red/green, regressions,
+review and local Git closeout. Dedicated checks passed **39 tests**; the latest full
+unfiltered offline gate passed **2273 tests / 10 skipped in 191.66s, zero deselections**.
+Initial failures/corrections remain in acceptance. Implementation/direct tests are
+committed at 5625f81 before Standards/Spec review; both axes returned zero findings.
+Nine database opt-ins and one host symlink
+case remain skipped; no database/native or live supplement is inferred from
+Ticket 06 approval. Issue #20 is closed/completed and parent #12 records 01-08 completed
+while remaining open. Initial automatic approval rejection was resolved after checking
+the approved tracker scope/remote and reducing newly published metadata; final bodies
+were read back exactly. The [tracker record](.scratch/rtpeval/ticket-08-tracker-update.md)
+preserves that sequence without treating local files/commits as published source.
+Local implementation/docs are unpublished; no push, freeze or Ticket 09 work occurred.
 
 ## 7. Keeping this file current
 

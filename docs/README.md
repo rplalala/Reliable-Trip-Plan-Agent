@@ -263,3 +263,30 @@ clear reviews and **2234 passed / 10 skipped / zero deselections** in the full o
 backend gate. The original excluded-test checkpoint remains historical. No production
 budget/behavior, live execution or later-ticket work changed. The separately approved
 local test commit is b18daef; documentation accompanies the approved third group.
+
+## Ticket 08 final quality report — 2026-10-02
+
+[Preflight](../.scratch/rtpeval/ticket-08-preflight.md) maps the five quality dimensions
+to current independent scorers, proposes the report/CLI wire and exact arithmetic,
+and preserves shared masks, true N/A zero contributions and unresolved-denominator
+availability. Existing source labeling conflicts remain role-review diagnostics;
+identity UNKNOWN with a known visit count remains a scoreable outcome. Resource/human/
+mechanism tracks and V3 pre/post work stay separate. The historical seam regression
+passed 275 tests. Subsequent explicit approval authorized the implemented report/CLI,
+synthetic tests and local commit-before-review closeout, without push. Current
+[score profile](../.scratch/rtpeval/score-profile.md),
+[metrics](../.scratch/rtpeval/metrics-contract.md) and
+[artifact contract](../.scratch/rtpeval/artifact-contract.md) retain the proposed details.
+The [acceptance](../.scratch/rtpeval/ticket-08-acceptance.md) records red/green, exact
+mask/arithmetic/linkage checks, actual regressions and review/commit history. Dedicated
+report/CLI checks passed 39 tests. The first full gate exposed a missing standard-library
+fractions allowlist entry; only that directly related test permission changed.
+Full retest: **2273 passed / 10 skipped / zero deselections**. Implementation/direct
+tests were committed at 5625f81 before dual review; Standards and Spec returned zero
+findings. [Package usage](../backend/evaluation/README.md#ticket-08-final-multimetric-report-and-auxiliary-scores)
+documents the CLI and field scales. No formal result, live/native supplement, paired
+V3 score or later-ticket work is included. [Tracker synchronization](../.scratch/rtpeval/ticket-08-tracker-update.md)
+resolved the initial automatic approval rejection through verified existing tracker
+authorization and a reduced metadata payload using the same GitHub interface. Issue #20
+is closed/completed; parent #12 marks 01-08 completed and remains open. Local source/
+documentation commits remain unpublished; no push occurred.

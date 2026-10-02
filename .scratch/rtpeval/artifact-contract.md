@@ -82,3 +82,53 @@ Scorer preflight must report malformed executable payloads/known contradictions 
 material correction while retaining semantic/time/identity uncertainty in reports.
 Independent schedule context is optional; absence does not infer a timezone.
 No parser, metric report or CLI from this specialization is implemented yet.
+
+## Ticket 08 proposed quality report specialization — 2026-10-02
+
+[Specification preflight](ticket-08-preflight.md) defines the proposed aggregate wire;
+no Ticket 08 report or CLI is implemented. Use schema_version=rtpeval_quality_report_1
+consistently with current executable reports, specializing the earlier generic
+report_schema_version field description. Include batch_id/batch_revision, generated_at,
+rules_profile_id/hash, component schema/rule hashes, exact source-file hashes and
+canonical replay/preparation digests, stage availability, group records and diagnostics.
+
+Each group retains one ordered mask, included-dimension count and exactly four selected
+final run records. Each dimension preserves P/F/U/N/A where the producer defines those
+units, applicability/denominator availability, exact numerator/denominator pairs,
+fractional rates, explicitly scaled 0-100 verified score and separate contribution.
+Excluded activity/role/protection records retain their own typed population; they do not
+become extra weighted units. Preserve original check/measurement/reason/evidence records.
+
+Known zero applicability, unresolved denominator and absent/corrupt source material are
+different states. True single-version no-check N/A has null raw rates and zero included
+contribution. Unresolved full-scope denominator has null score/contribution/affected total;
+all-four true N/A is excluded and an empty mask has null total plus diagnostic. Material
+or replay correction yields empty groups rather than a silently reduced cohort.
+
+The pure report boundary uses an explicit offset-aware generation timestamp; CLI may
+generate UTC metadata or accept --generated-at. Stable content hashing excludes generation
+metadata and the content hash itself. Fixed sources/rules/timestamp reproduce canonical
+JSON; source/rule hashes are retained even when generation metadata is excluded.
+Internal-findings-only source changes require properly relinked identity/snapshots; numeric
+invariance does not imply identical provenance hashes or permission to reuse stale evidence.
+No optional-track aggregation, paired V3 totals, live acquisition or formal analysis is
+authorized by this specification specialization.
+
+## Ticket 08 executable wire — 2026-10-02
+
+The approved report/CLI now implements `rtpeval_quality_report_1`; see
+[acceptance](ticket-08-acceptance.md) and the [package guide](../../backend/evaluation/README.md).
+`QualityReportResult` is immutable; `build_quality_report` requires an explicit aware
+`generated_at`, and the CLI supports UTC metadata or `--generated-at`. Root component
+metadata preserve emitted schema/rules/hash provenance; original row source hashes
+remain in each version's `component_source_hashes`. `source_hashes.artifacts` retains
+intake's exact-file hash map; preparation object digests and CLI file-byte hashes are
+distinct. The CLI recalculates `content_hash` after adding `preparation_file_sha256`.
+Each group exports `included_dimensions`, rational `dimension_weights`, four `versions`
+and `all_totals_available`. Each version retains `primary_metrics`, normalized
+`dimensions`, descriptive/schedule/occupancy records and `auxiliary_total`. Raw N/A,
+unresolved population and material failure remain distinct. Complete replay uses exit 0
+even with FAIL/UNKNOWN or null totals; material/replay correction uses exit 2 and empty
+groups. A valid paired snapshot is unsupported scope, not corruption. Resource/human/
+mechanism report availability remains separate from source usage/optional projection
+metadata. Earlier proposed/not-implemented statements retain their historical dates.

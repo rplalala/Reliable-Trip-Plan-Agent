@@ -161,3 +161,41 @@ reserve separately. Unresolved potential leg populations suppress complete burde
 and on affected dates, while preserving observed subtotals. Empty/unknown denominators
 produce null rates. This does not implement auxiliary total/masks, V3 deltas, formal
 cross-request analysis or comparative conclusions; those retain their own tickets.
+
+## Ticket 08 specification/interface preflight — 2026-10-02
+
+The [preflight](ticket-08-preflight.md) specifies proposed four-version request-level
+aggregation over existing independent scorers and validated primary-visit identity
+records. No scorer, aggregate or new test was implemented. Existing seam regressions
+passed 275 tests; this is offline engineering verification, not evaluation results.
+
+The proposed primary vector retains obligation/commitment/visit/leg counts, component
+measurements, descriptive date coverage/density/repetition, observed-only transfer burden,
+source/rule hashes and structural/evidence/decisive coverage. Only the five accepted
+verified dimension scores enter the shared-mask equal-weight auxiliary total. Do not use
+conditional compliance as that score or add extra cap/time/ID-conflict penalties.
+
+Unknown applicable outcomes remain in established denominators. Unknown applicability/
+population keeps partial records and null full-scope scores/affected totals; it never
+shrinks the group/version cohort or produces a new zero-accounting convention. Existing
+true no-check N/A zero contribution and common-N/A exclusion remain unchanged.
+Material/replay failures return diagnostics rather than partial four-version totals.
+
+Resource, human and mechanism availability remain separate. No new resource comparison,
+ranking, V3 paired delta, controlled Repair, formal cross-request aggregate or inference
+is included. Internal-findings-only changes preserve metric values after proper source
+relinking/replay, while source/report hashes may legitimately change. Stale evidence must
+still be rejected. The implementation proposal remains pending explicit scope approval.
+
+## Ticket 08 implemented report — 2026-10-02
+
+After explicit scope approval, `build_quality_report` replays existing independent
+scorers and validated identity occurrences for final v0-v3 only. It preserves their
+primary checks, descriptive/schedule measures, evidence coverage, exact route/opening
+magnitudes and observed burden. The five verified scores, exact companion fractions,
+group-common mask/equal weights and availability-aware auxiliary mean are implemented.
+No raw conditional rate, resource envelope, supplied-ID conflict or planner finding
+adds a new penalty. Existing unresolved denominator and true N/A boundaries remain.
+Multiple requests have separate masks/totals; there is no pooled total or formal
+comparison. [Acceptance](ticket-08-acceptance.md) owns actual tests/reviews and limitations;
+the preceding preflight status retains its dated no-implementation scope.

@@ -1,6 +1,13 @@
 # Dimension scores and auxiliary total — accepted scoring structure
 
-Status: Five equal-weight dimensions accepted. The user requires a numeric result for each group/version without rewarding missing evidence. Verified-compliance formula PASS/(PASS+FAIL+UNKNOWN) is accepted; group-wide N/A exclusion and single-version zero contribution are accepted. Not implemented.
+Current status (2026-10-02): implemented for final four-version reports under the approved
+Ticket 08 scope; full acceptance/review is tracked in [acceptance](ticket-08-acceptance.md).
+Unknown populations retain null affected scores/totals; numeric results require an
+established denominator. The dated original structure below and its earlier pending
+authorization statements preserve the 2026-09-28 design checkpoint.
+
+Original status: five equal-weight dimensions, verified-compliance PASS/(PASS+FAIL+UNKNOWN),
+group-wide N/A exclusion and single-version zero contribution accepted; not yet implemented.
 Date: 2026-09-28.
 
 ## Purpose
@@ -67,3 +74,38 @@ otherwise possible conflicts prevent a verified PASS. Unknown unit applicability
 unresolved duplicate grouping yields `denominator_unresolved`, not a guessed rate or
 true N/A. Ticket 08 must preserve that diagnostic. This does not change the accepted
 five-dimension formula or authorize its aggregate implementation.
+
+## Ticket 08 specification preflight — 2026-10-02
+
+The [preflight](ticket-08-preflight.md) maps the five accepted dimensions to current
+identity/requirement/non-overlap/opening/route outputs. Conditional P/(P+F) remains
+diagnostic; auxiliary scores use P/(P+F+U) only for established applicable units.
+Grounding uses resolved primary visits, with unresolved identities as UNKNOWN and
+claimed-ID conflicts reported separately. Parent obligations/logical commitments/legs
+retain one weight, including partial decisive FAIL without extra component penalties.
+
+Preserve the existing denominator_unresolved boundary. Unresolved roles, requirement
+completeness, commitment grouping or leg populations do not become fabricated UNKNOWN
+units, true N/A or an accounting zero. The affected full-scope dimension/rates/contribution
+and any total requiring it remain null with explicit availability reasons. Keep the common
+mask unchanged and other established version totals available; do not redistribute weights.
+The already accepted single-version true no-check zero contribution remains a separate
+accounting convention. All-four proven N/A excludes jointly; an empty mask has no total.
+
+Declaration/content conflicts such as main_poi with a walking title are labeling errors
+retained by existing role_review_required, pending correction/independent review. They
+are distinct from a confirmed visit with unresolved identity. No new classifier, label-error
+penalty or zero-accounting rule for unresolved denominators was approved or implemented.
+Use exact count fractions and unrounded equal-weight arithmetic; display fractions and
+0-100 scores distinctly. The concrete report/CLI proposal requires implementation approval.
+
+## Ticket 08 implemented specialization — 2026-10-02
+
+The subsequent explicit approval authorized the offline report/CLI and local commits.
+[Acceptance](ticket-08-acceptance.md) records exact arithmetic, masks/availability,
+strict replay/hash linkage and separate optional tracks. `quality_report.py` computes
+means from unrounded rational contributions, preserving exact total fractions and
+explicit 0-100 scores. CLI preparation-file byte hashes remain distinct from object
+digests and contribute to the stable content hash. Generation time alone is excluded.
+This implements auxiliary verified compliance, not universal usefulness or a formal
+comparison. Existing raw scorer definitions and planner versions remain unchanged.

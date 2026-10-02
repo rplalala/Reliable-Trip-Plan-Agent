@@ -413,3 +413,64 @@ provider availability, historical/future travel certainty or benchmark outcomes.
 review findings/corrections and regression results. The
 [preflight](../../.scratch/rtpeval/ticket-07-preflight.md) preserves the original proposals,
 accepted user decisions and subsequent explicit implementation authorization.
+
+## Ticket 08: final multimetric report and auxiliary scores
+
+`quality_report.build_quality_report` reuses the three independent offline scorers and
+validated primary-visit identity records. It accepts intake, identity report, snapshot
+directory and optional reviewed schedule/occupancy/route/coordinate envelopes, with an
+optional trusted `expected_plan` and required offset-aware `generated_at`. It returns an
+immutable `QualityReportResult`; `to_dict()` exports `rtpeval_quality_report_1`.
+No provider client, planner graph or extra dependency is constructed.
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.quality_report_cli `
+  <manifest.json> <identity-report.json> <snapshot-directory> `
+  --context <schedule-context.json> `
+  --occupancy-reviews <occupancy-reviews.json> `
+  --route-reviews <route-reviews.json> --coordinates <coordinates.json> `
+  --expected-plan <evidence-plan.json> --generated-at 2026-10-02T00:00:00Z
+```
+
+All options are optional for CLI replay; missing independent evidence retains the
+existing scorer policy. An absent `--generated-at` uses current UTC. Final-only
+`paired=False` evidence is required; a valid paired snapshot receives the explicit
+`unsupported_snapshot_scope` diagnostic. Optional V3 projection availability is exposed
+without paired scores/deltas. Exit 0 means complete replay, including quality FAIL,
+UNKNOWN and unavailable totals; material/replay correction emits empty groups and exit 2.
+
+Root `components` preserves each scorer's schema, rules and source/hash metadata.
+`source_hashes.artifacts` preserves intake's exact artifact hashes; independent identity/
+review/audit/reference, preparation and snapshot/plan digests remain explicit. CLI exact
+preparation-file SHA-256 is separate from canonical object hashing. `content_hash` covers
+all output fields except `generated_at` and itself, including CLI file hashes. Explicit
+time plus identical sources/rules reproduces sorted JSON. Sources are never mutated.
+
+Each group exports the ordered common `included_dimensions`, exact rational
+`dimension_weights`, included count, four keyed `versions` and `all_totals_available`.
+Each version exports raw `primary_metrics`, normalized `dimensions`, `auxiliary_total`,
+descriptive/schedule/occupancy measurements and untouched component row hashes.
+
+For established N=P+F+U>0, verified score is 100*P/N. Rates in 0-1 and exact count
+fractions accompany coverage (P+F)/N, U/N, F/N and conditional P/(P+F). UNKNOWN remains
+UNKNOWN; conditional compliance does not determine the score. Parent obligations,
+logical commitments, primary visits and combined route legs retain one weight.
+Grounding uses source occurrences/validated identity records rather than caller summary
+counts. Claimed-ID conflicts and unknown role populations remain separate records.
+
+All-four proven N=0 excludes a dimension jointly. Included single-version N=0 keeps
+raw N/A/null rates and contributes zero. Unresolved applicability preserves partial
+checks but makes its dimension/contribution and affected version total null, retaining
+the mask and weights. Empty masks return null totals and an upstream reconciliation
+diagnostic. Means use unrounded rational contributions, not rounded percentages.
+Different requests retain their own masks; no pooled comparison or ranking is computed.
+
+`stage_availability` distinguishes resource/human/mechanism reports (`not_integrated`)
+from linked usage envelopes and optional projection availability. Descriptive density,
+repetition, raw transfer burden, resources and V3 internal findings add no penalties.
+Findings-only source changes preserve numeric scores after correct relinking/replay;
+source/report hashes may change, and stale evidence remains invalid.
+
+[Acceptance](../../.scratch/rtpeval/ticket-08-acceptance.md) records actual red/green,
+regression, review, commits and limits. The [preflight](../../.scratch/rtpeval/ticket-08-preflight.md)
+preserves the original no-implementation checkpoint and subsequent scope approval.
