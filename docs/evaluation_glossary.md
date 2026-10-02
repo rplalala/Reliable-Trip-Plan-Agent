@@ -18,6 +18,13 @@ _Avoid_: Automatically evaluated candidate stream
 
 ## Requirement and schedule units
 
+**Submitted place claim**: The scheduled place identified by the output's structured
+place fields, independently checked against external evidence. A descriptive title does
+not need to be synonymous with that name; the claim does not itself establish factual identity.
+
+**Transport association**: The source-linked relation between a submitted journey and
+a directed pair of scheduled visit occurrences. It does not establish route feasibility.
+
 **Obligation check**: One outcome for one independently reviewed requirement, with
 all of its explicit count, date and time conditions retained as components.
 

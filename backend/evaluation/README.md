@@ -72,6 +72,13 @@ No provider acquisition, real model call, database access or V0-V3 algorithm cha
 Ticket 03 follow-up (2026-09-30): the details-only shortcut recognizes only a matching numbered street component with a supported English street suffix. Generic country/admin/postcode components require competition search. Search/details name or full-address disagreement enters review even when IDs agree. Separate titles must equal the place name or `Visit <name>` for automatic acceptance; other prose is left for adjudication. These conservative recognizers can increase unresolved coverage for valid venues. Malformed optional IDs remain per-reference uncertainty without aborting the batch. See the contract for exact recognition limits.
 
 
+Accepted specification revision (2026-10-02), not implemented:
+[ordinary-output compatibility](../../.scratch/rtpeval/ticket-01-03-simplification.md) removes
+ordinary-title gating in favor of structural claims, permits uniquely supported V0 endpoint
+association and proposes independent typed-address evidence with strict legacy fallback.
+It adds no request/backfill/LLM call. The preceding paragraph remains the current executable
+behavior until the separately approved correction and its regression checks are completed.
+
 Ticket 01/02 follow-up (2026-09-30): overlapping visit intervals produce source-linked `overlapping_visit_intervals` diagnostics and mark affected candidate adjacency unresolved; display sorting does not repair chronology. Available/partial usage envelopes require explicit model/provider/cache event arrays (empty is valid, absent is not). Duplicate cache IDs are rejected like model/provider duplicates. Repair token subtotal is null when no Repair token value was observed; a measured zero stays zero and partial known values remain an observed subtotal.
 
 

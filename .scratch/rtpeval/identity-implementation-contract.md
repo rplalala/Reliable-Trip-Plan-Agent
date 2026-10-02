@@ -1,5 +1,12 @@
 # Ticket 03 offline identity implementation contract
 
+Accepted specification follow-up, 2026-10-02: [ordinary-output compatibility](ticket-01-03-simplification.md)
+replaces title-equivalence gating with structural place claims and adds a narrow independent
+typed-address evidence path with legacy fallback. Independent identity checks, branch checks,
+high-impact review and audit sampling remain. No additional requests or old-snapshot backfill
+are allowed for the extension. The follow-up is not implemented; historical acceptance and
+the strict rules below describe existing code where the follow-up proposes a replacement.
+
 Status: Implemented for offline observations and adjudication replay; development validation is recorded in ticket-03-acceptance.md. No live acquisition or benchmark freeze.
 Date: 2026-09-29.
 Base revision: 364f91f05f01328266bfb00c5b75885242d93d7d; Tickets 01/02 and this work are uncommitted.

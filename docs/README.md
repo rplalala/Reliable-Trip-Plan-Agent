@@ -203,6 +203,11 @@ implementation and evaluation execution still require separate authorization.
 
 - [Evaluation glossary](evaluation_glossary.md): shared benchmark/evaluation terminology; not project-wide context.
 
+- [Tickets 01/03 ordinary-output specification revision](../.scratch/rtpeval/ticket-01-03-simplification.md):
+  accepted unique V0 endpoint/gap association, structural role/place claims and independent
+  typed-address compatibility with no additional requests or old-data backfill. Contains
+  concrete acceptance examples; implementation remains separately authorized.
+
 - [Ticket 10 V3 before/after preflight](../.scratch/rtpeval/ticket-10-preflight.md):
   confirmed pair-mask/availability rules and the approved source-driven correspondence
   revision: validated activity IDs, actually adopted edits and split sources precede content

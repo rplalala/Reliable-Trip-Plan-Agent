@@ -101,9 +101,9 @@ validation, caches and internal decisions are not independent factual ground tru
 
 | Ticket | Implementation checkpoint |
 | --- | --- |
-| 01: Intake/projection | Implemented and offline-validated, including provenance and transport-source corrections |
+| 01: Intake/projection | Implemented and offline-validated, including provenance and transport-source corrections; [ordinary-output specification revision](.scratch/rtpeval/ticket-01-03-simplification.md) accepted, implementation pending separate approval |
 | 02: Usage capture/report | Implemented and offline-validated; opt-in attempt capture, no automatic formal run |
-| 03: Identity/adjudication | Implemented and offline-validated; strict supplied-ID and name-search paths, manual review and automatic-result audit |
+| 03: Identity/adjudication | Implemented and offline-validated; strict supplied-ID and name-search paths, manual review and automatic-result audit; structural-claim/address specification revision accepted, implementation pending separate approval |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented and offline-validated; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed; local code publication pending |
 | 06: Opening checks | Offline parser/scorer/CLI implemented under the 2026-10-02 approval; offline acceptance complete; Standards/Spec reviews clear, full regression 2148 passed / 10 skipped; all ten skips passed in subsequently approved scoped supplements; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) closed as completed; [acceptance](.scratch/rtpeval/ticket-06-acceptance.md) |
@@ -371,6 +371,27 @@ English/local-link/content/diff checks cover documentation only; no implementati
 provider/model/database call is included. Local documentation commits exclude ignored research
 archives. Implementation, GitHub updates, formal work, later tickets, push and freeze remain
 separately authorized actions.
+
+### Tickets 01/03 ordinary-output revision - 2026-10-02
+
+The user accepted the [specification revision](.scratch/rtpeval/ticket-01-03-simplification.md)
+after a source audit and eight synthetic function probes exposed ordinary endpoint/title/
+address formats entering review. V0 transport may use unique explicit endpoints plus a
+unique containing gap. Structured role/place fields own the submitted visit claim; titles
+are descriptive, with review for concretely recognized conflicts rather than arbitrary
+semantic-equivalence checks. Independent factual identity verification remains required.
+
+A narrow independent address-component bridge is proposed for destination/location and
+search/details agreement. Existing snapshots do not guarantee these fields. Missing fields
+retain strict fallback or review; there are no extra requests, LLM calls or automatic old-data
+backfills. The checked provider field tiers do not raise the SKU of the described existing
+name/address requests. Planner behavior and budgets remain unchanged. The coordinate bridge
+candidate for Tickets 04/07 is outside this revision.
+
+Only specification, examples and documentation validation are completed by this task.
+Implementation, new regression tests, live collection, Issue updates and publication are
+not performed. The recommended next step is separate approval for the bounded offline
+correction before continuing Ticket 10 implementation.
 
 ## 7. Keeping this file current
 

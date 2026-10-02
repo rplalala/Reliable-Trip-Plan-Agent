@@ -1,5 +1,11 @@
 # Batch intake and independent projection contract
 
+Accepted specification follow-up, 2026-10-02: [ordinary-output compatibility](ticket-01-03-simplification.md)
+supersedes blanket endpoint-prose and title-keyword review for the specified cases.
+It uses unique V0 occurrence/gap association and structural role/place claims with bounded
+explicit conflict handling. This follow-up is not implemented; earlier acceptance records
+and the rules below describe the existing code unless the follow-up explicitly replaces them.
+
 Status: Ticket 01 specification closed; subsequently implemented under user approval and validated offline on 2026-09-29. See ticket-01-acceptance.md for scope and the platform-dependent skip. Not benchmark frozen.
 Date: 2026-09-29.
 Inspected checkpoint: 364f91f05f01328266bfb00c5b75885242d93d7d; clean working tree before this documentation pass.
