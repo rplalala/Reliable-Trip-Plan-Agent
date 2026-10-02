@@ -57,6 +57,24 @@ occupation boundary that permits no schedule grace, including the DRIVE reserve.
 or any independently proven FAIL. A partial decisive FAIL does not establish complete
 component evidence; missing components remain separately visible.
 
+## V3 before/after concepts
+
+**V3 stage pair**: The selected V3 run's pre-repair draft and final primary itinerary,
+evaluated independently under one compatible frozen snapshot. The draft is a V3 stage,
+not an independently executed V2 itinerary.
+
+**Paired dimension mask**: The common included score dimensions for a V3 stage pair;
+a dimension is omitted only when neither stage has applicable or unresolved units.
+It is separate from the four-version final report's mask.
+
+**Occurrence correspondence**: An independently established relation between activities
+in the two V3 stages. A shared activity ID does not by itself establish the same venue
+or prove that a conflict was repaired.
+
+**Correspondence review**: Source-linked human verification of an ambiguous or complex
+cross-stage relation. It establishes which occurrences are related, while independent
+quality checks determine their compliance.
+
 ## Blinded ranking concepts
 
 **Anonymous plan label**: A public A/B/C/D identifier whose plan association remains

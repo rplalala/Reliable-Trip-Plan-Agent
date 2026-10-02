@@ -110,7 +110,8 @@ validation, caches and internal decisions are not independent factual ground tru
 | 07: Route checks | Offline preparation/scorer/CLI implemented and validated; longest unstated-departure fragment, zero-grace hard boundaries and decisive partial FAIL; Standards/Spec reviews clear; 86 dedicated tests passed; approved existing-test repair removes the former exclusion, latest unfiltered backend gate 2234 passed / 10 skipped / zero deselections; implementation and repair committed locally under the approved three-group closeout; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) closed/completed; [acceptance](.scratch/rtpeval/ticket-07-acceptance.md) |
 | 08: Multimetric report | Approved offline report/CLI implemented; 39 dedicated tests passed; full offline gate 2273 passed / 10 skipped / zero deselections; committed at 5625f81 before clear Standards/Spec reviews; exact shared-mask verified scores and separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) closed/completed; [acceptance](.scratch/rtpeval/ticket-08-acceptance.md) |
 | 09: Blinded ranking | Independent offline package/import/report and React renderer implemented and reviewed; current display uses IANA time-zone selection and HH:mm, without Original timestamp controls or dedicated uncertainty hints; confirmed local-answer clearing implemented; latest frontend 98 passed, TypeScript/blind build/lint passed; earlier backend gate 2299 passed / 10 skipped remains separate; native browser acceptance completed by user report; [acceptance](.scratch/rtpeval/ticket-09-acceptance.md); [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) closed/completed |
-| 10-12 | Later approved work-plan tickets; no implementation is claimed here |
+| 10: V3 before/after | Specification preflight and complete shared understanding confirmed; pair mask, simple-auto/complex-reviewed correspondence and review-first local uncertainty accepted; [preflight](.scratch/rtpeval/ticket-10-preflight.md); implementation remains unauthorized, no implementation test or tracker mutation |
+| 11-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
@@ -338,6 +339,30 @@ is closed/completed; [parent #12](https://github.com/rplalala/Reliable-Trip-Plan
 marks Tickets 01-09 completed and remains open for 10-12. Local code/document commits
 are unpublished. No real rater session, formal comparison, live service/native test
 supplement, push, freeze or later-ticket implementation is included.
+
+### Ticket 10 specification preflight - 2026-10-02
+
+The user authorized only the current Issue/contracts/interface audit and an English
+[preflight](.scratch/rtpeval/ticket-10-preflight.md) with implementation/acceptance proposals.
+Live #22 remains open/needs-info; #20 is closed/completed, so the migration-time sentence
+that Ticket 08 is unfinished is stale. The gh CLI failed authentication; read-only GitHub
+connector reads supplied current Issue body/state/comments without credential changes.
+No tracker was edited.
+
+Current scorers support paired snapshots and optional V3 draft/final_primary rows, while
+Ticket 08 quality aggregation explicitly remains final-only. The user accepted a separate
+two-stage common mask for paired diagnostics, preserving existing four-version final
+arithmetic and behavior. After examples, the user accepted simple automatic correspondence
+and independent human review for complex edits. After further clarification, the user accepted
+supplementing review before retaining local unresolved continuity while preserving valid
+independent aggregate deltas. The user confirmed the complete specification without approving
+implementation. Source facts confirm replacement can retain activity_id and sorted arrays
+can move pointers; internal
+target resolution/removal is not independent proof of repair. Preflight runs no implementation
+tests or live provider/model/database calls. English/local-link/content/diff checks cover the
+documentation-only closeout; the preflight/current-status/index/glossary form one local docs
+commit, excluding the ignored historical archive. Implementation, GitHub updates, formal work,
+later tickets, push and freeze remain separately authorized actions.
 
 ## 7. Keeping this file current
 
