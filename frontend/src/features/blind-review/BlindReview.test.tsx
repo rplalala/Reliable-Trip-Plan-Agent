@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 import { BlindReview } from "./BlindReview";
 import type { Presentation } from "./answers";
@@ -224,4 +224,31 @@ it("downloaded JSON restores submitted and draft revisions after confirmed clear
     expect(JSON.parse([...storage.values()][0])).toEqual(original);
     expect(screen.getByLabelText("pace: response")).toHaveValue("unable_to_judge");
   } finally { click.mockRestore(); vi.unstubAllGlobals(); }
+});
+
+it("successful clearing invalidates an import that has not finished reading", async () => {
+  const storage = new Map<string, string>();
+  const persistence = { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => { storage.set(key, value); } };
+  let finishRead: (() => void) | undefined;
+  let backup = "";
+  vi.stubGlobal("FileReader", class {
+    result: string | null = null;
+    onload: (() => void) | null = null;
+    onerror: (() => void) | null = null;
+    readAsText() { finishRead = () => { this.result = backup; this.onload?.(); }; }
+  });
+  try {
+    render(<BlindReview presentation={presentation} storage={persistence} />);
+    for (const d of presentation.dimensions) fireEvent.change(screen.getByLabelText(`${d}: response`), { target: { value: "not_applicable" } });
+    fireEvent.click(screen.getByRole("button", { name: "Submit answer" }));
+    backup = [...storage.values()][0];
+    fireEvent.change(screen.getByLabelText("Import answers JSON"), { target: { files: [new File([backup], "answers.json")] } });
+    fireEvent.click(screen.getByRole("button", { name: "Clear answers" }));
+    fireEvent.click(screen.getByRole("button", { name: "Confirm clear" }));
+    await act(async () => { finishRead!(); await Promise.resolve(); });
+    expect(screen.queryByText("Submitted revision 1")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Submit answer" })).toBeDisabled();
+    expect(JSON.parse([...storage.values()][0]).answers).toEqual([]);
+    expect(screen.getByRole("status")).toHaveTextContent("Answers cleared");
+  } finally { vi.unstubAllGlobals(); }
 });

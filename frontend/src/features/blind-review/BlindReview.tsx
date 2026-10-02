@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { complete, dimensions, importAnswers, labels, latestAnswer } from "./answers";
 import type { Answer, Bundle, Dimension, Presentation, Response } from "./answers";
 import { DisplayTime, TimeZonePicker } from "./DisplayTime";
@@ -61,6 +61,7 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
   const [error, setError] = useState(initial.error);
   const [notice, setNotice] = useState("");
   const [clearRequested, setClearRequested] = useState(false);
+  const importGeneration = useRef(0);
   const submitted = latestAnswer(answers, task.task_id, true);
   const currentResponses = responses(form);
   function persist(next: Answer[]) {
@@ -88,19 +89,24 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
     } catch {
       setError("Local clear failed. Answers are unchanged; download JSON before closing."); setNotice(""); return;
     }
+    importGeneration.current += 1;
     setAnswers([]); setIndex(0); setForm(draft()); setClearRequested(false); setError("");
     setNotice("Answers cleared for this review package.");
   }
   async function read(file?: File) {
     if (!file) return;
+    const generation = importGeneration.current;
     try {
       const text = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader(); reader.onload = () => resolve(String(reader.result));
         reader.onerror = () => reject(new Error("File read failed")); reader.readAsText(file);
       });
+      if (generation !== importGeneration.current) return;
       const imported = importAnswers(JSON.parse(text), presentation, answers);
       persist(imported); setForm(draft(latestAnswer(imported, task.task_id)));
-    } catch (e) { setError(`Import rejected: ${e instanceof Error ? e.message : "Invalid file"}`); }
+    } catch (e) {
+      if (generation === importGeneration.current) setError(`Import rejected: ${e instanceof Error ? e.message : "Invalid file"}`);
+    }
   }
   return <main className="blind-review">
     <header><h1>Travel plan review</h1><p>Compare the four plans against the original request. Position 1 is best; assign the same position for a tie.</p>
