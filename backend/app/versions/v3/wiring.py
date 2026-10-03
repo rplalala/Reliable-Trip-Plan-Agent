@@ -247,10 +247,22 @@ def cost_records(itinerary):
 
 
 class V3PostPrimary:
-    def __init__(self, model, acquisition, tracer, discovery, owner, deadline, quantity_review):
+    def __init__(
+        self,
+        model,
+        acquisition,
+        tracer,
+        discovery,
+        owner,
+        deadline,
+        quantity_review,
+        *,
+        clock=monotonic,
+    ):
         self.model, self.acq, self.tracer = model, acquisition, tracer
         self.discovery, self.owner = discovery, owner
         self.deadline, self.quantity_review = deadline, quantity_review
+        self.clock = clock
 
     async def __call__(self, state):
         draft = state["itinerary"].model_copy(deep=True)
@@ -363,7 +375,7 @@ class V3PostPrimary:
                     enriched=state["candidate_funnel"].enriched_candidates,
                     admitted=state["candidate_funnel"].admitted_candidates,
                     runtime=self.acq.runtime_config,
-                    request_remaining=max(0, self.deadline - monotonic()),
+                    request_remaining=max(0, self.deadline - self.clock()),
                     cache=self.acq._cache,
                     semantic_service=getattr(self.acq, "poi_semantics", None),
                     geographic_scope=getattr(self.discovery, "scope", None),
@@ -393,6 +405,7 @@ class V3PostPrimary:
                 scope,
                 model=self.model,
                 request_deadline=self.deadline,
+                clock=self.clock,
                 pool=pool,
                 places_provider=self.acq._places,
                 routes_provider=self.acq._routes,

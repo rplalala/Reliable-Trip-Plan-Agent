@@ -648,7 +648,22 @@ def test_no_planner_import_or_network_on_intake(batch, monkeypatch):
         "importlib",
         "tzdata",
     }
+    # Ticket 11 explicitly executes frozen V3 through its isolated controlled boundary.
+    # Ordinary intake/scorers retain the planner-free import contract.
+    controlled = {
+        "_controlled_facts",
+        "_controlled_goals",
+        "_controlled_ports",
+        "controlled_batch",
+        "controlled_cli",
+        "controlled_models",
+        "controlled_preparation",
+        "controlled_replay",
+        "controlled_report",
+    }
     for path in Path("backend/evaluation").glob("*.py"):
+        if path.stem in controlled:
+            continue
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):

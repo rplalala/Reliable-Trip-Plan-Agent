@@ -87,6 +87,8 @@ def identity_references(intake):
                 }
             )
         for version in VERSIONS:
+            if version not in group["runs"]:
+                continue
             run = group["runs"][version]
             projections = [("final", run["final"])]
             if version == "v3":
@@ -449,6 +451,8 @@ def _summaries(references, records, prepared):
         gid = group["group_id"]
         versions = {}
         for version in VERSIONS:
+            if version not in group["runs"]:
+                continue
             labels = ["final"]
             if version == "v3":
                 labels.extend(
