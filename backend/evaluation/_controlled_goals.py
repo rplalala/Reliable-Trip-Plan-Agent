@@ -140,6 +140,21 @@ def verdict(stage, condition):
         selected = [c for c in checks(stage, condition.dimension) if matches(c, condition, stage)]
         # Conflict lists contain only conflicts; absence needs complete subject occupancy.
         if not selected and condition.dimension in {"conflicts", "protection_conflicts"}:
+            if condition.dimension == "protection_conflicts" and not condition.activity_ids:
+                # The independent obligation check already assesses every applicable
+                # commitment and unresolved candidate under the protection's scope.
+                protected = [
+                    c
+                    for c in checks(stage, "requirements")
+                    if c["kind"] == "protected_time"
+                    and c["obligation_id"] == condition.obligation_id
+                ]
+                has_blocker = any(
+                    condition.obligation_id in b["obligation_ids"]
+                    for b in stage["occupancy"]["blockers"]
+                )
+                state = protected[0]["state"] if has_blocker and len(protected) == 1 else "UNKNOWN"
+                return {"state": state, "checks": []}
             units = [
                 u
                 for u in stage["occupancy"]["commitments"]

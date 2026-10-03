@@ -492,6 +492,52 @@ def test_retained_protection_conflict_can_resolve_without_erasing_obligation(pai
     assert pair["stages"]["final_primary"]["dimensions"]["requirements"]["denominator"] == 1
 
 
+@pytest.mark.parametrize(
+    "scope,state,outcome",
+    [("primary_visits", "PASS", "resolved"), ("scheduled_commitments", "UNKNOWN", "unresolved")],
+)
+def test_controlled_protection_target_resolves_by_original_obligation_id(
+    pair_case, scope, state, outcome
+):
+    from backend.evaluation._controlled_goals import Goal, target_outcome
+
+    def after(itinerary):
+        itinerary["days"][0]["activities"][0].update(
+            start_time="2020-01-01T08:00:00Z", end_time="2020-01-01T09:00:00Z"
+        )
+
+    case = pair_case(after=after, obligations=[protection("09:30", "10:00", scope=scope)])
+    pair = report(case)["groups"][0]
+    projections = case[0].to_dict()["inventory"][0]["runs"]["v3"]["optional"]
+    for label in ("draft", "final_primary"):
+        pair["stages"][label]["controlled_projection"] = projections[label]
+    goal = Goal.model_validate(
+        {
+            "goal_id": "respect-rest",
+            "basis": "confirmed_conflict",
+            "condition": {
+                "kind": "check",
+                "dimension": "protection_conflicts",
+                "obligation_id": "rest",
+            },
+        }
+    )
+    result = target_outcome(goal, pair)
+    assert result["before"]["state"] == "FAIL"
+    assert "resolved" in result["transitions"]
+    assert result["after"]["state"] == state
+    assert result["independent_outcome"] == outcome
+
+    protected = pair["stages"]["final_primary"]["primary_metrics"]["requirements"]["checks"][0]
+    protected["state"] = "UNKNOWN"
+    assert target_outcome(goal, pair)["independent_outcome"] == "unresolved"
+    protected["state"] = "PASS"
+
+    # A missing protected blocker must never turn conflict absence into verification.
+    pair["stages"]["final_primary"]["occupancy"]["blockers"] = []
+    assert target_outcome(goal, pair)["independent_outcome"] == "unresolved"
+
+
 def repeated_before(itinerary):
     extra = copy.deepcopy(itinerary["days"][0]["activities"][0])
     extra.update(
