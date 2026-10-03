@@ -471,11 +471,14 @@ See [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) 
 
 ### Ticket 12 technical checkpoint — 2026-10-04
 
-**Status: read-only technical preflight completed; the delivery below is Proposed.**
-The user authorized technical preflight after Ticket 11. This is not implementation,
-capture activation, live collection, formal audit execution, publication or Issue mutation.
-Issue #24 remains open/needs-info; its missing optional artifacts must not invalidate
-independent quality material. Checkpoint: `7c9783bdeb1b57b7fe6fdfc258dec47cc5c3dcf7`.
+**Status: accepted design; implementation awaits separate scope approval.**
+After the read-only preflight, the user accepted reuse of existing records plus the
+minimum opt-in local capture on 2026-10-04. This accepts the observation units,
+denominators, audit linkage and delivery scope below; it does not activate capture or
+authorize implementation, live collection, formal audit execution, publication or Issue
+mutation. At preflight inspection, Issue #24 was open/needs-info; tracker synchronization
+remains separate. Missing optional artifacts must not invalidate independent quality
+material. Inspection checkpoint: `7c9783bdeb1b57b7fe6fdfc258dec47cc5c3dcf7`.
 
 #### Existing interfaces and observed gaps
 
@@ -490,10 +493,10 @@ independent quality material. Checkpoint: `7c9783bdeb1b57b7fe6fdfc258dec47cc5c3d
 | Trace and resource availability | [run tracer](../../backend/app/observability/run_trace.py), [usage capture](../../backend/app/observability/usage_capture.py) and [usage report](../../backend/evaluation/usage_report.py) | Tracing is best-effort and may be disabled/truncated. Numeric usage already has run/result linkage and missingness; no duplicate resource collector is needed. |
 
 The observed gap is capture provenance, not missing itinerary/transport correspondence
-or a need to rerun validation. The proposed reader consumes saved observations; it must
+or a need to rerun validation. The accepted reader design consumes saved observations; it must
 not replay a rule and label newly reconstructed evidence as historically used.
 
-#### Proposed mechanism units and denominators
+#### Accepted mechanism units and denominators
 
 Inventory selected source runs by group/version/run ID and exact original input/result
 hashes. V3 Repair is not applicable to V0-V2; absence of V3 metadata is unavailable, not
@@ -522,7 +525,7 @@ and trace copies, count the cumulative result as a final extra round, sum cumula
 counter snapshots, or add cumulative usage to its per-round children. Incomplete trace
 fragments may support explicitly observed cells, never a fabricated complete denominator.
 
-#### Proposed qualifying official-fact audit
+#### Accepted qualifying official-fact audit
 
 Use a run-linked catalog of Evidence-Gate-accepted typed official claims, preserving
 source refs, claim content/hash, source identity, excerpt, retrieval/date applicability
@@ -553,7 +556,7 @@ The planner gate's acceptance and its reasoner's confidence are not independent 
 verdicts. This ticket does not introduce automatic random website checks, additional
 retrieval or universal ticket-price/admission correctness scoring.
 
-#### Proposed minimum capture and delivery scope
+#### Accepted minimum capture and delivery scope
 
 Reuse complete saved V3 outcomes and existing compatible trace/usage observations.
 For future runs, add an opt-in, best-effort local normalized capture of the accepted
@@ -570,7 +573,7 @@ accepted/exposed/used facts must not be reconstructed from the final itinerary o
 rerunning the current gate. Existing Ticket 11 frozen material may supply actual replay
 observations only when linked to that replay; it cannot certify an older live execution.
 
-Proposed implementation: separate immutable mechanism reader/report and official audit
+Accepted implementation plan: separate immutable mechanism reader/report and official audit
 queue/review/report, researcher CLI and the minimum opt-in capture above. Reuse artifact
 hash/link validation and usage summarization. Keep four-final quality scores, identity,
 paired metrics and anonymous review unchanged. No frontend or new acquisition system.
@@ -584,8 +587,11 @@ Repair, tracing, budget summaries and usage reporting. The initial run had 63 pa
 14 setup errors because the task-local temporary parent directory had not been created;
 after directory setup, the same test selection passed. No production/test source changed,
 new Ticket 12 implementation fixture, live service or formal audit was executed.
-The remaining scope decision is whether to include the proposed minimum capture rather
-than deliver a saved-material reader alone with correspondingly unavailable audit cells.
+The user selected the minimum capture extension together with the readers/reports,
+rather than a saved-material-only delivery. No specification decision remains pending
+from this preflight. The next gate is explicit implementation-scope approval under
+AGENTS.md, with offline TDD/review and default-preserving capture checks; the accepted
+design alone is not evidence that capture or reports have been implemented.
 
 Whole-trip factual budget PASS, verified access/fees and false-certainty metrics remain deferred.
 Amounts can be descriptive; source role does not certify affordability. V0-V3 comparisons are
