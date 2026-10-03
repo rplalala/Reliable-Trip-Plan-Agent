@@ -231,8 +231,9 @@ individual scorers does not implement Ticket 10's before/after report.
 Ticket 10 retains independently evaluated V3 draft/final-primary under one compatible snapshot,
 validated adopted-edit/activity/split provenance before content fallback and residual review,
 and a paired common dimension mask. Unresolved local correspondence does not suppress an otherwise
-valid paired aggregate. The reader/report is not implemented; details remain in
-[accepted preflight](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22#issuecomment-5955706453).
+valid paired aggregate. The offline reader/report/CLI is implemented; current behavior
+is in the [paired contract](0005-quality-human-review.md#v3-pairs), with actual validation
+and review corrections in [acceptance](../records/evaluation/v3-pair-report.md).
 
 Ticket 11's accepted controlled composition is 24 targets plus 8 controls, with confirmed
 evidence/policy conflicts distinguished from optional review opportunities. Independent target
