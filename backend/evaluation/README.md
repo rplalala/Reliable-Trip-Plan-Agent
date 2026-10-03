@@ -94,8 +94,8 @@ that CLI input. `--expected-plan` optionally enforces trusted full-plan equality
 Library seams: `score_requirement_schedule`, `prepare_routes`, `score_opening`, and
 `score_routes`. These and identity/snapshot plan commands support `--paired` where
 declared, selecting available V3 draft/final-primary projections; paired scope must
-remain consistent across inputs. This is not implemented Ticket 10 correspondence or
-Repair delta reporting. Scorers exit 0 for complete processing, including FAIL/UNKNOWN,
+remain consistent across inputs. Ticket 10 combines these paired outputs below.
+Scorers exit 0 for complete processing, including FAIL/UNKNOWN,
 or 2 for material/replay correction. Snapshot commands exit 2 for invalid replay/input.
 
 <a id="ticket-08-final-multimetric-report-and-auxiliary-scores"></a>
@@ -149,11 +149,36 @@ answer, blinding and display semantics. Automated DOM checks do not prove native
 storage behavior; the [acceptance record](../../docs/records/evaluation/blinded-ranking-record.md)
 distinguishes automated checks from user-reported browser acceptance.
 
+### V3 paired diagnostics
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.v3_pair_cli prepare manifest.json identity-report.json > edit-provenance.json
+.venv/Scripts/python.exe -m backend.evaluation.v3_pair_cli report manifest.json identity-report.json paired-evidence-snapshot --context schedule-context.json --route-reviews route-reviews.json --coordinates coordinates.json --expected-plan paired-evidence-plan.json --edit-provenance edit-provenance.json --generated-at 2026-10-03T00:00:00Z > v3-pair-report.json
+```
+
+Prepare the current identity replay and frozen evidence plan with `--paired`. Save
+stdout JSON as UTF-8. The commands read the original selected V3 result bytes
+automatically; `--edit-provenance`
+is optional and, when supplied, is checked against a fresh source replay. Additional
+report options are `--occupancy-reviews`, `--correspondence-reviews` and
+`--identity-snapshot` (as an alternative to `--coordinates`). No provider/model/database
+call or input modification occurs. The snapshot argument can be omitted when no group
+has an available pair; supplied snapshots are still verified.
+
+Library seams are `read_v3_result_sources`, `prepare_v3_correspondence` and
+`build_v3_pair_report`. Original adopted edit/fragment sources establish occurrence
+lineage, independent identities establish venue continuity, and the scorers establish
+quality. The report retains local uncertainty, pair availability, exact signed deltas,
+losses/replacements, route topology/context and independent conflict transitions.
+Its pair mask/auxiliary totals remain separate from Ticket 08's four-final report.
+Exit 0 means complete processing, including unavailable pairs and FAIL/UNKNOWN checks;
+corrupt/stale material exits 2. See the [paired contract](../../docs/contracts/0005-quality-human-review.md#v3-pairs).
+
 ## Verification and status boundary
 
 Relevant regression tests live in `backend/tests/evaluation/`
 and the [blind-review frontend](../../frontend/src/features/blind-review/BlindReview.tsx).
 Actual historical results are in [evaluation record index](../../docs/records/README.md)
 and linked Issues. Synthetic checks do not establish real provider availability,
-formal benchmark outcomes or a version freeze. Before/after reporting, controlled
-Repair and mechanism/official-evidence analysis remain the separately scoped Tickets 10-12.
+formal benchmark outcomes or a version freeze. Controlled Repair and
+mechanism/official-evidence analysis remain the separately scoped Tickets 11-12.

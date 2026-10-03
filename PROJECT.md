@@ -110,7 +110,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | 07: Route checks | Offline preparation/scorer/CLI implemented and reviewed, including decisive partial FAIL, zero-grace hard boundaries and the [snapshot-coordinate bridge](docs/records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03); [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) completed; [original acceptance](docs/records/evaluation/routes.md#rtpeval-ticket-07-acceptance) |
 | 08: Multimetric report | Offline report/CLI implemented and reviewed; exact shared-mask scores with separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) completed; [acceptance](docs/records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) |
 | 09: Blinded ranking | Offline package/import/report and React renderer completed; IANA time-zone selection, HH:mm and confirmed answer clearing; user-reported browser acceptance complete; [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) completed; [acceptance](docs/records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) |
-| 10: V3 before/after | Specification preflight confirmed and source-driven correspondence revision approved; validated activity IDs/adopted edits/split sources precede content fallback and residual review; paired mask and valid aggregate availability retained; [preflight](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22#issuecomment-5955706453); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) is specification-ready; implementation remains unauthorized, with no implementation test or live execution |
+| 10: V3 before/after | Offline preparation/report/CLI implemented; adopted source lineage precedes unique fallback and residual review; separate paired mask, exact deltas and independent continuity; [contract](docs/contracts/0005-quality-human-review.md#v3-pairs) and [acceptance](docs/records/evaluation/v3-pair-report.md); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) remains open pending separately authorized tracker synchronization/publication |
 | 11-12 | Later approved work-plan tickets; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
@@ -158,12 +158,14 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2329 passed, 10 skipped**, from the
-2026-10-03 Tickets 01/03 ordinary-output compatibility revision. The skips are
-environment/opt-in cases; earlier approved supplements remain distinct evidence.
+Latest recorded full backend gate: **2409 passed, 10 skipped**, from the
+2026-10-03 Ticket 10 post-review implementation, including **580 passed, 1 skipped**
+evaluator cases and 52 new paired tests. Both review axes are closed after separate
+correction commits. The skips are environment/opt-in cases; earlier
+approved supplements remain distinct evidence.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
-lint passing for Ticket 09. These are historical validation checkpoints, not tests
-rerun during the documentation migration. Failure/correction/retest sequences stay
+lint passing for Ticket 09. These are dated development checkpoints, not formal
+benchmark results. Failure/correction/retest sequences stay
 in the [RTPEval records](docs/README.md#detailed-technical-contracts).
 
 The authorized Berlin three-day smoke ran V0-V3 once each. V0 produced six estimated
@@ -184,9 +186,9 @@ are evidence records, not current project authority or guaranteed fresh-clone as
 
 ## 6. Next work and authorization boundary
 
-Tickets 01-09 have completed their approved implementation scopes. Ticket 10's
-source-driven correspondence specification is accepted, but implementation remains
-unauthorized. Tickets 11-12 also require their own scope approval. Read the live
+Tickets 01-10 have completed their approved implementation scopes. Ticket 10 local
+delivery and offline acceptance do not authorize publication/tracker mutation or a
+formal run. Tickets 11-12 require their own scope approval. Read the live
 Issue and relevant contract before proposing the next task.
 
 The 2026-10-03 documentation migration consolidates durable scratch specifications

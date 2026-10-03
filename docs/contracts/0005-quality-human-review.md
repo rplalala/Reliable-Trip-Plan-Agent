@@ -252,12 +252,111 @@ test/review/browser evidence and remaining limitations.
 
 ## Follow-up reporting boundary
 
-V3 before/after correspondence/masks remain accepted but unimplemented Ticket 10 work.
+Ticket 10 supplies a separate [V3 paired diagnostic](#v3-pairs), with source-driven
+correspondence and independent checks. It does not alter the four-final report above.
 Controlled Repair and mechanism/official-evidence reporting remain Tickets 11-12; their
 accepted independent outcome/eligibility boundaries are in
 [follow-up scope](0001-evaluation-artifacts.md#planned). No optional-track metric becomes
 part of this final four-version total by implication. Human results remain separate from
 automatic scores; no overall human total or inferential analysis is supplied.
+
+<a id="v3-pairs"></a>
+
+## V3 draft/final-primary diagnostic
+
+The [accepted Ticket 10 specification](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22#issuecomment-5955706453)
+owns the source-first decision. `build_v3_pair_report` and `v3_pair_cli` compare only
+the selected same-run `/v3/draft` and `/v3/final_primary`. Every selected group remains
+inventoried. Missing/invalid optional stages yield `pair_unavailable`, original intake
+diagnostics and null paired deltas. `/itinerary` is never a substitute. Available
+stages can retain standalone observations. If all pairs are unavailable, no fictional
+snapshot is required. Otherwise require a verified `paired=True` evidence snapshot
+and current identity replay, with the same original input and RequirementSpec.
+
+The report calls the public requirement/schedule, opening and route scorers, verifies
+all expected final/optional rows and source hashes, then selects the two V3 stages.
+The reviewed-coordinate and saved identity-snapshot paths retain Ticket 07 semantics.
+Foreign/stale supplied sources, preparation/reviews or corrupt snapshots fail atomically;
+they do not silently shrink the cohort or become itinerary FAIL.
+
+The five dimensions retain exact P/(P+F+U) arithmetic and equal weights. The **pair's**
+common mask excludes a dimension only when both stages establish zero denominators.
+An included true no-check stage has null raw rates and zero accounting contribution.
+An unresolved denominator retains the dimension but makes its contribution and affected
+total unavailable. An empty mask has null totals. Signed changes are final minus draft,
+including exact rational score differences and percentage points. Defined identical
+metrics give zero; unavailable values never acquire zero through imputation. This mask
+and its auxiliary totals are distinct from Ticket 08's four-final comparison.
+
+Each stage preserves original checks, P/F/U/N/A counts, denominators, schedule commitments,
+conflicts, evidence/basis coverage, duration subtotals, lower bounds and observed traffic
+burden. The report exports population, date coverage, density/repetition and measurement
+differences. A subtotal difference describes its observed populations; it is not an exact
+full-trip difference when coverage changes or evidence is partial. Visit losses/additions,
+venue replacements, role losses and unresolved correspondence remain separate.
+
+### Source correspondence and review
+
+`read_v3_result_sources` rereads selected manifest artifacts through the safe relative-path
+and byte-hash rules. `prepare_v3_correspondence` emits immutable
+`rtpeval_v3_edit_provenance_1`; its optional source envelope is
+`rtpeval_v3_result_sources_1` with batch/revision and records containing group/run,
+input/result SHA256 and original UTF-8 result bytes. Verify exact associations and stage
+observations before using embedded material. A supplied preparation is recomputed against
+original sources; an arbitrary caller-written edit summary is not accepted.
+
+Within a checked chain, unique producer IDs identify edited slots. Validate Repair original,
+ordered round inputs/adopted states, result original/final and cumulative final. Only
+actually adopted changes, effective edits and accepted component membership establish
+relations. Rejected/pending/rolled-back components do not enter adopted lineage. Compose
+retime/move/replace/delete/add and free-time fragments across rounds; validate parent/root/
+child membership, fragment complements, dates and collision-free IDs. Record edit pointers.
+Sorting, source-ledger place-name normalization and transfer refresh are reconciled
+separately. Identical validated source snapshots also support unchanged IDs without Repair.
+
+Source lineage, canonical venue identity and quality are three separate facts. Replacement
+can preserve a slot while changing the independently confirmed venue, or retaining the same
+venue. Identity UNKNOWN does not invalidate known source lineage. Internal accepted/resolved/
+PASS judgments never establish independent identity or compliance. Complex recorded edits
+are automatically traceable; they do not require review solely because they are complex.
+
+Missing/inconsistent embedded lineage gives explicit local diagnostics, then uniquely
+unchanged content or globally unique independent canonical matching supplies weaker
+fallback. Do not use title semantics, nearest time, array position, favorable outcomes or
+greedy leftover venue matching. Residual occurrences produce review requests and coverage
+counts; unresolved local correspondence does not erase valid aggregate deltas.
+
+Optional `rtpeval_v3_correspondence_1` reviews carry batch/revision and records with
+group/run/result SHA256, full `before`/`after` stage source refs, `relation`, `reviewer_ref`,
+offset-aware `reviewed_at`, `rationale`, and optional string `supporting_refs`. Relations
+are unchanged/modified/moved/replaced/split/merged/complex/added/removed. Check exact
+membership, disjoint participation, cardinality and observable unchanged/moved claims.
+A review cannot override contradictory established correspondence. Many-to-many groups
+retain constituent checks without invented one-to-one edges or new success denominators.
+
+### Independent continuity
+
+Match requirements by original obligation ID; retain count/date/time components and
+regressions. Compare opening/grounding only for independently compatible continued visits.
+Deletion records removal; venue replacement retains old/new checks without repairing the
+old venue's fact. Directed route endpoints retain connection lineage separately from venue
+compatibility; inserted visits yield removed direct legs and added legs. Query/date/mode/
+departure context changes remain explicit and each stage uses its own applicable evidence.
+
+Overlap continuity uses independently continued participants, rather than generated check
+IDs or equal clock spans. Protection continuity retains the original obligation/scope.
+Removal is not resolution. Introduced conflicts require confirmed before non-conflict or
+established new participants; uncertainty retains unresolved attribution. Compatible
+FAIL-to-PASS can be resolved, FAIL-to-UNKNOWN is unverified change, and PASS-to-UNKNOWN is
+lost verification. Partial improvement requires comparable exact FAIL magnitudes under the
+same rule; missing or lower-bound magnitudes do not qualify. No overall Repair-success
+classification, causal conclusion, live acquisition or planner instrumentation is supplied.
+
+The wire is `rtpeval_v3_pair_report_1`, with rule/component/source hashes, per-group stage
+availability, mask, exact deltas, correspondence and continuity. Content hashing excludes
+creation time. CLI file-byte hashes remain distinct from canonical preparation digests.
+Exit 0 means complete processing, including unavailable pairs and quality FAIL/UNKNOWN;
+material/replay correction exits 2. Commands are in the [package guide](../../backend/evaluation/README.md).
 
 <a id="ticket-05-specification-closure--2026-10-01"></a>
 <a id="ticket-06-executable-measurements--2026-10-02"></a>

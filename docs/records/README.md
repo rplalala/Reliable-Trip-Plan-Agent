@@ -13,6 +13,7 @@ bounded by their recorded date and never grant another execution or freeze.
 | [V2](v0-v3/v2-milestone.md) | Retrieval integration, database observations and timeout diagnosis |
 | [V3](v0-v3/v3-milestone.md) | Validation/Repair development, closeout and bounded pilots |
 | [Evaluation](evaluation/intake-identity-usage.md) | Offline evaluator acceptance, readiness audit and [benchmark design history](evaluation/benchmark-design.md) |
+| [V3 paired evaluation](evaluation/v3-pair-report.md) | Ticket 10 source-driven correspondence, independent deltas, TDD and review evidence |
 | [Frontend](frontend/product-v3-acceptance.md) | Original MVP milestone and Product V3 acceptance/failure/retest evidence |
 | [Shared](v0-v3/poi-semantics-closeout.md) | Cross-version semantic, supply and transport observations |
 

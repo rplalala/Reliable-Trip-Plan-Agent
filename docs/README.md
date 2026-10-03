@@ -32,7 +32,7 @@ Evaluation has five consolidated contract references: [artifacts](contracts/0001
 [intake/identity/usage](contracts/0002-intake-identity-usage.md),
 [requirements/schedule](contracts/0003-requirement-schedule.md),
 [opening/routes](contracts/0004-opening-routes.md), and
-[quality/human review](contracts/0005-quality-human-review.md).
+[quality/human review and V3 pairs](contracts/0005-quality-human-review.md).
 These are continuous current rules with one owner per topic. Superseded proposals and
 approval/validation history remain in records and linked Issues; legacy deep links resolve
 to the corresponding current topic. Implementation status stays explicit in the evaluation

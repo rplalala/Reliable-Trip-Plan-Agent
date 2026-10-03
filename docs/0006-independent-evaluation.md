@@ -26,6 +26,7 @@ sources retain diagnostics but contribute no fallback transport occupancy.
 | 05 | Requirement and schedule metrics with independent time/occupancy review | [Requirement/schedule](contracts/0003-requirement-schedule.md) |
 | 06-07 | Offline opening and route preparation/scoring | [Opening/routes](contracts/0004-opening-routes.md) |
 | 08-09 | Quality report, anonymous review package, answer import and descriptive outcomes | [Quality/human review](contracts/0005-quality-human-review.md) |
+| 10 | Source-driven V3 draft/final-primary preparation, paired masks/deltas and independent continuity | [V3 paired diagnostic](contracts/0005-quality-human-review.md#v3-pairs) |
 
 [Artifacts and evidence contracts](contracts/0001-evaluation-artifacts.md) define shared
 material integrity, source roles and independent evidence/time semantics. The five topic
@@ -76,9 +77,11 @@ and rater. User-reported browser acceptance is distinct from automated test evid
 
 ## Proposed follow-up boundaries
 
-Ticket 10's accepted preflight uses validated existing activity/adopted-edit/split lineage
-before content fallback and residual human review. It preserves valid paired aggregate
-scores despite unresolved local correspondence. The reader/report is **not implemented**.
+Ticket 10's offline preparation/report uses validated existing activity/adopted-edit/split
+lineage before content fallback and residual review. It preserves valid paired aggregate
+scores despite unresolved local correspondence, while venue identity and quality remain
+independent of producer decisions. Its two-stage mask is separate from the four-final mask.
+See the [development acceptance](records/evaluation/v3-pair-report.md).
 Controlled Repair and mechanism/official-evidence reporting remain Tickets 11-12. This
 document authorizes no implementation, formal run, comparison or final conclusion.
 
