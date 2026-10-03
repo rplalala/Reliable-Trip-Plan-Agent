@@ -593,6 +593,89 @@ from this preflight. The next gate is explicit implementation-scope approval und
 AGENTS.md, with offline TDD/review and default-preserving capture checks; the accepted
 design alone is not evidence that capture or reports have been implemented.
 
+<a id="ticket12-implementation-scope"></a>
+
+#### Implementation approval proposal — 2026-10-04
+
+**Status: concrete scope prepared; implementation approval pending.** The accepted
+design above is the specification. This proposal makes its files, interfaces and
+verification scope reviewable without starting source changes. Preparation checkpoint:
+`8acb361`; Issue #24 and its comment were reread without mutation.
+
+| Delivery | Expected implementation location | Included behavior |
+| --- | --- | --- |
+| Selected-source preparation and mechanism report | New `backend/evaluation/mechanism_preparation.py`, `mechanism_report.py` and narrowly needed schema/helpers | Read explicitly selected saved results and optional linked observations; report trigger/authorization, original and related targets, rounds, model attempts, component adoption and internal progress with separate units/coverage. |
+| Official audit queue and reviewed report | New `backend/evaluation/official_audit.py` and narrowly needed schema/helpers | Join accepted claims to actual submission/rule-selection occurrences; preserve claim/source revisions, exclusions and missingness; import independently supplied exact-unit reviews and emit descriptive audit coverage/verdicts. |
+| Researcher commands | New `backend/evaluation/mechanism_cli.py` | Prepare selected sources, emit mechanism report, export audit queue and build reviewed audit report. Commands read local artifacts and emit versioned JSON; they do not invoke planners or acquire sources. |
+| Opt-in local capture | New `backend/app/observability/mechanism_capture.py` with a small internal observation helper if needed | Caller-owned async attempt wrapper with original-input/run identity, exact result serializer and local sink, independent of enabled usage/tracing; default-disabled recording and explicit partial/unavailable coverage. |
+| Minimal shared hooks | Existing `backend/app/versions/v1/graph.py`, `backend/app/versions/v3/repair_service.py`, `backend/app/llm/azure_foundry/client.py` and the V3 assessment/selected-hours seam | Register the accepted official catalog and exact structured projections; observe actual primary/Repair invocation and actual selected official operating/hour evidence. Hooks do not change evidence, prompts, schemas, permissions or budgets. |
+| Public-seam verification and documentation | `backend/tests/evaluation/`, `backend/tests/observability/`, relevant existing version/LLM tests; current contracts/package/PROJECT and dated acceptance under `docs/records/evaluation/` | Offline TDD and regressions, local implementation/test commits, fixed-base Standards/Spec review, separate review corrections and final acceptance. |
+
+The capture interface is an explicit producer wrapper around an existing runner, analogous
+to the existing usage attempt wrapper. It accepts invocation, linkage, serializer and sink;
+no new always-on runtime feature, YAML budget/configuration, planning API field or altered
+V0-V3 entry script is required. An enabled wrapper receives bounded normalized observations;
+its sink work follows invocation/result serialization. Failed writes, serialization failure,
+capacity truncation, cancellation and failed calls preserve the planner return/exception
+and retain recording coverage where possible. Capture failures never replace planning errors.
+
+Observation covers the existing default primary/Repair model adapter and actual V3 official
+operating/hour rule selections. A prepared projection is not qualified until the invocation
+seam observes submission. Arbitrary injected clients without that observation do not inherit
+claimed complete coverage. Rule records come from the actual assessment and selected refs,
+including their precise activity/date/representation; neither replayed validation nor all
+effective evidence in context supplies historical rule-use proof. No generic rule engine,
+all-adapter discovery system or new fact extractor is included.
+
+Preparation supports the delivered four-version selection and actual selected V3-only
+sources already available through Ticket 11 preparation, with the existing source/hash
+contracts reused. It never invents V0-V2 results or reruns controlled cases. Optional source
+references supply capture, current recognized trace records, existing usage and independent
+Ticket 10/11 reports. Missing optional channels stay unavailable; complete saved V3 outcomes
+can support mechanism observations without a capture. Only explicitly surviving trace
+cells are read, with no generic historical-log reconstruction. Exact duplicates deduplicate;
+conflicting identities and foreign/stale hashes are material diagnostics in that channel.
+Quality/identity readers and Ticket 08/10/11 score wires remain unchanged.
+
+Planned artifact families: `rtpeval_mechanism_capture_1`,
+`rtpeval_mechanism_preparation_1`, `rtpeval_mechanism_report_1`,
+`rtpeval_official_audit_queue_1`, `rtpeval_official_audit_reviews_1` and
+`rtpeval_official_audit_report_1`. Their detailed fields follow the accepted units/linkage
+and are implemented at public seams; internal helper names/grouping may follow the code's
+natural responsibilities without changing this scope. No raw prompt/provider-body dump
+is required. Source-bound claim excerpts remain local observation material, not Git assets.
+
+The offline acceptance tests must cover:
+
+- Real unchanged prompts, model/provider call counts, itinerary/results and policy/budget
+  settings with capture off/on; recording failure/cancellation and independent usage-off
+  operation; no observed official fact submission on an input-budget abort.
+- Original versus round-local/related targets, skipped/rejected/partial/complete adoption,
+  cumulative summary exclusion, duplicate/conflicting round records and missing trace.
+- Rejected, accepted-unused and preparation-only claims excluded from the qualifying set;
+  exposed-only, rule-selected-only and both-qualified claims; repeat occurrences counted
+  once per exact audit unit with occurrence links retained.
+- Exact input/result/source/review hashes, date/subject/representation linkage, absent and
+  foreign reviews, contradictory material, unavailable verdicts and review coverage.
+- Separate usage attachment without summing per-round and cumulative tokens; independently
+  linked outcomes remain separate from internal success and cannot change quality/identity.
+- Public CLI workflow through preparation/report/queue/reviewed report using synthetic
+  artifacts only; four-version and genuine V3-only selection; existing evaluator regressions.
+
+Run focused TDD checks, relevant evaluator/official/LLM/V3/observability regressions, Ruff,
+format/compile checks, documentation link checks and one full relevant backend gate for the
+shared hooks. Use an existing configured type checker if available; do not install tooling
+or claim a missing type-check result. Record the implementation starting commit as the review
+base, commit implementation/direct tests before the two review axes, and preserve separate
+fix and final-documentation commits under AGENTS.md.
+
+This proposal includes no live execution, extra model/provider calls, model token/budget
+increase, formal case construction/audit/rates/comparison, automatic website checks, frontend,
+new provider/database infrastructure, unrelated refactor, version freeze, branch switch,
+push, PR, merge or Issue mutation. Local capture introduces bounded serialization/storage
+work; its actual overhead is not yet measured. Full Ticket 12 implementation, relevant
+validation/review corrections and documentation are the single approval scope requested.
+
 Whole-trip factual budget PASS, verified access/fees and false-certainty metrics remain deferred.
 Amounts can be descriptive; source role does not certify affordability. V0-V3 comparisons are
 incremental system comparisons; no extra strict module-ablation study is introduced.

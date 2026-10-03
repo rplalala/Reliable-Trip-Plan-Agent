@@ -10,6 +10,8 @@ defines execution inputs, independent conditions and human supplementation.
 Ticket 12's [technical checkpoint](../../docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit)
 records the accepted design to reuse observations plus minimum opt-in local official-fact capture; its
 mechanism/audit readers and capture are not implemented or activated.
+The [concrete implementation proposal](../../docs/contracts/0001-evaluation-artifacts.md#ticket12-implementation-scope)
+defines the local wrapper, reader/audit CLI and offline acceptance scope pending approval.
 
 ## Contract and module navigation
 
