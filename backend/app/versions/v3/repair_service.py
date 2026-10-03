@@ -340,14 +340,22 @@ async def run_repair_once(
             from langchain_core.callbacks import UsageMetadataCallbackHandler
 
             callback = UsageMetadataCallbackHandler()
+            from backend.app.observability.mechanism_observation import (
+                model_projection,
+                repair_representation,
+            )
+
             try:
                 async with asyncio.timeout(timeout):
-                    raw = await observed("repair_model")(model.generate_repair_structured)(
-                        system_prompt=system,
-                        user_prompt=user,
-                        output_tokens=policy.input.output_tokens,
-                        usage_callback=callback,
-                    )
+                    with model_projection(
+                        "repair", lambda: repair_representation(user), round_index=round_index
+                    ):
+                        raw = await observed("repair_model")(model.generate_repair_structured)(
+                            system_prompt=system,
+                            user_prompt=user,
+                            output_tokens=policy.input.output_tokens,
+                            usage_callback=callback,
+                        )
             finally:
                 usage = dict(callback.usage_metadata)
             model_returned = True

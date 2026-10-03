@@ -63,9 +63,13 @@ def assess(itinerary, context, whitelist=(), evidence=(), transitions=None):
                 targets.append(
                     ImprovementTarget(finding_id=permission.target_id, basis="review_policy")
                 )
-    return report.model_copy(
+    result = report.model_copy(
         update={"findings": tuple(findings), "improvement_targets": tuple(targets)}
     )
+    from backend.app.observability.mechanism_observation import rule_selections
+
+    rule_selections(result)
+    return result
 
 
 def validate_scope(original, report, scope):

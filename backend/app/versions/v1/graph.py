@@ -225,6 +225,9 @@ def build_tools_graph(
 
     async def acquire_and_resolve_official_web(state: V1State) -> dict[str, object]:
         if official_web_service is None:
+            from backend.app.observability.mechanism_observation import accepted_catalog
+
+            accepted_catalog(())
             from backend.app.observability.progress import skipped
 
             skipped("official_information")
@@ -246,6 +249,9 @@ def build_tools_graph(
             tracer.event("official_web_integration_failed", {"error_type": type(exc).__name__})
             raise V1StageError("official_web") from exc
         planner_evidence = build_official_planner_evidence(result)
+        from backend.app.observability.mechanism_observation import accepted_catalog
+
+        accepted_catalog(result.accepted_evidence)
         tracer.event(
             "official_planner_evidence_prepared",
             {
@@ -370,12 +376,15 @@ def build_tools_graph(
             generate = llm_client.generate_primary_structured
             generation_kwargs["generation_config"] = generation_config
         try:
-            itinerary = await generate(
-                **generation_kwargs,
-                system_prompt=ITINERARY_GENERATION_SYSTEM_PROMPT,
-                user_prompt=user_prompt,
-                response_schema=V1Itinerary,
-            )
+            from backend.app.observability.mechanism_observation import model_projection
+
+            with model_projection("primary", state.get("official_planner_evidence") or []):
+                itinerary = await generate(
+                    **generation_kwargs,
+                    system_prompt=ITINERARY_GENERATION_SYSTEM_PROMPT,
+                    user_prompt=user_prompt,
+                    response_schema=V1Itinerary,
+                )
             itinerary = validate_output_sources(
                 itinerary,
                 places=state["place_evidence"],

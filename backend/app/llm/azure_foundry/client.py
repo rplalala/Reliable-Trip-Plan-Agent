@@ -347,6 +347,9 @@ class AzureFoundryStructuredLLMClient:
             **options,
         )
         try:
+            from backend.app.observability.mechanism_observation import model_submitted
+
+            model_submitted()
             raw_result = await structured_model.ainvoke(
                 [
                     SystemMessage(content=system_prompt),
@@ -423,6 +426,9 @@ class AzureFoundryStructuredLLMClient:
             max_output_tokens=output_tokens,
         )
         try:
+            from backend.app.observability.mechanism_observation import model_submitted
+
+            model_submitted()
             raw = await model.ainvoke(
                 [SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)],
                 **(
