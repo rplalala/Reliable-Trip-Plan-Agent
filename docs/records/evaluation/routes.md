@@ -3,6 +3,94 @@
 Dated development evidence; current design and live task state remain in PROJECT.md,
 core docs and GitHub Issues. Historical commands grant no new execution permission.
 
+<a id="snapshot-coordinate-bridge-2026-10-03"></a>
+
+## Snapshot-coordinate bridge — 2026-10-03
+
+Review fixed point: e8e75b01307fc5ecc39910262249a4cceb5dbaea on feature/evaluation;
+the starting tracked tree was clean. The user adopted the preceding audit recommendation,
+authorizing a bounded offline coordinate bridge, relevant tests, local commits, dual-axis
+review/corrections and related documentation. No live acquisition or publication is included.
+Current behavior is owned by the [opening/route contract](../../contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03).
+
+### Reproduction and implemented boundary
+
+The audit's three public probes showed 8 resolved visits but no route query context without
+a separate coordinate envelope. Preparing already-saved coordinates yielded 1 V0 context
+without any additional send. Existing relevant tests passed 48 cases (67 unrelated cases
+deselected). These fixtures establish a missing preparation bridge, not live coverage or
+a scoring defect. Source/raw preservation and manual route preparation already worked.
+
+`prepare_snapshot_coordinates` now replays an identity-phase snapshot, recomputes its intake
+plan and verifies derived evidence against the adopted identity report. Only exact adopted
+IDs contribute coordinates. Its immutable `rtpeval_snapshot_coordinates_1` output preserves
+manifest/plan/intake/identity hashes and each request/raw hash, candidate pointer and retrieval
+time. It declares independent_snapshot provenance without inventing human review metadata.
+Finite/ranged agreeing coordinates are usable; missing, malformed or contradictory points
+remain local diagnostics, retaining candidate populations. Foreign/corrupt/stale sources
+reject preparation atomically. Unresolved identities stay unresolved.
+
+Route prepare/score and the final quality-report API/CLI accept optional
+identity_snapshot_directory / --identity-snapshot. Existing reviewed --coordinates remains
+supported; selecting both sources is rejected. Automatic extraction uses existing default
+query options. Manual and automatic evidence digests differ, so replay uses the corresponding
+prepared query plan rather than borrowing an old query. Planner runtime, budgets, provider
+field masks, acquisition policy, source IDs and final score/mask rules remain unchanged.
+
+### Actual development validation
+
+1. Initial test setup could not create a nested basetemp because its parent did not exist.
+   Creating only the ignored task artifact parent enabled the actual red test.
+2. Snapshot-to-route preparation initially failed at the missing keyword interface, then
+   passed with linked extraction. Four malformed-coordinate cases then failed; local
+   invalid diagnostics fixed them without dropping the unaffected place.
+3. Conflicting repeated coordinates incorrectly produced a query; the regression failed,
+   then passed after exact agreement checks. Matching duplicates remained accepted.
+4. Route CLI, route scoring, quality-report API and quality CLI each failed at the missing
+   interface before being connected. A scoring fixture initially omitted independent mode
+   review and therefore produced UNKNOWN; supplying its existing review made the intended
+   PASS assertion valid without a production scoring change.
+5. Additional public checks cover corruption/linkage, absent coordinates, paired optional
+   tracks, Search/Details agreement, source-only provenance, competing source inputs,
+   unadopted IDs, unresolved identities, deterministic no-socket replay and unchanged bytes.
+   A huge out-of-range integer exposed OverflowError in the finite-number check; checking
+   range first fixed the reproduction and retained local coordinate uncertainty.
+6. Complete evaluator regression: 527 passed, 1 Windows symlink-privilege skip in 85.14s.
+   All 25 new cases participate; existing reviewed-coordinate/quality behavior remains
+   covered. Ruff and six-file format checks pass; no static typechecker is configured.
+
+Complete backend gate: 2356 passed, 10 skipped in 198.85s, no deselections. Nine opt-in
+PostgreSQL tests and one Windows symlink privilege test were skipped; no database supplement
+or native elevation was run. Implementation and direct tests were committed before review:
+f07b495 — feat: prepare route coordinates from independent snapshots.
+
+Standards review reported 0 hard violations and 0 actionable smells. Spec review found one P2:
+Search `places: null` was unavailable in converted identity evidence but raw coordinate
+iteration raised TypeError, wrongly rejecting the whole batch even with valid Details.
+The public route-preparation regression first failed (1 failed / 25 deselected), then passed
+after filtering requests by the existing converted observation status. Valid Details and
+other places remain usable; malformed Search evidence remains in the original snapshot.
+All 26 coordinate tests passed in 2.69s. Separate correction commit:
+5ddf9ae — fix: retain usable coordinates beside malformed search evidence.
+Both axes rechecked this committed correction: Standards 0 new findings; Spec P2 closed,
+0 new findings. The final evaluator gate passed 528 tests with 1 Windows symlink-privilege
+skip in 65.70s. Ruff/format and diff checks passed. The earlier full-backend result above
+precedes this bounded correction; the full backend was not repeated after it.
+
+Initial patch inspection found a duplicated contract section after a patch retry; it was
+deduplicated before final document validation. No ignored file is a published dependency.
+
+### Remaining limits
+
+Only linked identity-phase snapshots are read. Old snapshots may omit coordinates; no
+automatic backfill or follow-up request is made. Independent acquisition still uses a
+caller-owned injected transport; no built-in operational Google client is supplied.
+Coordinates prove correspondence to observed evidence, not factual perfection or future
+route guarantees. Close agreeing-but-different coordinates remain explicitly conflicting,
+without an unapproved tolerance policy. Manual reviewed coordinates remain an alternative.
+No formal comparison, database/model/provider live call, Ticket 10 implementation, Issue
+mutation, push or freeze is claimed by this extension.
+
 <a id="rtpeval-ticket-07-acceptance"></a>
 
 <a id="rtpeval-ticket-07-acceptance--ticket-07-offline-same-day-route-acceptance"></a>

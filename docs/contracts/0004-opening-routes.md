@@ -163,6 +163,39 @@ a trust boundary: the hash links evidence, but the evaluator does not certify co
 facts or acquire the referenced source. Exact coordinate/hash correspondence gates
 query applicability. Missing coordinates retain pending contexts and UNKNOWN.
 
+### Accepted snapshot-coordinate extension (2026-10-03)
+
+The user approved a deterministic offline bridge after a public-boundary audit reproduced
+unnecessary coordinate preparation. Implement `prepare_snapshot_coordinates(intake,
+identity_report, snapshot_directory)` and optional `identity_snapshot_directory` on route
+preparation/scoring and their CLI. Use these public boundaries for TDD. The existing reviewed
+coordinate envelope remains supported; selecting both sources is a material error.
+
+Replay the identity-phase snapshot through existing safe-path/raw-hash validation, recompute
+its identity plan from the supplied intake, and verify that its derived identity evidence
+matches the adopted report. Only exact adopted canonical IDs may contribute coordinates.
+Preserve the snapshot manifest hash, original response hash, request key, candidate pointer
+and retrieval timestamp. Automatic extraction is source preparation, not human review:
+do not invent reviewer names or review timestamps. Return immutable source-derived coordinate
+preparation with per-place diagnostics and deterministic evidence digests.
+
+Use finite numeric latitude/longitude within geographic ranges. Repeated usable observations
+must agree exactly; explicit malformed or contradictory coordinates block automatic adoption
+for that place. Missing coordinates do not require acquisition. Missing/blocked points leave
+route candidates and unavailable contexts visible while unaffected endpoints remain usable.
+Requests marked unavailable by the identity-evidence conversion, including malformed Search
+candidate lists, do not prevent using linked valid Details observations. Their original
+snapshot evidence remains preserved; explicit invalid coordinates in usable observations
+still block automatic coordinate adoption for the affected place.
+An unresolved identity never becomes resolved through coordinates. Stale/foreign/corrupt
+source material rejects the whole preparation. Extraction and replay perform no network,
+LLM, planner-cache, database, field-mask or automatic-backfill work. Quality-report callers
+may forward the same optional snapshot source without changing existing score/mask rules.
+
+This paragraph records accepted scope; implementation/validation status belongs in the
+[dated route acceptance record](../records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03),
+not a claim that the pre-existing reviewed wire was already automatic.
+
 Optional mode_options maps modes to `{"time_basis": ..., "routing_options": {...}}`.
 Defaults deliberately use time_independent WALK, time_independent DRIVE with explicit
 TRAFFIC_UNAWARE, and explicit_departure TRANSIT. Explicit queries use the adopted

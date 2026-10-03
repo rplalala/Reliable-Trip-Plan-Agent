@@ -104,10 +104,10 @@ validation, caches and internal decisions are not independent factual ground tru
 | 01: Intake/projection | Implemented and offline-validated, including provenance, transport sources and [ordinary-output compatibility](docs/records/evaluation/intake-identity-usage.md#rtpeval-ticket-01-03-acceptance) |
 | 02: Usage capture/report | Implemented and offline-validated; opt-in attempt capture, no automatic formal run |
 | 03: Identity/adjudication | Implemented and offline-validated; independent supplied-ID/name-search paths, manual review and automatic-result audit; structural claims and optional typed-address evidence supported |
-| 04: Evidence snapshots | Implemented and offline-validated through injected transport; not a built-in operational Google client |
+| 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented and offline-validated; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed; local code publication pending |
 | 06: Opening checks | Offline parser/scorer/CLI implemented and reviewed; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) completed; [acceptance and scoped supplements](docs/records/evaluation/opening.md#rtpeval-ticket-06-acceptance) |
-| 07: Route checks | Offline preparation/scorer/CLI implemented and reviewed, including decisive partial FAIL and zero-grace hard boundaries; [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) completed; [acceptance](docs/records/evaluation/routes.md#rtpeval-ticket-07-acceptance) |
+| 07: Route checks | Offline preparation/scorer/CLI implemented and reviewed, including decisive partial FAIL, zero-grace hard boundaries and the [snapshot-coordinate bridge](docs/records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03); [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) completed; [original acceptance](docs/records/evaluation/routes.md#rtpeval-ticket-07-acceptance) |
 | 08: Multimetric report | Offline report/CLI implemented and reviewed; exact shared-mask scores with separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) completed; [acceptance](docs/records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) |
 | 09: Blinded ranking | Offline package/import/report and React renderer completed; IANA time-zone selection, HH:mm and confirmed answer clearing; user-reported browser acceptance complete; [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) completed; [acceptance](docs/records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) |
 | 10: V3 before/after | Specification preflight confirmed and source-driven correspondence revision approved; validated activity IDs/adopted edits/split sources precede content fallback and residual review; paired mask and valid aggregate availability retained; [preflight](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22#issuecomment-5955706453); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) is specification-ready; implementation remains unauthorized, with no implementation test or live execution |
@@ -117,6 +117,12 @@ Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
 and diagnostics but contribute no transport occupancy or fallback. Missing transfers
 remain missing. Independent evidence is still needed for factual feasibility.
+
+Route preparation can reuse coordinates already present in a verified independent identity
+snapshot after canonical ID adoption. Missing, invalid or conflicting coordinates remain
+local uncertainty; extraction adds no provider requests or planner/model work. The reviewed
+coordinate envelope remains available. This bridge preserves V0-V3 planning behavior and
+existing evaluation score/mask rules; see the [current contract](docs/contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03).
 
 Accepted Ticket 05 decision: same-scope overlapping protected intervals become one
 occupancy blocker while preserving and checking each original obligation separately.

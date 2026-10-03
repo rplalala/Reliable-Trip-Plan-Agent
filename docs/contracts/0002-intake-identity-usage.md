@@ -226,6 +226,11 @@ The snapshot is an evaluation-owned immutable collection interval, not a simulta
 
 `identity_evidence(snapshot)` creates the existing identity envelope with source-linked per-reference records, requested IDs/query/page size and actual raw search count. Malformed search candidates remain represented so Ticket 03 can block acceptance. Raw response files and hashes remain auditable via observation references. Details retain timezone/current/regular hours and coordinates in snapshot raw data for later tickets; no opening verdict is computed.
 
+The accepted [snapshot-coordinate bridge](0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03)
+reads linked raw identity-snapshot coordinates after canonical identity adoption. The identity
+wire remains unchanged; coordinate extraction preserves separate provenance and uncertainty.
+This removes duplicate preparation when existing evidence suffices, without live acquisition.
+
 Matrix summaries require a unique expected (0,0) element and preserve raw duration strings, status, condition and fallback. Missing/duplicate/unexpected indices are explicit incomplete evidence, not no-route or a substitute estimate. This slice does not compute Routes/opening/requirement verdicts or parse durations into rounded planner DTOs.
 
 Oracle acquisition has a separate snapshot ledger (namespace=oracle), actual transport invocations, retries, requested matrix elements and within-snapshot request deduplication. It is not added to planner usage and makes no billing/delivery claim. Exact planner-to-oracle lag is unavailable without independently supplied planner timestamps; absence is explicit rather than invented.

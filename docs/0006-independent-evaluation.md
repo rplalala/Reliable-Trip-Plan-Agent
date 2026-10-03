@@ -37,6 +37,14 @@ Snapshot acquisition currently accepts injected transport; it is not a built-in 
 Google collection client. Formal external acquisition, retention checks, case construction,
 budgets and execution need separately approved plans.
 
+Route preparation can extract coordinates offline from a verified identity-phase snapshot
+whose evidence matches the adopted canonical identities. This reuses saved independent
+observations with separate coordinate provenance; it does not borrow planner coordinates or
+acquire missing points. Missing, invalid or conflicting points retain local uncertainty and
+route candidates. The existing reviewed-coordinate source remains supported; details and
+acceptance are in the [opening/route contract](contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03)
+and [dated bridge record](records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03).
+
 ## Scoring semantics and uncertainty
 
 | Term | Meaning |

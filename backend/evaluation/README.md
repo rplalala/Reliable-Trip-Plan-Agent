@@ -75,6 +75,18 @@ Save prepared route contexts, build the evidence plan and acquire/replay its sna
 through the separately authorized injected caller before scoring. Preparation does not
 invent coordinates or transport restrictions. Missing optional context/review retains
 UNKNOWN or applicability diagnostics. Route preparation exports `route_contexts` and its ready-made `evidence_plan`.
+
+When the adopted identity report was resolved from an independent identity snapshot that
+already contains coordinates, replace `--coordinates coordinates.json` with
+`--identity-snapshot identity-snapshot` on route prepare/score or quality-report commands.
+The library keyword is `identity_snapshot_directory`; direct inspection uses
+`prepare_snapshot_coordinates` in [snapshot_coordinates](snapshot_coordinates.py).
+Each replay verifies the snapshot and its exact identity linkage. Source-derived coordinate
+records retain response hashes/pointers and retrieval times, without fabricated review fields.
+Missing, invalid or conflicting coordinates stay diagnostic and do not trigger acquisition.
+Select one coordinate source; the existing reviewed envelope and query options remain available.
+The automatic path uses existing default query options and requires its own matching evidence
+plan; previously prepared manual-coordinate query hashes are not interchangeable.
 Use that plan directly, or put the context array under `{"contexts": [...]}` in
 `route-contexts.json` for the snapshot planning CLI; the full preparation report is not
 that CLI input. `--expected-plan` optionally enforces trusted full-plan equality.
