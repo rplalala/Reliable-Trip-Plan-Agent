@@ -7,6 +7,9 @@ comparative research is constructed by these commands.
 [Evaluation architecture](../../docs/0006-independent-evaluation.md) owns scope.
 Ticket 11's [controlled replay contract](../../docs/contracts/0001-evaluation-artifacts.md#controlled-repair)
 defines execution inputs, independent conditions and human supplementation.
+Ticket 12's [technical checkpoint](../../docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit)
+maps existing observations and proposes a minimum opt-in official-fact capture; its
+mechanism/audit readers and capture are not implemented or activated.
 
 ## Contract and module navigation
 

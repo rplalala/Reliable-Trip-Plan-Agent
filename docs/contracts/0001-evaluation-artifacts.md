@@ -467,6 +467,126 @@ only material is outside that denominator. Exact extraction/reporting remains de
 See [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) and
 [Ticket 12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24).
 
+<a id="mechanism-official-audit"></a>
+
+### Ticket 12 technical checkpoint — 2026-10-04
+
+**Status: read-only technical preflight completed; the delivery below is Proposed.**
+The user authorized technical preflight after Ticket 11. This is not implementation,
+capture activation, live collection, formal audit execution, publication or Issue mutation.
+Issue #24 remains open/needs-info; its missing optional artifacts must not invalidate
+independent quality material. Checkpoint: `7c9783bdeb1b57b7fe6fdfc258dec47cc5c3dcf7`.
+
+#### Existing interfaces and observed gaps
+
+| Required observation | Current source | Technical conclusion |
+| --- | --- | --- |
+| Initial findings, improvement targets and authorized scope | `V3Outcome.original_report` and `scope` in [V3 state](../../backend/app/versions/v3/state.py) | Complete saved outcomes already support mechanism-only trigger/authorization observations. Internal findings do not establish independent truth. |
+| Rounds, model attempts, components, target links, adoption and stopping | `RepairResult.rounds`, `RepairRoundRecord.target_links`, per-round result and continuation reason in [repair models](../../backend/app/versions/v3/repair_models.py) | Use the real records. The top-level result is a cumulative summary, not an additional round. |
+| Accepted official claims and resolved representations | `OfficialWebIntegrationResult.accepted_evidence`, [official planner projection](../../backend/app/versions/v1/official_planner.py), `EffectiveFact.source_refs` | Typed claims and provenance exist in memory; the ordinary final result does not preserve a complete official-claim catalog. |
+| Primary model evidence | `official_planner_evidence_prepared` and the primary generation code in [V1 graph](../../backend/app/versions/v1/graph.py) | Preparation precedes input-budget checks and model invocation. Prepared evidence alone does not prove input submission. Raw request capture is optional. V2/V3 share this primary graph. |
+| Repair model evidence | `effective_evidence` and selected hours in [repair input](../../backend/app/versions/v3/repair_projection.py), followed by [repair invocation](../../backend/app/versions/v3/repair_service.py) | The actual projection exists, but ordinary mechanism traces chiefly retain sizing/fingerprints rather than a complete per-call official-fact submission record. |
+| Rule-selected operating evidence | `Finding.adopted_evidence.selected_hours` and evidence refs from [opening assessment](../../backend/app/evidence/opening_hours.py) | Selected evidence can be traced where complete validation reports survive. All effective evidence in context, or conditions merely reported as unverified, are not automatically rule-used facts. |
+| Trace and resource availability | [run tracer](../../backend/app/observability/run_trace.py), [usage capture](../../backend/app/observability/usage_capture.py) and [usage report](../../backend/evaluation/usage_report.py) | Tracing is best-effort and may be disabled/truncated. Numeric usage already has run/result linkage and missingness; no duplicate resource collector is needed. |
+
+The observed gap is capture provenance, not missing itinerary/transport correspondence
+or a need to rerun validation. The proposed reader consumes saved observations; it must
+not replay a rule and label newly reconstructed evidence as historically used.
+
+#### Proposed mechanism units and denominators
+
+Inventory selected source runs by group/version/run ID and exact original input/result
+hashes. V3 Repair is not applicable to V0-V2; absence of V3 metadata is unavailable, not
+zero triggers or zero model attempts. Distinguish available, partial, unavailable and
+not-applicable coverage per observation. Positive zero is allowed only with complete
+observations establishing that no event occurred.
+
+Report initial improvement targets, initial authorized targets, model attempts, accepted
+rounds, accepted/proposed components, per-round target presence and internal progress
+separately. Trigger means a nonempty authorized scope, not merely a NEEDS_REVIEW finding.
+For each optional fraction, expose its numerator, denominator, unit and covered/missing
+run counts. A run acceptance fraction uses triggered runs; a round acceptance fraction
+uses model-attempted rounds; component acceptance uses components actually evaluated,
+with pending/not-evaluated components reported separately. Do not merge these fractions.
+
+Original authorized targets use original finding IDs; round-local target links map back
+to them. Newly activated related/coverage targets remain a separate inventory. Per-target
+internal progress does not become an independent resolution rate. Independently supplied
+Ticket 10/11 reports may be linked with exact source hashes, but their outcomes remain
+separate and are never inferred from an accepted patch or vanished target ID.
+
+Round identity is run ID plus round index. Identical repeated observations are counted
+once with their source references retained; contradictory records for the same identity
+are material errors in that observation channel. Do not count both embedded round records
+and trace copies, count the cumulative result as a final extra round, sum cumulative
+counter snapshots, or add cumulative usage to its per-round children. Incomplete trace
+fragments may support explicitly observed cells, never a fabricated complete denominator.
+
+#### Proposed qualifying official-fact audit
+
+Use a run-linked catalog of Evidence-Gate-accepted typed official claims, preserving
+source refs, claim content/hash, source identity, excerpt, retrieval/date applicability
+and subject scope. Link the resolved representation actually submitted or selected to
+its accepted supporting claims. A URL or reference alone is not a verified fact.
+
+The qualifying set is accepted claims with established model-input submission or actual
+rule selection; keep those qualifying reasons distinct. Record preparation-only evidence,
+failed-before-submission calls, rejected claims, search-only material and unused accepted
+claims outside that denominator. An input-submission observation records the application
+handing the exact projected facts to the model invocation; it does not prove provider
+receipt, successful generation, the model's attention or causal influence. Incomplete
+submission observations remain unavailable. Operational-day and conflict representations
+retain their date/scope/uncertainty rather than being rewritten as affirmative truths.
+
+Count a qualifying claim once per run and exact claim/source revision, preserving every
+call/round/rule occurrence separately. Identical values from different source revisions
+do not silently merge. One accepted claim exposed in two rounds and selected by one rule
+has one audit unit and three occurrence links. This is neither a website count nor an
+exposure-frequency-weighted truth score.
+
+Export an audit queue with exact run/input/result/capture hashes, claim and occurrence
+links. Independently supplied reviews bind that exact unit and revision, identify the
+reviewer/time/rationale/supporting sources and classify supported, contradicted,
+scope-mismatch or unavailable. Preserve both all qualifying units and reviewed/verifiable
+coverage. Missing reviews do not remove claims or become supported/contradicted zeros.
+The planner gate's acceptance and its reasoner's confidence are not independent audit
+verdicts. This ticket does not introduce automatic random website checks, additional
+retrieval or universal ticket-price/admission correctness scoring.
+
+#### Proposed minimum capture and delivery scope
+
+Reuse complete saved V3 outcomes and existing compatible trace/usage observations.
+For future runs, add an opt-in, best-effort local normalized capture of the accepted
+claim catalog, actual primary/Repair model-input submission links and rule-selected
+evidence links. Capture the facts at their existing seams without changing prompts,
+model schemas, gate rules, Repair permissions, provider requests or runtime budgets.
+Observe failed/uncertain submissions and capture truncation/write failure explicitly;
+recording failures must not change planning. Do not require raw prompts/provider bodies
+or enabled usage collection. Preserve existing trace redaction and size controls.
+
+Old runs use only surviving, source-linked observations: complete V3 outcomes can still
+support mechanism cells while the official audit is partial/unavailable. Historical
+accepted/exposed/used facts must not be reconstructed from the final itinerary or by
+rerunning the current gate. Existing Ticket 11 frozen material may supply actual replay
+observations only when linked to that replay; it cannot certify an older live execution.
+
+Proposed implementation: separate immutable mechanism reader/report and official audit
+queue/review/report, researcher CLI and the minimum opt-in capture above. Reuse artifact
+hash/link validation and usage summarization. Keep four-final quality scores, identity,
+paired metrics and anonymous review unchanged. No frontend or new acquisition system.
+The extension adds local serialization/storage work; it adds no model input/output
+tokens or provider/model calls by design. Offline regressions must verify identical
+prompts/call counts with capture disabled/enabled and best-effort failure behavior;
+real overhead is not measured by this preflight.
+
+Existing offline interface checks passed 77 tests across official integration, multiround
+Repair, tracing, budget summaries and usage reporting. The initial run had 63 passes and
+14 setup errors because the task-local temporary parent directory had not been created;
+after directory setup, the same test selection passed. No production/test source changed,
+new Ticket 12 implementation fixture, live service or formal audit was executed.
+The remaining scope decision is whether to include the proposed minimum capture rather
+than deliver a saved-material reader alone with correspondingly unavailable audit cells.
+
 Whole-trip factual budget PASS, verified access/fees and false-certainty metrics remain deferred.
 Amounts can be descriptive; source role does not certify affordability. V0-V3 comparisons are
 incremental system comparisons; no extra strict module-ablation study is introduced.
