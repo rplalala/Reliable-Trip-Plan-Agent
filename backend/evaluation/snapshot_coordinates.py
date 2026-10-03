@@ -81,7 +81,7 @@ def prepare_snapshot_coordinates(intake, identity_report, snapshot_directory):
             candidates = selected.setdefault(pid, {})
             for kind, key in refs[rid]["requests"].items():
                 record = records[key]
-                if record["summary"]["status"] != "available":
+                if observed[rid][kind]["status"] != "available":
                     continue
                 payload = record["summary"]["payload"]
                 places = (

@@ -35,6 +35,7 @@ def coordinate_case(batch, tmp_path):
         details_change=None,
         paired=False,
         optional_tracks=False,
+        malformed_search=False,
     ):
         if optional_tracks:
             itinerary = batch[1]["v3"]["itinerary"]
@@ -68,6 +69,8 @@ def coordinate_case(batch, tmp_path):
             if details and details_change:
                 details_change(candidate)
             places = [candidate]
+            if malformed_search and name == "Museum A" and not details:
+                places = None
             if duplicate is not None and name == "Museum A":
                 extra = copy.deepcopy(candidate)
                 extra["location"] = duplicate
@@ -87,6 +90,12 @@ def coordinate_case(batch, tmp_path):
             "records": [],
         }
         for ref in identity_references(intake):
+            observation = observed[ref["reference_id"]]
+            if not any(
+                observation.get(kind, {}).get("status") == "available"
+                for kind in ("search", "details")
+            ):
+                continue
             reviews["records"].extend(
                 review_envelope(
                     intake,
@@ -99,6 +108,27 @@ def coordinate_case(batch, tmp_path):
         return intake, identity, directory, snapshot
 
     return build
+
+
+def test_malformed_search_preserves_usable_details_and_other_places(coordinate_case):
+    intake, identity, directory, snapshot = coordinate_case(supplied_id=True, malformed_search=True)
+    report = prepare_routes(
+        intake, identity, context(intake), identity_snapshot_directory=directory
+    ).to_dict()
+    assert report["status"] == "complete"
+    assert len(report["results"]) == 4
+    coordinates = report["coordinate_preparation"]
+    assert coordinates["diagnostics"] == []
+    assert [point["place_id"] for point in coordinates["records"]] == [
+        "canonical-Museum A",
+        "canonical-Museum B",
+    ]
+    assert len(coordinates["records"][0]["observations"]) == 1
+    assert coordinates["records"][0]["observations"][0]["pointer"] == "/location"
+    assert any(
+        row.get("search", {}).get("status") == "malformed"
+        for row in identity_evidence(snapshot)["records"]
+    )
 
 
 def test_snapshot_coordinates_remove_duplicate_route_preparation(coordinate_case):
