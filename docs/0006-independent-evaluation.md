@@ -1,7 +1,7 @@
 # Independent evaluation architecture
 
-Status: Tickets 01-11 have offline implementations within their approved scopes;
-Ticket 12 is not implemented. This is a technical boundary, not a formal benchmark or results report.
+Status: Tickets 01-12 have offline implementations within their approved scopes.
+This is a technical boundary, not a formal benchmark or results report.
 [PROJECT.md](../PROJECT.md) and live Issues own current authorization and task state.
 
 ## Separation from planning and benchmark construction
@@ -28,6 +28,7 @@ sources retain diagnostics but contribute no fallback transport occupancy.
 | 08-09 | Quality report, anonymous review package, answer import and descriptive outcomes | [Quality/human review](contracts/0005-quality-human-review.md) |
 | 10 | Source-driven V3 draft/final-primary preparation, paired masks/deltas and independent continuity | [V3 paired diagnostic](contracts/0005-quality-human-review.md#v3-pairs) |
 | 11 | Isolated frozen real V3 post-primary execution and independently reviewed target/control outcomes | [Controlled Repair](contracts/0001-evaluation-artifacts.md#controlled-repair) |
+| 12 | Selected-source mechanism reports, exact official-claim audit queue/reviews and default-off local submission/selection capture | [Mechanism/audit](contracts/0001-evaluation-artifacts.md#mechanism-official-audit) |
 
 [Artifacts and evidence contracts](contracts/0001-evaluation-artifacts.md) define shared
 material integrity, source roles and independent evidence/time semantics. The five topic
@@ -83,9 +84,12 @@ lineage before content fallback and residual review. It preserves valid paired a
 scores despite unresolved local correspondence, while venue identity and quality remain
 independent of producer decisions. Its two-stage mask is separate from the four-final mask.
 See the [development acceptance](records/evaluation/v3-pair-report.md).
-Controlled Repair is the isolated Ticket 11 execution boundary. Ticket 12 mechanism/
-official-evidence reporting remains unimplemented. This document authorizes no formal
-run, comparison or final conclusion.
+Controlled Repair is the isolated Ticket 11 execution boundary. Ticket 12 reads selected
+saved sources and optionally captured actual observations. Internal acceptance, independent
+quality and independent official-fact review remain separate. Capture adds no model/provider
+calls or tokens by design; its local normalization/storage overhead is unmeasured. Missing
+historical observations cannot be inferred from final outputs or current gate replay.
+This document authorizes no formal run, comparison or final conclusion.
 
 Ticket 11's [accepted controlled replay contract](contracts/0001-evaluation-artifacts.md#controlled-repair)
 uses the real V3 Repair path with frozen capabilities and independently reviewed outcomes.

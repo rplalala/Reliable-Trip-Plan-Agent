@@ -1,6 +1,6 @@
 # Evaluation artifacts, scope and time
 
-Current shared contract, reconciled with the implemented Tickets 01-11 on 2026-10-04.
+Current shared contract, reconciled with the implemented Tickets 01-12 on 2026-10-04.
 [PROJECT.md](../../PROJECT.md) owns scope; [evaluation architecture](../0006-independent-evaluation.md)
 owns implemented/deferred boundaries. GitHub owns task state. This reference states current
 rules together; dated proposals, approvals and validation remain in linked history.
@@ -471,16 +471,17 @@ See [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) 
 
 ### Ticket 12 technical checkpoint — 2026-10-04
 
-**Status: accepted design; implementation awaits separate scope approval.**
+**Status: implemented, offline validated and fixed-base review completed.**
 After the read-only preflight, the user accepted reuse of existing records plus the
 minimum opt-in local capture on 2026-10-04. This accepts the observation units,
 denominators, audit linkage and delivery scope below; it does not activate capture or
 authorize implementation, live collection, formal audit execution, publication or Issue
-mutation. At preflight inspection, Issue #24 was open/needs-info; tracker synchronization
+mutation by itself. The user subsequently approved the complete implementation scope below.
+At preflight inspection, Issue #24 was open/needs-info; tracker synchronization
 remains separate. Missing optional artifacts must not invalidate independent quality
 material. Inspection checkpoint: `7c9783bdeb1b57b7fe6fdfc258dec47cc5c3dcf7`.
 
-#### Existing interfaces and observed gaps
+#### Preflight interfaces and gaps before implementation
 
 | Required observation | Current source | Technical conclusion |
 | --- | --- | --- |
@@ -589,18 +590,19 @@ after directory setup, the same test selection passed. No production/test source
 new Ticket 12 implementation fixture, live service or formal audit was executed.
 The user selected the minimum capture extension together with the readers/reports,
 rather than a saved-material-only delivery. No specification decision remains pending
-from this preflight. The next gate is explicit implementation-scope approval under
-AGENTS.md, with offline TDD/review and default-preserving capture checks; the accepted
-design alone is not evidence that capture or reports have been implemented.
+from that preflight. Its next gate was explicit implementation-scope approval under
+AGENTS.md. The user then approved that scope; actual implementation/validation is
+recorded below. The earlier design approval alone did not authorize execution.
 
 <a id="ticket12-implementation-scope"></a>
 
 #### Implementation approval proposal — 2026-10-04
 
-**Status: concrete scope prepared; implementation approval pending.** The accepted
-design above is the specification. This proposal makes its files, interfaces and
-verification scope reviewable without starting source changes. Preparation checkpoint:
-`8acb361`; Issue #24 and its comment were reread without mutation.
+**Status: approved by the user and implemented on 2026-10-04.** The accepted design above
+is the specification. The prepared scope at `21986f5` was explicitly approved in this
+conversation before implementation. Preparation checkpoint: `8acb361`; Issue #24 and
+its comment were reread without mutation. Approval includes implementation, offline
+validation, local commits, dual-axis review, in-scope corrections and documentation.
 
 | Delivery | Expected implementation location | Included behavior |
 | --- | --- | --- |
@@ -674,7 +676,78 @@ increase, formal case construction/audit/rates/comparison, automatic website che
 new provider/database infrastructure, unrelated refactor, version freeze, branch switch,
 push, PR, merge or Issue mutation. Local capture introduces bounded serialization/storage
 work; its actual overhead is not yet measured. Full Ticket 12 implementation, relevant
-validation/review corrections and documentation are the single approval scope requested.
+validation/review corrections and documentation are the single approved scope.
+
+<a id="mechanism-audit-executable-wire"></a>
+
+#### Executable wire — 2026-10-04
+
+The [mechanism CLI](../../backend/evaluation/mechanism_cli.py) has `prepare`, `report`,
+`audit-queue` and `audit-report` commands. `prepare --manifest` reuses the existing
+four-version intake; `prepare --selection` reads the saved Ticket 11 preparation and
+its embedded exact `result_sources`. Neither command invokes a planner or reconstructs
+a controlled case. Optional `--observations` reads `{ "records": [...] }` with these fields:
+
+- `group_id`, `run_id`, `version`, original `input_sha256`, exact saved `result_sha256`;
+- `channel`: `capture`, `trace`, `usage` or `independent`;
+- `content`: the supplied JSON envelope; `content_sha256`: its canonical JSON digest;
+- optional `artifact_sha256`: retained saved-file byte provenance, not a substitute for
+  the verified content digest or source linkage.
+
+Canonical digests use sorted keys, compact separators and UTF-8 with non-ASCII characters
+preserved. Original result hashes remain byte hashes using the exact caller serializer;
+preparation retains the original result bytes as UTF-8 and rechecks them on reporting.
+Preparation is an immutable snapshot. Channel-local errors preserve other mechanisms
+and never change Ticket 08/10/11 quality, identity or scoring material.
+
+The `trace` channel accepts an `events` array from the current tracer. Only surviving
+`v3_repair_round` payloads are recognized as round observations; matching embedded copies
+are not added to counts. The trace does not certify a complete attempt/target/component
+denominator. `usage` uses the existing independent summarizer once; parent cumulative
+tokens/counters are retained separately from child observations. An `independent` channel
+accepts a complete Ticket 10 pair or Ticket 11 controlled report with verified semantic
+content hash and its `source_hashes.intake` or `.preparation` binding the original selection.
+These attachments retain independent outcomes without upgrading internal acceptance.
+
+The [capture wrapper](../../backend/app/observability/mechanism_capture.py) accepts a
+zero-argument async invocation, group/run/version, original input hash, exact result
+serializer, synchronous local sink and positive `max_bytes` (default 1,000,000).
+It observes only normalized official projections/catalogs and actual opening selections;
+no always-on configuration or extra API/CLI planner field is introduced. Default adapter
+submission is application-interface entry, including later failed calls. Per-call return,
+failure or cancellation remains in `prepared_calls`; missing injected-client observation
+does not become submission. Existing redaction rules are reused: a secret-bearing
+observation is omitted with partial diagnostics rather than altering an exact claim.
+Capacity and observation failures are bounded; sink failure logs only its error type.
+Result/exception preservation includes cancellation, independent of enabled usage/tracing.
+
+Capture claim links bind accepted `source_ref` plus exact `claim_sha256`. Queue units retain
+input/result/capture hashes, full typed claim/source content, exact submitted/selected
+representations and every distinct occurrence. Exact duplicate identities retain pointers;
+conflicting identities fail that channel. A source revision remains a separate claim unit.
+Rejected/search-only/non-catalogued material cannot qualify; accepted-unused and prepared-only
+observations stay outside the qualifying set. No rejected-claim count is invented from an
+accepted-only catalog.
+
+Reviews use `rtpeval_official_audit_reviews_1`, exact `queue_sha256` and `records` containing
+`unit_sha256`, `verdict`, `reviewer_ref`, offset-aware `reviewed_at`, `rationale` and nonempty
+`supporting_source_refs`. Verdicts are `supported`, `contradicted`, `scope_mismatch` or
+`unavailable`. Missing reviews stay unreviewed. Review coverage refers to observed qualifying
+units; `counts.qualifying` is null when collection is incomplete, while
+`counts.observed_qualifying` preserves observed units. Supported fractions use independently
+verifiable reviewed units, with unavailable reviews and missing coverage retained separately.
+The queue/report schemas identify canonical content/unit hashes; review material cannot
+change planner gate decisions or quality scores.
+
+Partial capture distinguishes observed accepted/qualifying counts from complete populations.
+`accepted_unused_count` remains null unless observation is complete;
+`accepted_without_qualifying_observation_count` identifies only the observed catalog remainder.
+It does not certify non-use when a submission/occurrence could have been truncated. Trace
+copies are checked against matching saved round status, continuation, usage and shared
+cumulative counter cells; contradiction fails only the trace channel.
+
+Offline acceptance and implementation/review history are recorded in the
+[Ticket 12 record](../records/evaluation/2026-10-04-mechanism-official-audit.md).
 
 Whole-trip factual budget PASS, verified access/fees and false-certainty metrics remain deferred.
 Amounts can be descriptive; source role does not certify affordability. V0-V3 comparisons are

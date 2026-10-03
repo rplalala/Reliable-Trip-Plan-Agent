@@ -112,7 +112,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | 09: Blinded ranking | Offline package/import/report and React renderer completed; IANA time-zone selection, HH:mm and confirmed answer clearing; user-reported browser acceptance complete; [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) completed; [acceptance](docs/records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) |
 | 10: V3 before/after | Offline preparation/report/CLI implemented; adopted source lineage precedes unique fallback and residual review; separate paired mask, exact deltas and independent continuity; [contract](docs/contracts/0005-quality-human-review.md#v3-pairs) and [acceptance](docs/records/evaluation/v3-pair-report.md); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) remains open pending separately authorized tracker synchronization/publication |
 | 11: Controlled Repair | Offline real V3 replay, strict frozen ports/time/cache, independent targets/controls, human supplementation and CLI implemented; [contract](docs/contracts/0001-evaluation-artifacts.md#controlled-repair); formal case construction/execution, publication and tracker synchronization remain separately authorized |
-| 12: Mechanism/evidence audit | [Design](docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit) accepted: reuse records plus minimum opt-in local official-fact capture; [concrete implementation scope](docs/contracts/0001-evaluation-artifacts.md#ticket12-implementation-scope) prepared for approval; no implementation is claimed |
+| 12: Mechanism/evidence audit | Selected-source mechanism report, exact official-claim audit queue/reviews, researcher CLI and default-off local submission/selection capture implemented; [contract](docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit) and [offline acceptance](docs/records/evaluation/2026-10-04-mechanism-official-audit.md); formal audit/execution, publication and tracker synchronization remain separately authorized |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
@@ -159,12 +159,13 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2433 passed, 10 skipped**, from the
-2026-10-04 Ticket 11 implementation. Subsequent offline logical-time and review corrections
-passed **608 evaluator tests, 1 skipped**, including 26 dedicated controlled tests and two
-paired protection-goal cases. The full gate precedes those corrections; this is scoped
-retest evidence, not a repeated full gate. The [Ticket 11 record](docs/records/evaluation/2026-10-04-controlled-repair.md)
-retains the test and review sequence.
+Latest recorded full backend gate: **2477 passed, 10 skipped**, from the
+2026-10-04 Ticket 12 implementation, before its report-only review corrections.
+The [Ticket 12 record](docs/records/evaluation/2026-10-04-mechanism-official-audit.md)
+retains subsequent correction/retest and dual-axis review evidence. Earlier Ticket 11
+validation was **2433 passed, 10 skipped**, followed by **608 evaluator tests, 1 skipped**
+for logical-time/review corrections; its [record](docs/records/evaluation/2026-10-04-controlled-repair.md)
+preserves that historical sequence.
 The skips are environment/opt-in cases. No live services or formal corpus were used;
 earlier approved supplements remain distinct evidence.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and

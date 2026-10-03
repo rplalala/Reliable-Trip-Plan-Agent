@@ -1,17 +1,16 @@
 # Independent evaluation package
 
-Tickets 01-11 have offline implementations for explicitly submitted immutable material.
-Ticket 12 remains unimplemented. Ordinary scoring consumes saved outputs; the isolated
+Tickets 01-12 have offline implementations for explicitly submitted immutable material.
+Ordinary scoring and Ticket 12 reporting consume saved outputs; the isolated
 Ticket 11 command executes only frozen V3 post-primary cases. No formal corpus or
 comparative research is constructed by these commands.
 [Evaluation architecture](../../docs/0006-independent-evaluation.md) owns scope.
 Ticket 11's [controlled replay contract](../../docs/contracts/0001-evaluation-artifacts.md#controlled-repair)
 defines execution inputs, independent conditions and human supplementation.
-Ticket 12's [technical checkpoint](../../docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit)
-records the accepted design to reuse observations plus minimum opt-in local official-fact capture; its
-mechanism/audit readers and capture are not implemented or activated.
-The [concrete implementation proposal](../../docs/contracts/0001-evaluation-artifacts.md#ticket12-implementation-scope)
-defines the local wrapper, reader/audit CLI and offline acceptance scope pending approval.
+Ticket 12's [contract](../../docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit)
+defines separate mechanism/audit readers and explicit opt-in capture, disabled by default.
+The [approved scope](../../docs/contracts/0001-evaluation-artifacts.md#ticket12-implementation-scope)
+defines the local wrapper, reader/audit CLI and offline acceptance boundaries.
 
 ## Contract and module navigation
 
@@ -190,7 +189,40 @@ and the [blind-review frontend](../../frontend/src/features/blind-review/BlindRe
 Actual historical results are in [evaluation record index](../../docs/records/README.md)
 and linked Issues. Synthetic checks do not establish real provider availability,
 formal benchmark outcomes or a version freeze. Formal controlled-case construction/execution
-and Ticket 12 mechanism/official-evidence work remain separately authorized.
+and independent official-fact audit execution remain separately authorized.
+
+## Mechanism and official-evidence audit workflow
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.mechanism_cli prepare --manifest manifest.json --observations linked-observations.json --output mechanism-preparation.json
+.venv/Scripts/python.exe -m backend.evaluation.mechanism_cli prepare --selection controlled-preparation.json --output controlled-mechanism-preparation.json
+.venv/Scripts/python.exe -m backend.evaluation.mechanism_cli report mechanism-preparation.json --output mechanism-report.json
+.venv/Scripts/python.exe -m backend.evaluation.mechanism_cli audit-queue mechanism-preparation.json --output official-audit-queue.json
+.venv/Scripts/python.exe -m backend.evaluation.mechanism_cli audit-report official-audit-queue.json --reviews official-audit-reviews.json --output official-audit-report.json
+```
+
+The two `prepare` examples are alternatives: an existing curated four-version manifest or
+genuine saved Ticket 11 V3-only preparation. Optional observations and reviews may be omitted;
+missing metadata is unavailable, not zero. Commands read local JSON without provider/model
+calls, case replay or website checks. Reports retain internal mechanisms separately from
+independent quality. Exit 2 identifies material corrections; valid missing observations,
+unreviewed units and unavailable verdicts are retained in successful processing.
+
+Library seams: `prepare_sources`, `read_batch_sources`, `report_mechanism`,
+`build_audit_queue` and `report_audit`. The producer explicitly owns
+`backend.app.observability.mechanism_capture.capture_attempt`: wrap its existing invocation,
+supply original input/run identity and the exact saved-result serializer, and save the
+emitted envelope through a synchronous local sink. No new planner run flag is required.
+This capture is independent of enabled tracing/usage; custom injected adapters lacking the
+submission observation remain partial. Sink/capacity/redaction failures preserve planning.
+
+Official units require accepted typed claims and exact actual submission/rule occurrences.
+Preparation-only and accepted-unused claims are excluded; submission does not prove model
+attention or provider receipt. Queue/unit hashes bind independent reviews. Unreviewed and
+unavailable units remain visible. Incomplete collection reports the observed unit count while
+the full qualifying population remains null. See the
+[wire contract](../../docs/contracts/0001-evaluation-artifacts.md#mechanism-audit-executable-wire)
+and [offline acceptance](../../docs/records/evaluation/2026-10-04-mechanism-official-audit.md).
 
 ## Controlled V3 offline workflow
 
