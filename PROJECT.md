@@ -105,14 +105,14 @@ validation, caches and internal decisions are not independent factual ground tru
 | 02: Usage capture/report | Implemented and offline-validated; opt-in attempt capture, no automatic formal run |
 | 03: Identity/adjudication | Implemented and offline-validated; independent supplied-ID/name-search paths, manual review and automatic-result audit; structural claims and optional typed-address evidence supported |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
-| 05: Requirement/schedule metrics | Implemented and offline-validated; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed; local code publication pending |
+| 05: Requirement/schedule metrics | Implemented, offline-validated and published; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed |
 | 06: Opening checks | Offline parser/scorer/CLI implemented and reviewed; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) completed; [acceptance and scoped supplements](docs/records/evaluation/opening.md#rtpeval-ticket-06-acceptance) |
 | 07: Route checks | Offline preparation/scorer/CLI implemented and reviewed, including decisive partial FAIL, zero-grace hard boundaries and the [snapshot-coordinate bridge](docs/records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03); [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) completed; [original acceptance](docs/records/evaluation/routes.md#rtpeval-ticket-07-acceptance) |
 | 08: Multimetric report | Offline report/CLI implemented and reviewed; exact shared-mask scores with separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) completed; [acceptance](docs/records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) |
 | 09: Blinded ranking | Offline package/import/report and React renderer completed; IANA time-zone selection, HH:mm and confirmed answer clearing; user-reported browser acceptance complete; [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) completed; [acceptance](docs/records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) |
-| 10: V3 before/after | Offline preparation/report/CLI implemented; adopted source lineage precedes unique fallback and residual review; separate paired mask, exact deltas and independent continuity; [contract](docs/contracts/0005-quality-human-review.md#v3-pairs) and [acceptance](docs/records/evaluation/v3-pair-report.md); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) remains open pending separately authorized tracker synchronization/publication |
-| 11: Controlled Repair | Offline real V3 replay, strict frozen ports/time/cache, independent targets/controls, human supplementation and CLI implemented; [contract](docs/contracts/0001-evaluation-artifacts.md#controlled-repair); formal case construction/execution, publication and tracker synchronization remain separately authorized |
-| 12: Mechanism/evidence audit | Selected-source mechanism report, exact official-claim audit queue/reviews, researcher CLI and default-off local submission/selection capture implemented; [contract](docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit) and [offline acceptance](docs/records/evaluation/2026-10-04-mechanism-official-audit.md); formal audit/execution, publication and tracker synchronization remain separately authorized |
+| 10: V3 before/after | Offline preparation/report/CLI implemented, reviewed and published; adopted source lineage precedes unique fallback and residual review; separate paired mask, exact deltas and independent continuity; [contract](docs/contracts/0005-quality-human-review.md#v3-pairs) and [acceptance](docs/records/evaluation/v3-pair-report.md); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) completed |
+| 11: Controlled Repair | Offline real V3 replay, strict frozen ports/time/cache, independent targets/controls, human supplementation and CLI implemented, reviewed and published; [contract](docs/contracts/0001-evaluation-artifacts.md#controlled-repair) and [acceptance](docs/records/evaluation/2026-10-04-controlled-repair.md); [#23](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) completed; formal case construction/execution remains separately authorized |
+| 12: Mechanism/evidence audit | Selected-source mechanism report, exact official-claim audit queue/reviews, researcher CLI and default-off local submission/selection capture implemented, reviewed and published; [contract](docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit) and [offline acceptance](docs/records/evaluation/2026-10-04-mechanism-official-audit.md); [#24](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24) completed; formal audit/execution remains separately authorized |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
@@ -191,13 +191,16 @@ are evidence records, not current project authority or guaranteed fresh-clone as
 
 ## 6. Next work and authorization boundary
 
-Tickets 01-12 have completed their approved local implementation, offline validation
-and review scopes. The next work is engineering delivery and tracker synchronization.
-On 2026-10-04, read-only GitHub verification found Tickets 01-09 closed/completed,
-Tickets 10-12 (#22-#24) and parent #12 open, and documentation migration #36
-closed/completed. The open Issues still describe earlier specification checkpoints;
-their implementation acceptance has not yet been synchronized. These observations
-are dated snapshots, not a second live tracker or publication authorization.
+Tickets 01-12 have completed their approved implementation, offline validation,
+review and engineering delivery scopes. On 2026-10-04, the user separately authorized
+a normal push of feature/evaluation and verified acceptance updates/closure of
+Tickets 10-12, followed by parent #12. The 56 prepared commits were published through
+`bab0d5315f9a6dcaecb8327c1017bfe94269f2c1`; exact remote head and seven linked
+contract/acceptance/navigation blobs were verified. Tickets 01-12 (#13-#24) and
+parent #12 were then verified closed/completed. Documentation migration #36 remains
+separately completed. See the [published parent acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12#issuecomment-5973135724)
+and [delivery record](docs/records/evaluation/2026-10-04-mechanism-official-audit.md#engineering-publication-and-tracker-closeout--2026-10-04).
+GitHub owns live lifecycle state; these observations describe this delivery checkpoint.
 
 The 2026-10-03 documentation migration consolidates durable scratch specifications
 into core docs and dated records, preserves local spec/child-ticket working files,
@@ -207,18 +210,15 @@ URLs. GitHub owns task state; local ticket copies are planning aids, not a secon
 live tracker. See [tracker conventions](docs/agents/issue-tracker.md) and the
 [core design/proposal index](docs/README.md).
 
-The approved delivery preflight covers local status/evidence corrections, outgoing
-commit inspection, read-only remote verification and Issue update drafts. The verified
-remote feature/evaluation tip is fc9996803b05b9b444583f0985274bee75c4ed0f; pending
-local commits include Tickets 05-12, related corrections and documentation migration.
-No open PR for that branch was found at the preflight checkpoint.
+This delivery publishes the existing engineering work and synchronizes its acceptance;
+it creates no PR or merge and does not switch branches. No additional test/live run,
+budget increase, formal corpus/comparison/analysis or version freeze occurred. The
+final documentation closeout records these observed outcomes in a separate commit.
 
-Local commits are not automatically published. Push, PR creation, merge, branch
-switching and Issue mutations require explicit authorization beyond this preflight.
-Live services, formal cases/evaluation/analysis, further implementation and version
-freezes remain separately authorized work. Read the live Issue and relevant contract
-before proposing a new task; completed Tickets 11-12 do not need implementation
-approval again.
+No further development or research task is authorized by completion. Read PROJECT.md,
+the relevant current contract and live Issues before proposing a separately scoped
+next task. Future push, PR creation, merge, branch switching and Issue mutations retain
+the repository's explicit authorization rules.
 
 Per-ticket approvals and task discussion remain in the relevant GitHub Issues.
 

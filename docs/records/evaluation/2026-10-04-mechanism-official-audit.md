@@ -91,3 +91,44 @@ record-index updates preserve the distinction between the full implementation ga
 the later evaluator-wide correction gate. No further implementation issue is outstanding
 within this approved scope. Real capture overhead, live/formal execution, publication,
 tracker synchronization and any version freeze remain outside this acceptance.
+
+## Engineering publication and tracker closeout — 2026-10-04
+
+After local preflight, the user explicitly authorized a normal push of the current
+feature/evaluation branch, publication verification, acceptance updates and completed
+closure of #22-#24, then parent #12. The worktree/index were clean at the starting
+delivery revision `bab0d5315f9a6dcaecb8327c1017bfe94269f2c1`.
+
+The push advanced the remote from `fc9996803b05b9b444583f0985274bee75c4ed0f`
+through all 56 prepared local commits, including Tickets 05-12, related corrections
+and documentation migration. Remote branch identity and exact Git blob parity for
+seven linked contract/acceptance/navigation files were verified before Issue updates.
+No force push, rebase, squash, PR, merge or branch change occurred.
+
+The live Issue bodies/comments were refreshed and matched the preflight source
+snapshots. Active acceptance checklists and current summaries were updated while
+preserving original wording, unrelated content and imported historical checklists.
+Obsolete readiness labels were removed; existing classification labels remain.
+Each saved body, acceptance comment, label change and completed closure was re-read:
+
+- [Ticket 10 / #22 acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22#issuecomment-5973113398).
+- [Ticket 11 / #23 acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23#issuecomment-5973121380).
+- [Ticket 12 / #24 acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24#issuecomment-5973124658).
+- [Parent #12 acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12#issuecomment-5973135724),
+  published only after all #13-#24 child states were verified closed/completed.
+
+Preflight documentation checks passed for 58 Markdown files and 499 local tracked
+links/anchors, with zero errors. Four historical/reachable Ticket 10 revision pairs
+have identical Git trees, preserving the meaning of prior validation and review.
+Eight prepared Issue drafts preserved unrelated source content; their 24 intended
+published file links were checked locally before actual publication verification.
+The final PROJECT/tracker/record corrections form a separate documentation closeout.
+Existing code test and dual-axis review results above were reused; no new code suite,
+live provider/model/database call, formal case/audit, comparison, analysis or freeze
+was performed. Engineering plan closure does not establish a formal research result.
+
+The GitHub CLI token was invalid, so Issue operations used the connected GitHub tools.
+Sandboxed SSH initially could not read known_hosts and surfaced host-key failure;
+an authorized read-only check outside the sandbox succeeded and matched both verified
+branch tips. Normal push used that available connection. No credentials, host keys,
+Git/SSH configuration or provider budgets were changed.

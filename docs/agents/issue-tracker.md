@@ -51,8 +51,13 @@ numbers/API database IDs are different concepts.
 [Parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12) owns
 Tickets 01-12, mapped respectively to #13-#24. See the
 [historical migration acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12#issuecomment-5956797691)
-and [planning record](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12). Tickets 10-12 and the parent
-remain open; this documentation migration does not implement or close them.
+and [planning record](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
+Tickets 10-12 and the parent remained open at the original migration checkpoint.
+The separately authorized 2026-10-04 engineering delivery published their implementation
+and verified all twelve children and the parent closed/completed; see the
+[delivery acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12#issuecomment-5973135724).
+Use live Issues for subsequent lifecycle state; completion grants no formal-run or
+version-freeze authorization.
 
 ## Commit and publication boundary
 
