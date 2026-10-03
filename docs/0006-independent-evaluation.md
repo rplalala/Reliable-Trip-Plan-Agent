@@ -1,12 +1,12 @@
 # Independent evaluation architecture
 
-Status: Tickets 01-09 implemented within their approved scopes; Tickets 10-12 are
-not implemented. This is a technical boundary, not a formal benchmark or results report.
+Status: Tickets 01-11 have offline implementations within their approved scopes;
+Ticket 12 is not implemented. This is a technical boundary, not a formal benchmark or results report.
 [PROJECT.md](../PROJECT.md) and live Issues own current authorization and task state.
 
 ## Separation from planning and benchmark construction
 
-The evaluator consumes a deliberately submitted, curated, source-linked batch. It does
+The final-quality workflow consumes a deliberately submitted, curated, source-linked batch. It does
 not run planners, choose replacement cases, monitor a growing case list or decide when
 benchmark construction is complete. The producer/user owns batch selection and eligibility.
 Planner caches, validator verdicts and repair-target disappearance are not independent
@@ -27,6 +27,7 @@ sources retain diagnostics but contribute no fallback transport occupancy.
 | 06-07 | Offline opening and route preparation/scoring | [Opening/routes](contracts/0004-opening-routes.md) |
 | 08-09 | Quality report, anonymous review package, answer import and descriptive outcomes | [Quality/human review](contracts/0005-quality-human-review.md) |
 | 10 | Source-driven V3 draft/final-primary preparation, paired masks/deltas and independent continuity | [V3 paired diagnostic](contracts/0005-quality-human-review.md#v3-pairs) |
+| 11 | Isolated frozen real V3 post-primary execution and independently reviewed target/control outcomes | [Controlled Repair](contracts/0001-evaluation-artifacts.md#controlled-repair) |
 
 [Artifacts and evidence contracts](contracts/0001-evaluation-artifacts.md) define shared
 material integrity, source roles and independent evidence/time semantics. The five topic
@@ -82,16 +83,20 @@ lineage before content fallback and residual review. It preserves valid paired a
 scores despite unresolved local correspondence, while venue identity and quality remain
 independent of producer decisions. Its two-stage mask is separate from the four-final mask.
 See the [development acceptance](records/evaluation/v3-pair-report.md).
-Controlled Repair and mechanism/official-evidence reporting remain Tickets 11-12. This
-document authorizes no implementation, formal run, comparison or final conclusion.
+Controlled Repair is the isolated Ticket 11 execution boundary. Ticket 12 mechanism/
+official-evidence reporting remains unimplemented. This document authorizes no formal
+run, comparison or final conclusion.
 
 Ticket 11's [accepted controlled replay contract](contracts/0001-evaluation-artifacts.md#controlled-repair)
 uses the real V3 Repair path with frozen capabilities and independently reviewed outcomes.
 Controls permit lawful changes while checking preserved user obligations and newly introduced
 problems; explicit one-visit restrictions override generic quantity recommendations. Human
 supplements remain separate from planner inputs, and unresolved verdicts remain visible.
-The technical preflight is documented locally; implementation and Issue synchronization
-still require their respective authorization. No formal controlled cases have been built.
+The offline implementation recomputes production permissions and uses strict frozen
+external scripts, restored caches/semantic state and logical async timeouts. Raw paired
+scores remain separate from supplemented check outcomes. Formal case construction,
+live execution and Issue synchronization remain separately authorized; no formal cases
+have been built. See the [executable wire](contracts/0001-evaluation-artifacts.md#controlled-executable-wire).
 
 Task authority: [parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12),
 [Ticket 10 #22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22),

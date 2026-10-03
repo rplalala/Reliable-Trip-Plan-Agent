@@ -1,6 +1,6 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-10-03.
+Current source of truth. Updated 2026-10-04.
 Detailed design, development and acceptance records are indexed in
 [docs/README.md](docs/README.md).
 
@@ -111,7 +111,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | 08: Multimetric report | Offline report/CLI implemented and reviewed; exact shared-mask scores with separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) completed; [acceptance](docs/records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) |
 | 09: Blinded ranking | Offline package/import/report and React renderer completed; IANA time-zone selection, HH:mm and confirmed answer clearing; user-reported browser acceptance complete; [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) completed; [acceptance](docs/records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) |
 | 10: V3 before/after | Offline preparation/report/CLI implemented; adopted source lineage precedes unique fallback and residual review; separate paired mask, exact deltas and independent continuity; [contract](docs/contracts/0005-quality-human-review.md#v3-pairs) and [acceptance](docs/records/evaluation/v3-pair-report.md); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) remains open pending separately authorized tracker synchronization/publication |
-| 11: Controlled Repair | [Local technical preflight and control/review rules](docs/contracts/0001-evaluation-artifacts.md#controlled-repair) accepted; implementation, formal case construction/execution and tracker synchronization remain separately authorized; no implementation is claimed |
+| 11: Controlled Repair | Offline real V3 replay, strict frozen ports/time/cache, independent targets/controls, human supplementation and CLI implemented; [contract](docs/contracts/0001-evaluation-artifacts.md#controlled-repair); formal case construction/execution, publication and tracker synchronization remain separately authorized |
 | 12: Mechanism/evidence audit | Later approved work-plan ticket; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
@@ -159,11 +159,14 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2409 passed, 10 skipped**, from the
-2026-10-03 Ticket 10 post-review implementation, including **580 passed, 1 skipped**
-evaluator cases and 52 new paired tests. Both review axes are closed after separate
-correction commits. The skips are environment/opt-in cases; earlier
-approved supplements remain distinct evidence.
+Latest recorded full backend gate: **2433 passed, 10 skipped**, from the
+2026-10-04 Ticket 11 implementation. Subsequent offline logical-time and review corrections
+passed **608 evaluator tests, 1 skipped**, including 26 dedicated controlled tests and two
+paired protection-goal cases. The full gate precedes those corrections; this is scoped
+retest evidence, not a repeated full gate. The [Ticket 11 record](docs/records/evaluation/2026-10-04-controlled-repair.md)
+retains the test and review sequence.
+The skips are environment/opt-in cases. No live services or formal corpus were used;
+earlier approved supplements remain distinct evidence.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
 lint passing for Ticket 09. These are dated development checkpoints, not formal
 benchmark results. Failure/correction/retest sequences stay

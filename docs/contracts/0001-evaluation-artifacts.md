@@ -1,6 +1,6 @@
 # Evaluation artifacts, scope and time
 
-Current shared contract, reconciled with the implemented Tickets 01-10 on 2026-10-03.
+Current shared contract, reconciled with the implemented Tickets 01-11 on 2026-10-04.
 [PROJECT.md](../../PROJECT.md) owns scope; [evaluation architecture](../0006-independent-evaluation.md)
 owns implemented/deferred boundaries. GitHub owns task state. This reference states current
 rules together; dated proposals, approvals and validation remain in linked history.
@@ -13,7 +13,7 @@ rules together; dated proposals, approvals and validation remain in linked histo
 The final-quality workflow consumes an explicitly selected, producer-attested batch of
 four-version groups.
 It does not select cases, rerun planners, recompute workflow completion or improve the source
-itineraries. The separately planned Ticket 11 controlled V3 replay has the execution boundary
+itineraries. The isolated Ticket 11 controlled V3 replay has the execution boundary
 below; it does not require invented V0-V2 outputs. A qualifying group means workflow completion
 was established upstream, not that
 its itinerary is factually correct. Failed construction attempts stay upstream.
@@ -248,7 +248,7 @@ for separately authorized work. No controlled cases or rates are created by this
 
 ### Ticket 11 controlled replay contract
 
-**Status: accepted design; implementation awaits separate approval.** The control and
+**Status: offline implementation approved and implemented; validation/review recorded separately.** The control and
 human-review decisions were accepted on 2026-10-03. This section closes the local technical
 preflight for [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23);
 it does not change the live Issue state or authorize publication, formal case construction,
@@ -348,9 +348,9 @@ capabilities. A small shared production initialization/finalization seam can avo
 a second Repair implementation. Default live clocks, policies and version entry paths must
 retain their behavior.
 
-#### Proposed implementation and validation boundary
+#### Approved implementation and validation boundary
 
-The next separately approved slice is an offline V3-only case reader/preparation, frozen
+The approved implementation is an offline V3-only case reader/preparation, frozen
 execution adapters, controlled outcome report and CLI under `backend/evaluation/`, with a
 small behavior-preserving shared seam in `backend/app/versions/v3/wiring.py` if needed.
 Reuse the existing independent identity, requirement/schedule, opening, route and paired
@@ -364,6 +364,101 @@ script errors and deterministic time/cache conditions. Follow TDD, implementatio
 fixed-base Standards/Spec review, separate correction commits and final documentation.
 Run relevant evaluator/V3 regressions and the required full backend gate for the shared seam.
 No live service, budget increase, Ticket 12 work or formal benchmark is included.
+
+#### Controlled executable wire
+
+`backend.evaluation.controlled_cli` owns the isolated command workflow. Ordinary
+four-version intake still requires V0-V3. Controlled preparation contains only actual
+V3 final/draft/final-primary sources; it never synthesizes V0-V2 results. The production
+V3 post-primary and POI semantic services accept an optional clock; live defaults and
+existing entry points preserve their behavior. Replay logical time starts at zero,
+with `request_remaining` as the frozen deadline and declared durations added at calls.
+
+The strict `rtpeval_controlled_case_1` envelope is defined by `ControlledCase` in
+`backend/evaluation/controlled_models.py`. It embeds original input, primary itinerary,
+interpreted requirements, runtime, transport, supply, place/route evidence, review switch,
+reference date and request time remaining. Optional frozen funnel, geographic, RAG and
+semantic state retain the execution capability. `calls` is required; explicitly empty
+cache/attempt lists are valid. Cache entries preserve full keys, typed values and provider
+wrapping. Semantic state preserves its fingerprint cache, active assessments, calls,
+elapsed time and failed flag. Recomputed targets, scope and adopted outputs are forbidden
+case inputs.
+
+External scripts declare an operation, exact JSON request, response or nonempty declared
+failure, and nonnegative duration. Repeated identical requests consume that request's
+response queue in order; unused capability responses are permitted. Operations cover
+Repair and semantic model calls, Places search/Details, Routes, embedding and retrieval.
+Model matching excludes usage callback objects. Missing/mismatched calls and malformed
+typed model/semantic/provider/retrieval responses remain out-of-band execution errors even if Repair
+catches them. Declared model/provider outages are execution observations. A fatal production
+exception without a completed V3 outcome is `execution_failed`; it cannot enter scoring.
+Network connects are blocked inside replay. Use an exclusive event loop in a dedicated
+offline process with no other network work, and execute cases serially. The guard patches
+process-wide socket functions and the active loop clock; unrelated async tasks would observe
+logical time too. This is a CLI/development executor, not a concurrent web-service runner.
+The real asyncio timeout handles run against logical time before scripted replies are
+delivered, so a response exceeding a configured call timeout is not silently adopted.
+Tokenizer assets must already be local;
+tests use the repository's offline structural tokenizer rather than live token measurements.
+
+Replay emits `rtpeval_controlled_replay_1` with normalized case hash, actual V3 outcome,
+request ledger, logical elapsed time, diagnostics and replay hash. Preparation verifies
+that hash and original draft, then emits `rtpeval_controlled_preparation_1`. The embedded
+original-input hash is the canonical JSON digest, not an original external file-byte hash;
+reviewed requirements must bind to that digest and case ID. Executed source JSON is
+serialized deterministically into genuine Ticket 10 result-source records.
+
+`rtpeval_controlled_expectations_1` binds case ID/hash and a reviewed revision, reviewer,
+offset-aware time, rationale and supporting references. Its `targets` and `guards` have
+unique `goal_id`, `basis` and `condition`; targets additionally declare a `detector`.
+Basis is `confirmed_conflict`, `explicit_requirement`, `product_policy` or
+`review_opportunity`. Explicit requirements cite `{field, quote}` in the original input.
+Check conditions select an independent dimension and exact original activity IDs or
+obligation ID; optional canonical venue/date further restrict applicability. Dimensions
+are requirements, grounding, opening, routes, conflicts and protection conflicts. Count
+conditions use `daily_count` with date or `repeat_count` with canonical venue, with a
+declared minimum/maximum. These are reviewer-supplied conditions, not title inference or
+automatic sparse/repeated-day defects. Daily bounds include uncertain role/date occurrences;
+repetition bounds include unresolved identities. Detector selectors use production check,
+optional reason, activity/place/requirement IDs and dates. Confirmed goals match CONFIRMED
+findings; review opportunities match NEEDS_REVIEW findings.
+
+Per-goal output retains initial detection and authorization, round-linked candidate and
+identity-free opportunities, model attempt and dependency-linked component adoption.
+Independent outcomes reuse paired continuity and preserve structural changes, residual
+FAIL, partial improvement, regression and unresolved evidence. Missing/corrupt execution
+material retains expected goal inventory with unavailable outcomes and null measured counts.
+An obligation-only protection condition reuses the independently scored `protected_time`
+check for that original obligation. A cleared visit conflict alone does not establish that
+all applicable commitments are clear; uncertain transport/candidate occupancy remains UNKNOWN.
+An absent protected blocker cannot prove compliance.
+Control baselines with confirmed violations are invalid control material. Unknown initial
+compliance remains unresolved. Control regression checks guards and introduced/continued
+independent failures; a lawful changed control need not have an empty scope. Raw paired
+checks/scores remain separate from reviewed check outcomes.
+
+Optional `rtpeval_controlled_facts_1` binds exact case and replay hashes with reviewed
+revision/provenance. Opening facts select canonical venue, declared date and timezone,
+with verified offset-aware `open_intervals`/`closed_intervals`. They fill only supported
+coverage using the existing interval arithmetic and cannot contradict known intervals
+or timezone. Route facts bind `expected_context_hash` from an independently prepared leg;
+`availability` is `route_exists` or `no_route`, with optional integer duration nanoseconds
+and distance meters. The existing route component rules evaluate those facts, retaining
+missing components and rejecting contrary established observations. An unapplied, stale
+or duplicate fact is material error. No human PASS assertion is accepted. Remaining
+occupancy uncertainty uses the existing occupancy review channel; route facts alone do
+not fabricate transfer occupancy. Raw paired metrics and deltas are preserved, while
+`reviewed_checks` exposes supplemental checks/continuity without claiming recalculated
+five-dimension scores.
+
+The optional `rtpeval_controlled_batch_1` manifest inventories case ID, role,
+`expected_goal_ids` and content-addressed report artifact references under one root.
+Its report assembler verifies file/content hashes and exact case/goal inventory, keeps
+unavailable cases and expected targets, and exposes descriptive counts. It imposes no
+case-count cap and does not generate the formal 24-target/8-control corpus.
+
+The dated [implementation and review record](../records/evaluation/2026-10-04-controlled-repair.md)
+retains development validation, corrections and execution limitations.
 
 Ticket 12 separates mechanism exposure/usage from independent quality and causality. Official
 Evidence Audit includes only accepted facts exposed to a model or used by a rule, with separate
