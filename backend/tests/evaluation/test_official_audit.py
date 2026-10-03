@@ -1,6 +1,8 @@
 """Exact qualifying claim revisions and independent, source-bound human reviews."""
 
+import asyncio
 import copy
+import json
 
 import pytest
 
@@ -157,3 +159,58 @@ def test_partial_catalog_and_submission_remain_observed_coverage_not_full_popula
     queue = build_audit_queue(base)
     assert len(queue["units"]) == 1
     assert queue["runs"][0]["coverage"] == "partial"
+
+
+def test_actual_truncated_occurrence_cannot_certify_accepted_claim_unused():
+    from backend.app.evidence.official_models import OfficialCurrentEvidence
+    from backend.app.observability.mechanism_capture import capture_attempt
+    from backend.app.observability.mechanism_observation import (
+        accepted_catalog,
+        model_projection,
+        model_submitted,
+    )
+
+    base = preparation()
+    original = base["runs"][0]["channels"]["capture"]["records"][0]
+    claim = OfficialCurrentEvidence.model_validate(original["content"]["catalog"][0]["claim"])
+    captures = []
+
+    async def invoke():
+        accepted_catalog((claim,))
+        with model_projection("primary", {"source_refs": [claim.source_ref]}):
+            model_submitted()
+        return {"system_version": "v1"}
+
+    async def execute(capacity):
+        return await capture_attempt(
+            invoke,
+            group_id="g",
+            run_id="r",
+            version="v1",
+            input_sha256="a" * 64,
+            serialize=json.dumps,
+            sink=captures.append,
+            max_bytes=capacity,
+        )
+
+    asyncio.run(execute(1_000_000))
+    complete = captures.pop()
+    # The contract capacity accounts for catalog and prepared-call bytes, before
+    # their later submitted/outcome bookkeeping. The occurrence cannot fit.
+    prepared = copy.deepcopy(complete["prepared_calls"][0])
+    prepared["submitted"] = False
+    prepared.pop("outcome")
+    capacity = sum(
+        len(json.dumps(row, ensure_ascii=False).encode())
+        for row in (*complete["catalog"], prepared)
+    )
+    asyncio.run(execute(capacity))
+    truncated = captures[0]
+    assert truncated["prepared_calls"][0]["submitted"] is True
+    assert truncated["occurrences"] == []
+    assert truncated["collection_status"] == "partial"
+    original.update(content=truncated, content_sha256=canonical_digest(truncated))
+    queue = build_audit_queue(base)
+    assert queue["runs"][0]["accepted_unused_count"] is None
+    assert queue["runs"][0]["accepted_without_qualifying_observation_count"] == 1
+    assert report_audit(queue)["counts"]["qualifying"] is None

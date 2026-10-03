@@ -225,6 +225,34 @@ def test_trace_copy_of_saved_round_is_not_an_extra_attempt():
     assert len(run["rounds"]) == 2 and len(run["trace_observations"]) == 1
 
 
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("continuation_reason", "wrong_stop_reason"),
+        ("cumulative_counters", {"model": 999}),
+        ("usage", {"foreign-model": {"total_tokens": 999}}),
+    ],
+)
+def test_trace_conflicting_shared_round_cells_are_local_material_errors(field, value):
+    base = selected(actual_outcome()).to_dict()
+    saved = base["runs"][0]["result"]["v3"]["repair"]["rounds"][0]
+    payload = {
+        "round_index": saved["round_index"],
+        "status": saved["result"]["status"],
+        "continuation_reason": saved["continuation_reason"],
+        "cumulative_counters": saved["result"]["counters"],
+        "usage": saved["usage"],
+    }
+    payload[field] = value
+    row = observed(base, "trace", {"events": [{"event": "v3_repair_round", "payload": payload}]})
+    base["runs"][0]["channels"]["trace"].update(status="available", records=[row])
+    report = report_mechanism(base)
+    run = report["runs"][0]
+    assert run["model_attempts"] == 2 and run["coverage"] == "available"
+    assert run["trace_coverage"] == "needs_material_correction"
+    assert report["status"] == "needs_material_correction"
+
+
 def test_separate_usage_does_not_add_to_cumulative_or_round_token_observations():
     base = selected(actual_outcome()).to_dict()
     run = base["runs"][0]

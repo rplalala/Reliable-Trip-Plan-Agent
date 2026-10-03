@@ -125,11 +125,32 @@ def _trace(run, rounds):
         for item in rows:
             row = item["value"]
             if row["round_index"] in embedded:
+                saved = embedded[row["round_index"]]
                 require(
-                    row["status"] == embedded[row["round_index"]]["status"],
+                    row["status"] == saved["status"],
                     "trace",
                     "Trace contradicts saved round",
                 )
+                for trace_field, saved_field in (
+                    ("continuation_reason", "continuation_reason"),
+                    ("usage", "usage_observation"),
+                ):
+                    if trace_field in row and saved.get(saved_field) is not None:
+                        require(
+                            row[trace_field] == saved[saved_field],
+                            "trace",
+                            f"Trace {trace_field} contradicts saved round",
+                        )
+                if "cumulative_counters" in row:
+                    counters = row["cumulative_counters"]
+                    require(
+                        isinstance(counters, dict), "trace", "Counter snapshot must be an object"
+                    )
+                    require(
+                        all(saved["counters_snapshot"].get(k) == v for k, v in counters.items()),
+                        "trace",
+                        "Trace cumulative counters contradict saved round",
+                    )
         return rows, "partial", []  # Current trace cells do not establish a complete denominator.
     except (ValueError, KeyError, TypeError) as exc:
         return [], "needs_material_correction", [diagnostic(exc)]

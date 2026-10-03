@@ -41,14 +41,21 @@ def _run_units(run):
         "coverage": channel["status"],
         "diagnostics": list(channel["diagnostics"]),
         "accepted_count": None,
+        "observed_accepted_count": None,
         "accepted_unused_count": None,
         "qualifying_count": None,
+        "observed_qualifying_count": None,
         "prepared_calls": [],
         "capture_sha256s": [],
     }
     if run["version"] == "v0":
         summary.update(
-            coverage="not_applicable", accepted_count=0, accepted_unused_count=0, qualifying_count=0
+            coverage="not_applicable",
+            accepted_count=0,
+            observed_accepted_count=0,
+            accepted_unused_count=0,
+            qualifying_count=0,
+            observed_qualifying_count=0,
         )
         return [], summary
     if channel["status"] != "available":
@@ -187,9 +194,14 @@ def _run_units(run):
             unit["unit_sha256"] = canonical_digest(unit)
         summary.update(
             coverage=capture["collection_status"],
-            accepted_count=len(claims),
-            accepted_unused_count=len(claims) - len(units),
-            qualifying_count=len(units),
+            accepted_count=len(claims) if capture["collection_status"] == "available" else None,
+            observed_accepted_count=len(claims),
+            accepted_unused_count=(
+                len(claims) - len(units) if capture["collection_status"] == "available" else None
+            ),
+            accepted_without_qualifying_observation_count=len(claims) - len(units),
+            qualifying_count=len(units) if capture["collection_status"] == "available" else None,
+            observed_qualifying_count=len(units),
             prepared_calls=capture["prepared_calls"],
             capture_sha256s=[canonical_digest(capture)],
             missing_fields=capture.get("missing_fields", []),
