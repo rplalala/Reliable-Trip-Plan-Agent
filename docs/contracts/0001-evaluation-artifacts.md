@@ -1,6 +1,6 @@
 # Evaluation artifacts, scope and time
 
-Current shared contract, reconciled with the implemented Tickets 01-09 on 2026-10-03.
+Current shared contract, reconciled with the implemented Tickets 01-10 on 2026-10-03.
 [PROJECT.md](../../PROJECT.md) owns scope; [evaluation architecture](../0006-independent-evaluation.md)
 owns implemented/deferred boundaries. GitHub owns task state. This reference states current
 rules together; dated proposals, approvals and validation remain in linked history.
@@ -10,9 +10,12 @@ rules together; dated proposals, approvals and validation remain in linked histo
 
 ## Batch ownership and reader separation
 
-Evaluation consumes an explicitly selected, producer-attested batch of four-version groups.
+The final-quality workflow consumes an explicitly selected, producer-attested batch of
+four-version groups.
 It does not select cases, rerun planners, recompute workflow completion or improve the source
-itineraries. A qualifying group means workflow completion was established upstream, not that
+itineraries. The separately planned Ticket 11 controlled V3 replay has the execution boundary
+below; it does not require invented V0-V2 outputs. A qualifying group means workflow completion
+was established upstream, not that
 its itinerary is factually correct. Failed construction attempts stay upstream.
 
 Quality readers use original Input, reviewed RequirementSpec, projected itinerary claims,
@@ -217,7 +220,7 @@ Implemented outputs include intake, identity/adjudication, usage, snapshots, req
 schedule, opening, routes, final multimetric reports and anonymous human packages/import/reports.
 Not every optional track is integrated into the quality report. Its availability metadata does
 not manufacture resource/human/mechanism aggregation. Paired snapshot support in preparation/
-individual scorers does not implement Ticket 10's before/after report.
+individual scorers alone is distinct from the implemented Ticket 10 paired report.
 
 <a id="rtpeval-spec--repair-and-controlled-cases"></a>
 <a id="rtpeval-spec--presentation-of-mechanism-comparisons"></a>
@@ -240,6 +243,127 @@ evidence/policy conflicts distinguished from optional review opportunities. Inde
 outcomes include detection failures, residuals, regressions and control invariants; disappearance
 of a planner target ID is insufficient. Cases/evidence/capability configuration must be frozen
 for separately authorized work. No controlled cases or rates are created by this document.
+
+<a id="controlled-repair"></a>
+
+### Ticket 11 controlled replay contract
+
+**Status: accepted design; implementation awaits separate approval.** The control and
+human-review decisions were accepted on 2026-10-03. This section closes the local technical
+preflight for [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23);
+it does not change the live Issue state or authorize publication, formal case construction,
+execution or analysis. The accepted 24-target/8-control composition remains unchanged.
+
+#### Cases, targets and controls
+
+Consume separately supplied V3 cases with original input, reviewed obligations, a pre-repair
+primary itinerary, frozen execution capabilities and separately sourced evaluation material.
+Case metadata declares the expected target conditions, their subjects and classification,
+the intended improvement and the conditions to preserve. Actual findings and permissions
+are measured outputs, not caller-supplied authorizations. Keep confirmed factual conflicts,
+explicit requirement violations, declared product-policy violations and optional review
+opportunities distinguishable. A sparse, repeated or overfull itinerary is not automatically
+defective; apply the actual user obligations and frozen policy/review configuration.
+
+A control checks whether an initially compliant itinerary becomes worse against its declared
+constraints or acquires new independently established problems. It does **not** require
+byte-identical output or an empty Repair scope. Legitimate review-policy changes may occur;
+report detection, authorization, attempted edits and adopted changes separately from harm.
+An added visit is acceptable only when the user's requirements remain satisfied and the
+relevant added schedule, identity, opening and route conditions are independently supported.
+An internally accepted patch is not independent proof of this outcome.
+
+For example, adding Gallery C to a feasible Museum A/Garden B day is not automatically a
+control regression. If the user explicitly requires exactly one primary visit on Tuesday,
+adding a second Tuesday visit violates that reviewed obligation, even if opening and route
+checks pass or the planner accepts the patch. Generic quantity recommendations do not waive
+explicit counts, dates, exclusivity, required visits or protected time. Updated diagnostics
+and transfer presentation are not themselves harmful itinerary changes.
+
+Identify regression units through original obligation IDs, independently established visit
+correspondence, directed route endpoints and the applicable conflict/protection subjects.
+Reuse [paired continuity](0005-quality-human-review.md#v3-pairs): retained comparable
+FAIL-to-PASS is resolution; deletions, replacements, removed connections and changed contexts
+remain explicit rather than proving the old fact repaired. PASS-to-FAIL is a confirmed
+regression; PASS-to-UNKNOWN is lost verification, not a confirmed regression or safe change.
+Check newly introduced visits/connections and retain missingness. Product-policy or optional
+review goals use their declared applicable conditions, not invented factual obligations.
+
+Retain every expected target and control in the inventory. For each expected target, distinguish
+detection, authorization, candidate opportunity, model attempt, adoption and independent
+outcome. A detection miss stays in the expected-target denominator; later skips, unavailable
+capability, rejected patches or missing independent verdicts do not silently remove the unit.
+Report residual conditions, partial improvements, regressions, valid no-change and lawful
+changes separately. Do not import Ticket 08's four-final total or manufacture a causal verdict.
+
+#### Human supplementation and unresolved outcomes
+
+Missing provider fields do not alone prevent a human from establishing an evaluation fact.
+Review may clarify an obligation from the original request or supply separately verified
+opening/route/identity evidence. Record the reviewer, review time, rationale, supporting
+source references, exact case/source revision, affected subject, date/query applicability
+and rule context. Use the existing identity, requirement, correspondence and scoped evidence
+review mechanisms where they cover the subject; add only the missing controlled-case linkage.
+A bare assertion of success or safety is not a substitute for the relevant fact or condition.
+
+Preserve the original planner/provider material. Human supplements enter the independently
+versioned evaluation channel; they do not retroactively grant the replay planner additional
+evidence, supply, budget or permissions. Changed supplements produce a new linked preparation
+revision. They cannot silently override contradictory established evidence.
+
+After review, supported subjects receive their independent verdict. Remaining local uncertainty
+stays unresolved/UNKNOWN, with affected units and coverage visible; it proves neither successful
+repair nor confirmed harm. Preserve unaffected, valid observations. Corrupt sources, stale or
+foreign reviews, missing required execution inputs and incomplete replay scripts are material/
+execution errors, distinct from an unresolved real-world fact or an itinerary FAIL.
+
+#### Frozen execution and the real V3 path
+
+Reuse production post-primary initialization, `assess`, `operation_scope`, `run_repair_stage`
+and finalization through `final_primary`. Recompute schedule, transitions, visit bindings,
+targets, scope and round localization from frozen original inputs. Do not inject a target,
+scope, prepared authorization or an adopted itinerary to bypass these measured stages.
+Candidate preparation, model input construction, patch/component acceptance, re-validation
+and final source/date/transfer handling remain the real production operations.
+
+Freeze the runtime/review/transport configuration, candidate supply, geographic/intention
+inputs, semantic assessments and active ledger, request time remaining, cache values/attempt
+states and external response scripts. A case may explicitly declare an empty cache; historical
+key hashes alone do not restore captured cache behavior. Supply typed local responses or
+declared failures for Places, Routes, retrieval/embedding and model/semantic requests actually
+needed by that case. Match calls against their declared input context. Supply deterministic
+logical time and declared call durations without measuring real provider latency.
+
+Unexpected or mismatched calls, absent script entries and any unintended live model/provider/
+database access fail replay integrity. Frozen adapters retain an out-of-band error ledger,
+because production Repair may catch ordinary provider/model exceptions. Declared provider
+failures remain valid frozen responses; swallowed script errors cannot become ordinary skips,
+detection misses or no-change outcomes. Replay usage is declared/simulated usage, not observed
+live cost or a model-quality estimate.
+
+The existing `tools/validation/repair_replay.py` is evidence-only scope/candidate preparation;
+it does not replay model proposals or adoption. Reuse its capture concepts where applicable,
+but preserve that diagnostic contract and do not claim old snapshots contain complete replay
+capabilities. A small shared production initialization/finalization seam can avoid maintaining
+a second Repair implementation. Default live clocks, policies and version entry paths must
+retain their behavior.
+
+#### Proposed implementation and validation boundary
+
+The next separately approved slice is an offline V3-only case reader/preparation, frozen
+execution adapters, controlled outcome report and CLI under `backend/evaluation/`, with a
+small behavior-preserving shared seam in `backend/app/versions/v3/wiring.py` if needed.
+Reuse the existing independent identity, requirement/schedule, opening, route and paired
+correspondence checks. Add explicit controlled goal/invariant linkage rather than a second
+general quality scorer or fake four-version batch. No formal 32-case corpus is generated.
+
+Use synthetic development fixtures after implementation approval to verify real detection
+misses, valid no-change, legitimate additions, explicit one-visit violations, reviewed and
+unresolved evidence, rejected/adopted component lineage, newly introduced problems, strict
+script errors and deterministic time/cache conditions. Follow TDD, implementation commits,
+fixed-base Standards/Spec review, separate correction commits and final documentation.
+Run relevant evaluator/V3 regressions and the required full backend gate for the shared seam.
+No live service, budget increase, Ticket 12 work or formal benchmark is included.
 
 Ticket 12 separates mechanism exposure/usage from independent quality and causality. Official
 Evidence Audit includes only accepted facts exposed to a model or used by a rule, with separate

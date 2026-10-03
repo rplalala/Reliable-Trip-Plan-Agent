@@ -85,6 +85,14 @@ See the [development acceptance](records/evaluation/v3-pair-report.md).
 Controlled Repair and mechanism/official-evidence reporting remain Tickets 11-12. This
 document authorizes no implementation, formal run, comparison or final conclusion.
 
+Ticket 11's [accepted controlled replay contract](contracts/0001-evaluation-artifacts.md#controlled-repair)
+uses the real V3 Repair path with frozen capabilities and independently reviewed outcomes.
+Controls permit lawful changes while checking preserved user obligations and newly introduced
+problems; explicit one-visit restrictions override generic quantity recommendations. Human
+supplements remain separate from planner inputs, and unresolved verdicts remain visible.
+The technical preflight is documented locally; implementation and Issue synchronization
+still require their respective authorization. No formal controlled cases have been built.
+
 Task authority: [parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12),
 [Ticket 10 #22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22),
 [Ticket 11 #23](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23), and

@@ -111,7 +111,8 @@ validation, caches and internal decisions are not independent factual ground tru
 | 08: Multimetric report | Offline report/CLI implemented and reviewed; exact shared-mask scores with separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) completed; [acceptance](docs/records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) |
 | 09: Blinded ranking | Offline package/import/report and React renderer completed; IANA time-zone selection, HH:mm and confirmed answer clearing; user-reported browser acceptance complete; [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) completed; [acceptance](docs/records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) |
 | 10: V3 before/after | Offline preparation/report/CLI implemented; adopted source lineage precedes unique fallback and residual review; separate paired mask, exact deltas and independent continuity; [contract](docs/contracts/0005-quality-human-review.md#v3-pairs) and [acceptance](docs/records/evaluation/v3-pair-report.md); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) remains open pending separately authorized tracker synchronization/publication |
-| 11-12 | Later approved work-plan tickets; no implementation is claimed here |
+| 11: Controlled Repair | [Local technical preflight and control/review rules](docs/contracts/0001-evaluation-artifacts.md#controlled-repair) accepted; implementation, formal case construction/execution and tracker synchronization remain separately authorized; no implementation is claimed |
+| 12: Mechanism/evidence audit | Later approved work-plan ticket; no implementation is claimed here |
 
 Evaluation uses transport activities for V0 and application transfers for V1-V3,
 including optional V3 draft/final projections. Ignored sources retain provenance
