@@ -272,3 +272,12 @@ def test_logical_model_duration_obeys_real_async_timeout_before_adoption():
     assert out["status"] == "complete", out["diagnostics"]
     assert out["outcome"]["repair"]["status"] == "REJECTED"
     assert not any(c["status"] == "accepted" for c in out["outcome"]["repair"]["components"])
+
+
+def test_malformed_model_script_is_material_error_even_when_production_catches_it():
+    value = scripted(overlap_case(), {"edits": []})
+    model = next(c for c in value["calls"] if c["operation"] == "repair_model")
+    model["response"] = {"not_a_patch": "invalid frozen material"}
+    out = replay(value)
+    assert out["status"] == "execution_material_error"
+    assert "invalid_frozen_response:repair_model" in out["diagnostics"]

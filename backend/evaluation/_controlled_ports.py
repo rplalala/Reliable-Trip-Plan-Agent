@@ -16,6 +16,7 @@ from backend.app.services.evidence_acquisition import _ProviderResult
 from backend.app.services.poi_semantics import POISemanticsService, semantic_cache_key
 from backend.app.tripworld.database.vectors import SPACE
 from backend.app.tripworld.retrieval.entities import RetrievalEntity
+from backend.app.versions.v3.repair_models import RepairPatch
 
 from .records import canonical_digest
 
@@ -98,9 +99,15 @@ class FrozenPorts:
         return deepcopy(script.response)
 
     async def generate_repair_structured(self, **kwargs):
-        return await self.call(
+        response = await self.call(
             "repair_model", {k: v for k, v in kwargs.items() if k != "usage_callback"}
         )
+        try:
+            RepairPatch.model_validate(response)
+        except ValidationError as exc:
+            self.errors.append("invalid_frozen_response:repair_model")
+            raise ReplayMismatch(self.errors[-1]) from exc
+        return response
 
     async def generate_poi_semantics_structured(self, **kwargs):
         response = await self.call(
