@@ -372,7 +372,7 @@ def build_v3_pair_report(
                             r["identity_change"] == "changed_canonical_venue"
                             and "primary_visit" in r["roles"]["before"]
                             for r in relations
-                            if r["before"] and r["after"]
+                            if len(r["before"]) == len(r["after"]) == 1
                         ),
                         "primary_role_loss_count": sum(
                             "primary_visit" in r["roles"]["before"]

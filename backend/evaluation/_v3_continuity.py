@@ -65,8 +65,10 @@ def build_continuity(stages, correspondence):
     established_before, established_after = set(), set()
     for relation in correspondence["relations"]:
         left, right = relation["before"], relation["after"]
-        established_before.update(s["record_id"] for s in left)
-        established_after.update(s["record_id"] for s in right)
+        if len(left) == len(right) == 1 or relation["relation"] == "removed":
+            established_before.update(s["record_id"] for s in left)
+        if len(left) == len(right) == 1 or relation["relation"] == "added":
+            established_after.update(s["record_id"] for s in right)
         compatible = (
             relation["identity_change"] == "same_canonical_venue"
             and relation["roles"]["before"] == relation["roles"]["after"]
@@ -260,6 +262,10 @@ def _conflicts(before, after, correspondence, route_changes):
     mapping, added, removed = {}, set(), set()
     for relation in correspondence["relations"]:
         left, right = relation["before"], relation["after"]
+        venue_changed = (
+            len(left) == len(right) == 1
+            and relation["identity_change"] == "changed_canonical_venue"
+        )
         if (
             len(left) == len(right) == 1
             and relation["roles"]["before"] == relation["roles"]["after"]
@@ -270,15 +276,9 @@ def _conflicts(before, after, correspondence, route_changes):
             )
         ):
             mapping[left[0]["record_id"]] = right[0]["record_id"]
-        if (
-            relation["relation"] == "added"
-            or relation["identity_change"] == "changed_canonical_venue"
-        ):
+        if relation["relation"] == "added" or venue_changed:
             added.update(s["record_id"] for s in right)
-        if (
-            relation["relation"] == "removed"
-            or relation["identity_change"] == "changed_canonical_venue"
-        ):
+        if relation["relation"] == "removed" or venue_changed:
             removed.update(s["record_id"] for s in left)
     old_units = {u["commitment_id"]: u for u in before["occupancy"]["commitments"]}
     new_units = {u["commitment_id"]: u for u in after["occupancy"]["commitments"]}

@@ -126,3 +126,45 @@ def test_transport_protection_attribution_uses_confirmed_endpoint_changes(
     assert conflicts[0]["transition"] == (
         "removed_participant" if operation == "delete" else "introduced_conflict"
     )
+
+
+@pytest.mark.parametrize("venue_change", [False, True])
+def test_complex_visit_sets_do_not_prove_new_transport_participants(pair_case, venue_change):
+    def before(itinerary):
+        duplicate = copy.deepcopy(itinerary["days"][0]["activities"][0])
+        duplicate["activity_id"] = "a2"
+        itinerary["days"][0]["activities"].insert(1, duplicate)
+        itinerary["transfers"][0].update(
+            from_activity_id="a2",
+            departure_time="2020-01-01T10:00:00Z",
+            arrival_time="2020-01-01T10:05:00Z",
+        )
+
+    def after(itinerary):
+        for activity in itinerary["days"][0]["activities"]:
+            if activity["activity_id"] != "b":
+                activity.update(start_time="2020-01-01T08:00:00Z", end_time="2020-01-01T09:00:00Z")
+        if venue_change:
+            itinerary["days"][0]["activities"][1].update(
+                title="Gallery C", place_name="Gallery C", source_place_id="canonical-Gallery C"
+            )
+        itinerary["transfers"][0].update(
+            departure_time="2020-01-01T10:00:00Z",
+            arrival_time="2020-01-01T10:30:00Z",
+        )
+
+    case = pair_case(before=before, after=after, obligations=[pairs.protection("10:10", "10:20")])
+    review = pairs.correspondence_review(case, "complex")
+    run = case[0].to_dict()["inventory"][0]["runs"]["v3"]
+    for side, stage in (("before", "draft"), ("after", "final_primary")):
+        review["records"][0][side] = [
+            a["source"]
+            for a in run["optional"][stage]["activities"]
+            if a["original"]["activity_id"] != "b"
+        ]
+    out = pairs.report(case, correspondence_reviews=review)
+    assert out["status"] == "complete", out["diagnostics"]
+    continuity = out["groups"][0]["continuity"]
+    assert continuity["protection_conflicts"][0]["transition"] == "unresolved_attribution"
+    assert all(row["transition"] == "unresolved_correspondence" for row in continuity["routes"])
+    assert out["groups"][0]["visit_changes"]["confirmed_venue_loss_count"] == 0
