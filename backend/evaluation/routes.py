@@ -14,13 +14,14 @@ from ._route_evidence import (
 from ._route_inputs import coordinates, policy_component, route_context
 from ._route_inputs import route_reviews as read_route_reviews
 from ._route_preparation import prepare_leg
-from ._route_rules import DRIVE_RESERVE_SECONDS, RULES
+from ._route_rules import DEFAULT_OPTIONS, DRIVE_RESERVE_SECONDS, RULES
 from ._schedule_preparation import _occupancy_reviews, _validate_spec, _validate_time_capacity
 from .intake import _read
 from .occupancy import prepare_occupancy
 from .preparation import identity_ready, schedule_timezones
 from .records import MaterialError, canonical_digest, freeze, require, thaw
 from .snapshot import build_evidence_plan, load_snapshot
+from .snapshot_coordinates import prepare_snapshot_coordinates
 
 PREPARATION_VERSION = "rtpeval_route_preparation_1"
 REPORT_VERSION = "rtpeval_route_report_1"
@@ -57,8 +58,9 @@ def prepare_routes(
     coordinate_evidence=None,
     *,
     paired=False,
+    identity_snapshot_directory=None,
 ):
-    """Prepare source-selected routes without reading provider observations."""
+    """Prepare source-selected routes without reading route observations."""
     prepared, identity = _value(intake), _value(identity_report)
     base = {
         "schema_version": PREPARATION_VERSION,
@@ -84,7 +86,30 @@ def prepare_routes(
             return RoutePreparation("identity_replay_required", freeze(base))
         identities = {r["reference_id"]: r for r in identity["records"]}
         policies = read_route_reviews(prepared, _value(route_reviews))
-        points, options = coordinates(prepared, identity, _value(coordinate_evidence))
+        require(
+            identity_snapshot_directory is None or coordinate_evidence is None,
+            "coordinates",
+            "Choose one coordinate source",
+        )
+        if identity_snapshot_directory is not None:
+            coordinate_preparation = prepare_snapshot_coordinates(
+                prepared, identity, identity_snapshot_directory
+            ).to_dict()
+            require(
+                coordinate_preparation["status"] == "complete",
+                "coordinates",
+                str(coordinate_preparation["diagnostics"]),
+            )
+            base["coordinate_preparation"] = coordinate_preparation
+            points = {
+                r["place_id"]: {
+                    k: r[k] for k in ("place_id", "latitude", "longitude", "evidence_sha256")
+                }
+                for r in coordinate_preparation["records"]
+            }
+            options = DEFAULT_OPTIONS
+        else:
+            points, options = coordinates(prepared, identity, _value(coordinate_evidence))
         base.update(batch_id=prepared["batch_id"], batch_revision=prepared["revision"])
         base["source_hashes"] = {
             "intake": canonical_digest(prepared),
@@ -100,6 +125,8 @@ def prepare_routes(
                 canonical_digest(_value(value)) if value is not None else None
             )
         base["rules"], base["rules_hash"] = RULES, canonical_digest(RULES)
+        if identity_snapshot_directory is not None:
+            base["source_hashes"]["snapshot_coordinates"] = canonical_digest(coordinate_preparation)
         for group in prepared["inventory"]:
             zone = zones.get(group["group_id"])
             for version, run in group["runs"].items():
@@ -177,7 +204,7 @@ def prepare_routes(
             prepared, identity, base["route_contexts"], paired=paired
         )
         return RoutePreparation("complete", freeze(base))
-    except (MaterialError, ValueError, TypeError, KeyError) as exc:
+    except (MaterialError, ValueError, TypeError, KeyError, OSError) as exc:
         base["results"], base["route_contexts"] = [], []
         base["diagnostics"] = [
             exc.diagnostic
@@ -330,6 +357,7 @@ def score_routes(
     *,
     paired=False,
     expected_plan=None,
+    identity_snapshot_directory=None,
 ):
     """Replay a whole frozen batch; unavailable evidence never reduces its candidate population."""
     prepared = prepare_routes(
@@ -340,6 +368,7 @@ def score_routes(
         route_reviews,
         coordinate_evidence,
         paired=paired,
+        identity_snapshot_directory=identity_snapshot_directory,
     ).to_dict()
     base = {
         "schema_version": REPORT_VERSION,
@@ -350,6 +379,8 @@ def score_routes(
     }
     if prepared["status"] != "complete":
         return RouteResult(prepared["status"], freeze(base))
+    if "coordinate_preparation" in prepared:
+        base["coordinate_preparation"] = prepared["coordinate_preparation"]
     try:
         snapshot = load_snapshot(snapshot_directory, expected_plan=_value(expected_plan))
         requests = {r["key"]: r for r in snapshot["plan"]["requests"]}

@@ -25,6 +25,9 @@ def main(argv=None):
         sub.add_argument(
             "--coordinates", help="Independent canonical coordinate/query options JSON"
         )
+        sub.add_argument(
+            "--identity-snapshot", help="Linked identity snapshot for automatic coordinates"
+        )
         sub.add_argument("--paired", action="store_true", help="Include available V3 projections")
     args = parser.parse_args(argv)
     try:
@@ -39,6 +42,8 @@ def main(argv=None):
         ):
             path = getattr(args, attribute)
             files[name], hashes[attribute] = _read(Path(path)) if path else (None, None)
+        if args.identity_snapshot is not None:
+            files["identity_snapshot_directory"] = args.identity_snapshot
         if args.command == "prepare":
             result = prepare_routes(intake, identity, **files, paired=args.paired).to_dict()
         else:

@@ -19,6 +19,9 @@ def main(argv=None):
     parser.add_argument("--occupancy-reviews", help="Independent occupancy review JSON")
     parser.add_argument("--route-reviews", help="Source-linked route policy review JSON")
     parser.add_argument("--coordinates", help="Independent canonical coordinate evidence JSON")
+    parser.add_argument(
+        "--identity-snapshot", help="Linked identity snapshot for automatic coordinates"
+    )
     parser.add_argument("--expected-plan", help="Optional trusted full snapshot plan JSON")
     parser.add_argument("--generated-at", help="Explicit offset-aware report creation timestamp")
     args = parser.parse_args(argv)
@@ -38,6 +41,8 @@ def main(argv=None):
         ):
             path = getattr(args, attribute)
             files[name], hashes[attribute] = _read(Path(path)) if path else (None, None)
+        if args.identity_snapshot is not None:
+            files["identity_snapshot_directory"] = args.identity_snapshot
         result = build_quality_report(
             intake,
             identity,

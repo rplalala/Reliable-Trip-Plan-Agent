@@ -216,6 +216,7 @@ def build_quality_report(
     coordinate_evidence=None,
     *,
     expected_plan=None,
+    identity_snapshot_directory=None,
     generated_at,
 ):
     """Compose existing offline scorers without accepting caller-authored metric summaries."""
@@ -278,6 +279,7 @@ def build_quality_report(
                 coordinate_evidence,
                 paired=False,
                 expected_plan=expected_plan,
+                identity_snapshot_directory=identity_snapshot_directory,
             ).to_dict(),
         }
         failures = [
