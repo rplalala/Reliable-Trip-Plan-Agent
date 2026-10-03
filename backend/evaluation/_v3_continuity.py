@@ -197,7 +197,9 @@ def build_continuity(stages, correspondence):
                     else "unresolved_correspondence",
                 }
             )
-    result["conflicts"], result["protection_conflicts"] = _conflicts(before, after, correspondence)
+    result["conflicts"], result["protection_conflicts"] = _conflicts(
+        before, after, correspondence, result["routes"]
+    )
     return result
 
 
@@ -236,7 +238,25 @@ def _non_conflict(left, right):
     return True
 
 
-def _conflicts(before, after, correspondence):
+def _participant_changed(unit, stage, activity_ids, structural_legs):
+    key = _unit_key(unit, stage)
+    return key is not None and (
+        any(sid in activity_ids for sid in key[1])
+        or (unit["kind"] == "transport" and key[1] in structural_legs)
+    )
+
+
+def _conflicts(before, after, correspondence, route_changes):
+    changed_legs = {}
+    for side, transition in (
+        ("before", "structural_leg_removed"),
+        ("after", "structural_leg_added"),
+    ):
+        changed_legs[side] = {
+            tuple(row[side][field]["record_id"] for field in ("from_source", "to_source"))
+            for row in route_changes
+            if row["transition"] == transition
+        }
     mapping, added, removed = {}, set(), set()
     for relation in correspondence["relations"]:
         left, right = relation["before"], relation["after"]
@@ -291,7 +311,8 @@ def _conflicts(before, after, correspondence):
         other = new_pairs.get(target)
         if target is None:
             known_removal = any(
-                s["record_id"] in removed for uid in ids for s in old_units[uid]["sources"]
+                _participant_changed(old_units[uid], before, removed, changed_legs["before"])
+                for uid in ids
             )
             output.append(
                 {
@@ -334,7 +355,7 @@ def _conflicts(before, after, correspondence):
             *(old_units[uid] for uid in previous)
         )
         known_addition = any(
-            s["record_id"] in added for uid in ids for s in new_units[uid]["sources"]
+            _participant_changed(new_units[uid], after, added, changed_legs["after"]) for uid in ids
         )
         output.append(
             {
@@ -381,7 +402,9 @@ def _conflicts(before, after, correspondence):
                 and oid in new_blocks
                 and _non_conflict(new_units[target], new_blocks[oid])
             )
-            removed_participant = any(s["record_id"] in removed for s in old_units[uid]["sources"])
+            removed_participant = _participant_changed(
+                old_units[uid], before, removed, changed_legs["before"]
+            )
             record = {
                 "before": conflict,
                 "after": None,
@@ -410,7 +433,7 @@ def _conflicts(before, after, correspondence):
             and oid in old_blocks
             and _non_conflict(old_units[previous], old_blocks[oid])
         )
-        addition = any(s["record_id"] in added for s in new_units[uid]["sources"])
+        addition = _participant_changed(new_units[uid], after, added, changed_legs["after"])
         protections.append(
             {
                 "before": None,

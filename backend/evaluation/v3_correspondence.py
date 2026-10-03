@@ -87,6 +87,15 @@ def _same_state(a, b):
     )
 
 
+def _content(activity):
+    """Observable occurrence content, independent of the producer's ID allocation."""
+    return [
+        activity["declared_day"],
+        activity["evaluation_role"],
+        {key: value for key, value in activity["original"].items() if key != "activity_id"},
+    ]
+
+
 def _sources(prepared, supplied):
     if supplied is None:
         return {}
@@ -623,13 +632,7 @@ def prepare_v3_correspondence(
 
                 # Only unique exact content supplies weaker fallback correspondence.
                 def signature(a):
-                    return canonical_digest(
-                        [
-                            a["declared_day"],
-                            a["evaluation_role"],
-                            {k: v for k, v in a["original"].items() if k != "activity_id"},
-                        ]
-                    )
+                    return canonical_digest(_content(a))
 
                 for aid, activity in list(old.items()):
                     key = signature(activity)
@@ -794,10 +797,7 @@ def _apply_reviews(prepared, identities, rows, envelope):
         require(cardinality.get(relation, False), gid, "Review relation/cardinality mismatch")
         if relation == "unchanged":
             require(
-                left[0]["declared_day"] == right[0]["declared_day"]
-                and left[0]["evaluation_role"] == right[0]["evaluation_role"]
-                and {k: v for k, v in left[0]["original"].items() if k != "activity_id"}
-                == {k: v for k, v in right[0]["original"].items() if k != "activity_id"},
+                _content(left[0]) == _content(right[0]),
                 gid,
                 "Unchanged review contradicts observed fields",
             )

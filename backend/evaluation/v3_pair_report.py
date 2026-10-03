@@ -381,20 +381,16 @@ def build_v3_pair_report(
                             if r["before"] and r["after"]
                         ),
                         "removed_count": sum(
-                            r["relation"] == "removed"
-                            and any(
-                                activities[s["record_id"]]["evaluation_role"] == "primary_visit"
-                                for s in r["before"]
-                            )
+                            activities[s["record_id"]]["evaluation_role"] == "primary_visit"
                             for r in relations
+                            if r["relation"] == "removed"
+                            for s in r["before"]
                         ),
                         "added_count": sum(
-                            r["relation"] == "added"
-                            and any(
-                                activities[s["record_id"]]["evaluation_role"] == "primary_visit"
-                                for s in r["after"]
-                            )
+                            activities[s["record_id"]]["evaluation_role"] == "primary_visit"
                             for r in relations
+                            if r["relation"] == "added"
+                            for s in r["after"]
                         ),
                         "unresolved_before": pair["correspondence"]["unresolved"]["before"],
                         "unresolved_after": pair["correspondence"]["unresolved"]["after"],
