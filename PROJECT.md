@@ -191,10 +191,13 @@ are evidence records, not current project authority or guaranteed fresh-clone as
 
 ## 6. Next work and authorization boundary
 
-Tickets 01-10 have completed their approved implementation scopes. Ticket 10 local
-delivery and offline acceptance do not authorize publication/tracker mutation or a
-formal run. Tickets 11-12 require their own scope approval. Read the live
-Issue and relevant contract before proposing the next task.
+Tickets 01-12 have completed their approved local implementation, offline validation
+and review scopes. The next work is engineering delivery and tracker synchronization.
+On 2026-10-04, read-only GitHub verification found Tickets 01-09 closed/completed,
+Tickets 10-12 (#22-#24) and parent #12 open, and documentation migration #36
+closed/completed. The open Issues still describe earlier specification checkpoints;
+their implementation acceptance has not yet been synchronized. These observations
+are dated snapshots, not a second live tracker or publication authorization.
 
 The 2026-10-03 documentation migration consolidates durable scratch specifications
 into core docs and dated records, preserves local spec/child-ticket working files,
@@ -204,10 +207,18 @@ URLs. GitHub owns task state; local ticket copies are planning aids, not a secon
 live tracker. See [tracker conventions](docs/agents/issue-tracker.md) and the
 [core design/proposal index](docs/README.md).
 
-Local implementation/documentation commits are not automatically published. This
-task authorizes document migration, legacy Issue mapping/closure and local commits;
-it adds no live run, formal evaluation, next-ticket implementation or version freeze.
-Push, merge and branch switching require separate authorization.
+The approved delivery preflight covers local status/evidence corrections, outgoing
+commit inspection, read-only remote verification and Issue update drafts. The verified
+remote feature/evaluation tip is fc9996803b05b9b444583f0985274bee75c4ed0f; pending
+local commits include Tickets 05-12, related corrections and documentation migration.
+No open PR for that branch was found at the preflight checkpoint.
+
+Local commits are not automatically published. Push, PR creation, merge, branch
+switching and Issue mutations require explicit authorization beyond this preflight.
+Live services, formal cases/evaluation/analysis, further implementation and version
+freezes remain separately authorized work. Read the live Issue and relevant contract
+before proposing a new task; completed Tickets 11-12 do not need implementation
+approval again.
 
 Per-ticket approvals and task discussion remain in the relevant GitHub Issues.
 

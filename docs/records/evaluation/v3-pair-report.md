@@ -139,3 +139,23 @@ uniquely from indistinguishable observations without sufficient original evidenc
 aggregate delta describes two observed populations, not causal Repair efficacy or an overall
 success rate. Controlled Repair and mechanism reporting remain separate Tickets 11-12.
 Existing injected-transport and formal-run authorization boundaries remain in force.
+
+## Delivery revision correspondence — 2026-10-04
+
+Read-only delivery preflight at `296460dfbab442f066a87798e44b800800f995d8`
+found that the historical review revisions above are no longer ancestors of the current
+delivery head. Their corresponding reachable revisions have exactly identical Git
+tree hashes, verified with local Git objects and empty pairwise tree diffs:
+
+| Historical evidence revision | Reachable delivery revision | Role |
+| --- | --- | --- |
+| `d08083d5d50573e0bec6345f45ed12beb2b77855` | `45a04567067bf0c5aa6909b1bf3dd147086d9c24` | Review fixed point |
+| `f65cd0f8370136afacfabc14a1af7251ba8fc197` | `3ebefb62db9264fd7146dd60f0dc209650db0a33` | Implementation and direct tests |
+| `e24ce0ee628a7e8de99aab6f82bf36a7a336ecda` | `645becd09bc1637a8527f46c676b51f0bfd9d92b` | First review correction |
+| `45b13d926ff8b2d6b667c599f3c812fcfe24d995` | `bd406b3007552cf7ea6e26ee4e1fe97f294e1cfb` | Second review correction |
+
+Original revision identifiers, validation counts and review chronology are preserved
+as historical evidence. Publication must reference the reachable delivery revisions;
+the identical-tree check supports reusing existing code validation without claiming a
+new test run. This preflight neither rewrites commits nor publishes code or tracker
+updates. These local revisions are not remote links until publication is verified.
