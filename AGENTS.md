@@ -216,11 +216,14 @@ Examples:
 ## Thesis Research Archive
 
 `thesis_notes/` stores historical research/development records for future thesis work.
-It is **not** a project source of truth.
+It is a local archive, not a project source of truth. Shareable engineering evidence belongs
+in `docs/records/`; local research context and private interpretation belong in `thesis_notes/`.
+When preserving, promoting or deduplicating a record, apply the
+[record admission rules](docs/agents/domain.md#record-admission-and-topic-ownership).
 
 For normal development tasks:
 
-- Proactively record meaningful failure diagnoses, architecture decisions, rejected approaches, and development validation results in `thesis_notes/` without requesting separate approval. Read only the relevant archive files needed to place or update the record.
+- Proactively preserve meaningful failure diagnoses, architecture decisions, rejected approaches and development validation results in the appropriate existing record owner under those admission rules, without requesting separate approval. Read only the relevant archive files needed to place or update the record. Use one full record per event; local notes may reference a public record and add distinct research context.
 - Do not use thesis notes to determine current requirements or architecture.
 - Historical notes may contain rejected, superseded, or outdated designs and must never override current project files.
 - Archive updates are part of the current development task, not a separate stage requiring approval. Summarize any archive updates in the final Chinese report.

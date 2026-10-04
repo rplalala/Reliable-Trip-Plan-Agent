@@ -55,31 +55,9 @@ formal benchmark or automatic next task is authorized by this milestone document
 
 ## Shared first-generation mixed transport (current offline checkpoint)
 
-V1/V2/V3 now use shared baseline routing, bounded pre-generation mixed-mode options,
-one primary generation, and actual-adjacency/time transfer binding before the version's
-post-primary step. V1/V2 report conflicts and UNKNOWN without repairing activities.
-V3 reuses the same evidence and adopted transfers in its existing validator and Repair.
-V0 remains tool-free. This is a shared baseline upgrade, not V3-exclusive mechanism value.
-
-The normal planning supply is unchanged: this does not rediscover omitted POIs, increase K,
-or add a second discovery pass. Default WALK preference permits evidence-supported TRANSIT
-and DRIVE alternatives; explicit supported requirements remain restrictive. Representative
-TRANSIT never inherits final-time PASS. Provider duration and DRIVE application reserve are
-separate. The primary projection retains all directed baseline facts in a compact catalogue;
-it drops redundant wrappers, not inconvenient facts. No selective fact omission is performed.
-Unbound actual adjacencies remain in application-owned `route_diagnostics`, including
-per-mode facts and unresolved alternatives; absent transfers do not erase obligations.
-
-Primary input is 252000, output 16384. Supplementary totals are 32 directed pairs / 32 sends /
-64 requested elements; post-generation reservations are 16 / 16 / 32 within those totals.
-Baseline remains 7 / 400 / 64. Cumulative route-work wall time is 120 seconds with 30 seconds
-reserved for post-generation, always inside the original request deadline. Other acquisition,
-Repair and Nearby limits are unchanged. Common transport policy now belongs to `transport`
-in runtime.yaml; Repair-only authority and added-burden policy remain version-specific.
-
-Implementation and tests are recorded in `docs/v1_development.md`. This checkpoint has only
-offline evidence; historical development live records are unchanged and do not validate it.
-No new live, evaluation, freeze, commit or push is implied.
+The 2026-09-25 [shared mixed-transport checkpoint](v1-milestone.md#shared-first-generation-mixed-transport-current-offline-checkpoint)
+supplied baseline facts to V3's existing validation/Repair. Its offline evidence does
+not extend live acceptance or freeze V3; later V3-specific evidence retains its dated scope below.
 
 
 ### Minimum daily coverage update (2026-09-25)

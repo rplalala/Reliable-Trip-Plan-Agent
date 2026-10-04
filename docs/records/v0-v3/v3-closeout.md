@@ -8,6 +8,18 @@
 Status: V3 ENGINEERING CLOSED — FINAL ENGINEERING CHECKPOINT RECORDED. Benchmark Frozen: NO. Formal Evaluation: NOT STARTED.
 Next stage: Evaluation Readiness Audit, not started or authorized by this checkpoint.
 
+<a id="shared-milestone-notice-2026-09-25"></a>
+
+## Shared milestone notice - 2026-09-25
+
+Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3-closeout.md)
+for current configuration, shared ownership and artifact-verified evidence. Earlier dated
+implementation/live statements below retain their original scope. V0 remains tool-free;
+V1/V2 do not run Repair; the product default remains V0. Provider recovery UI is offline-only.
+
+This notice was shared by the V0/V1/V2 and frontend records at this dated checkpoint.
+Its Product/default and provider-recovery statements describe 2026-09-25 only.
+
 ## Authorized post-checkpoint review corrections — 2026-09-25
 
 Status: implemented + offline-validated; no new live evidence. The review used committed

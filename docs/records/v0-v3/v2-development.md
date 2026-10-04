@@ -2422,11 +2422,8 @@ separates a functional rebuild from restoring exact local vector values.
 
 ## Shared first-generation extension - 2026-09-20
 
-The shared coverage/role/diagnostic/K20 extension is implemented and checked offline;
-no fresh live result is claimed. Acquisition goals remain unchanged and no repair loop
-exists. The single [development event](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/development_record.md)
-owns sizing, first failures and subsequent targeted test results. Historical live and
-full-suite records above retain their original configuration and outcome.
+The 2026-09-20 extension also applied to V2; its evidence was offline only and
+left prior live/configuration records unchanged. [Shared coverage/role/K20 event](v1-development.md#shared-first-generation-extension---2026-09-20).
 
 ### Connection tolerance change
 
@@ -2439,41 +2436,12 @@ I/O variability. See the shared event for the original capture and precise limit
 
 ## Compatible transfer output update (2026-09-25)
 
-The shared itinerary DTO now accepts optional `transfers` (missing defaults empty).
-Current V3 binds and presents verified/unknown per-leg route estimates and separate
-application reserves; V0-V2 do not fabricate transfers or acquire additional routes for
-this field. Primary model DTO/prompt, K, existing version entry points and product default
-are unchanged. The frontend can render this optional data when supplied; this does not
-implement the deferred Product V3/API selection or the whole frontend backlog.
-See [V3 design](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/v3_design.md) and the
-[development verification record](v3-development.md#mixed-transport-and-joint-components-2026-09-25).
-This is shared output compatibility, not evidence of a V3-only quality gain or a re-freeze.
+V2 participated in the 2026-09-25 optional-transfer compatibility update;
+its existing execution path and Product-selection scope were preserved. [Shared DTO/presentation boundary and verification](v1-development.md#compatible-transfer-output-update-2026-09-25).
 
 
 ## Shared first-generation mixed transport (current offline checkpoint)
 
-V1/V2/V3 now use shared baseline routing, bounded pre-generation mixed-mode options,
-one primary generation, and actual-adjacency/time transfer binding before the version's
-post-primary step. V1/V2 report conflicts and UNKNOWN without repairing activities.
-V3 reuses the same evidence and adopted transfers in its existing validator and Repair.
-V0 remains tool-free. This is a shared baseline upgrade, not V3-exclusive mechanism value.
-
-The normal planning supply is unchanged: this does not rediscover omitted POIs, increase K,
-or add a second discovery pass. Default WALK preference permits evidence-supported TRANSIT
-and DRIVE alternatives; explicit supported requirements remain restrictive. Representative
-TRANSIT never inherits final-time PASS. Provider duration and DRIVE application reserve are
-separate. The primary projection retains all directed baseline facts in a compact catalogue;
-it drops redundant wrappers, not inconvenient facts. No selective fact omission is performed.
-Unbound actual adjacencies remain in application-owned `route_diagnostics`, including
-per-mode facts and unresolved alternatives; absent transfers do not erase obligations.
-
-Primary input is 252000, output 16384. Supplementary totals are 32 directed pairs / 32 sends /
-64 requested elements; post-generation reservations are 16 / 16 / 32 within those totals.
-Baseline remains 7 / 400 / 64. Cumulative route-work wall time is 120 seconds with 30 seconds
-reserved for post-generation, always inside the original request deadline. Other acquisition,
-Repair and Nearby limits are unchanged. Common transport policy now belongs to `transport`
-in runtime.yaml; Repair-only authority and added-burden policy remain version-specific.
-
-Implementation and tests are recorded in `docs/v1_development.md`. This checkpoint has only
-offline evidence; historical development live records are unchanged and do not validate it.
-No new live, evaluation, freeze, commit or push is implied.
+V2 uses the shared 2026-09-25 mixed-transport baseline. The [retained checkpoint summary](v1-milestone.md#shared-first-generation-mixed-transport-current-offline-checkpoint)
+records mode applicability, compact evidence, route diagnostics, limits and reservations.
+V2 retains its independent tools/RAG path and performs no Repair. This shared checkpoint was offline-only; it adds no version freeze or new live acceptance.

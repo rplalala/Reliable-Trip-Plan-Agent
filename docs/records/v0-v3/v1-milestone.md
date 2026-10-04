@@ -5,17 +5,16 @@
 
 # V1 milestone checkpoints
 
-Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3-closeout.md)
-for current configuration, shared ownership and artifact-verified evidence. Earlier dated
-implementation/live statements below retain their original scope. V0 remains tool-free;
-V1/V2 do not run Repair; the product default remains V0. Provider recovery UI is offline-only.
+V1 retains its original milestone scope below. The [shared 2026-09-25 notice](v3-closeout.md#shared-milestone-notice-2026-09-25)
+records the historical Product default, version isolation and recovery-UI limitations.
 
 
 ## Latest accepted boundary - 2026-09-20
 
 V1 quality_first_1: 24 ordinary successes, 24 compared, 12 supplied, eight scheduled. Nearby remained independent.
 
-Status: implemented + bounded development-live-validated where covered, not production-ready, formal benchmark or automatic re-freeze. Current explicit configuration is quality_first_1 with 160k input guard and 16,384 output. This does not rewrite earlier frozen configurations. Exact implementation/config hashes, offline history, live inputs, failures, artifacts and limitations are maintained once in the [joint event](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/development_record.md). Reviews/Profile and ten-day K16 live were not covered; unknown Web reasoner usage stays unknown. No new validation is performed by this migration.
+V1 retains its quality-first outcome above. The joint 2026-09-20 status,
+configuration and uncovered live checks are retained with the [quality-first pair](v2-milestone.md#earlier-quality-first-pair---2026-09-20).
 
 Dated records below preserve original scope, status and evidence; they are not current runtime instructions. Current design is maintained separately. Proposed or unexecuted steps remain unexecuted unless a later explicitly identified record establishes otherwise.
 
@@ -443,34 +442,23 @@ checkpoint.
 
 ## Later shared first-draft checkpoint - 2026-09-20
 
-The prior accepted implementation and bounded-live checkpoints remain valid for their
-recorded scope. Later shared full-range generation guidance, declared roles, diagnostics
-and K20/400-element Routes support were implemented with offline checks only. The new
-prompt has not been live-validated. The single [shared event](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/development_record.md)
-records the full run859 passed/9 skipped/2 failed and45-pass targeted correction; the
-full run is not retrospectively green. No re-freeze or benchmark is claimed.
+V1 also received the 2026-09-20 shared first-draft extension. Its full-suite
+failures and targeted correction remain distinct in the [dated shared checkpoint](v2-milestone.md#later-shared-first-draft-checkpoint---2026-09-20).
 
-V2 acceptance does not establish feasible outputs: below-default/empty days, repeats,
-redundancy, opening/transition conflicts, visitor-access and cost UNKNOWN and factual
-contradictions remain possible. [V3 design](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/v3_design.md) records their future validation
-and targeted-repair boundary, not implemented capability. K20/default targets/sorting
-and connection tolerance are shared/V2 baseline work, not V3 research contributions.
+The shared baseline did not establish V2 feasibility or an implemented V3
+validation gain at this date; retain the [original limitations and future boundary](v2-milestone.md#later-shared-first-draft-checkpoint---2026-09-20).
 
 
 ## Compatible transfer output update (2026-09-25)
 
-The shared itinerary DTO now accepts optional `transfers` (missing defaults empty).
-Current V3 binds and presents verified/unknown per-leg route estimates and separate
-application reserves; V0-V2 do not fabricate transfers or acquire additional routes for
-this field. Primary model DTO/prompt, K, existing version entry points and product default
-are unchanged. The frontend can render this optional data when supplied; this does not
-implement the deferred Product V3/API selection or the whole frontend backlog.
-See [V3 design](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/v3_design.md) and the
-[development verification record](v3-development.md#mixed-transport-and-joint-components-2026-09-25).
-This is shared output compatibility, not evidence of a V3-only quality gain or a re-freeze.
+V1 participated in the 2026-09-25 optional-transfer compatibility update;
+its existing execution path and Product-selection scope were preserved. [Shared DTO/presentation boundary and verification](v1-development.md#compatible-transfer-output-update-2026-09-25).
 
 
 ## Shared first-generation mixed transport (current offline checkpoint)
+
+Recorded event: 2026-09-25. The full [implementation, failure/correction/retest and sizing sequence](v1-development.md#2026-09-25---shared-first-generation-mixed-transport)
+is retained in the dated V1 development event. The paragraphs below are its shared checkpoint summary.
 
 V1/V2/V3 now use shared baseline routing, bounded pre-generation mixed-mode options,
 one primary generation, and actual-adjacency/time transfer binding before the version's

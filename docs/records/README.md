@@ -19,12 +19,12 @@ bounded by their recorded date and never grant another execution or freeze.
 | [Frontend](frontend/product-v3-acceptance.md) | Original MVP milestone and Product V3 acceptance/failure/retest evidence |
 | [Shared](v0-v3/poi-semantics-closeout.md) | Cross-version semantic, supply and transport observations |
 
-Keep a record only when its date, evidence, decision or failure/correction/retest sequence
-adds information beyond the current contract. Merge related observations into the topic owner.
-Do not archive whole copies of current design documents here. Contract changes belong in docs;
-specs, tickets and pending decisions belong in Issues. Local drafts, preflight/dispatch packets,
-handoffs, commit plans and migration/link-audit manifests belong in ignored scratch/artifacts.
-Raw local evidence paths may identify historical evidence but are not published dependencies.
+For new records, promotion from local notes and deduplication, apply the
+[record admission and ownership rules](../agents/domain.md#record-admission-and-topic-ownership).
+Keep one shareable, evidence-backed account per historical event; local `thesis_notes/` adds
+distinct private research context. A record summarizes a dated event, not a full backup of a
+current design, raw runtime output or a live task packet. Prefer an existing owner and retain
+unique decisions and failure/retest evidence when replacing repeated prose with historical links.
 
 The original full design/development snapshots remain accessible through the historical
 [V0 #42](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/42),

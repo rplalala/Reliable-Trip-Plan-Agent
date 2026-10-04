@@ -29,14 +29,47 @@ conflicts with recorded decisions explicitly rather than silently overriding the
 
 ## Record admission and topic ownership
 
-Use `docs/records/v0-v3/` for version and shared engineering evidence,
-`docs/records/evaluation/` for evaluation records, and `docs/records/frontend/`
-for frontend evidence. Operational commands belong in `docs/guides/`. Benchmark design history belongs
-in evaluation with its accepted/proposed/frozen status explicit. Historical failure and
-retest sequences are retained even when a later contract changes; current contracts must
-not be duplicated there as whole-file backups. Merge new evidence into a relevant owner.
-Keep dispatch/preflight packets, handoffs, commit plans, migration inventories and temporary
-coverage/link audits in ignored scratch/artifacts. Publish useful decisions/specification
-discussion to the relevant Issue; a local working copy is optional. Before retiring a
-record, merge still-valid technical rules into core docs and redirect dependencies to
-the actual current owner or accessible historical Issue/revision.
+Choose a destination by purpose before writing. This section owns admission and deduplication
+rules; AGENTS.md owns task approval, publication, Git and research limits.
+
+| Material | Owner | Admission boundary |
+| --- | --- | --- |
+| Current design, behavior or detailed contract | Existing numbered core doc, `docs/contracts/` or ADR | Maintain the current rule in its topic owner; an archive is not another current specification. |
+| Current reproducible operational instructions | `docs/guides/` | Maintain usable commands and prerequisites; link dated results to their evidence owner. |
+| Shareable historical engineering evidence | `docs/records/` | Retain a substantive dated decision, failure, rejected approach, implementation or acceptance event with evidence and scope beyond the current contract. |
+| Local research context | Ignored `thesis_notes/` | Preserve private interpretation, research questions or thesis preparation context beyond a public engineering record; distinguish hypotheses from observations. Formal thesis writing or research evaluation still needs explicit authorization. |
+| Specs, tickets, dependencies and pending decisions | GitHub Issues | Use the tracker for live state; optional local `.scratch/` copies are drafts only. |
+| Temporary drafting and execution material | Ignored `.scratch/`, `artifacts/` or `logs/` | Drafts/preflight/handoffs belong in scratch, derived audits/manifests in artifacts, and original runtime evidence in logs. These do not become tracked records by default. |
+
+Admit a public engineering record only when all of the following hold:
+
+- It adds an event-specific rationale, observation or failure/correction/retest sequence;
+  a current-design copy, routine dispatch or raw output dump is insufficient.
+- It states the event date, code revision and relevant uncommitted context, design/validation
+  status, evidence identifiers, actual check scope and limitations. Missing evidence is explicit.
+- It distinguishes observed facts, inferences and hypotheses; implementation, validation and
+  user-approved freezes remain separate. Historical commands grant no new execution authority.
+- It is safe to track: exclude secrets and raw private/provider payloads. Summarize the evidence;
+  label local evidence paths as historical identifiers and use only tracked or accessible remote
+  destinations for published navigation.
+
+Use `docs/records/v0-v3/` for version/shared engineering evidence, `evaluation/` for evaluator
+evidence and historical benchmark decisions, and `frontend/` for frontend evidence. Merge into
+the existing relevant topic/event owner before creating a file. File length or ticket count
+alone does not justify another record. Existing historical records may retain incomplete metadata
+with that limitation identified; never fabricate missing facts to make them meet the new gate.
+
+Use one full historical account per event. If both public evidence and local research context
+are needed, keep the shareable account in records and let local notes reference it plus distinct
+private material. Promotion from local notes produces a sanitized engineering record and replaces
+copied shareable prose in the local note with a pointer; retain unique private context. Raw evidence
+stays local. Maintaining tracked documents does not authorize a push, Issue publication or formal run.
+
+For deduplication, choose an existing dated event owner and keep its complete shared account.
+Replace repeated accounts elsewhere with an event-specific summary and a link to that historical
+owner; retain each version's distinct approval, result and limitation. Preserve dates, revisions,
+rejected/superseded decisions, failure/retest order and old section anchors. Current docs cannot
+replace the evidence of an older decision. Common archive warnings may stay at each reader entry.
+Keep a long record when its unique evidence is useful; neither length nor current implementation
+coverage alone is a deletion criterion. Before retiring a record, place still-valid technical rules
+in their current owner and redirect dependencies to the retained history or accessible revision.
