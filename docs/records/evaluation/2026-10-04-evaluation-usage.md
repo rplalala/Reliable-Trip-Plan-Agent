@@ -105,3 +105,40 @@ remain unchanged. The existing native browser acceptance is reused; package gene
 does not establish a new native storage/download acceptance result. There is no new universal
 CLI, UI or evidence acquisition system. Publication needs separate approval; new commits
 and documents stay local until an authorized push.
+
+## Authorized PR delivery and import correction - 2026-10-04
+
+The later delivery authorization covers normal push of `feature/evaluation`, PR creation,
+independent Standards/Spec review, publication of engineering scores and merge after
+blocking findings are resolved. [PR #50](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/50)
+contains the complete Evaluation and tracked-documentation release against `main`.
+The initial reviewed head was `59adc5ea63ba33f9ab70c7111cac5d7076feecab`;
+the fixed base was `ecb01cc67be2d5b659747444756d606a6b2485bb`.
+Concurrent documentation was subsequently committed separately as `02e11e3` and added
+to the delivery review; it was not staged or overwritten by the delivery task.
+
+Standards review found an asynchronous answer-import defect: after file reading starts,
+saving another revision could be lost when the older answer snapshot was imported.
+Navigation during reading could also restore the previous task's form into the selected
+task. Each delayed-FileReader regression failed before its respective correction and
+passed afterward. Separate correction commit `8d3b387` reads the latest saved answers
+and current task at completion, retaining the existing Clear invalidation behavior.
+This changes only the standalone blind-review renderer and its component tests.
+
+Validation at the corrected code revision:
+
+- Frontend suite: **100 passed across 13 files**; the affected component has 14 passing tests.
+- Frontend lint, TypeScript/product build and isolated blind-review build passed.
+- The rebuilt renderer was selected explicitly for the offline usage suite:
+  **9 passed in 137.05 seconds**, with 40 actual CLI subprocesses. No live provider,
+  model or database execution was introduced. An earlier rerun without selecting the
+  built renderer was interrupted and is not counted as passing evidence.
+- The unchanged backend implementation reuses the earlier **2490 passed / 10 skipped**
+  full-suite result. Ruff and release diff checks passed. Mypy/pyright are not configured.
+
+Delivery logs and generated packets are ignored local evidence under
+`artifacts/git-delivery/`; this record and the PR discussion are the shareable summary.
+Hosted CI returned no runs or checks, so it is not described as passing CI.
+The final review outcome and actual merge revision are recorded in the PR timeline;
+this pre-merge record does not claim a merge before it occurs. Engineering acceptance
+does not establish a formal comparison, research conclusion or version freeze.
