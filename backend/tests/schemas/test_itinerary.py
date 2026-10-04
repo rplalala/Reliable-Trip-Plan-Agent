@@ -83,3 +83,55 @@ def test_itinerary_rejects_duplicate_activity_ids() -> None:
                 )
             ],
         )
+
+
+def test_transport_declaration_round_trips_in_nested_itinerary_output() -> None:
+    raw = make_activity().model_dump(mode="json")
+    raw.update(
+        activity_kind="transport",
+        place_name=None,
+        transport={"mode": "TRANSIT", "from_activity_id": "a", "to_activity_id": "b"},
+    )
+    itinerary = make_itinerary().model_copy(
+        update={
+            "days": [
+                ItineraryDay(date=date(2026, 10, 1), activities=[Activity.model_validate(raw)])
+            ]
+        }
+    )
+    encoded = itinerary.model_dump(mode="json")
+    assert encoded["days"][0]["activities"][0]["transport"] == raw["transport"]
+    assert Itinerary.model_validate(encoded).model_dump(mode="json") == encoded
+
+
+@pytest.mark.parametrize("explicit_null", [False, True])
+def test_absent_transport_preserves_historical_activity_wire_shape(explicit_null) -> None:
+    raw = make_activity().model_dump(mode="json")
+    if explicit_null:
+        raw["transport"] = None
+    assert "transport" not in Activity.model_validate(raw).model_dump(mode="json")
+
+
+@pytest.mark.parametrize(
+    "declaration",
+    [
+        {"mode": "WALK", "from_activity_id": "", "to_activity_id": "b"},
+        {"mode": "BICYCLE", "from_activity_id": "a", "to_activity_id": "b"},
+        {"mode": "WALK", "from_activity_id": "a"},
+    ],
+)
+def test_invalid_transport_declaration_is_rejected(declaration) -> None:
+    raw = make_activity().model_dump(mode="json")
+    raw.update(activity_kind="transport", transport=declaration)
+    with pytest.raises(ValidationError):
+        Activity.model_validate(raw)
+
+
+def test_transport_declaration_cannot_reclassify_a_visit() -> None:
+    raw = make_activity().model_dump(mode="json")
+    raw.update(
+        activity_kind="main_poi",
+        transport={"mode": None, "from_activity_id": "a", "to_activity_id": "b"},
+    )
+    with pytest.raises(ValidationError, match="transport declarations require"):
+        Activity.model_validate(raw)

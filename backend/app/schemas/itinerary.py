@@ -3,11 +3,28 @@
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    SerializerFunctionWrapHandler,
+    model_serializer,
+    model_validator,
+)
 
 from backend.app.schemas.request import Money
 
 ActivityKind = Literal["main_poi", "generic_activity", "transport", "free_time", "unknown"]
+
+
+class TransportDeclaration(BaseModel):
+    """Model-authored journey claim, never independently verified route evidence."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    mode: Literal["WALK", "TRANSIT", "DRIVE"] | None
+    from_activity_id: str = Field(min_length=1)
+    to_activity_id: str = Field(min_length=1)
 
 
 class Activity(BaseModel):
@@ -25,13 +42,24 @@ class Activity(BaseModel):
     end_time: datetime
     estimated_cost: Money | None = None
     notes: str | None = Field(default=None, min_length=1)
+    transport: TransportDeclaration | None = None
+
+    @model_serializer(mode="wrap")
+    def serialize_optional_transport(self, handler: SerializerFunctionWrapHandler) -> dict:
+        """Keep legacy and tool-backed activity output unchanged when absent."""
+        result = handler(self)
+        if self.transport is None:
+            result.pop("transport", None)
+        return result
 
     @model_validator(mode="after")
     def validate_time_range(self) -> "Activity":
-        """Require an activity to finish after it starts."""
+        """Require a positive interval and transport-only declarations."""
 
         if self.end_time <= self.start_time:
             raise ValueError("end_time must be after start_time")
+        if self.transport is not None and self.activity_kind != "transport":
+            raise ValueError("transport declarations require activity_kind='transport'")
         return self
 
 

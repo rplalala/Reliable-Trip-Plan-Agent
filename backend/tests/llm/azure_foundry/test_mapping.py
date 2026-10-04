@@ -7,11 +7,11 @@ import pytest
 from pydantic import ValidationError
 
 from backend.app.llm.azure_foundry.dto import (
-    FoundryActivityDTO,
     FoundryDateTimeDTO,
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
     FoundryMoneyDTO,
+    FoundryV0ActivityDTO,
 )
 from backend.app.llm.azure_foundry.mapping import (
     FoundryMappingError,
@@ -38,8 +38,8 @@ def make_activity(
     *,
     start_time: FoundryDateTimeDTO | None = None,
     end_time: FoundryDateTimeDTO | None = None,
-) -> FoundryActivityDTO:
-    return FoundryActivityDTO(
+) -> FoundryV0ActivityDTO:
+    return FoundryV0ActivityDTO(
         activity_kind="main_poi",
         source_place_id=None,
         activity_id="activity-1",
@@ -50,10 +50,11 @@ def make_activity(
         end_time=end_time or make_datetime(time_value="11:00:00"),
         estimated_cost=FoundryMoneyDTO(amount="0", currency="JPY"),
         notes=None,
+        transport=None,
     )
 
 
-def make_itinerary(*, activity: FoundryActivityDTO | None = None) -> FoundryItineraryDTO:
+def make_itinerary(*, activity: FoundryV0ActivityDTO | None = None) -> FoundryItineraryDTO:
     return FoundryItineraryDTO(
         output_version="itinerary_2",
         reference_recommendations=[],
@@ -128,7 +129,25 @@ def test_itinerary_mapping_does_not_infer_missing_activity_date() -> None:
     del payload["end_time"]["date"]
 
     with pytest.raises(ValidationError, match="Field required"):
-        FoundryActivityDTO.model_validate(payload)
+        FoundryV0ActivityDTO.model_validate(payload)
+
+
+@pytest.mark.parametrize("mode", ["WALK", "TRANSIT", "DRIVE", None])
+def test_v0_mapping_preserves_transport_declaration_without_inventing_route_facts(mode):
+    raw = make_activity().model_dump()
+    raw.update(
+        activity_kind="transport",
+        place_name=None,
+        transport={"mode": mode, "from_activity_id": "origin", "to_activity_id": "destination"},
+    )
+    mapped = map_foundry_itinerary(
+        make_itinerary(activity=FoundryV0ActivityDTO.model_validate(raw))
+    )
+    assert (
+        mapped.model_dump(mode="json")["days"][0]["activities"][0]["transport"] == raw["transport"]
+    )
+    assert mapped.transfers == []
+    assert mapped.route_diagnostics == []
 
 
 def test_itinerary_mapping_preserves_domain_time_range_validation() -> None:

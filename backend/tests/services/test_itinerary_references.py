@@ -185,6 +185,9 @@ def test_new_wire_requires_fields_and_rejects_authoritative_source_ref():
 
 def test_primary_cost_projection_and_final_api_contract():
     data = make_dto().model_dump(exclude={"reference_recommendations"})
+    for day in data["days"]:
+        for activity in day["activities"]:
+            activity.pop("transport")  # V1 provider output excludes V0's declaration field.
     data["days"][0]["activities"][0]["source_place_id"] = "museum"
     data["days"][0]["activities"][0]["estimated_cost"]["amount"] = "10-20"
     result = map_foundry_v1_itinerary(FoundryPrimaryItineraryDTO.model_validate(data))

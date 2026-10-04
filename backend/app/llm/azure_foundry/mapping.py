@@ -10,8 +10,9 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryItineraryDTO,
     FoundryMoneyDTO,
     FoundryPrimaryItineraryDTO,
+    FoundryV0ActivityDTO,
 )
-from backend.app.schemas.itinerary import Activity, Itinerary, ItineraryDay
+from backend.app.schemas.itinerary import Activity, Itinerary, ItineraryDay, TransportDeclaration
 from backend.app.schemas.request import Money
 
 _DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
@@ -92,6 +93,11 @@ def map_foundry_activity(value: FoundryActivityDTO, *, field_path: str) -> Activ
             map_foundry_money(value.estimated_cost) if value.estimated_cost is not None else None
         ),
         notes=value.notes,
+        transport=(
+            TransportDeclaration.model_validate(value.transport.model_dump())
+            if isinstance(value, FoundryV0ActivityDTO) and value.transport is not None
+            else None
+        ),
     )
 
 

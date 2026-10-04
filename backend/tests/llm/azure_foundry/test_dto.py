@@ -12,6 +12,7 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryItineraryDayDTO,
     FoundryItineraryDTO,
     FoundryMoneyDTO,
+    FoundryPrimaryItineraryDTO,
 )
 
 UNSUPPORTED_KEYWORDS = {
@@ -101,3 +102,18 @@ def test_dto_rejects_extra_fields() -> None:
                 "timezone_name": "Asia/Tokyo",
             }
         )
+
+
+def test_only_v0_provider_activities_require_nullable_transport_declaration() -> None:
+    schema = FoundryItineraryDTO.model_json_schema()
+    day = schema["$defs"]["FoundryItineraryDayDTO"]
+    activity_ref = day["properties"]["activities"]["items"]["$ref"].split("/")[-1]
+    activity = schema["$defs"][activity_ref]
+    assert "transport" in activity["required"]
+    branches = activity["properties"]["transport"]["anyOf"]
+    assert {"type": "null"} in branches
+    declaration_ref = next(branch["$ref"] for branch in branches if "$ref" in branch)
+    declaration = schema["$defs"][declaration_ref.split("/")[-1]]
+    assert set(declaration["required"]) == {"mode", "from_activity_id", "to_activity_id"}
+    primary = FoundryPrimaryItineraryDTO.model_json_schema()["$defs"]["FoundryPrimaryActivityDTO"]
+    assert "transport" not in primary["properties"]

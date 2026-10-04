@@ -67,6 +67,49 @@ def test_v0_runs_exactly_the_two_intended_structured_stages() -> None:
     }
 
 
+@pytest.mark.parametrize("mode", ["WALK", None])
+def test_v0_preserves_structured_model_transport_without_additional_stages(mode):
+    raw = make_itinerary().model_dump(mode="json")
+    raw["output_version"] = "itinerary_2"
+    visit = raw["days"][0]["activities"][0]
+    visit["activity_kind"] = "main_poi"
+    visit["end_time"] = "2026-09-12T10:00:00+09:00"
+    declaration = {"mode": mode, "from_activity_id": visit["activity_id"], "to_activity_id": "b"}
+    travel = dict(
+        visit,
+        activity_id="travel",
+        activity_kind="transport",
+        title="Between the visits",
+        start_time="2026-09-12T10:00:00+09:00",
+        end_time="2026-09-12T10:20:00+09:00",
+        place_name=None,
+        transport=declaration,
+    )
+    second = dict(
+        visit,
+        activity_id="b",
+        title="Visit another shrine",
+        start_time="2026-09-12T10:30:00+09:00",
+        end_time="2026-09-12T11:30:00+09:00",
+    )
+    raw["days"][0]["activities"] = [second, travel, visit]
+    client = FakeStructuredLLMClient([empty_preference_draft(), Itinerary.model_validate(raw)])
+    result = asyncio.run(
+        run_v0(
+            make_request(additional_preferences="Plan one day in Kyoto."),
+            client,
+            reference_date=date(2026, 9, 11),
+        )
+    )
+    activities = result.model_dump(mode="json")["itinerary"]["days"][0]["activities"]
+    assert [a["activity_id"] for a in activities] == [visit["activity_id"], "travel", "b"]
+    assert activities[1]["transport"] == declaration
+    assert result.itinerary.transfers == []
+    assert result.itinerary.route_diagnostics == []
+    assert [call.response_schema for call in client.calls] == [InterpretationDraft, Itinerary]
+    assert client.semantic_calls == []
+
+
 def test_v0_reports_missing_input_before_generation():
     client = FakeStructuredLLMClient([])
     with pytest.raises(ValidationError):
@@ -130,8 +173,10 @@ def test_v0_rejects_requested_dates_outside_shared_window_before_generation() ->
 
 def test_v0_rejects_final_activity_date_outside_requested_range() -> None:
     itinerary = make_itinerary()
-    activity = itinerary.days[0].activities[0].model_copy(
-        update={"end_time": datetime.fromisoformat("2026-09-13T01:00:00+09:00")}
+    activity = (
+        itinerary.days[0]
+        .activities[0]
+        .model_copy(update={"end_time": datetime.fromisoformat("2026-09-13T01:00:00+09:00")})
     )
     day = itinerary.days[0].model_copy(update={"activities": [activity]})
     itinerary = itinerary.model_copy(update={"days": [day]})
