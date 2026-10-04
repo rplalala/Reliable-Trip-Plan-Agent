@@ -181,6 +181,18 @@ def test_v0_generic_notes_do_not_block_supported_transport_binding(batch, title,
 
 
 @pytest.mark.parametrize(
+    "title", ["Walking; Estimated travel time", "Walking ; Estimated travel time"]
+)
+def test_v0_mode_clause_whitespace_does_not_block_transport_binding(batch, title):
+    _, results, write, _, _ = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][1]["title"] = title
+    out = final(load_batch(write("v0")))
+    assert not out["unbound_transport"]
+    assert len(out["legs"][0]["claims"]) == 1
+    assert out["legs"][0]["claims"][0]["mode"] == "WALK"
+
+
+@pytest.mark.parametrize(
     "title",
     [
         "Walking tour of Museum A",

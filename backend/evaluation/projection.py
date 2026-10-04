@@ -318,7 +318,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
             ]
         else:
             endpoints = transport_endpoints(raw)
-            title = (normalized(raw.get("title")) or "").split(";", 1)[0].removesuffix(".")
+            title = (normalized(raw.get("title")) or "").split(";", 1)[0].strip().removesuffix(".")
             plain_title = title in MODE_TITLES or title in {"transport", "transfer"}
             matches = (
                 []
