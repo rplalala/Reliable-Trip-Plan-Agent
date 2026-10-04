@@ -1,6 +1,6 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-10-04.
+Current source of truth. Updated 2026-10-05.
 Detailed design, development and acceptance records are indexed in
 [docs/README.md](docs/README.md).
 
@@ -76,6 +76,8 @@ Details: [requirements](docs/0002-requirements-evidence.md),
   references stay separate. References do not satisfy required visits or count as
   scheduled activities or planned costs.
 - V0 generates explicitly estimated transport activities without Routes calls.
+  New output includes structured mode and directed activity endpoints; absent/null
+  declarations remain compatible with historical outputs. These are model estimates.
 - V1-V3 model output must not contain transport activities. Their primary DTO and
   shared output acceptance enforce the declared-role boundary; prompts also prohibit
   disguised transport. Application-owned `transfers` use Routes evidence. Models may
@@ -159,11 +161,11 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2576 passed, 10 skipped in 247.11s**, from
-the 2026-10-04 Issue #53 correction after its separately committed review fix.
-The [correction acceptance](docs/records/evaluation/intake-identity-usage.md#free-text-scoring-corrections-2026-10-04)
+Latest recorded full backend gate: **2632 passed, 10 skipped in 238.61s**, from
+the 2026-10-05 Issue #57 implementation after its separate output-schema correction.
+The [structured transport acceptance](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-2026-10-05)
 retains failing regressions, corrections, final retest and dual-axis review evidence.
-Earlier Ticket 11/12 results remain historical in their respective acceptance records.
+Earlier Issue #53 and Ticket 11/12 results remain historical in their acceptance records.
 The skips are environment/opt-in cases. No live services or formal corpus were used;
 earlier approved supplements remain distinct evidence.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
@@ -223,8 +225,9 @@ The 2026-10-04 evaluator correction under
 vetoes of structured role/identity claims, excludes declared free time from POI counts,
 and prevents unrelated notes from changing V0 mode/transport association. Genuine
 unknown roles, date attribution, endpoint conflicts and identity review/audit remain.
-Projection policy is `structural_claims_directed_occurrences_4`; identity association is
-`structural_claims_typed_addresses_3`. The density table and V0-V3 planners are unchanged.
+That correction introduced projection policy `structural_claims_directed_occurrences_4`
+and identity association `structural_claims_typed_addresses_3`. The density table and
+V0-V3 planners were unchanged by that correction.
 See the [intake contract](docs/contracts/0002-intake-identity-usage.md#claims) and
 [correction acceptance](docs/records/evaluation/intake-identity-usage.md#free-text-scoring-corrections-2026-10-04).
 
@@ -235,7 +238,7 @@ was merged on 2026-10-05 in [PR #55](https://github.com/rplalala/Reliable-Trip-P
 through `96e4f6d`, including the earlier `main_poi` correction. Both review axes had
 zero remaining findings; Issue #53's nine acceptance criteria were verified checked
 and its state CLOSED. No new code testing was needed for the final documentation-only
-review correction; the 2576-pass/10-skip gate above remains valid.
+review correction; its 2576-pass/10-skip gate remained valid at that publication checkpoint.
 
 The subsequent authorized 2026-10-05 Seoul offline replay used these delivered policies
 and preserved original observations and agent decisions. Updated identity, route plans,
@@ -249,6 +252,18 @@ its non-overlap denominator makes the total unavailable. Changed policy/hash/obs
 references describe replay linkage, not new observations or new adjudications. This
 single-case regression does not establish live failure frequency or a formal ranking.
 See the [publication and replay acceptance](docs/records/evaluation/intake-identity-usage.md#prose-publication-and-seoul-replay-2026-10-05).
+
+The 2026-10-05 implementation under
+[Issue #57](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/57) adds V0
+`Activity.transport` declarations: mode and directed activity IDs. V0's provider
+schema/mapping/prompt emits them; the evaluator reads them before prose, with
+independent per-field review precedence. Projection policy is now
+`structural_claims_directed_occurrences_5`. Missing/null objects retain legacy input
+compatibility, while invalid IDs and null/unsupported modes remain unresolved.
+V1-V3 provider schemas and transfer authority, identity rules and density penalties
+remain unchanged. Validation is offline; preserved Seoul results are not retrofitted,
+and this task supplies no new live result or score comparison. See the
+[structured transport acceptance](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-2026-10-05).
 
 ## 6. Next work and authorization boundary
 

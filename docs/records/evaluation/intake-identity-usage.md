@@ -986,3 +986,103 @@ Ignored local evidence identifiers: `artifacts/seoul-prose-replay/replay.py`,
 `complete-first/`, `complete-repeat/`, `comparison.json`, `semantic-comparison.json`,
 `acceptance.json` and `summary.md`. Failed first/second preparations remain separate
 for historical diagnosis. Raw artifacts are not committed or required published assets.
+
+<a id="v0-structured-transport-2026-10-05"></a>
+
+## Structured V0 transport declarations - 2026-10-05
+
+Status: Implemented, offline-validated and reviewed locally.
+This is offline engineering validation, not a live result, formal comparison or freeze.
+[Issue #57](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/57) owns the task.
+Starting fixed point: `37eae16c59bf94ec2c130a80f9992ca3bab1cfe0`; final code revision:
+`72ff58f5c197641fc358bdd533b8c18b8261edb8`. Implementation began from a clean
+`feature/evaluation` branch. Tests initially ran against the combined uncommitted
+implementation, then both implementation commits were reviewed. Only related tracked
+documentation remained uncommitted when this record was written.
+
+### Decision and observed behavior
+
+The preceding Seoul replay preserved four V0 journeys with unresolved mode/association.
+Their producer supplied prose without structured endpoints. Adding more title grammar
+would not make that language reliable. The approved solution supplies declarations at
+generation: a V0-only provider activity DTO mapped to optional shared Activity data.
+Missing/null objects are omitted on shared serialization to retain historical/V1-V3
+wire compatibility. The provider schemas for V1-V3 remain unchanged.
+
+Public fixture tests observe directed ID binding independent of narrative titles/notes,
+including contradictory prose. Null/unsupported modes remain unknown; self, reversed,
+dangling, malformed, nonadjacent, cross-day, overlapping and invalid-clock associations
+do not obtain a favorable legacy fallback. Independent mode and endpoint reviews override
+their corresponding fields separately. Review identified an ambiguous sentence in the
+Issue brief; the body and a clarification comment now distinguish automatic gap checks
+from the accepted endpoint-review exception that can associate despite time conflict.
+The conflict remains available to scoring; no implementation exception was added.
+
+Report fixtures retain two primary visits and zero density penalty. Correct IDs and
+clocks establish three non-overlap units even with mode null; route state then stays
+UNKNOWN. Invalid IDs leave the non-overlap denominator unresolved. Supported WALK plus
+independent synthetic route evidence passes the route check, while opening evidence
+still has two UNKNOWN results. Declaration acceptance does not supply provider facts.
+The [output contract](../../0003-itinerary-transport.md#transport-ownership) and
+[intake contract](../../contracts/0002-intake-identity-usage.md#claims) own current rules.
+
+### Failure, correction and retest sequence
+
+Public seams were Activity/PlanningResult schema and wire output, Foundry generation
+and mapping, mocked `run_v0`, batch intake and the frozen-evidence quality report.
+Schema RED reproduced 3 failures with 8 controls passing, then all 11 passed. Provider
+schema RED reproduced 1 failure with 9 controls passing; mapping/prompt RED reproduced
+5 failures with 12 passing. Structured intake RED reproduced 27 failures with 104
+passing and 1 skipped. The combined focused suite then passed 356 with 1 skipped.
+
+A run using the default pytest temporary root produced 76 setup permission errors
+with 149 tests passing. Fresh repository-local `--basetemp` directories and
+`-p no:cacheprovider` resolved that environmental problem; the existing intake file
+passed 95 tests with 1 skipped. A new report assertion initially assumed null mode
+also made the occupancy denominator unavailable. Reading the existing occupancy
+contract corrected that assertion: known endpoints/clocks and unknown mode are
+separate. The three report cases then passed without changing any scoring rule.
+
+The first full backend run had 2627 passing, 10 skipped and four failing fixtures:
+two reused the now-V0 provider helper as V1 input without omitting `transport`; two
+new V0 cases queued an interpretation response despite empty preferences, which
+correctly skip interpretation. Correcting those fixtures passed the related 41 tests.
+The second complete run passed **2631 tests, 10 skipped in 309.14s**. Ruff initially
+reported long lines; wrapping and formatting resolved them, and lint/format/whitespace
+checks passed before committing the combined validated code in two logical groups:
+
+- `dc0d381` - `feat: declare V0 transport modes and activity endpoints (#57)`.
+- `1bb6a3b` - `feat: project structured V0 transport claims (#57)`.
+
+Both committed review axes reported zero implementation findings. An additional root
+probe of `PlanningResult.model_json_schema(mode="serialization")` then found the
+wrap serializer's `dict` return annotation replaced Activity's output schema with a
+generic object lacking properties. A public regression reproduced 1 failure with
+11 passing. Removing that annotation retained typed output properties, required fields
+and the extra-field restriction, without changing serialized values. Schema/API checks
+passed **85 tests in 4.92s**. The separate correction commit is `72ff58f` -
+`fix: preserve activity serialization schema (#57)`; both axes rechecked the complete
+fixed-point diff with zero remaining findings. Spec also independently passed its
+54-case focused probe and the corrected 12-test schema file. No history was rewritten.
+
+Final full backend command:
+
+```powershell
+uv run pytest backend/tests -q -p no:cacheprovider --basetemp artifacts/v0-transport-schema-final-backend --tb=short
+```
+
+It passed
+**2632 tests, 10 skipped in 238.61s** after the schema correction. Final Ruff lint,
+format and whitespace checks passed. No configured mypy/pyright gate exists.
+
+### Evidence and limitations
+
+Ignored fixture roots `artifacts/v0-transport-*` and the executed pytest outputs are
+local evidence identifiers, not published dependencies or raw provider material.
+Original Seoul sources and historical reports were not rewritten. This task did not
+replay Seoul or call live LLM/Google services. V0's two-node, tool-free path and V1-V3
+independent execution remain covered by tests; the unchanged density/identity rules
+are not a newly approved research policy. No measured live improvement, failure frequency,
+formal ranking or version freeze is claimed. Local commits are complete; code publication
+and a new live check require separate authorization. Current task acceptance remains
+tracked in Issue #57.
