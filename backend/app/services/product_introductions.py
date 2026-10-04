@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict
 from backend.app.observability.progress import observed, skipped
 from backend.app.services.planner_runtime import _await_cleanup
 from backend.app.versions.v0.config import V0Settings
+from backend.model_references import INSTRUCTION, ShortReferences
 
 LOGGER = logging.getLogger(__name__)
 SYSTEM_PROMPT = (
@@ -39,23 +40,27 @@ class IntroductionClient:
         self.client, self.deployment = client, deployment
 
     async def generate(self, places):
+        references = ShortReferences(places, {"activity_id": "a"})
         response = await self.client.responses.create(
             model=self.deployment,
             input=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": json.dumps(places, ensure_ascii=True)},
+                {"role": "system", "content": SYSTEM_PROMPT + "\n" + INSTRUCTION},
+                {
+                    "role": "user",
+                    "content": json.dumps(references.encode(places), ensure_ascii=True),
+                },
             ],
             text={
                 "format": {
                     "type": "json_schema",
                     "name": "ProductIntroductions",
                     "strict": True,
-                    "schema": IntroductionBatch.model_json_schema(),
+                    "schema": references.constrain_schema(IntroductionBatch.model_json_schema()),
                 }
             },
             max_output_tokens=8192,
         )
-        return IntroductionBatch.model_validate_json(response.output_text)
+        return IntroductionBatch.model_validate(references.decode(json.loads(response.output_text)))
 
 
 @asynccontextmanager

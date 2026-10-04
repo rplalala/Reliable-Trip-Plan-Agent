@@ -31,7 +31,24 @@ class FakeResponses:
 
     async def create(self, **kwargs):
         self.calls.append(kwargs)
-        return {"output_text": json.dumps({"assessments": self.assessments})}
+        payload = json.loads(kwargs["input"][1]["content"])
+        source_refs = {}
+        for source in payload["SOURCE_EVIDENCE"]:
+            original = EvidenceSourceBlock.model_validate(
+                {key: value for key, value in source.items() if key != "source_key"}
+                | {"task_id": "task-1"},
+            )
+            source_refs[original.source_key] = source["source_key"]
+        rows = json.loads(json.dumps(self.assessments))
+        for row in rows:
+            if row["candidate"] is not None:
+                candidate = row["candidate"]
+                candidate["source_key"] = source_refs.get(
+                    candidate["source_key"], candidate["source_key"]
+                )
+                if candidate["place_id"] == "alpha":
+                    candidate["place_id"] = payload["QUERY_CONTEXT_NOT_EVIDENCE"]["place_id"]
+        return {"output_text": json.dumps({"assessments": rows})}
 
 
 def _place():
@@ -116,6 +133,24 @@ def _assessment(source=None, **changes):
     return data
 
 
+def test_reasoner_uses_short_place_and_source_references():
+    source = _source()
+
+    class WireResponses:
+        async def create(self, **kwargs):
+            payload = json.loads(kwargs["input"][1]["content"])
+            assert payload["QUERY_CONTEXT_NOT_EVIDENCE"]["place_id"] == "p01"
+            assert payload["SOURCE_EVIDENCE"][0]["source_key"] == "s01"
+            assert source.source_key not in kwargs["input"][1]["content"]
+            assessment = _assessment(source)
+            assessment["candidate"].update(place_id="p01", source_key="s01")
+            return {"output_text": json.dumps({"assessments": [assessment]})}
+
+    result = asyncio.run(_reasoner(WireResponses()).reason(_task(), (source,), _place()))
+    assert result[0].candidate.place_id == "alpha"
+    assert result[0].candidate.source_key == source.source_key
+
+
 def _reasoner(fake):
     return AzureFoundryEvidenceReasoner(
         endpoint="https://example.test/openai/v1",
@@ -138,7 +173,7 @@ def test_reasoner_separates_query_context_and_source_evidence_without_tools() ->
     assert call["text"]["format"]["type"] == "json_schema"
     payload = json.loads(call["input"][1]["content"])
     assert payload["QUERY_CONTEXT_NOT_EVIDENCE"]["requested_start_date"] == "2026-12-25"
-    assert payload["SOURCE_EVIDENCE"][0]["source_key"] == source.source_key
+    assert payload["SOURCE_EVIDENCE"][0]["source_key"] == "s01"
     assert "2026-12-25" not in payload["SOURCE_EVIDENCE"][0]["text"]
     assert "QUERY CONTEXT" in SYSTEM_PROMPT and "SOURCE EVIDENCE" in SYSTEM_PROMPT
     assert "not required" in SYSTEM_PROMPT and "FREE general entry" in SYSTEM_PROMPT

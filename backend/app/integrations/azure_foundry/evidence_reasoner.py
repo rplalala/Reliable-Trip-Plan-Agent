@@ -24,6 +24,7 @@ from backend.app.integrations.azure_foundry.evidence_reasoner_prompt import (
 )
 from backend.app.observability.usage import install_http_hooks, observe_sdk
 from backend.app.runtime.config_models import WebEvidenceConfig
+from backend.model_references import INSTRUCTION, ShortReferences
 
 _OPTIONAL_STRING = {"type": ["string", "null"]}
 _CANDIDATE_FIELDS = {
@@ -287,20 +288,26 @@ class AzureFoundryEvidenceReasoner:
                 for source in sources
             ],
         }
+        references = ShortReferences(
+            input_data, {"place_id": "p", "source_key": "s", "task_id": "t"}
+        )
         raw = await observe_sdk(
             self._responses.create,
             usage_operation="official_reasoning",
             usage_provider="azure_foundry",
             model=self._deployment,
             input=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": json.dumps(input_data, ensure_ascii=False)},
+                {"role": "system", "content": SYSTEM_PROMPT + "\n" + INSTRUCTION},
+                {
+                    "role": "user",
+                    "content": json.dumps(references.encode(input_data), ensure_ascii=False),
+                },
             ],
             text={
                 "format": {
                     "type": "json_schema",
                     "name": PROMPT_VERSION,
-                    "schema": OUTPUT_SCHEMA,
+                    "schema": references.constrain_schema(OUTPUT_SCHEMA),
                     "strict": True,
                 }
             },
@@ -326,7 +333,11 @@ class AzureFoundryEvidenceReasoner:
         aligned: list[EvidenceReasonerAssessment] = []
         by_key = {source.source_key: source for source in sources}
         for item in parsed["assessments"]:
-            assessment = EvidenceReasonerAssessment.model_validate(item)
+            try:
+                decoded = references.decode(item)
+            except ValueError:
+                continue
+            assessment = EvidenceReasonerAssessment.model_validate(decoded)
             candidate = assessment.candidate
             if candidate is None:
                 aligned.append(assessment)
