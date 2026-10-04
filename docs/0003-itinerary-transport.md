@@ -1,6 +1,7 @@
 # Itinerary, transport and presentation contracts
 
-Status: Implemented shared output contract, consolidated 2026-10-03.
+Status: Implemented shared output contract, consolidated 2026-10-03;
+V0 structured declarations added 2026-10-05.
 
 ## Scheduled activities and references
 
@@ -32,6 +33,22 @@ rather than standalone schema construction, owns normalization.
 | --- | --- | --- |
 | V0 | Explicitly estimated model transport activities | No Routes request; estimates remain unverified |
 | V1-V3 | Application-owned `transfers` for real adjacencies | Applicable provider facts plus separately represented reserves |
+
+V0 transport activities can carry `transport: {mode, from_activity_id, to_activity_id}`.
+Mode is `WALK`, `TRANSIT`, `DRIVE` or null; endpoints are nonempty activity IDs.
+The new V0 provider schema requires the nullable field on every activity. Its prompt
+requires an object on transport activities and null elsewhere, directed between
+consecutive visits on the same day. Titles/notes describe estimates but do not replace
+these fields. This declaration supplies neither verified duration nor route evidence.
+
+Shared Activity accepts historical missing/null declarations and omits them on output,
+preserving the old activity wire shape. A present object survives nested PlanningResult
+serialization; a declaration on a non-transport activity fails structural validation.
+V1-V3 provider DTOs do not gain the field. V0 keeps its tool-free generation path and
+does not validate/repair endpoint feasibility or create application-owned transfers.
+Independent evaluation retains invalid associations and unknown modes, with separate
+review precedence; see the [intake contract](contracts/0002-intake-identity-usage.md#claims)
+and [development acceptance](records/evaluation/intake-identity-usage.md#v0-structured-transport-2026-10-05).
 
 V1-V3 primary model DTOs forbid declared transport activities. A violation fails generation
 without silently deleting the item or granting an extra retry. Prompts also prohibit

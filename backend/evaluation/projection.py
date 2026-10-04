@@ -21,6 +21,7 @@ ACTIVITY_FIELDS = (
     "end_time",
     "estimated_cost",
     "notes",
+    "transport",
 )
 TRANSFER_FIELDS = (
     "from_activity_id",
@@ -73,9 +74,13 @@ def interval(start, end):
 
 
 def mode_claim(raw, review):
-    """Read reviewed mode or a bounded title declaration; notes are not mode fields."""
+    """Prefer reviewed mode, then structured declaration, then legacy title."""
     if review and "mode" in review:
         return review["mode"]
+    if raw.get("transport") is not None:
+        declaration = raw["transport"]
+        mode = declaration.get("mode") if isinstance(declaration, dict) else None
+        return mode if mode in MODES else None
     declared = []
     for clause in (normalized(raw.get("title")) or "").split(";"):
         title = clause.strip().removesuffix(".")
@@ -316,6 +321,20 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
                 if (leg["from_activity_id"], leg["to_activity_id"])
                 == (review["from_activity_id"], review["to_activity_id"])
             ]
+        elif raw.get("transport") is not None:
+            declaration = raw["transport"]
+            pair = (
+                (declaration.get("from_activity_id"), declaration.get("to_activity_id"))
+                if isinstance(declaration, dict)
+                else (None, None)
+            )
+            matches = [
+                leg
+                for leg in candidates
+                if leg["adjacency_status"] != "unresolved"
+                and (leg["from_activity_id"], leg["to_activity_id"]) == pair
+                and contains(leg["gap_start"], leg["gap_end"], claim["start"], claim["end"])
+            ]
         else:
             endpoints = transport_endpoints(raw)
             title = (normalized(raw.get("title")) or "").split(";", 1)[0].strip().removesuffix(".")
@@ -363,7 +382,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
     require(consumed == set(review_map), prefix, "Review points to no activity in this projection")
     return {
         "context": context,
-        "policy_version": "structural_claims_directed_occurrences_4",
+        "policy_version": "structural_claims_directed_occurrences_5",
         "projection": prefix,
         "wire_version": wire,
         "planner_version": version,

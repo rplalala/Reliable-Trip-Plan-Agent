@@ -28,9 +28,14 @@ itinerary. The response schema is supplied separately by the provider.
 Include transport between consecutive scheduled visits at different places on the same day.
 Represent each journey as an activity with activity_kind="transport", its own unique
 activity_id, null place_name and source_place_id, and estimated start_time/end_time between
-the visits without overlapping them. In the title or notes, name the origin and destination,
-suggest a mode (walking, public transit, or driving), and explicitly label the duration and
-route as model estimates, not live-verified facts. Respect the user's transport preferences;
+the visits without overlapping them. Populate its transport object with mode
+("WALK", "TRANSIT", or "DRIVE"),
+from_activity_id equal to the origin visit's activity_id, and to_activity_id equal to the
+destination visit's activity_id. Use mode=null if you cannot suggest a supported mode.
+These IDs must identify consecutive visits on that same day, in travel direction. On all
+non-transport activities return transport=null. Titles and notes may describe the journey,
+but must not substitute for these fields. Explicitly label the duration and route in notes
+as model estimates, not live-verified facts. Respect the user's transport preferences;
 otherwise prefer walking for short journeys and public transit where appropriate. Allow
 realistic estimated travel time when choosing visit times. Do not invent checked service
 lines, timetables, fares or provider distances. Do not add travel for a same-place continuation,

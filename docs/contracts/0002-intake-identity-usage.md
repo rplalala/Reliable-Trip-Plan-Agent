@@ -1,7 +1,8 @@
 # Intake, identity, snapshots and usage
 
 Current implemented contract for Tickets 01-04, including the 2026-10-03 ordinary-output
-revision. Source records are immutable; offline replay and independent review are separate
+and 2026-10-05 structured V0 transport revisions. Source records are immutable; offline
+replay and independent review are separate
 from live acquisition. [Evaluation architecture](../0006-independent-evaluation.md) owns
 implemented/deferred scope. This file owns preparation wire and provenance; scorer rules
 live in the related topic contracts.
@@ -83,7 +84,7 @@ unresolved; daily counts still retain genuine role and date-attribution uncertai
 
 Bounded title parsing may retain source-linked `competing_claim` metadata and feed the
 separate identity review. It cannot establish semantic role contradictions or factual
-identity. Transport endpoint parsing still applies to authoritative transport records;
+identity. Legacy endpoint parsing applies only without a structured transport declaration;
 this revision adds no general semantic model or new LLM invocation.
 
 Generic locationless activities are transition-like; named unresolved POIs stay visits.
@@ -94,9 +95,23 @@ Preserve delivered day membership. For a day with comparable valid timestamps, o
 
 Candidate legs connect consecutive primary visits within a day. Nearby, transition placeholders and transport records do not become POI endpoints. Protected intervals remain separate blockers. Possible intervening unresolved-role records prevent declaring a clean complete adjacency list for that span; preserve the candidate and uncertainty instead of skipping them. Canonical same-place N/A is decided later using independent identity, not equality of claimed IDs.
 
-V0 transport supports complete `from NAME to NAME` clauses, optionally prefixed by `walk`,
+V0 preserves the optional Activity `transport` object with `mode`, `from_activity_id`
+and `to_activity_id`. Independently reviewed mode and endpoint pairs take precedence
+separately. Otherwise a present declaration takes precedence over title/notes, including
+null/unsupported mode and invalid endpoint IDs. Automatic binding requires a directed,
+consecutive, same-day candidate pair with resolved chronology and an interval fully
+contained in its gap. Self, reversed, dangling, cross-day, nonadjacent, overlapping,
+unresolved or malformed associations stay unbound. A malformed declaration never
+enables favorable prose fallback. Null/unsupported mode remains unknown even with a
+valid association. Known endpoints and clocks can establish occupancy independently
+of unknown route mode; association, occupancy and route feasibility remain separate.
+The existing independently reviewed endpoint path may associate a same-day candidate
+pair despite a time conflict, which remains visible to the scorers.
+
+Absent/null objects retain the legacy path below; object `mode=null` does not.
+Legacy V0 transport supports complete `from NAME to NAME` clauses, optionally prefixed by `walk`,
 `walking`, `drive`, `driving`, `transit`, `public transit`, `transfer` or `travel`.
-Only complete supported title/notes declarations supply endpoint pairs. All recognized
+Only complete supported title/notes declarations supply legacy endpoint pairs. All recognized
 pairs must agree; unrelated prose and generic estimate notes neither supply a pair nor
 block association. A bare supported mode title (or `Transport`/`Transfer`) without any
 recognized endpoint declaration can associate through exactly one containing gap.
@@ -108,7 +123,8 @@ reversed, unsupported, overlapping or ambiguous claims retain review; no nearest
 pair or positional override is chosen. Independent reviewed endpoints can associate despite
 a separate time conflict; the review does not clear that conflict.
 
-V0 mode comes from independent mode review or a bounded explicit title declaration.
+Without a structured object or independent mode review, legacy V0 mode comes from
+a bounded explicit title declaration.
 Supported bare labels include walk/walking/on foot, public transit/public transport,
 bus/train/metro/subway/tram, and drive/driving/by car. Recognized directed movement
 clauses may supply the leading mode label. The first semicolon-separated title clause
@@ -126,7 +142,7 @@ segments remain segments, and conflicts stay alternatives rather than summed or 
 Association status and agreement are separate. No claimed arrival is synthesized from duration.
 Display-only inferred arrival follows [human review](0005-quality-human-review.md#human).
 
-`policy_version=structural_claims_directed_occurrences_4`; immutable source-reference
+`policy_version=structural_claims_directed_occurrences_5`; immutable source-reference
 `projection_version=rtpeval_projection_1`. Internal-finding-only source changes can preserve
 semantic projections while still changing exact artifact hashes and source identities.
 Replay derived identity/evidence/report preparations when classification changes; preserve

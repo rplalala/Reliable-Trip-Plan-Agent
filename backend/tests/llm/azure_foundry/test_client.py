@@ -11,7 +11,6 @@ from backend.app.evidence.experience_models import ExperienceProfileDraft
 from backend.app.llm.azure_foundry import client as client_module
 from backend.app.llm.azure_foundry.client import AzureFoundryStructuredLLMClient
 from backend.app.llm.azure_foundry.dto import (
-    FoundryActivityDTO,
     FoundryDateTimeDTO,
     FoundryExperienceProfileDTO,
     FoundryExperienceSignalDTO,
@@ -19,6 +18,7 @@ from backend.app.llm.azure_foundry.dto import (
     FoundryItineraryDTO,
     FoundryMoneyDTO,
     FoundryPrimaryItineraryDTO,
+    FoundryV0ActivityDTO,
 )
 from backend.app.llm.client import StructuredOutputError
 from backend.app.schemas.itinerary import Itinerary
@@ -82,8 +82,8 @@ class FakeChatOpenAI:
 def make_activity(
     *,
     end_time: FoundryDateTimeDTO | None = None,
-) -> FoundryActivityDTO:
-    return FoundryActivityDTO(
+) -> FoundryV0ActivityDTO:
+    return FoundryV0ActivityDTO(
         activity_kind="main_poi",
         source_place_id=None,
         activity_id="activity-1",
@@ -103,6 +103,7 @@ def make_activity(
         ),
         estimated_cost=None,
         notes=None,
+        transport=None,
     )
 
 
@@ -132,9 +133,21 @@ def test_old_operational_extraction_binding_is_removed(monkeypatch):
         generate(client, TravelRequirements)
 
 
+@pytest.mark.parametrize(
+    "declaration",
+    [
+        None,
+        {"mode": "TRANSIT", "from_activity_id": "a", "to_activity_id": "b"},
+        {"mode": None, "from_activity_id": "a", "to_activity_id": "b"},
+    ],
+)
 def test_client_uses_itinerary_dto_and_returns_domain_model(
     monkeypatch: pytest.MonkeyPatch,
+    declaration,
 ) -> None:
+    raw = make_activity().model_dump()
+    if declaration is not None:
+        raw.update(activity_kind="transport", place_name=None, transport=declaration)
     FakeChatOpenAI.response = FoundryItineraryDTO(
         output_version="itinerary_2",
         reference_recommendations=[],
@@ -144,7 +157,7 @@ def test_client_uses_itinerary_dto_and_returns_domain_model(
         days=[
             FoundryItineraryDayDTO(
                 date="2026-10-01",
-                activities=[make_activity()],
+                activities=[FoundryV0ActivityDTO.model_validate(raw)],
             )
         ],
     )
@@ -156,6 +169,10 @@ def test_client_uses_itinerary_dto_and_returns_domain_model(
     assert FakeChatOpenAI.schema is FoundryItineraryDTO
     assert result.days[0].activities[0].end_time.isoformat() == ("2026-10-01T11:00:00+09:00")
     assert FakeChatOpenAI.structured_model.invocation_count == 1
+    serialized = result.model_dump(mode="json")["days"][0]["activities"][0]
+    assert serialized.get("transport") == declaration
+    if declaration is None:
+        assert "transport" not in serialized
 
 
 def test_client_v1_projects_range_cost_in_one_call_without_changing_v0_binding(
@@ -169,7 +186,7 @@ def test_client_v1_projects_range_cost_in_one_call_without_changing_v0_binding(
         destination="Kyoto",
         start_date="2026-10-01",
         end_date="2026-10-01",
-        days=[{"date": "2026-10-01", "activities": [activity.model_dump()]}],
+        days=[{"date": "2026-10-01", "activities": [activity.model_dump(exclude={"transport"})]}],
     )
     client = make_client(monkeypatch)
 

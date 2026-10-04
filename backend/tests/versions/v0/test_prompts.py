@@ -17,3 +17,6 @@ def test_itinerary_prompt_requires_exact_datetime_components() -> None:
 
 def test_v0_keeps_explicit_model_transport_instruction():
     assert 'activity_kind="transport"' in ITINERARY_GENERATION_SYSTEM_PROMPT
+    assert "from_activity_id" in ITINERARY_GENERATION_SYSTEM_PROMPT
+    assert "to_activity_id" in ITINERARY_GENERATION_SYSTEM_PROMPT
+    assert '"WALK", "TRANSIT", or "DRIVE"' in ITINERARY_GENERATION_SYSTEM_PROMPT

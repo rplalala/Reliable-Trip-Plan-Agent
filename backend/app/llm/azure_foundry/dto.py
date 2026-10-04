@@ -291,11 +291,25 @@ class FoundryActivityDTO(FoundryTransportDTO):
     notes: str | None
 
 
+class FoundryTransportDeclarationDTO(FoundryTransportDTO):
+    """V0 model declaration; nullable mode means unknown."""
+
+    mode: Literal["WALK", "TRANSIT", "DRIVE"] | None
+    from_activity_id: str
+    to_activity_id: str
+
+
+class FoundryV0ActivityDTO(FoundryActivityDTO):
+    """V0 alone authors transport activities and their structured declarations."""
+
+    transport: FoundryTransportDeclarationDTO | None
+
+
 class FoundryItineraryDayDTO(FoundryTransportDTO):
     """Transport representation of one itinerary day."""
 
     date: str
-    activities: list[FoundryActivityDTO]
+    activities: list[FoundryV0ActivityDTO]
 
 
 class FoundryReferenceRecommendationDTO(FoundryTransportDTO):

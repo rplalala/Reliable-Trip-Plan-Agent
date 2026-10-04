@@ -124,7 +124,12 @@ def test_real_adapter_submission_preserves_messages_options_and_result(monkeypat
         destination="Kyoto",
         start_date="2026-10-01",
         end_date="2026-10-01",
-        days=[{"date": "2026-10-01", "activities": [make_activity().model_dump()]}],
+        days=[
+            {
+                "date": "2026-10-01",
+                "activities": [make_activity().model_dump(exclude={"transport"})],
+            }
+        ],
     )
 
     async def invoke():

@@ -149,6 +149,152 @@ def final(result, version="v0"):
     return result.to_dict()["inventory"][0]["runs"][version]["final"]
 
 
+@pytest.mark.parametrize("mode", ["WALK", "TRANSIT", "DRIVE", None, "BICYCLE"])
+@pytest.mark.parametrize("title", ["Walking", "Journey between visits", "Visit Museum C"])
+def test_structured_v0_transport_overrides_prose_and_preserves_unknown_mode(batch, mode, title):
+    _, results, write, _, _ = batch
+    travel = results["v0"]["itinerary"]["days"][0]["activities"][1]
+    travel.update(
+        title=title,
+        notes="Driving from Museum B to Museum A",
+        transport={"mode": mode, "from_activity_id": "a", "to_activity_id": "b"},
+    )
+    out = final(load_batch(write("v0")))
+    assert not out["unbound_transport"]
+    claim = out["legs"][0]["claims"][0]
+    assert claim["original"]["transport"] == travel["transport"]
+    assert claim["mode"] == (mode if mode in ("WALK", "TRANSIT", "DRIVE") else None)
+    assert out["legs"][0]["journey"]["agreement"] == (
+        "consistent" if mode in ("WALK", "TRANSIT", "DRIVE") else "incomplete"
+    )
+
+
+@pytest.mark.parametrize(
+    "declaration",
+    [
+        {"mode": "WALK", "from_activity_id": "b", "to_activity_id": "a"},
+        {"mode": "WALK", "from_activity_id": "a", "to_activity_id": "a"},
+        {"mode": "WALK", "from_activity_id": "a", "to_activity_id": "missing"},
+        {"mode": "WALK", "from_activity_id": "a"},
+        {"mode": "WALK", "from_activity_id": ["a"], "to_activity_id": "b"},
+        "Walking from Museum A to Museum B",
+        [],
+        {},
+    ],
+)
+def test_bad_structured_endpoints_never_fall_back_to_supported_prose(batch, declaration):
+    _, results, write, _, _ = batch
+    travel = results["v0"]["itinerary"]["days"][0]["activities"][1]
+    travel["transport"] = declaration
+    out = final(load_batch(write("v0")))
+    assert len(out["unbound_transport"]) == 1
+    assert out["unbound_transport"][0]["original"]["transport"] == declaration
+    assert not out["legs"][0]["claims"]
+
+
+@pytest.mark.parametrize(
+    "fault", ["nonadjacent", "overlap", "cross_day", "outside_gap", "bad_clock"]
+)
+def test_structured_transport_requires_consecutive_same_day_resolved_gap(batch, fault):
+    _, results, write, _, _ = batch
+    itinerary = results["v0"]["itinerary"]
+    acts = itinerary["days"][0]["activities"]
+    acts[1]["transport"] = {"mode": "WALK", "from_activity_id": "a", "to_activity_id": "b"}
+    if fault == "nonadjacent":
+        acts.append(activity("c", "Museum C", "10:21", "10:25", place="Museum C"))
+    elif fault == "overlap":
+        acts[2]["start_time"] = "2020-01-01T09:30:00+00:00"
+    elif fault == "cross_day":
+        other = acts.pop()
+        other["start_time"] = "2020-01-02T10:30:00+00:00"
+        other["end_time"] = "2020-01-02T11:30:00+00:00"
+        itinerary["end_date"] = "2020-01-02"
+        itinerary["days"].append({"date": "2020-01-02", "activities": [other]})
+    elif fault == "outside_gap":
+        acts[1]["end_time"] = "2020-01-01T10:40:00+00:00"
+    else:
+        acts[1]["end_time"] = "invalid"
+    out = final(load_batch(write("v0")))
+    assert len(out["unbound_transport"]) == 1
+    assert all(not leg["claims"] for leg in out["legs"])
+
+
+@pytest.mark.parametrize(
+    "fields",
+    [
+        {"mode": "DRIVE"},
+        {"mode": None},
+        {"from_activity_id": "a", "to_activity_id": "b"},
+        {"mode": "DRIVE", "from_activity_id": "a", "to_activity_id": "b"},
+    ],
+)
+def test_reviewed_transport_fields_take_precedence_independently(batch, fields):
+    manifest, results, write, save, _ = batch
+    travel = results["v0"]["itinerary"]["days"][0]["activities"][1]
+    has_pair = "from_activity_id" in fields
+    travel.update(
+        title="Narrative journey",
+        transport={
+            "mode": "TRANSIT",
+            "from_activity_id": "b" if has_pair else "a",
+            "to_activity_id": "b",
+        },
+    )
+    write("v0")
+    ref = manifest["groups"][0]["selected_runs"]["v0"]["result_ref"]
+    review = {
+        "group_id": "g",
+        "run_id": "run-v0",
+        "artifact_sha256": ref["sha256"],
+        "pointer": "/itinerary/days/0/activities/1",
+        "reviewer_ref": "r",
+        "reviewed_at": "now",
+        "revision": "1",
+        "rationale": "Independent transport review",
+        **fields,
+    }
+    manifest["projection_reviews_ref"] = save(
+        "reviews.json",
+        {"schema_version": "rtpeval_reviews_1", "batch_id": "batch", "records": [review]},
+        "rtpeval_reviews_1",
+    )
+    out = final(load_batch(write()))
+    assert not out["unbound_transport"]
+    assert out["legs"][0]["claims"][0]["mode"] == fields.get("mode", "TRANSIT")
+
+
+def test_null_transport_retains_legacy_binding(batch):
+    _, results, write, _, _ = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][1]["transport"] = None
+    out = final(load_batch(write("v0")))
+    assert not out["unbound_transport"]
+    assert out["legs"][0]["claims"][0]["mode"] == "WALK"
+
+
+@pytest.mark.parametrize("version", ["v1", "v2", "v3"])
+def test_structured_model_transport_cannot_replace_application_transfers(batch, version):
+    _, results, write, _, _ = batch
+    results[version]["itinerary"]["days"][0]["activities"][1]["transport"] = {
+        "mode": "DRIVE",
+        "from_activity_id": "a",
+        "to_activity_id": "b",
+    }
+    results[version]["itinerary"]["transfers"] = [
+        {
+            "mode": "WALK",
+            "from_activity_id": "a",
+            "to_activity_id": "b",
+            "departure_time": "2020-01-01T10:00:00+00:00",
+            "arrival_time": "2020-01-01T10:20:00+00:00",
+        }
+    ]
+    out = final(load_batch(write(version)), version)
+    assert len(out["legs"][0]["claims"]) == 1
+    assert out["legs"][0]["claims"][0]["kind"] == "transfer"
+    assert out["legs"][0]["claims"][0]["mode"] == "WALK"
+    assert len(out["ignored_transport"]) == 1
+
+
 @pytest.mark.parametrize("in_notes", [False, True])
 def test_explicit_v0_endpoints_bind_unique_occurrence_gap(batch, in_notes):
     _, results, write, _, _ = batch
