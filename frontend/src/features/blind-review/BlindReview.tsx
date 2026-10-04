@@ -55,7 +55,9 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
     } catch { return { answers: [], error: "Local restore unavailable. Import your downloaded JSON backup." }; }
   });
   const [answers, setAnswers] = useState<Answer[]>(initial.answers);
+  const latestAnswers = useRef(initial.answers);
   const [index, setIndex] = useState(0);
+  const currentIndex = useRef(0);
   const task = presentation.tasks[index];
   const [form, setForm] = useState(() => draft(latestAnswer(initial.answers, task.task_id)));
   const [error, setError] = useState(initial.error);
@@ -65,6 +67,7 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
   const submitted = latestAnswer(answers, task.task_id, true);
   const currentResponses = responses(form);
   function persist(next: Answer[]) {
+    latestAnswers.current = next;
     setAnswers(next);
     try {
       (storage ?? window.localStorage).setItem(key, JSON.stringify({ schema_version: "rtpeval_human_answers_1", answers: next }));
@@ -81,6 +84,7 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
     persist(importAnswers({ schema_version: "rtpeval_human_answers_1", answers: [record] }, presentation, answers));
   }
   function navigate(next: number) {
+    currentIndex.current = next;
     setIndex(next); setForm(draft(latestAnswer(answers, presentation.tasks[next].task_id))); setNotice("");
   }
   function clearAnswers() {
@@ -90,6 +94,8 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
       setError("Local clear failed. Answers are unchanged; download JSON before closing."); setNotice(""); return;
     }
     importGeneration.current += 1;
+    latestAnswers.current = [];
+    currentIndex.current = 0;
     setAnswers([]); setIndex(0); setForm(draft()); setClearRequested(false); setError("");
     setNotice("Answers cleared for this review package.");
   }
@@ -102,8 +108,8 @@ export function BlindReview({ presentation, storage }: { presentation: Presentat
         reader.onerror = () => reject(new Error("File read failed")); reader.readAsText(file);
       });
       if (generation !== importGeneration.current) return;
-      const imported = importAnswers(JSON.parse(text), presentation, answers);
-      persist(imported); setForm(draft(latestAnswer(imported, task.task_id)));
+      const imported = importAnswers(JSON.parse(text), presentation, latestAnswers.current);
+      persist(imported); setForm(draft(latestAnswer(imported, presentation.tasks[currentIndex.current].task_id)));
     } catch (e) {
       if (generation === importGeneration.current) setError(`Import rejected: ${e instanceof Error ? e.message : "Invalid file"}`);
     }

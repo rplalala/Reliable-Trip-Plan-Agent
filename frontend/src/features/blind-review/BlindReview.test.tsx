@@ -252,3 +252,67 @@ it("successful clearing invalidates an import that has not finished reading", as
     expect(screen.getByRole("status")).toHaveTextContent("Answers cleared");
   } finally { vi.unstubAllGlobals(); }
 });
+
+it("an import preserves revisions saved while its file is being read", async () => {
+  const storage = new Map<string, string>();
+  const persistence = { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => { storage.set(key, value); } };
+  let finishRead: (() => void) | undefined;
+  let backup = "";
+  vi.stubGlobal("FileReader", class {
+    result: string | null = null;
+    onload: (() => void) | null = null;
+    onerror: (() => void) | null = null;
+    readAsText() { finishRead = () => { this.result = backup; this.onload?.(); }; }
+  });
+  try {
+    const first = render(<BlindReview presentation={presentation} storage={persistence} />);
+    for (const d of presentation.dimensions) fireEvent.change(screen.getByLabelText(`${d}: response`), { target: { value: "not_applicable" } });
+    fireEvent.click(screen.getByRole("button", { name: "Submit answer" }));
+    backup = [...storage.values()][0];
+    fireEvent.change(screen.getByLabelText("Import answers JSON"), { target: { files: [new File([backup], "answers.json")] } });
+    fireEvent.change(screen.getByLabelText("pace: reason"), { target: { value: "Saved during import" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save draft" }));
+    await act(async () => { finishRead!(); await Promise.resolve(); });
+    expect(screen.getByLabelText("pace: reason")).toHaveValue("Saved during import");
+    first.unmount();
+    render(<BlindReview presentation={presentation} storage={persistence} />);
+    expect(screen.getByLabelText("pace: reason")).toHaveValue("Saved during import");
+    fireEvent.click(screen.getByRole("button", { name: "Submit answer" }));
+    expect(screen.getByText("Submitted revision 3")).toBeInTheDocument();
+  } finally { vi.unstubAllGlobals(); }
+});
+
+it("an import restores the task selected when its file finishes reading", async () => {
+  const storage = new Map<string, string>();
+  const persistence = { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => { storage.set(key, value); } };
+  const material = structuredClone(presentation);
+  material.tasks.push({ ...structuredClone(material.tasks[0]), task_id: "task-2" });
+  let finishRead: (() => void) | undefined;
+  let backup = "";
+  vi.stubGlobal("FileReader", class {
+    result: string | null = null;
+    onload: (() => void) | null = null;
+    onerror: (() => void) | null = null;
+    readAsText() { finishRead = () => { this.result = backup; this.onload?.(); }; }
+  });
+  try {
+    render(<BlindReview presentation={material} storage={persistence} />);
+    fireEvent.change(screen.getByLabelText("pace: reason"), { target: { value: "First task answer" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save draft" }));
+    fireEvent.click(screen.getByRole("button", { name: "Next task" }));
+    fireEvent.change(screen.getByLabelText("pace: reason"), { target: { value: "Second task answer" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save draft" }));
+    backup = [...storage.values()][0];
+    fireEvent.click(screen.getByRole("button", { name: "Previous task" }));
+    fireEvent.change(screen.getByLabelText("Import answers JSON"), { target: { files: [new File([backup], "answers.json")] } });
+    fireEvent.click(screen.getByRole("button", { name: "Next task" }));
+    await act(async () => { finishRead!(); await Promise.resolve(); });
+    expect(screen.getByText("Task 2 of 2")).toBeInTheDocument();
+    expect(screen.getByLabelText("pace: reason")).toHaveValue("Second task answer");
+    fireEvent.click(screen.getByRole("button", { name: "Save draft" }));
+    fireEvent.click(screen.getByRole("button", { name: "Previous task" }));
+    expect(screen.getByLabelText("pace: reason")).toHaveValue("First task answer");
+    fireEvent.click(screen.getByRole("button", { name: "Next task" }));
+    expect(screen.getByLabelText("pace: reason")).toHaveValue("Second task answer");
+  } finally { vi.unstubAllGlobals(); }
+});
