@@ -161,11 +161,14 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2632 passed, 10 skipped in 238.61s**, from
-the 2026-10-05 Issue #57 implementation after its separate output-schema correction.
-The [structured transport acceptance](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-2026-10-05)
-retains failing regressions, corrections, final retest and dual-axis review evidence.
-Earlier Issue #53 and Ticket 11/12 results remain historical in their acceptance records.
+Latest recorded full backend gate: **2655 passed, 10 skipped in 323.62s**, from
+the 2026-10-05 Issue #59 implementation before independent review corrections.
+Subsequent corrections passed focused **80** and affected **288, 1 skipped** checks;
+the delivery correction passed **95** observability/resource/cost checks. The full
+gate was not repeated after these bounded corrections.
+The [offline cost acceptance](docs/records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05)
+retains failures, corrections, retests and dual-axis review evidence.
+Earlier Issue #57, Issue #53 and Ticket 11/12 results remain historical in their records.
 The skips are environment/opt-in cases. No live services or formal corpus were used;
 earlier approved supplements remain distinct evidence.
 The separately approved [V0 structured transport smoke](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-live-2026-10-05)
