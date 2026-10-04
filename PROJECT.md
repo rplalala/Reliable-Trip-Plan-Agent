@@ -220,6 +220,13 @@ version comparison. The [density contract](docs/contracts/0005-quality-human-rev
 and [acceptance record](docs/records/evaluation/2026-10-04-daily-density.md) own the rules,
 validation and limitations.
 
+The 2026-10-04 intake correction removes title-regex vetoes of declared visit/transport
+roles. Structured POI counts no longer become uncertain merely because a title says
+`Walk to Museum A`; genuine unknown roles and conflicting date attribution remain visible.
+Projection policy is `structural_claims_directed_occurrences_3`; the approved density table
+and V0-V3 planner behavior are unchanged. See the [intake contract](docs/contracts/0002-intake-identity-usage.md#claims)
+and [correction acceptance](docs/records/evaluation/intake-identity-usage.md#structured-role-title-correction-2026-10-04).
+
 ## 6. Next work and authorization boundary
 
 Tickets 01-12 have completed their approved implementation, offline validation,

@@ -72,10 +72,17 @@ not need to equal that name. Without usable place fields, retain the supported n
 review path rather than manufacturing a venue. Explicit competing structural/content claims
 retain `competing_claim`, its field/text/source and parsed destination/origin as applicable.
 
-Recognized `Visit <different name>` or directed movement contradictions require review;
-an isolated movement keyword or ordinary `Walking tour of Museum A` title does not veto a
-structural Museum A visit. Other prose conflicts may be independently reviewed. This is a
-bounded recognizer, not arbitrary multilingual entity understanding or factual certification.
+Title regexes do not veto declared visit or transport roles. A structured `main_poi`
+remains a primary visit under the existing place/placeholder rules even when its title is
+`Walk to Museum A` or `Walk to Museum A and explore its exhibitions`. A locationless
+declared transport remains transport even with a `Visit`/`Tour` title. Independently
+reviewed roles retain precedence. Unknown roles without usable place claims remain
+unresolved; daily counts still retain genuine role and date-attribution uncertainty.
+
+Bounded title parsing may retain source-linked `competing_claim` metadata and feed the
+separate identity review. It cannot establish semantic role contradictions or factual
+identity. Transport endpoint parsing still applies to authoritative transport records;
+this revision adds no general semantic model or new LLM invocation.
 
 Generic locationless activities are transition-like; named unresolved POIs stay visits.
 Nearby is unscheduled. Unknown/inconsistent roles retain review and applicability counts.
@@ -104,9 +111,12 @@ segments remain segments, and conflicts stay alternatives rather than summed or 
 Association status and agreement are separate. No claimed arrival is synthesized from duration.
 Display-only inferred arrival follows [human review](0005-quality-human-review.md#human).
 
-`policy_version=structural_claims_directed_occurrences_2`; immutable source-reference
+`policy_version=structural_claims_directed_occurrences_3`; immutable source-reference
 `projection_version=rtpeval_projection_1`. Internal-finding-only source changes can preserve
 semantic projections while still changing exact artifact hashes and source identities.
+Replay derived identity/evidence/report preparations when classification changes; preserve
+original source artifacts and historical reports. The density table remains
+`rtpeval_daily_density_2`.
 
 <a id="rtpeval-identity-contract"></a>
 <a id="rtpeval-identity-implementation-contract"></a>

@@ -741,3 +741,51 @@ The next full run completed with 5 failed, 1968 passed and 10 skipped in 83.54s.
 
 
 Final full backend regression: **1973 passed, 10 skipped in 85.49s**. The ten skips are nine opt-in database cases and the existing native Windows symlink privilege case. Ruff, compilation and diff whitespace checks passed. Standards and Spec have zero remaining actionable findings. No live service was called, no files were staged or committed, and no version was frozen.
+
+<a id="structured-role-title-correction-2026-10-04"></a>
+
+## Structured role and title correction - 2026-10-04
+
+Status: Implemented, validated offline and reviewed; not frozen.
+Review fixed point: `300ee039b3e2a2116a0b21f93eb09c9da2ade126` on
+`feature/evaluation`; the starting working tree was clean. The user requested avoiding
+title-regex semantic overreach following the approved density-table work. This correction
+is limited to evaluator role classification, relevant regressions and current contracts.
+
+Observed failure: the movement recognizer accepts `Walk to Museum A and explore its
+exhibitions`, interpreting all text after `to` as a destination. The old role classifier
+then changed a declared `main_poi` into `unresolved`. This was reproduced with synthetic
+intake fixtures; it is not an observed real-provider failure rate. The previously preserved
+Seoul replay had no unresolved-role/possible-count cases in the four finals or V3 stages.
+
+The classifier no longer uses movement/visit title patterns to veto declared roles.
+Existing place/placeholder guards, independent role overrides, source preservation,
+transport authority, explicit endpoint association and genuine date/role uncertainty remain.
+Competing-title metadata and the separate factual identity checks are retained; establishing
+a visit role does not establish that its venue is real or correctly identified. Projection
+policy advances to `structural_claims_directed_occurrences_3`; immutable source-reference
+version remains `rtpeval_projection_1`. Derived material affected by classification must be
+replayed from preserved sources. The density table remains `rtpeval_daily_density_2`.
+
+Validation sequence: the first pytest invocation could not access the default Windows
+temporary/cache directories, before exercising assertions. Using a fresh ignored workspace
+`--basetemp` and disabling pytest cache fixed the execution environment. The intake RED run
+then reproduced four expected role assertion failures, with three existing cases passing.
+Removing the veto made intake pass (70 passed, 1 skipped). Transport-title and four-version
+quality/density regressions then passed (102 passed, 1 skipped), including known count 2,
+possible count 0 and ordinary density penalty 0. The genuine unknown-role fixture still
+keeps its denominator unavailable. Ruff initially detected mixed line endings introduced by
+editing; formatting corrected them, and lint/format/whitespace checks passed.
+
+The full backend suite passed: **2532 passed, 10 skipped in 322.19s**. Implementation
+and directly related tests were committed before review as `9039466`
+(`fix: preserve structured activity roles across title wording`).
+Parallel Standards and Spec reviews of that commit against the recorded fixed point each
+reported zero findings. No implementation correction commit was needed; current contract
+and acceptance updates are committed separately after review.
+
+Evidence identifiers: local test directories `artifacts/title-role-red`,
+`artifacts/title-role-intake-green`, `artifacts/title-role-report-green` and
+`artifacts/title-role-full`; these are ignored execution material, not published dependencies.
+No original Seoul artifacts or report files were rewritten. No planner/provider/model run,
+formal experiment, publication or version freeze is part of this correction.
