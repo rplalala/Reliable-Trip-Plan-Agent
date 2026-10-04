@@ -202,6 +202,15 @@ separately completed. See the [published parent acceptance](https://github.com/r
 and [delivery record](docs/records/evaluation/2026-10-04-mechanism-official-audit.md#engineering-publication-and-tracker-closeout--2026-10-04).
 GitHub owns live lifecycle state; these observations describe this delivery checkpoint.
 
+The user separately approved offline CLI usage acceptance under
+[#49](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/49). The five synthetic
+workflows and two material-error examples passed through actual module processes;
+the new regression gate passed 9 tests and the full backend gate passed 2490 with 10
+skipped. This task adds tests and usage documentation, with no production behavior change
+or live/formal execution. See the [usage guide](backend/evaluation/README.md#start-with-the-synthetic-usage-packet)
+and [dated record](docs/records/evaluation/2026-10-04-evaluation-usage.md). New task commits
+and documentation remain local pending separate publication approval.
+
 The 2026-10-03 documentation migration consolidates durable scratch specifications
 into core docs and dated records, preserves local spec/child-ticket working files,
 and maps completed legacy work to GitHub Issues. `.scratch/` is local and ignored;

@@ -16,6 +16,7 @@ bounded by their recorded date and never grant another execution or freeze.
 | [V3 paired evaluation](evaluation/v3-pair-report.md) | Ticket 10 source-driven correspondence, independent deltas, TDD and review evidence |
 | [Controlled V3 repair](evaluation/2026-10-04-controlled-repair.md) | Ticket 11 frozen real execution, independently reviewed outcomes, offline TDD and review corrections |
 | [Mechanism and official audit](evaluation/2026-10-04-mechanism-official-audit.md) | Ticket 12 selected-source observations, opt-in capture, independent exact-unit reviews and offline validation |
+| [Evaluation CLI usage](evaluation/2026-10-04-evaluation-usage.md) | Issue #49 synthetic subprocess workflows, report interpretation, material correction examples and offline acceptance |
 | [Frontend](frontend/product-v3-acceptance.md) | Original MVP milestone and Product V3 acceptance/failure/retest evidence |
 | [Shared](v0-v3/poi-semantics-closeout.md) | Cross-version semantic, supply and transport observations |
 

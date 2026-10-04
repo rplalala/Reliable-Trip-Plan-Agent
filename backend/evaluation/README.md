@@ -37,6 +37,62 @@ researcher-prepared files; commands do not generate missing independent evidence
 CLI, `--help` gives executable arguments. Default reports go to stdout; save them outside
 source artifacts. Human output paths must be new. No command below acquires live evidence.
 
+### Start with the synthetic usage packet
+
+For a small development demonstration without authoring envelopes, run the subprocess
+acceptance tests. They reuse existing synthetic fixtures and exercise the actual module
+commands; they do not generate real trips. With the existing Python/npm environments,
+run this in PowerShell 7 from the repository root:
+
+```powershell
+npm --prefix frontend run build:blind-review
+New-Item -ItemType Directory -Path artifacts/evaluation-usage -Force | Out-Null
+$env:EVALUATION_USAGE_RENDERER_DIR = (Resolve-Path frontend/dist-blind-review).Path
+.venv/Scripts/python.exe -m pytest backend/tests/evaluation/test_usage_workflow.py -q --basetemp artifacts/evaluation-usage/demo-01 -o cache_dir=artifacts/evaluation-usage/cache
+Remove-Item Env:EVALUATION_USAGE_RENDERER_DIR
+```
+
+Use a fresh `--basetemp` name each time: pytest clears that directory before use.
+Generated inputs, snapshots, package and reports remain under that ignored directory.
+Each test folder's `cli-output/` retains numbered `*-command.json` (argv/exit code),
+`*-stdout.json` and `*-stderr.txt`. Command records contain local absolute paths;
+replay them only while that packet remains in its original location. Tests verify that
+pre-existing source bytes survive each CLI unchanged. External connections are guarded;
+loopback remains available for the event loop's internal socket pair. Regression runs
+use synthetic tokenization, as the parent suite does, and do not measure payload size.
+Without `EVALUATION_USAGE_RENDERER_DIR`, the package test uses a minimal renderer fixture
+so ordinary Python regression tests need no npm build. Set it as above for the real renderer.
+
+| Example | What to inspect | Expected interpretation |
+| --- | --- | --- |
+| Four-version quality/resources | Quality `groups[].versions`; resource `metrics` | All V0-V3 retained; the synthetic V1 score is 50 with two opening UNKNOWNs; missing tokens stay null |
+| V3 overlap retime | Pair `continuity`, `correspondence`, `deltas`, `visit_changes` | Confirmed overlap resolved using adopted lineage, zero removed visits; grounding delta is exactly 0/1; unresolved total delta stays null |
+| Four controlled cases | `targets[].independent_outcome` or `control.outcome` | `resolved`, `valid_no_change`, `lawful_change`, `regressed`, respectively |
+| Mechanism/audit | Mechanism `runs`; audit queue `units` and report `counts` | Complete simulated captures give three run-bound claim units, two occurrences each; missing captures leave the population count null |
+| Anonymous package | `public/review.html`, private mapping, import/report stdout | Four labels A-D, one imported answer revision and one descriptive task; answers are synthetic |
+| Invalid input | Intake `material_diagnostics`, command exit code | Missing file and changed-source hash mismatch exit 2 with the affected path |
+
+The exclusive-addition example deliberately includes an independently reviewed quotation,
+“Exactly one primary visit on this day.” Its planner interpretation misses that restriction.
+V3's internal `ACCEPTED_COMPLETE` therefore coexists with the independent `regressed` verdict.
+Without that restriction, the same independently feasible addition is `lawful_change`.
+The audit verdicts and ranking answers only demonstrate file linkage and report processing;
+they are not real human assessments or evidence that any venue fact is true.
+Existing native browser acceptance remains separate from package generation/import checks.
+
+For researcher-supplied material, follow the commands below and the relevant contract;
+the demo does not collect missing independent evidence. Four-final scoring requires a
+final-only snapshot, whereas V3 paired reporting requires a paired snapshot. Do not reuse
+one snapshot across those scopes. Exit 0 means processing completed, including FAIL,
+UNKNOWN or unavailable totals; inspect the report rather than treating it as an itinerary PASS.
+
+Save stdout JSON as UTF-8 without BOM. In PowerShell 7, set
+`$env:PYTHONIOENCODING = 'utf-8'` and pipe a stdout-only command to
+`Set-Content -Encoding utf8NoBOM`; native CLI output options already write UTF-8.
+Windows PowerShell 5.1 `>` uses UTF-16, so it cannot be used for these JSON artifacts.
+The [dated usage record](../../docs/records/evaluation/2026-10-04-evaluation-usage.md)
+retains the observed validation sequence and limits.
+
 <a id="entry-points"></a>
 <a id="manifest-and-envelope-vocabulary"></a>
 <a id="independent-review-replay"></a>
@@ -160,8 +216,9 @@ distinguishes automated checks from user-reported browser acceptance.
 ### V3 paired diagnostics
 
 ```powershell
-.venv/Scripts/python.exe -m backend.evaluation.v3_pair_cli prepare manifest.json identity-report.json > edit-provenance.json
-.venv/Scripts/python.exe -m backend.evaluation.v3_pair_cli report manifest.json identity-report.json paired-evidence-snapshot --context schedule-context.json --route-reviews route-reviews.json --coordinates coordinates.json --expected-plan paired-evidence-plan.json --edit-provenance edit-provenance.json --generated-at 2026-10-03T00:00:00Z > v3-pair-report.json
+$env:PYTHONIOENCODING = 'utf-8'
+.venv/Scripts/python.exe -m backend.evaluation.v3_pair_cli prepare manifest.json identity-report.json | Set-Content -Encoding utf8NoBOM edit-provenance.json
+.venv/Scripts/python.exe -m backend.evaluation.v3_pair_cli report manifest.json identity-report.json paired-evidence-snapshot --context schedule-context.json --route-reviews route-reviews.json --coordinates coordinates.json --expected-plan paired-evidence-plan.json --edit-provenance edit-provenance.json --generated-at 2026-10-03T00:00:00Z | Set-Content -Encoding utf8NoBOM v3-pair-report.json
 ```
 
 Prepare the current identity replay and frozen evidence plan with `--paired`. Save
