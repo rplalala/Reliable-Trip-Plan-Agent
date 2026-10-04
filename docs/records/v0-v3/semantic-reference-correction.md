@@ -795,3 +795,29 @@ It does not establish a general error rate, full V0-V3 orchestration, venue-poli
 introduction-prose accuracy, formal benchmark or version freeze. Native identity adoption
 remains **zero**, and the V0's four route verdicts remain **UNKNOWN**. The next engineering
 step is authorized Git delivery of #66, followed by separately scoped #67 adoption work.
+
+### Authorized Git delivery checkpoint — 2026-10-05
+
+The user subsequently authorized push, PR creation, review, merge after successful
+checks and acceptance-based closure of #66, including the related #66/#67 preparation
+documents. The four existing commits were normally pushed without rewriting history;
+[PR #68](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/68) targets `main`
+from `feature/evaluation`. Its fixed review base is
+`62f9329903b53f76abb8ea2a37e119bd94d3f478`; the first published head is
+`a802724ce5040ac3897428d207ca2fd3ac52fecb`.
+
+Combined Standards and Spec reviews covered all eight release files and the four
+commits, with zero remaining findings on either axis. The earlier two native-seam
+corrections remain effective. Six added local document links resolve to tracked targets;
+English content, Ruff and diff checks passed. No GitHub CI check workflow is configured
+for this PR; local regression evidence is the merge gate. No further live request was
+made during delivery. This documentation update records the authorization/checkpoint,
+not a premature merge assertion; the PR and #66 own definitive publication/closure state.
+The #67 design remains Proposed and its Issue remains open.
+
+The final delivery backend gate passed **2705 tests with 10 skipped in 421.67
+seconds**, covering the corrected executor and unchanged production code. This
+supersedes the implementation's earlier full gate for current validation status;
+it does not rerun any live service. Python mypy/pyright checks are not configured
+in the project. The additional tracked delivery update changes documentation only;
+its content/diff checks and affected review rechecks precede merge.

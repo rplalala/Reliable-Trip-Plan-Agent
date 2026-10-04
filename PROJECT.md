@@ -164,10 +164,10 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2704 passed, 10 skipped in 246.51s**, from the
-2026-10-05 [short-reference executor implementation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05),
+Latest recorded full backend gate: **2705 passed, 10 skipped in 421.67s**, from the
+2026-10-05 [short-reference delivery validation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05),
 tracked under [#66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66).
-Subsequent review corrections passed **89** executor/Repair and **42** native-policy
+Earlier review corrections passed **89** executor/Repair and **42** native-policy
 tests; Standards and Spec rechecks have no remaining findings.
 Primary generation, Repair, review profiling, official reasoning and Product decoration
 now restore supplied identities from short model references. The subsequent authorized
@@ -312,8 +312,10 @@ On 2026-10-05 the user approved creating and preparing two follow-ups:
 [short-reference live regression #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66)
 and [V0-only proposal adoption/route handoff #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67).
 The user subsequently authorized #66 implementation and its live budget. Its executor,
-offline SDK preflight, dual-axis review and six-case live smoke are complete locally;
-Git publication and Issue closeout require separate delivery approval. No short-reference
+offline SDK preflight, dual-axis review and six-case live smoke are complete. The user
+also authorized publication and #66 closeout through
+[PR #68](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/68); GitHub owns final
+merge and Issue lifecycle state. No short-reference
 restoration failure occurred in these six samples. See the dated
 [execution acceptance](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05).
 The second proposes default-off V0 model-assisted association while
