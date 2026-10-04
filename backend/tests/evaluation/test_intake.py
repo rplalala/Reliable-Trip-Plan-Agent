@@ -160,6 +160,26 @@ def test_explicit_v0_endpoints_bind_unique_occurrence_gap(batch, in_notes):
     assert out["legs"][0]["claims"][0]["mode"] == "WALK"
 
 
+@pytest.mark.parametrize("title", ["Walking", "Walking from Museum A to Museum B"])
+@pytest.mark.parametrize(
+    "notes",
+    [
+        "Model estimate",
+        "Estimated travel time",
+        "Bring water if it is sunny",
+        "Pass the bus station",
+        "Model estimate; prefer to wear comfortable shoes",
+    ],
+)
+def test_v0_generic_notes_do_not_block_supported_transport_binding(batch, title, notes):
+    _, results, write, _, _ = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][1].update(title=title, notes=notes)
+    out = final(load_batch(write("v0")))
+    assert not out["unbound_transport"]
+    assert len(out["legs"][0]["claims"]) == 1
+    assert out["legs"][0]["claims"][0]["mode"] == "WALK"
+
+
 @pytest.mark.parametrize(
     "title",
     [
@@ -186,6 +206,15 @@ def test_declared_transport_role_is_not_overridden_by_title(batch, title):
     out = final(load_batch(write("v0")))
     assert out["activities"][1]["evaluation_role"] == "transport"
     assert out["activities"][1]["transport_applicable"] is True
+    assert len(out["legs"]) == 1
+
+
+@pytest.mark.parametrize("title", ["Rest", "Explore the area"])
+def test_declared_visit_without_place_is_not_erased_by_placeholder_title(batch, title):
+    _, results, write, _, _ = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][0].update(title=title, place_name=None)
+    out = final(load_batch(write("v0")))
+    assert out["activities"][0]["evaluation_role"] == "primary_visit"
     assert len(out["legs"]) == 1
 
 
@@ -693,12 +722,24 @@ def test_no_planner_import_or_network_on_intake(batch, monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "note,mode", [("Estimated, not live verified", "WALK"), ("Do not walk; use driving", None)]
+    "title,note,mode",
+    [
+        ("Walking", "Estimated, not live verified", "WALK"),
+        ("Walking", "Bring water if it is sunny", "WALK"),
+        ("Walking", "Pass the bus station", "WALK"),
+        ("Walking from Museum A to Museum B", "Pass the bus station", "WALK"),
+        ("Public transit", "Walk around after arrival", "TRANSIT"),
+        ("Driving", "Train station nearby", "DRIVE"),
+        ("Do not walk; use driving", None, None),
+        ("Walk or drive", None, None),
+        ("Walking; Driving", None, None),
+        ("Transfer", "Walking might be possible", None),
+    ],
 )
-def test_transport_disclaimer_is_not_mode_negation(batch, note, mode):
+def test_v0_explicit_title_mode_is_not_inferred_from_notes(batch, title, note, mode):
     _, results, write, _, _ = batch
     a = results["v0"]["itinerary"]["days"][0]["activities"][1]
-    a["notes"] = note
+    a.update(title=title, notes=note)
     out = final(load_batch(write("v0")))
     all_claims = out["unbound_transport"] + out["legs"][0]["claims"]
     assert all_claims[0]["mode"] == mode

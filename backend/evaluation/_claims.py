@@ -54,19 +54,16 @@ def claim_evidence(value, parsed, source):
     return {"source": source, "field": "title", "original": value, "parsed": parsed}
 
 
-def has_endpoint_claim(value):
-    return bool(re.search(r"\b(from|to|towards|between)\b|[\u2192>]|\u5230|\u81f3", value, re.I))
-
-
 def transport_endpoints(raw):
-    """Require all endpoint-bearing clauses to express the same supported pair."""
+    """Read supported endpoint declarations; unrelated prose supplies no endpoint claim."""
     pairs = []
     for field in ("title", "notes"):
         value = normalized(raw.get(field)) or ""
         for clause in value.split(";"):
-            if has_endpoint_claim(clause):
-                pair = directed_claim(clause)
-                if pair is None:
-                    return None
+            pair = directed_claim(clause)
+            if pair is not None:
                 pairs.append(pair)
-    return pairs[0] if pairs and len(set(pairs)) == 1 else None
+    return {
+        "declared": bool(pairs),
+        "pair": pairs[0] if pairs and len(set(pairs)) == 1 else None,
+    }

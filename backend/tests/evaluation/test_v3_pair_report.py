@@ -11,6 +11,7 @@ from backend.evaluation.v3_correspondence import prepare_v3_correspondence, read
 from backend.evaluation.v3_pair_report import build_v3_pair_report
 from backend.tests.evaluation import test_routes as route_tests
 from backend.tests.evaluation.test_daily_density import density_reviews
+from backend.tests.evaluation.test_intake import activity
 from backend.tests.evaluation.test_requirement_schedule import required
 from backend.tests.evaluation.test_routes import no_departure, protection
 
@@ -113,6 +114,27 @@ def test_identical_pair_reuses_scorers_and_has_exact_zero_deltas(pair_case):
     assert pair["deltas"]["auxiliary_total"]["exact_fraction"] == {"numerator": 0, "denominator": 1}
     assert pair["deltas"]["dimensions"]["requirements"]["verified_score_percentage_points"] is None
     assert pair["deltas"]["dimensions"]["routes"]["denominator"] == 0
+
+
+def test_paired_free_time_title_change_does_not_change_visit_counts_or_density(pair_case):
+    def before(itinerary):
+        itinerary["days"][0]["activities"].append(
+            activity("break", "Free time", "10:00", "10:20", "free_time")
+        )
+
+    def after(itinerary):
+        itinerary["days"][0]["activities"][-1]["title"] = "Coffee break"
+
+    case = pair_case(before=before, after=after)
+    out = report(case, density_reviews=density_reviews(case[0]))
+    assert out["status"] == "complete", out["diagnostics"]
+    pair = out["groups"][0]
+    for stage in pair["stages"].values():
+        day = stage["daily_density"]["days"][0]
+        assert day["known_primary_count"] == 2
+        assert day["possible_primary_count"] == 0
+        assert day["penalty_0_100"] == 0
+    assert pair["deltas"]["overall_total"]["percentage_points"] == 0
 
 
 def test_pair_density_repair_contributes_to_overall_delta(pair_case):

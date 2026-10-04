@@ -11,6 +11,26 @@ from backend.tests.evaluation.test_intake import activity, transfer
 pytest_plugins = ("backend.tests.evaluation.test_intake",)
 
 
+def test_non_poi_free_time_retains_independently_reviewed_commitment(batch):
+    _, results, write, _, _ = batch
+    rest = activity("rest", "Coffee break", "10:00", "10:20", "free_time", place="Hotel Lounge")
+    results["v1"]["itinerary"]["days"][0]["activities"].append(rest)
+    projection = load_batch(write("v1")).to_dict()["inventory"][0]["runs"]["v1"]["final"]
+    item = projection["activities"][-1]
+    assert item["evaluation_role"] == "transition"
+    unreviewed = prepare_occupancy(projection, [], timezone="Etc/UTC").to_dict()
+    assert any(c["sources"] == [item["source"]] for c in unreviewed["candidates"])
+    reviewed = prepare_occupancy(
+        projection,
+        [],
+        timezone="Etc/UTC",
+        reviews=[{"source": item["source"], "occupancy": "committed"}],
+    ).to_dict()
+    rest_unit = next(c for c in reviewed["commitments"] if c["kind"] == "fixed_generic")
+    assert rest_unit["sources"] == [item["source"]]
+    assert rest_unit["intervals"][0]["seconds"] == 1200
+
+
 def test_overlapping_protections_union_without_adding_commitments(batch):
     _, _, write, _, _ = batch
     projection = load_batch(write()).to_dict()["inventory"][0]["runs"]["v0"]["final"]
