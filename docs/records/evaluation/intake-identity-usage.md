@@ -1324,3 +1324,29 @@ formatting/import findings were corrected before the gate.
 The final documentation commit records acceptance, current interfaces and the route plan.
 Issue checklist completion reflects local validation, not publication or bill retrieval.
 No version milestone/freeze or formal research conclusion follows.
+
+### Git delivery review correction — 2026-10-05
+
+Publication was separately authorized for this scope: push, PR review, merge after
+acceptance and closure of Issue #59. [PR #60](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/60)
+reviews the complete published scope against `f9d7880`; the first published head was
+`9be9e1b`. Synchronizing main introduced no file changes, preserving earlier test evidence.
+The original baseline and implementation/correction commits above remain in history.
+
+The delivery Spec review found no actionable findings and independently passed 30
+focused tests. Standards found two issues: SDK tool billing observations inflated the
+existing physical HTTP metrics, and PROJECT.md still called Issue #57's gate the latest.
+The HTTP regression first failed for both zero and one actual mocked dispatch (reporting
+one and two respectively). Correction `941bd9d` excludes only the explicit
+`sdk_output_tool_calls` observations from HTTP metrics, retaining their cost units,
+duplicate-event validation, model tokens and actual transport events. PROJECT.md now
+points to the later Issue #59 full gate and distinguishes subsequent bounded checks.
+
+The first broader correction run passed 79 tests but had 16 fixture setup errors because
+the default Windows pytest temporary directory was inaccessible. Using a fresh workspace
+temporary directory and disabling pytest cache resolved this environment issue: all **95
+observability/resource/cost tests passed in 3.89s**. Ruff lint/format and diff checks passed.
+The local log is `artifacts/seoul-cost-20261005/delivery-correction-tests.txt`; it is
+ignored evidence, not a published dependency. No source artifacts, invoices, paid calls,
+planner behavior or route execution changed. Final delivery review and merge status are
+recorded on PR #60 and Issue #59.

@@ -315,7 +315,7 @@ A benchmark-owned caller invokes capture_attempt around its existing selected-ve
 Capture is opt-in and request-local. It neither changes prompts, retries, timeouts, budgets nor adopts planner judgments. Existing observed stage decorators provide inclusive stage spans; unobserved stages remain unattributed. Structured generation includes V0/shared structured calls; requirements use their own nested stage. Repair/repair_round ancestry marks a subset with round IDs. Stage times are not summed into outer latency.
 
 - Model events: unique LangChain run IDs for chat callbacks; unique SDK invocation IDs for official reasoning/search and embedding. Provider-returned input/output/total tokens are preserved; total may be derived only from both known components. Missing usage is null, including failures. Embedding prompt/total usage is retained without inventing output tokens.
-- Provider events: one event per actual HTTP transport entry on instrumented clients, including repeated sends. Counts do not prove successful delivery, paid requests, or billable matrix elements. Matrix requested elements are observed from request cardinality, never provider billing.
+- Provider transport events: one event per actual HTTP transport entry on instrumented clients, including repeated sends. Counts do not prove successful delivery, paid requests, or billable matrix elements. Matrix requested elements are observed from request cardinality, never provider billing. The same `provider_events` collection can also retain SDK tool billing observations explicitly marked `source="sdk_output_tool_calls"`; these are excluded from every HTTP send/response metric and remain available to cost accounting.
 - Response hooks record HTTP status. An attempt with no response remains incomplete; outer failure/cancellation is recorded separately, without inventing a server status. Response latency measures time to response hook, not full parsing time.
 - Cache events: get_or_create cache reuse is separate from lookup hits (which may merely inspect availability). Neither implies a saved API call; cache keys and request content are not persisted.
 - Retry attempts are distinct transport events; no guessed retry cause or grouping is derived from identical URLs. Current default SDKs disable automatic retries. Internal provider web-search operations and model reasoning are not equated with application HTTP sends.
@@ -405,7 +405,10 @@ Reasoning is already included in output tokens; it is not added to the total aga
 Google HTTP observations retain only bounded Places endpoint/field mask and route
 mode/routing preference, alongside requested matrix elements. Unique active model
 invocations can supply exact backing-HTTP event/provider bindings. SDK web-search output can
-retain numeric tool-call counts separately from model usage. Missing details stay missing.
+retain numeric tool-call counts separately from model usage, as provider events marked
+`source="sdk_output_tool_calls"`. These observations do not represent application HTTP
+transport entries; resource reports exclude them from HTTP metrics while cost reports
+retain their tool-call units. Missing details stay missing.
 No prompts, query text, coordinates, URLs, keys or raw responses are added to this ledger.
 
 `rtpeval_prices_1` has an explicit currency and unique price rows with `price_id`, source,
