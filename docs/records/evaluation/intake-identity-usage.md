@@ -1179,7 +1179,12 @@ dependencies or raw payloads committed to Git.
 Mechanism capture links the correct input/result and reports no collection error,
 but its `prepared_calls`, `occurrences` and `catalog` arrays are empty for this V0
 path; that envelope does not independently prove model submission contents or attention.
-The usage ledger supplies the observed invocation/send counts. No new identity,
+The usage ledger supplies the observed invocation/send counts. The provenance file
+also retains preflight-only `network_calls_performed: 0` and
+`status: ready_for_budget_confirmation` fields copied from preparation; these describe
+preflight, not the completed live attempt. Use `attempt.json` and `usage.json` for
+actual completion and calls, rather than treating those inherited fields as live totals.
+No new identity,
 opening, price or route facts were independently checked. A valid model-estimated
 duration and correct binding do not imply route PASS. Historical Seoul V0-V3 sources,
 reports and scores remain unchanged; no paired score delta or general quality ranking
