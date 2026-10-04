@@ -958,7 +958,7 @@ confirmed all 313 original source files and 5 earlier density-baseline files unc
 | V1 final | 85 | 85 | 2, 1, 1, 1 | 15 |
 | V2 final | 90 | 90 | 2, 2, 1, 1 | 10 |
 | V3 final | 100 | 100 | 2, 2, 2, 2 | 0 |
-| V3 draft | 95 | 95 | 2, 2, 1, 2 | 5 |
+| V3 draft | 95 | 95 | 2, 2, 2, 1 | 5 |
 | V3 final-primary | 100 | 100 | 2, 2, 2, 2 | 0 |
 
 The paired adjusted delta remains exactly 5 percentage points (1/20). Final V1-V3
@@ -968,6 +968,12 @@ metrics also compare equal after excluding only derived `observation_id`/`eviden
 fields; identity resolution, adopted venue and reason records have zero differences.
 Policy versions, source/preparation/snapshot hashes and observation references changed,
 so report bytes differ from old reports; this is not new independent factual evidence.
+
+Independent documentation review caught the draft table's last two day counts in
+the wrong order. The native report and comparison were correct throughout; the
+documentation and local readable summary were corrected to `2, 2, 2, 1`. Every
+table row was then checked against the saved comparison. Scores/deductions were
+unchanged and no evaluator replay or code correction was needed.
 
 V0 still has 8 known commitments and 4 unresolved candidate commitments, leaving the
 non-overlap denominator unavailable. Its four route occurrences retain unresolved
