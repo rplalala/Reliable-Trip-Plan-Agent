@@ -3,6 +3,7 @@
 import asyncio
 
 import httpx
+import pytest
 
 from backend.app.observability.usage import install_http_hooks, observe_sdk
 from backend.app.observability.usage_capture import capture_attempt
@@ -83,3 +84,41 @@ def test_sdk_search_output_records_tool_units_separately_from_model_tokens():
     assert rows[0]["provider_events"][0]["operation"] == "web_search_tool"
     assert rows[0]["provider_events"][0]["tool_calls"] == 1
     assert rows[0]["model_calls"][0]["total_tokens"] == 12
+
+
+@pytest.mark.parametrize("tools", [None, object()])
+def test_optional_sdk_tools_metadata_does_not_change_success(tools):
+    rows = []
+
+    async def invoke():
+        async def response(**kwargs):
+            return {"usage": {"input_tokens": 10, "output_tokens": 2}}
+
+        return await observe_sdk(
+            response, usage_operation="test", usage_provider="fixture", tools=tools
+        )
+
+    result = asyncio.run(
+        capture_attempt(invoke, group_id="g", run_id="r", version="v0", sink=rows.append)
+    )
+    assert result["usage"]["output_tokens"] == 2
+    assert rows[0]["outcome"] == "completed"
+
+
+def test_http_backing_send_links_to_its_active_sdk_invocation():
+    rows = []
+
+    async def invoke():
+        async with httpx.AsyncClient(
+            transport=httpx.MockTransport(lambda r: httpx.Response(200, json={}))
+        ) as client:
+            install_http_hooks(client, "fixture", "model_http")
+
+            async def response(**kwargs):
+                await client.post("https://example.test/model", json={})
+                return {"usage": {"input_tokens": 10, "output_tokens": 2}}
+
+            await observe_sdk(response, usage_operation="chat", usage_provider="fixture")
+
+    asyncio.run(capture_attempt(invoke, group_id="g", run_id="r", version="v0", sink=rows.append))
+    assert rows[0]["provider_events"][0]["model_event_id"] == rows[0]["model_calls"][0]["event_id"]

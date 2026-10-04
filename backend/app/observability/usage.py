@@ -231,9 +231,10 @@ async def observe_sdk(call, *, usage_operation, usage_provider, **kwargs):
             raise
         raw = result.get("usage") if isinstance(result, dict) else getattr(result, "usage", None)
         ledger.finish("model", eid, usage=raw)
-        if any(
+        tool_options = kwargs.get("tools")
+        if isinstance(tool_options, (list, tuple)) and any(
             t.get("type") in ("web_search", "web_search_preview")
-            for t in kwargs.get("tools", [])
+            for t in tool_options
             if isinstance(t, dict)
         ):
             output = (
@@ -336,6 +337,26 @@ def install_http_hooks(client, provider=None, operation=None):
                 pass
         if not isinstance(body, dict):
             body = {}
+        resolved_operation = operation or op
+        active_models = (
+            [
+                m
+                for m in ledger.models.values()
+                if m["outcome"] == "incomplete"
+                and (m["operation"] == resolved_operation or resolved_operation == "model_http")
+            ]
+            if resolved_operation
+            in ("model_http", "embedding", "official_reasoning", "official_search")
+            else []
+        )
+        model_binding = (
+            {
+                "model_event_id": active_models[0]["event_id"],
+                "model_provider": active_models[0]["provider"],
+            }
+            if len(active_models) == 1
+            else {}
+        )
         eid = ledger.begin(
             "provider",
             provider or p,
@@ -344,6 +365,7 @@ def install_http_hooks(client, provider=None, operation=None):
             element_count=elements,
             source="http_request_hook",
             billing_context=billing_context(request, op, body),
+            **model_binding,
         )
         request.extensions["rtpeval_usage_event"] = (ledger, eid)
 
