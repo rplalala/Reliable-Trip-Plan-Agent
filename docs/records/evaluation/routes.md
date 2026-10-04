@@ -3,6 +3,132 @@
 Dated development evidence; current design and live task state remain in PROJECT.md,
 core docs and GitHub Issues. Historical commands grant no new execution permission.
 
+<a id="new-v0-route-plan-2026-10-05"></a>
+
+## New V0 independent-route collection plan — 2026-10-05
+
+Status: **Prepared only; collection budget and execution are not approved.** The user
+approved preparing this plan alongside offline fee accounting [#59](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/59).
+The source is the completed structured-transport V0 smoke; no model rerun, prompt change,
+retiming, endpoint substitution, mode optimization or targeted Repair is included.
+This is a single-source development diagnostic, not a formal benchmark/comparison.
+Review fixed point is `ff2085f6e6dafffa2b02f9b14bb10c89e49b3be8`; preparation occurred
+with the approved fee changes and pending documentation in the worktree. Existing route
+implementation/rules are unchanged.
+
+### Frozen source and declarations
+
+Original result: `artifacts/v0-transport-live-20261005/result.json`, SHA-256
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+Input: Seoul, 2026-10-07 through 10-10, two travelers, KRW 1,200,000; SHA-256
+`07be92a51cc1db24d925e04ab16d15c15f2e501cecfd24a151ea9ee6cb6debfa`.
+All times below use `Asia/Seoul` (+09:00). The original projection has four bound
+transport claims, no unbound claims and no projection diagnostics.
+
+| Date | Original endpoints / activity IDs | Mode | Claimed transport | Next visit starts | Nominal continuous time G |
+| --- | --- | --- | --- | --- | --- |
+| 10-07 | Gyeongbokgung Palace (`day1-gyeongbokgung`) → National Museum of Korean Contemporary History (`day1-contemporary-history-museum`) | WALK | 12:00–12:20, 20 min | 12:30 | 30 min |
+| 10-08 | Bukchon Hanok Village (`day2-bukchon`) → Insadong (`day2-insadong`) | WALK | 12:00–12:25, 25 min | 12:35 | 35 min |
+| 10-09 | Seoul Museum of History (`day3-seoul-museum-history`) → Gwangjang Market (`day3-gwangjang-market`) | TRANSIT | 12:00–12:35, 35 min | 12:45 | 45 min |
+| 10-10 | Changdeokgung Palace (`day4-changdeokgung`) → Jongmyo Shrine (`day4-jongmyo`) | WALK | 12:00–12:20, 20 min | 12:30 | 30 min |
+
+These G values are source schedule arithmetic before final native occupancy preparation;
+they are not independently measured journey durations. The source's own transport is
+excluded from competing occupancy. Protected/other commitments and unresolved occupancy
+must still pass existing preparation, rather than summing disconnected gaps.
+
+### Prepared source view and evidence protocol
+
+Local plan owner: `artifacts/v0-route-plan-20261005/` contains `plan.json`, the
+explicit single-source `diagnostic-view.json`, native `identity-plan.json` and
+`route-preflight.json`. Original input/result hashes were checked, and native `project`
+recomputed the V0 projection. The view reuses the previously reviewed original-input
+requirements, includes only the new V0 source and declares its diagnostic scope. It is
+a library preparation view, **not** a new accepted four-version batch or a replacement
+for the historical manifest. No old V1-V3 result is inserted to fabricate qualification.
+
+Native `build_identity_plan` produced **9 references / 9 search requests**. The required
+Gyeongbokgung subject and its scheduled visit have different source/query contexts and
+therefore are not artificially deduplicated. Native `prepare_routes` without identity
+evidence returned `identity_replay_required`. No identity, coordinate or route facts have
+been acquired, and all four route verdicts remain UNKNOWN.
+
+After budget approval, execution follows the existing seams:
+
+1. Recheck source/view/plan hashes, execution authorization, price snapshot, remaining
+   budget and original frozen bytes before creating any client or sending requests.
+2. Acquire the frozen identity search plan independently. Use returned names, addresses,
+   canonical IDs and typed identity evidence; generated V0 IDs/locations are claims,
+   not truth. Retain raw bytes/hashes and every attempt using `acquire_snapshot`.
+3. Replay through `load_snapshot`, `identity_evidence` and `resolve_identities` with the
+   existing audit/adjudication rules. Real required human adjudication must be supplied
+   as such; automated review cannot be relabeled human. Unresolved/audit-pending IDs
+   block their affected legs. Report review blockers instead of inventing adoption.
+4. Preserve the original linked identity search snapshot and use
+   `prepare_snapshot_coordinates`; only adopted, agreeing independent coordinates
+   reach route queries. The bridge replays the exact identity plan; do not insert
+   newly adopted IDs into that plan or fabricate another identity snapshot. Reusing
+   older evidence requires fresh association and applicable context, not just names.
+5. Prepare source-linked timezone and original-input mode-policy reviews, then use
+   `prepare_routes` and freeze the exact `build_evidence_plan` output before sends.
+   Its evidence phase includes at most nine adopted canonical Details requests,
+   deduplicated by actual ID, alongside the four eligible route elements.
+   Three WALK queries use existing time-independent options; the TRANSIT query uses
+   2026-10-09 **03:00 UTC** (12:00 Seoul), explicit departure, original mode and no
+   substituted date. Each requested route has one origin and one destination.
+6. Acquire the bounded Details/route evidence plan, then replay the exact frozen plan with
+   `score_routes`. Report each component/verdict, duration/distance, original claimed
+   minutes, G, deadline tolerance, evidence limitations and actual/estimated cost.
+   Preserve shortcomings as observations; no new requests seek a preferred verdict.
+
+The iteration conversation owns preparation/adaptation and assessment. Only the prepared,
+authorized execution is delegated to `smoke tests`; it must report blockers without code
+changes. The ordinary route CLI expects a delivered batch; this diagnostic uses the
+existing library seams with its explicitly scoped source view, not a fabricated manifest.
+
+### Existing verdict rules and interpretation
+
+Use `rtpeval_route_rules_1` unchanged. WALK/TRANSIT duration cap is 45 minutes plus
+5-minute cap tolerance; WALK distance cap is 3,000 m with zero distance tolerance.
+The schedule check uses the independently prepared continuous G, with five-minute
+tolerance at the next visit and zero at a protected hard boundary. DRIVE's existing
+10-minute reserve is not applicable to these four declared modes.
+
+Matching successful evidence and all applicable components PASS yield PASS. Proven
+component failure is decisive FAIL, including a valid successful no-route result.
+Missing/corrupt/inapplicable mode, endpoints, date/options, unresolved identity or
+incomplete duration/distance yields UNKNOWN unless another component already proves FAIL.
+HTTP/provider failure is not proof that no route exists. Use exact existing precision,
+source hashes and deadlines; do not add a new penalty or require evidence to fail.
+
+The scorer checks schedule feasibility, not exact equality with the model's stated
+transport duration. A provider duration longer than the claimed 20 minutes can still
+fit a 30-minute G (or its existing tolerance). Record the difference descriptively
+without changing the rule or hiding it. Provider representative points for villages,
+shopping streets or markets do not prove a particular entrance, internal walk, waiting
+time or service disruption. A matched transit estimate is evidence at the requested
+context, not a guarantee of future operations.
+
+### Proposed execution budget and stopping
+
+Maximum **22 sends**: 9 Text Search + up to 9 Details + 4 single-element route requests.
+No LLM calls, no retries, one attempt/request, 20-second request timeout and **10-minute**
+overall wall limit. Reused evidence/canonical IDs may reduce sends; unused capacity
+does not authorize unrelated calls. Using the preserved collection adapter's Enterprise
+Places mask and Global first-paid-tier prices read 2026-10-05 gives a retail ceiling
+estimate of **USD 0.515**: 9 × $0.035 + 9 × $0.020 + 4 × $0.005.
+This excludes credits/free caps/tax and does not assert the eventual invoice amount.
+Sources: [Global prices](https://developers.google.com/maps/billing-and-pricing/pricing),
+[field-based SKUs](https://developers.google.com/maps/billing-and-pricing/sku-details) and
+[route billing](https://developers.google.com/maps/documentation/routes/usage-and-billing).
+
+Stop on authorization/source mismatch, exhausted send/time cap, authentication/billing
+failure or unsupported query context. Never shift dates or add fallback modes. Unresolved
+identity/coordinate/context stops only its affected leg; other eligible legs may proceed
+within the approved total. Preserve partial evidence and UNKNOWNs when limits stop work.
+Changing the budget, adding retries/providers or repairing V0 requires separate approval.
+**This preparation made zero paid provider calls.**
+
 <a id="snapshot-coordinate-bridge-2026-10-03"></a>
 
 ## Snapshot-coordinate bridge — 2026-10-03

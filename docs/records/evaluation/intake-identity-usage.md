@@ -1086,3 +1086,267 @@ are not a newly approved research policy. No measured live improvement, failure 
 formal ranking or version freeze is claimed. Local commits are complete; code publication
 and a new live check require separate authorization. Current task acceptance remains
 tracked in Issue #57.
+
+<a id="v0-structured-transport-live-2026-10-05"></a>
+
+## Structured V0 transport live smoke - 2026-10-05
+
+Status: Validated for one bounded development smoke. Not a formal benchmark,
+version comparison, independent route-feasibility assessment or version freeze.
+The user explicitly approved the prepared scope and budget after PR #58 delivery:
+one V0 workflow, at most two model calls, a 600-second request deadline and no retry.
+Execution used clean `feature/evaluation` revision
+`c368f1cef9f54d365e50a6e4eeabb2334dcf57e5`, whose tree is identical to merged PR #58
+revision `f9d788087417d95c9a04cdfa3ed9b20ad6a5ec57`.
+No production/configuration change was made. This record and its PROJECT.md pointer
+were added after execution; the tracked working tree was clean throughout the run.
+
+### Scope, dispatch failure and actual execution
+
+The unchanged Seoul request specifies 2026-10-07 through 2026-10-10, two travelers,
+KRW 1,200,000, one Gyeongbokgung visit and relaxed history/neighborhood/food interests.
+Input SHA-256: `07be92a51cc1db24d925e04ab16d15c15f2e501cecfd24a151ea9ee6cb6debfa`.
+Reference date was 2026-10-05; no previous live allowance was reused.
+
+The `smoke tests` conversation verified the prepared files and code, then automatic
+approval review rejected two delegated launch requests before process creation.
+It did not recognize cross-conversation human approval as trusted live authorization.
+No launch marker or model send existed at that checkpoint. The owning conversation
+then launched the same verified entry point using the user's direct approval there.
+The smoke executor inspected and reported the saved artifacts without launching again.
+This is an execution-coordination deviation, not a model retry or a budget extension.
+The rejection history remains in the local execution report.
+
+The single actual workflow completed with exit code 0. Launch and completion were
+2026-10-04T15:53:38.100781Z and 2026-10-04T15:54:08.991526Z, respectively
+(2026-10-05 locally). Usage capture measured **30.516 seconds** including cleanup.
+It recorded two successful `gpt-6-luna` model invocations and two instrumented Foundry
+HTTP sends, both status 200: preference interpretation and structured generation.
+There were no retries, V1-V3 runs, Google/Web/Weather/RAG/database calls or independent
+factual-evidence acquisition. Reported tokens total **18,286**: 12,675 input and
+5,611 output. These are observed provider/message usage, not independently measured
+billing; actual charged cost remains unknown. Inclusive stage summaries overlap
+and include duplicate stage labels; they must not be added to obtain total elapsed time.
+
+### Observed declarations and native projection
+
+The result contains four days, each with two declared `main_poi` activities and one
+estimated transport activity. All four transport activities preserve a nested
+declaration; non-transport activities serialize without one. There are no
+application-owned transfers.
+
+| Day | Directed activity endpoints | Mode | Model-estimated interval |
+| --- | --- | --- | --- |
+| 2026-10-07 | `day1-gyeongbokgung` to `day1-contemporary-history-museum` | WALK | 12:00-12:20 +09:00 |
+| 2026-10-08 | `day2-bukchon` to `day2-insadong` | WALK | 12:00-12:25 +09:00 |
+| 2026-10-09 | `day3-seoul-museum-history` to `day3-gwangjang-market` | TRANSIT | 12:00-12:35 +09:00 |
+| 2026-10-10 | `day4-changdeokgung` to `day4-jongmyo` | WALK | 12:00-12:20 +09:00 |
+
+Unmodified native projection policy `structural_claims_directed_occurrences_5`
+uniquely binds **4/4** claims, with **0 unbound claims and 0 projection diagnostics**.
+No endpoint/mode review, title rewriting or evidence substitution was supplied.
+This live sample has only supported modes and valid bindings; it does not exercise
+null modes or invalid endpoints, which remain covered by the prior offline regressions.
+For example, the title "Travel toward Gwangjang Market" does not name its origin
+or mode; its structured endpoints and TRANSIT declaration supply that representation.
+This is observed successful production of the new contract in this one run, not a
+claim that free-text parsing became reliable or all future outputs will be complete.
+
+### Checks, evidence and limits
+
+Offline preparation validated input dates, credential presence without printing
+secrets, clean code/tree equality, current 600-second runtime configuration and
+protected original-source hashes. Initial helper lint found import-placement and
+lambda-assignment violations; local helper corrections passed Ruff lint/format
+before live approval and did not modify production code. A network-forbidden check
+also projected historical V0 material without rewriting it.
+
+After the actual run, shared PlanningResult validation and an exact independent
+replay of the saved projection passed. Input/result hash linkage across the attempt,
+provenance, usage and mechanism artifacts passed, as did all four protected original
+Seoul hashes (input, V0 result, manifest and packet). The prepared plan/launcher hashes
+still matched authorization. The saved result SHA-256 is
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+The full backend gate was not repeated: no production code changed after the existing
+2632-pass/10-skip gate; this task adds actual bounded execution and source checks.
+
+Local evidence identifier: `artifacts/v0-transport-live-20261005/` contains the
+plan, authorization, launcher, preflight, launch marker, copied input, result,
+attempt, provenance, usage, mechanism, projection, inspection, execution report
+and completion audit. These ignored files are retained local evidence, not published
+dependencies or raw payloads committed to Git.
+
+Mechanism capture links the correct input/result and reports no collection error,
+but its `prepared_calls`, `occurrences` and `catalog` arrays are empty for this V0
+path; that envelope does not independently prove model submission contents or attention.
+The usage ledger supplies the observed invocation/send counts. The provenance file
+also retains preflight-only `network_calls_performed: 0` and
+`status: ready_for_budget_confirmation` fields copied from preparation; these describe
+preflight, not the completed live attempt. Use `attempt.json` and `usage.json` for
+actual completion and calls, rather than treating those inherited fields as live totals.
+No new identity,
+opening, price or route facts were independently checked. A valid model-estimated
+duration and correct binding do not imply route PASS. Historical Seoul V0-V3 sources,
+reports and scores remain unchanged; no paired score delta or general quality ranking
+is inferred from this new sample. Future factual verification or another live attempt
+requires its own approved scope and budget.
+
+<a id="offline-cost-acceptance-2026-10-05"></a>
+
+## Offline cost accounting and Seoul replay — 2026-10-05
+
+Status: **Implemented, offline validated and reviewed; local commits only.**
+[Issue #59](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/59) supplements
+closed usage [#14](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/14).
+The user approved TDD, implementation/testing/review/corrections, local commits, Issue
+updates and offline replay. No paid provider call, account billing query, push/PR/merge,
+planner rerun, formal experiment or version freeze is included. The separate new-V0
+[route plan](routes.md#new-v0-route-plan-2026-10-05) remains preparation only.
+
+Review fixed point: `ff2085f6e6dafffa2b02f9b14bb10c89e49b3be8` on `feature/evaluation`,
+with a clean initial tracked tree. Existing prior V0 smoke documentation commits are
+outside this diff. Runtime reports, prices, normalized sources/annotations and checks
+remain ignored local evidence under `artifacts/seoul-cost-20261005/`; no raw provider
+payload, runtime log or price assumption artifact is committed.
+
+### Implementation and price basis
+
+The existing opt-in ledger now retains optional cache/reasoning token details, bounded
+Google billing request context and separately observed SDK search-tool counts. Reasoning
+remains part of output. Uniquely observed active model invocations supply exact backing
+HTTP bindings; ambiguous capture remains unlinked. The stdlib-only cost library/CLI
+accept saved usage and verified native snapshots, explicit dated price rows, normalized
+event/run/aggregate bills and source-linked historical annotations. Decimal money,
+unknowns, Repair subsets, namespaces and lineage are separate from quality scoring.
+Output cannot overwrite imported usage/price/bill/snapshot material.
+
+No actual bill was supplied, so **actual charges remain unavailable**. Microsoft pricing
+research did not yield a usable deployment-specific numeric rate. The user then explicitly
+selected OpenAI official GPT-6 Luna prices: Standard short context, per million tokens
+**input $0.10, cached input $0.01, output $0.50**, checked 2026-10-05 at the
+[official model page](https://developers.openai.com/api/docs/models/gpt-6-luna).
+Historical missing cache counts use an explicit, source-linked **no-discount assumption**;
+cache writes, regional premium and service-tier differences are excluded rather than
+claimed observed. Each call is below the 272,000-token long-context threshold. These are
+current-price retrospective estimates and not Foundry invoice amounts.
+
+Google prices use the Global first paid tier before credits/free caps/tax/volume discounts,
+checked 2026-10-05. The preserved historical oracle adapter's exact Text Search/Details
+mask includes opening hours/website fields, supplying an annotated Enterprise basis:
+$35/1,000 searches and $20/1,000 Details. The frozen TRANSIT matrix requests use no
+advanced options and one element each: Essentials $5/1,000 elements.
+Sources: [prices](https://developers.google.com/maps/billing-and-pricing/pricing),
+[field/SKU rules](https://developers.google.com/maps/billing-and-pricing/sku-details),
+[route billing](https://developers.google.com/maps/documentation/routes/usage-and-billing).
+Annotations retain exact original source hashes and reconstruction explanations.
+
+### Observed offline results
+
+| Saved attempt | Observed input/output tokens | OpenAI model estimate USD |
+| --- | --- | --- |
+| Original Seoul V0 | 12,562 / 5,815 | 0.0041637 |
+| Original Seoul V1 | 64,151 / 8,195 | 0.0105126 |
+| Original Seoul V2 | 65,406 / 10,806 | 0.0119436 |
+| Original Seoul V3 | 95,078 / 14,696 | 0.0168558 |
+| New structured-transport V0 | 12,675 / 5,611 | 0.004073 |
+
+V3 Repair's model estimate is **$0.003523**, already included in V3. This is a subset,
+not an extra amount to add. Model-backed HTTP is not another model fee, but these older
+envelopes lack exact backing links; that uncertainty prevents complete run totals.
+Historical planner API events also lack field-mask/mode/SKU context, so the primary
+report leaves those components unpriced. Open-Meteo account charging and unobserved
+services are not inferred; absent embedding events do not establish a universal zero bill.
+
+Two explicitly assumed unit-rate scenarios supplement the primary report. They price
+every historical search/Details/matrix event at the stated official rate regardless of
+the unknown actual SKU. They are **not a confirmed range or bill**:
+
+| Scenario | Per 1,000 search / Details / matrix-element rates | V1 observed subtotal USD | V2 observed subtotal USD | V3 observed subtotal USD | V3 Repair subset USD |
+| --- | --- | --- | --- | --- | --- |
+| Pro / Enterprise / Essentials | $32 / $20 / $5 | 2.0565126 | 2.0679436 | 2.0988558 | 0.093523 |
+| Highest field tiers | $40 / $25 / $15 | 4.4405126 | 4.4719436 | 4.6668558 | 0.273523 |
+
+These subtotals include the model estimate. Weather and unlinked/uncertain sends remain
+unavailable; neither scenario supplies a complete actual/estimated run total. The Repair
+API scenarios correspond to 18 requested route elements, not another whole-run charge.
+
+Independent oracle accounting remains shared and separate:
+
+| Frozen oracle snapshot | Actual recorded sends | Requested matrix elements | Retail estimate USD |
+| --- | --- | --- | --- |
+| Identity | 36: 23 searches + 13 Details | 0 | 1.065 |
+| Final evidence | 23: 16 Details + 7 matrix | 7 | 0.355 |
+| Paired evidence | 23: 16 Details + 7 matrix | 7 | 0.355 |
+| Observed oracle subtotal | 82 | 14 | **1.775** |
+
+The final/paired acquisitions have different timestamps/manifest hashes and separately
+recorded sends, so both are counted; duplicate artifacts/captured attempts are rejected.
+They are not allocated to V0-V3. These rows do not assert charges after account allowances
+or establish formal efficiency/quality comparisons.
+
+The final CLI replay completed after review corrections. All eight original usage and
+snapshot manifest hashes remained byte-identical; native raw observations passed existing
+replay/hash checks. The new V0 result also retained SHA-256
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+Old Seoul sources/reports and V0 planning decisions were not modified.
+
+### Validation, commits and independent review
+
+TDD first reproduced absent cache details, absent Google billing context, absent SDK tool
+counts and missing cost/snapshot interfaces. Each slice passed after implementation.
+Worked examples cover exact cache partition/output amounts, requests/elements/embeddings,
+tool fees, actual event override, whole-run allocation limits, aggregate retention,
+bad/foreign/duplicate bindings, absent data, expired/ambiguous prices, adapter coverage,
+source-bound annotations, CLI no-socket operation and immutable/corrupt snapshots.
+An initial subtotal assertion was corrected to include its matrix component; Ruff
+formatting/import findings were corrected before the gate.
+
+1. Before implementation commits, focused checks passed **73 tests**, Ruff/diff checks
+   passed, and the full unfiltered backend gate passed **2655 tests, 10 skipped in
+   323.62s**. No configured static typechecker exists. Existing skip conditions remain.
+2. Implementation commits: `0a68380` (`feat: capture optional billing usage details (#59)`)
+   and `f3d4621` (`feat: account saved usage and imported bills offline (#59)`). These were
+   committed before independent Standards/Spec review against the fixed point.
+3. Standards found optional `tools=None`/SDK omission metadata could turn a successful
+   SDK response into TypeError. Spec found broad model-HTTP suppression hid failed,
+   unlinked or foreign sends. Regression tests reproduced both before correction.
+   A real mocked HTTP/SDK seam also reproduced the missing invocation link.
+4. Separate correction commits preserve history: `6e74c11` (`fix: preserve SDK outcomes
+   and bind model transport (#59)`) and `0f6a247` (`fix: retain uncertainty for unlinked
+   model sends (#59)`). Corrected focused checks passed **80**; affected Foundry,
+   integration, retrieval, runtime, intake and planner-runtime checks passed **288,
+   1 skipped**. The full gate was not repeated after these bounded corrections.
+5. Standards and Spec rechecks each reported **zero remaining actionable findings**.
+   Reviewers also checked the pending cost contract/guide and route preparation boundary.
+   Narrow reviewer checks passed 6 capture and 23 calculator tests respectively; these
+   overlap other checks and must not be added into an independent total.
+
+The final documentation commit records acceptance, current interfaces and the route plan.
+Issue checklist completion reflects local validation, not publication or bill retrieval.
+No version milestone/freeze or formal research conclusion follows.
+
+### Git delivery review correction — 2026-10-05
+
+Publication was separately authorized for this scope: push, PR review, merge after
+acceptance and closure of Issue #59. [PR #60](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/60)
+reviews the complete published scope against `f9d7880`; the first published head was
+`9be9e1b`. Synchronizing main introduced no file changes, preserving earlier test evidence.
+The original baseline and implementation/correction commits above remain in history.
+
+The delivery Spec review found no actionable findings and independently passed 30
+focused tests. Standards found two issues: SDK tool billing observations inflated the
+existing physical HTTP metrics, and PROJECT.md still called Issue #57's gate the latest.
+The HTTP regression first failed for both zero and one actual mocked dispatch (reporting
+one and two respectively). Correction `941bd9d` excludes only the explicit
+`sdk_output_tool_calls` observations from HTTP metrics, retaining their cost units,
+duplicate-event validation, model tokens and actual transport events. PROJECT.md now
+points to the later Issue #59 full gate and distinguishes subsequent bounded checks.
+
+The first broader correction run passed 79 tests but had 16 fixture setup errors because
+the default Windows pytest temporary directory was inaccessible. Using a fresh workspace
+temporary directory and disabling pytest cache resolved this environment issue: all **95
+observability/resource/cost tests passed in 3.89s**. Ruff lint/format and diff checks passed.
+The local log is `artifacts/seoul-cost-20261005/delivery-correction-tests.txt`; it is
+ignored evidence, not a published dependency. No source artifacts, invoices, paid calls,
+planner behavior or route execution changed. Final delivery review and merge status are
+recorded on PR #60 and Issue #59.

@@ -3,6 +3,7 @@
 import asyncio
 import json
 import math
+import re
 from contextlib import contextmanager
 from contextvars import ContextVar
 from datetime import UTC, datetime
@@ -27,6 +28,35 @@ def tokens(raw):
     ):
         value = raw.get(name, raw.get(alternate))
         result[name] = value if type(value) is int and value >= 0 else None
+    for name, containers, key, total in (
+        (
+            "cached_input_tokens",
+            ("input_tokens_details", "prompt_tokens_details"),
+            "cached_tokens",
+            "input_tokens",
+        ),
+        (
+            "reasoning_tokens",
+            ("output_tokens_details", "completion_tokens_details"),
+            "reasoning_tokens",
+            "output_tokens",
+        ),
+        ("cached_input_tokens", ("input_token_details",), "cache_read", "input_tokens"),
+        ("reasoning_tokens", ("output_token_details",), "reasoning", "output_tokens"),
+    ):
+        for container in containers:
+            details = raw.get(container)
+            if isinstance(details, dict) and key in details:
+                value = details[key]
+                result[name] = (
+                    value
+                    if (
+                        type(value) is int
+                        and value >= 0
+                        and (result[total] is None or value <= result[total])
+                    )
+                    else None
+                )
     derived = False
     if result["total_tokens"] is None and all(
         result[k] is not None for k in ("input_tokens", "output_tokens")
@@ -201,6 +231,35 @@ async def observe_sdk(call, *, usage_operation, usage_provider, **kwargs):
             raise
         raw = result.get("usage") if isinstance(result, dict) else getattr(result, "usage", None)
         ledger.finish("model", eid, usage=raw)
+        tool_options = kwargs.get("tools")
+        if isinstance(tool_options, (list, tuple)) and any(
+            t.get("type") in ("web_search", "web_search_preview")
+            for t in tool_options
+            if isinstance(t, dict)
+        ):
+            output = (
+                result.get("output")
+                if isinstance(result, dict)
+                else getattr(result, "output", None)
+            )
+            count = (
+                sum(
+                    (item.get("type") if isinstance(item, dict) else getattr(item, "type", None))
+                    == "web_search_call"
+                    for item in output
+                )
+                if isinstance(output, list)
+                else None
+            )
+            tool_id = ledger.begin(
+                "provider",
+                usage_provider,
+                "web_search_tool",
+                tool_calls=count,
+                source="sdk_output_tool_calls",
+                model_event_id=eid,
+            )
+            ledger.finish("provider", tool_id)
         return result
 
 
@@ -215,6 +274,35 @@ def http_operation(request):
     if host.endswith("open-meteo.com"):
         return "open_meteo", "weather"
     return "external", "http_request"
+
+
+def billing_context(request, operation, body):
+    """Bounded request options, excluding queries, locations and arbitrary header values."""
+    context = {}
+    if operation in ("places_search", "place_details"):
+        path = urlsplit(str(request.url)).path
+        endpoint = next(
+            (v for v in ("searchText", "searchNearby") if path.endswith(":" + v)),
+            "details" if operation == "place_details" else None,
+        )
+        if endpoint:
+            context["endpoint"] = endpoint
+        mask = request.headers.get("X-Goog-FieldMask", "")
+        if mask and len(mask) <= 4096 and re.fullmatch(r"[A-Za-z0-9_.*,]+", mask):
+            context["field_mask"] = ",".join(sorted(set(mask.split(","))))
+    if operation == "route_matrix":
+        for key, wire, allowed in (
+            ("travel_mode", "travelMode", {"WALK", "TRANSIT", "DRIVE", "BICYCLE", "TWO_WHEELER"}),
+            (
+                "routing_preference",
+                "routingPreference",
+                {"TRAFFIC_UNAWARE", "TRAFFIC_AWARE", "TRAFFIC_AWARE_OPTIMAL"},
+            ),
+        ):
+            value = body.get(wire)
+            if isinstance(value, str) and value in allowed:
+                context[key] = value
+    return context
 
 
 def install_http_hooks(client, provider=None, operation=None):
@@ -240,12 +328,35 @@ def install_http_hooks(client, provider=None, operation=None):
             return
         p, op = http_operation(request)
         elements = None
+        body = {}
         if op == "route_matrix":
             try:
                 body = json.loads(request.content)
                 elements = len(body["origins"]) * len(body["destinations"])
             except (ValueError, KeyError, TypeError, AttributeError):
                 pass
+        if not isinstance(body, dict):
+            body = {}
+        resolved_operation = operation or op
+        active_models = (
+            [
+                m
+                for m in ledger.models.values()
+                if m["outcome"] == "incomplete"
+                and (m["operation"] == resolved_operation or resolved_operation == "model_http")
+            ]
+            if resolved_operation
+            in ("model_http", "embedding", "official_reasoning", "official_search")
+            else []
+        )
+        model_binding = (
+            {
+                "model_event_id": active_models[0]["event_id"],
+                "model_provider": active_models[0]["provider"],
+            }
+            if len(active_models) == 1
+            else {}
+        )
         eid = ledger.begin(
             "provider",
             provider or p,
@@ -253,6 +364,8 @@ def install_http_hooks(client, provider=None, operation=None):
             send_status="transport_entered",
             element_count=elements,
             source="http_request_hook",
+            billing_context=billing_context(request, op, body),
+            **model_binding,
         )
         request.extensions["rtpeval_usage_event"] = (ledger, eid)
 

@@ -315,7 +315,7 @@ A benchmark-owned caller invokes capture_attempt around its existing selected-ve
 Capture is opt-in and request-local. It neither changes prompts, retries, timeouts, budgets nor adopts planner judgments. Existing observed stage decorators provide inclusive stage spans; unobserved stages remain unattributed. Structured generation includes V0/shared structured calls; requirements use their own nested stage. Repair/repair_round ancestry marks a subset with round IDs. Stage times are not summed into outer latency.
 
 - Model events: unique LangChain run IDs for chat callbacks; unique SDK invocation IDs for official reasoning/search and embedding. Provider-returned input/output/total tokens are preserved; total may be derived only from both known components. Missing usage is null, including failures. Embedding prompt/total usage is retained without inventing output tokens.
-- Provider events: one event per actual HTTP transport entry on instrumented clients, including repeated sends. Counts do not prove successful delivery, paid requests, or billable matrix elements. Matrix requested elements are observed from request cardinality, never provider billing.
+- Provider transport events: one event per actual HTTP transport entry on instrumented clients, including repeated sends. Counts do not prove successful delivery, paid requests, or billable matrix elements. Matrix requested elements are observed from request cardinality, never provider billing. The same `provider_events` collection can also retain SDK tool billing observations explicitly marked `source="sdk_output_tool_calls"`; these are excluded from every HTTP send/response metric and remain available to cost accounting.
 - Response hooks record HTTP status. An attempt with no response remains incomplete; outer failure/cancellation is recorded separately, without inventing a server status. Response latency measures time to response hook, not full parsing time.
 - Cache events: get_or_create cache reuse is separate from lookup hits (which may merely inspect availability). Neither implies a saved API call; cache keys and request content are not persisted.
 - Retry attempts are distinct transport events; no guessed retry cause or grouping is derived from identical URLs. Current default SDKs disable automatic retries. Internal provider web-search operations and model reasoning are not equated with application HTTP sends.
@@ -388,3 +388,73 @@ and Tickets [01](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/13)
 [03](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/15),
 [04](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/16).
 Earlier title-equivalence/equal-transport-authority restrictions are not current rules.
+
+<a id="offline-cost-accounting"></a>
+
+## Offline cost accounting — accepted extension 2026-10-05
+
+[Issue #59](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/59) supplements
+completed usage Ticket 02. `build_cost_report` and `python -m
+backend.evaluation.cost_report` read one or more saved envelopes and optional verified
+native oracle snapshots. They do not require a four-version comparison, invoke planners,
+fetch bills/prices or contact providers. Capture remains opt-in; planning behavior and
+quality scores are unchanged.
+
+Optional numeric capture retains SDK/LangChain cached-input and reasoning token details.
+Reasoning is already included in output tokens; it is not added to the total again.
+Google HTTP observations retain only bounded Places endpoint/field mask and route
+mode/routing preference, alongside requested matrix elements. Unique active model
+invocations can supply exact backing-HTTP event/provider bindings. SDK web-search output can
+retain numeric tool-call counts separately from model usage, as provider events marked
+`source="sdk_output_tool_calls"`. These observations do not represent application HTTP
+transport entries; resource reports exclude them from HTTP metrics while cost reports
+retain their tool-call units. Missing details stay missing.
+No prompts, query text, coordinates, URLs, keys or raw responses are added to this ledger.
+
+`rtpeval_prices_1` has an explicit currency and unique price rows with `price_id`, source,
+`as_of`, inclusive `valid_from`, exclusive `valid_until`, exact event `match`, positive
+decimal-string `per` and decimal-string `rates`. Match includes kind, provider, operation
+and model identity for model rows; optional exact billing context selects an explicitly
+supplied SKU. Supported units are input, cached input, output tokens, requests, matrix
+elements and observed tool calls. Cached input is partitioned out of total input before
+applying its rate. Embeddings can have input-only prices. Unsupported or overlapping
+prices, missing counts, incomplete outcomes and out-of-scope context leave costs unpriced.
+The calculator does not interpret free text to infer a SKU.
+
+The caller supplies hashes of original usage file bytes to the library; the CLI computes
+them itself. Optional historical annotations bind exact usage SHA-256, event kind/ID,
+source SHA-256, source reference and explanation. They can supplement missing billing
+context or an explicitly stated cache assumption, but cannot overwrite observations or
+replace status, model identity, input/output tokens or artifact lineage. An assumption is
+retained beside the estimate rather than becoming observed provider data. An explicit
+unit-rate scenario may use a price row's `assumption`; it is not confirmed SKU evidence.
+
+Normalized bill import is a JSON array. Every row has a unique `bill_id`, `scope`,
+`currency`, decimal-string `amount` and `source`. Event rows additionally bind
+`usage_sha256`, `result_sha256`, `kind` and `event_id`; run rows bind the artifact hashes
+and require `complete: true`. Event actuals supersede estimates for best-available
+accounting. Complete run actuals do not invent category/Repair allocation. Event and run
+bills cannot overlap, and a model's backing HTTP bill must bind its model event or run.
+Aggregate account/resource/month rows remain unallocated and retain their own currencies;
+no proportional allocation or implicit FX occurs. Vendor exports must be normalized
+according to their real scope, not assigned event IDs without evidence.
+
+`rtpeval_cost_report_1` distinguishes actual, estimated and best-available values, observed
+subtotals and complete totals; unpriced components and unverified adapter coverage prevent
+a complete estimate. Totals describe observed instrumented adapters only. Models,
+embeddings and API categories remain separate; Repair is a subset, never an additional
+charge. Successful explicitly linked model backing HTTP sends are transport observations
+rather than additional charges. Failed, incomplete, unlinked or mismatched backing sends
+retain uncertainty; legacy envelopes without links cannot acquire a complete total merely
+because model usage exists. Independent oracle snapshots are separate shared runs, not assigned
+to planner versions. Verified raw hashes, actual attempts (including failures/retries) and
+duplicate-capture checks protect native snapshot replay. Output cannot overwrite inputs
+or any material inside an imported snapshot.
+
+Retail estimates exclude account credits, free caps, volume discounts and tax. No supplied
+bill means actual amounts remain unavailable. The user explicitly selected OpenAI official
+GPT-6 Luna pricing for this task's Foundry estimates; that proxy is a documented assumption,
+not a claim about Azure charges. Current-source prices used retrospectively and missing
+cache/service-tier details must be stated. The [package guide](../../backend/evaluation/README.md#offline-cost-report)
+contains runnable import examples; dated acceptance belongs to the existing
+[usage record](../records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05).
