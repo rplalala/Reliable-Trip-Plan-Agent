@@ -168,6 +168,12 @@ retains failing regressions, corrections, final retest and dual-axis review evid
 Earlier Issue #53 and Ticket 11/12 results remain historical in their acceptance records.
 The skips are environment/opt-in cases. No live services or formal corpus were used;
 earlier approved supplements remain distinct evidence.
+The separately approved [V0 structured transport smoke](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-live-2026-10-05)
+completed on 2026-10-05: one V0 run, two Foundry invocations, 30.516 seconds,
+four structured transport declarations and 4/4 native bindings with no unbound claims
+or projection diagnostics. Each day has two declared primary POIs. Original Seoul
+evidence remains unchanged. This verifies the new representation in one live sample;
+no independent route feasibility, four-version score comparison or freeze is claimed.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
 lint passing for Ticket 09. These are dated development checkpoints, not formal
 benchmark results. Failure/correction/retest sequences stay

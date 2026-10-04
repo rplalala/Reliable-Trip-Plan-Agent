@@ -1086,3 +1086,102 @@ are not a newly approved research policy. No measured live improvement, failure 
 formal ranking or version freeze is claimed. Local commits are complete; code publication
 and a new live check require separate authorization. Current task acceptance remains
 tracked in Issue #57.
+
+<a id="v0-structured-transport-live-2026-10-05"></a>
+
+## Structured V0 transport live smoke - 2026-10-05
+
+Status: Validated for one bounded development smoke. Not a formal benchmark,
+version comparison, independent route-feasibility assessment or version freeze.
+The user explicitly approved the prepared scope and budget after PR #58 delivery:
+one V0 workflow, at most two model calls, a 600-second request deadline and no retry.
+Execution used clean `feature/evaluation` revision
+`c368f1cef9f54d365e50a6e4eeabb2334dcf57e5`, whose tree is identical to merged PR #58
+revision `f9d788087417d95c9a04cdfa3ed9b20ad6a5ec57`.
+No production/configuration change was made. This record and its PROJECT.md pointer
+were added after execution; the tracked working tree was clean throughout the run.
+
+### Scope, dispatch failure and actual execution
+
+The unchanged Seoul request specifies 2026-10-07 through 2026-10-10, two travelers,
+KRW 1,200,000, one Gyeongbokgung visit and relaxed history/neighborhood/food interests.
+Input SHA-256: `07be92a51cc1db24d925e04ab16d15c15f2e501cecfd24a151ea9ee6cb6debfa`.
+Reference date was 2026-10-05; no previous live allowance was reused.
+
+The `smoke tests` conversation verified the prepared files and code, then automatic
+approval review rejected two delegated launch requests before process creation.
+It did not recognize cross-conversation human approval as trusted live authorization.
+No launch marker or model send existed at that checkpoint. The owning conversation
+then launched the same verified entry point using the user's direct approval there.
+The smoke executor inspected and reported the saved artifacts without launching again.
+This is an execution-coordination deviation, not a model retry or a budget extension.
+The rejection history remains in the local execution report.
+
+The single actual workflow completed with exit code 0. Launch and completion were
+2026-10-04T15:53:38.100781Z and 2026-10-04T15:54:08.991526Z, respectively
+(2026-10-05 locally). Usage capture measured **30.516 seconds** including cleanup.
+It recorded two successful `gpt-6-luna` model invocations and two instrumented Foundry
+HTTP sends, both status 200: preference interpretation and structured generation.
+There were no retries, V1-V3 runs, Google/Web/Weather/RAG/database calls or independent
+factual-evidence acquisition. Reported tokens total **18,286**: 12,675 input and
+5,611 output. These are observed provider/message usage, not independently measured
+billing; actual charged cost remains unknown. Inclusive stage summaries overlap
+and include duplicate stage labels; they must not be added to obtain total elapsed time.
+
+### Observed declarations and native projection
+
+The result contains four days, each with two declared `main_poi` activities and one
+estimated transport activity. All four transport activities preserve a nested
+declaration; non-transport activities serialize without one. There are no
+application-owned transfers.
+
+| Day | Directed activity endpoints | Mode | Model-estimated interval |
+| --- | --- | --- | --- |
+| 2026-10-07 | `day1-gyeongbokgung` to `day1-contemporary-history-museum` | WALK | 12:00-12:20 +09:00 |
+| 2026-10-08 | `day2-bukchon` to `day2-insadong` | WALK | 12:00-12:25 +09:00 |
+| 2026-10-09 | `day3-seoul-museum-history` to `day3-gwangjang-market` | TRANSIT | 12:00-12:35 +09:00 |
+| 2026-10-10 | `day4-changdeokgung` to `day4-jongmyo` | WALK | 12:00-12:20 +09:00 |
+
+Unmodified native projection policy `structural_claims_directed_occurrences_5`
+uniquely binds **4/4** claims, with **0 unbound claims and 0 projection diagnostics**.
+No endpoint/mode review, title rewriting or evidence substitution was supplied.
+This live sample has only supported modes and valid bindings; it does not exercise
+null modes or invalid endpoints, which remain covered by the prior offline regressions.
+For example, the title "Travel toward Gwangjang Market" does not name its origin
+or mode; its structured endpoints and TRANSIT declaration supply that representation.
+This is observed successful production of the new contract in this one run, not a
+claim that free-text parsing became reliable or all future outputs will be complete.
+
+### Checks, evidence and limits
+
+Offline preparation validated input dates, credential presence without printing
+secrets, clean code/tree equality, current 600-second runtime configuration and
+protected original-source hashes. Initial helper lint found import-placement and
+lambda-assignment violations; local helper corrections passed Ruff lint/format
+before live approval and did not modify production code. A network-forbidden check
+also projected historical V0 material without rewriting it.
+
+After the actual run, shared PlanningResult validation and an exact independent
+replay of the saved projection passed. Input/result hash linkage across the attempt,
+provenance, usage and mechanism artifacts passed, as did all four protected original
+Seoul hashes (input, V0 result, manifest and packet). The prepared plan/launcher hashes
+still matched authorization. The saved result SHA-256 is
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+The full backend gate was not repeated: no production code changed after the existing
+2632-pass/10-skip gate; this task adds actual bounded execution and source checks.
+
+Local evidence identifier: `artifacts/v0-transport-live-20261005/` contains the
+plan, authorization, launcher, preflight, launch marker, copied input, result,
+attempt, provenance, usage, mechanism, projection, inspection, execution report
+and completion audit. These ignored files are retained local evidence, not published
+dependencies or raw payloads committed to Git.
+
+Mechanism capture links the correct input/result and reports no collection error,
+but its `prepared_calls`, `occurrences` and `catalog` arrays are empty for this V0
+path; that envelope does not independently prove model submission contents or attention.
+The usage ledger supplies the observed invocation/send counts. No new identity,
+opening, price or route facts were independently checked. A valid model-estimated
+duration and correct binding do not imply route PASS. Historical Seoul V0-V3 sources,
+reports and scores remain unchanged; no paired score delta or general quality ranking
+is inferred from this new sample. Future factual verification or another live attempt
+requires its own approved scope and budget.
