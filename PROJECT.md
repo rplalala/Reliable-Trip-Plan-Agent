@@ -220,12 +220,20 @@ version comparison. The [density contract](docs/contracts/0005-quality-human-rev
 and [acceptance record](docs/records/evaluation/2026-10-04-daily-density.md) own the rules,
 validation and limitations.
 
-The 2026-10-04 intake correction removes title-regex vetoes of declared visit/transport
-roles. Structured POI counts no longer become uncertain merely because a title says
-`Walk to Museum A`; genuine unknown roles and conflicting date attribution remain visible.
-Projection policy is `structural_claims_directed_occurrences_3`; the approved density table
-and V0-V3 planner behavior are unchanged. See the [intake contract](docs/contracts/0002-intake-identity-usage.md#claims)
-and [correction acceptance](docs/records/evaluation/intake-identity-usage.md#structured-role-title-correction-2026-10-04).
+The 2026-10-04 evaluator correction under
+[Issue #53](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/53) removes title
+vetoes of structured role/identity claims, excludes declared free time from POI counts,
+and prevents unrelated notes from changing V0 mode/transport association. Genuine
+unknown roles, date attribution, endpoint conflicts and identity review/audit remain.
+Projection policy is `structural_claims_directed_occurrences_4`; identity association is
+`structural_claims_typed_addresses_3`. The density table and V0-V3 planners are unchanged.
+See the [intake contract](docs/contracts/0002-intake-identity-usage.md#claims) and
+[correction acceptance](docs/records/evaluation/intake-identity-usage.md#free-text-scoring-corrections-2026-10-04).
+
+The separately authorized density delivery through `300ee039` was merged in
+[PR #54](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54), with both review
+axes clear and Issue #52 verified closed. Later Issue #53 corrections remain local
+and outside that release; their publication needs separate authorization.
 
 ## 6. Next work and authorization boundary
 
@@ -246,8 +254,8 @@ workflows and two material-error examples passed through actual module processes
 the new regression gate passed 9 tests and the full backend gate passed 2490 with 10
 skipped. This task adds tests and usage documentation, with no production behavior change
 or live/formal execution. See the [usage guide](backend/evaluation/README.md#start-with-the-synthetic-usage-packet)
-and [dated record](docs/records/evaluation/2026-10-04-evaluation-usage.md). New task commits
-and documentation remain local pending separate publication approval.
+and [dated record](docs/records/evaluation/2026-10-04-evaluation-usage.md). At that
+acceptance checkpoint, its new commits and documentation were local pending publication.
 
 The 2026-10-03 documentation migration consolidates durable scratch specifications
 into core docs and dated records, preserves local spec/child-ticket working files,
@@ -257,8 +265,8 @@ URLs. GitHub owns task state; local ticket copies are planning aids, not a secon
 live tracker. See [tracker conventions](docs/agents/issue-tracker.md) and the
 [core design/proposal index](docs/README.md).
 
-This delivery publishes the existing engineering work and synchronizes its acceptance;
-it creates no PR or merge and does not switch branches. No additional test/live run,
+That earlier delivery published the existing engineering work and synchronized acceptance;
+it created no PR or merge and did not switch branches. No additional test/live run,
 budget increase, formal corpus/comparison/analysis or version freeze occurred. The
 final documentation closeout records these observed outcomes in a separate commit.
 

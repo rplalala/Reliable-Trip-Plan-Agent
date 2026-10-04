@@ -433,7 +433,7 @@ content; generation time is metadata. Material correction returns no partial coh
 
 Identity preflight requires the complete original reference population and current
 `subject_scope_version=required_excluded_fixed_time_1`, `reference_set_digest` and
-`association_policy_version=structural_claims_typed_addresses_2`. Missing/stale references
+`association_policy_version=structural_claims_typed_addresses_3`. Missing/stale references
 require `identity_replay_required`; replay frozen evidence/reviews/audit offline. A newly
 included fixed-time subject can alter high-impact review, so old automatic decisions do not
 bypass recomputation. Missing observation remains UNKNOWN, distinct from missing preparation.
