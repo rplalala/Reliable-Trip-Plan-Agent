@@ -209,7 +209,11 @@ five-dimensional `auxiliary_total` remains diagnostic; `overall_total` subtracts
 mean requested-date deduction, clamped at zero. Matching explicit daily counts override
 defaults. Nonempty user preferences require independent density review; unresolved
 policy/counts keep the adjusted total unavailable. Report schemas are version 2;
-planner V0-V3 behavior is unchanged. An offline replay of the preserved Seoul evidence
+planner V0-V3 behavior is unchanged. The final table in
+[Issue #52](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/52) uses
+`rtpeval_daily_density_2`: ordinary three-visit days deduct 10; relaxed
+three/four/five-visit days deduct 40/70/90; rich pace has the smallest four/five-visit
+deductions. An offline replay of the preserved Seoul evidence
 produced V1 85, V2 90, V3 100 and V3 draft/final 95 → 100; V0 remains unavailable.
 This is development acceptance of the revised rules, not a new live run or formal
 version comparison. The [density contract](docs/contracts/0005-quality-human-review.md#daily-density)

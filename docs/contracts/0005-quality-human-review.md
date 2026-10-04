@@ -139,6 +139,12 @@ choice, not proof of statistical independence or overall travel usefulness.
 
 ### Daily density policy and overall score (2026-10-04)
 
+The current numeric authority is the final approved table in
+[Issue #52](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/52), implemented
+as `rtpeval_daily_density_2`. Earlier density curves are historical only. Final and
+paired report wire shapes stay at version 2; their embedded density profile and rule
+hash identify the current deductions.
+
 The user's approved development-time scoring change preserves the five-dimensional
 `auxiliary_total` and adds `overall_total = max(0, auxiliary_total - mean_daily_penalty)`.
 The mean gives every inclusive requested date equal weight, including missing/empty
@@ -153,10 +159,15 @@ score null; even a 100-point deduction cannot make missing feasibility evidence 
 | 0 | 100 | 100 | 100 |
 | 1 | 40 | 20 | 60 |
 | 2 | 0 | 0 | 0 |
-| 3 | 0 | 10 | 0 |
-| 4 | 50 | 30 | 30 |
-| 5 | 80 | 50 | 70 |
+| 3 | 10 | 40 | 0 |
+| 4 | 50 | 70 | 30 |
+| 5 | 80 | 90 | 70 |
 | 6 or more | 100 | 100 | 100 |
+
+For four and five visits, deductions strictly increase from rich to ordinary to
+relaxed. Ordinary pace now deducts 10 for three visits; relaxed pace deducts 40.
+Uncertain ordinary counts spanning two and three visits therefore have deduction
+bounds 0..10 and an unavailable exact deduction; they are not a zero-cost interval.
 
 Counts reuse the requirement/schedule scorer's source-distinct primary occurrences;
 transport, breaks and Nearby suggestions are excluded. Same-venue repeat occurrences
