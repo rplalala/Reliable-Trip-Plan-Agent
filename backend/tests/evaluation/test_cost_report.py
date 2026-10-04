@@ -40,6 +40,8 @@ def source(namespace="planner", version="v3"):
                     "provider": "fixture",
                     "operation": "model_http",
                     "outcome": "completed",
+                    "model_event_id": "m",
+                    "model_provider": "fixture",
                 },
                 {
                     "event_id": "api",
@@ -213,7 +215,14 @@ def test_embeddings_and_search_tool_units_are_distinct_from_backing_http():
         }
     ]
     item["usage"]["provider_events"] = [
-        {"event_id": "h", "provider": "fixture", "operation": "embedding", "outcome": "completed"},
+        {
+            "event_id": "h",
+            "provider": "fixture",
+            "operation": "embedding",
+            "outcome": "completed",
+            "model_event_id": "m",
+            "model_provider": "fixture",
+        },
         {
             "event_id": "t",
             "provider": "fixture",
@@ -284,3 +293,20 @@ def test_cli_rejects_output_overwriting_source_material(tmp_path):
     with pytest.raises(SystemExit):
         main(["--usage", str(usage), "--prices", str(catalog), "--output", str(usage)])
     assert usage.read_bytes() == before
+
+
+@pytest.mark.parametrize("fault", ["failed", "incomplete", "foreign", "unlinked"])
+def test_uncertain_backing_sends_remain_unknown(fault):
+    item = source()
+    event = item["usage"]["provider_events"][0]
+    if fault in ("failed", "incomplete"):
+        event["outcome"] = fault
+    elif fault == "foreign":
+        event["provider"] = "foreign"
+    else:
+        del event["model_event_id"]
+    run = build_cost_report([item], prices())["runs"][0]
+    assert run["best_available_total"] is None
+    assert run["best_available_observed_subtotal"] == "0.0322"
+    assert run["events"][1]["status"] == "unpriced"
+    assert run["events"][1]["missing_reason"]

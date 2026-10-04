@@ -22,6 +22,24 @@ UNITS = {
 TRANSPORT_ONLY = {"model_http", "embedding", "official_reasoning", "official_search"}
 
 
+def backing_transport(event, models):
+    """A successful, source-bound dispatch is not another model charge."""
+    if event["operation"] not in TRANSPORT_ONLY:
+        return False, None
+    if event.get("outcome") != "completed":
+        return False, "charge_uncertain"
+    model = next((m for m in models if m["event_id"] == event.get("model_event_id")), None)
+    if model is None or event.get("model_provider") != model["provider"]:
+        return False, "unlinked_model_transport"
+    if model["provider"] != "langchain" and model["provider"] != event["provider"]:
+        return False, "transport_provider_mismatch"
+    if event["operation"] != "model_http" and event["operation"] != model["operation"]:
+        return False, "transport_operation_mismatch"
+    if model.get("outcome") != "completed":
+        return False, "charge_uncertain"
+    return True, None
+
+
 def amount(value):
     """Money and divisors are decimal strings, never binary floats or implicit currencies."""
     if not isinstance(value, str):
@@ -261,16 +279,15 @@ def build_cost_report(sources, prices, *, bills=None, annotations=None):
                         raise ValueError("Annotations must not override observed billing fields")
                     else:
                         event[k] = v
-                transport = (
-                    kind == "provider"
-                    and event["operation"] in TRANSPORT_ONLY
-                    and any(
-                        m["operation"] == event["operation"] or event["operation"] == "model_http"
-                        for m in usage.get("model_calls", [])
-                    )
+                transport, transport_reason = (
+                    backing_transport(event, usage.get("model_calls", []))
+                    if kind == "provider"
+                    else (False, None)
                 )
                 value, pricing, reason = (
-                    (None, None, None) if transport else estimate(event, kind, usage, prices)
+                    (None, None, transport_reason)
+                    if transport or transport_reason
+                    else estimate(event, kind, usage, prices)
                 )
                 bill = bound.get(key)
                 if bill and transport:
