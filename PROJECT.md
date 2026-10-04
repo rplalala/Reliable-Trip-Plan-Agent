@@ -300,6 +300,20 @@ and this task supplies no new live result or score comparison. See the
 
 ## 6. Next work and authorization boundary
 
+On 2026-10-05 the user approved creating and preparing two follow-ups:
+[short-reference live regression #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66)
+and [V0-only proposal adoption/route handoff #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67).
+The first proposes six adapter/packet model requests, no retries or Google calls,
+a ten-minute deadline and a USD 0.05 retail-estimate budget (USD 0.018 at the stated
+token caps). Runner implementation and paid execution are not yet authorized or
+prepared. The second proposes default-off V0 model-assisted association while
+retaining genuine high-impact/audit review; policy implementation and subsequent
+independent acquisition require separate approval. Offline source/hash and proposal
+restoration checks passed; these preparation checks add no adopted identity or
+route evidence. The new V0's four routes remain UNKNOWN. See the dated
+[regression preparation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-preparation-2026-10-05)
+and [adoption design preparation](docs/records/evaluation/routes.md#v0-adoption-design-preparation-2026-10-05).
+
 Tickets 01-12 have completed their approved implementation, offline validation,
 review and engineering delivery scopes. On 2026-10-04, the user separately authorized
 a normal push of feature/evaluation and verified acceptance updates/closure of

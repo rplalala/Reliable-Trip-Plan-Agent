@@ -604,3 +604,82 @@ The evaluator packet still requires a separately prepared and authorized executi
 measure model behavior with short IDs. V0-V3 retain independent entry points and version
 mechanisms; this shared transport correction does not freeze a version or constitute
 a formal benchmark. Publication and further live execution remain separate actions.
+
+<a id="short-reference-live-regression-preparation-2026-10-05"></a>
+
+## Short-reference live regression preparation — 2026-10-05
+
+Status: **Plan prepared; runner implementation and live execution pending approval.**
+The user approved creation of two follow-up Issues and preparation of their plans.
+[Issue #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66) owns the
+execution specification and acceptance; [#67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67)
+owns the separate V0 adoption proposal. #63/#64 remain completed within their
+original scopes, delivered by [PR #65](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/65).
+
+Preparation started on `feature/evaluation` at
+`def635c7914ce5ca6ddc73c604110e75abfc9c8b`, with a clean tracked worktree; changes
+in this event are planning documentation and ignored offline preparation receipts.
+The published merge revision is `62f9329903b53f76abb8ea2a37e119bd94d3f478`.
+No branch switch, main-to-development merge, runtime change or paid call occurred.
+
+### Scope choice and proposed budget
+
+The implementation audit identified six relevant smoke cases: shared V1-V3 primary,
+review profiling, V3 Repair, official evidence reasoning, product introduction and
+the V0 evaluator identity packet. Each gets at most one model request through its
+actual boundary. Frozen inputs isolate the affected mapping and domain checks;
+rerunning discovery/RAG/Google or all four planners would add cost and unrelated
+variability without directly strengthening this adapter check. This scope does not
+claim full live V0-V3 orchestration coverage. V0 primary and the already protected
+POI semantic projection have no newly changed supplied-ID mapping to validate.
+
+Proposed limits: six sends including failed attempts, zero retries/corrections,
+no tools or Google/search/embedding calls, 60 seconds per request, 600 seconds total.
+Each estimated input must fit 10,000 tokens including schema and a 1,024-token
+framing reserve; actual output is capped at 4,000 tokens including reasoning.
+An observed usage overrun stops subsequent sends. Identity assistance must retain
+the semantic judging instructions from #63 alongside the mapping instruction.
+The existing packet alone is neither a semantic prompt nor a live caller.
+
+[Official GPT-6 Luna pricing](https://developers.openai.com/api/docs/models/gpt-6-luna)
+was checked on 2026-10-05: Standard USD 0.10 input, 0.01 cached input and 0.50 output
+per million tokens. Six uncached capped calls, without cache-write surcharges,
+estimate **USD 0.018**. Proposed retail-estimate allowance is **USD 0.05**, not a
+Foundry invoice cap. Record any cache-write/regional pricing and actual usage;
+invoice amounts remain unknown until supplied. Accounting uses #59 and separates
+primary, profiling, Repair, reasoning, introduction and independent evaluator calls.
+
+Before requesting execution, prepare actual inputs, schemas, maps and revision/source
+hashes, then demonstrate task-specific SDK caps and exact restoration offline for
+all six cases. Current planning does not claim that runner/preflight is complete.
+The prepared, explicitly authorized execution belongs to `smoke tests`; it reports
+blockers and must not modify code. Stop on an unexpected send/host, timeout, budget,
+hash, schema, mapping or ownership failure without correction or a baseline call.
+Generated prose need not match old output; canonical identities, source alignment
+and native permissions must pass. Valid `unknown` identity suggestions are distinct
+from malformed reference transport.
+
+### Observed preparation checks and limitations
+
+The task-local offline preflight verified all **61** original pilot-authorized
+file hashes unchanged, rebuilt nine references/fourteen candidate occurrences/
+twelve distinct candidates and restored all nine old proposals identically.
+Mapping SHA-256 remains
+`4a7d36cc0e0ccf64138f1faf36a194b99fe606c8999538966b3cc16fbe66a36b`.
+Original V0 SHA-256 remains
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+The cost calculation and six-case count passed. This is an offline programmatic
+replay of existing proposals; it is not a new response, SDK/live gate or accuracy
+measurement. It adds no adopted identity or route evidence.
+
+Local evidence identifiers, not published dependencies:
+`artifacts/followup-plans-20261005/{offline_preflight.py,offline-preflight.json,short-id-plan.json}`.
+GitHub Issue bodies are self-contained and link only to accessible published
+baseline revisions. Further live/adoption work and Git delivery require approval.
+
+Documentation validation passed: three intended tracked Markdown files, seven new
+local/pinned document links with valid tracked targets/anchors, English content,
+matching remote Issue bodies and `git diff --check`. #66/#67 were re-read OPEN with
+only preparation criteria checked; #63/#64 remained CLOSED and PR #65 remained
+MERGED at the pinned revision. No implementation tests were rerun for this
+documentation-only event. Branch and main references were verified unchanged.

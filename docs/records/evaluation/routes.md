@@ -369,6 +369,94 @@ Independent route acquisition requires its own prepared budget and approval afte
 sufficient endpoint identities are adopted. No additional live request is authorized
 by this record. Issue lifecycle and Git delivery remain distinct from these results.
 
+<a id="v0-adoption-design-preparation-2026-10-05"></a>
+
+## V0 adoption design preparation — 2026-10-05
+
+Status: **Proposed; preparation approved, policy implementation and acquisition pending.**
+The user approved creating two follow-ups and preparing their plans.
+[Issue #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67) owns
+the adoption specification and acceptance; [#66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66)
+owns the new short-reference response validation. Offline design/implementation
+can proceed independently of that live run; adoption of its new response requires
+its validation. Closed #63/#64 retain their original completed scopes.
+
+Preparation revision: `def635c7914ce5ca6ddc73c604110e75abfc9c8b` on
+`feature/evaluation`, initially clean. Only planning documentation and ignored
+offline receipts change at this checkpoint. This record does not replace the
+current independent identity contract or introduce an operational model caller.
+
+### Existing obstacle and recommended seam
+
+Observed baseline: the prior model suggested nine matches, while native identity
+resolution adopted zero. Two references require high-impact review; seven had
+malformed typed-address diagnostics. A shorter ID solves the copying boundary,
+not adoption or coordinates. The current coordinate bridge also verifies the
+native policy and recomputed report; passing a proposal or relabeling a model as
+human would not be a valid extension.
+
+The recommendation is a default-off, separately versioned V0 model-assisted
+association policy. Keep native accepted associations and genuine human decisions
+first. For unresolved ordinary visits, let the model match the structured V0 claim
+against frozen independent candidates using name/location/address evidence. The
+program checks exact references, per-reference ownership, hash linkage and actual
+allowlisted evidence fields rather than interpreting rationale prose or adding
+title/fuzzy-name rules. A valid match remains fallible; no model confidence cutoff
+or additional judge is proposed.
+
+Adopt eligible ordinary matches through an explicit `model_assisted` path after
+review/audit gates. Keep REQUIRED/EXCLUDED/fixed-time subjects and their high-impact
+possible visit matches subject to genuine review. The positive-count, predeclared
+audit must also cover model-assisted automatic proposals; sampled cases remain
+pending review. In this source, the required Gyeongbokgung subject and its visit
+therefore remain review-required, and the audit may block other visits. Approval
+of this proposed integration alone would not establish all four route endpoints.
+
+This alternative association policy deliberately permits independently supported
+name variants or candidate choice that the default exact-name rule cannot accept.
+It leaves the shared policy and V1-V3 unchanged. Optional malformed address
+components remain diagnosed and cannot be cited as verified typed facts; valid
+independent name/formatted-address fields can support the separate model-assisted
+path. Original snapshots are immutable and no synthetic components are introduced.
+Unsupported matches preserve UNKNOWN; a missing match is not proof of fabrication.
+
+Hash-bind source/intake/reference population, independent observations, complete
+judging instructions/schema/map/response and audit inputs. Extend downstream replay
+validation explicitly for this policy; do not replace a policy string to bypass
+the current bridge. TDD must cover human precedence, high-impact/audit pending,
+wrong/stale/foreign identities and missing cited fields, plus default/V1-V3
+invariance. Implementation and tests must be committed before Standards/Spec review.
+Score formulas and masks remain unchanged; the report must expose the association
+policy and evidence when availability changes.
+
+### Independent route handoff and preparation checks
+
+The four original directed legs/modes/time windows remain exactly those in the
+[frozen source table](#new-v0-route-plan-2026-10-05). Acquire new independent Details
+only for adopted endpoint IDs, checking requested/returned identity and contradictions,
+numeric coordinates and snapshot linkage. Never use model/planner coordinates.
+Deduplication by exact adopted venue would allow at most **eight Details plus four
+Routes requests** if every endpoint cleared its gates. This is a planning upper
+bound, not an approved budget; pending reviews or unsupported modes reduce eligibility.
+Freeze actual eligible requests, field masks/SKUs, dated official prices, timeouts,
+total deadline and stop conditions before separate acquisition approval.
+
+Use native route preparation/scoring with the original WALK/TRANSIT, direction
+and temporal context. Preserve provider limitations as UNKNOWN; do not switch modes,
+retime, rerun or optimize V0. Report independent duration, original claimed duration,
+available continuous window, rule/margin and evidence limitations separately. An
+incorrect time estimate alone is distinct from an infeasible itinerary. Model
+matching is not evidence of opening hours or journey duration.
+
+The offline preparation check passed on its first run: all **61** original
+pilot-authorized files retained their hashes, the original V0 hash remained
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`,
+and nine prior proposals were exactly restored through the new map. The check made
+no model/provider requests and added no adopted identity or route evidence.
+Local evidence identifier: `artifacts/followup-plans-20261005/offline-preflight.json`;
+the linked Issues contain self-contained public plans, not local-file dependencies.
+Current observed status stays **zero adopted identities; four UNKNOWN routes**.
+
 <a id="snapshot-coordinate-bridge-2026-10-03"></a>
 
 ## Snapshot-coordinate bridge — 2026-10-03
