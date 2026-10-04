@@ -1,11 +1,9 @@
 """Source-preserving schedule projection, independent of planner judgments."""
 
-import re
 from datetime import date, datetime
 
 from ._claims import (
     claim_evidence,
-    has_endpoint_claim,
     movement_claim,
     normalized,
     transport_endpoints,
@@ -37,6 +35,21 @@ TRANSFER_FIELDS = (
     "reserve_seconds",
 )
 MODES = ("WALK", "TRANSIT", "DRIVE")
+MODE_TITLES = {
+    "walk": "WALK",
+    "walking": "WALK",
+    "on foot": "WALK",
+    "public transit": "TRANSIT",
+    "public transport": "TRANSIT",
+    "bus": "TRANSIT",
+    "train": "TRANSIT",
+    "metro": "TRANSIT",
+    "subway": "TRANSIT",
+    "tram": "TRANSIT",
+    "drive": "DRIVE",
+    "driving": "DRIVE",
+    "by car": "DRIVE",
+}
 PLACEHOLDERS = {"free time", "break", "rest", "relax", "explore", "explore the area"}
 
 
@@ -60,26 +73,17 @@ def interval(start, end):
 
 
 def mode_claim(raw, review):
+    """Read reviewed mode or a bounded title declaration; notes are not mode fields."""
     if review and "mode" in review:
         return review["mode"]
-    found = set()
-    prose = " ".join(str(raw.get(k) or "") for k in ("title", "notes")).casefold()
-    patterns = {
-        "WALK": r"\b(walk|walking|on foot)\b",
-        "TRANSIT": r"\b(public transit|public transport|bus|train|metro|subway|tram)\b",
-        "DRIVE": r"\b(drive|driving|by car)\b",
-    }
-    # Negated/conditional recommendations require review rather than keyword selection.
-    if re.search(
-        r"\b(not|no|avoid)\s+(walk(?:ing)?|driv(?:e|ing)|public transit|bus|train)\b"
-        r"|\b(instead|could|either|if)\b",
-        prose,
-    ):
-        return None
-    for mode, pattern in patterns.items():
-        if re.search(pattern, prose):
-            found.add(mode)
-    return next(iter(found)) if len(found) == 1 else None
+    declared = []
+    for clause in (normalized(raw.get("title")) or "").split(";"):
+        title = clause.strip().removesuffix(".")
+        mode = MODE_TITLES.get(title)
+        if mode is None and movement_claim(title):
+            mode = MODE_TITLES.get(title.split(" from ", 1)[0].split(" to ", 1)[0])
+        declared.append(mode)
+    return declared[0] if all(mode in (None, declared[0]) for mode in declared) else None
 
 
 def classify(raw, review):
@@ -88,14 +92,12 @@ def classify(raw, review):
     role = raw.get("activity_kind", "unknown")
     place = text(raw.get("place_name")) or text(raw.get("source_place_id"))
     title = raw["title"].strip().casefold()
-    movement_title = bool(movement_claim(title))
-    visit_title = bool(re.match(r"(?:visit|tour|explore museum)\b", title))
-    if (role == "transport" and visit_title) or (role == "main_poi" and movement_title):
-        return "unresolved", "unresolved", "role_review_required"
     if role == "transport" and not place:
         return "transport", "declared_consistent", "declared_transport"
-    if role == "main_poi" and title not in PLACEHOLDERS:
+    if role == "main_poi":
         return "primary_visit", "declared_consistent", "declared_visit"
+    if role == "free_time":
+        return "transition", "declared_consistent", "declared_free_time"
     if place and role not in ("transport", "free_time"):
         return "primary_visit", "declared_consistent", "named_visit"
     if not place and title in PLACEHOLDERS and role != "transport":
@@ -315,32 +317,12 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
                 == (review["from_activity_id"], review["to_activity_id"])
             ]
         else:
-            # Endpoint prose is never interpreted as a trusted binding by a keyword guess.
-            prose = str(raw.get("title", "")) + " " + str(raw.get("notes") or "")
-            has_endpoint_prose = has_endpoint_claim(prose)
-            plain_title = raw.get("title", "").strip().casefold() in {
-                "walk",
-                "walking",
-                "public transit",
-                "public transport",
-                "drive",
-                "driving",
-                "transport",
-                "transfer",
-                "bus",
-                "train",
-                "metro",
-                "subway",
-                "tram",
-            }
-            plain_notes = not raw.get("notes") or str(raw["notes"]).strip().casefold() in {
-                "model estimate",
-                "estimated, not live verified",
-                "estimated",
-            }
+            endpoints = transport_endpoints(raw)
+            title = (normalized(raw.get("title")) or "").split(";", 1)[0].strip().removesuffix(".")
+            plain_title = title in MODE_TITLES or title in {"transport", "transfer"}
             matches = (
                 []
-                if has_endpoint_prose or not plain_title or not plain_notes
+                if endpoints["declared"] or not plain_title
                 else [
                     leg
                     for leg in candidates
@@ -348,8 +330,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
                     and contains(leg["gap_start"], leg["gap_end"], claim["start"], claim["end"])
                 ]
             )
-            endpoints = transport_endpoints(raw)
-            if endpoints:
+            if endpoints["pair"]:
                 names = {
                     r["original"]["activity_id"]: normalized(
                         r["original"].get("place_name") or r["original"]["title"]
@@ -360,7 +341,8 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
                     leg
                     for leg in candidates
                     if leg["adjacency_status"] != "unresolved"
-                    and (names[leg["from_activity_id"]], names[leg["to_activity_id"]]) == endpoints
+                    and (names[leg["from_activity_id"]], names[leg["to_activity_id"]])
+                    == endpoints["pair"]
                     and contains(leg["gap_start"], leg["gap_end"], claim["start"], claim["end"])
                 ]
         attach(claim, matches, claims)
@@ -381,7 +363,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
     require(consumed == set(review_map), prefix, "Review points to no activity in this projection")
     return {
         "context": context,
-        "policy_version": "structural_claims_directed_occurrences_2",
+        "policy_version": "structural_claims_directed_occurrences_4",
         "projection": prefix,
         "wire_version": wire,
         "planner_version": version,

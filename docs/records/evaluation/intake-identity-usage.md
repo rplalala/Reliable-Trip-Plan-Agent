@@ -741,3 +741,150 @@ The next full run completed with 5 failed, 1968 passed and 10 skipped in 83.54s.
 
 
 Final full backend regression: **1973 passed, 10 skipped in 85.49s**. The ten skips are nine opt-in database cases and the existing native Windows symlink privilege case. Ruff, compilation and diff whitespace checks passed. Standards and Spec have zero remaining actionable findings. No live service was called, no files were staged or committed, and no version was frozen.
+
+<a id="structured-role-title-correction-2026-10-04"></a>
+
+## Structured role and title correction - 2026-10-04
+
+Status: Implemented, validated offline and reviewed; not frozen.
+Review fixed point: `300ee039b3e2a2116a0b21f93eb09c9da2ade126` on
+`feature/evaluation`; the starting working tree was clean. The user requested avoiding
+title-regex semantic overreach following the approved density-table work. This correction
+is limited to evaluator role classification, relevant regressions and current contracts.
+
+Observed failure: the movement recognizer accepts `Walk to Museum A and explore its
+exhibitions`, interpreting all text after `to` as a destination. The old role classifier
+then changed a declared `main_poi` into `unresolved`. This was reproduced with synthetic
+intake fixtures; it is not an observed real-provider failure rate. The previously preserved
+Seoul replay had no unresolved-role/possible-count cases in the four finals or V3 stages.
+
+The classifier no longer uses movement/visit title patterns to veto declared roles.
+Existing place/placeholder guards, independent role overrides, source preservation,
+transport authority, explicit endpoint association and genuine date/role uncertainty remain.
+Competing-title metadata and the separate factual identity checks are retained; establishing
+a visit role does not establish that its venue is real or correctly identified. Projection
+policy advances to `structural_claims_directed_occurrences_3`; immutable source-reference
+version remains `rtpeval_projection_1`. Derived material affected by classification must be
+replayed from preserved sources. The density table remains `rtpeval_daily_density_2`.
+
+Validation sequence: the first pytest invocation could not access the default Windows
+temporary/cache directories, before exercising assertions. Using a fresh ignored workspace
+`--basetemp` and disabling pytest cache fixed the execution environment. The intake RED run
+then reproduced four expected role assertion failures, with three existing cases passing.
+Removing the veto made intake pass (70 passed, 1 skipped). Transport-title and four-version
+quality/density regressions then passed (102 passed, 1 skipped), including known count 2,
+possible count 0 and ordinary density penalty 0. The genuine unknown-role fixture still
+keeps its denominator unavailable. Ruff initially detected mixed line endings introduced by
+editing; formatting corrected them, and lint/format/whitespace checks passed.
+
+The full backend suite passed: **2532 passed, 10 skipped in 322.19s**. Implementation
+and directly related tests were committed before review as `9039466`
+(`fix: preserve structured activity roles across title wording`).
+Parallel Standards and Spec reviews of that commit against the recorded fixed point each
+reported zero findings. No implementation correction commit was needed; current contract
+and acceptance updates are committed separately after review.
+
+Evidence identifiers: local test directories `artifacts/title-role-red`,
+`artifacts/title-role-intake-green`, `artifacts/title-role-report-green` and
+`artifacts/title-role-full`; these are ignored execution material, not published dependencies.
+No original Seoul artifacts or report files were rewritten. No planner/provider/model run,
+formal experiment, publication or version freeze is part of this correction.
+
+The subsequent [Issue #53](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/53)
+explicitly associates implementation `9039466` and documentation `55ab8fc` with the
+broader free-text correction history. Their commits are preserved without rewriting.
+
+<a id="free-text-scoring-corrections-2026-10-04"></a>
+
+## Free-text scoring corrections - 2026-10-04
+
+Status: Implemented, offline validated and reviewed locally; publication is pending.
+Specification and live task state:
+[Issue #53](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/53).
+Starting/review revision: `55ab8fc59243be4f4fb583fc7284dabeecb907a4`; the starting
+tree was clean. The user authorized all four confirmed problems, local implementation,
+tests, commits, review and documentation. Publication was separately limited to earlier
+revisions through `300ee039`, delivered in PR #54; these corrections remain local.
+
+### Reproduced behavior and correction
+
+- Structured Museum A claims with agreeing independent evidence were blocked solely by
+  benign `Visit Museum A in the morning`, gardens or walking titles. Identity title
+  diagnostics no longer veto automatic proposals. Actual candidate/ID/name/address,
+  destination, high-impact and predeclared audit gates remain.
+- A `free_time` Coffee break became a possible visit, turning a known two-visit day
+  into count bounds 2..3 and an unavailable ordinary penalty. Declared free time is
+  non-POI regardless of title/place text; primary roles are no longer erased by generic
+  placeholder titles. Independent occupancy review remains separate and can retain a
+  named rest interval as a fixed commitment.
+- Walking transport became mode UNKNOWN after unrelated conditional/bus notes. V0
+  reads independent mode review or a bounded first-title-clause declaration; conflicting
+  recognized title modes and unsupported/missing mode declarations stay unknown. Notes
+  are preserved, not mined for mode keywords or narrative negation.
+- A generic estimate note prevented otherwise supported transport binding. Remove that
+  note whitelist and incidental endpoint-keyword veto. Complete supported endpoint
+  declarations still require agreement, exact delivered labels, chronology and a unique
+  containing same-day occurrence gap. Generic prose supplies no endpoint declaration;
+  unsupported titles, genuine recognized conflicts and ambiguous gaps retain review.
+
+Projection policy is `structural_claims_directed_occurrences_4`; identity association
+policy is `structural_claims_typed_addresses_3`. Source-reference version stays
+`rtpeval_projection_1`; wire shapes and `rtpeval_daily_density_2` remain unchanged.
+Older identity/preparation reports require offline replay because the association
+policy changed. Original evidence and historical reports are preserved.
+
+### Development validation sequence
+
+Public seams: batch intake, independent identity resolution, final quality report,
+V3 paired report and occupancy preparation. Identity RED reproduced 20 failures with
+4 controls passing; the full identity file then passed 69 tests. Role RED reproduced
+7 failures with 1 control passing; related intake/report/occupancy checks then passed
+120 tests with 1 skipped. Mode RED reproduced 6 failures with 3 controls passing;
+its explicit-conflicting-title follow-up reproduced 1 failure and then passed all
+10 mode cases. Binding RED reproduced 5 failures with 5 controls passing; the full
+intake file then passed 93 tests with 1 skipped.
+
+The integrated five-file run initially had 229 passing, 1 skipped and one test error:
+the new occupancy assertion used `guaranteed_intervals` instead of the existing
+serialized `intervals` field. Correcting only that test made the occupancy file pass
+11 tests. Final/V3 checks cover title-invariant density, generic-note-invariant V0
+scores and preserved independent rest occupancy. Ruff lint/format and whitespace
+checks passed before the full backend run.
+
+The complete backend suite passed: **2574 passed, 10 skipped in 255.42s** using
+`python -m pytest backend/tests -q --basetemp artifacts/semantic-full-backend
+-p no:cacheprovider --tb=short`. The same complete worktree was validated before
+splitting its implementation and directly related tests into local commits:
+`a694c21` (`fix: keep identity association independent of title prose (#53)`) and
+`4e12ab4` (`fix: respect structured roles and explicit transport claims (#53)`).
+Validation covers their combined code state, rather than a separate full-suite run
+of the intermediate first commit. The committed review uses the starting revision
+above through `4e12ab4df7e2e0fa33a3c72b7d7de21157885f22`.
+
+The initial committed reviews reported Standards 0 findings and Spec 1 P2 finding:
+`Walking; Estimated travel time` associated while `Walking ; Estimated travel time`
+did not. The association path had not stripped the first title clause, unlike the mode
+path. A public intake regression reproduced 1 failure with 1 control passing. Removing
+clause boundary whitespace then passed the five-file suite (232 passed, 1 skipped,
+23.52s). Ruff first reported mixed line endings introduced by editing; formatting
+corrected them and lint/format/whitespace checks passed. The separate correction commit
+is `62c7586` (`fix: normalize transport title clause spacing (#53)`); earlier commits
+are preserved rather than amended. Standards and Spec independently rechecked the
+correction, confirmed the P2 resolved and reported zero remaining findings over the
+combined starting revision through `62c75867704107cc4193bf0980c59f4919686edd`.
+The Spec reviewer also independently reproduced successful binding for both title
+forms. The final full backend run after correction passed **2576 tests, 10 skipped
+in 247.11s**, using the same command with
+`--basetemp artifacts/semantic-review-full-backend`. No code changed after this run.
+Ruff lint/format and committed/working diff whitespace checks passed. Final current
+contracts, project status and this acceptance record are a separate documentation
+commit after review. Local acceptance is complete; Issue #53 remains open only for
+its separately authorized correction publication criterion. The historical
+`main_poi` commits `9039466`/`55ab8fc` and all new correction commits remain excluded
+from PR #54; no new live execution or planner/density changes were made.
+
+Evidence identifiers are ignored local fixture directories `artifacts/semantic-*`
+and the executed pytest results. No original Seoul sources or output reports were
+rewritten or rerun. All observations here are synthetic implementation diagnostics,
+not measured live failure frequencies or formal evaluation conclusions. These changes
+add no LLM/provider calls, planner behavior, version freeze, or general semantic model.

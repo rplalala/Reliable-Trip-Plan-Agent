@@ -672,14 +672,19 @@ def test_search_details_contradiction_requires_review(intake_batch, field, value
 
 @pytest.mark.parametrize("version", ["v0", "v1", "v2", "v3"])
 @pytest.mark.parametrize(
-    "title,expected",
+    "title,diagnostic",
     [
-        ("Visit National Aviation Museum", "title_association_unverified"),
-        ("Visit Museum A", "audit_pending"),
-        ("Museum A and National Aviation Museum", "title_association_unverified"),
+        ("Visit National Aviation Museum", True),
+        ("Visit Museum A", False),
+        ("Museum A and National Aviation Museum", True),
+        ("Visit Museum A in the morning", True),
+        ("Museum A and its gardens", True),
+        ("Walk to Museum A and explore its exhibitions", True),
     ],
 )
-def test_title_claim_must_agree_before_automatic_binding(intake_batch, version, title, expected):
+def test_title_diagnostics_do_not_veto_structured_identity(
+    intake_batch, version, title, diagnostic
+):
     def change(_, results, _save, _root):
         activity = results[version]["itinerary"]["days"][0]["activities"][0]
         activity["title"] = title
@@ -696,14 +701,13 @@ def test_title_claim_must_agree_before_automatic_binding(intake_batch, version, 
         intake, evidence(intake, [observation]), audit_plan=plan(intake)
     ).to_dict()
     record = next(r for r in report["records"] if r["reference_id"] == ref["reference_id"])
-    assert record["reason"] == expected
+    assert record["reason"] == "audit_pending"
     assert record["canonical_place_id"] is None
-    if expected == "title_association_unverified":
+    if diagnostic:
         claim = record["competing_claim"]
         assert claim["source"] == ref["source"]
         assert claim["field"] == "title"
         assert claim["original"] == title
-        assert claim["parsed"]["destination"] == "national aviation museum"
 
 
 def test_typed_locality_cannot_be_overridden_by_legacy_location(intake_batch):

@@ -26,8 +26,8 @@ use this table only. Explicit-count policy, source-occurrence population, mean
 deduction, original auxiliary score, wire shapes and uncertainty rules are retained.
 The ordinary 2..3 count interval now has cost bounds 0..10 and UNKNOWN exact deduction.
 Issue #52 is associated through current contracts, PROJECT.md, commit references and
-this acceptance owner. Its GitHub specification is self-contained because local code
-and updated documents have not been published.
+this acceptance owner. At the local acceptance checkpoint its GitHub specification
+was self-contained because code and updated documents had not yet been published.
 
 ### Final-table follow-up validation
 
@@ -59,9 +59,29 @@ uncommitted during that review. Two parallel code-review agents reported **Stand
 0 findings; Spec: 0 findings** against the committed diff and current Issue #52 body.
 No code correction was required. Current contracts, usage guidance, project status and
 this acceptance record are committed as a final documentation group after review.
-Issue #52 records the accepted local implementation; code publication still needs
-separate authorization. The next section is superseded implementation history, not
-another current table.
+At that checkpoint Issue #52 recorded accepted local implementation pending separate
+publication authorization. The publication acceptance below records the subsequent
+delivery; the initial implementation section preserves superseded numeric history.
+
+## Authorized publication acceptance - 2026-10-04
+
+The subsequent user authorization delivered only the five commits through
+`300ee039b3e2a2116a0b21f93eb09c9da2ade126`. Remote `feature/evaluation` was verified
+at that exact head; later `9039466`, `55ab8fc` and Issue #53 changes were excluded.
+[PR #54](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54) compared base
+`4aa76a956f55822d39c2b61f2d3105e8b1b33932` with that head. Two independent review
+agents reviewed the full release: Standards 0 findings and Spec 0 findings. The
+review reused the exact final-code evidence above; no tests/live runs were repeated.
+GitHub reported no CI checks, and mypy/pyright are not configured.
+
+The [review comment](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54#issuecomment-5979830137)
+was published and verified before merge. After confirming the same reviewed base/head,
+the merge used head matching and retained commit history. Observed merge commit:
+`69197cdc5a99c96ab94e15fa8b9313b11b1127c9`. PR state MERGED and Issue #52 CLOSED
+were re-read; its original acceptance criteria and publication criteria are checked.
+Local `main` was safely fast-forwarded without switching the implementation checkout
+or discarding Issue #53 changes. This delivery creates no new benchmark or freeze.
+Earlier local-only statements above describe the pre-publication checkpoint.
 
 ## Initial implementation history (superseded numeric policy)
 

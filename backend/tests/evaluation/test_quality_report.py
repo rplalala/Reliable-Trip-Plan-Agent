@@ -18,6 +18,7 @@ from backend.evaluation.snapshot import (
 )
 from backend.tests.evaluation import test_requirement_schedule as schedule_tests
 from backend.tests.evaluation import test_routes as route_tests
+from backend.tests.evaluation.test_daily_density import density_reviews
 from backend.tests.evaluation.test_intake import activity
 
 pytest_plugins = ("backend.tests.evaluation.test_intake",)
@@ -163,10 +164,11 @@ def test_single_version_no_checks_keeps_raw_na_and_zero_contribution(route_case)
     assert group["versions"]["v0"]["auxiliary_total"]["score_0_100"] == 50
 
 
-def test_label_conflict_keeps_unknown_population_and_asymmetric_totals(route_case):
+def test_genuinely_unknown_role_keeps_unknown_population_and_asymmetric_totals(route_case):
     def change(results):
         route_tests.no_departure(results)
-        results["v0"]["itinerary"]["days"][0]["activities"][0]["title"] = "Walk to Museum A"
+        first = results["v0"]["itinerary"]["days"][0]["activities"][0]
+        first.update(activity_kind="unknown", place_name=None, title="Unclassified experience")
 
     out = report(route_case(change=change))
     assert out["status"] == "complete"
@@ -183,6 +185,72 @@ def test_label_conflict_keeps_unknown_population_and_asymmetric_totals(route_cas
     assert group["versions"]["v1"]["auxiliary_total"]["score_0_100"] == 50
     assert not group["all_totals_available"]
     assert group["included_dimensions"] == ["grounding", "non_overlap", "opening", "routes"]
+
+
+@pytest.mark.parametrize(
+    "title", ["Walk to Museum A", "Walk to Museum A and explore its exhibitions"]
+)
+def test_title_wording_does_not_make_declared_visit_counts_unknown(route_case, title):
+    def change(results):
+        route_tests.no_departure(results)
+        for result in results.values():
+            result["itinerary"]["days"][0]["activities"][0]["title"] = title
+
+    case = route_case(change=change)
+    out = report(case, density_reviews=density_reviews(case[0]))
+    assert out["status"] == "complete", out["diagnostics"]
+    for version in out["groups"][0]["versions"].values():
+        assert version["primary_metrics"]["grounding"]["unresolved_role_count"] == 0
+        assert version["dimensions"]["grounding"]["denominator"] == 2
+        day = version["daily_density"]["days"][0]
+        assert day["known_primary_count"] == 2
+        assert day["possible_primary_count"] == 0
+        assert day["penalty_0_100"] == 0
+        assert version["overall_total"]["score_0_100"] is not None
+
+
+@pytest.mark.parametrize("title", ["Coffee break", "Relax over a drink", "Rest"])
+@pytest.mark.parametrize("place", [None, "Hotel Lounge"])
+def test_declared_free_time_never_becomes_a_possible_poi(route_case, title, place):
+    def change(results):
+        route_tests.no_departure(results)
+        for result in results.values():
+            result["itinerary"]["days"][0]["activities"].append(
+                activity("break", title, "10:00", "10:20", "free_time", place=place)
+            )
+
+    case = route_case(change=change)
+    out = report(case, density_reviews=density_reviews(case[0]))
+    assert out["status"] == "complete", out["diagnostics"]
+    for version in out["groups"][0]["versions"].values():
+        assert version["primary_metrics"]["grounding"]["unresolved_role_count"] == 0
+        assert version["dimensions"]["grounding"]["denominator"] == 2
+        day = version["daily_density"]["days"][0]
+        assert day["known_primary_count"] == 2
+        assert day["possible_primary_count"] == 0
+        assert day["penalty_0_100"] == 0
+
+
+@pytest.mark.parametrize("notes", ["Estimated travel time", "Bring water if it is sunny"])
+def test_v0_report_scores_are_invariant_under_unrelated_transport_notes(route_case, notes):
+    def change(note):
+        def apply(results):
+            route_tests.no_departure(results)
+            travel = activity("travel", "Walking", "10:00", "10:30", "transport")
+            travel["notes"] = note
+            results["v0"]["itinerary"]["days"][0]["activities"].append(travel)
+
+        return apply
+
+    baseline = report(route_case(change=change("Model estimate")))
+    revised = report(route_case(change=change(notes)))
+    assert baseline["status"] == revised["status"] == "complete"
+    old = baseline["groups"][0]["versions"]["v0"]
+    new = revised["groups"][0]["versions"]["v0"]
+    for name in ("grounding", "non_overlap", "opening", "routes"):
+        assert new["dimensions"][name]["counts"] == old["dimensions"][name]["counts"]
+        assert new["dimensions"][name]["denominator"] == old["dimensions"][name]["denominator"]
+    assert new["auxiliary_total"] == old["auxiliary_total"]
 
 
 def test_empty_mask_is_unavailable_instead_of_invented_perfect_score(route_case):

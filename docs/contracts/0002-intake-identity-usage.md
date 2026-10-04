@@ -72,10 +72,19 @@ not need to equal that name. Without usable place fields, retain the supported n
 review path rather than manufacturing a venue. Explicit competing structural/content claims
 retain `competing_claim`, its field/text/source and parsed destination/origin as applicable.
 
-Recognized `Visit <different name>` or directed movement contradictions require review;
-an isolated movement keyword or ordinary `Walking tour of Museum A` title does not veto a
-structural Museum A visit. Other prose conflicts may be independently reviewed. This is a
-bounded recognizer, not arbitrary multilingual entity understanding or factual certification.
+Title regexes do not veto declared visit or transport roles. A structured `main_poi`
+remains a primary visit even without a place field or with a placeholder-like title;
+this does not establish its factual venue identity. A declared `free_time` is non-POI,
+including `Coffee break` or a named lounge, regardless of title wording. Independent
+occupancy/protection review still decides whether it is a time commitment. A locationless
+declared transport remains transport even with a `Visit`/`Tour` title. Independently
+reviewed roles retain precedence. Unknown roles without usable place claims remain
+unresolved; daily counts still retain genuine role and date-attribution uncertainty.
+
+Bounded title parsing may retain source-linked `competing_claim` metadata and feed the
+separate identity review. It cannot establish semantic role contradictions or factual
+identity. Transport endpoint parsing still applies to authoritative transport records;
+this revision adds no general semantic model or new LLM invocation.
 
 Generic locationless activities are transition-like; named unresolved POIs stay visits.
 Nearby is unscheduled. Unknown/inconsistent roles retain review and applicability counts.
@@ -87,13 +96,26 @@ Candidate legs connect consecutive primary visits within a day. Nearby, transiti
 
 V0 transport supports complete `from NAME to NAME` clauses, optionally prefixed by `walk`,
 `walking`, `drive`, `driving`, `transit`, `public transit`, `transfer` or `travel`.
-Semicolon-separated estimate disclaimers are allowed; every endpoint-bearing title/notes
-clause must agree. Match complete NFC/casefold/whitespace-normalized scheduled labels,
+Only complete supported title/notes declarations supply endpoint pairs. All recognized
+pairs must agree; unrelated prose and generic estimate notes neither supply a pair nor
+block association. A bare supported mode title (or `Transport`/`Transfer`) without any
+recognized endpoint declaration can associate through exactly one containing gap.
+An unsupported non-bare title remains unbound without independent endpoint review.
+Match complete NFC/casefold/whitespace-normalized scheduled labels,
 resolved chronology and exactly one same-day occurrence gap containing the whole transport
 interval. Repeated labels are acceptable if only one occurrence pair survives. Contradictory,
 reversed, unsupported, overlapping or ambiguous claims retain review; no nearest/favorable
 pair or positional override is chosen. Independent reviewed endpoints can associate despite
 a separate time conflict; the review does not clear that conflict.
+
+V0 mode comes from independent mode review or a bounded explicit title declaration.
+Supported bare labels include walk/walking/on foot, public transit/public transport,
+bus/train/metro/subway/tram, and drive/driving/by car. Recognized directed movement
+clauses may supply the leading mode label. The first semicolon-separated title clause
+must declare a supported mode; later recognized mode declarations must agree. Missing,
+unsupported or conflicting mode declarations remain UNKNOWN. Notes are not mode fields;
+incidental conditional/transport keywords and narrative negations are not interpreted.
+Original prose is preserved for independent review rather than treated as semantic proof.
 
 V1-V3 associate Transfers through directed consecutive same-day activity IDs. Wrong/dangling/
 nonadjacent/cross-day IDs remain unbound; place-ID disagreement stays a separate claim.
@@ -104,9 +126,12 @@ segments remain segments, and conflicts stay alternatives rather than summed or 
 Association status and agreement are separate. No claimed arrival is synthesized from duration.
 Display-only inferred arrival follows [human review](0005-quality-human-review.md#human).
 
-`policy_version=structural_claims_directed_occurrences_2`; immutable source-reference
+`policy_version=structural_claims_directed_occurrences_4`; immutable source-reference
 `projection_version=rtpeval_projection_1`. Internal-finding-only source changes can preserve
 semantic projections while still changing exact artifact hashes and source identities.
+Replay derived identity/evidence/report preparations when classification changes; preserve
+original source artifacts and historical reports. The density table remains
+`rtpeval_daily_density_2`.
 
 <a id="rtpeval-identity-contract"></a>
 <a id="rtpeval-identity-implementation-contract"></a>
@@ -157,6 +182,11 @@ Unresolved identity is not proof of fabrication, and resolved identity is not op
 
 ### Automatic association and typed addresses
 
+Structured place claims and independent evidence determine association. Title-derived
+`competing_claim` metadata is diagnostic and cannot veto automatic proposals, including
+`Visit Museum A in the morning` or `Museum A and its gardens`. Required review/audit
+gates and independently evidenced name/ID/address/destination conflicts still apply.
+
 Names use NFC, casefold and whitespace normalization only. Aliases, translations, competing
 branches and approximate names remain review cases. Supplied-ID details must return the
 requested ID and corroborate the structural name/destination/location; lookup success alone
@@ -184,7 +214,7 @@ available, unsupported location tokens cannot borrow favorable formatted prose. 
 components remain diagnostic. No substring city test, geocoding, alias inference, extra request,
 LLM call or old-snapshot backfill is added. Planner field masks/budgets are unchanged.
 
-`association_policy_version=structural_claims_typed_addresses_2` is required downstream.
+`association_policy_version=structural_claims_typed_addresses_3` is required downstream.
 `subject_scope_version=required_excluded_fixed_time_1` and `reference_set_digest` bind the
 recomputed reference population. Old derived reports require offline replay and new affected
 plans; fixed-time subjects may change high-impact review even with unchanged source hashes.

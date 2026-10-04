@@ -114,8 +114,9 @@ Exact parsing/projection wire is owned by [intake](0002-intake-identity-usage.md
 
 Each primary visit is one concrete place occurrence with its own interval. A confirmed
 multi-POI block sharing an interval is a delivery diagnostic; do not split places or invent
-times. Structural `main_poi`/`place_name` claims take precedence over ordinary descriptive
-title wording, with bounded explicit competing-claim review. Unresolved named visits remain
+times. Structural `main_poi`/`place_name` claims determine visit classification under the
+intake rules; title patterns do not override declared visit/transport roles. Bounded
+competing-claim metadata is separate from role classification. Unresolved named visits remain
 visits with identity uncertainty. Generic locationless placeholders supply no invented venue.
 
 Nearby is unscheduled and excluded from primary counts, required/excluded checks, opening

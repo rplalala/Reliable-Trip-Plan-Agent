@@ -20,7 +20,7 @@ EVIDENCE_VERSION = "rtpeval_identity_evidence_1"
 REVIEW_VERSION = "rtpeval_identity_reviews_1"
 AUDIT_VERSION = "rtpeval_identity_audit_1"
 SUBJECT_SCOPE_VERSION = "required_excluded_fixed_time_1"
-ASSOCIATION_POLICY_VERSION = "structural_claims_typed_addresses_2"
+ASSOCIATION_POLICY_VERSION = "structural_claims_typed_addresses_3"
 VERSIONS = ("v0", "v1", "v2", "v3")
 
 
@@ -271,9 +271,6 @@ def _automatic_candidate(ref, record, high_impact):
         return None, "high_impact_review"
     if not text(ref["name"]):
         return None, "missing_place_name"
-    if ref["name_source"] == "place_name" and text(ref["original_title"]):
-        if competing_title(ref["original_title"], ref["name"]):
-            return None, "title_association_unverified"
     if ref["claimed_place_id"] is not None and not text(ref["claimed_place_id"]):
         return None, "malformed_claimed_id"
     if record is None:
