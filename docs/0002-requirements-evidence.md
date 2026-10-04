@@ -245,8 +245,8 @@ Existing C/G/K, Details, RAG, semantic, route and Repair limits remain unchanged
 
 ## Failure and observability
 
-Invalid output, empty output, auxiliary provider failure, timeout and unresolved nominations
-fall back to the available qualified pool with recorded degraded status. Cancellation
+Landmark nomination/discovery invalid or empty output, auxiliary provider failure, timeout
+and unresolved nominations fall back to the available qualified pool with recorded degraded status. Cancellation
 propagates; unrelated identity/qualification failures retain their existing behavior.
 
 Trace events `landmark_nomination` and `landmark_discovery` record attempts, elapsed time,

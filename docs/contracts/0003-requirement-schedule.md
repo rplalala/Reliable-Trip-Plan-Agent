@@ -1,10 +1,11 @@
 # Reviewed requirements and schedule metrics
 
-Current Ticket 05 contract, implemented and offline validated. Updated 2026-10-03.
+Current Ticket 05 contract, implemented and offline validated. Updated 2026-10-04.
 This file owns RequirementSpec authoring/wire, obligation semantics, time/occupancy preparation,
 non-overlap units and descriptive schedule measurements. It consumes accepted immutable intake
 and independent identity; it calls no planner, model, provider or database. Optional V3 stages
-can be scored independently; Ticket 10 deltas remain unimplemented.
+can be scored independently; the implemented [Ticket 10 paired report](0005-quality-human-review.md#v3-pairs)
+owns cross-stage deltas and continuity.
 
 <a id="rtpeval-requirement-spec-contract"></a>
 <a id="rtpeval-requirement-spec-contract--requirementspec-contract--draft"></a>
@@ -253,7 +254,7 @@ meeting the conjunction do not satisfy the time obligation.
 
 ## Independent time, commitments and protected blockers
 
-Preserve original strings. Follow evidence-time-contract.md for half-open intervals,
+Preserve original strings. Follow the [shared time contract](0001-evaluation-artifacts.md#time) for half-open intervals,
 offsets, IANA zones, unique localization and DST folds/gaps. Never use host timezone,
 planner timezone metadata or provider duration to repair submitted timestamps.
 Aware endpoints can establish instant relations without localization when their

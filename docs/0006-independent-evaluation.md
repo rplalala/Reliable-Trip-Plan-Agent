@@ -77,7 +77,9 @@ display material, holds the hidden mapping and imports revision-aware answers. T
 uses IANA time-zone selection and HH:mm, with confirmed clearing scoped to the active package
 and rater. User-reported browser acceptance is distinct from automated test evidence.
 
-## Proposed follow-up boundaries
+<a id="proposed-follow-up-boundaries"></a>
+
+## Paired, controlled and mechanism boundaries
 
 Ticket 10's offline preparation/report uses validated existing activity/adopted-edit/split
 lineage before content fallback and residual review. It preserves valid paired aggregate

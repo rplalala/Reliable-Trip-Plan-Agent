@@ -165,10 +165,9 @@ query applicability. Missing coordinates retain pending contexts and UNKNOWN.
 
 ### Accepted snapshot-coordinate extension (2026-10-03)
 
-The user approved a deterministic offline bridge after a public-boundary audit reproduced
-unnecessary coordinate preparation. Implement `prepare_snapshot_coordinates(intake,
+The implemented deterministic offline bridge provides `prepare_snapshot_coordinates(intake,
 identity_report, snapshot_directory)` and optional `identity_snapshot_directory` on route
-preparation/scoring and their CLI. Use these public boundaries for TDD. The existing reviewed
+preparation/scoring and their CLI. The existing reviewed
 coordinate envelope remains supported; selecting both sources is a material error.
 
 Replay the identity-phase snapshot through existing safe-path/raw-hash validation, recompute
@@ -192,9 +191,9 @@ source material rejects the whole preparation. Extraction and replay perform no 
 LLM, planner-cache, database, field-mask or automatic-backfill work. Quality-report callers
 may forward the same optional snapshot source without changing existing score/mask rules.
 
-This paragraph records accepted scope; implementation/validation status belongs in the
-[dated route acceptance record](../records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03),
-not a claim that the pre-existing reviewed wire was already automatic.
+The [dated route acceptance record](../records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03)
+preserves approval, reproduction, implementation and validation. The pre-existing reviewed
+wire remains supported alongside the explicit snapshot-source option.
 
 Optional mode_options maps modes to `{"time_basis": ..., "routing_options": {...}}`.
 Defaults deliberately use time_independent WALK, time_independent DRIVE with explicit

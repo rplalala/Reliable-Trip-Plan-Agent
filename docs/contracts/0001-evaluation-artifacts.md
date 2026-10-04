@@ -463,7 +463,8 @@ retains development validation, corrections and execution limitations.
 Ticket 12 separates mechanism exposure/usage from independent quality and causality. Official
 Evidence Audit includes only accepted facts exposed to a model or used by a rule, with separate
 independent supported/contradicted/scope-mismatch/unavailable outcomes. Rejected/unused/search-
-only material is outside that denominator. Exact extraction/reporting remains deferred.
+only material is outside that denominator. The implemented reader, queue and reviewed
+report are specified in the [mechanism/audit contract](#mechanism-official-audit).
 See [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) and
 [Ticket 12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24).
 
@@ -472,30 +473,19 @@ See [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) 
 ### Ticket 12 technical checkpoint — 2026-10-04
 
 **Status: implemented, offline validated and fixed-base review completed.**
-After the read-only preflight, the user accepted reuse of existing records plus the
-minimum opt-in local capture on 2026-10-04. This accepts the observation units,
-denominators, audit linkage and delivery scope below; it does not activate capture or
-authorize implementation, live collection, formal audit execution, publication or Issue
-mutation by itself. The user subsequently approved the complete implementation scope below.
-At preflight inspection, Issue #24 was open/needs-info; tracker synchronization
-remains separate. Missing optional artifacts must not invalidate independent quality
-material. Inspection checkpoint: `7c9783bdeb1b57b7fe6fdfc258dec47cc5c3dcf7`.
+The selected-source reader, mechanism report, exact official-fact audit and default-off
+local capture are implemented within the boundaries below. Missing optional observations
+remain partial/unavailable without invalidating independent quality material. The
+[dated implementation record](../records/evaluation/2026-10-04-mechanism-official-audit.md)
+owns preflight findings, approval, validation and engineering delivery; this contract
+grants no new execution, collection, publication or Issue-mutation authority.
 
 #### Preflight interfaces and gaps before implementation
 
-| Required observation | Current source | Technical conclusion |
-| --- | --- | --- |
-| Initial findings, improvement targets and authorized scope | `V3Outcome.original_report` and `scope` in [V3 state](../../backend/app/versions/v3/state.py) | Complete saved outcomes already support mechanism-only trigger/authorization observations. Internal findings do not establish independent truth. |
-| Rounds, model attempts, components, target links, adoption and stopping | `RepairResult.rounds`, `RepairRoundRecord.target_links`, per-round result and continuation reason in [repair models](../../backend/app/versions/v3/repair_models.py) | Use the real records. The top-level result is a cumulative summary, not an additional round. |
-| Accepted official claims and resolved representations | `OfficialWebIntegrationResult.accepted_evidence`, [official planner projection](../../backend/app/versions/v1/official_planner.py), `EffectiveFact.source_refs` | Typed claims and provenance exist in memory; the ordinary final result does not preserve a complete official-claim catalog. |
-| Primary model evidence | `official_planner_evidence_prepared` and the primary generation code in [V1 graph](../../backend/app/versions/v1/graph.py) | Preparation precedes input-budget checks and model invocation. Prepared evidence alone does not prove input submission. Raw request capture is optional. V2/V3 share this primary graph. |
-| Repair model evidence | `effective_evidence` and selected hours in [repair input](../../backend/app/versions/v3/repair_projection.py), followed by [repair invocation](../../backend/app/versions/v3/repair_service.py) | The actual projection exists, but ordinary mechanism traces chiefly retain sizing/fingerprints rather than a complete per-call official-fact submission record. |
-| Rule-selected operating evidence | `Finding.adopted_evidence.selected_hours` and evidence refs from [opening assessment](../../backend/app/evidence/opening_hours.py) | Selected evidence can be traced where complete validation reports survive. All effective evidence in context, or conditions merely reported as unverified, are not automatically rule-used facts. |
-| Trace and resource availability | [run tracer](../../backend/app/observability/run_trace.py), [usage capture](../../backend/app/observability/usage_capture.py) and [usage report](../../backend/evaluation/usage_report.py) | Tracing is best-effort and may be disabled/truncated. Numeric usage already has run/result linkage and missingness; no duplicate resource collector is needed. |
-
-The observed gap is capture provenance, not missing itinerary/transport correspondence
-or a need to rerun validation. The accepted reader design consumes saved observations; it must
-not replay a rule and label newly reconstructed evidence as historically used.
+The [historical inspection](../records/evaluation/2026-10-04-mechanism-official-audit.md#preflight-interfaces-and-gaps-before-implementation)
+records the pre-implementation sources and capture gaps. Current supported interfaces are
+in the [executable wire](#mechanism-audit-executable-wire); newly replayed rules cannot
+establish which facts an older execution actually used.
 
 #### Accepted mechanism units and denominators
 
@@ -560,7 +550,7 @@ retrieval or universal ticket-price/admission correctness scoring.
 #### Accepted minimum capture and delivery scope
 
 Reuse complete saved V3 outcomes and existing compatible trace/usage observations.
-For future runs, add an opt-in, best-effort local normalized capture of the accepted
+The default-off caller-owned wrapper provides best-effort local normalized capture of the accepted
 claim catalog, actual primary/Repair model-input submission links and rule-selected
 evidence links. Capture the facts at their existing seams without changing prompts,
 model schemas, gate rules, Repair permissions, provider requests or runtime budgets.
@@ -574,8 +564,8 @@ accepted/exposed/used facts must not be reconstructed from the final itinerary o
 rerunning the current gate. Existing Ticket 11 frozen material may supply actual replay
 observations only when linked to that replay; it cannot certify an older live execution.
 
-Accepted implementation plan: separate immutable mechanism reader/report and official audit
-queue/review/report, researcher CLI and the minimum opt-in capture above. Reuse artifact
+The implemented boundary separates the immutable mechanism reader/report, official audit
+queue/review/report, researcher CLI and minimum opt-in capture above. Reuse artifact
 hash/link validation and usage summarization. Keep four-final quality scores, identity,
 paired metrics and anonymous review unchanged. No frontend or new acquisition system.
 The extension adds local serialization/storage work; it adds no model input/output
@@ -583,100 +573,16 @@ tokens or provider/model calls by design. Offline regressions must verify identi
 prompts/call counts with capture disabled/enabled and best-effort failure behavior;
 real overhead is not measured by this preflight.
 
-Existing offline interface checks passed 77 tests across official integration, multiround
-Repair, tracing, budget summaries and usage reporting. The initial run had 63 passes and
-14 setup errors because the task-local temporary parent directory had not been created;
-after directory setup, the same test selection passed. No production/test source changed,
-new Ticket 12 implementation fixture, live service or formal audit was executed.
-The user selected the minimum capture extension together with the readers/reports,
-rather than a saved-material-only delivery. No specification decision remains pending
-from that preflight. Its next gate was explicit implementation-scope approval under
-AGENTS.md. The user then approved that scope; actual implementation/validation is
-recorded below. The earlier design approval alone did not authorize execution.
+Preflight checks, the initial temporary-directory setup errors and subsequent scope
+approval are preserved in the [dated approval sequence](../records/evaluation/2026-10-04-mechanism-official-audit.md#preflight-validation-and-approval).
 
 <a id="ticket12-implementation-scope"></a>
 
 #### Implementation approval proposal — 2026-10-04
 
-**Status: approved by the user and implemented on 2026-10-04.** The accepted design above
-is the specification. The prepared scope at `21986f5` was explicitly approved in this
-conversation before implementation. Preparation checkpoint: `8acb361`; Issue #24 and
-its comment were reread without mutation. Approval includes implementation, offline
-validation, local commits, dual-axis review, in-scope corrections and documentation.
-
-| Delivery | Expected implementation location | Included behavior |
-| --- | --- | --- |
-| Selected-source preparation and mechanism report | New `backend/evaluation/mechanism_preparation.py`, `mechanism_report.py` and narrowly needed schema/helpers | Read explicitly selected saved results and optional linked observations; report trigger/authorization, original and related targets, rounds, model attempts, component adoption and internal progress with separate units/coverage. |
-| Official audit queue and reviewed report | New `backend/evaluation/official_audit.py` and narrowly needed schema/helpers | Join accepted claims to actual submission/rule-selection occurrences; preserve claim/source revisions, exclusions and missingness; import independently supplied exact-unit reviews and emit descriptive audit coverage/verdicts. |
-| Researcher commands | New `backend/evaluation/mechanism_cli.py` | Prepare selected sources, emit mechanism report, export audit queue and build reviewed audit report. Commands read local artifacts and emit versioned JSON; they do not invoke planners or acquire sources. |
-| Opt-in local capture | New `backend/app/observability/mechanism_capture.py` with a small internal observation helper if needed | Caller-owned async attempt wrapper with original-input/run identity, exact result serializer and local sink, independent of enabled usage/tracing; default-disabled recording and explicit partial/unavailable coverage. |
-| Minimal shared hooks | Existing `backend/app/versions/v1/graph.py`, `backend/app/versions/v3/repair_service.py`, `backend/app/llm/azure_foundry/client.py` and the V3 assessment/selected-hours seam | Register the accepted official catalog and exact structured projections; observe actual primary/Repair invocation and actual selected official operating/hour evidence. Hooks do not change evidence, prompts, schemas, permissions or budgets. |
-| Public-seam verification and documentation | `backend/tests/evaluation/`, `backend/tests/observability/`, relevant existing version/LLM tests; current contracts/package/PROJECT and dated acceptance under `docs/records/evaluation/` | Offline TDD and regressions, local implementation/test commits, fixed-base Standards/Spec review, separate review corrections and final acceptance. |
-
-The capture interface is an explicit producer wrapper around an existing runner, analogous
-to the existing usage attempt wrapper. It accepts invocation, linkage, serializer and sink;
-no new always-on runtime feature, YAML budget/configuration, planning API field or altered
-V0-V3 entry script is required. An enabled wrapper receives bounded normalized observations;
-its sink work follows invocation/result serialization. Failed writes, serialization failure,
-capacity truncation, cancellation and failed calls preserve the planner return/exception
-and retain recording coverage where possible. Capture failures never replace planning errors.
-
-Observation covers the existing default primary/Repair model adapter and actual V3 official
-operating/hour rule selections. A prepared projection is not qualified until the invocation
-seam observes submission. Arbitrary injected clients without that observation do not inherit
-claimed complete coverage. Rule records come from the actual assessment and selected refs,
-including their precise activity/date/representation; neither replayed validation nor all
-effective evidence in context supplies historical rule-use proof. No generic rule engine,
-all-adapter discovery system or new fact extractor is included.
-
-Preparation supports the delivered four-version selection and actual selected V3-only
-sources already available through Ticket 11 preparation, with the existing source/hash
-contracts reused. It never invents V0-V2 results or reruns controlled cases. Optional source
-references supply capture, current recognized trace records, existing usage and independent
-Ticket 10/11 reports. Missing optional channels stay unavailable; complete saved V3 outcomes
-can support mechanism observations without a capture. Only explicitly surviving trace
-cells are read, with no generic historical-log reconstruction. Exact duplicates deduplicate;
-conflicting identities and foreign/stale hashes are material diagnostics in that channel.
-Quality/identity readers and Ticket 08/10/11 score wires remain unchanged.
-
-Planned artifact families: `rtpeval_mechanism_capture_1`,
-`rtpeval_mechanism_preparation_1`, `rtpeval_mechanism_report_1`,
-`rtpeval_official_audit_queue_1`, `rtpeval_official_audit_reviews_1` and
-`rtpeval_official_audit_report_1`. Their detailed fields follow the accepted units/linkage
-and are implemented at public seams; internal helper names/grouping may follow the code's
-natural responsibilities without changing this scope. No raw prompt/provider-body dump
-is required. Source-bound claim excerpts remain local observation material, not Git assets.
-
-The offline acceptance tests must cover:
-
-- Real unchanged prompts, model/provider call counts, itinerary/results and policy/budget
-  settings with capture off/on; recording failure/cancellation and independent usage-off
-  operation; no observed official fact submission on an input-budget abort.
-- Original versus round-local/related targets, skipped/rejected/partial/complete adoption,
-  cumulative summary exclusion, duplicate/conflicting round records and missing trace.
-- Rejected, accepted-unused and preparation-only claims excluded from the qualifying set;
-  exposed-only, rule-selected-only and both-qualified claims; repeat occurrences counted
-  once per exact audit unit with occurrence links retained.
-- Exact input/result/source/review hashes, date/subject/representation linkage, absent and
-  foreign reviews, contradictory material, unavailable verdicts and review coverage.
-- Separate usage attachment without summing per-round and cumulative tokens; independently
-  linked outcomes remain separate from internal success and cannot change quality/identity.
-- Public CLI workflow through preparation/report/queue/reviewed report using synthetic
-  artifacts only; four-version and genuine V3-only selection; existing evaluator regressions.
-
-Run focused TDD checks, relevant evaluator/official/LLM/V3/observability regressions, Ruff,
-format/compile checks, documentation link checks and one full relevant backend gate for the
-shared hooks. Use an existing configured type checker if available; do not install tooling
-or claim a missing type-check result. Record the implementation starting commit as the review
-base, commit implementation/direct tests before the two review axes, and preserve separate
-fix and final-documentation commits under AGENTS.md.
-
-This proposal includes no live execution, extra model/provider calls, model token/budget
-increase, formal case construction/audit/rates/comparison, automatic website checks, frontend,
-new provider/database infrastructure, unrelated refactor, version freeze, branch switch,
-push, PR, merge or Issue mutation. Local capture introduces bounded serialization/storage
-work; its actual overhead is not yet measured. Full Ticket 12 implementation, relevant
-validation/review corrections and documentation are the single approved scope.
+This is a historical approval anchor. The [complete approved scope](../records/evaluation/2026-10-04-mechanism-official-audit.md#implementation-approval-proposal--2026-10-04)
+retains the delivery plan, exclusions and development gates. The current executable
+interfaces and observation contracts follow below; the approval adds no new task or run.
 
 <a id="mechanism-audit-executable-wire"></a>
 

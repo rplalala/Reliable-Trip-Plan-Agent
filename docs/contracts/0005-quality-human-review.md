@@ -1,9 +1,9 @@
 # Quality scores and anonymous human review
 
-Current implemented Tickets 08-09 contract, updated 2026-10-03. Automatic verified compliance,
-human preference, resources and later mechanism/Repair tracks have separate meanings.
+Current implemented Tickets 08-10 contract, updated 2026-10-04. Automatic verified compliance,
+paired diagnostics, human preference, resources and mechanism/controlled-Repair tracks have separate meanings.
 [Evaluation architecture](../0006-independent-evaluation.md) owns status; formal comparative
-analysis and later-ticket implementation are outside this document's execution scope.
+analysis and new implementation require separately authorized work.
 
 <a id="rtpeval-metrics-contract"></a>
 <a id="rtpeval-metrics-contract--rtpeval-unified-metrics-contract--draft"></a>

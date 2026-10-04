@@ -173,8 +173,12 @@ count/length/token, result-scan, resolution and fallback ceilings remain separat
 Unresolved ordinary entities are skipped; required identity uncertainty preserves clarification.
 
 Functional reconstruction uses pinned source manifests, deterministic builders, migrations,
-lockfile and an explicitly authorized offline embedding job. A clean clone does not distribute
-the original vectors or database volume and cannot guarantee identical provider regeneration.
-Saved hashes/checkpoints are needed for exact historical values. The historical validation
+lockfile and an explicitly authorized offline embedding job. A source clone alone does not
+distribute the original vectors or database volume. The separate [release/restore instructions](../README.md#tripworld-database-release)
+describe a saved database dump and compatible sidecars for reusing stored vectors without
+regeneration; verify the packaged checksums and runtime compatibility before import.
+Rebuilding through the provider cannot guarantee identical vectors. Saved hashes/checkpoints
+are needed for exact historical values. The historical validation
 utility requires local Phase 4 inputs and executes ANALYZE; it is not a portable read-only
-clean-room check. A distributed immutable recovery bundle is not currently promised.
+clean-room check. The external release does not recreate live provider evidence or make
+online planning independent of its model/travel services.

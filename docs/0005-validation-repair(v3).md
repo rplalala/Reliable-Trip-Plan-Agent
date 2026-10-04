@@ -13,12 +13,43 @@ Validation includes supported requirement, schedule, coverage, repetition and fa
 consistency policies. Applicability depends on available evidence and declared scope.
 This is planner-internal validation, not the independent evaluator's ground truth.
 
+### Supported findings and factual limits
+
+[Validation](../backend/app/versions/v3/validation.py) emits `PASS`, `CONFIRMED`,
+`NEEDS_REVIEW` or `UNKNOWN`; only `CONFIRMED` is a violation. A finding or improvement
+target is distinct from the later operation permission. Its supported boundaries are:
+
+| Finding family | Current scope |
+| --- | --- |
+| Named/semantic and primary policy | Source-bound named inclusion/count/date obligations, supported semantic count/date goals and primary-role/exception policy; arbitrary open text remains unassessed. See [shared semantics](0002-requirements-evidence.md#semantic-qualification-and-multiplicity). |
+| Overlap, repetition and coverage | Supported schedule conflicts, unauthorized canonical repeats and minimum coverage; optional quantity/overfull review remains separate. See [counting](0003-itinerary-transport.md#generation-diagnostics-and-counting-contract). |
+| Opening | Complete visit containment in adopted structured intervals, with selected-hours provenance and outside-hours magnitude; this is not admission or ticket verification. |
+| Route | Actual directed transition bindings and applicable evidence; missing mode/departure/binding remains UNKNOWN. |
+| Visitor suitability and budget | Admission eligibility, reservation/ticket possession, special-area access and verified whole-trip affordability remain UNKNOWN. Reported conditions are context, not certified fulfillment. |
+
+[Opening selection](../backend/app/evidence/opening_hours.py) prefers applicable adopted
+official date/range facts, then request-window current Places periods and eligible regular
+weekly periods. Conflicting, invalid or missing applicable material retains UNKNOWN.
+Without an explicit visit binding, the application uses the recorded `obey_place_hours`
+scheduling policy. An explicit exterior/non-entry binding cannot acquire an entry-hours
+PASS. A missing venue timezone may use the single recognized timezone of related scheduled
+places; this is planner context, not the evaluator's independent timezone evidence.
+The selected intervals may cover overnight visits; older whole-venue/date-only limitations
+in records describe their earlier checkpoints. Even an hours PASS establishes only that
+adopted-hours condition, not real-world access or independent factual completeness.
+
 ## Authority precedes editing
 
 Target selection and operation permissions are application-owned. Hard protections,
 required/excluded identity obligations, fixed time and existing accepted state constrain
 each proposed patch. Optional quantity review is recorded separately from minimum daily
 coverage. A sparse or overfull day alone does not grant unrestricted rescheduling.
+
+Confirmed opening/route conflicts can authorize duration-preserving retiming of affected
+main visits and policy-bounded moves. Delete/replace requires the existing dispensable-visit
+and sourced count/date/access protections; the application does not shorten a visit merely
+to fit hours. Removed-obligation progress stays distinct from verified resolution, and
+retained route endpoints require applicable checks of the actual changed chain.
 
 Repair receives compact current context, canonical candidates, target worksheets, allowed
 operations, route options and bounded feedback. It proposes edits and target dispositions;

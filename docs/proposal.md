@@ -2,7 +2,7 @@
 
 **Project:** Capstone / Thesis B travel-planning system
 
-**Document date:** 2026-10-03
+**Document date:** 2026-10-04
 
 **Status:** Engineering proposal aligned with the implemented baseline
 
@@ -87,8 +87,10 @@ personas derived from interviews or evidence of market demand.
 The engineering baseline includes structured requests, optional preference
 interpretation, itinerary generation, normalized external evidence, V2/V3 retrieval,
 V3 validation and repair, Product/Developer interfaces and approved evaluation
-Tickets 01-09. Detailed contracts and dated acceptance records define the exact
-delivered subsets.
+Tickets 01-12. These include independent final-output scoring and anonymous review,
+V3 draft/final-primary diagnostics, isolated frozen V3 Repair replay, and selected-source
+mechanism/official-evidence audit. Detailed contracts and dated acceptance records define
+the exact delivered subsets.
 
 ### 4.3 Excluded scope
 
@@ -97,8 +99,8 @@ availability or affordability, user accounts or saved itinerary history, or a
 production multi-user service guarantee. Automatic corpus rebuilding and new
 distributed infrastructure are outside the current design.
 
-Evaluation Tickets 10-12 are not implemented. Formal benchmark construction,
-comparative experiments, thesis writing and final research conclusions require
+Formal benchmark construction, live evidence collection, comparative experiments,
+thesis writing and final research conclusions require
 separately approved work. This proposal adds no live acquisition or execution budget.
 
 ## 5. Principal user journeys
@@ -118,8 +120,10 @@ a formal version-comparison experiment.
 **Evaluation journey:** explicitly select and submit source-linked artifacts,
 review obligations and ambiguous associations, supply independent observations,
 replay implemented scorers, and inspect availability alongside outcomes. Anonymous
-human review is a separate judgment channel. Evaluation does not automatically run
-planners, choose cases or certify a benchmark.
+human review is a separate judgment channel. Final-quality scoring reads saved outputs.
+For a separately supplied controlled case, the operator can execute the actual V3
+post-primary path with frozen offline capabilities and inspect independent target/control
+outcomes. These workflows do not automatically choose cases or certify a benchmark.
 
 ## 6. User stories and acceptance criteria
 
@@ -148,6 +152,9 @@ belong to the linked design and acceptance records.
 | US-09 | As an evaluation operator, I want submitted artifacts and obligations to retain their provenance so that an assessment can be traced to its actual inputs. | Original artifact identity and hashes are preserved. Projection and reviewed associations retain source references; scoring does not rewrite original results or use planner verdicts as ground truth. |
 | US-10 | As an evaluation operator, I want evidence availability reported alongside compliance so that missing facts do not create misleading scores. | Implemented scorers expose applicable populations, denominators and UNKNOWN outcomes. Snapshot acquisition uses supplied/injected transport; an operational collection client and a formal collection campaign are not implied. |
 | US-11 | As a human reviewer, I want anonymous itinerary alternatives so that my judgment is recorded separately from version attribution and automatic scores. | Review material hides version attribution and automatic scores. The researcher holds the mapping; imported answers retain package/rater/revision context and human preferences remain separate from automatic metrics. |
+| US-12 | As an evaluation operator, I want to compare a saved V3 draft with its final primary plan so that I can inspect changes and their independently assessed outcomes. | Same-run source lineage, paired masks/deltas and independent continuity remain separate. Missing stages or unresolved correspondence remain visible; the draft is not an independently executed V2 result. |
+| US-13 | As an evaluation operator, I want to replay a supplied V3 Repair case under frozen capabilities so that I can inspect detection, adoption and independently reviewed target/control outcomes. | The real post-primary path recomputes permissions. Script mismatches fail replay integrity; lawful changes, regressions and unresolved evidence remain distinct. No formal case corpus is generated. |
+| US-14 | As an evaluation operator, I want mechanism observations and exact official-claim audit units so that I can distinguish internal activity from independently supported facts. | Selected-source hashes, observation coverage and exact review linkage are retained. Default-off capture observes existing seams; gate acceptance and model-input submission do not establish independent truth or causal influence. |
 
 ## 7. Requirements and traceability
 
@@ -162,7 +169,7 @@ belong to the linked design and acceptance records.
 | FR-05 | Validate and apply only permitted, re-validated V3 corrections | US-05 | [Validation and repair](0005-validation-repair%28v3%29.md) |
 | FR-06 | Provide controlled input assistance, progress, cancellation and separate Product/Developer disclosure | US-06, US-07, US-08 | [Application and operations](0007-application-operations.md) |
 | FR-07 | Maintain independent version entry points and orchestration boundaries | US-08 | [System architecture](0001-system-architecture.md) |
-| FR-08 | Assess submitted artifacts through implemented independent scoring and anonymous review workflows | US-09, US-10, US-11 | [Independent evaluation](0006-independent-evaluation.md) |
+| FR-08 | Assess submitted artifacts through independent final/paired scoring, anonymous review, frozen controlled Repair and mechanism/official audit workflows | US-09 through US-14 | [Independent evaluation](0006-independent-evaluation.md) |
 
 ### 7.2 Quality requirements
 
@@ -220,10 +227,11 @@ engineering evidence.
 
 Independent evaluation consumes an explicitly selected batch, preserves original
 artifacts and reviewed obligations, and uses separately sourced observations.
-Tickets 01-09 provide approved implemented subsets; they do not establish a formal
-dataset, sampling protocol or comparative result. Ticket 10's source-driven V3
-before/after specification is accepted, but its reader/report is not implemented.
-Tickets 11-12 also remain unimplemented.
+Tickets 01-12 provide approved offline implementations, including source-driven V3
+before/after reporting, frozen real Repair execution and selected-source mechanism/audit
+reporting. Synthetic CLI usage acceptance exercises their delivered interfaces.
+These checks do not establish a formal dataset, sampling protocol, truth audit or
+comparative result; detailed scope remains in the [evaluation design](0006-independent-evaluation.md).
 
 Formal evaluation requires its own approved plan, collection scope, budget and
 analysis method. Research questions may concern independently measured outcomes,
@@ -237,9 +245,7 @@ effect size or final conclusion is supplied by this proposal.
 | Independently runnable V0-V3 | Implemented baseline with recorded engineering validation | Preserve version boundaries and pass checks relevant to each approved change |
 | Product and Developer interfaces | Implemented, including input assistance and Product V3 presentation | Validate interaction and disclosure against their defined contracts |
 | Evidence, retrieval and V3 correction components | Implemented within bounded contracts | Verify provenance, compatibility, permitted edits, adoption and failure behavior |
-| Independent evaluation Tickets 01-09 | Approved implementation scopes completed | Preserve source-linked offline acceptance and evidence limitations |
-| Evaluation Ticket 10 | Accepted specification; implementation outstanding | Obtain implementation scope approval and satisfy its source-correspondence contract |
-| Evaluation Tickets 11-12 | Follow-up work not implemented | Resolve specifications/dependencies and approve each scope |
+| Independent evaluation Tickets 01-12 | Approved offline implementation, review and engineering delivery scopes completed | Preserve source-linked acceptance and separately authorize real collection, formal cases, assessment and analysis |
 | Project proposal, core design, ADRs and engineering records | Maintained repository assets | Keep user value, technical ownership, current status and dated evidence consistent |
 | Formal comparative evaluation and thesis outputs | Outside current execution scope | Separate authorization and an approved research plan |
 
