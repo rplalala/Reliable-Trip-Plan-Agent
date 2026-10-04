@@ -177,6 +177,13 @@ four structured transport declarations and 4/4 native bindings with no unbound c
 or projection diagnostics. Each day has two declared primary POIs. Original Seoul
 evidence remains unchanged. This verifies the new representation in one live sample;
 no independent route feasibility, four-version score comparison or freeze is claimed.
+The subsequent [bounded V0 route diagnostic](docs/records/evaluation/routes.md#new-v0-route-execution-2026-10-05)
+under [#61](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/61) sent nine
+successful Places searches in 3.328 seconds, with no Details, Routes, LLM calls or retries.
+All four route verdicts remain UNKNOWN: identity handling stopped on high-impact human
+review and restrictive address-component parsing. The observed retail estimate is
+USD 0.315; actual billing is unavailable. Offline replay was identical and original
+V0/older Seoul evidence remained unchanged. Route feasibility is still unverified.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
 lint passing for Ticket 09. These are dated development checkpoints, not formal
 benchmark results. Failure/correction/retest sequences stay
