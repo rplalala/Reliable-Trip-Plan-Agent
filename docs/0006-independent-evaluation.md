@@ -142,6 +142,12 @@ all of its explicit count, date and time conditions retained as components.
 **Schedule commitment**: One distinct scheduled visit, journey or fixed activity whose
 occupied time is assessed independently; uncertain timing does not erase the commitment.
 
+**Daily density deduction**: A reviewed ordinary/relaxed/rich pace policy applied to
+source-distinct primary visit counts on every requested date. Explicit matching daily
+numbers override defaults. This deduction adjusts the overall score while preserving
+the original five-dimensional auxiliary score; [the score contract](contracts/0005-quality-human-review.md#daily-density)
+owns numeric penalties, review provenance and uncertainty rules.
+
 **Protected blocker**: A reviewed interval restricting specified kinds of scheduled
 commitments. Overlapping protections can share a blocked span while remaining separate
 user obligations.

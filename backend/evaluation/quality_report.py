@@ -5,6 +5,8 @@ from datetime import datetime
 from fractions import Fraction
 from pathlib import Path
 
+from .daily_density import RULES as DENSITY_RULES
+from .daily_density import apply_density_penalty, prepare_density_policies, score_daily_density
 from .intake import VERSIONS, _read
 from .opening import score_opening
 from .preparation import identity_ready
@@ -14,9 +16,9 @@ from .requirement_schedule import score_requirement_schedule
 from .routes import score_routes
 from .snapshot import load_snapshot
 
-REPORT_VERSION = "rtpeval_quality_report_1"
+REPORT_VERSION = "rtpeval_quality_report_2"
 RULES_PROFILE = {
-    "profile_id": "rtpeval_verified_quality_1",
+    "profile_id": "rtpeval_verified_quality_2",
     "dimensions": list(DIMENSIONS),
     "verified_fraction": "PASS / (PASS + FAIL + UNKNOWN)",
     "total": "unrounded rational mean over the group common mask",
@@ -25,6 +27,7 @@ RULES_PROFILE = {
     "unresolved_denominator": "include; dimension and affected total unavailable",
     "empty_mask": "total unavailable",
     "scope": "final projections only; no optional track contributions",
+    "daily_density": DENSITY_RULES,
 }
 
 
@@ -61,6 +64,7 @@ def build_quality_report(
     *,
     expected_plan=None,
     identity_snapshot_directory=None,
+    density_reviews=None,
     generated_at,
 ):
     """Compose existing offline scorers without accepting caller-authored metric summaries."""
@@ -85,6 +89,7 @@ def build_quality_report(
             "Accepted intake required",
         )
         base.update(batch_id=prepared["batch_id"], batch_revision=prepared["revision"])
+        density_policies = prepare_density_policies(prepared, _value(density_reviews))
         if not identity_ready(prepared, identity):
             status = "identity_replay_required"
             raise MaterialError(
@@ -186,12 +191,19 @@ def build_quality_report(
                         "primary_metrics": metrics,
                         "schedule_measures": schedule["schedule_measures"],
                         "descriptive": schedule["descriptive"],
+                        "daily_density": score_daily_density(
+                            group,
+                            schedule["descriptive"]["density"],
+                            density_policies[group["group_id"]],
+                        ),
                         "occupancy": schedule["occupancy"],
                         "component_source_hashes": {
                             name: indexed[name][key]["source_hashes"] for name in components
                         },
                     }
                 mask = _totals(versions)
+                for version in versions.values():
+                    apply_density_penalty(version)
                 groups.append(
                     {
                         "group_id": group["group_id"],
@@ -209,8 +221,7 @@ def build_quality_report(
                         if not mask
                         else [],
                         "all_totals_available": all(
-                            v["auxiliary_total"]["score_0_100"] is not None
-                            for v in versions.values()
+                            v["overall_total"]["score_0_100"] is not None for v in versions.values()
                         ),
                         "versions": versions,
                     }
@@ -239,6 +250,7 @@ def build_quality_report(
                             "route_reviews": route_reviews,
                             "coordinate_evidence": coordinate_evidence,
                             "expected_plan": expected_plan,
+                            "density_reviews": density_reviews,
                         }.items()
                     },
                 },

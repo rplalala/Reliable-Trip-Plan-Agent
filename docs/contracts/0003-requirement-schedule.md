@@ -397,8 +397,10 @@ not an invented interval. Opening, route feasibility and auxiliary scores have s
 - Density counts source-distinct primary occurrences on requested declared days,
   including empty days. Report known and possible counts, and `<2`, `2..5`, `>5`
   categories only when role uncertainty cannot change the category. These are
-  descriptions, not quantity FAILs. Canonical uncertainty does not remove an otherwise
-  established visit from density.
+  descriptions, not quantity FAILs in this component. The final and paired reports
+  additionally apply the [reviewed daily density policy](0005-quality-human-review.md#daily-density)
+  to these counts. Canonical uncertainty does not remove an otherwise established
+  visit from density.
 - Canonical repetition groups adopted identities only. For venue occurrences `n`
   across `d` declared requested dates, extra occurrences are `n-1`, within-day extras
   are `sum(max(0,n_day-1))`, and across-day extras are `d-1`; the two extra counts

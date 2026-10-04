@@ -31,7 +31,12 @@ def _validate_observation(observation, run, selection_sha256):
     elif channel == "independent":
         schema = content.get("schema_version")
         require(
-            schema in ("rtpeval_v3_pair_report_1", "rtpeval_controlled_report_1")
+            schema
+            in (
+                "rtpeval_v3_pair_report_1",
+                "rtpeval_v3_pair_report_2",
+                "rtpeval_controlled_report_1",
+            )
             and run["version"] == "v3"
             and content.get("status") == "complete",
             "independent",
@@ -45,7 +50,7 @@ def _validate_observation(observation, run, selection_sha256):
             "independent",
             "Independent report hash mismatch",
         )
-        field = "intake" if schema == "rtpeval_v3_pair_report_1" else "preparation"
+        field = "intake" if schema.startswith("rtpeval_v3_pair_report_") else "preparation"
         require(
             content["source_hashes"][field] == selection_sha256,
             "independent",

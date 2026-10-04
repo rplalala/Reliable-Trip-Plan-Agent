@@ -178,6 +178,48 @@ human or mechanism penalties. Exit 0 means processing completed, not a passing i
 or available total; correction exits 2. `--generated-at` defaults to current UTC;
 freeze it with the inputs for reproducible report content.
 
+Current report schemas are `rtpeval_quality_report_2` and `rtpeval_v3_pair_report_2`.
+Both use `rtpeval_daily_density_2` and the sole current
+[approved table](../../docs/contracts/0005-quality-human-review.md#daily-density)
+from [Issue #52](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/52).
+Use `overall_total.score_0_100` for the density-adjusted score; `auxiliary_total`
+remains the exact five-dimensional diagnostic. Both report commands accept
+`--density-reviews density-reviews.json`. Review the complete original request once
+per group, including dated count exceptions, and reuse that policy for final and paired
+reports. A request containing nonempty `additional_preferences` needs this review to
+establish density deductions; omitting it keeps the overall total unavailable.
+
+Example preparation (replace all linkage and review fields with actual values):
+
+```json
+{
+  "schema_version": "rtpeval_density_reviews_1",
+  "batch_id": "submitted-batch",
+  "batch_revision": "1",
+  "groups": [{
+    "group_id": "request-group",
+    "input_sha256": "actual-input-file-sha256",
+    "reviewer_ref": "independent-reviewer",
+    "reviewed_at": "2026-10-04T00:00:00Z",
+    "review_origin": "agent",
+    "rationale": "Original request asks for relaxed pace without explicit daily counts.",
+    "default": {
+      "profile": "relaxed",
+      "exact_count": null,
+      "source_refs": [{
+        "field_path": "additional_preferences",
+        "quote": "Please keep the pace relaxed."
+      }]
+    },
+    "days": []
+  }]
+}
+```
+
+The [density contract](../../docs/contracts/0005-quality-human-review.md#daily-density)
+defines dated overrides, count exemptions/mismatches, penalty tables and UNKNOWN bounds.
+Keep historical report files intact and write new replays to separate paths.
+
 Usage envelopes come from opt-in [request-local capture](../app/observability/USAGE.md),
 not automatic CLI/API collection. `compare_usage` keeps scopes/namespaces and missing
 measurements explicit. Its CLI prints a descriptive report; invalid envelopes raise an
