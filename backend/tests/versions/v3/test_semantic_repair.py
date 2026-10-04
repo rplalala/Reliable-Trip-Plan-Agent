@@ -303,22 +303,19 @@ def test_unmet_named_count_remains_incomplete_in_product_after_failed_repair():
     assert "required_visit_obligation_unmet" in public.policy_reasons
 
 
-def test_transport_endpoint_is_not_a_second_canonical_visit():
-    original, ctx, _, _ = setup(
-        [
+def test_model_transport_endpoint_is_rejected_before_canonical_visit_checks():
+    with pytest.raises(ValueError, match="transport activities"):
+        setup(
             [
-                visit("a1", "a"),
-                visit("transfer", "a", start="12:00", end="13:00").model_copy(
-                    update={"activity_kind": "transport"}
-                ),
-            ]
-        ],
-        reviews=(),
-    )
-    ctx = ctx.model_copy(update={"semantic_assessments": semantic_rows(ctx)})
-    report = assess(original, ctx)
-    assert not any(f.check == "repetition" for f in report.findings)
-    assert report.diagnostics.policy_completion == "complete"
+                [
+                    visit("a1", "a"),
+                    visit("transfer", "a", start="12:00", end="13:00").model_copy(
+                        update={"activity_kind": "transport"}
+                    ),
+                ]
+            ],
+            reviews=(),
+        )
 
 
 def test_assessed_generic_visit_counts_toward_atomic_deduplication_compensation():
@@ -472,7 +469,7 @@ def test_minimum_revisit_does_not_invent_upper_bound(exact):
     assert excess_visits(items, contract, ctx.named_resolutions, "a") == (1 if exact else 0)
 
 
-def test_required_named_transport_endpoint_is_not_a_visit():
+def test_required_named_model_transport_is_rejected_before_requirement_checks():
     original, ctx, _, _ = repeated("REQUIRED")
     ctx = ctx.model_copy(
         update={
@@ -484,6 +481,5 @@ def test_required_named_transport_endpoint_is_not_a_visit():
         for activity in day.activities:
             if activity.source_place_id == "a":
                 activity.activity_kind = "transport"
-    report = assess(original, ctx)
-    assert report.diagnostics.policy_completion == "incomplete"
-    assert any(f.check == "named_requirement" and f.status == "CONFIRMED" for f in report.findings)
+    with pytest.raises(ValueError, match="transport activities"):
+        assess(original, ctx)

@@ -309,6 +309,17 @@ class FoundryReferenceRecommendationDTO(FoundryTransportDTO):
     uncertainty: str | None
 
 
+class FoundryPrimaryActivityDTO(FoundryActivityDTO):
+    """Tool-backed generation leaves transport records to the application."""
+
+    activity_kind: Literal["main_poi", "generic_activity", "free_time", "unknown"]
+
+
+class FoundryPrimaryItineraryDayDTO(FoundryTransportDTO):
+    date: str
+    activities: list[FoundryPrimaryActivityDTO]
+
+
 class FoundryPrimaryItineraryDTO(FoundryTransportDTO):
     """V1 model output contains only the primary itinerary."""
 
@@ -316,12 +327,13 @@ class FoundryPrimaryItineraryDTO(FoundryTransportDTO):
     destination: str
     start_date: str
     end_date: str
-    days: list[FoundryItineraryDayDTO]
+    days: list[FoundryPrimaryItineraryDayDTO]
 
 
 class FoundryItineraryDTO(FoundryPrimaryItineraryDTO):
     """V0 model output includes subordinate model-knowledge references."""
 
+    days: list[FoundryItineraryDayDTO]
     reference_recommendations: list[FoundryReferenceRecommendationDTO]
 
 

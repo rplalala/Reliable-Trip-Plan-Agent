@@ -7,10 +7,10 @@ import pytest
 from pydantic import ValidationError
 
 from backend.app.llm.azure_foundry.dto import (
-    FoundryActivityDTO,
     FoundryDateTimeDTO,
-    FoundryItineraryDayDTO,
     FoundryMoneyDTO,
+    FoundryPrimaryActivityDTO,
+    FoundryPrimaryItineraryDayDTO,
     FoundryPrimaryItineraryDTO,
 )
 from backend.app.llm.azure_foundry.itinerary_cost_projection import map_foundry_v1_itinerary
@@ -33,10 +33,10 @@ def _itinerary(
         start_date=start_date,
         end_date="2026-09-18",
         days=[
-            FoundryItineraryDayDTO(
+            FoundryPrimaryItineraryDayDTO(
                 date="2026-09-18",
                 activities=[
-                    FoundryActivityDTO(
+                    FoundryPrimaryActivityDTO(
                         activity_kind="main_poi",
                         source_place_id=None,
                         activity_id=f"activity-{index}",

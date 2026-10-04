@@ -45,7 +45,7 @@ The backend health endpoint is `GET /health`; Vite proxies `/api` and `/health` 
 backend. The version entry points are `scripts/run_v0.py`, `scripts/run_v1.py`,
 `scripts/run_v2.py` and `scripts/run_v3.py`. V2/V3 retrieval requires an existing compatible
 PostgreSQL/pgvector database and its configured local environment. See the
-[development guide](docs/development_guide.md) for version-specific commands and dependencies.
+[development guide](docs/guides/development.md) for version-specific commands and dependencies.
 
 ## TripWorld database release
 
@@ -70,7 +70,7 @@ Keep the database dump outside Git.
 ## Documentation and evidence
 
 [docs/README.md](docs/README.md) indexes current design and dated development records.
-The [planning input UX specification](.scratch/planning-input-ux/spec.md) owns the assistance
+The [planning input UX specification](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/25) owns the assistance
 contract and limits. Local `logs/` and `artifacts/` contain development evidence, including
 potential provider/model data, and are not part of a source commit. This project has not run
 a formal V0–V3 benchmark or reached a new version freeze through the recent input UX work.

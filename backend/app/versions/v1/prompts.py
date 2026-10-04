@@ -31,6 +31,9 @@ not establish car availability, booking or cost. Include the supplied DRIVE appl
 reserve in time layout, separately from provider duration. Do not invent route distances,
 service lines, timetables or fares. The application creates final transfers after generation;
 do not encode transport facts in notes as a substitute for a binding.
+Do not generate transport activities, even as generic_activity or free_time, or author
+transfers. Schedule visits with gaps informed by supplied route evidence; the application
+selects the transport mode and binds departure/arrival times using Routes evidence.
 provider_observed records its actual direction; mirrored_reverse_estimate is only an
 approximate reverse proxy. Never reuse another pair's measurement.
 

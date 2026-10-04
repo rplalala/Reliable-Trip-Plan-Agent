@@ -133,7 +133,7 @@ def db(monkeypatch):
 def test_real_migrations_extension_and_checksum(db, tmp_path):
     assert db.execute("SELECT extversion FROM pg_extension WHERE extname='vector'").fetchone()
     assert migrate(db) == []
-    path = Path(__file__).parents[2] / "app/tripworld/database/migrations/001_retrieval.sql"
+    path = Path(__file__).parents[3] / "tools/data/tripworld/migrations/001_retrieval.sql"
     (tmp_path / path.name).write_text(path.read_text() + "\n-- changed", encoding="utf-8")
     with pytest.raises(ValueError, match="checksum"):
         migrate(db, tmp_path)

@@ -1,0 +1,39 @@
+# Historical engineering evidence
+
+This archive retains dated milestones, observed failures, validation sequences and research
+design history. It is not a second current specification or a task tracker. PROJECT.md owns
+current scope; [core docs](../README.md) own current technical contracts; GitHub Issues
+own specifications, task discussion and live state. Historical Current/Next statements are
+bounded by their recorded date and never grant another execution or freeze.
+
+| Topic | Retained evidence |
+| --- | --- |
+| [V0](v0-v3/v0-milestone.md) | Original freeze and separately recorded later changes |
+| [V1](v0-v3/v1-milestone.md) | Milestone, development evidence and retired selector studies |
+| [V2](v0-v3/v2-milestone.md) | Retrieval integration, database observations and timeout diagnosis |
+| [V3](v0-v3/v3-milestone.md) | Validation/Repair development, closeout and bounded pilots |
+| [Evaluation](evaluation/intake-identity-usage.md) | Offline evaluator acceptance, readiness audit and [benchmark design history](evaluation/benchmark-design.md) |
+| [V3 paired evaluation](evaluation/v3-pair-report.md) | Ticket 10 source-driven correspondence, independent deltas, TDD and review evidence |
+| [Controlled V3 repair](evaluation/2026-10-04-controlled-repair.md) | Ticket 11 frozen real execution, independently reviewed outcomes, offline TDD and review corrections |
+| [Mechanism and official audit](evaluation/2026-10-04-mechanism-official-audit.md) | Ticket 12 selected-source observations, opt-in capture, independent exact-unit reviews and offline validation |
+| [Evaluation CLI usage](evaluation/2026-10-04-evaluation-usage.md) | Issue #49 synthetic subprocess workflows, report interpretation, material correction examples and offline acceptance |
+| [Frontend](frontend/product-v3-acceptance.md) | Original MVP milestone and Product V3 acceptance/failure/retest evidence |
+| [Shared](v0-v3/poi-semantics-closeout.md) | Cross-version semantic, supply and transport observations |
+
+For new records, promotion from local notes and deduplication, apply the
+[record admission and ownership rules](../agents/domain.md#record-admission-and-topic-ownership).
+Keep one shareable, evidence-backed account per historical event; local `thesis_notes/` adds
+distinct private research context. A record summarizes a dated event, not a full backup of a
+current design, raw runtime output or a live task packet. Prefer an existing owner and retain
+unique decisions and failure/retest evidence when replacing repeated prose with historical links.
+
+The original full design/development snapshots remain accessible through the historical
+[V0 #42](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/42),
+[V1 #43](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/43),
+[shared #44](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/44),
+[V2 #45](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/45),
+[V3 #46](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/46),
+[frontend #47](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/47) and
+[semantics #48](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/48) records.
+These preserve historical context without maintaining duplicate current-contract files.
+Benchmark design is not frozen and no formal evaluation result is claimed.

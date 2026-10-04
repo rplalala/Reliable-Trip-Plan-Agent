@@ -13,3 +13,7 @@ def test_itinerary_prompt_requires_exact_datetime_components() -> None:
     assert "utc_offset must use exactly +HH:MM or -HH:MM" in prompt
     assert "date 2026-10-01, time 13:30:00, utc_offset +09:00" in prompt
     assert "Do not abbreviate 13:30:00 to 13:30" in prompt
+
+
+def test_v0_keeps_explicit_model_transport_instruction():
+    assert 'activity_kind="transport"' in ITINERARY_GENERATION_SYSTEM_PROMPT

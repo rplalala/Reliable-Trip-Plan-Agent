@@ -133,6 +133,8 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert routes.requests[0].routing_preference is None
     generation_prompt = llm.calls[-1].user_prompt
     generation_system_prompt = llm.calls[-1].system_prompt
+    assert "Do not generate transport activities" in generation_system_prompt
+    assert "transport for a transfer" not in generation_system_prompt
     assert "place_evidence" not in generation_prompt
     assert '"places"' in generation_prompt
     assert '"precipitation_probability_percent": 70' in generation_prompt
@@ -147,6 +149,28 @@ def test_v1_full_offline_run_uses_normalized_evidence_and_fixed_masks() -> None:
     assert "currentOpeningHours" not in generation_prompt
     assert '"rating"' not in generation_prompt
     assert "<official_current_evidence>" not in generation_prompt
+
+
+def test_shared_generation_rejects_model_transport_before_transfer_binding():
+    llm, places, weather, routes, tracer, _ = _dependencies()
+    original = make_itinerary()
+    original.days[0].activities[0].activity_kind = "transport"
+    llm = FakeStructuredLLMClient([make_extraction(), original])
+    from backend.app.versions.v1.graph import V1StageError
+
+    with pytest.raises(V1StageError) as error:
+        asyncio.run(
+            run_v1(
+                make_request(additional_preferences="Plan two days in Sydney."),
+                llm,
+                places,
+                weather,
+                routes,
+                reference_date=date(2026, 9, 11),
+                tracer=tracer,
+            )
+        )
+    assert "transport activities" in str(error.value.__cause__)
 
 
 def test_v1_weather_failure_is_explicit_and_does_not_block_generation() -> None:

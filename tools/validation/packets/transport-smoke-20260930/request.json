@@ -1,0 +1,12 @@
+{
+  "input_version": "planning_request_2",
+  "destination": "Berlin, Germany",
+  "start_date": "2026-10-03",
+  "end_date": "2026-10-05",
+  "traveler_count": 2,
+  "budget": {
+    "amount": "1500",
+    "currency": "EUR"
+  },
+  "additional_preferences": "We want to have an enjoyable trip in this city."
+}

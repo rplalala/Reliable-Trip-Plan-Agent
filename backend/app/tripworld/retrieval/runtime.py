@@ -12,6 +12,7 @@ from openai import AsyncOpenAI
 from pgvector.psycopg import register_vector_async
 from psycopg.rows import dict_row
 
+from backend.app.observability.usage import install_http_hooks, observe_sdk
 from backend.app.tripworld.database.policy import POLICY_VERSION
 from backend.app.tripworld.database.search import search_query
 from backend.app.tripworld.database.vectors import SPACE, SPACE_ID
@@ -131,6 +132,7 @@ class RuntimeRetrieval:
             )
             # Attach to this owned SDK client's actual transport (httpx2 in the installed stack).
             http = self.client._client
+            install_http_hooks(http, "openai", "embedding")
             active = {}
 
             async def request_hook(request):
@@ -151,7 +153,10 @@ class RuntimeRetrieval:
             self._http_hooks = (http, request_hook, response_hook)
         async with asyncio.timeout(self.config.embedding_timeout):
             self.embedding_sends += 1
-            response = await self.client.embeddings.create(
+            response = await observe_sdk(
+                self.client.embeddings.create,
+                usage_operation="embedding",
+                usage_provider="openai",
                 model=SPACE["model"],
                 input=texts,
                 encoding_format="float",

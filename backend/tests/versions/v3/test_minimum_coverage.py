@@ -30,8 +30,12 @@ def protection(**changes):
 
 
 @pytest.mark.parametrize("role", ["generic_activity", "free_time", "transport"])
-def test_non_primary_is_missing_without_review(role):
+def test_non_primary_is_missing_or_transport_is_rejected_before_review(role):
     a = activity(pid=None, place_name=None, activity_kind=role)
+    if role == "transport":
+        with pytest.raises(ValueError, match="transport activities"):
+            setup([[a]], reviews=())
+        return
     original, ctx, scope, _ = setup([[a]], reviews=())
     before = original.model_dump()
     report = assess(original, ctx)

@@ -365,7 +365,7 @@ def test_httpx2_embedding_timeout_and_cancel_close_owned_client(tmp_path, monkey
         await asyncio.sleep(60)
 
     runtime, _, _ = configured(tmp_path, monkeypatch, lambda _: None)
-    runtime.config = runtime.config.model_copy(update={"embedding_timeout": 0.02})
+    runtime.config = runtime.config.model_copy(update={"embedding_timeout": 5})
     runtime.embedding_client_factory = lambda **kw: AsyncOpenAI(
         **kw, http_client=DefaultAsyncHttpxClient(transport=httpx2.MockTransport(handler))
     )
@@ -373,13 +373,18 @@ def test_httpx2_embedding_timeout_and_cancel_close_owned_client(tmp_path, monkey
     async def run():
         async with runtime:
             task = asyncio.create_task(runtime.embed(["museum"]))
-            await entered.wait()
-            if cancel:
-                task.cancel()
-            with pytest.raises(asyncio.CancelledError if cancel else TimeoutError):
-                await task
+            try:
+                if cancel:
+                    await asyncio.wait_for(entered.wait(), timeout=3)
+                    task.cancel()
+                with pytest.raises(asyncio.CancelledError if cancel else TimeoutError):
+                    await task
+            finally:
+                if not task.done():
+                    task.cancel()
+                await asyncio.gather(task, return_exceptions=True)
 
-    asyncio.run(run())
+    asyncio.run(asyncio.wait_for(run(), timeout=10))
     assert runtime.embedding_sends == len(runtime.http_attempts) == 1
     assert runtime.http_attempts[0]["status_code"] is None
     assert runtime.client.is_closed()

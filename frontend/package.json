@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:blind-review": "tsc -b && vite build --config vite.blind-review.config.ts",
     "lint": "eslint .",
     "test": "vitest run"
   },

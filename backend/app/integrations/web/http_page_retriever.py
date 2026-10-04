@@ -20,6 +20,7 @@ from backend.app.integrations.web.page_models import (
     PageFetchResult,
     PageFetchStatus,
 )
+from backend.app.observability.usage import install_http_hooks
 from backend.app.runtime.config_models import PageRetrievalConfig
 
 _REDIRECTS = {301, 302, 303, 307, 308}
@@ -67,6 +68,7 @@ class HttpxPinnedPageTransport:
         async with httpx.AsyncClient(
             timeout=timeout_seconds, follow_redirects=False, trust_env=False
         ) as client:
+            install_http_hooks(client, "official_website", "page_http")
             async with client.stream(
                 "GET", pinned, headers=headers, extensions={"sni_hostname": host}
             ) as response:

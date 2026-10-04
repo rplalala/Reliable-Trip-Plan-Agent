@@ -66,9 +66,10 @@ def semantic_cache_key(place, contract, named_bindings):
 
 
 class POISemanticsService:
-    def __init__(self, llm, config, framing, *, tracer=None, deadline=None):
+    def __init__(self, llm, config, framing, *, tracer=None, deadline=None, clock=None):
         self.llm, self.config, self.framing = llm, config, framing
         self.tracer, self.deadline = tracer, deadline
+        self.clock = clock or perf_counter
         self.cache, self.ledger, self.records = {}, {}, []
         self.calls = 0
         self.cache_hits = 0
@@ -149,7 +150,7 @@ class POISemanticsService:
                 remaining = min(
                     self.config.call_timeout_seconds,
                     self.config.total_seconds - self.elapsed,
-                    *[d - perf_counter() for d in (deadline, self.deadline) if d is not None],
+                    *[d - self.clock() for d in (deadline, self.deadline) if d is not None],
                 )
                 if remaining <= 0:
                     raise SemanticPreparationLimit("poi_semantics_deadline")
@@ -185,7 +186,7 @@ class POISemanticsService:
             }
             self.records.append(record)
             self.calls += 1
-            started = perf_counter()
+            started = self.clock()
             from langchain_core.callbacks import UsageMetadataCallbackHandler
 
             callback = UsageMetadataCallbackHandler()
@@ -258,7 +259,7 @@ class POISemanticsService:
                 }
                 payload = json.dumps(data, ensure_ascii=False, sort_keys=True)
             finally:
-                spent = perf_counter() - started
+                spent = self.clock() - started
                 self.elapsed += spent
                 record["elapsed_seconds"] = spent
                 record["usage"] = dict(callback.usage_metadata)

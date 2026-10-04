@@ -15,6 +15,7 @@ htmlcov/
 # Build artifacts
 build/
 dist/
+frontend/dist-blind-review/
 *.egg-info/
 node_modules/
 coverage/
@@ -44,3 +45,6 @@ Thumbs.db
 
 # Local presentation slides
 /slides/
+
+# Local planning scratch; durable contracts and evidence summaries belong in docs/
+/.scratch/

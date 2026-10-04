@@ -53,7 +53,7 @@ This includes:
 - database column names,
 - API field names,
 - README and project documentation,
-- Git commit messages when commits are explicitly requested.
+- Git commit messages.
 
 Do not write Chinese text inside project files unless I explicitly request Chinese for a specific user-facing feature.
 
@@ -81,7 +81,7 @@ For every meaningful development task:
    - tests/checks you plan to run,
    - whether the change could affect any existing V0/V1/V2/V3 behavior.
 3. Obtain my explicit approval for the proposed scope before major changes. An existing explicit approval for that scope remains valid; do not request it again.
-4. Within the approved task, proceed through implementation, relevant tests, code review, necessary corrections, and related documentation updates without separate approval for each step. Honor any explicit exclusions or limits, including live-run budgets and no-live instructions.
+4. Within the approved task, proceed through implementation, relevant tests, local commits, code review, necessary corrections, and related documentation updates without separate approval for each step. Follow the Git Commit Policy for commit/review order. Honor any explicit exclusions or limits, including live-run budgets and no-live instructions.
 5. Run relevant tests/checks.
 6. When finished, report in Chinese:
    - what was implemented,
@@ -91,7 +91,7 @@ For every meaningful development task:
    - recommended next step.
 7. Request approval before expanding the agreed scope or starting a separate task. Moving between implementation, testing, review, corrections, and documentation within the approved scope is not a new task.
 
-The separate approval requirements for Git actions, version freezes and progression, and formal research work below still apply.
+The separate approval requirements for publication and other restricted Git actions, version freezes and progression, and formal research work below still apply. Local commits follow the Git Commit Policy.
 
 ### Self-contained documentation update reports
 
@@ -108,14 +108,34 @@ on the web, where local repository links and files are not available.
 
 ## Git Commit Policy
 
-Only create commits when I explicitly ask.
+Within an approved task, create local commits without requesting separate approval for
+each commit or its grouping, unless I explicitly require approval, defer commits or
+prohibit them. Implementation scope still requires approval; permission to commit does
+not authorize another ticket, a broader change or a live run.
 
 Before committing:
 
 1. Inspect the relevant diff.
-2. Propose a logical commit grouping in Chinese.
-3. Wait for my approval unless the grouping has already been approved.
-4. Run relevant tests/checks; if they fail, stop and report.
+2. Briefly explain the logical commit grouping in Chinese; this is informational unless I require approval.
+3. Run relevant tests/checks. Commit only after they pass; resolve failures within the approved scope or report a blocker.
+4. Stage only the current task's intended files/hunks, preserving unrelated pre-existing work.
+
+### Implementation, review and correction sequence
+
+For implementation tasks, follow Matt's `implement` flow with `tdd` and `code-review`,
+using this repository's commit order:
+
+1. Record the starting commit before implementation as the review fixed point, unless I specify another base.
+2. Implement with TDD at the agreed seams and complete relevant validation.
+3. Commit the implementation and its directly related tests in logical groups **before code review**.
+4. Run `code-review` against the recorded fixed point through the committed implementation, on both Standards and Spec axes. Include the task's commit list so the full change is reviewed.
+5. If review finds issues, fix them within the approved scope, run relevant checks, and create additional commits such as `fix: correct route boundary handling`. Use `test:` or `docs:` when the correction only changes tests or documentation. Recheck the affected findings; repeat correction and commit as needed.
+6. Commit necessary final documentation/acceptance updates in a coherent group and report the implementation and correction history.
+
+This order overrides a skill's default commit-after-review order. Preserve the original
+implementation commits and separate review-fix commits; do not amend, squash or rewrite
+them merely to absorb review corrections. Routine in-scope corrections and their commits
+need no additional approval. Scope expansion and task-specific exclusions still apply.
 
 Prefer small, logically coherent commits grouped by responsibility or capability.
 
@@ -185,22 +205,25 @@ When I explicitly approve a version freeze:
 3. Preserve historical accuracy; do not rewrite later changes as if they existed in the original milestone.
 4. Do not document future/unimplemented features as part of the frozen version.
 5. Do not begin the next version until the documentation update is complete and I approve moving forward.
-6. Do not force-add ignored documentation files or commit/push unless explicitly authorized.
+6. Commit tracked freeze documentation under the Git Commit Policy. Force-adding ignored documentation and pushing still require explicit authorization.
 
 Examples:
 
-- V0 → `docs/v0_milestone.md`
-- V1 → `docs/v1_design.md` and any V1 milestone/final-status document
+- V0 → `docs/records/v0-v3/v0-milestone.md`
+- V1 → the numbered core architecture and `docs/records/v0-v3/v1-milestone.md`
 - V2/V3 → corresponding version documentation
 
 ## Thesis Research Archive
 
 `thesis_notes/` stores historical research/development records for future thesis work.
-It is **not** a project source of truth.
+It is a local archive, not a project source of truth. Shareable engineering evidence belongs
+in `docs/records/`; local research context and private interpretation belong in `thesis_notes/`.
+When preserving, promoting or deduplicating a record, apply the
+[record admission rules](docs/agents/domain.md#record-admission-and-topic-ownership).
 
 For normal development tasks:
 
-- Proactively record meaningful failure diagnoses, architecture decisions, rejected approaches, and development validation results in `thesis_notes/` without requesting separate approval. Read only the relevant archive files needed to place or update the record.
+- Proactively preserve meaningful failure diagnoses, architecture decisions, rejected approaches and development validation results in the appropriate existing record owner under those admission rules, without requesting separate approval. Read only the relevant archive files needed to place or update the record. Use one full record per event; local notes may reference a public record and add distinct research context.
 - Do not use thesis notes to determine current requirements or architecture.
 - Historical notes may contain rejected, superseded, or outdated designs and must never override current project files.
 - Archive updates are part of the current development task, not a separate stage requiring approval. Summarize any archive updates in the final Chinese report.
@@ -283,19 +306,52 @@ Do not repeatedly read or test unrelated parts of the repository without a reaso
 - Avoid unrelated refactors.
 - Avoid unnecessary complexity.
 - Do not implement future-stage mechanisms early.
-- Do not automatically commit or push unless explicitly asked.
+- Follow the Git Commit Policy for local commits and explicitly authorized publication.
 - Keep explanations concise unless I ask for more detail.
 
 ## Agent skills
 
+### Matt skills workflow
+
+- Invoke `$ask-matt` with the task, constraints, and expected result when unsure
+  which skill fits, or invoke a specific skill such as `$diagnosing-bugs`.
+  Read its `SKILL.md` before use. Matt's `/skill-name` notation refers to the
+  corresponding skill; use the invocation supported by the current client.
+- Clarify repository ideas with `grill-with-docs`. For a small, clear task, use
+  `implement`; for a multi-session build, use `to-spec` -> `to-tickets` ->
+  `implement` per ticket, resolving blockers first. `implement` uses `tdd` and
+  `code-review` against both project standards and the spec; commit/review/correction
+  order follows the Git Commit Policy above.
+- Use `prototype` when a design question needs runnable evidence, and `handoff`
+  when moving findings between directories or sessions.
+- Route raw incoming requests through `triage`; tickets from `to-tickets` are
+  already prepared. Use `diagnosing-bugs` for hard bugs: reproduce the failure,
+  then fix it with a regression test.
+- Use `wayfinder` for large efforts with unresolved direction, then return to
+  `to-spec` -> `to-tickets` -> `implement` once decisions are clear.
+- Use `improve-codebase-architecture` to find improvement candidates,
+  `codebase-design` for module interfaces and test seams, `domain-modeling` for
+  terminology and ADRs, and `writing-for-agents` for agent-facing documents.
+- Keep clarification, spec, and ticket creation in one context when practical;
+  start each self-contained implementation ticket with fresh context. Continue,
+  clear, hand off, or compact at phase boundaries as needed. Delegate only when
+  applicable instructions explicitly authorize it.
+- Verify skill availability and the tracker, triage, and documentation
+  conventions below before an engineering flow. If setup is missing, use
+  `setup-matt-pocock-skills` within an approved scope. Report unavailable skills
+  and use an available equivalent, or ask before installing them.
+- These workflows follow this file's approval, Git, live-run, research, and
+  version rules. `PROJECT.md` remains the current source of truth; skill-generated
+  context, ADRs, and specs must stay aligned with it.
+
 ### Issue tracker
 
-Project issues and specs live under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+Use GitHub Issues for specifications, parent/child tickets, task state and discussion. Keep durable detailed contracts and acceptance records in tracked core `docs/` contracts and dated `docs/records/` documents. `.scratch/` is optional ignored drafting space, never the formal specification or issue-tracker location. See `docs/agents/issue-tracker.md` for skill operations and published-link rules.
 
 ### Triage labels
 
-Use the default five triage roles as local issue `Status:` values. See `docs/agents/triage-labels.md`.
+Use the existing default five triage roles as GitHub labels. Local `Status:` fields are historical snapshots, not live task state. See `docs/agents/triage-labels.md`.
 
 ### Project documentation
 
-Use `PROJECT.md` for current project state and `docs/README.md` to find relevant design documents. See `docs/agents/domain.md`.
+Use `PROJECT.md` for current project state and `docs/README.md` to find tracked design and acceptance documents. GitHub specs link to published documentation revisions; published files must not depend on ignored/local-only files. Preserve the single-context project layout and current source-of-truth hierarchy. See `docs/agents/domain.md`.
