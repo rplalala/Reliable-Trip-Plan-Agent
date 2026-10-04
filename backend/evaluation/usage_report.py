@@ -29,6 +29,8 @@ def summarize(usage):
         ids = [r["event_id"] for r in rows]
         if len(set(ids)) != len(ids):
             raise ValueError("Duplicate event IDs cannot be counted twice")
+    # SDK tool billing observations are not application HTTP transport entries.
+    providers = [r for r in providers if r.get("source") != "sdk_output_tool_calls"]
     covered = usage.get("coverage", {}).get("adapter_coverage") == "default_adapters" and usage.get(
         "collection_status"
     ) in ("available", "partial")
