@@ -104,7 +104,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | Ticket | Implementation checkpoint |
 | --- | --- |
 | 01: Intake/projection | Implemented and offline-validated, including provenance, transport sources and [ordinary-output compatibility](docs/records/evaluation/intake-identity-usage.md#rtpeval-ticket-01-03-acceptance) |
-| 02: Usage capture/report | Implemented and offline-validated; opt-in attempt capture, no automatic formal run |
+| 02: Usage capture/report | Implemented and offline-validated; opt-in capture plus [offline cost/bill accounting](docs/contracts/0002-intake-identity-usage.md#offline-cost-accounting); no automatic formal run or bill fetching |
 | 03: Identity/adjudication | Implemented and offline-validated; independent supplied-ID/name-search paths, manual review and automatic-result audit; structural claims and optional typed-address evidence supported |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented, offline-validated and published; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed |

@@ -283,6 +283,64 @@ corrupt/stale material exits 2. See the [paired contract](../../docs/contracts/0
 
 ## Verification and status boundary
 
+<a id="offline-cost-report"></a>
+
+### Offline cost report
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.cost_report --usage saved-v0-usage.json --usage saved-v3-usage.json --snapshot saved-oracle-snapshot --prices prices.json --bills normalized-bills.json --annotations historical-annotations.json --output cost-report.json
+```
+
+`--usage` and `--snapshot` are repeatable; either one alone suffices. `--bills` and
+`--annotations` are optional. All inputs are local, and original files remain unchanged.
+The report is independent of quality scores and does not launch any model/API call.
+Native snapshots must pass the existing raw/plan/attempt hash replay before normalization.
+Their collection is shown in the oracle namespace, without artificial version attribution.
+
+A minimal illustrative price file (synthetic rates, not a current provider quotation):
+
+```json
+{"schema_version":"rtpeval_prices_1","currency":"USD","rows":[
+  {"price_id":"fixture-model","source":"synthetic worked example","as_of":"2026-10-05",
+   "valid_from":"2026-10-01","valid_until":"2026-11-01",
+   "match":{"kind":"model","provider":"fixture","operation":"chat","model":"test"},
+   "rates":{"input_tokens":"2","cached_input_tokens":"0.5","output_tokens":"4"},
+   "per":"1000000"}
+]}
+```
+
+For 1,000 input tokens including 400 cached, and 200 output tokens, this yields
+`0.0022` USD. Reasoning tokens are part of output, not another charge. Missing cache
+counts do not imply zero; a deliberate no-discount assumption needs a source-linked
+annotation, or the estimate stays unavailable. Each official price row must retain its
+source/date/currency, billing unit and applicable context. Explicit proxy prices and SKU
+scenarios must retain an `assumption`, rather than pretending unknown context is observed.
+
+Normalize an existing invoice/export into rows according to its evidence:
+
+```json
+[
+  {"bill_id":"invoice-line-1","scope":"event","currency":"USD","amount":"0.10",
+   "source":"invoice.csv:1","usage_sha256":"<original usage file SHA-256>",
+   "result_sha256":"<result hash from usage>","kind":"model","event_id":"<captured ID>"},
+  {"bill_id":"resource-month","scope":"aggregate","currency":"KRW","amount":"12000",
+   "source":"resource-month-export.csv:2"}
+]
+```
+
+Those hash/ID placeholders must be replaced with genuine matching artifacts. A complete
+run bill uses `scope: run`, artifact hashes and `complete: true` without kind/event ID.
+Aggregate rows cannot bind events/runs, and no cross-currency conversion occurs.
+Actual event charges override estimates; whole-run bills leave category/Repair allocation
+unknown. Backing HTTP transport is not another model charge, and Repair is never added
+to the run again. Missing costs remain null beside a partial observed subtotal.
+
+The library seam is `build_cost_report(sources, prices, bills=..., annotations=...)`, where
+each source has original `sha256` and `usage`. Annotation rows contain `usage_sha256`,
+kind/event ID, `source`, `source_sha256`, `note` and `fields` (only missing billing context
+or explicit cached-input assumptions). Import does not fetch cloud bills or query billing
+warehouses. Do not attribute aggregate exports to individual runs without supporting data.
+
 Relevant regression tests live in `backend/tests/evaluation/`
 and the [blind-review frontend](../../frontend/src/features/blind-review/BlindReview.tsx).
 Actual historical results are in [evaluation record index](../../docs/records/README.md)

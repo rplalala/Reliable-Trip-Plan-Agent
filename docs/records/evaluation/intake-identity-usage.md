@@ -1190,3 +1190,137 @@ duration and correct binding do not imply route PASS. Historical Seoul V0-V3 sou
 reports and scores remain unchanged; no paired score delta or general quality ranking
 is inferred from this new sample. Future factual verification or another live attempt
 requires its own approved scope and budget.
+
+<a id="offline-cost-acceptance-2026-10-05"></a>
+
+## Offline cost accounting and Seoul replay — 2026-10-05
+
+Status: **Implemented, offline validated and reviewed; local commits only.**
+[Issue #59](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/59) supplements
+closed usage [#14](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/14).
+The user approved TDD, implementation/testing/review/corrections, local commits, Issue
+updates and offline replay. No paid provider call, account billing query, push/PR/merge,
+planner rerun, formal experiment or version freeze is included. The separate new-V0
+[route plan](routes.md#new-v0-route-plan-2026-10-05) remains preparation only.
+
+Review fixed point: `ff2085f6e6dafffa2b02f9b14bb10c89e49b3be8` on `feature/evaluation`,
+with a clean initial tracked tree. Existing prior V0 smoke documentation commits are
+outside this diff. Runtime reports, prices, normalized sources/annotations and checks
+remain ignored local evidence under `artifacts/seoul-cost-20261005/`; no raw provider
+payload, runtime log or price assumption artifact is committed.
+
+### Implementation and price basis
+
+The existing opt-in ledger now retains optional cache/reasoning token details, bounded
+Google billing request context and separately observed SDK search-tool counts. Reasoning
+remains part of output. Uniquely observed active model invocations supply exact backing
+HTTP bindings; ambiguous capture remains unlinked. The stdlib-only cost library/CLI
+accept saved usage and verified native snapshots, explicit dated price rows, normalized
+event/run/aggregate bills and source-linked historical annotations. Decimal money,
+unknowns, Repair subsets, namespaces and lineage are separate from quality scoring.
+Output cannot overwrite imported usage/price/bill/snapshot material.
+
+No actual bill was supplied, so **actual charges remain unavailable**. Microsoft pricing
+research did not yield a usable deployment-specific numeric rate. The user then explicitly
+selected OpenAI official GPT-6 Luna prices: Standard short context, per million tokens
+**input $0.10, cached input $0.01, output $0.50**, checked 2026-10-05 at the
+[official model page](https://developers.openai.com/api/docs/models/gpt-6-luna).
+Historical missing cache counts use an explicit, source-linked **no-discount assumption**;
+cache writes, regional premium and service-tier differences are excluded rather than
+claimed observed. Each call is below the 272,000-token long-context threshold. These are
+current-price retrospective estimates and not Foundry invoice amounts.
+
+Google prices use the Global first paid tier before credits/free caps/tax/volume discounts,
+checked 2026-10-05. The preserved historical oracle adapter's exact Text Search/Details
+mask includes opening hours/website fields, supplying an annotated Enterprise basis:
+$35/1,000 searches and $20/1,000 Details. The frozen TRANSIT matrix requests use no
+advanced options and one element each: Essentials $5/1,000 elements.
+Sources: [prices](https://developers.google.com/maps/billing-and-pricing/pricing),
+[field/SKU rules](https://developers.google.com/maps/billing-and-pricing/sku-details),
+[route billing](https://developers.google.com/maps/documentation/routes/usage-and-billing).
+Annotations retain exact original source hashes and reconstruction explanations.
+
+### Observed offline results
+
+| Saved attempt | Observed input/output tokens | OpenAI model estimate USD |
+| --- | --- | --- |
+| Original Seoul V0 | 12,562 / 5,815 | 0.0041637 |
+| Original Seoul V1 | 64,151 / 8,195 | 0.0105126 |
+| Original Seoul V2 | 65,406 / 10,806 | 0.0119436 |
+| Original Seoul V3 | 95,078 / 14,696 | 0.0168558 |
+| New structured-transport V0 | 12,675 / 5,611 | 0.004073 |
+
+V3 Repair's model estimate is **$0.003523**, already included in V3. This is a subset,
+not an extra amount to add. Model-backed HTTP is not another model fee, but these older
+envelopes lack exact backing links; that uncertainty prevents complete run totals.
+Historical planner API events also lack field-mask/mode/SKU context, so the primary
+report leaves those components unpriced. Open-Meteo account charging and unobserved
+services are not inferred; absent embedding events do not establish a universal zero bill.
+
+Two explicitly assumed unit-rate scenarios supplement the primary report. They price
+every historical search/Details/matrix event at the stated official rate regardless of
+the unknown actual SKU. They are **not a confirmed range or bill**:
+
+| Scenario | Per 1,000 search / Details / matrix-element rates | V1 observed subtotal USD | V2 observed subtotal USD | V3 observed subtotal USD | V3 Repair subset USD |
+| --- | --- | --- | --- | --- | --- |
+| Pro / Enterprise / Essentials | $32 / $20 / $5 | 2.0565126 | 2.0679436 | 2.0988558 | 0.093523 |
+| Highest field tiers | $40 / $25 / $15 | 4.4405126 | 4.4719436 | 4.6668558 | 0.273523 |
+
+These subtotals include the model estimate. Weather and unlinked/uncertain sends remain
+unavailable; neither scenario supplies a complete actual/estimated run total. The Repair
+API scenarios correspond to 18 requested route elements, not another whole-run charge.
+
+Independent oracle accounting remains shared and separate:
+
+| Frozen oracle snapshot | Actual recorded sends | Requested matrix elements | Retail estimate USD |
+| --- | --- | --- | --- |
+| Identity | 36: 23 searches + 13 Details | 0 | 1.065 |
+| Final evidence | 23: 16 Details + 7 matrix | 7 | 0.355 |
+| Paired evidence | 23: 16 Details + 7 matrix | 7 | 0.355 |
+| Observed oracle subtotal | 82 | 14 | **1.775** |
+
+The final/paired acquisitions have different timestamps/manifest hashes and separately
+recorded sends, so both are counted; duplicate artifacts/captured attempts are rejected.
+They are not allocated to V0-V3. These rows do not assert charges after account allowances
+or establish formal efficiency/quality comparisons.
+
+The final CLI replay completed after review corrections. All eight original usage and
+snapshot manifest hashes remained byte-identical; native raw observations passed existing
+replay/hash checks. The new V0 result also retained SHA-256
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+Old Seoul sources/reports and V0 planning decisions were not modified.
+
+### Validation, commits and independent review
+
+TDD first reproduced absent cache details, absent Google billing context, absent SDK tool
+counts and missing cost/snapshot interfaces. Each slice passed after implementation.
+Worked examples cover exact cache partition/output amounts, requests/elements/embeddings,
+tool fees, actual event override, whole-run allocation limits, aggregate retention,
+bad/foreign/duplicate bindings, absent data, expired/ambiguous prices, adapter coverage,
+source-bound annotations, CLI no-socket operation and immutable/corrupt snapshots.
+An initial subtotal assertion was corrected to include its matrix component; Ruff
+formatting/import findings were corrected before the gate.
+
+1. Before implementation commits, focused checks passed **73 tests**, Ruff/diff checks
+   passed, and the full unfiltered backend gate passed **2655 tests, 10 skipped in
+   323.62s**. No configured static typechecker exists. Existing skip conditions remain.
+2. Implementation commits: `0a68380` (`feat: capture optional billing usage details (#59)`)
+   and `f3d4621` (`feat: account saved usage and imported bills offline (#59)`). These were
+   committed before independent Standards/Spec review against the fixed point.
+3. Standards found optional `tools=None`/SDK omission metadata could turn a successful
+   SDK response into TypeError. Spec found broad model-HTTP suppression hid failed,
+   unlinked or foreign sends. Regression tests reproduced both before correction.
+   A real mocked HTTP/SDK seam also reproduced the missing invocation link.
+4. Separate correction commits preserve history: `6e74c11` (`fix: preserve SDK outcomes
+   and bind model transport (#59)`) and `0f6a247` (`fix: retain uncertainty for unlinked
+   model sends (#59)`). Corrected focused checks passed **80**; affected Foundry,
+   integration, retrieval, runtime, intake and planner-runtime checks passed **288,
+   1 skipped**. The full gate was not repeated after these bounded corrections.
+5. Standards and Spec rechecks each reported **zero remaining actionable findings**.
+   Reviewers also checked the pending cost contract/guide and route preparation boundary.
+   Narrow reviewer checks passed 6 capture and 23 calculator tests respectively; these
+   overlap other checks and must not be added into an independent total.
+
+The final documentation commit records acceptance, current interfaces and the route plan.
+Issue checklist completion reflects local validation, not publication or bill retrieval.
+No version milestone/freeze or formal research conclusion follows.
