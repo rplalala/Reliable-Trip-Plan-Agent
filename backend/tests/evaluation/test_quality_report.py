@@ -253,6 +253,50 @@ def test_v0_report_scores_are_invariant_under_unrelated_transport_notes(route_ca
     assert new["auxiliary_total"] == old["auxiliary_total"]
 
 
+@pytest.mark.parametrize(
+    "mode,pair,known",
+    [
+        ("WALK", ("a", "b"), True),
+        (None, ("a", "b"), False),
+        ("WALK", ("b", "a"), False),
+    ],
+)
+def test_structured_transport_report_preserves_independent_uncertainties(
+    route_case, mode, pair, known
+):
+    def change(results):
+        route_tests.no_departure(results)
+        travel = activity("travel", "Journey between visits", "10:00", "10:30", "transport")
+        travel["notes"] = "Walking from Museum A to Museum B"
+        travel["transport"] = {"mode": mode, "from_activity_id": pair[0], "to_activity_id": pair[1]}
+        results["v0"]["itinerary"]["days"][0]["activities"].append(travel)
+
+    case = route_case(change=change)
+    before = copy.deepcopy(case[0].to_dict())
+    reviews = density_reviews(case[0])
+    out = report(case, density_reviews=reviews)
+    assert out["status"] == "complete", out["diagnostics"]
+    version = out["groups"][0]["versions"]["v0"]
+    dimension = version["dimensions"]["non_overlap"]
+    if known:
+        assert dimension["denominator"] == 3
+        assert dimension["counts"] == {"PASS": 3, "FAIL": 0, "UNKNOWN": 0}
+        assert version["primary_metrics"]["routes"]["checks"][0]["state"] == "PASS"
+    elif pair == ("a", "b"):
+        assert dimension["denominator"] == 3
+        assert dimension["counts"] == {"PASS": 3, "FAIL": 0, "UNKNOWN": 0}
+        assert version["primary_metrics"]["routes"]["checks"][0]["state"] == "UNKNOWN"
+    else:
+        assert dimension["denominator"] is None
+        assert version["auxiliary_total"]["reason"] == "denominator_unresolved"
+    assert version["dimensions"]["grounding"]["denominator"] == 2
+    assert version["dimensions"]["opening"]["counts"]["UNKNOWN"] == 2
+    assert version["daily_density"]["days"][0]["known_primary_count"] == 2
+    assert version["daily_density"]["mean_penalty_0_100"] == 0
+    assert case[0].to_dict() == before
+    assert report(case, density_reviews=reviews) == out
+
+
 def test_empty_mask_is_unavailable_instead_of_invented_perfect_score(route_case):
     def change(results):
         for result in results.values():
