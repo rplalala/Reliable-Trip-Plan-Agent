@@ -30,6 +30,7 @@ def main(argv=None):
         ("expected-plan", "Optional trusted paired snapshot plan JSON"),
         ("edit-provenance", "Optional preparation to verify against original result bytes"),
         ("correspondence-reviews", "Evidence-backed residual correspondence review JSON"),
+        ("density-reviews", "Source-linked daily pace/count policy review JSON"),
     ):
         report.add_argument("--" + option, help=help_text)
     report.add_argument(
@@ -54,6 +55,7 @@ def main(argv=None):
                 ("expected_plan", "expected_plan"),
                 ("edit_provenance", "edit_provenance"),
                 ("correspondence_reviews", "correspondence_reviews"),
+                ("density_reviews", "density_reviews"),
             ):
                 path = getattr(args, attribute)
                 files[name], hashes[attribute] = _read(Path(path)) if path else (None, None)

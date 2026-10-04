@@ -10,6 +10,7 @@ from backend.evaluation.snapshot import AcquisitionPolicy, Response, acquire_sna
 from backend.evaluation.v3_correspondence import prepare_v3_correspondence, read_v3_result_sources
 from backend.evaluation.v3_pair_report import build_v3_pair_report
 from backend.tests.evaluation import test_routes as route_tests
+from backend.tests.evaluation.test_daily_density import density_reviews
 from backend.tests.evaluation.test_requirement_schedule import required
 from backend.tests.evaluation.test_routes import no_departure, protection
 
@@ -112,6 +113,33 @@ def test_identical_pair_reuses_scorers_and_has_exact_zero_deltas(pair_case):
     assert pair["deltas"]["auxiliary_total"]["exact_fraction"] == {"numerator": 0, "denominator": 1}
     assert pair["deltas"]["dimensions"]["requirements"]["verified_score_percentage_points"] is None
     assert pair["deltas"]["dimensions"]["routes"]["denominator"] == 0
+
+
+def test_pair_density_repair_contributes_to_overall_delta(pair_case):
+    def before(itinerary):
+        itinerary["days"][0]["activities"] = itinerary["days"][0]["activities"][:1]
+        itinerary["transfers"] = []
+
+    def after(itinerary):
+        extra = copy.deepcopy(itinerary["days"][0]["activities"][0])
+        extra.update(
+            activity_id="extra",
+            title="Museum B",
+            place_name="Museum B",
+            start_time="2020-01-01T12:00:00Z",
+            end_time="2020-01-01T13:00:00Z",
+        )
+        itinerary["days"][0]["activities"].append(extra)
+
+    case = pair_case(before=before, after=after)
+    out = report(case, density_reviews=density_reviews(case[0], "relaxed"))
+    assert out["status"] == "complete", out["diagnostics"]
+    pair = out["groups"][0]
+    before_stage, after_stage = (pair["stages"][stage] for stage in ("draft", "final_primary"))
+    assert before_stage["daily_density"]["mean_penalty_0_100"] == 20
+    assert after_stage["daily_density"]["mean_penalty_0_100"] == 0
+    assert pair["deltas"]["overall_total"]["percentage_points"] == 20
+    assert pair["deltas"]["auxiliary_total"]["percentage_points"] == 0
 
 
 def adopted_edit(draft, final, edits):

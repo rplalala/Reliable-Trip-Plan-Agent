@@ -7,6 +7,8 @@ from fractions import Fraction
 from pathlib import Path
 
 from ._v3_continuity import build_continuity
+from .daily_density import RULES as DENSITY_RULES
+from .daily_density import apply_density_penalty, prepare_density_policies, score_daily_density
 from .intake import _read
 from .opening import score_opening
 from .preparation import identity_ready
@@ -17,15 +19,16 @@ from .routes import score_routes
 from .snapshot import load_snapshot
 from .v3_correspondence import prepare_v3_correspondence
 
-REPORT_VERSION = "rtpeval_v3_pair_report_1"
+REPORT_VERSION = "rtpeval_v3_pair_report_2"
 STAGES = ("draft", "final_primary")
 RULES = {
-    "profile_id": "rtpeval_v3_pair_rules_1",
+    "profile_id": "rtpeval_v3_pair_rules_2",
     "scope": "selected same-run V3 draft and final_primary",
     "mask": "pair union; exclude only two established zero denominators",
     "delta": "after minus before; exact fractions; unavailable remains null",
     "correspondence": "validated adopted sources before unique fallback and review",
     "quality": "independent checks; deletion and replacement do not repair old facts",
+    "daily_density": DENSITY_RULES,
 }
 
 
@@ -120,6 +123,13 @@ def _deltas(stages):
         "auxiliary_total": _fraction_delta(
             before["auxiliary_total"]["exact_fraction"], after["auxiliary_total"]["exact_fraction"]
         ),
+        "overall_total": _fraction_delta(
+            before["overall_total"]["exact_fraction"], after["overall_total"]["exact_fraction"]
+        ),
+        "daily_density_penalty": _difference(
+            before["daily_density"]["mean_penalty_0_100"],
+            after["daily_density"]["mean_penalty_0_100"],
+        ),
     }
     output["population"] = {
         key: after["population"][key] - value for key, value in before["population"].items()
@@ -168,7 +178,7 @@ def _deltas(stages):
     return output
 
 
-def _stage(group, projection, label, indexed, identities):
+def _stage(group, projection, label, indexed, identities, density_policy):
     key = (group["group_id"], "v3", projection["context"]["run_id"], label)
     schedule = indexed["requirement_schedule"][key]
     metrics = {
@@ -201,6 +211,9 @@ def _stage(group, projection, label, indexed, identities):
         "primary_metrics": metrics,
         "schedule_measures": schedule["schedule_measures"],
         "descriptive": schedule["descriptive"],
+        "daily_density": score_daily_density(
+            group, schedule["descriptive"]["density"], density_policy
+        ),
         "occupancy": schedule["occupancy"],
         "component_source_hashes": {name: indexed[name][key]["source_hashes"] for name in indexed},
     }
@@ -220,6 +233,7 @@ def build_v3_pair_report(
     result_sources=None,
     correspondence_reviews=None,
     edit_provenance=None,
+    density_reviews=None,
     generated_at,
 ):
     """Replay optional V3 pairs; missing stages never acquire synthetic after results."""
@@ -245,6 +259,7 @@ def build_v3_pair_report(
             status = "identity_replay_required"
             raise MaterialError(status, "identity", "Current linked identity report required")
         base.update(batch_id=prepared["batch_id"], batch_revision=prepared["revision"])
+        density_policies = prepare_density_policies(prepared, _value(density_reviews))
         valid_pairs = any(
             group["runs"]["v3"]["paired_available"] for group in prepared["inventory"]
         )
@@ -352,13 +367,22 @@ def build_v3_pair_report(
             }
             if indexed is not None:
                 pair["stages"] = {
-                    name: _stage(group, run["optional"][name], name, indexed, identities)
+                    name: _stage(
+                        group,
+                        run["optional"][name],
+                        name,
+                        indexed,
+                        identities,
+                        density_policies[group["group_id"]],
+                    )
                     for name in STAGES
                     if available[name]
                 }
                 if all(available.values()):
                     pair["pair_status"] = "available"
                     pair["included_dimensions"] = _totals(pair["stages"])
+                    for stage in pair["stages"].values():
+                        apply_density_penalty(stage)
                     pair["deltas"] = _deltas(pair["stages"])
                     activities = {
                         a["source"]["record_id"]: a
@@ -409,6 +433,7 @@ def build_v3_pair_report(
                     "route_reviews": route_reviews,
                     "coordinate_evidence": coordinate_evidence,
                     "expected_plan": expected_plan,
+                    "density_reviews": density_reviews,
                 }.items()
             },
         }

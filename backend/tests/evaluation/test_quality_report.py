@@ -88,6 +88,48 @@ def test_verified_scores_use_known_units_and_one_common_mask(route_case):
     assert versions["v1"]["primary_metrics"]["routes"]["checks"][0]["state"] == "PASS"
 
 
+def test_final_report_deducts_daily_penalty_without_replacing_verified_metrics(route_case):
+    case = route_case()
+    prepared = case[0].to_dict()
+    group = prepared["inventory"][0]
+    reviews = {
+        "schema_version": "rtpeval_density_reviews_1",
+        "batch_id": prepared["batch_id"],
+        "batch_revision": prepared["revision"],
+        "groups": [
+            {
+                "group_id": group["group_id"],
+                "input_sha256": group["input_sha256"],
+                "reviewer_ref": "independent-reviewer",
+                "reviewed_at": STAMP,
+                "review_origin": "agent",
+                "rationale": "Architecture preference implies no count.",
+                "default": {
+                    "profile": "ordinary",
+                    "exact_count": None,
+                    "source_refs": [
+                        {
+                            "field_path": "additional_preferences",
+                            "quote": "Prefer architecture",
+                        }
+                    ],
+                },
+                "days": [],
+            }
+        ],
+    }
+    out = report(case, density_reviews=reviews)
+    assert out["status"] == "complete", out["diagnostics"]
+    v1 = out["groups"][0]["versions"]["v1"]
+    assert v1["daily_density"]["mean_penalty_0_100"] == 0
+    assert v1["overall_total"]["score_0_100"] == 50
+    assert v1["auxiliary_total"]["score_0_100"] == 50
+    assert out["source_hashes"]["preparation"]["density_reviews"] == canonical_digest(reviews)
+    missing = report(case)["groups"][0]["versions"]["v1"]
+    assert missing["overall_total"]["score_0_100"] is None
+    assert missing["overall_total"]["reason"] == "density_penalty_unresolved"
+
+
 def test_known_unknown_identity_has_no_fabrication_penalty(route_case):
     group = report(route_case(unresolved_names=["Museum A", "Museum B"]))["groups"][0]
     for version in group["versions"].values():

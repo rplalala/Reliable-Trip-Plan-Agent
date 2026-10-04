@@ -11,6 +11,7 @@ from backend.evaluation.quality_report import quality_content_hash
 from backend.evaluation.quality_report_cli import main
 from backend.tests.evaluation import test_route_cli as route_cli_tests
 from backend.tests.evaluation import test_routes as route_tests
+from backend.tests.evaluation.test_daily_density import density_reviews
 
 pytest_plugins = ("backend.tests.evaluation.test_intake",)
 prepared_scenario = route_tests.prepared_scenario
@@ -124,3 +125,20 @@ def test_cli_exact_file_hash_differs_from_object_hash_and_changes_content_hash(r
         != replayed["preparation_file_sha256"]["identity"]
     )
     assert original["content_hash"] != replayed["content_hash"]
+
+
+def test_cli_replays_density_reviews_with_exact_file_provenance(route_case, capsys):
+    case = route_case()
+    path = case[2].parent / "density.json"
+    path.write_text(json.dumps(density_reviews(case[0], exact_count=1)), encoding="utf-8")
+    assert main(arguments(case) + ["--density-reviews", str(path)]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert (
+        out["preparation_file_sha256"]["density_reviews"]
+        == hashlib.sha256(path.read_bytes()).hexdigest()
+    )
+    v1 = out["groups"][0]["versions"]["v1"]
+    assert v1["daily_density"]["mean_penalty_0_100"] == 100
+    assert v1["overall_total"]["score_0_100"] == 0
+    assert v1["auxiliary_total"]["score_0_100"] == 50
+    assert out["content_hash"] == quality_content_hash(out)
