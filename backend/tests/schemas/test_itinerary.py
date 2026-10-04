@@ -135,3 +135,22 @@ def test_transport_declaration_cannot_reclassify_a_visit() -> None:
     )
     with pytest.raises(ValidationError, match="transport declarations require"):
         Activity.model_validate(raw)
+
+
+def test_nested_planning_serialization_schema_keeps_activity_contract() -> None:
+    schema = PlanningResult.model_json_schema(mode="serialization")["$defs"]["Activity"]
+    assert set(schema["properties"]) == {
+        "activity_id",
+        "activity_kind",
+        "title",
+        "place_name",
+        "source_place_id",
+        "location",
+        "start_time",
+        "end_time",
+        "estimated_cost",
+        "notes",
+        "transport",
+    }
+    assert schema["additionalProperties"] is False
+    assert set(schema["required"]) == {"activity_id", "title", "start_time", "end_time"}

@@ -45,8 +45,9 @@ class Activity(BaseModel):
     transport: TransportDeclaration | None = None
 
     @model_serializer(mode="wrap")
-    def serialize_optional_transport(self, handler: SerializerFunctionWrapHandler) -> dict:
+    def serialize_optional_transport(self, handler: SerializerFunctionWrapHandler):
         """Keep legacy and tool-backed activity output unchanged when absent."""
+        # A dict return annotation would replace the model's JSON output schema.
         result = handler(self)
         if self.transport is None:
             result.pop("transport", None)
