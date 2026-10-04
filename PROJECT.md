@@ -164,18 +164,26 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2686 passed, 10 skipped in 249.85s**, from the
-2026-10-05 [cross-chain model reference audit](docs/records/v0-v3/semantic-reference-correction.md#model-reference-audit-2026-10-05),
-tracked under [#64](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/64).
+Latest recorded full backend gate: **2704 passed, 10 skipped in 246.51s**, from the
+2026-10-05 [short-reference executor implementation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05),
+tracked under [#66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66).
+Subsequent review corrections passed **89** executor/Repair and **42** native-policy
+tests; Standards and Spec rechecks have no remaining findings.
 Primary generation, Repair, review profiling, official reasoning and Product decoration
-now restore supplied identities from short model references. The evaluator adds only an
-offline proposal-packet seam. No new live validation or native identity adoption occurred.
+now restore supplied identities from short model references. The subsequent authorized
+six-case live adapter smoke passed in **18.016 seconds**, with six model sends and no
+retries, tools or Google calls. Reported usage was **12,832 input / 1,604 output**;
+the Standard retail estimate is **USD 0.0020852**, excluding unpriced cache-write or
+regional adjustments; actual billing is unavailable. The V0 evaluator test produced
+nine bounded proposals, with zero native adoptions. This is selected-boundary evidence,
+not full planner orchestration or an identity-accuracy result. Four V0 routes remain UNKNOWN.
 The preceding Issue #59 gate was **2655 passed, 10 skipped in 323.62s**, before review
 corrections; subsequent focused gates were **80**, **288, 1 skipped**, and **95**.
 The [offline cost acceptance](docs/records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05)
 retains failures, corrections, retests and dual-axis review evidence.
 Earlier Issue #57, Issue #53 and Ticket 11/12 results remain historical in their records.
-The skips are environment/opt-in cases. No live services or formal corpus were used;
+The skips are environment/opt-in cases. No live services or formal corpus were used
+in the offline test gates;
 earlier approved supplements remain distinct evidence.
 The separately approved [V0 structured transport smoke](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-live-2026-10-05)
 completed on 2026-10-05: one V0 run, two Foundry invocations, 30.516 seconds,
@@ -303,10 +311,12 @@ and this task supplies no new live result or score comparison. See the
 On 2026-10-05 the user approved creating and preparing two follow-ups:
 [short-reference live regression #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66)
 and [V0-only proposal adoption/route handoff #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67).
-The first proposes six adapter/packet model requests, no retries or Google calls,
-a ten-minute deadline and a USD 0.05 retail-estimate budget (USD 0.018 at the stated
-token caps). Runner implementation and paid execution are not yet authorized or
-prepared. The second proposes default-off V0 model-assisted association while
+The user subsequently authorized #66 implementation and its live budget. Its executor,
+offline SDK preflight, dual-axis review and six-case live smoke are complete locally;
+Git publication and Issue closeout require separate delivery approval. No short-reference
+restoration failure occurred in these six samples. See the dated
+[execution acceptance](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05).
+The second proposes default-off V0 model-assisted association while
 retaining genuine high-impact/audit review; policy implementation and subsequent
 independent acquisition require separate approval. Offline source/hash and proposal
 restoration checks passed; these preparation checks add no adopted identity or

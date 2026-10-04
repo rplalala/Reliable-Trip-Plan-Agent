@@ -683,3 +683,115 @@ matching remote Issue bodies and `git diff --check`. #66/#67 were re-read OPEN w
 only preparation criteria checked; #63/#64 remained CLOSED and PR #65 remained
 MERGED at the pinned revision. No implementation tests were rerun for this
 documentation-only event. Branch and main references were verified unchanged.
+
+<a id="short-reference-live-regression-execution-2026-10-05"></a>
+
+## Short-reference executor and live regression — 2026-10-05
+
+Status: **Implemented, reviewed and validated for six selected development cases;
+local Git delivery pending.** The user explicitly approved #66 executor implementation,
+offline preflight and the previously prepared live budget. #67 remains a separate
+adoption-design follow-up; no adoption implementation or route acquisition occurred.
+
+Work started on clean `feature/evaluation` at review fixed point
+`73c5412492438ae89882925ffc25a25700bad4ce`. Implementation/tests were committed as
+`a90dd87fec27b8a1a2b2aa3a3d170fadde0edc03` before dual-axis review; the separate
+review correction is `c9fbd3a49df61f6a458a68ef4e42b7b09ddcf267`, also the frozen live
+execution revision. No branch switch, main-to-development merge, push or PR occurred.
+Production code and independent V0-V3 entry points were unchanged. Artifacts are ignored
+local evidence, not published dependencies or committed raw provider/model payloads.
+
+### Implementation and offline validation sequence
+
+The development tool freezes six actual SDK requests, schemas, short-reference maps,
+SDK versions, endpoint binding and source hashes. Its transport limits each case to
+one send and enforces the selected model, destination, no tools/retries/redirects,
+input/output ceilings, per-request timeout and total deadline. An exclusive launch
+record prevents a second execution of the packet. Attempts are journaled before
+transport, retaining failed/unknown fees; successful outputs pass the existing adapter
+and selected native acceptance seam. The V0 boundary returns proposals only.
+
+TDD began with missing runner/case/packet interfaces and then progressed through the
+six actual adapters over MockTransport. Initially failing negative tests exposed absent
+terminal-failure fields, failed-attempt accounting and usage export; those were corrected.
+The first completed focused gate passed 18 tests. Ruff and `git diff --check` passed;
+the full backend suite passed **2704 with 10 skipped in 246.51 seconds**, without live
+services. No project type-check command is configured in this Python environment.
+
+Standards review found zero issues; Spec review found two P2 issues: the synthetic
+Repair input bypassed production `build_repair_input`, and primary acceptance omitted
+`validate_output_sources`. Two added regressions failed before correction. Repair now
+uses the production `repair_input_2` projection and freezes that same map; primary runs
+the native source/name normalization and date checks before fixture coverage. The final
+focused executor gate passed **19 tests**; executor/Repair checks passed **89**, and
+date/source/ordering checks passed **42**. One intermediate test assertion misread SDK
+message content as an array and was corrected to its actual string shape. An attempted
+test selection referenced a nonexistent filename and collected no tests; the correct
+native-policy files then passed. Both review axes rechecked the correction with zero
+remaining findings. Implementation commits were preserved separately from corrections.
+
+Final actual-SDK preflight passed six MockTransport sends and **zero live sends**.
+Estimated wire input tokens, including schema and the 1,024-token reserve, were
+3,958 primary; 1,853 profiling; 4,279 Repair; 3,383 reasoning; 1,436 introduction;
+6,158 identity. All fit the authorized 10,000 ceiling. Actual output limits were
+4,000 except official reasoning's existing 1,200. The ready packet froze 581 source
+files, including all 61 original pilot-authorized hashes; the identity mapping retained
+SHA-256 `4a7d36cc0e0ccf64138f1faf36a194b99fe606c8999538966b3cc16fbe66a36b`.
+
+### Observed live execution and cost
+
+The prepared authorized execution was delegated to the same-project `smoke tests`
+conversation, which launched the execute command once after clean-worktree/revision
+checks. Process exit was 0; status completed; **six model sends in 18.016 seconds**.
+All six responses reported HTTP 200, completed and `gpt-6-luna`. No retry, tool,
+Google/search/embedding request, baseline request or stop condition occurred. Limits
+remained six sends, 60 seconds/request, 600 seconds total and USD 0.05 retail-estimate
+allowance. No fixture was changed after observing a live response.
+
+| Boundary | Selected native check | Input / output tokens | Retail estimate USD |
+| --- | --- | ---: | ---: |
+| Shared V1-V3 primary | Two restored places; source/date/coverage acceptance | 2,508 / 362 | 0.0004318 |
+| Review profile | Restored place; two-review ownership | 611 / 131 | 0.0001266 |
+| V3 Repair | Restored activity/place/target; isolated `apply_patch` permissions | 2,815 / 154 | 0.0003585 |
+| Official reasoning | Restored source/place; exact supplied URL/span alignment | 1,863 / 322 | 0.0003473 |
+| Product introduction | Two restored activity keys; ownership and coverage | 279 / 64 | 0.0000599 |
+| V0 identity | Nine unique reference proposals; per-reference candidate bounds | 4,756 / 571 | 0.0007611 |
+
+All selected provider/schema/alias/native fixture checks passed. Totals were **12,832
+input, 1,604 output, 14,436 total**, zero cached input and **211 reasoning tokens already
+included in output**. Raw usage also reported **11,930 cache-write tokens**. The authorized
+[OpenAI Standard price basis](https://developers.openai.com/api/docs/models/gpt-6-luna),
+dated 2026-10-05, gives **USD 0.0020852** before any separately priced cache-write,
+regional or invoice adjustment. Actual billed amount remains unavailable.
+
+The owner independently verified six request/response hashes, all packet/source hashes
+and original V0 SHA-256
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+All nine new `(reference_id, decision, candidate_id)` associations equal the old pilot's
+associations; prose may differ. This is structural agreement, not independent identity
+accuracy. The five planner-related fixtures are synthetic adapter data; the sixth uses
+the previously frozen real V0 candidate packet without new evidence acquisition.
+
+Offline #59 `build_cost_report` reproduced the six model costs and classified their six
+linked HTTP events as transport-only, avoiding double charging. The raw smoke usage
+supports `usage_report`; cost accounting additionally needs explicit run identity/time.
+A separate, source-hash-bound derived envelope supplies these in the independent
+`oracle` namespace, with no allocation to planner versions. Partial/unverified coverage
+is retained: the observed cost subtotal is available while complete-run and invoice totals
+remain unknown. The first offline price snapshot lacked per-operation selectors and was
+rejected; adding six explicit selectors passed, without changing execution evidence.
+
+### Evidence and remaining boundaries
+
+Local identifiers: `artifacts/short-id-live-20261005/packet/` contains frozen inputs,
+preflight, authorization, launch record, executor report and verification; `packet/live/`
+contains execution/canonical outputs, attempts, usage and raw response files. The owner
+assessment and derived cost envelope/price/report are under the containing event directory.
+[Issue #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66) records the
+self-contained remote task state; repository publication requires separate Git approval.
+
+This run observed no new short-reference restoration failure in six selected samples.
+It does not establish a general error rate, full V0-V3 orchestration, venue-policy truth,
+introduction-prose accuracy, formal benchmark or version freeze. Native identity adoption
+remains **zero**, and the V0's four route verdicts remain **UNKNOWN**. The next engineering
+step is authorized Git delivery of #66, followed by separately scoped #67 adoption work.
