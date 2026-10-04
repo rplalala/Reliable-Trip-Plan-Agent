@@ -165,7 +165,8 @@ from dated run plans into a new execution. Entry-point request deadlines and sta
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
 Latest recorded full backend gate: **2686 passed, 10 skipped in 249.85s**, from the
-2026-10-05 [cross-chain model reference audit](docs/records/v0-v3/semantic-reference-correction.md#model-reference-audit-2026-10-05).
+2026-10-05 [cross-chain model reference audit](docs/records/v0-v3/semantic-reference-correction.md#model-reference-audit-2026-10-05),
+tracked under [#64](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/64).
 Primary generation, Repair, review profiling, official reasoning and Product decoration
 now restore supplied identities from short model references. The evaluator adds only an
 offline proposal-packet seam. No new live validation or native identity adoption occurred.

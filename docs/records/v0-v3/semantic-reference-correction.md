@@ -509,6 +509,10 @@ The preceding V0 identity pilot is separate historical evidence under
 [#63](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/63); this audit did not
 extend its live authorization or adopt its proposals. The current rule is maintained in
 [system architecture](../../0001-system-architecture.md#model-identity-references).
+At the user's subsequent request, [Issue #64](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/64)
+was created on 2026-10-05 for this cross-chain work after local implementation/review.
+It records the original commits, checked implementation acceptance and pending Git
+delivery, with related Issues #63 and #28. The original commits were not rewritten.
 
 ### Audit and implementation
 
