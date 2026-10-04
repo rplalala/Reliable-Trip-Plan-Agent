@@ -145,6 +145,13 @@ def test_repair_restores_all_namespaces_and_passes_actual_patch_permissions(tmp_
     def respond(request):
         wire = request.content.decode()
         assert "ChIJsynthetic" not in wire and "0123456789abcdef" not in wire
+        body = json.loads(request.content)
+        prompt = json.loads(body["input"][-1]["content"])
+        assert prompt["version"] == "repair_input_2"
+        assert len(prompt["candidate_catalog"]) == 2
+        assert prompt["target_worksheet"][0]["target_id"] == "t01"
+        assert prompt["other_operation_candidates"][0]["place_id"] == "p02"
+        assert "preparation" not in prompt
         return httpx.Response(200, json=sdk_response(mock_output(case)))
 
     runner = SmokeRunner(
@@ -162,6 +169,41 @@ def test_repair_restores_all_namespaces_and_passes_actual_patch_permissions(tmp_
         result["target_dispositions"][0]["target_id"]
         == "finding-replace-0123456789abcdef0123456789abcdef"
     )
+
+
+def test_primary_runs_existing_source_normalization_and_date_validation(tmp_path):
+    case = prepared_cases()[0]
+
+    def respond(request):
+        output = mock_output(case)
+        output["days"][0]["activities"][0]["place_name"] = "Model-authored alternate name"
+        return httpx.Response(200, json=sdk_response(output))
+
+    runner = SmokeRunner(
+        endpoint="https://fixture.example/openai/v1/",
+        api_key="unused-test-key",
+        transport=httpx.MockTransport(respond),
+        directory=tmp_path / "names",
+    )
+    report = asyncio.run(runner.run([case]))
+    assert report["status"] == "completed"
+    first = report["cases"][0]["canonical_output"]["days"][0]["activities"][0]
+    assert first["place_name"] == "Synthetic Museum A"
+
+    def wrong_date(request):
+        output = mock_output(case)
+        output["start_date"] = "2026-10-06"
+        return httpx.Response(200, json=sdk_response(output))
+
+    runner = SmokeRunner(
+        endpoint="https://fixture.example/openai/v1/",
+        api_key="unused-test-key",
+        transport=httpx.MockTransport(wrong_date),
+        directory=tmp_path / "dates",
+    )
+    report = asyncio.run(runner.run([case, profile_case()]))
+    assert report["status"] == "stopped" and report["model_sends"] == 1
+    assert report["error_type"] == "TripDatePolicyError"
 
 
 def test_official_sdk_smoke_keeps_exact_source_and_canonical_keys(tmp_path):

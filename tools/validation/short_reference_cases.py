@@ -10,6 +10,83 @@ TARGET = "finding-replace-0123456789abcdef0123456789abcdef"
 DAY = "2026-10-07"
 
 
+def fixture_request():
+    from backend.app.schemas.request import PlanningRequest
+
+    return PlanningRequest(
+        destination="Seoul",
+        start_date=DAY,
+        end_date=DAY,
+        traveler_count=2,
+        budget={"amount": 100000, "currency": "KRW"},
+    )
+
+
+def fixture_places():
+    from datetime import datetime
+
+    from backend.app.evidence.models import PlaceEvidence
+
+    return [
+        PlaceEvidence(
+            place_id=pid,
+            name=name,
+            latitude=37.5,
+            longitude=127.0,
+            formatted_address="Seoul",
+            availability="available",
+            retrieved_at=datetime.fromisoformat("2026-10-05T00:00:00+00:00"),
+            source_ref="synthetic_fixture",
+        )
+        for pid, name in [(PLACE_A, "Synthetic Museum A"), (PLACE_B, "Synthetic Museum B")]
+    ]
+
+
+def repair_prompt(payload):
+    """Project frozen synthetic domain objects through the production input builder."""
+    from datetime import date
+
+    from backend.app.policies.interpreted_requirements import canonicalize_requirements
+    from backend.app.policies.itinerary_schedule import ScheduleState
+    from backend.app.policies.trip_dates import create_trip_date_window
+    from backend.app.schemas.itinerary import Itinerary
+    from backend.app.services.preference_interpretation import empty_preference_draft
+    from backend.app.versions.v3.models import Finding, ValidationReport
+    from backend.app.versions.v3.repair_acceptance import assess
+    from backend.app.versions.v3.repair_models import (
+        CandidatePreparation,
+        RepairScope,
+        ValidationContext,
+    )
+    from backend.app.versions.v3.repair_projection import build_repair_input
+
+    original = Itinerary.model_validate(payload["original"])
+    preparation = CandidatePreparation.model_validate(payload["preparation"])
+    scope = RepairScope.model_validate(payload["scope"])
+    context = ValidationContext(
+        contract=canonicalize_requirements(empty_preference_draft(), fixture_request()),
+        window=create_trip_date_window(date(2026, 10, 5)),
+        original_supply_ids=tuple(c.place.place_id for c in preparation.input_candidates),
+        places=tuple(c.place for c in preparation.ledger),
+        schedule=ScheduleState.model_validate(payload["time_protection"]),
+    )
+    report = ValidationReport(
+        diagnostics=assess(original, context).diagnostics,
+        findings=(
+            Finding(
+                finding_id=TARGET,
+                check="visitor_suitability",
+                status="NEEDS_REVIEW",
+                reason=payload["request"],
+                dates=(DAY,),
+                activity_ids=(ACTIVITY_A,),
+                place_ids=(PLACE_A,),
+            ),
+        ),
+    )
+    return build_repair_input(original, report, scope, context, preparation)[1]
+
+
 def official_case():
     from backend.app.evidence.official_models import EvidenceSourceBlock
     from backend.app.evidence.web_models import WebEvidenceTask
@@ -55,9 +132,6 @@ def introduction_case():
 
 
 def repair_case():
-    from datetime import datetime
-
-    from backend.app.evidence.models import PlaceEvidence
     from backend.app.schemas.itinerary import Activity, Itinerary, ItineraryDay
     from backend.app.versions.v3.repair_models import (
         ActivityPermission,
@@ -67,19 +141,7 @@ def repair_case():
         RepairScope,
     )
 
-    places = [
-        PlaceEvidence(
-            place_id=pid,
-            name=name,
-            latitude=37.5,
-            longitude=127.0,
-            formatted_address="Seoul",
-            availability="available",
-            retrieved_at=datetime.fromisoformat("2026-10-05T00:00:00+00:00"),
-            source_ref="synthetic_fixture",
-        )
-        for pid, name in [(PLACE_A, "Synthetic Museum A"), (PLACE_B, "Synthetic Museum B")]
-    ]
+    places = fixture_places()
     original = Itinerary(
         destination="Seoul",
         start_date=DAY,

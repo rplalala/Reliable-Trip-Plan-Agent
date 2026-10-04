@@ -19,7 +19,12 @@ from backend.app.llm.reference_transport import (
 )
 from backend.evaluation.identity_assistance import IdentityAssistancePacket
 from backend.model_references import ShortReferences
-from tools.validation.short_reference_cases import mock_output, prepared_cases, primary_prompt
+from tools.validation.short_reference_cases import (
+    mock_output,
+    prepared_cases,
+    primary_prompt,
+    repair_prompt,
+)
 from tools.validation.short_reference_smoke import SmokeCase, SmokeRunner, digest, save
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -56,7 +61,7 @@ def case_references(case):
     if case.name == "review_profile":
         return profile_references(json.dumps(case.payload))[0]
     if case.name == "v3_repair":
-        return repair_references(json.dumps(case.payload))[0]
+        return repair_references(repair_prompt(case.payload))[0]
     if case.name == "v0_identity":
         return IdentityAssistancePacket(case.payload["cases"]).references
     if case.name == "product_introduction":

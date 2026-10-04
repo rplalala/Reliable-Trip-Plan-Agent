@@ -234,16 +234,37 @@ class SmokeRunner:
                 for case in cases:
                     self.transport.case = case.name
                     if case.name == "shared_primary":
+                        from datetime import date
+
+                        from backend.app.policies.itinerary_output import validate_output_sources
+                        from backend.app.policies.trip_dates import (
+                            create_trip_date_window,
+                            validate_itinerary_dates,
+                        )
                         from backend.app.schemas.itinerary_projection import V1Itinerary
                         from backend.app.versions.v1.prompts import (
                             ITINERARY_GENERATION_SYSTEM_PROMPT,
                         )
-                        from tools.validation.short_reference_cases import primary_prompt
+                        from tools.validation.short_reference_cases import (
+                            fixture_places,
+                            fixture_request,
+                            primary_prompt,
+                        )
 
                         value = await client.generate_structured(
                             system_prompt=ITINERARY_GENERATION_SYSTEM_PROMPT,
                             user_prompt=primary_prompt(case.payload),
                             response_schema=V1Itinerary,
+                        )
+                        value = validate_output_sources(
+                            value,
+                            places=fixture_places(),
+                            supplied_ids=[p["place_id"] for p in case.payload["places"]],
+                        )
+                        validate_itinerary_dates(
+                            fixture_request().trip_requirements(),
+                            value,
+                            create_trip_date_window(date(2026, 10, 5)),
                         )
                         visits = [a for d in value.days for a in d.activities]
                         expected = {p["place_id"] for p in case.payload["places"]}
@@ -277,10 +298,11 @@ class SmokeRunner:
                             RepairScope,
                         )
                         from backend.app.versions.v3.repair_projection import REPAIR_SYSTEM_PROMPT
+                        from tools.validation.short_reference_cases import repair_prompt
 
                         value = await client.generate_repair_structured(
                             system_prompt=REPAIR_SYSTEM_PROMPT,
-                            user_prompt=json.dumps(case.payload),
+                            user_prompt=repair_prompt(case.payload),
                             output_tokens=4000,
                         )
                         scope = RepairScope.model_validate(case.payload["scope"])
