@@ -160,12 +160,32 @@ def test_explicit_v0_endpoints_bind_unique_occurrence_gap(batch, in_notes):
     assert out["legs"][0]["claims"][0]["mode"] == "WALK"
 
 
-@pytest.mark.parametrize("title", ["Walking tour of Museum A", "A relaxing morning", "Rest"])
+@pytest.mark.parametrize(
+    "title",
+    [
+        "Walking tour of Museum A",
+        "A relaxing morning",
+        "Rest",
+        "Walk to Museum A",
+        "Walk to Museum A and explore its exhibitions",
+        "Walking from Museum A to Museum B",
+    ],
+)
 def test_structured_visit_role_survives_descriptive_title(batch, title):
     _, results, write, _, _ = batch
     results["v1"]["itinerary"]["days"][0]["activities"][0]["title"] = title
     out = final(load_batch(write("v1")), "v1")
     assert out["activities"][0]["evaluation_role"] == "primary_visit"
+    assert len(out["legs"]) == 1
+
+
+@pytest.mark.parametrize("title", ["Visit Museum B", "Tour Museum B", "Explore museum district"])
+def test_declared_transport_role_is_not_overridden_by_title(batch, title):
+    _, results, write, _, _ = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][1]["title"] = title
+    out = final(load_batch(write("v0")))
+    assert out["activities"][1]["evaluation_role"] == "transport"
+    assert out["activities"][1]["transport_applicable"] is True
     assert len(out["legs"]) == 1
 
 
@@ -703,13 +723,14 @@ def test_resolved_escape_is_rejected_without_opening(batch, monkeypatch):
     assert "escapes" in result.data["material_diagnostics"][0]["explanation"]
 
 
-def test_movement_role_conflict_exposes_parsed_source(batch):
+def test_movement_title_preserves_visit_role_and_parsed_source(batch):
     _, results, write, _, _ = batch
     results["v0"]["itinerary"]["days"][0]["activities"][0]["title"] = (
         "Walking from Museum A to Museum B"
     )
     activity = final(load_batch(write("v0")))["activities"][0]
-    assert activity["reason"] == "role_review_required"
+    assert activity["evaluation_role"] == "primary_visit"
+    assert activity["reason"] == "declared_visit"
     claim = activity["competing_claim"]
     assert claim["source"] == activity["source"]
     assert claim["field"] == "title"

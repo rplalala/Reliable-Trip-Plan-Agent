@@ -88,10 +88,6 @@ def classify(raw, review):
     role = raw.get("activity_kind", "unknown")
     place = text(raw.get("place_name")) or text(raw.get("source_place_id"))
     title = raw["title"].strip().casefold()
-    movement_title = bool(movement_claim(title))
-    visit_title = bool(re.match(r"(?:visit|tour|explore museum)\b", title))
-    if (role == "transport" and visit_title) or (role == "main_poi" and movement_title):
-        return "unresolved", "unresolved", "role_review_required"
     if role == "transport" and not place:
         return "transport", "declared_consistent", "declared_transport"
     if role == "main_poi" and title not in PLACEHOLDERS:
@@ -381,7 +377,7 @@ def project(itinerary, context, prefix="/itinerary", reviews=(), *, version):
     require(consumed == set(review_map), prefix, "Review points to no activity in this projection")
     return {
         "context": context,
-        "policy_version": "structural_claims_directed_occurrences_2",
+        "policy_version": "structural_claims_directed_occurrences_3",
         "projection": prefix,
         "wire_version": wire,
         "planner_version": version,
