@@ -189,3 +189,11 @@ Recommended separately scoped follow-up: improve V0 transport association and
 Korean address handling; then prepare bounded controlled/official-claim cases if
 those currently unexercised tracks need real execution. Preserve this pilot's
 original sources and uncertainty rather than rewriting them after later fixes.
+
+### Subsequent evaluator replay - 2026-10-05
+
+The separately authorized Issue #53 corrections were published, then this preserved
+pilot was replayed offline. The [correction acceptance owner](intake-identity-usage.md#prose-publication-and-seoul-replay-2026-10-05)
+records publication, linkage corrections, repeatability, unchanged original hashes,
+actual before/after metrics and remaining V0 uncertainty. That later replay does not
+rewrite the original live observations or add live evidence to this pilot.

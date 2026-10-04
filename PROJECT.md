@@ -230,8 +230,25 @@ See the [intake contract](docs/contracts/0002-intake-identity-usage.md#claims) a
 
 The separately authorized density delivery through `300ee039` was merged in
 [PR #54](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54), with both review
-axes clear and Issue #52 verified closed. Later Issue #53 corrections remain local
-and outside that release; their publication needs separate authorization.
+axes clear and Issue #52 verified closed. The separately authorized Issue #53 release
+was merged on 2026-10-05 in [PR #55](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/55)
+through `96e4f6d`, including the earlier `main_poi` correction. Both review axes had
+zero remaining findings; Issue #53's nine acceptance criteria were verified checked
+and its state CLOSED. No new code testing was needed for the final documentation-only
+review correction; the 2576-pass/10-skip gate above remains valid.
+
+The subsequent authorized 2026-10-05 Seoul offline replay used these delivered policies
+and preserved original observations and agent decisions. Updated identity, route plans,
+snapshot bindings and V3 edit provenance passed the native evaluator entry points twice
+with identical output bytes. Network/DNS calls were blocked, with zero attempts; all
+313 source files and 5 density-baseline files retained their hashes. Scores remained
+V0 unavailable, V1 85, V2 90, V3 100 and V3 draft/final 95 to 100. Visit counts,
+deductions, substantive primary metrics, schedule measures and occupancy were unchanged.
+V0 still has four unresolved candidate commitments/modes and one unresolved identity;
+its non-overlap denominator makes the total unavailable. Changed policy/hash/observation
+references describe replay linkage, not new observations or new adjudications. This
+single-case regression does not establish live failure frequency or a formal ranking.
+See the [publication and replay acceptance](docs/records/evaluation/intake-identity-usage.md#prose-publication-and-seoul-replay-2026-10-05).
 
 ## 6. Next work and authorization boundary
 

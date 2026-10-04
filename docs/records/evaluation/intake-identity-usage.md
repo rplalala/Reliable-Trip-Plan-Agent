@@ -798,7 +798,8 @@ broader free-text correction history. Their commits are preserved without rewrit
 
 ## Free-text scoring corrections - 2026-10-04
 
-Status: Implemented, offline validated and reviewed locally; publication is pending.
+Status at the local acceptance checkpoint: Implemented, offline validated and reviewed;
+publication was pending. The subsequent publication/replay section below owns closeout.
 Specification and live task state:
 [Issue #53](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/53).
 Starting/review revision: `55ab8fc59243be4f4fb583fc7284dabeecb907a4`; the starting
@@ -888,3 +889,94 @@ and the executed pytest results. No original Seoul sources or output reports wer
 rewritten or rerun. All observations here are synthetic implementation diagnostics,
 not measured live failure frequencies or formal evaluation conclusions. These changes
 add no LLM/provider calls, planner behavior, version freeze, or general semantic model.
+
+<a id="prose-publication-and-seoul-replay-2026-10-05"></a>
+
+## Prose publication and Seoul offline replay - 2026-10-05
+
+Status: Published, merged and offline replay validated. This remains engineering
+acceptance, not a formal benchmark, version freeze or research conclusion.
+
+### Publication and review correction
+
+The user authorized delivery of the seven local commits through `31f5137`, including
+the preceding `main_poi` correction, followed by offline replay of existing Seoul
+evidence. The clean `feature/evaluation` branch was pushed without rewriting history.
+[PR #55](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/55) used exact base
+`69197cdc5a99c96ab94e15fa8b9313b11b1127c9`. Independent Standards review found one
+P2 documentation issue: PROJECT.md still described a 2477-pass gate as latest.
+Spec found zero issues. Separate commit `96e4f6d` updated that current summary to
+the actual final 2576-pass/10-skip result and linked this existing owner; both reviewers
+rechecked through `96e4f6de4f67def4b3bb9110700a26a81b679491` with zero remaining
+findings. Code was unchanged, so the existing full-suite/Ruff evidence was reused;
+release whitespace checks passed. No CI checks or configured mypy/pyright gate exist.
+
+The [review comment](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/55#issuecomment-5980448177)
+was published and re-read before head-matched merge. Observed merge revision:
+`a4b7ba361a1b24a5740cfb9eade300e68d8d15a4`. PR state MERGED and Issue #53 state
+CLOSED were verified, with all nine criteria checked and a self-contained publication
+acceptance appended. Local main was safely fast-forwarded without switching branches.
+The earlier local-only statements in this record describe historical checkpoints.
+
+### Offline replay and linkage corrections
+
+Replay used delivered evaluator revision `96e4f6d` (the same backend code in the
+merge above). The working tree remained clean through execution; only the ignored
+replay helper and generated artifacts were created. Original input/results, independent
+raw responses, context, predeclared audit, route/density reviews and historical agent
+adjudications were retained. No new evidence, adjudication, model or provider call was made.
+
+The new intake policy changes plan hashes. New snapshots were derived in separate
+directories only after proving every original request, reference, leg and other plan
+field unchanged: identity differed only in `intake_hash`; final/paired plans only in
+`intake_hash` and `identity_report_hash`. Raw bytes, original collection times, attempts,
+response status and ledgers were preserved; those ledgers describe historical sends.
+Separate replay-provenance files record that new network sends are zero.
+
+The first local helper attempt stopped at its evidence-equality assertion because
+`observation_id` includes the derived snapshot hash. The corrected adapter proves
+observations identical except that identifier, then rebinds the historical review
+evidence hashes in new files; decisions, candidates, reviewer, rationale and original
+review times remain unchanged, with an explicit old/new binding provenance. A second
+attempt completed final quality but the paired report correctly rejected the stale
+original edit provenance. Regenerating that preparation through the native `prepare`
+entry point from original V3 result bytes and the new identity report fixed the linkage.
+Neither attempt required evaluator code changes or rewriting original artifacts.
+
+The final sequence rebuilt intake, identity evidence/report, final and paired route
+preparations/plans/snapshot bindings, V3 edit provenance, final quality and V3 pair.
+All applicable CLI results were complete. Two full offline passes produced identical
+bytes for intake, identity report, both route preparations, edit provenance, quality
+and pair. Socket/DNS access was forbidden with zero attempted calls. SHA-256 inventories
+confirmed all 313 original source files and 5 earlier density-baseline files unchanged.
+
+### Observed report differences and limits
+
+| Scope | Before | After | Primary visits by day | Mean daily deduction |
+| --- | ---: | ---: | --- | ---: |
+| V0 final | Unavailable | Unavailable | 2, 2, 2, 2 | 0 |
+| V1 final | 85 | 85 | 2, 1, 1, 1 | 15 |
+| V2 final | 90 | 90 | 2, 2, 1, 1 | 10 |
+| V3 final | 100 | 100 | 2, 2, 2, 2 | 0 |
+| V3 draft | 95 | 95 | 2, 2, 1, 2 | 5 |
+| V3 final-primary | 100 | 100 | 2, 2, 2, 2 | 0 |
+
+The paired adjusted delta remains exactly 5 percentage points (1/20). Final V1-V3
+auxiliary scores remain 100. All dimension populations/counts, daily density counts
+and deductions, schedule measures and occupancy are unchanged. Substantive primary
+metrics also compare equal after excluding only derived `observation_id`/`evidence_hash`
+fields; identity resolution, adopted venue and reason records have zero differences.
+Policy versions, source/preparation/snapshot hashes and observation references changed,
+so report bytes differ from old reports; this is not new independent factual evidence.
+
+V0 still has 8 known commitments and 4 unresolved candidate commitments, leaving the
+non-overlap denominator unavailable. Its four route occurrences retain unresolved
+occupancy/mode, one also unresolved identity; grounding remains 7 PASS and 1 UNKNOWN.
+The unchanged scores establish regression compatibility for this saved case only.
+The preceding synthetic regressions exercise the four corrected failures; no live
+frequency estimate, version ranking or claim that every itinerary fact is known follows.
+
+Ignored local evidence identifiers: `artifacts/seoul-prose-replay/replay.py`,
+`complete-first/`, `complete-repeat/`, `comparison.json`, `semantic-comparison.json`,
+`acceptance.json` and `summary.md`. Failed first/second preparations remain separate
+for historical diagnosis. Raw artifacts are not committed or required published assets.
