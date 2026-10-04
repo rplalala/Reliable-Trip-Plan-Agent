@@ -43,7 +43,7 @@ unestablished denominators produce null rates rather than perfect compliance.
 | Non-overlap / occupied time | [Schedule](0003-requirement-schedule.md#non-overlap): logical commitments, pair/union measurements and protected boundaries |
 | Opening | [Opening](0004-opening-routes.md#opening): primary visits; complete evidence versus partial decisive verdicts and outside-duration lower bounds |
 | Routes / transfer burden | [Routes](0004-opening-routes.md#route-verdicts): same-day occurrence legs; one combined verdict with separate cap/time/distance evidence |
-| Date coverage, density, canonical repetition | [Descriptive schedule](0003-requirement-schedule.md#descriptive): requested dates, source occurrences and adopted identities; no extra quality penalty |
+| Date coverage, density, canonical repetition | [Descriptive schedule](0003-requirement-schedule.md#descriptive): raw counts and adopted identities; [daily density](#daily-density) adds a reviewed pace deduction to the overall score |
 | Latency, calls, tokens, HTTP/cache events | [Usage](0002-intake-identity-usage.md#usage): observed scope/namespace; Repair subsets are not added twice |
 
 Conditional `P/(P+F)` is diagnostic compliance and accompanies coverage/UNKNOWN. It is not
@@ -78,7 +78,7 @@ unit. Formal aggregation, inference and post-result weight tuning are not implem
 validated primary-visit identity records. It accepts intake, identity report, snapshot
 directory and optional reviewed schedule/occupancy/route/coordinate envelopes, with an
 optional trusted `expected_plan` and required offset-aware `generated_at`. It returns an
-immutable `QualityReportResult`; `to_dict()` exports `rtpeval_quality_report_1`.
+immutable `QualityReportResult`; `to_dict()` exports `rtpeval_quality_report_2`.
 No provider client, planner graph or extra dependency is constructed.
 
 Executable commands are in the [package guide](../../backend/evaluation/README.md).
@@ -100,6 +100,7 @@ time plus identical sources/rules reproduces sorted JSON. Sources are never muta
 Each group exports the ordered common `included_dimensions`, exact rational
 `dimension_weights`, included count, four keyed `versions` and `all_totals_available`.
 Each version exports raw `primary_metrics`, normalized `dimensions`, `auxiliary_total`,
+`daily_density`, `overall_total`,
 descriptive/schedule/occupancy measurements and untouched component row hashes.
 
 For established N=P+F+U>0, verified score is 100*P/N. Rates in 0-1 and exact count
@@ -117,8 +118,9 @@ diagnostic. Means use unrounded rational contributions, not rounded percentages.
 Different requests retain their own masks; no pooled comparison or ranking is computed.
 
 `stage_availability` distinguishes resource/human/mechanism reports (`not_integrated`)
-from linked usage envelopes and optional projection availability. Descriptive density,
-repetition, raw transfer burden, resources and V3 internal findings add no penalties.
+from linked usage envelopes and optional projection availability. Raw density measurements
+feed the reviewed daily deduction below. Repetition, raw transfer burden, resources and
+V3 internal findings add no additional penalties.
 Findings-only source changes preserve numeric scores after correct relinking/replay;
 source/report hashes may change, and stale evidence remains invalid.
 
@@ -132,6 +134,67 @@ lower-bound verified-compliance accounting does not prove immunity to activity d
 changed applicability; retain counts, coverage and unresolved populations. Totals with
 different common masks do not measure identical content. Equal weights are a transparent
 choice, not proof of statistical independence or overall travel usefulness.
+
+<a id="daily-density"></a>
+
+### Daily density policy and overall score (2026-10-04)
+
+The user's approved development-time scoring change preserves the five-dimensional
+`auxiliary_total` and adds `overall_total = max(0, auxiliary_total - mean_daily_penalty)`.
+The mean gives every inclusive requested date equal weight, including missing/empty
+days. Calculate with exact rational values before emitting numeric percentages.
+The rule/profile versions distinguish this report from historical five-dimensional-only
+reports; old artifacts are not rewritten. `all_totals_available` now describes overall
+totals. An unavailable auxiliary score or unresolved daily deduction keeps the overall
+score null; even a 100-point deduction cannot make missing feasibility evidence available.
+
+| Primary visit count | Ordinary | Relaxed | Rich |
+| --- | ---: | ---: | ---: |
+| 0 | 100 | 100 | 100 |
+| 1 | 40 | 20 | 60 |
+| 2 | 0 | 0 | 0 |
+| 3 | 0 | 10 | 0 |
+| 4 | 50 | 30 | 30 |
+| 5 | 80 | 50 | 70 |
+| 6 or more | 100 | 100 | 100 |
+
+Counts reuse the requirement/schedule scorer's source-distinct primary occurrences;
+transport, breaks and Nearby suggestions are excluded. Same-venue repeat occurrences
+remain occurrences; canonical repetition is separately reported. This change does not
+replace the legacy `<2`, `2..5`, `>5` descriptive categories or planner V3 quantity rules.
+The 2..5 window is not a blanket exemption from busyness deductions.
+
+`--density-reviews` supplies `rtpeval_density_reviews_1` with `batch_id`,
+`batch_revision` and a `groups` array. Each reviewed group has `group_id`,
+`input_sha256`, `reviewer_ref`, offset-aware `reviewed_at`, `review_origin` (`human`
+or `agent`), `rationale`, a `default` policy and `days` overrides. A policy has exactly
+`profile` (`ordinary`, `relaxed`, `rich`, `unresolved`), `exact_count` (null or a
+nonnegative integer) and nonempty `source_refs` quoting original Input through
+`field_path`, `quote` and optional existing quote occurrence/offset fields. A dated
+override adds `date`; dates must be requested and unique. The reviewer must examine
+the full original request for pace and count exceptions; mechanical quote validation
+does not independently prove that its semantic interpretation is correct. Planner
+requirements, internal findings and planner density summaries are never policy evidence.
+Canonical review hashes and exact CLI file hashes bind this additional preparation.
+Foreign, stale, duplicate or malformed material fails the whole batch.
+
+Dated policies override the trip default. To retain the default profile while changing
+only the count, repeat that profile explicitly in the dated policy. An explicit count
+matching the actual count deducts zero, including requested rest days or 1/4/5/6+ visits.
+A confirmed mismatch deducts 100 in this daily policy and is labelled
+`explicit_count_mismatch`; it does not fabricate another named-place obligation in the
+five-dimensional requirements metric. This requires an actual reviewed exact number:
+relaxed/rich descriptions alone cannot supply one. A trip-wide explicit daily number
+belongs in `default.exact_count`; a date-specific number belongs only in its override.
+
+Without a review, a request with no `additional_preferences` defaults to ordinary.
+Nonempty free text may contain pace/count exceptions, so missing review retains an
+unresolved policy and unavailable deduction rather than silently choosing ordinary.
+An explicitly reviewed unresolved profile also stays unavailable unless an exact count
+determines the deduction. For uncertain visit populations, evaluate every reachable
+penalty, retaining minimum/maximum bounds: penalty curves are nonmonotonic. Emit an
+exact deduction only when all possible counts produce the same value. UNKNOWN is never
+automatically zero, FAIL, or an assumed midpoint.
 
 <a id="rtpeval-metrics-contract--c-human-and-independent-repair-reporting"></a>
 <a id="quality-human-review"></a>
@@ -288,6 +351,14 @@ including exact rational score differences and percentage points. Defined identi
 metrics give zero; unavailable values never acquire zero through imputation. This mask
 and its auxiliary totals are distinct from Ticket 08's four-final comparison.
 
+`rtpeval_v3_pair_report_2` applies the same reviewed density policy to both stages.
+Each stage exports daily deductions and `overall_total`; `deltas.overall_total` is
+the exact final-minus-draft overall change, while `deltas.auxiliary_total` preserves
+the original five-dimensional delta. Mean deduction changes are also exported.
+Independent mechanism preparation accepts historical pair report 1 and current report 2
+with the same exact source/hash checks. Density improvement is not proof of repairing a
+different feasibility conflict or of general travel usefulness.
+
 Each stage preserves original checks, P/F/U/N/A counts, denominators, schedule commitments,
 conflicts, evidence/basis coverage, duration subtotals, lower bounds and observed traffic
 burden. The report exports population, date coverage, density/repetition and measurement
@@ -352,7 +423,9 @@ lost verification. Partial improvement requires comparable exact FAIL magnitudes
 same rule; missing or lower-bound magnitudes do not qualify. No overall Repair-success
 classification, causal conclusion, live acquisition or planner instrumentation is supplied.
 
-The wire is `rtpeval_v3_pair_report_1`, with rule/component/source hashes, per-group stage
+The current wire is `rtpeval_v3_pair_report_2`; `_1` remains a historical format
+accepted by independent mechanism preparation. Reports preserve rule/component/source
+hashes, per-group stage
 availability, mask, exact deltas, correspondence and continuity. Content hashing excludes
 creation time. CLI file-byte hashes remain distinct from canonical preparation digests.
 Exit 0 means complete processing, including unavailable pairs and quality FAIL/UNKNOWN;

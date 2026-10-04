@@ -203,6 +203,19 @@ empty. Production/runtime behavior was unchanged. The
 actual inputs, agent-review boundaries, failure/correction/retest sequence and
 known association limitations; raw artifacts stay ignored and local.
 
+The user-authorized 2026-10-04 evaluator density change now adds source-linked
+ordinary/relaxed/rich daily deductions to final and V3 paired reports. The original
+five-dimensional `auxiliary_total` remains diagnostic; `overall_total` subtracts the
+mean requested-date deduction, clamped at zero. Matching explicit daily counts override
+defaults. Nonempty user preferences require independent density review; unresolved
+policy/counts keep the adjusted total unavailable. Report schemas are version 2;
+planner V0-V3 behavior is unchanged. An offline replay of the preserved Seoul evidence
+produced V1 85, V2 90, V3 100 and V3 draft/final 95 → 100; V0 remains unavailable.
+This is development acceptance of the revised rules, not a new live run or formal
+version comparison. The [density contract](docs/contracts/0005-quality-human-review.md#daily-density)
+and [acceptance record](docs/records/evaluation/2026-10-04-daily-density.md) own the rules,
+validation and limitations.
+
 ## 6. Next work and authorization boundary
 
 Tickets 01-12 have completed their approved implementation, offline validation,
