@@ -495,3 +495,112 @@ low-effort temporary option, but duplicates a multi-megabyte result and moves th
 future growth may lose the same end-of-run fields. A separate compact summary is preferable
 for recurring budget audits. Do not change API budgets or quantity Repair based on this
 trace-storage issue. Any implementation or limit change needs its own approved scope.
+
+<a id="model-reference-audit-2026-10-05"></a>
+
+## Cross-chain model identity reference audit, 2026-10-05
+
+Status: Implemented; offline validation and review recorded below. This event follows
+the user's approved request to audit V0-V3, evaluation and other current model boundaries
+for supplied long IDs that models must reproduce, and insert reversible short references.
+The starting revision was `08b2cc477b779d3b168aa593a64ba4e07a166676`. The work began from
+a clean `feature/evaluation` checkout; the changes below were initially uncommitted.
+The preceding V0 identity pilot is separate historical evidence under
+[#63](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/63); this audit did not
+extend its live authorization or adopt its proposals. The current rule is maintained in
+[system architecture](../../0001-system-architecture.md#model-identity-references).
+At the user's subsequent request, [Issue #64](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/64)
+was created on 2026-10-05 for this cross-chain work after local implementation/review.
+It records the original commits, checked implementation acceptance and pending Git
+delivery, with related Issues #63 and #28. The original commits were not rewritten.
+
+### Audit and implementation
+
+| Current model boundary | Observation and resulting change |
+| --- | --- |
+| V0 primary | No supplied external place ID to reproduce. Model-created activity/transport identities retain their existing contract. No external tools added. |
+| Shared requirement interpretation | Source quotations and existing short local requirement references; no long-ID round trip found. Unchanged. |
+| V1-V3 primary | Full canonical place IDs previously appeared in evidence and returned `source_place_id`. Shared aliases now cover evidence, compact directed routes, identity-based conflicts, official projections and candidate supply. |
+| Review profiling | Canonical place ID previously returned alongside already-short `review_N` references. Only the place identity now uses an alias. |
+| POI semantic classification | Existing `pNN`/`eNN` projection already protects canonical places and evidence. Unchanged. |
+| Landmark nomination | Names and descriptions, with application identity resolution afterwards. No supplied long-ID round trip found. Unchanged. |
+| V3 Repair | Full place/activity/target IDs previously had to be copied. Aliases now cover their structured permissions, feedback, route endpoints, temporal fragments, lineage keys/values and compensation permissions. Original patch authorization/adoption remains canonical. |
+| Official evidence reasoning | Canonical place IDs and hashed source keys previously returned in assessments. Place, source and task fields now use aliases; original URLs, exact spans and source alignment remain required. |
+| Product introductions | Supplied activity IDs previously returned in decoration output. Activity aliases are restored before existing result ownership checks. |
+| Preference polishing, native web search, embeddings | No supplied long IDs that the model must repeat; provider-generated citation IDs and vectors are separate. Unchanged. |
+| Native evaluator | No operational identity-assistance LLM caller. Added an offline proposal packet using reference/place aliases; no model client, live acquisition, human adjudication or native adoption was added. Controlled Repair continues using its isolated frozen ports. |
+
+The shared data-only mapping utility has no SDK, planner or evaluator-policy dependency.
+Aliases derive from complete identities in each request and have distinct namespaces;
+they neither truncate hashes nor infer identity from prose. Response enums preserve
+nullability, and exact restoration precedes existing domain validation. Evaluator packets
+add exact decision coverage and per-reference candidate ownership checks. Primary and
+Repair input sizing now includes the transmitted alias payload, instruction and enum
+schema under unchanged ceilings. No retries or additional model/API sends were introduced.
+
+### Validation sequence
+
+Regression tests first reproduced canonical-ID leakage or failure to restore short
+references at primary, Repair, introduction and official-reasoning boundaries. Helper
+tests cover immutable input text, reversible keyed tables, identical ID prefixes,
+separate per-call mappings, nullability and unknown/canonical-echo rejection.
+
+An initial focused run passed 224 checks. An affected run passed 481 with one failure:
+an old Repair SDK fixture supplied non-JSON `input` and expected the DTO class directly.
+The fixture was corrected to the existing canonical JSON input contract and now checks
+the constrained activity enum and unchanged per-call output-token options. Further
+regressions exposed unmapped lineage, fragment/related activity and removable-place
+references; those fields were added. Subsequent focused validation passed 654 checks.
+User-supplied prompt markers are now excluded from application-owned JSON parsing.
+
+The first full run had 2,682 passes, 10 skips and two failures. The evaluator import
+guard rejected the new helper's imports; the mapping was moved to a neutral backend
+module and the JSON-only identity packet stopped importing planner code. The guard and
+related checks then passed 19 tests without weakening the guard. A frozen requirement
+acceptance test observed a source-file change during that run and rejected its boundary
+hash; with source stable it passed separately. The final adapter suite passed 9 tests,
+including a real SDK over MockTransport: one short-reference request, constrained
+response schema and canonical domain restoration, without live network access.
+
+With code stable, the final full backend suite passed **2,686 tests, 10 skipped in
+249.85 seconds**. Ruff and `git diff --check` passed. These were offline implementation
+checks, including fixtures and MockTransport, not a new live pilot or formal benchmark.
+
+Implementation was committed before review, as required by AGENTS.md:
+
+- `a8b13d1`: `feat: use short model references across planning adapters` (shared utility,
+  provider projections, budget accounting and directly related regressions).
+- `e9567f6`: `feat: prepare evaluator identity proposals with short references` (independent
+  offline proposal packet and its coverage/ownership tests).
+
+Parallel code review examined both commits against the recorded starting revision and
+the approved user request. Standards reported zero documented violations or actionable
+baseline smells; Spec reported zero missing requirements, scope extensions or incorrect
+implementations. No post-review code correction was required. The final documentation
+group updates PROJECT.md, the architecture contract, this event and its record index.
+Publication was not performed; `main` and `origin/main` remained at
+`1e2aaa9ef53a650207e371986a9dc6229187d11a`.
+
+### Preserved V0 evidence and limits
+
+Local evidence identifiers, not published dependencies:
+`artifacts/short-id-20261005/{focused-01.log,affected-01.log,focused-final.log,full-backend.log,full-backend-final.log}`
+and `v0-identity-{short-input,reference-map,offline-replay}.json` in that directory.
+The old `artifacts/v0-identity-prototype-20261005` packet remained untouched: all 61
+authorized file hashes were verified unchanged. The new offline packet represents nine
+references and twelve distinct candidates. Its mapping hash is
+`4a7d36cc0e0ccf64138f1faf36a194b99fe606c8999538966b3cc16fbe66a36b`.
+
+The program re-encoded the existing proposals and restored them identically. This was
+not a new model response. Consistently serialized offline input estimates changed from
+5,017 to 4,522 tokens; these are engineering estimates, not the old provider's reported
+4,213 input tokens, measured new usage, a billing reduction or evidence of better model
+accuracy. No live calls were made. Native identity adoption remains zero and the four
+V0 routes remain UNKNOWN. The original V0 itinerary was neither rerun nor optimized.
+
+Short references prevent long-ID copying errors at the protected boundaries. They do
+not establish candidate truth, eliminate semantic mistakes or validate transport.
+The evaluator packet still requires a separately prepared and authorized execution to
+measure model behavior with short IDs. V0-V3 retain independent entry points and version
+mechanisms; this shared transport correction does not freeze a version or constitute
+a formal benchmark. Publication and further live execution remain separate actions.

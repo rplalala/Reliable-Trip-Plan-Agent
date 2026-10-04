@@ -21,6 +21,7 @@ bounded by their recorded date and never grant another execution or freeze.
 | [Daily density scoring](evaluation/2026-10-04-daily-density.md) | Final approved table (#52), explicit count precedence, offline Seoul evidence replay and implementation/review acceptance |
 | [Frontend](frontend/product-v3-acceptance.md) | Original MVP milestone and Product V3 acceptance/failure/retest evidence |
 | [Shared](v0-v3/poi-semantics-closeout.md) | Cross-version semantic, supply and transport observations |
+| [Model references](v0-v3/semantic-reference-correction.md#model-reference-audit-2026-10-05) | Earlier semantic reference correction and the later cross-chain short-ID audit, offline validation and preserved V0 pilot evidence |
 
 For new records, promotion from local notes and deduplication, apply the
 [record admission and ownership rules](../agents/domain.md#record-admission-and-topic-ownership).

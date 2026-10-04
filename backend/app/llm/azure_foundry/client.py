@@ -25,12 +25,18 @@ from backend.app.llm.azure_foundry.mapping import (
 )
 from backend.app.llm.azure_foundry.provider_diagnostics import failure_category, normalize
 from backend.app.llm.client import StructuredModelT, StructuredOutputError
+from backend.app.llm.reference_transport import (
+    primary_references,
+    profile_references,
+    repair_references,
+)
 from backend.app.observability.usage import install_http_hooks, staged
 from backend.app.runtime.fingerprints import digest
 from backend.app.schemas.interpreted_requirements import InterpretationDraft
 from backend.app.schemas.itinerary import Itinerary
 from backend.app.schemas.itinerary_projection import V1Itinerary
 from backend.app.schemas.requirement_boundary import RequirementBoundaryError
+from backend.model_references import INSTRUCTION
 
 
 def requirement_wire_format():
@@ -338,12 +344,21 @@ class AzureFoundryStructuredLLMClient:
             )
 
         options = {"method": "json_schema", "strict": True}
+        references = None
+        if response_schema is V1Itinerary:
+            references, user_prompt = primary_references(user_prompt)
+        elif response_schema is ExperienceProfileDraft:
+            references, user_prompt = profile_references(user_prompt)
+        wire_schema = binding.transport_schema
+        if references is not None:
+            system_prompt += "\n" + INSTRUCTION
+            wire_schema = references.constrain_schema(binding.transport_schema.model_json_schema())
         if _generation_config is not None:
             if response_schema is not V1Itinerary:
                 raise ValueError("Primary generation limits apply only to V1/V2 main output")
             options["max_output_tokens"] = _generation_config.output_tokens
         structured_model = self._chat_model.with_structured_output(
-            binding.transport_schema,
+            wire_schema,
             **options,
         )
         try:
@@ -356,9 +371,15 @@ class AzureFoundryStructuredLLMClient:
                     HumanMessage(content=user_prompt),
                 ]
             )
+            if references is not None:
+                raw_result = references.decode(
+                    raw_result.model_dump(mode="json")
+                    if isinstance(raw_result, BaseModel)
+                    else raw_result
+                )
             transport_result = binding.transport_schema.model_validate(raw_result)
             domain_result = binding.to_domain(transport_result)
-        except (FoundryMappingError, ValidationError) as exc:
+        except (FoundryMappingError, ValidationError, ValueError) as exc:
             raise StructuredOutputError(
                 f"Microsoft Foundry response did not match {response_schema.__name__}: {exc}"
             ) from exc
@@ -419,8 +440,10 @@ class AzureFoundryStructuredLLMClient:
 
         if output_tokens is None:
             output_tokens = configured_policy().input.output_tokens
+        references, user_prompt = repair_references(user_prompt)
+        system_prompt += "\n" + INSTRUCTION
         model = self._chat_model.with_structured_output(
-            FoundryRepairPatchDTO,
+            references.constrain_schema(FoundryRepairPatchDTO.model_json_schema()),
             method="json_schema",
             strict=True,
             max_output_tokens=output_tokens,
@@ -437,7 +460,11 @@ class AzureFoundryStructuredLLMClient:
                     else {}
                 ),
             )
-            dto = FoundryRepairPatchDTO.model_validate(raw)
+            dto = FoundryRepairPatchDTO.model_validate(
+                references.decode(
+                    raw.model_dump(mode="json") if isinstance(raw, BaseModel) else raw
+                )
+            )
             return RepairPatch.model_validate(dto.model_dump())
-        except ValidationError as exc:
+        except (ValidationError, ValueError) as exc:
             raise StructuredOutputError("Invalid Repair patch") from exc

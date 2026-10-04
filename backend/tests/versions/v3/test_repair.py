@@ -517,7 +517,6 @@ def test_candidate_limit_and_input_overflow_fail_before_model(monkeypatch):
 
 def test_foundry_repair_options_are_per_call_and_primary_unchanged():
     from backend.app.llm.azure_foundry.client import AzureFoundryStructuredLLMClient
-    from backend.app.versions.v3.repair_projection import FoundryRepairPatchDTO
 
     calls = []
 
@@ -532,15 +531,16 @@ def test_foundry_repair_options_are_per_call_and_primary_unchanged():
     client = object.__new__(AzureFoundryStructuredLLMClient)
     client._chat_model = Chat()
     result = asyncio.run(
-        client.generate_repair_structured(system_prompt="system", user_prompt="input")
+        client.generate_repair_structured(
+            system_prompt="system",
+            user_prompt='{"activity_id":"original-activity","place_id":"original-place","target_id":"original-target"}',
+        )
     )
     assert not result.edits
-    assert calls == [
-        (
-            FoundryRepairPatchDTO,
-            {"method": "json_schema", "strict": True, "max_output_tokens": 16384},
-        )
-    ]
+    assert len(calls) == 1
+    schema, options = calls[0]
+    assert schema["$defs"]["RepairEdit"]["properties"]["activity_id"]["enum"] == ["a01", None]
+    assert options == {"method": "json_schema", "strict": True, "max_output_tokens": 16384}
 
 
 def test_pre_send_failure_has_no_send_charge_and_is_not_retried():

@@ -35,6 +35,9 @@ External provider payloads are normalized before entering application policies.
 
 V1-V3 share the tools-generation pipeline; V3 adds its own post-primary extension.
 Shared correctness fixes must preserve the intended behavior of dependent versions.
+Supplied model identities now use request-local short references at the affected
+provider boundaries, with exact restoration before existing domain/ownership checks;
+see the [identity transport contract](docs/0001-system-architecture.md#model-identity-references).
 Earlier milestone freezes retain their original scope; later changes are separately
 recorded and do not automatically re-freeze any version.
 
@@ -161,11 +164,14 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2655 passed, 10 skipped in 323.62s**, from
-the 2026-10-05 Issue #59 implementation before independent review corrections.
-Subsequent corrections passed focused **80** and affected **288, 1 skipped** checks;
-the delivery correction passed **95** observability/resource/cost checks. The full
-gate was not repeated after these bounded corrections.
+Latest recorded full backend gate: **2686 passed, 10 skipped in 249.85s**, from the
+2026-10-05 [cross-chain model reference audit](docs/records/v0-v3/semantic-reference-correction.md#model-reference-audit-2026-10-05),
+tracked under [#64](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/64).
+Primary generation, Repair, review profiling, official reasoning and Product decoration
+now restore supplied identities from short model references. The evaluator adds only an
+offline proposal-packet seam. No new live validation or native identity adoption occurred.
+The preceding Issue #59 gate was **2655 passed, 10 skipped in 323.62s**, before review
+corrections; subsequent focused gates were **80**, **288, 1 skipped**, and **95**.
 The [offline cost acceptance](docs/records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05)
 retains failures, corrections, retests and dual-axis review evidence.
 Earlier Issue #57, Issue #53 and Ticket 11/12 results remain historical in their records.
@@ -184,6 +190,17 @@ All four route verdicts remain UNKNOWN: identity handling stopped on high-impact
 review and restrictive address-component parsing. The observed retail estimate is
 USD 0.315; actual billing is unavailable. Offline replay was identical and original
 V0/older Seoul evidence remained unchanged. Route feasibility is still unverified.
+The subsequent [V0-only identity pilot](docs/records/evaluation/routes.md#v0-identity-assistance-pilot-2026-10-05)
+under [#63](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/63) made one
+`gpt-6-luna` request and produced nine bounded matching proposals, including two name
+variants, consistent with owner-agent checking of the existing candidate fields.
+Reported usage was 4,213 input / 1,007 output tokens; retail estimate USD 0.0009248,
+actual billing unavailable. Native adoption remains zero and four routes remain UNKNOWN.
+No production integration, genuine human accuracy estimate or V1-V3 change is claimed.
+The later reference audit prepared a separate short-ID packet for those same nine
+references and twelve candidates. Programmatic re-encoding/restoration was identical;
+all 61 old authorized file hashes remained unchanged. This did not rerun the model,
+establish a new accuracy result or change the four UNKNOWN route verdicts.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
 lint passing for Ticket 09. These are dated development checkpoints, not formal
 benchmark results. Failure/correction/retest sequences stay

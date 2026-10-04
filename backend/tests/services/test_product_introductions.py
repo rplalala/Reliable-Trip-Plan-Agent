@@ -1,6 +1,7 @@
 """Product decoration makes at most one call and cannot replan or invalidate an itinerary."""
 
 import asyncio
+import json
 from contextlib import asynccontextmanager
 from types import SimpleNamespace
 
@@ -108,3 +109,23 @@ def test_only_main_places_are_sent_and_timeout_uses_remaining_allowance(monkeypa
     assert len(received) == 1 and len(received[0][0]) == 1
     assert received[0][1] == 3  # No fresh 30/600-second allowance after planning.
     assert received[0][0][0]["summary"] is None  # Missing context is not invented.
+
+
+def test_introduction_model_does_not_echo_long_activity_ids():
+    long_id = "activity-" + "0123456789abcdef" * 4
+    calls = []
+
+    class Responses:
+        async def create(self, **kwargs):
+            calls.append(kwargs)
+            rows = json.loads(kwargs["input"][1]["content"])
+            assert rows[0]["activity_id"] == "a01"
+            return SimpleNamespace(
+                output_text=json.dumps(
+                    {"introductions": [{"activity_id": "a01", "text": "A museum."}]}
+                )
+            )
+
+    client = IntroductionClient(SimpleNamespace(responses=Responses()), "test")
+    result = asyncio.run(client.generate([{"activity_id": long_id, "place_name": "Museum"}]))
+    assert result.introductions[0].activity_id == long_id and len(calls) == 1

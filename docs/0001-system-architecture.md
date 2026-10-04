@@ -66,6 +66,45 @@ scheduled fulfillment and factual feasibility are separate facts. The applicatio
 identities, budgets, authorization and adoption; models propose interpretations,
 classifications, itineraries or patches within their supplied contracts.
 
+## Model identity references
+
+When a model must return an identity supplied by the application, expose a short,
+request-local reference such as `p01`, `a01`, `t01`, `s01` or `r01`. Preserve the full
+canonical ID in application state, external API calls, persisted artifacts and returned
+domain objects. References are deterministic ordinal aliases over complete IDs, never
+truncated ID prefixes, ranks or response positions. Separate calls own separate maps.
+
+The provider adapters map declared structured identity fields and identity-keyed tables,
+including Repair activity lineage and compact route endpoints. They do not rewrite
+user prose, source quotations, names or URLs. Output schemas constrain linked fields to
+the supplied references with their original nullability; exact decoding rejects unknown
+references before domain validation. Existing candidate ownership, patch permissions,
+source alignment and adoption checks remain authoritative after IDs are restored.
+Primary-generation and Repair input accounting includes the transmitted aliases,
+reference instruction and constrained schema under the existing ceilings.
+
+| Boundary | Identity transport |
+| --- | --- |
+| V1-V3 primary generation | Place references shared across evidence, route facts, conflicts and candidate supply |
+| V3 Repair | Place, activity and target references, including permissions, feedback and time fragments |
+| Review profiling | Place references; existing `review_N` references retained |
+| Official evidence reasoning | Place, source-key and task references; original URLs and exact spans retained |
+| Product introductions | Activity references restored before presentation ownership checks |
+| Offline evaluator identity assistance | Reference/candidate aliases restored to proposals; no model transport or native identity adoption |
+
+[ShortReferences](../backend/model_references.py) is a data-only shared utility with
+standard-library dependencies. Planner projection lives in
+[reference_transport](../backend/app/llm/reference_transport.py); the independent
+[identity packet](../backend/evaluation/identity_assistance.py) has no planner imports.
+V0 plain generation receives no supplied external place IDs to repeat. Requirement
+interpretation and landmark nomination do not repeat supplied long IDs; POI semantics
+already uses bounded short references. Provider-generated search citations and embedding
+responses require no identity round trip. The native evaluator remains independently
+offline; a proposal packet neither verifies identity nor authorizes evidence acquisition.
+Short references prevent copying long identities but do not prove that a model selected
+the correct candidate or understood its evidence. Adding a new model boundary requires
+checking its supplied and returned identity fields against this rule.
+
 ## Lifecycle and resources
 
 Runtime configuration owns tunable limits. Request deadlines include acquisition,
