@@ -189,6 +189,20 @@ Evidence owners: [latest smoke and closeout](docs/records/v0-v3/transport-respon
 [known issues](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/known_issues.md). Local logs/artifacts and ignored thesis archives
 are evidence records, not current project authority or guaranteed fresh-clone assets.
 
+Separately authorized 2026-10-04 Seoul four-day pilot completed the real V0-V3 →
+saved originals/usage/mechanism → independent Google evidence → Evaluator → reports
+chain with agent reviews. All four live invocations completed; 82 independent sends
+returned HTTP 200 without retries. The final replay audit passed 29 requirements.
+V1-V3 auxiliary totals were 100 in their implemented metric populations; V0's total
+remained unavailable due to unresolved transport association and one identity.
+V3 adopted one added visit (7 → 8); independent paired quality stayed 100 → 100.
+This is one engineering smoke, not a version ranking or human participant study.
+No frozen controlled case was replayed and the official-claim audit population was
+empty. Production/runtime behavior was unchanged. The
+[dated pilot record](docs/records/evaluation/2026-10-04-seoul-live-pilot.md) owns the
+actual inputs, agent-review boundaries, failure/correction/retest sequence and
+known association limitations; raw artifacts stay ignored and local.
+
 ## 6. Next work and authorization boundary
 
 Tickets 01-12 have completed their approved implementation, offline validation,
