@@ -184,6 +184,13 @@ All four route verdicts remain UNKNOWN: identity handling stopped on high-impact
 review and restrictive address-component parsing. The observed retail estimate is
 USD 0.315; actual billing is unavailable. Offline replay was identical and original
 V0/older Seoul evidence remained unchanged. Route feasibility is still unverified.
+The subsequent [V0-only identity pilot](docs/records/evaluation/routes.md#v0-identity-assistance-pilot-2026-10-05)
+under [#63](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/63) made one
+`gpt-6-luna` request and produced nine bounded matching proposals, including two name
+variants, consistent with owner-agent checking of the existing candidate fields.
+Reported usage was 4,213 input / 1,007 output tokens; retail estimate USD 0.0009248,
+actual billing unavailable. Native adoption remains zero and four routes remain UNKNOWN.
+No production integration, genuine human accuracy estimate or V1-V3 change is claimed.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
 lint passing for Ticket 09. These are dated development checkpoints, not formal
 benchmark results. Failure/correction/retest sequences stay

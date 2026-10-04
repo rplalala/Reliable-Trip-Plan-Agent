@@ -257,6 +257,118 @@ handling and genuine required adjudication, followed by a separately authorized
 route-evidence acquisition, remains future work. No formal comparison, research
 conclusion or version freeze follows from this diagnostic.
 
+<a id="v0-identity-assistance-pilot-2026-10-05"></a>
+
+## V0-only identity-assistance pilot — 2026-10-05
+
+Status: **Executed and owner-assessed bounded development trial** under
+[Issue #63](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/63).
+The user explicitly approved Issue creation and the proposed model budget after
+the bounded route diagnostic above. Execution used developer revision
+`90d36999ee6daec2d228b21a07e9be3f530fd83e`, with a clean tracked worktree and
+task-local ignored preparation/runner/checks. Production evaluator and planner
+V0-V3 code were unchanged. This is not an accepted production identity policy,
+formal benchmark, human accuracy measurement, route verification or version freeze.
+
+### Question, frozen inputs and safeguards
+
+Test whether one model request can associate the original V0 place claims with
+already acquired independent Google candidates despite name variants and restrictive
+native address parsing. The original V0 result remains SHA-256
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+The judge input remains
+`afd6ad59126bf18ffdb23cf8830228a16c842bd29fa6ec612033d6838c6a6d6d`:
+nine references (eight visits and the linked required-place subject), fourteen
+candidate occurrences sorted by candidate ID. Candidate text is supplied data;
+the prompt excludes planner findings and version labels. Model proposals are
+separate from native adopted identities and genuine human adjudication.
+
+Authorized limits: at most one `gpt-6-luna` request, zero retries/tools/new Google
+requests, 10,000 input tokens, 4,000 output tokens including reasoning, a 60-second
+request timeout and five-minute total deadline. Retail-estimate budget: USD 0.01,
+not a provider invoice cap. The isolated runner uses the configured Foundry v1
+Responses endpoint, low reasoning effort, strict JSON output and a one-shot launch
+marker. It retains failures without a repair request and checks complete unique
+reference coverage and supplied candidate membership before retaining proposals.
+The serialized request/schema estimate plus 1,024-token framing reserve was 5,646;
+this was an estimate, while actual input usage below was provider-reported.
+
+### Execution and per-reference assessment
+
+`smoke tests` executed the owner-prepared package once after offline preflight.
+Observed: HTTP 200, model `gpt-6-luna`, one send, zero retries, zero tools and zero
+new Google sends. Request through output capture took **6.094 seconds**, not the
+whole process duration. Reported usage: **4,213 input / 1,007 output / 5,220 total**,
+zero cached input and zero reasoning tokens. All nine references received `match`
+proposals, with unique complete coverage and only supplied candidate IDs.
+
+Before reading the model output, the owner agent separately recorded expected
+candidate selections from the existing snapshot's names and addresses. Subsequent
+checking found all nine proposals consistent with those field-based assessments;
+no incorrect selection or unsupported candidate ID was observed in this sample.
+This is agent consistency checking, not independent human gold or an accuracy claim.
+
+| Reference | Native blocker | Model candidate | Owner field assessment |
+| --- | --- | --- | --- |
+| Required Gyeongbokgung Palace subject | `high_impact_review` | Gyeongbokgung Palace | Exact name/location; avoids the alternate palace and named subvenues |
+| Gyeongbokgung Palace visit | `high_impact_review` | Gyeongbokgung Palace | Exact name/location |
+| National Museum of Korean Contemporary History | `malformed_address_components` | National Museum of Korean Contemporary History | Exact name/location |
+| Bukchon Hanok Village | `malformed_address_components` | Bukchon Hanok Village | Exact name/location |
+| Insadong | `malformed_address_components` | Insa-dong | Supported segmentation variant and neighborhood location |
+| Seoul Museum of History | `malformed_address_components` | Seoul Museum of History | Exact name/location; avoids the different history museum candidate |
+| Gwangjang Market | `malformed_address_components` | Gwangjang Market | Exact name/location |
+| Changdeokgung Palace | `malformed_address_components` | Changdeokgung | Supported distinctive name with generic Palace omitted |
+| Jongmyo Shrine | `malformed_address_components` | Jongmyo Shrine | Exact name/formatted location despite incomplete typed components |
+
+The model's reasons reference supplied names and Seoul/Jongno addresses. Seven
+references have exact candidate names and two have name variants; two references
+have multiple candidates. No live adversarial/no-supported-match population or
+alternative prompt/order/model run was executed. These observations do not establish
+general semantic reliability or that all current blockers require an LLM.
+
+### Cost, validation and remaining boundary
+
+Using [official GPT-6 Luna pricing](https://developers.openai.com/api/docs/models/gpt-6-luna)
+accessed 2026-10-05, USD 0.10 input / 0.01 cached input / 0.50 output per million,
+the observed-token retail estimate is **USD 0.0009248**:
+`4,213 * 0.10 / 1,000,000 + 1,007 * 0.50 / 1,000,000`.
+Actual Foundry invoice amount is unavailable; this evaluator-only estimate is
+separate from planner, V3 Repair and prior Google acquisition costs.
+
+Actual offline sequence: the first HTTP-boundary check failed while the runner
+was absent; after implementation, pytest's default temporary/cache location was
+unwritable. Using an ignored task-local temporary directory and disabling cache
+allowed the first check to pass. Expanded checks initially had three failures from
+misplaced HTTP-429 assertions in the test file; correcting their placement produced
+**7 passed in 2.36 seconds**. These checks cover HTTP failure without retries,
+duplicate launch prevention, redirects/timeouts/invalid output without follow-up,
+and unobserved candidates/duplicate or missing references. Runner/check/builder
+Ruff checks passed after formatting and bounded lint corrections. Owner-assessment
+lint corrections likewise passed. No production/full-suite rerun was needed for
+this isolated diagnostic; no model or provider calls occurred during these checks.
+
+Owner replay verified all **61 frozen file hashes**, the captured response SHA-256
+`d32064b69732271cd0d89c3aa735df162c7fad4af95ef634183eaa5bec57f00a`, actual
+request/token limits, and an identical native identity replay. Original V0, earlier
+Seoul evidence, Google snapshots and existing reports remained unchanged. The
+native report still has nine unresolved references, **zero adopted identities**,
+and the four existing route verdicts remain **UNKNOWN**. No genuine human review,
+Details/coordinates, Routes duration/distance, opening validation or itinerary
+optimization was added. The required-place review and audit gates remain intact.
+
+Ignored local evidence identifier: `artifacts/v0-identity-prototype-20261005/`,
+containing authorization/request/preflight, one-shot launch, raw response and its
+hash, proposals, source verification, executor report, owner expectations and
+`owning-assessment.json`. Raw provider/model payloads, credentials and temporary
+checks are excluded from Git; these identifiers are not fresh-checkout dependencies.
+
+The bounded trial supports proposing a V0-only integration, with explicit model
+provenance and residual uncertainty. Production address compatibility, proposal
+adoption and mandatory genuine human/audit review still need an approved design.
+Independent route acquisition requires its own prepared budget and approval after
+sufficient endpoint identities are adopted. No additional live request is authorized
+by this record. Issue lifecycle and Git delivery remain distinct from these results.
+
 <a id="snapshot-coordinate-bridge-2026-10-03"></a>
 
 ## Snapshot-coordinate bridge — 2026-10-03
