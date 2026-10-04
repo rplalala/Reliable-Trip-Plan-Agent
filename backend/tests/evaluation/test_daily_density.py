@@ -87,8 +87,8 @@ def test_ordinary_sparse_and_busy_days_reduce_the_score_in_requested_order():
 @pytest.mark.parametrize(
     "profile, expected",
     [
-        ("ordinary", [100, 40, 0, 0, 50, 80, 100, 100]),
-        ("relaxed", [100, 20, 0, 10, 30, 50, 100, 100]),
+        ("ordinary", [100, 40, 0, 10, 50, 80, 100, 100]),
+        ("relaxed", [100, 20, 0, 40, 70, 90, 100, 100]),
         ("rich", [100, 60, 0, 0, 30, 70, 100, 100]),
     ],
 )
@@ -98,6 +98,30 @@ def test_all_pace_windows_and_out_of_window_counts(profile, expected):
         result = score_daily_density(group, density, prepare_density_policies(intake, reviews)["g"])
         assert [row["penalty_0_100"] for row in result["days"]] == [penalty] * 3
         assert result["mean_penalty_0_100"] == penalty
+
+
+@pytest.mark.parametrize("count", [4, 5])
+def test_busy_day_cost_orders_rich_before_ordinary_before_relaxed(count):
+    penalties = {}
+    for profile in ("ordinary", "relaxed", "rich"):
+        intake, group, reviews, density = scenario(profile, counts=(count,) * 3)
+        result = score_daily_density(group, density, prepare_density_policies(intake, reviews)["g"])
+        penalties[profile] = result["mean_penalty_0_100"]
+    assert penalties["rich"] < penalties["ordinary"] < penalties["relaxed"]
+
+
+@pytest.mark.parametrize(
+    "profile, exact_mean",
+    [
+        ("ordinary", {"numerator": 140, "denominator": 3}),
+        ("relaxed", {"numerator": 200, "denominator": 3}),
+        ("rich", {"numerator": 100, "denominator": 3}),
+    ],
+)
+def test_mixed_busy_days_keep_exact_mean_under_the_final_table(profile, exact_mean):
+    intake, group, reviews, density = scenario(profile, counts=(3, 4, 5))
+    result = score_daily_density(group, density, prepare_density_policies(intake, reviews)["g"])
+    assert result["exact_mean_penalty"] == exact_mean
 
 
 @pytest.mark.parametrize("count", [0, 1, 3, 4, 5, 6, 1000000])
@@ -138,7 +162,7 @@ def test_date_pace_override_takes_precedence_over_trip_pace():
         ],
     )
     result = score_daily_density(group, density, prepare_density_policies(intake, reviews)["g"])
-    assert [row["penalty_0_100"] for row in result["days"]] == [0, 10, 0]
+    assert [row["penalty_0_100"] for row in result["days"]] == [10, 40, 10]
 
 
 def test_possible_counts_preserve_nonmonotonic_penalty_bounds():
@@ -149,7 +173,8 @@ def test_possible_counts_preserve_nonmonotonic_penalty_bounds():
     result = score_daily_density(group, density, prepare_density_policies(intake, reviews)["g"])
     assert result["days"][0]["penalty_bounds"] == {"lower": 0, "upper": 80}
     assert result["days"][0]["penalty_0_100"] is None
-    assert result["days"][1]["penalty_0_100"] == 0
+    assert result["days"][1]["penalty_0_100"] is None
+    assert result["days"][1]["penalty_bounds"] == {"lower": 0, "upper": 10}
     assert result["days"][2]["penalty_0_100"] == 100
     assert result["mean_penalty_0_100"] is None
 

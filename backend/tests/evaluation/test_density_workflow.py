@@ -1,11 +1,15 @@
 """Density rules survive actual paired CLI and downstream independent channels."""
 
+import copy
 import hashlib
 import json
+
+import pytest
 
 from backend.evaluation.mechanism_preparation import read_batch_sources
 from backend.evaluation.records import canonical_digest
 from backend.evaluation.v3_pair_cli import main
+from backend.tests.evaluation import test_quality_report as quality
 from backend.tests.evaluation import test_route_cli as route_commands
 from backend.tests.evaluation import test_v3_pair_report as pairs
 from backend.tests.evaluation.test_daily_density import density_reviews
@@ -14,6 +18,56 @@ pytest_plugins = ("backend.tests.evaluation.test_intake",)
 pair_case = pairs.pair_case
 route_case = pairs.route_case
 prepared_scenario = pairs.prepared_scenario
+
+
+def add_third_visit(itinerary):
+    visit = copy.deepcopy(itinerary["days"][0]["activities"][0])
+    visit.update(
+        activity_id="extra",
+        title="Gallery C",
+        place_name="Gallery C",
+        start_time="2020-01-01T12:00:00Z",
+        end_time="2020-01-01T13:00:00Z",
+    )
+    itinerary["days"][0]["activities"].append(visit)
+
+
+@pytest.mark.parametrize(
+    "profile, expected_penalty", [("ordinary", 10), ("relaxed", 40), ("rich", 0)]
+)
+def test_final_and_paired_reports_use_the_same_final_three_visit_cost(
+    pair_case,
+    route_case,
+    profile,
+    expected_penalty,
+):
+    def change(results):
+        pairs.no_departure(results)
+        for result in results.values():
+            add_third_visit(result["itinerary"])
+
+    final_case = route_case(change=change)
+    final = quality.report(final_case, density_reviews=density_reviews(final_case[0], profile))
+    assert final["status"] == "complete", final["diagnostics"]
+    version = final["groups"][0]["versions"]["v3"]
+    paired_case = pair_case(before=add_third_visit)
+    paired = pairs.report(paired_case, density_reviews=density_reviews(paired_case[0], profile))
+    assert paired["status"] == "complete", paired["diagnostics"]
+    stages = paired["groups"][0]["stages"]
+    for row in (version, *stages.values()):
+        assert row["daily_density"]["rules_profile_id"] == "rtpeval_daily_density_2"
+        assert row["daily_density"]["mean_penalty_0_100"] == expected_penalty
+        assert row["daily_density"]["days"][0]["known_primary_count"] == 3
+        assert row["auxiliary_total"]["score_0_100"] == 37.5
+        assert (
+            row["overall_total"]["score_0_100"]
+            == {
+                "ordinary": 27.5,
+                "relaxed": 0,
+                "rich": 37.5,
+            }[profile]
+        )
+    assert paired["groups"][0]["deltas"]["overall_total"]["percentage_points"] == 0
 
 
 def test_paired_cli_density_policy_preserves_provenance_and_read_only_sources(pair_case, capsys):

@@ -8,12 +8,12 @@ from .quality_aggregation import _fraction
 from .records import require, text
 
 PENALTIES = {
-    "ordinary": [100, 40, 0, 0, 50, 80],
-    "relaxed": [100, 20, 0, 10, 30, 50],
+    "ordinary": [100, 40, 0, 10, 50, 80],
+    "relaxed": [100, 20, 0, 40, 70, 90],
     "rich": [100, 60, 0, 0, 30, 70],
 }
 RULES = {
-    "profile_id": "rtpeval_daily_density_1",
+    "profile_id": "rtpeval_daily_density_2",
     "penalties_by_count_0_to_5": PENALTIES,
     "count_6_or_more": 100,
     "explicit_count": "matching reviewed exact count exempts defaults; mismatch deducts 100",
