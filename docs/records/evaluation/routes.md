@@ -7,8 +7,10 @@ core docs and GitHub Issues. Historical commands grant no new execution permissi
 
 ## New V0 independent-route collection plan — 2026-10-05
 
-Status: **Prepared only; collection budget and execution are not approved.** The user
+Preparation checkpoint: **Prepared only; collection budget and execution were not yet approved.** The user
 approved preparing this plan alongside offline fee accounting [#59](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/59).
+Subsequent approval and bounded execution are recorded [below](#new-v0-route-execution-2026-10-05);
+the frozen preparation artifacts retain their original checkpoint status.
 The source is the completed structured-transport V0 smoke; no model rerun, prompt change,
 retiming, endpoint substitution, mode optimization or targeted Repair is included.
 This is a single-source development diagnostic, not a formal benchmark/comparison.
@@ -128,6 +130,132 @@ identity/coordinate/context stops only its affected leg; other eligible legs may
 within the approved total. Preserve partial evidence and UNKNOWNs when limits stop work.
 Changing the budget, adding retries/providers or repairing V0 requires separate approval.
 **This preparation made zero paid provider calls.**
+
+<a id="new-v0-route-execution-2026-10-05"></a>
+
+## New V0 bounded route diagnostic — 2026-10-05
+
+Status: **Acquisition and offline replay completed; all four routes remain UNKNOWN.**
+The user explicitly approved the preceding plan, including execution delegation and
+result delivery through PR, under [#61](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/61).
+UNKNOWN is an accepted observation for this bounded execution, not a finding that
+the original V0 transport is feasible or infeasible. No evaluator rules or production
+code were changed, and the original itinerary was not rerun, repaired or retimed.
+
+The execution used revision `0f0120dc63ac25b492fd5d474c1d04826c5ab22f` on
+`feature/evaluation`, with a clean tracked worktree and tree
+`04684766d16cf2428cdefc2656f5e101c14b773e`, identical to delivered PR #60.
+The task-specific execution packet and raw evidence were ignored local artifacts;
+the subsequent tracked changes are this record and the project-status summary.
+The record date uses Australia/Sydney; acquisition timestamps are retained in UTC.
+
+### Preflight, authorization and observed acquisition
+
+The owner prepared a task-local launcher around existing snapshot/identity/coordinate/
+route APIs. It uses the preserved collector's request construction but does not invoke
+its historical retrying launcher. A shared counter and deadline cover both acquisition
+phases: at most 22 sends, one attempt per request, 20-second request timeout, 600 seconds
+overall, no redirects/transport retries and no model client. A one-shot launch marker
+prevents accidental replay of the paid collection.
+
+Offline checks verified the 23rd-send and exhausted-wall stops, native empty-result
+replay with UNKNOWN preservation, and authentication-failure stop with retained raw
+attempt evidence. The three packet tests passed; the combined packet/native snapshot/
+coordinate/resource suite passed **81 tests in 5.36 seconds**. These counts overlap.
+Initial Ruff import/format findings were corrected before passing the final lint and
+format checks. The owner verified source hashes, projection, nine-request identity
+plan, original-input mode policy and preserved IANA timezone data before delegation.
+Audit seed and sample count were frozen before acquisition; no human identity
+adjudication was supplied or fabricated.
+
+`smoke tests` initially encountered automatic approval review rejection before process
+creation: the reviewer did not accept cross-conversation authorization for the Google
+requests and possible charges. At that checkpoint there were zero sends and no launch.
+The human subsequently authorized execution and owner coordination directly in that
+conversation. Exactly one accepted prepared launch then completed with exit code 0.
+The executor acquired evidence and reported blockers without changing production code.
+The earlier blocked-dispatch evidence remains a historical checkpoint.
+
+Observed sends were **9 Places Text Search, 0 Details, 0 Routes and 0 LLM calls**,
+with **zero retries**. All nine searches returned HTTP 200 with distinct request keys.
+Measured invocation through cleanup was **3.328 seconds**; the acquisition deadline
+had **596.656 seconds** remaining. Unused budget did not authorize another launch.
+HTTP success for these searches does not verify the uncalled Details/Routes APIs.
+
+### Existing evaluator replay and identity blockers
+
+All nine identity references remain unresolved, with nine human-review queue entries:
+two `high_impact_review` references (the required Gyeongbokgung subject and its scheduled
+visit) and seven `malformed_address_components` references. The frozen audit selected
+no automatic proposal because none reached that stage. No canonical ID was adopted;
+the coordinate bridge therefore produced no eligible route context and the frozen
+evidence plan contained zero requests. Scoring an empty native evidence snapshot
+completed with the existing `rtpeval_route_rules_1`, preserving these unknowns.
+
+| Date / original leg | Mode | Claimed minutes | Prepared continuous G (minutes) | Independent duration / distance | Verdict |
+| --- | --- | ---: | ---: | --- | --- |
+| 10-07 Gyeongbokgung Palace → National Museum of Korean Contemporary History | WALK | 20 | 30 | Unavailable | UNKNOWN |
+| 10-08 Bukchon Hanok Village → Insadong | WALK | 25 | 35 | Unavailable | UNKNOWN |
+| 10-09 Seoul Museum of History → Gwangjang Market | TRANSIT | 35 | 45 | Unavailable | UNKNOWN |
+| 10-10 Changdeokgung Palace → Jongmyo Shrine | WALK | 20 | 30 | Unavailable | UNKNOWN |
+
+Each leg reports unresolved identity, missing route context and missing route evidence.
+The mode-policy component alone is PASS because the original request does not restrict
+transport modes; it is not a feasibility PASS. Independent journey times, schedule
+sufficiency and transfer burden cannot be established from this acquisition.
+
+The owner's read-only address diagnosis reproduced the seven parser rejections:
+
+- Six reference searches (seven candidate rows, including two Seoul Museum of History
+  candidates) have distinct numbered sublocality levels sharing the generic
+  `sublocality` tag. The parser treats that shared tag as a unique slot and raises
+  `Conflicting address components` when the component values differ, even though the
+  numbered hierarchy is distinct. Individual components passed the parser checks.
+- The Jongmyo candidate includes an address component without `types`; the parser
+  raises `Address component requires types` before later association checks.
+
+These are observed parser outcomes, not proof that the places are incorrect or that
+V0's schedule fails. Google documents address components as repeated hierarchical
+components whose types and representation can vary; see the
+[Places address-component reference](https://developers.google.com/maps/documentation/places/web-service/reference/rest/v1/places#AddressComponent).
+The inference is that the current normalization is too restrictive for these returned
+structures. Fixing normalization alone would not establish identity: high-impact human
+review, aliases, competing candidates and applicable audit requirements still need
+their existing checks. No normalization fix or additional acquisition is included here.
+
+### Actual-send cost, integrity and acceptance boundary
+
+The owner rebuilt the cost report from the exact captured `oracle` usage and frozen
+price context. All nine events match Places Text Search Enterprise SKU
+`E967-44BC-B44D`, with the preserved search field mask. At the Global first paid tier
+of **USD 35 per 1,000 requests**, the observed retail estimate is **USD 0.315**
+(`9 × 0.035`); Details, Routes, models and Repair had no sends in this run.
+Source: [Google Global prices](https://developers.google.com/maps/billing-and-pricing/pricing),
+read **2026-10-05**. The earlier USD 0.515 is the prepared maximum retail estimate.
+Actual billed amount remains absent; free allowances, credits, account tier and tax
+are not inferred. This oracle acquisition is distinct from original planner/model
+costs and is not allocated again to V0-V3 planner totals.
+
+Offline assessment reloaded both snapshots against their frozen expected plans,
+reproduced the identity evidence and obtained an exactly identical native route
+report. The nine usage events agree with the attempt journal and snapshot ledgers;
+zero retries and zero model calls were independently checked. All nine raw-response
+hashes and all 15 frozen source/packet hashes matched, including the original V0
+result and the protected older Seoul input/result/manifest/packet. The original
+V0 SHA-256 remains `b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+
+Local evidence identifiers, not published file dependencies:
+`artifacts/v0-route-execution-20261005/` contains authorization/preflight, launch,
+execution/usage, attempt journal/raw hashes, identity snapshots/reports/review queue,
+route preparation/evidence plan/snapshot/report, cost report, owning assessment and
+address diagnostics. The earlier prepared view remains under
+`artifacts/v0-route-plan-20261005/`. Raw payloads and credentials are excluded from Git.
+
+This bounded execution can be accepted with UNKNOWN as specified in #61, but it does
+not complete independent route feasibility validation. Resolving structured identity
+handling and genuine required adjudication, followed by a separately authorized
+route-evidence acquisition, remains future work. No formal comparison, research
+conclusion or version freeze follows from this diagnostic.
 
 <a id="snapshot-coordinate-bridge-2026-10-03"></a>
 
