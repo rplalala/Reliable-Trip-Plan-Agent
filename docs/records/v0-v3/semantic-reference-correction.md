@@ -604,3 +604,220 @@ The evaluator packet still requires a separately prepared and authorized executi
 measure model behavior with short IDs. V0-V3 retain independent entry points and version
 mechanisms; this shared transport correction does not freeze a version or constitute
 a formal benchmark. Publication and further live execution remain separate actions.
+
+<a id="short-reference-live-regression-preparation-2026-10-05"></a>
+
+## Short-reference live regression preparation — 2026-10-05
+
+Status: **Plan prepared; runner implementation and live execution pending approval.**
+The user approved creation of two follow-up Issues and preparation of their plans.
+[Issue #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66) owns the
+execution specification and acceptance; [#67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67)
+owns the separate V0 adoption proposal. #63/#64 remain completed within their
+original scopes, delivered by [PR #65](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/65).
+
+Preparation started on `feature/evaluation` at
+`def635c7914ce5ca6ddc73c604110e75abfc9c8b`, with a clean tracked worktree; changes
+in this event are planning documentation and ignored offline preparation receipts.
+The published merge revision is `62f9329903b53f76abb8ea2a37e119bd94d3f478`.
+No branch switch, main-to-development merge, runtime change or paid call occurred.
+
+### Scope choice and proposed budget
+
+The implementation audit identified six relevant smoke cases: shared V1-V3 primary,
+review profiling, V3 Repair, official evidence reasoning, product introduction and
+the V0 evaluator identity packet. Each gets at most one model request through its
+actual boundary. Frozen inputs isolate the affected mapping and domain checks;
+rerunning discovery/RAG/Google or all four planners would add cost and unrelated
+variability without directly strengthening this adapter check. This scope does not
+claim full live V0-V3 orchestration coverage. V0 primary and the already protected
+POI semantic projection have no newly changed supplied-ID mapping to validate.
+
+Proposed limits: six sends including failed attempts, zero retries/corrections,
+no tools or Google/search/embedding calls, 60 seconds per request, 600 seconds total.
+Each estimated input must fit 10,000 tokens including schema and a 1,024-token
+framing reserve; actual output is capped at 4,000 tokens including reasoning.
+An observed usage overrun stops subsequent sends. Identity assistance must retain
+the semantic judging instructions from #63 alongside the mapping instruction.
+The existing packet alone is neither a semantic prompt nor a live caller.
+
+[Official GPT-6 Luna pricing](https://developers.openai.com/api/docs/models/gpt-6-luna)
+was checked on 2026-10-05: Standard USD 0.10 input, 0.01 cached input and 0.50 output
+per million tokens. Six uncached capped calls, without cache-write surcharges,
+estimate **USD 0.018**. Proposed retail-estimate allowance is **USD 0.05**, not a
+Foundry invoice cap. Record any cache-write/regional pricing and actual usage;
+invoice amounts remain unknown until supplied. Accounting uses #59 and separates
+primary, profiling, Repair, reasoning, introduction and independent evaluator calls.
+
+Before requesting execution, prepare actual inputs, schemas, maps and revision/source
+hashes, then demonstrate task-specific SDK caps and exact restoration offline for
+all six cases. Current planning does not claim that runner/preflight is complete.
+The prepared, explicitly authorized execution belongs to `smoke tests`; it reports
+blockers and must not modify code. Stop on an unexpected send/host, timeout, budget,
+hash, schema, mapping or ownership failure without correction or a baseline call.
+Generated prose need not match old output; canonical identities, source alignment
+and native permissions must pass. Valid `unknown` identity suggestions are distinct
+from malformed reference transport.
+
+### Observed preparation checks and limitations
+
+The task-local offline preflight verified all **61** original pilot-authorized
+file hashes unchanged, rebuilt nine references/fourteen candidate occurrences/
+twelve distinct candidates and restored all nine old proposals identically.
+Mapping SHA-256 remains
+`4a7d36cc0e0ccf64138f1faf36a194b99fe606c8999538966b3cc16fbe66a36b`.
+Original V0 SHA-256 remains
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+The cost calculation and six-case count passed. This is an offline programmatic
+replay of existing proposals; it is not a new response, SDK/live gate or accuracy
+measurement. It adds no adopted identity or route evidence.
+
+Local evidence identifiers, not published dependencies:
+`artifacts/followup-plans-20261005/{offline_preflight.py,offline-preflight.json,short-id-plan.json}`.
+GitHub Issue bodies are self-contained and link only to accessible published
+baseline revisions. Further live/adoption work and Git delivery require approval.
+
+Documentation validation passed: three intended tracked Markdown files, seven new
+local/pinned document links with valid tracked targets/anchors, English content,
+matching remote Issue bodies and `git diff --check`. #66/#67 were re-read OPEN with
+only preparation criteria checked; #63/#64 remained CLOSED and PR #65 remained
+MERGED at the pinned revision. No implementation tests were rerun for this
+documentation-only event. Branch and main references were verified unchanged.
+
+<a id="short-reference-live-regression-execution-2026-10-05"></a>
+
+## Short-reference executor and live regression — 2026-10-05
+
+Status: **Implemented, reviewed and validated for six selected development cases;
+local Git delivery pending.** The user explicitly approved #66 executor implementation,
+offline preflight and the previously prepared live budget. #67 remains a separate
+adoption-design follow-up; no adoption implementation or route acquisition occurred.
+
+Work started on clean `feature/evaluation` at review fixed point
+`73c5412492438ae89882925ffc25a25700bad4ce`. Implementation/tests were committed as
+`a90dd87fec27b8a1a2b2aa3a3d170fadde0edc03` before dual-axis review; the separate
+review correction is `c9fbd3a49df61f6a458a68ef4e42b7b09ddcf267`, also the frozen live
+execution revision. No branch switch, main-to-development merge, push or PR occurred.
+Production code and independent V0-V3 entry points were unchanged. Artifacts are ignored
+local evidence, not published dependencies or committed raw provider/model payloads.
+
+### Implementation and offline validation sequence
+
+The development tool freezes six actual SDK requests, schemas, short-reference maps,
+SDK versions, endpoint binding and source hashes. Its transport limits each case to
+one send and enforces the selected model, destination, no tools/retries/redirects,
+input/output ceilings, per-request timeout and total deadline. An exclusive launch
+record prevents a second execution of the packet. Attempts are journaled before
+transport, retaining failed/unknown fees; successful outputs pass the existing adapter
+and selected native acceptance seam. The V0 boundary returns proposals only.
+
+TDD began with missing runner/case/packet interfaces and then progressed through the
+six actual adapters over MockTransport. Initially failing negative tests exposed absent
+terminal-failure fields, failed-attempt accounting and usage export; those were corrected.
+The first completed focused gate passed 18 tests. Ruff and `git diff --check` passed;
+the full backend suite passed **2704 with 10 skipped in 246.51 seconds**, without live
+services. No project type-check command is configured in this Python environment.
+
+Standards review found zero issues; Spec review found two P2 issues: the synthetic
+Repair input bypassed production `build_repair_input`, and primary acceptance omitted
+`validate_output_sources`. Two added regressions failed before correction. Repair now
+uses the production `repair_input_2` projection and freezes that same map; primary runs
+the native source/name normalization and date checks before fixture coverage. The final
+focused executor gate passed **19 tests**; executor/Repair checks passed **89**, and
+date/source/ordering checks passed **42**. One intermediate test assertion misread SDK
+message content as an array and was corrected to its actual string shape. An attempted
+test selection referenced a nonexistent filename and collected no tests; the correct
+native-policy files then passed. Both review axes rechecked the correction with zero
+remaining findings. Implementation commits were preserved separately from corrections.
+
+Final actual-SDK preflight passed six MockTransport sends and **zero live sends**.
+Estimated wire input tokens, including schema and the 1,024-token reserve, were
+3,958 primary; 1,853 profiling; 4,279 Repair; 3,383 reasoning; 1,436 introduction;
+6,158 identity. All fit the authorized 10,000 ceiling. Actual output limits were
+4,000 except official reasoning's existing 1,200. The ready packet froze 581 source
+files, including all 61 original pilot-authorized hashes; the identity mapping retained
+SHA-256 `4a7d36cc0e0ccf64138f1faf36a194b99fe606c8999538966b3cc16fbe66a36b`.
+
+### Observed live execution and cost
+
+The prepared authorized execution was delegated to the same-project `smoke tests`
+conversation, which launched the execute command once after clean-worktree/revision
+checks. Process exit was 0; status completed; **six model sends in 18.016 seconds**.
+All six responses reported HTTP 200, completed and `gpt-6-luna`. No retry, tool,
+Google/search/embedding request, baseline request or stop condition occurred. Limits
+remained six sends, 60 seconds/request, 600 seconds total and USD 0.05 retail-estimate
+allowance. No fixture was changed after observing a live response.
+
+| Boundary | Selected native check | Input / output tokens | Retail estimate USD |
+| --- | --- | ---: | ---: |
+| Shared V1-V3 primary | Two restored places; source/date/coverage acceptance | 2,508 / 362 | 0.0004318 |
+| Review profile | Restored place; two-review ownership | 611 / 131 | 0.0001266 |
+| V3 Repair | Restored activity/place/target; isolated `apply_patch` permissions | 2,815 / 154 | 0.0003585 |
+| Official reasoning | Restored source/place; exact supplied URL/span alignment | 1,863 / 322 | 0.0003473 |
+| Product introduction | Two restored activity keys; ownership and coverage | 279 / 64 | 0.0000599 |
+| V0 identity | Nine unique reference proposals; per-reference candidate bounds | 4,756 / 571 | 0.0007611 |
+
+All selected provider/schema/alias/native fixture checks passed. Totals were **12,832
+input, 1,604 output, 14,436 total**, zero cached input and **211 reasoning tokens already
+included in output**. Raw usage also reported **11,930 cache-write tokens**. The authorized
+[OpenAI Standard price basis](https://developers.openai.com/api/docs/models/gpt-6-luna),
+dated 2026-10-05, gives **USD 0.0020852** before any separately priced cache-write,
+regional or invoice adjustment. Actual billed amount remains unavailable.
+
+The owner independently verified six request/response hashes, all packet/source hashes
+and original V0 SHA-256
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+All nine new `(reference_id, decision, candidate_id)` associations equal the old pilot's
+associations; prose may differ. This is structural agreement, not independent identity
+accuracy. The five planner-related fixtures are synthetic adapter data; the sixth uses
+the previously frozen real V0 candidate packet without new evidence acquisition.
+
+Offline #59 `build_cost_report` reproduced the six model costs and classified their six
+linked HTTP events as transport-only, avoiding double charging. The raw smoke usage
+supports `usage_report`; cost accounting additionally needs explicit run identity/time.
+A separate, source-hash-bound derived envelope supplies these in the independent
+`oracle` namespace, with no allocation to planner versions. Partial/unverified coverage
+is retained: the observed cost subtotal is available while complete-run and invoice totals
+remain unknown. The first offline price snapshot lacked per-operation selectors and was
+rejected; adding six explicit selectors passed, without changing execution evidence.
+
+### Evidence and remaining boundaries
+
+Local identifiers: `artifacts/short-id-live-20261005/packet/` contains frozen inputs,
+preflight, authorization, launch record, executor report and verification; `packet/live/`
+contains execution/canonical outputs, attempts, usage and raw response files. The owner
+assessment and derived cost envelope/price/report are under the containing event directory.
+[Issue #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66) records the
+self-contained remote task state; repository publication requires separate Git approval.
+
+This run observed no new short-reference restoration failure in six selected samples.
+It does not establish a general error rate, full V0-V3 orchestration, venue-policy truth,
+introduction-prose accuracy, formal benchmark or version freeze. Native identity adoption
+remains **zero**, and the V0's four route verdicts remain **UNKNOWN**. The next engineering
+step is authorized Git delivery of #66, followed by separately scoped #67 adoption work.
+
+### Authorized Git delivery checkpoint — 2026-10-05
+
+The user subsequently authorized push, PR creation, review, merge after successful
+checks and acceptance-based closure of #66, including the related #66/#67 preparation
+documents. The four existing commits were normally pushed without rewriting history;
+[PR #68](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/68) targets `main`
+from `feature/evaluation`. Its fixed review base is
+`62f9329903b53f76abb8ea2a37e119bd94d3f478`; the first published head is
+`a802724ce5040ac3897428d207ca2fd3ac52fecb`.
+
+Combined Standards and Spec reviews covered all eight release files and the four
+commits, with zero remaining findings on either axis. The earlier two native-seam
+corrections remain effective. Six added local document links resolve to tracked targets;
+English content, Ruff and diff checks passed. No GitHub CI check workflow is configured
+for this PR; local regression evidence is the merge gate. No further live request was
+made during delivery. This documentation update records the authorization/checkpoint,
+not a premature merge assertion; the PR and #66 own definitive publication/closure state.
+The #67 design remains Proposed and its Issue remains open.
+
+The final delivery backend gate passed **2705 tests with 10 skipped in 421.67
+seconds**, covering the corrected executor and unchanged production code. This
+supersedes the implementation's earlier full gate for current validation status;
+it does not rerun any live service. Python mypy/pyright checks are not configured
+in the project. The additional tracked delivery update changes documentation only;
+its content/diff checks and affected review rechecks precede merge.

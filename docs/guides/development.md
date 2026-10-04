@@ -140,6 +140,7 @@ read-only clean-clone check. Do not rebuild vectors or destroy a volume to follo
 | [Source preparation](../../tools/data/prepare_tripworld.py) | Source projection/profiling and corpus preparation |
 | [Retrieval tools](../../tools/data/tripworld_retrieval.py) | Entity construction and exact retrieval reference tools |
 | [Runtime acceptance](../../tools/validation/runtime_acceptance.py) | Owned-resource/capture library, not an autonomous live launcher |
+| [Short-reference smoke](../../tools/validation/short_reference_packet.py) | Freeze and preflight six development adapter cases; separately authorized one-shot execution |
 | [Requirement acceptance](../../tools/validation/requirement_acceptance.py) | Explicit frozen matrices and execution |
 | [Retrieval validation](../../tools/validation/retrieval_validation.py) | Explicit database validation |
 | [Retrieval timing](../../tools/diagnostics/retrieval_performance.py) | Bounded SQL timing/plans |

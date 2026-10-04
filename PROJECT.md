@@ -164,18 +164,26 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2686 passed, 10 skipped in 249.85s**, from the
-2026-10-05 [cross-chain model reference audit](docs/records/v0-v3/semantic-reference-correction.md#model-reference-audit-2026-10-05),
-tracked under [#64](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/64).
+Latest recorded full backend gate: **2705 passed, 10 skipped in 421.67s**, from the
+2026-10-05 [short-reference delivery validation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05),
+tracked under [#66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66).
+Earlier review corrections passed **89** executor/Repair and **42** native-policy
+tests; Standards and Spec rechecks have no remaining findings.
 Primary generation, Repair, review profiling, official reasoning and Product decoration
-now restore supplied identities from short model references. The evaluator adds only an
-offline proposal-packet seam. No new live validation or native identity adoption occurred.
+now restore supplied identities from short model references. The subsequent authorized
+six-case live adapter smoke passed in **18.016 seconds**, with six model sends and no
+retries, tools or Google calls. Reported usage was **12,832 input / 1,604 output**;
+the Standard retail estimate is **USD 0.0020852**, excluding unpriced cache-write or
+regional adjustments; actual billing is unavailable. The V0 evaluator test produced
+nine bounded proposals, with zero native adoptions. This is selected-boundary evidence,
+not full planner orchestration or an identity-accuracy result. Four V0 routes remain UNKNOWN.
 The preceding Issue #59 gate was **2655 passed, 10 skipped in 323.62s**, before review
 corrections; subsequent focused gates were **80**, **288, 1 skipped**, and **95**.
 The [offline cost acceptance](docs/records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05)
 retains failures, corrections, retests and dual-axis review evidence.
 Earlier Issue #57, Issue #53 and Ticket 11/12 results remain historical in their records.
-The skips are environment/opt-in cases. No live services or formal corpus were used;
+The skips are environment/opt-in cases. No live services or formal corpus were used
+in the offline test gates;
 earlier approved supplements remain distinct evidence.
 The separately approved [V0 structured transport smoke](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-live-2026-10-05)
 completed on 2026-10-05: one V0 run, two Foundry invocations, 30.516 seconds,
@@ -299,6 +307,24 @@ and this task supplies no new live result or score comparison. See the
 [structured transport acceptance](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-2026-10-05).
 
 ## 6. Next work and authorization boundary
+
+On 2026-10-05 the user approved creating and preparing two follow-ups:
+[short-reference live regression #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66)
+and [V0-only proposal adoption/route handoff #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67).
+The user subsequently authorized #66 implementation and its live budget. Its executor,
+offline SDK preflight, dual-axis review and six-case live smoke are complete. The user
+also authorized publication and #66 closeout through
+[PR #68](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/68); GitHub owns final
+merge and Issue lifecycle state. No short-reference
+restoration failure occurred in these six samples. See the dated
+[execution acceptance](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05).
+The second proposes default-off V0 model-assisted association while
+retaining genuine high-impact/audit review; policy implementation and subsequent
+independent acquisition require separate approval. Offline source/hash and proposal
+restoration checks passed; these preparation checks add no adopted identity or
+route evidence. The new V0's four routes remain UNKNOWN. See the dated
+[regression preparation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-preparation-2026-10-05)
+and [adoption design preparation](docs/records/evaluation/routes.md#v0-adoption-design-preparation-2026-10-05).
 
 Tickets 01-12 have completed their approved implementation, offline validation,
 review and engineering delivery scopes. On 2026-10-04, the user separately authorized
