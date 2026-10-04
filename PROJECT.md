@@ -159,13 +159,11 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2477 passed, 10 skipped**, from the
-2026-10-04 Ticket 12 implementation, before its report-only review corrections.
-The [Ticket 12 record](docs/records/evaluation/2026-10-04-mechanism-official-audit.md)
-retains subsequent correction/retest and dual-axis review evidence. Earlier Ticket 11
-validation was **2433 passed, 10 skipped**, followed by **608 evaluator tests, 1 skipped**
-for logical-time/review corrections; its [record](docs/records/evaluation/2026-10-04-controlled-repair.md)
-preserves that historical sequence.
+Latest recorded full backend gate: **2576 passed, 10 skipped in 247.11s**, from
+the 2026-10-04 Issue #53 correction after its separately committed review fix.
+The [correction acceptance](docs/records/evaluation/intake-identity-usage.md#free-text-scoring-corrections-2026-10-04)
+retains failing regressions, corrections, final retest and dual-axis review evidence.
+Earlier Ticket 11/12 results remain historical in their respective acceptance records.
 The skips are environment/opt-in cases. No live services or formal corpus were used;
 earlier approved supplements remain distinct evidence.
 Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
