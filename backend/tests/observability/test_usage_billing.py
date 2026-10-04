@@ -7,6 +7,7 @@ import pytest
 
 from backend.app.observability.usage import install_http_hooks, observe_sdk
 from backend.app.observability.usage_capture import capture_attempt
+from backend.evaluation.usage_report import summarize
 
 
 def test_sdk_capture_retains_cache_and_reasoning_without_changing_totals():
@@ -84,6 +85,54 @@ def test_sdk_search_output_records_tool_units_separately_from_model_tokens():
     assert rows[0]["provider_events"][0]["operation"] == "web_search_tool"
     assert rows[0]["provider_events"][0]["tool_calls"] == 1
     assert rows[0]["model_calls"][0]["total_tokens"] == 12
+
+
+@pytest.mark.parametrize("http_sends", [0, 1])
+def test_sdk_tool_billing_does_not_inflate_physical_http_metrics(http_sends):
+    rows, dispatched = [], []
+
+    async def invoke():
+        def transport(request):
+            dispatched.append(request)
+            return httpx.Response(200, json={})
+
+        async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
+            install_http_hooks(client, "fixture", "model_http")
+
+            async def response(**kwargs):
+                if http_sends:
+                    await client.post("https://example.test/model", json={})
+                return {
+                    "usage": {"input_tokens": 10, "output_tokens": 2},
+                    "output": [{"type": "web_search_call"}],
+                }
+
+            await observe_sdk(
+                response,
+                usage_operation="official_search",
+                usage_provider="fixture",
+                tools=[{"type": "web_search"}],
+            )
+
+    asyncio.run(
+        capture_attempt(
+            invoke,
+            group_id="g",
+            run_id="r",
+            version="v1",
+            sink=rows.append,
+            adapter_coverage="default_adapters",
+        )
+    )
+    report = summarize(rows[0])
+    assert len(dispatched) == http_sends
+    assert report["metrics"]["http_sends"] == http_sends
+    assert report["observed_http_sends"] == http_sends
+    assert report["observed_tool_http_sends"] == 0
+    assert report["failed_http_responses"] == 0
+    assert report["incomplete_http_sends"] == 0
+    assert report["metrics"]["total_tokens"] == 12
+    assert rows[0]["provider_events"][-1]["tool_calls"] == 1
 
 
 @pytest.mark.parametrize("tools", [None, object()])
