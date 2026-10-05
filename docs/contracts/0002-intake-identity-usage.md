@@ -260,7 +260,23 @@ The new V0 instructions/schema/policy produce new packet and request hashes; cur
 requires that exact packet and response provenance. The historical uniform schema/instructions
 remain unchanged under explicit replay. Old V0 policy-1 packets and the rejected #73 envelope
 cannot be relabeled as accepted current reports. Raw responses and consumed execution evidence
-are retained unchanged. #77/#78/#79 remain separate scopes; this contract grants no new call.
+are retained unchanged. #78/#79 remain separate scopes; this contract grants no new call.
+
+Fresh preparation under #77 uses `rtpeval_identity_smoke_preparation_2`, recomputes the
+current V0 primary population, and freezes original/candidate material, implementation,
+strict request/schema, reference map, HTTPS destination and a new execution directory.
+The offline pending report supplies no new V0 model evidence. The private handoff owns
+exact proposed limits, source revision, data/destination scope, counts, output paths and
+stops. Prices retain ordinary/cached/write input categories and output (including reasoning);
+missing categories use a labelled conservative reference upper bound, with the original
+usage preserved. Reference prices and regional scenarios are distinct from unavailable
+provider invoices. One attempt consumes the bound directory, even on HTTP/import failure.
+Neither preparation nor ticket completion authorizes execution: a new exact-plan approval
+and the current-session child required by smoke policy are mandatory. Historical #73
+failure evidence, raw response and consumed directory remain untouched; FAIL/UNKNOWN are
+valid outcomes without an all-match acceptance target. See the
+[operational guide](../../backend/evaluation/README.md#prepared-one-call-identity-development-smoke)
+and [preparation record](../records/evaluation/intake-identity-usage.md#fresh-v0-smoke-preparation-2026-10-06).
 
 The complete `identity_versioned_replay` stores independent evidence and the optional
 V0 result. Consumers reconstruct the exact report from the original intake before using

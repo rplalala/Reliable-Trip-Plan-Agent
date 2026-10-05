@@ -181,12 +181,13 @@ endpoints using synthetic local snapshots. SDK execution tests use MockTransport
 V0 material bundle. Preparation is offline; execution requires explicit user approval of
 the exact manifest digest and the [smoke execution handoff](../../docs/agents/smoke-tests.md).
 Existing historical authorization is used only to verify source material. It grants no
-new request authority. Configure `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT` and
-`AZURE_OPENAI_API_KEY` through the existing V0 settings; no credentials are written to the
-preparation. The request itself selects `gpt-6-luna`.
+new request authority. Preparation accepts `--endpoint` without loading credentials;
+otherwise it reads existing V0 settings. Execution requires `AZURE_OPENAI_ENDPOINT`,
+`AZURE_OPENAI_DEPLOYMENT` and `AZURE_OPENAI_API_KEY` through V0 settings; no credentials
+are written to preparation. The request itself selects `gpt-6-luna`.
 
 ```powershell
-.venv/Scripts/python.exe -m tools.validation.identity_judgment_smoke prepare --material v0-identity-material.json --directory artifacts/new-identity-smoke
+.venv/Scripts/python.exe -m tools.validation.identity_judgment_smoke prepare --material v0-identity-material.json --directory artifacts/new-identity-smoke --endpoint https://YOUR_RESOURCE.openai.azure.com/openai/v1/
 # Execute only after this exact preparation and its limits receive user approval:
 .venv/Scripts/python.exe -m tools.validation.identity_judgment_smoke execute --preparation artifacts/new-identity-smoke/preparation.json --approved-manifest-sha256 APPROVED_DIGEST
 ```
@@ -194,19 +195,33 @@ preparation. The request itself selects `gpt-6-luna`.
 Optional `--protected-hashes` reads a JSON `file_hashes` map to preserve additional original
 files. The preparation binds verified source hashes, implementation hashes, the original
 identity packet, exact wire request, endpoint, token/retail-reference limits and a single
-execution directory. Re-preparation over an existing directory is rejected. One approved
+execution directory. Schema `rtpeval_identity_smoke_preparation_2` recomputes V0 primary
+references and candidate counts under the corrected output contract, excluding V1-V3
+and shared requirement subjects from the model request. It writes `preparation.json`,
+`pending-identity-report.json` and private `handoff.md`; append the reviewed source revision
+and configuration prerequisites before any future dispatch. The pending report has no new
+V0 model evidence. Implementation hashes cover evaluator modules, local reference/token
+code and dependency declarations. Re-preparation over an existing directory is rejected. One approved
 execution consumes its directory, even when it fails; reusing it cannot send again.
 The SDK has zero retries, redirects are disabled, and the HTTP boundary checks the exact
 POST/request and rechecks sources before its sole attempt. Changed source material after
 the response prevents import. No planner or Google calls are included.
 
 The fixed development limits are one request, low reasoning, no tools, `store=false`,
-20,000 estimated input tokens including 1,024 reserve, 4,000 output tokens and a 60-second
+16,000 estimated input tokens including 1,024 reserve, 3,000 output tokens and a 60-second
 HTTP deadline. The locally cached tokenizer is a surrogate preflight estimate. Excessive
 reported usage stops import after receipt; these checks cannot guarantee the provider's
-tokenizer or invoice ceiling. Standard retail reference rates are dated in the manifest,
-with a USD 0.005 reference allowance and a USD 0.004 maximum standard estimate. Cached-input,
-cache-write, regional and Foundry billing differences are not verified invoice evidence.
+tokenizer or invoice ceiling. The fresh proposed reference allowance is USD 0.004; it
+requires new exact-plan approval and does not inherit #73's consumed allowance. Official
+OpenAI reference rates checked 2026-10-06 are USD 0.10 ordinary input, 0.01 cached input,
+0.125 cache writes and 0.50 output per million tokens. At these caps the maximum standard
+reference is USD 0.0035; a regional +10% scenario is USD 0.00385. Output already includes
+reasoning. Receipts retain original usage, partition reported input categories, and label
+missing categories as a conservative reference upper bound rather than observed zero.
+Malformed or excessive category counts stop import. These standard/regional scenarios do
+not establish a service tier, Azure SKU, taxes or a Foundry invoice ceiling. See the
+[model price reference](https://developers.openai.com/api/docs/models/gpt-6-luna) and
+[cache usage reference](https://developers.openai.com/api/docs/guides/prompt-caching).
 
 `execution.json` records attempts, usage, reference cost, raw byte digest and terminal error
 type without SDK exception text or headers. Received complete raw bytes stay in `response.bin`;

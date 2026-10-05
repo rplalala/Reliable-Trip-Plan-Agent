@@ -1905,3 +1905,105 @@ Current contract, project status, CLI usage guide and this dated acceptance reco
 separate final documentation commit after implementation and review corrections. The only
 remaining worktree edit is the unrelated pre-existing `.gitignore` change.
 #77/#78/#79 remain separate scopes with their original approval gates.
+
+<a id="fresh-v0-smoke-preparation-2026-10-06"></a>
+
+### Fresh V0 identity smoke preparation (#77, 2026-10-06)
+
+The user explicitly authorized #77 implementation with offline preparation only and zero
+paid calls. Fixed review base is `f53c2b13922f8a6c7fad71f77bf00e9ad15b9490`, following #76,
+on `feature/evaluation`. Implementation and public-interface tests are committed as
+`5f0e1b4e3370c1900439bb2758d91f04d164b5d6`. The unrelated pre-existing `.gitignore` edit
+remains excluded. This event prepares a reviewable request; it establishes no new live
+model/Places/Routes evidence, score comparison, formal benchmark, freeze or Git publication.
+
+The verified original bundle is the ignored local historical identifier
+`artifacts/v0-identity-adoption-20261005/material.json`. Current policy recomputes **eight
+V0 primary references and nine independent API candidates**, rather than assuming the old
+nine-reference model population. Shared requirement subjects and V1-V3 stay on program
+verification and are absent from the request. All eight originals have supplied addresses;
+the missing-address contract is rehearsed separately with synthetic null-address fixtures.
+The real current pending report retains **eight V0 UNKNOWN** results and zero non-V0
+model judgments. No rejected historical response is imported or repaired.
+
+The fresh private preparation identifier is `artifacts/v0-identity-smoke-77-20261006`.
+Its manifest, pending report, complete destination/data handoff and offline audit bind
+**73 source hashes and 68 implementation/dependency hashes**. The 69 original source
+hashes remain unchanged; the additional protected files are the old #73 preparation and
+its three consumed execution files. The original #73 execution directory remains present
+and untouched; the newly bound execution directory does not exist. Token sizing uses the
+already cached, hash-checked local o200k vocabulary, with **12,652 tokens including 1,024
+reserve**. No tokenizer download or model client is allowed during actual preparation.
+Raw claims, candidate payloads, private endpoint and secrets are excluded from tracked docs.
+These local identifiers are evidence references, not dependencies for public instructions.
+
+The concrete frozen preparation has manifest SHA-256
+`14304cf36f3e138011e3a1b3ae5f79b002026cc874d66148d12eb233786ce096`
+and wire-request SHA-256
+`ffc53c919ddc9b51a59b720a019f0197d1058222fd71263ef8a57a042d584d56`.
+The private handoff names source revision `5f0e1b4`, configured HTTPS Responses destination,
+original/candidate data scope, exact command/digest, credentials prerequisites, output
+paths, stops and the request-local reference map. Request proposal: **one `gpt-6-luna`
+call with low reasoning**, `store=false`, no tools, 16,000 input/3,000 output caps,
+60-second HTTP timeout and zero retries. Google, planner and Routes request counts are zero.
+This is a fresh proposal, not reuse of #73's consumed approval.
+
+[Official model pricing](https://developers.openai.com/api/docs/models/gpt-6-luna) and
+[cache usage](https://developers.openai.com/api/docs/guides/prompt-caching) were checked
+2026-10-06. Standard reference rates per million tokens are USD 0.10 ordinary input,
+0.01 cached input, 0.125 cache writes and 0.50 output; output already contains reasoning.
+Maximum uncached reference at the proposed caps is USD 0.0031, maximum standard input
+category reference is USD 0.0035, and a regional +10% scenario is USD 0.00385. The new
+proposed allowance is **USD 0.004**. This proxy cannot guarantee a Foundry invoice ceiling;
+provider SKU, tier, credits and tax are unverified. Execution preserves raw usage and
+prices supplied cache categories separately. Missing category counts produce an explicit
+conservative reference upper bound, not invented zero usage; invalid/overlapping category
+counts stop import. Provider invoice remains unavailable.
+
+Public-interface TDD first reproduced absent preparation metadata, then old token limits,
+ignored cache categories and invalid category acceptance (seven failing pricing cases).
+The relative-material-root regression reproduced resolving source files against the process
+directory instead of the bundle directory. Credential-free CLI preparation first rejected
+the new explicit endpoint argument. Corrections now emit schema version 2, a pending report
+and handoff, apply the new proposal/categories, resolve relative roots correctly and avoid
+credential loading for explicit offline destinations. The first preservation test briefly
+failed because its new `Path` import was missing; adding it corrected the harness.
+
+The default Windows sandbox hung creating an asyncio loopback socketpair before synthetic
+fixture setup. A faulthandler stack identified that restriction; the incomplete runs were
+stopped and are not passes. Offline pytest was then run outside that shell restriction,
+with repository external-network guards and injected HTTP transports still active. No
+paid invocation occurred. Actual preparation additionally prohibited DNS, socket connection
+and model-client creation. The executor gate passed **29 tests** before the final CLI slice;
+the related executor/current/program/historical/adoption gate passed **138 in 29.98s**.
+It covers successful matching, confirmed FAIL, legitimate UNKNOWN, invalid citations,
+null addresses, changed sources, raw evidence preservation and terminal attempt consumption.
+Global Ruff lint, two changed-file format checks and whitespace checks passed.
+
+Independent Standards review of the committed implementation and concrete handoff found
+zero findings. Independent Spec review found one P3 private-handoff navigation typo:
+the supplemental pointer used `reference_map` instead of the actual `reference_maps`.
+The pointer and private handoff audit hash were corrected; manifest/wire/source hashes
+remain unchanged. The private correction receipt preserves the previous/new handoff hashes.
+No tracked implementation correction was needed. The final serial full backend gate at
+`5f0e1b4` passed **2926 tests, 10 skipped in 283.85s**:
+`.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider
+--basetemp .scratch/pytest-77-full --tb=short --show-capture=no`.
+Its ignored local evidence identifier is `.scratch/pytest-77-full.txt`; it is not a public
+dependency. Global Ruff, two changed Python format checks and whitespace checks passed
+again. Documentation validation passed **174 tracked local link targets/anchors** and
+English-only added text. All 73 source and 68 implementation hashes still match; the new
+execution directory remains absent. Both independent axes reviewed the final documentation
+and corrected handoff with **zero unresolved findings**. Current contract, operational
+guide, project state and this dated record are saved in a separate final documentation
+commit. The unrelated `.gitignore` edit remains the only intended unstaged worktree change.
+
+Actual preparation sends and incremental charges are **zero**. Any subsequent live test
+requires explicit approval of this new exact manifest/limits and a current-session execution
+child configured `gpt-6.1-sol` / `medium`. HTTP success must be reported separately from
+accepted import; raw/usage/error evidence and failed directories must remain preserved.
+FAIL/UNKNOWN are valid results, without an all-match/PASS target. The old #73 failure and
+UNKNOWN evidence remain until genuinely new accepted evidence exists. #78 route integration
+and #79 publication remain separate scopes; no full planner rerun or version expansion is
+authorized here. The Issue remains a tracker-owned lifecycle item; this local record does
+not claim closure or authorize a send.

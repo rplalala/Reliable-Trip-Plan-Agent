@@ -119,7 +119,9 @@ authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
 follow-ups. The user subsequently authorized #75 implementation, offline testing, local
 commits and dual review, followed by #76's V0 response-contract correction. #75 and #76
-are implemented locally; #77-#79 remain separate scopes. No new paid execution or Git
+are implemented locally. The user then authorized #77 offline preparation, with zero
+paid calls. Its new V0-only frozen plan is prepared locally; #78/#79 remain separate
+scopes. No new paid execution or Git
 publication is authorized. GitHub owns live Issue state. See the
 [accepted requirement](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
 and [publication record](docs/records/evaluation/intake-identity-usage.md#version-specific-evaluator-backlog-2026-10-06).
@@ -128,6 +130,13 @@ records local validation and review; it grants no paid run or publication author
 The [#76 correction record](docs/records/evaluation/intake-identity-usage.md#v0-correspondence-contract-correction-2026-10-06)
 records schema/import agreement, required `not_supplied` for missing addresses, preserved
 candidate correspondence versus original-claim FAIL/UNKNOWN, and unchanged historical evidence.
+The [#77 preparation record](docs/records/evaluation/intake-identity-usage.md#fresh-v0-smoke-preparation-2026-10-06)
+records eight current V0 primary references and nine independent candidates, a fresh
+private destination/manifest/handoff and offline rehearsals. Actual sends and incremental
+charges are zero; the new execution directory is unconsumed. V0 remains UNKNOWN without
+new accepted model evidence. The proposed one-call token/cost limits require separate
+exact-plan approval and the required current-session execution child; #73's consumed
+allowance and rejected response grant no further execution authority.
 
 | Ticket | Implementation checkpoint |
 | --- | --- |
@@ -244,7 +253,15 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest full backend gate (2026-10-06, #73 smoke preparation): **2842 passed, 10 skipped
+Latest full backend gate (2026-10-06, #77 offline preparation, implementation `5f0e1b4`):
+**2926 passed, 10 skipped in 283.85s**. The related identity/executor gate passed 138;
+global Ruff and changed-file format checks pass. The concrete fresh preparation has
+zero sends/charges; provider invoices and new accepted V0 model evidence remain unavailable.
+Independent Standards review found no findings; Spec found a private handoff field-pointer
+typo, corrected without changing the frozen request or implementation. See the
+[#77 acceptance record](docs/records/evaluation/intake-identity-usage.md#fresh-v0-smoke-preparation-2026-10-06).
+
+Previous full backend gate (2026-10-06, #73 smoke preparation): **2842 passed, 10 skipped
 in 397.57s**. The final isolated executor gate passed 17 tests; executor plus identity
 policy passed 52. Ruff passes. Standards and Spec each have zero findings. Implementation
 and tests are published as `abc2663` in
