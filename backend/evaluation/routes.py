@@ -145,7 +145,10 @@ def prepare_routes(
                             identities[s["record_id"]]
                             for s in (leg["from_source"], leg["to_source"])
                         ]
-                        if any("programmatic_judgment" in r for r in endpoint_records):
+                        if any(
+                            "programmatic_judgment" in r or "candidate_correspondence" in r
+                            for r in endpoint_records
+                        ):
                             leg["identity_grounding_verdicts"] = [
                                 r.get("grounding_verdict") for r in endpoint_records
                             ]

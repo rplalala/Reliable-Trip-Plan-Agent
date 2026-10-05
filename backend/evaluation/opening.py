@@ -169,7 +169,7 @@ def _check(activity, identity, reference, records, context_zone):
         "source": activity["source"],
         **(
             {"identity_grounding_verdict": identity["grounding_verdict"]}
-            if "programmatic_judgment" in identity
+            if "programmatic_judgment" in identity or "candidate_correspondence" in identity
             else {}
         ),
         "declared_day": activity["declared_day"],

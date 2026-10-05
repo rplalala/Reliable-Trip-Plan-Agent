@@ -1,4 +1,4 @@
-"""Uniform offline LLM identity judgments over independent, source-bound facts."""
+"""Offline V0 candidate correspondence and explicit historical identity replay."""
 
 import json
 from dataclasses import dataclass
@@ -22,6 +22,7 @@ from .records import canonical_digest as digest
 from .records import freeze, text, thaw
 
 POLICY_VERSION = "llm_identity_judgment_2"
+V0_POLICY_VERSION = "v0_identity_correspondence_2"
 PACKET_VERSION = "rtpeval_identity_judgment_packet_1"
 RESULT_VERSION = "rtpeval_identity_model_result_1"
 ADDRESS_STATES = (
@@ -33,6 +34,18 @@ ADDRESS_STATES = (
     "not_supplied",
 )
 DESTINATION_STATES = ("consistent", "contradictory", "unknown")
+CITATION_PATHS = (
+    "claim.place_name",
+    "claim.destination",
+    "claim.location",
+    "claim.claimed_place_id",
+    "claim.original_title",
+    "candidate.display_name",
+    "candidate.formatted_address",
+    "candidate.address_components",
+    "candidate.observations",
+    "case.candidates",
+)
 INSTRUCTIONS = """Judge every supplied identity reference using only independent candidate facts.
 Original planner claims are comparison inputs, not evidence. Provider rank is not confidence.
 Select a supplied candidate only when it represents the intended venue; otherwise return
@@ -52,6 +65,27 @@ judgments. An address failure requires claim.place_name, claim.destination, clai
 and independent candidate support. Without a selected candidate, cite case.candidates (the
 complete supplied independent set); without that support, use unknown. Do not certify opening
 hours, routes, or factual accuracy of model judgments."""
+V0_INSTRUCTIONS = """Correspond every original V0 claim to its supplied independent API candidates.
+Return match only for a supplied candidate representing the intended venue; otherwise use
+unknown or no_supported_match with candidate_id null. Matching and original-claim correctness
+are separate: recognizing a candidate never repairs an incorrect address or different venue.
+Use only supplied facts; do not invent candidates, coordinates, opening/route evidence or
+corrected planner output. Original claims are comparison inputs, not independent evidence.
+Compare name, destination, supplied ID and all conflicting provider observations. Provider
+rank is not confidence. Destination must be consistent for adoption. Explain every judgment.
+Use only the evidence_fields schema enum, citing actual nonempty fields of this case and
+its selected candidate. A match requires claim.place_name, claim.destination,
+candidate.display_name and candidate.formatted_address; also cite claim.location and
+claim.claimed_place_id when supplied. Do not invent or rename citation paths.
+For every decision, if claim.location is absent/null/blank, address_assessment MUST be
+not_supplied and claim.location MUST NOT be cited. Missing addresses alone are not errors.
+If an original address is supplied, not_supplied is forbidden. Assess equivalent wording,
+different_precision, incorrect_claim (recognized venue but wrong original address),
+different_place or unknown according to available evidence. Insufficient support is unknown.
+An address failure requires claim.place_name, claim.destination, claim.location and independent
+candidate.display_name/candidate.formatted_address; without a selected candidate cite the
+complete nonempty case.candidates instead. Such supported failures stay FAIL without adoption.
+Do not certify opening hours, routes or factual accuracy of model judgments."""
 
 
 @dataclass(frozen=True)
@@ -72,7 +106,7 @@ def _packet(cases):
     )
 
 
-def judgment_schema():
+def judgment_schema(*, historical=True):
     """Strict portable model output schema; no provider-specific runtime dependency."""
     properties = {
         "reference_id": {"type": "string"},
@@ -83,6 +117,16 @@ def judgment_schema():
         "address_assessment": {"type": "string", "enum": list(ADDRESS_STATES)},
         "destination_assessment": {"type": "string", "enum": list(DESTINATION_STATES)},
     }
+    if not historical:
+        properties["evidence_fields"]["items"]["enum"] = list(CITATION_PATHS)
+        properties["evidence_fields"]["description"] = (
+            "Cite only actual nonempty fields owned by this case and selected candidate. "
+            "Never cite claim.location when absent/null/blank."
+        )
+        properties["address_assessment"]["description"] = (
+            "For every decision, absent/null/blank claim.location requires not_supplied; "
+            "a supplied original location forbids not_supplied. Absence alone is not an error."
+        )
     return {
         "type": "object",
         "additionalProperties": False,
@@ -136,6 +180,34 @@ def _cases(prepared, evidence, *, v0_only=False):
     return refs, observed, cases
 
 
+def _correspondence_schema(packet):
+    """Bind address-state alternatives to the owned short references before sending."""
+    schema = packet.constrain_schema(judgment_schema(historical=False))
+    decisions = schema["properties"]["decisions"]
+    variants = []
+    for supplied in (False, True):
+        references = [
+            case["reference_id"]
+            for case in packet.payload["cases"]
+            if text(case["claim"]["location"]) == supplied
+        ]
+        if not references:
+            continue
+        variant = json.loads(json.dumps(decisions["items"]))
+        properties = variant["properties"]
+        properties["reference_id"]["enum"] = references
+        properties["address_assessment"]["enum"] = (
+            [state for state in ADDRESS_STATES if state != "not_supplied"]
+            if supplied
+            else ["not_supplied"]
+        )
+        if not supplied:
+            properties["evidence_fields"]["items"]["enum"].remove("claim.location")
+        variants.append(variant)
+    decisions["items"] = {"anyOf": variants}
+    return schema
+
+
 def prepare_identity_judgment(intake, evidence, *, model, historical=False):
     """Freeze a complete model request without executing a model or provider."""
     if not text(model):
@@ -147,7 +219,9 @@ def prepare_identity_judgment(intake, evidence, *, model, historical=False):
     packet = _packet(cases)
     request = {
         "model": model,
-        "instructions": INSTRUCTIONS + "\n" + packet.payload["instructions"],
+        "instructions": (INSTRUCTIONS if historical else V0_INSTRUCTIONS)
+        + "\n"
+        + packet.payload["instructions"],
         "input": json.dumps(
             {"cases": packet.payload["cases"]},
             ensure_ascii=False,
@@ -160,11 +234,13 @@ def prepare_identity_judgment(intake, evidence, *, model, historical=False):
                 "type": "json_schema",
                 "name": "IdentityJudgments",
                 "strict": True,
-                "schema": packet.constrain_schema(judgment_schema()),
+                "schema": packet.constrain_schema(judgment_schema())
+                if historical
+                else _correspondence_schema(packet),
             }
         },
     }
-    scope = {} if historical else {"association_policy_version": "v0_identity_correspondence_1"}
+    scope = {} if historical else {"association_policy_version": V0_POLICY_VERSION}
     return IdentityJudgmentPacket(
         freeze(
             {
@@ -263,21 +339,12 @@ def _decisions(intake, evidence, cases, material, *, historical=True):
         candidate = next(
             (c for c in case["candidates"] if c["place_id"] == row["candidate_id"]), None
         )
+        has_location = text(case["claim"]["location"])
+        if not historical and (row["address_assessment"] == "not_supplied") == has_location:
+            raise ValueError("Address assessment contradicts original location presence")
         cited = set(row["evidence_fields"])
-        allowed = {
-            "claim.place_name",
-            "claim.destination",
-            "claim.location",
-            "claim.claimed_place_id",
-            "claim.original_title",
-            "candidate.display_name",
-            "candidate.formatted_address",
-            "candidate.address_components",
-            "candidate.observations",
-            "case.candidates",
-        }
         for field in cited:
-            if field not in allowed:
+            if field not in CITATION_PATHS:
                 raise ValueError("Unsupported identity judgment citation")
             owner, key = field.split(".")
             value = (
@@ -316,7 +383,6 @@ def _decisions(intake, evidence, cases, material, *, historical=True):
                 "candidate.display_name",
                 "candidate.formatted_address",
             }
-            has_location = text(case["claim"]["location"])
             if has_location:
                 required.add("claim.location")
             if text(case["claim"]["claimed_place_id"]):
@@ -327,6 +393,7 @@ def _decisions(intake, evidence, cases, material, *, historical=True):
                 raise ValueError("Address assessment contradicts original location presence")
         decisions[row["reference_id"]] = row
     return decisions, {
+        **({"association_policy_version": V0_POLICY_VERSION} if not historical else {}),
         "model": model,
         "response_id": response["id"],
         "request_sha256": expected["request_sha256"],
@@ -403,6 +470,16 @@ def resolve_llm_identities(intake, evidence, *, model_result=None, v0_only=False
                     "location": ref["location"],
                 },
                 "model_judgment": judgment,
+                **(
+                    {
+                        "candidate_correspondence": {
+                            "decision": judgment["decision"] if judgment else "unknown",
+                            "candidate_id": judgment["candidate_id"] if judgment else None,
+                        }
+                    }
+                    if v0_only
+                    else {}
+                ),
             }
         )
     queue = [

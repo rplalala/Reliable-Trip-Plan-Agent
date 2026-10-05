@@ -44,7 +44,7 @@ def output(plan, *, failure=False):
                 "candidate_id": None,
                 "rationale": "Insufficient independent facts.",
                 "evidence_fields": [],
-                "address_assessment": "unknown",
+                "address_assessment": "unknown" if case["claim"]["location"] else "not_supplied",
                 "destination_assessment": "unknown",
             }
         )

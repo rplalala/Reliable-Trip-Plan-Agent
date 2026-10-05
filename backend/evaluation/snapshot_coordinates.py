@@ -36,7 +36,10 @@ def prepare_snapshot_coordinates(intake, identity_report, snapshot_directory):
             "identity",
             "Current linked identity report required",
         )
-        if any("programmatic_judgment" in r for r in identity["records"]):
+        if any(
+            "programmatic_judgment" in r or "candidate_correspondence" in r
+            for r in identity["records"]
+        ):
             base["unadopted_references"] = [
                 {key: r[key] for key in ("reference_id", "source", "reason", "grounding_verdict")}
                 for r in identity["records"]
