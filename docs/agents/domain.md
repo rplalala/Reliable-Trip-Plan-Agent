@@ -30,7 +30,8 @@ conflicts with recorded decisions explicitly rather than silently overriding the
 ## Record admission and topic ownership
 
 Choose a destination by purpose before writing. This section owns admission and deduplication
-rules; AGENTS.md owns task approval, publication, Git and research limits.
+rules; [AGENTS.md](../../AGENTS.md) and its linked policies own task approval,
+publication, Git and research limits.
 
 | Material | Owner | Admission boundary |
 | --- | --- | --- |
@@ -73,3 +74,29 @@ replace the evidence of an older decision. Common archive warnings may stay at e
 Keep a long record when its unique evidence is useful; neither length nor current implementation
 coverage alone is a deletion criterion. Before retiring a record, place still-valid technical rules
 in their current owner and redirect dependencies to the retained history or accessible revision.
+
+## Thesis Research Archive
+
+`thesis_notes/` stores historical research/development records for future thesis work.
+It is a local archive, not a project source of truth. Shareable engineering evidence belongs
+in `docs/records/`; local research context and private interpretation belong in `thesis_notes/`.
+When preserving, promoting or deduplicating a record, apply the
+[record admission rules](#record-admission-and-topic-ownership).
+
+For normal development tasks:
+
+- Proactively preserve meaningful failure diagnoses, architecture decisions, rejected approaches and development validation results in the appropriate existing record owner under those admission rules, without requesting separate approval. Read only the relevant archive files needed to place or update the record. Use one full record per event; local notes may reference a public record and add distinct research context.
+- Do not use thesis notes to determine current requirements or architecture.
+- Historical notes may contain rejected, superseded, or outdated designs and must never override current project files.
+- Archive updates are part of the current development task, not a separate stage requiring approval. Summarize any archive updates in the final Chinese report.
+
+For all archive updates:
+
+- record the date, relevant code revision and uncommitted-change context, evidence locations, and validation scope or limitations;
+- distinguish observed facts from hypotheses and inferences;
+- preserve historical sequence, including rejected and superseded approaches;
+- distinguish design status such as `Proposed`, `Accepted`, `Implemented`, `Validated`, and `Frozen`;
+- do not invent missing prompts, outputs, logs, latency, tokens, costs, or rationale;
+- do not describe development smoke tests as formal benchmarks unless they were explicitly conducted as such.
+
+Do not create a final version-level research retrospective unless I explicitly request it, normally after that version has been completed and frozen.

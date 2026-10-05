@@ -4,7 +4,8 @@ import asyncio
 import json
 
 from backend.evaluation.controlled_preparation import prepare_controlled_case
-from backend.evaluation.identity import identity_references, resolve_identities
+from backend.evaluation.identity import identity_references
+from backend.evaluation.identity import resolve_legacy_identities as resolve_identities
 from backend.evaluation.records import canonical_digest
 from backend.evaluation.routes import prepare_routes
 from backend.evaluation.snapshot import AcquisitionPolicy, Response, acquire_snapshot

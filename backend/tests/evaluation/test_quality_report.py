@@ -6,6 +6,7 @@ import json
 
 import pytest
 
+from backend.evaluation.identity import identity_references, resolve_identities
 from backend.evaluation.quality_report import build_quality_report
 from backend.evaluation.records import canonical_digest
 from backend.evaluation.routes import prepare_routes
@@ -19,6 +20,8 @@ from backend.evaluation.snapshot import (
 from backend.tests.evaluation import test_requirement_schedule as schedule_tests
 from backend.tests.evaluation import test_routes as route_tests
 from backend.tests.evaluation.test_daily_density import density_reviews
+from backend.tests.evaluation.test_identity import evidence, search
+from backend.tests.evaluation.test_identity_llm import model_material
 from backend.tests.evaluation.test_intake import activity
 
 pytest_plugins = ("backend.tests.evaluation.test_intake",)
@@ -139,6 +142,69 @@ def test_known_unknown_identity_has_no_fabrication_penalty(route_case):
         assert dim["denominator"] == 2
         assert dim["rates"]["unknown_rate"] == 1
         assert dim["verified_score_0_100"] == 0
+
+
+def test_legacy_metadata_cannot_supply_a_new_grounding_verdict(route_case):
+    case = route_case()
+    historical = case[1]
+    legacy = historical.to_dict()
+    for row in legacy["records"]:
+        row["grounding_verdict"] = "FAIL"
+    out = report(replay_evidence(case, identity=legacy))
+    assert out["status"] == "complete", out["diagnostics"]
+    for version in out["groups"][0]["versions"].values():
+        assert version["dimensions"]["grounding"]["counts"] == {"PASS": 2, "FAIL": 0, "UNKNOWN": 0}
+
+
+@pytest.mark.parametrize("version", ["v0", "v1", "v2", "v3"])
+@pytest.mark.parametrize("assessment", ["incorrect_claim", "different_place", "unknown"])
+def test_address_errors_are_failures_without_repairing_any_version(route_case, version, assessment):
+    def change(results):
+        route_tests.no_departure(results)
+        results[version]["itinerary"]["days"][0]["activities"][0]["location"] = "Wrong address"
+
+    case = route_case(change=change)
+    intake = case[0]
+    original = copy.deepcopy(intake.to_dict())
+    observed = evidence(
+        intake,
+        [
+            search(r, r["name"], place_id="canonical-" + r["name"])
+            for r in identity_references(intake)
+        ],
+    )
+
+    def choose(row, selected):
+        if selected["claim"]["location"]:
+            row["address_assessment"] = assessment
+            row["evidence_fields"].append("claim.location")
+
+    identity = resolve_identities(
+        intake, observed, model_result=model_material(intake, observed, decisions=choose)
+    ).to_dict()
+    assert identity["status"] == ("needs_model_judgment" if assessment == "unknown" else "complete")
+    assert len(identity["judgment_queue"]) == (1 if assessment == "unknown" else 0)
+    accepted = replay_evidence(case, identity=identity)
+    out = report(accepted)
+    assert out["status"] == "complete", out["diagnostics"]
+    versions = out["groups"][0]["versions"]
+    expected = {"PASS": 1, "FAIL": 1, "UNKNOWN": 0}
+    if assessment == "unknown":
+        expected = {"PASS": 1, "FAIL": 0, "UNKNOWN": 1}
+    assert versions[version]["dimensions"]["grounding"]["counts"] == expected
+    assert versions[version]["dimensions"]["grounding"]["denominator"] == 2
+    assert versions[version]["dimensions"]["routes"]["counts"] == {
+        "PASS": 0,
+        "FAIL": 0,
+        "UNKNOWN": 1,
+    }
+    for other in {"v0", "v1", "v2", "v3"} - {version}:
+        assert versions[other]["dimensions"]["grounding"]["counts"] == {
+            "PASS": 2,
+            "FAIL": 0,
+            "UNKNOWN": 0,
+        }
+    assert intake.to_dict() == original
 
 
 def test_single_version_no_checks_keeps_raw_na_and_zero_contribution(route_case):

@@ -50,12 +50,32 @@ and [dated bridge record](records/evaluation/routes.md#snapshot-coordinate-bridg
 
 ## Scoring semantics and uncertainty
 
+The user accepted a [version-specific evaluator requirement](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
+on 2026-10-06: V0 introduces an LLM primarily for generated-POI correspondence with
+independent API candidates; V1-V3 evaluation uses API evidence and program rules without
+an evaluator model or fallback, including user-named requirements. Original API-backed
+name/address differences count as errors, without repair. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
+owns the classified follow-ups. This requirement is not implemented yet; the following
+paragraph describes current code, and historical evidence is not reclassified.
+
+Implemented place identity uses the [uniform LLM judgment contract](contracts/0002-intake-identity-usage.md#uniform-llm-identity)
+for V0-V3, with independent candidates and exact source-bound offline replay. High-impact
+references and sampling no longer require human identity confirmation. Address correctness
+remains a separate assessment: recognizing a venue does not repair the delivered address
+or establish opening/route feasibility. Both a recognizable venue with an incorrect submitted
+address and an address identifying another venue produce grounding FAIL and prohibit canonical
+adoption for downstream coordinates/endpoints. Insufficient evidence stays UNKNOWN. All versions
+use the same standard; evaluation does not hide baseline errors or presume a version must fail.
+Explicit historical human identity replay is retained.
+Blinded preference review and other human supplements keep their separate responsibilities.
+
 | Term | Meaning |
 | --- | --- |
 | Submitted group | One request and its source-linked selected version artifacts; inclusion is not proof of quality |
 | Claim | A proposition represented in the submitted output or reviewed obligation |
 | Independent observation | Separately sourced evidence with declared identity/query/time applicability |
-| Adjudication | Recorded human resolution of an ambiguous or audited association; not planner self-validation |
+| Identity judgment | LLM association with supplied independent candidates, preserving original claims and uncertainty |
+| Historical adjudication | Human resolution in an explicitly replayed legacy identity report |
 | Compliance | Outcome against an applicable criterion, distinct from evidence availability |
 | Common mask | The explicitly shared comparison set; missing evidence must remain visible |
 | UNKNOWN | An unresolved applicable fact/outcome, not a passing check or a zero-valued measurement |

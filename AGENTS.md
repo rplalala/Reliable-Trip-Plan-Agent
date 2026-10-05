@@ -1,357 +1,55 @@
-# Codex Development Rules
-
-This repository is a Capstone / Thesis B travel-planning research project.
-
-Read `PROJECT.md` when project-level context is needed.
-Treat `PROJECT.md` as the current source of truth.
-
-Historical proposal, meeting, slide, paper, reference, or thesis-note files may contain older decisions.
-Do not read all historical/reference files unless I explicitly ask or they are necessary for the current task.
-
-## Current Responsibility
-
-For now, you are responsible only for:
-
-- system design,
-- software architecture,
-- implementation,
-- implementation testing,
-- maintaining independently runnable V0, V1, V2, and V3 versions.
-
-Do **not** start the following unless I explicitly ask later:
-
-- formal benchmark design,
-- formal V0/V1/V2/V3 benchmark comparison,
-- formal experiment analysis,
-- formal thesis writing,
-- final research conclusions.
-
-Small development-time pilot scenarios are allowed only to verify that an implementation works.
-
-Proactive research-note preservation under `thesis_notes/` is authorized under the Thesis Research Archive rules below.
-This does not authorize formal thesis writing or formal research evaluation.
-
-## Language Policy
-
-All repository content must be written in **English**.
-
-This includes:
-
-- file names,
-- directory names,
-- source code identifiers,
-- class names,
-- function names,
-- variable names,
-- code comments,
-- docstrings,
-- log messages,
-- error messages,
-- test names,
-- configuration keys,
-- database table names,
-- database column names,
-- API field names,
-- README and project documentation,
-- Git commit messages.
-
-Do not write Chinese text inside project files unless I explicitly request Chinese for a specific user-facing feature.
-
-When communicating with me in Codex chat, use **Chinese** for:
-
-- plans,
-- confirmations,
-- explanations,
-- progress reports,
-- debugging explanations,
-- milestone reports,
-- recommendations.
-
-Technical identifiers, file names, API names, library names, and code snippets should remain in English inside Chinese explanations.
-
-## Collaboration Workflow
-
-For every meaningful development task:
-
-1. Inspect only the relevant current files.
-2. Before making major changes, briefly tell me in Chinese:
-   - what you plan to do,
-   - important files you expect to create or modify,
-   - the implementation approach,
-   - tests/checks you plan to run,
-   - whether the change could affect any existing V0/V1/V2/V3 behavior.
-3. Obtain my explicit approval for the proposed scope before major changes. An existing explicit approval for that scope remains valid; do not request it again.
-4. Within the approved task, proceed through implementation, relevant tests, local commits, code review, necessary corrections, and related documentation updates without separate approval for each step. Follow the Git Commit Policy for commit/review order. Honor any explicit exclusions or limits, including live-run budgets and no-live instructions.
-5. Run relevant tests/checks.
-6. When finished, report in Chinese:
-   - what was implemented,
-   - important files changed,
-   - test/check results,
-   - important limitations or unresolved issues,
-   - recommended next step.
-7. Request approval before expanding the agreed scope or starting a separate task. Moving between implementation, testing, review, corrections, and documentation within the approved scope is not a new task.
-
-The separate approval requirements for publication and other restricted Git actions, version freezes and progression, and formal research work below still apply. Local commits follow the Git Commit Policy.
-
-### Self-contained documentation update reports
-
-When updating project documentation, also include a brief, self-contained Chinese summary of
-the updated content in the final chat response. The user forwards these responses to ChatGPT
-on the web, where local repository links and files are not available.
-
-- Explain the substantive changes, current status, important boundaries and remaining limitations.
-- When documenting validation, summarize the actual test sequence, initial failures, corrections
-  and retest outcomes at a level sufficient to understand the result without opening the file.
-- Local document links are supplementary references, not a substitute for this summary.
-- Do not require the user to upload the updated document merely to understand the report.
-- Keep the summary concise; do not reproduce the entire document or unrelated project history.
-
-## Git Commit Policy
-
-Within an approved task, create local commits without requesting separate approval for
-each commit or its grouping, unless I explicitly require approval, defer commits or
-prohibit them. Implementation scope still requires approval; permission to commit does
-not authorize another ticket, a broader change or a live run.
-
-Before committing:
-
-1. Inspect the relevant diff.
-2. Briefly explain the logical commit grouping in Chinese; this is informational unless I require approval.
-3. Run relevant tests/checks. Commit only after they pass; resolve failures within the approved scope or report a blocker.
-4. Stage only the current task's intended files/hunks, preserving unrelated pre-existing work.
-
-### Implementation, review and correction sequence
-
-For implementation tasks, follow Matt's `implement` flow with `tdd` and `code-review`,
-using this repository's commit order:
-
-1. Record the starting commit before implementation as the review fixed point, unless I specify another base.
-2. Implement with TDD at the agreed seams and complete relevant validation.
-3. Commit the implementation and its directly related tests in logical groups **before code review**.
-4. Run `code-review` against the recorded fixed point through the committed implementation, on both Standards and Spec axes. Include the task's commit list so the full change is reviewed.
-5. If review finds issues, fix them within the approved scope, run relevant checks, and create additional commits such as `fix: correct route boundary handling`. Use `test:` or `docs:` when the correction only changes tests or documentation. Recheck the affected findings; repeat correction and commit as needed.
-6. Commit necessary final documentation/acceptance updates in a coherent group and report the implementation and correction history.
-
-This order overrides a skill's default commit-after-review order. Preserve the original
-implementation commits and separate review-fix commits; do not amend, squash or rewrite
-them merely to absorb review corrections. Routine in-scope corrections and their commits
-need no additional approval. Scope expansion and task-specific exclusions still apply.
-
-Prefer small, logically coherent commits grouped by responsibility or capability.
-
-Keep implementation and its directly related tests in the same commit.
-
-Avoid mixing unrelated concerns such as feature behavior, shared infrastructure, frontend changes, provider integrations, observability, and documentation when they can be separated cleanly.
-
-Use partial staging when necessary.
-
-Do not change implementation solely to force an artificial commit split.
-
-Do not force-add ignored files unless I explicitly authorize it.
-
-Never commit secrets, `.env` files with real credentials, runtime logs, raw provider/LLM payloads, temporary generated files, or ignored files unless explicitly authorized.
-
-Use concise English Conventional Commit-style messages when appropriate:
-
-- `feat:` new capability
-- `fix:` bug fix
-- `refactor:` internal restructuring
-- `test:` independent test-only change
-- `docs:` tracked documentation
-- `chore:` maintenance/tooling
-
-Commit messages should describe the logical change, not list files.
-
-After committing, report the commit hashes/messages, test results, and final `git status`.
-
-Do not push, merge, create a PR, or switch branches unless I explicitly ask.
-
-## Version Rules
-
-Development sequence:
-
-- V0: Plain LLM
-- V1: V0 + External Information / Tools
-- V2: V1 + RAG
-- V3: V2 + Validation + Targeted Repair + Re-validation
-
-V0, V1, V2, and V3 must remain independently runnable.
-
-Do not overwrite an earlier version when implementing a later version.
-
-Prefer shared components plus version-specific graph/configuration/entry points.
-
-Changes to shared components must not silently change the intended behavior of earlier versions.
-
-At a minimum, preserve independent execution paths such as:
-
-```text
-scripts/run_v0.py
-scripts/run_v1.py
-scripts/run_v2.py
-scripts/run_v3.py
-```
-
-## Version Freeze Documentation
-
-A version is considered frozen only after I explicitly approve it as final/stable.
-
-Passing tests, live smoke tests, or completing implementation does not automatically freeze a version.
-
-When I explicitly approve a version freeze:
-
-1. Update the corresponding version documentation to match the actual implemented state.
-2. Record final architecture, behavior, configuration, test/live-smoke status, known limitations, and approved post-milestone changes.
-3. Preserve historical accuracy; do not rewrite later changes as if they existed in the original milestone.
-4. Do not document future/unimplemented features as part of the frozen version.
-5. Do not begin the next version until the documentation update is complete and I approve moving forward.
-6. Commit tracked freeze documentation under the Git Commit Policy. Force-adding ignored documentation and pushing still require explicit authorization.
-
-Examples:
-
-- V0 → `docs/records/v0-v3/v0-milestone.md`
-- V1 → the numbered core architecture and `docs/records/v0-v3/v1-milestone.md`
-- V2/V3 → corresponding version documentation
-
-## Thesis Research Archive
-
-`thesis_notes/` stores historical research/development records for future thesis work.
-It is a local archive, not a project source of truth. Shareable engineering evidence belongs
-in `docs/records/`; local research context and private interpretation belong in `thesis_notes/`.
-When preserving, promoting or deduplicating a record, apply the
-[record admission rules](docs/agents/domain.md#record-admission-and-topic-ownership).
-
-For normal development tasks:
-
-- Proactively preserve meaningful failure diagnoses, architecture decisions, rejected approaches and development validation results in the appropriate existing record owner under those admission rules, without requesting separate approval. Read only the relevant archive files needed to place or update the record. Use one full record per event; local notes may reference a public record and add distinct research context.
-- Do not use thesis notes to determine current requirements or architecture.
-- Historical notes may contain rejected, superseded, or outdated designs and must never override current project files.
-- Archive updates are part of the current development task, not a separate stage requiring approval. Summarize any archive updates in the final Chinese report.
-
-For all archive updates:
-
-- record the date, relevant code revision and uncommitted-change context, evidence locations, and validation scope or limitations;
-- distinguish observed facts from hypotheses and inferences;
-- preserve historical sequence, including rejected and superseded approaches;
-- distinguish design status such as `Proposed`, `Accepted`, `Implemented`, `Validated`, and `Frozen`;
-- do not invent missing prompts, outputs, logs, latency, tokens, costs, or rationale;
-- do not describe development smoke tests as formal benchmarks unless they were explicitly conducted as such.
-
-Do not create a final version-level research retrospective unless I explicitly request it, normally after that version has been completed and frozen.
-
-## Milestone Notification
-
-When V0, V1, V2, or V3 is fully implemented and relevant tests pass, explicitly notify me in Chinese.
-
-Use the fixed milestone marker first:
-
-- `V0 milestone completed.`
-- `V1 milestone completed.`
-- `V2 milestone completed.`
-- `V3 milestone completed.`
-
-Then explain in Chinese:
-
-- what that version contains,
-- whether relevant tests passed,
-- whether all previous versions remain independently runnable,
-- important limitations,
-- recommended next step.
-
-Do not automatically begin the next version.
-
-A milestone completion report does not mean the version is frozen; freezing requires my explicit approval.
-
-## Architecture Principles
-
-Prefer a modular monolith.
-
-Keep:
-
-- frontend concerns in React,
-- API and application logic in FastAPI,
-- LLM/RAG/orchestration/validation/repair in the backend,
-- PostgreSQL + pgvector as the primary persistence layer.
-
-Do not introduce microservices, queues, caches, or other infrastructure without a concrete project need.
-
-Normalize data from external providers into internal schemas instead of passing provider-specific payloads throughout the application.
-
-Do not call third-party APIs directly from LangGraph nodes when a service/client abstraction is more appropriate.
-
-### Budget and limit tradeoffs
-
-Treat current budgets and limits as tunable engineering choices. When diagnosing a bottleneck, compare a measured increase in the relevant limit with adding mechanisms under the existing limit. Propose a budget adjustment when evidence suggests it is more effective or simpler to maintain. Explain the observed bottleneck, proposed values, expected benefit, cost and latency impact, risks, and bounded validation and rollback criteria. Distinguish resource limits from correctness requirements; increasing a budget does not relax evidence or acceptance checks. Existing task-specific budget restrictions remain in force until the user approves a change.
-
-## Testing
-
-### Smoke-test coordination
-
-The iteration conversation (`01a0d8d3-b759-7920-957b-a0b144352afe`) owns smoke-test plans, budgets, acceptance criteria, tool adaptation, implementation, offline validation, and result assessment. Delegate only execution of prepared, authorized smoke tests and reporting to the same-project conversation titled `smoke tests`. That conversation must report blockers rather than design solutions or modify code. The user authorizes coordination messages between these conversations for this workflow.
-
-After execution, `smoke tests` must report the process, results, issues requiring fixes or further verification, deviations from the current project spec, and relevant evidence/document paths to the iteration conversation. Distinguish observed facts, inferences, and missing evidence. Delegation does not override live-run approval requirements or existing budgets and exclusions.
-
-Default:
-
-- module change → run relevant tests,
-- shared schema/core graph change → run broader tests,
-- V0/V1/V2/V3 milestone → run the full relevant test suite.
-
-Use mocked or fixture responses for third-party API tests where practical.
-
-Do not repeatedly read or test unrelated parts of the repository without a reason.
-
-## General Constraints
-
-- Avoid unrelated refactors.
-- Avoid unnecessary complexity.
-- Do not implement future-stage mechanisms early.
-- Follow the Git Commit Policy for local commits and explicitly authorized publication.
-- Keep explanations concise unless I ask for more detail.
-
-## Agent skills
-
-### Matt skills workflow
-
-- Invoke `$ask-matt` with the task, constraints, and expected result when unsure
-  which skill fits, or invoke a specific skill such as `$diagnosing-bugs`.
-  Read its `SKILL.md` before use. Matt's `/skill-name` notation refers to the
-  corresponding skill; use the invocation supported by the current client.
-- Clarify repository ideas with `grill-with-docs`. For a small, clear task, use
-  `implement`; for a multi-session build, use `to-spec` -> `to-tickets` ->
-  `implement` per ticket, resolving blockers first. `implement` uses `tdd` and
-  `code-review` against both project standards and the spec; commit/review/correction
-  order follows the Git Commit Policy above.
-- Use `prototype` when a design question needs runnable evidence, and `handoff`
-  when moving findings between directories or sessions.
-- Route raw incoming requests through `triage`; tickets from `to-tickets` are
-  already prepared. Use `diagnosing-bugs` for hard bugs: reproduce the failure,
-  then fix it with a regression test.
-- Use `wayfinder` for large efforts with unresolved direction, then return to
-  `to-spec` -> `to-tickets` -> `implement` once decisions are clear.
-- Use `improve-codebase-architecture` to find improvement candidates,
-  `codebase-design` for module interfaces and test seams, `domain-modeling` for
-  terminology and ADRs, and `writing-for-agents` for agent-facing documents.
-- Keep clarification, spec, and ticket creation in one context when practical;
-  start each self-contained implementation ticket with fresh context. Continue,
-  clear, hand off, or compact at phase boundaries as needed. Delegate only when
-  applicable instructions explicitly authorize it.
-- Verify skill availability and the tracker, triage, and documentation
-  conventions below before an engineering flow. If setup is missing, use
-  `setup-matt-pocock-skills` within an approved scope. Report unavailable skills
-  and use an available equivalent, or ask before installing them.
-- These workflows follow this file's approval, Git, live-run, research, and
-  version rules. `PROJECT.md` remains the current source of truth; skill-generated
-  context, ADRs, and specs must stay aligned with it.
-
-### Issue tracker
-
-Use GitHub Issues for specifications, parent/child tickets, task state and discussion. Keep durable detailed contracts and acceptance records in tracked core `docs/` contracts and dated `docs/records/` documents. `.scratch/` is optional ignored drafting space, never the formal specification or issue-tracker location. See `docs/agents/issue-tracker.md` for skill operations and published-link rules.
-
-### Triage labels
-
-Use the existing default five triage roles as GitHub labels. Local `Status:` fields are historical snapshots, not live task state. See `docs/agents/triage-labels.md`.
-
-### Project documentation
-
-Use `PROJECT.md` for current project state and `docs/README.md` to find tracked design and acceptance documents. GitHub specs link to published documentation revisions; published files must not depend on ignored/local-only files. Preserve the single-context project layout and current source-of-truth hierarchy. See `docs/agents/domain.md`.
+# Codex development rules
+
+## Scope and authority
+
+- `PROJECT.md` is the current source of truth; `docs/README.md` locates current
+  contracts and records. Read relevant current files; use historical/reference
+  material only when the task requires it or the user requests it.
+- Work covers system design, architecture, implementation/testing and independently
+  runnable V0-V3. Small implementation pilots are allowed. Formal benchmark design,
+  formal version comparisons/experiment analysis/thesis writing, final research conclusions
+  and final version-level research retrospectives require explicit authorization.
+- All repository content (including code, configuration, comments, docs and Git
+  messages) is English. Chinese in project files requires explicit approval for the
+  specific user-facing feature. Communicate with the user in Chinese; keep
+  technical identifiers and code in English. Keep explanations concise unless asked.
+
+## Task boundaries
+
+- Before major changes, explain scope, files, approach, checks and V0-V3 impact in
+  Chinese; obtain explicit scope approval. Existing approval remains valid. Complete
+  implementation, tests, local commits, review, corrections and related docs within
+  that scope without repeated approval. Scope expansion or a separate task needs approval.
+- Local commits are authorized within approved work unless deferred/prohibited.
+  Push, PR creation, merge and branch switching require explicit authorization.
+  Preserve unrelated work; honor task-specific exclusions and live budgets.
+- Keep V0-V3 independently runnable with their intended behavior. A milestone/test
+  pass is not a freeze. Freeze and next-version progression require explicit approval.
+
+## Architecture
+
+Use a modular monolith: React frontend; FastAPI API/application logic; backend
+LLM/RAG/orchestration/validation/repair; PostgreSQL + pgvector persistence. Introduce
+microservices, queues, caches or other infrastructure only for a concrete need.
+Normalize provider payloads into internal schemas; use service/client abstractions
+rather than direct third-party calls from LangGraph nodes where appropriate. Avoid
+unrelated refactors, unnecessary complexity and premature future-stage mechanisms.
+
+## Required policies on demand
+
+These linked rules are binding. Read the applicable sections before the listed
+operation; do not preload every policy or historical record.
+
+| When | Read |
+| --- | --- |
+| Meaningful development, scope, testing or completion reports | [Collaboration](docs/agents/workflow.md#collaboration-workflow), [testing](docs/agents/workflow.md#testing); use [budget tradeoffs](docs/agents/workflow.md#budget-and-limit-tradeoffs) when diagnosing limits |
+| Staging, committing, reviewing or Git delivery | [Git policy](docs/agents/workflow.md#git-commit-policy): fixed base, TDD, implementation/test commits before Standards/Spec review, separate correction commits |
+| Engineering flow: skill selection, planning or implementation | [Matt workflow](docs/agents/workflow.md#matt-skills-workflow); [GitHub tracker](docs/agents/issue-tracker.md) and [triage labels](docs/agents/triage-labels.md) before tracker operations |
+| Version boundaries, milestone, freeze or next-version progression | [Version lifecycle](docs/agents/versions.md) |
+| Live smoke planning or execution | [Smoke policy](docs/agents/smoke-tests.md): current-session execution child, `gpt-6.1-sol`, `medium`; prepared/approved scope only |
+| Documentation, evidence or archive maintenance | [Document ownership/admission](docs/agents/domain.md), including [archive rules](docs/agents/domain.md#thesis-research-archive); proactively preserve meaningful events within approved work |
+
+GitHub Issues own specs, tickets and live task state; current contracts belong in
+tracked `docs/`, dated evidence in `docs/records/`. `.scratch/`, raw runtime artifacts
+and thesis notes are local aids, not competing project authorities or published
+requirements. Final documentation reports must be self-contained in Chinese.

@@ -7,7 +7,8 @@ import socket
 
 import pytest
 
-from backend.evaluation.identity import identity_references, resolve_identities
+from backend.evaluation.identity import identity_references
+from backend.evaluation.identity import resolve_legacy_identities as resolve_identities
 from backend.evaluation.intake import load_batch
 from backend.evaluation.records import canonical_digest
 from backend.evaluation.route_cli import main

@@ -8,7 +8,7 @@ from ..model_references import INSTRUCTION, ShortReferences
 class IdentityAssistancePacket:
     """Expose only local references while preserving independent candidate ownership."""
 
-    def __init__(self, cases):
+    def __init__(self, cases, *, additional_fields=None):
         cases = json.loads(json.dumps(cases))
         ids = [case["reference_id"] for case in cases]
         if not ids or len(set(ids)) != len(ids):
@@ -20,7 +20,13 @@ class IdentityAssistancePacket:
                 raise ValueError("Duplicate identity candidate")
             self.candidates[case["reference_id"]] = set(candidates)
         self.references = ShortReferences(
-            cases, {"reference_id": "r", "place_id": "p", "candidate_id": "p"}
+            cases,
+            {
+                "reference_id": "r",
+                "place_id": "p",
+                "candidate_id": "p",
+                **(additional_fields or {}),
+            },
         )
         self.payload = {"instructions": INSTRUCTION, "cases": self.references.encode(cases)}
         self.manifest = self.references.manifest

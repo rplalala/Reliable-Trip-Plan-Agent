@@ -5,7 +5,8 @@ import json
 
 import pytest
 
-from backend.evaluation.identity import identity_references, resolve_identities
+from backend.evaluation.identity import identity_references
+from backend.evaluation.identity import resolve_legacy_identities as resolve_identities
 from backend.evaluation.intake import load_batch
 from backend.evaluation.requirement_schedule import score_requirement_schedule
 from backend.tests.evaluation.test_identity import evidence, plan, review_envelope, search

@@ -6,11 +6,12 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
+from ._identity_cli import add_identity_options, identity_command
 from .controlled_batch import build_controlled_batch
 from .controlled_preparation import prepare_controlled_case
 from .controlled_replay import replay_controlled_case
 from .controlled_report import build_controlled_report
-from .identity import identity_references, resolve_identities
+from .identity import identity_references
 from .intake import _read
 from .records import MaterialError
 from .routes import prepare_routes
@@ -42,9 +43,10 @@ def main(argv=None):
     identity = commands.add_parser(
         "identity", help="Resolve separately collected identity observations"
     )
-    for name in ("preparation", "evidence", "audit"):
+    for name in ("preparation", "evidence"):
         identity.add_argument(name)
-    identity.add_argument("--reviews")
+    identity.add_argument("audit", nargs="?", help="Historical audit; requires --legacy")
+    add_identity_options(identity)
     evidence_plan = commands.add_parser(
         "evidence-plan", help="Prepare paired independent evidence acquisition"
     )
@@ -91,9 +93,9 @@ def main(argv=None):
         elif args.command == "identity-plan":
             result = build_identity_plan(read(args.preparation), paired=True)
         elif args.command == "identity":
-            result = resolve_identities(
-                read(args.preparation), read(args.evidence), read(args.reviews), read(args.audit)
-            ).to_dict()
+            result = identity_command(
+                read(args.preparation), read(args.evidence), args, read, audit=read(args.audit)
+            )
         elif args.command == "batch":
             result = build_controlled_batch(
                 read(args.manifest),
@@ -132,6 +134,8 @@ def main(argv=None):
             ],
         }
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False))
+    if args.command == "identity" and result.get("status") == "needs_model_judgment":
+        return 3
     return 0 if result.get("status", "complete") in {"complete", "accepted"} else 2
 
 

@@ -11,7 +11,9 @@ from backend.evaluation.identity import (
     REVIEW_VERSION,
     _digest,
     identity_references,
-    resolve_identities,
+)
+from backend.evaluation.identity import (
+    resolve_legacy_identities as resolve_identities,
 )
 from backend.evaluation.identity_cli import main as identity_main
 from backend.evaluation.intake import load_batch
@@ -619,6 +621,7 @@ def test_identity_cli_replays_local_files_without_network(intake_batch, monkeypa
             str(manifest_path),
             str(root / "identity-evidence.json"),
             str(root / "identity-audit.json"),
+            "--legacy",
         ]
     )
     assert exit_code == 3

@@ -109,7 +109,7 @@ def test_bounded_retry_preserves_failures_and_budget_coverage(batch, tmp_path, f
 
 
 def test_identity_snapshot_handoff_uses_real_resolver(batch, tmp_path):
-    from backend.evaluation.identity import resolve_identities
+    from backend.evaluation.identity import resolve_legacy_identities as resolve_identities
     from backend.evaluation.snapshot import (
         AcquisitionPolicy,
         Response,
@@ -151,7 +151,8 @@ def test_identity_snapshot_handoff_uses_real_resolver(batch, tmp_path):
 
 
 def resolved_batch(batch):
-    from backend.evaluation.identity import identity_references, resolve_identities
+    from backend.evaluation.identity import identity_references
+    from backend.evaluation.identity import resolve_legacy_identities as resolve_identities
     from backend.tests.evaluation.test_identity import evidence, plan, review_envelope, search
 
     intake = load_batch(batch[2]())
@@ -169,7 +170,7 @@ def resolved_batch(batch):
 
 @pytest.mark.parametrize("component_state", ["available", "absent", "malformed"])
 def test_address_snapshot_replay_never_backfills_or_adds_requests(batch, tmp_path, component_state):
-    from backend.evaluation.identity import resolve_identities
+    from backend.evaluation.identity import resolve_legacy_identities as resolve_identities
     from backend.evaluation.snapshot import (
         AcquisitionPolicy,
         Response,
@@ -514,7 +515,7 @@ def test_replay_rejects_invalid_collection_times(batch, tmp_path, mutation):
 
 
 def test_supplied_id_and_malformed_optional_location_handoff(batch, tmp_path):
-    from backend.evaluation.identity import resolve_identities
+    from backend.evaluation.identity import resolve_legacy_identities as resolve_identities
     from backend.evaluation.snapshot import (
         AcquisitionPolicy,
         Response,

@@ -1350,3 +1350,407 @@ The local log is `artifacts/seoul-cost-20261005/delivery-correction-tests.txt`; 
 ignored evidence, not a published dependency. No source artifacts, invoices, paid calls,
 planner behavior or route execution changed. Final delivery review and merge status are
 recorded on PR #60 and Issue #59.
+
+<a id="uniform-llm-identity-2026-10-05"></a>
+
+## Uniform LLM identity judgment — 2026-10-05
+
+The user approved replacing mandatory human place-identity confirmation with LLM judgments
+under [Issue #72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72). The decision
+applies to evaluator V0-V3, relevant requirement subjects and optional V3 projections;
+individual names in a live smoke are evidence, not design rules or fixed test cases.
+Implementation baseline: `b158c916148d92d0f73907054aa492f12062004f`; implementation/test
+commit: `9f1cd71`. The unrelated pre-existing `.gitignore` change remains outside the task.
+Git publication and fresh live model/Places/Routes calls were not authorized.
+
+The [current contract](../../contracts/0002-intake-identity-usage.md#uniform-llm-identity)
+prepares immutable packets with original claims, independent candidate observations and
+short references. Every adopted identity comes from supplied model judgments; high-impact
+and sampling no longer impose human gates. Model output explicitly assesses address and
+destination compatibility. An identified venue can coexist with an incorrect original
+address; the original claim is retained. Unknown/no-supported-match and contradictions
+keep unresolved identities, denominator coverage and downstream uncertainty. Exact
+request/response/report replay checks integrity, not semantic correctness or human accuracy.
+Explicit legacy entry points reproduce frozen native/V0 human-policy reports.
+
+Public-boundary TDD first failed on the missing packet module, then missing model adoption,
+downstream replay and CLI preparation. Later tests exposed acceptance of malformed cited
+address components, a malformed-record marker scan and a controlled CLI replay mismatch.
+The controlled mismatch came from JSON field order changing a serialized request string;
+canonical request serialization fixed it without changing source bytes. A source-linked
+synthetic high-impact fixture also needed its declared required-visit count to enter route
+preparation; the fixture now supplies an exact count of one. A final malformed model-content
+regression reproduced an AttributeError and now rejects that material as a ValueError.
+Synthetic evidence covers all versions, optional projections, protected subjects, unknown
+and no-match outputs, wrong claimed IDs, address states, packet/response/report tampering,
+three CLIs, coordinates and V0 route-request preparation with a network guard.
+
+The first full backend gate passed **2804 tests with 10 skips in 353.61s**. Final focused
+coverage after the extra malformed-content regression passed **28 tests in 5.44s**; Ruff
+passed. Standards and Spec each found one issue during independent review. Standards found stale
+PROJECT.md validation metadata, corrected in the pending documentation. Spec found that cited
+address components lacked optional `shortText` type validation. The synthetic regression first
+reproduced acceptance of `shortText: 42`; correction `e8a7293` rejects the complete import and
+consumer replay while keeping valid repeated provider types available to the model. Both
+review rechecks have **zero remaining actionable findings**. Correction retests passed **301
+identity/snapshot/schedule/request tests in 38.57s** and **30 LLM tests in 5.24s**.
+
+The follow-up full run passed 2804 with 10 skips but failed one existing retrieval test,
+`test_sql_timeout_and_caller_cancellation_are_distinct[True]`, in 342.20s. It configures a
+20ms SQL timeout and distinguishes cancellation after an asyncio event. The complete
+retrieval test file independently passed **16 tests in 7.77s**. Timing interference while
+another focused test run was active is an inference, not a confirmed production defect.
+No retrieval code or timeout test was changed. The final serial full backend gate after
+correction passed **2807 tests with 10 skips in 328.32s**, without another test run active.
+The final code revision is `e8a7293`; implementation and correction remain separate commits.
+Ruff, tracked-link checks, preserved historical anchors and protected-file hashes pass.
+Status: locally implemented, offline validated and independently reviewed; Git publication
+and fresh paid judgment collection remain pending separate authorization.
+No mypy/pyright configuration is present. Local logs are ignored evidence identifiers:
+`.scratch/issue72/full-backend.log`, `full-backend-final.log`, `full-backend-serial.log`,
+`review-retest.log`, `review-focused.log` and `retrieval-recheck.log` under that directory.
+
+Offline replay of saved smoke material verified all **61 protected file hashes unchanged**.
+The new derived packet covers nine references (one requirement subject and eight visits),
+has zero human gates and produced zero new model/provider sends or incremental charges.
+Its explicit model is inherited from the saved material solely to prepare the request.
+The prior response lacks the new address assessments; it was not fabricated or reinterpreted
+as a current-policy response. Derived local evidence identifiers are
+`artifacts/llm-identity-policy-20261005/packet.json`, `pending-report.json` and
+`offline-acceptance.json`. New-policy acceptance for that smoke awaits separately authorized
+fresh model judgment; its original six-adoption report and all four UNKNOWN route verdicts
+remain historical evidence. No planner rerun, score change, formal benchmark, version freeze
+or research conclusion is claimed. Blinded preference work and other human supplements are
+outside this place-identity change.
+
+<a id="address-failure-no-repair-2026-10-05"></a>
+
+### Delivered-address failure clarification - 2026-10-05 to 2026-10-06
+
+After the uniform-policy local acceptance, the user clarified that both a recognizable
+intended venue with a wrong submitted address and an address denoting another venue must
+count as errors. Evaluation must preserve baseline mistakes rather than repair V0. The
+same evidence standard applies to every version; an expectation that V0 can err is not
+permission to manufacture failures. This is an in-scope correction under #72, with fixed
+review base `adaf2888b78f9d6cacddd41510f0077720cbe7e3`. The pre-existing unrelated
+`.gitignore` change is excluded; no live sends or Git publication are authorized.
+Implementation/test commit: `1c43007`.
+
+Policy `llm_identity_judgment_2` marks supported `incorrect_claim` and `different_place`
+assessments as grounding FAIL and refuses canonical adoption. The chosen candidate remains
+diagnostic model material, including claimed-ID conflicts, but cannot supply corrected
+addresses, coordinates or route endpoints for that occurrence. UNKNOWN remains for
+insufficient evidence. Confirmed failures complete their judgments rather than entering
+an automatic repair/retry queue. The quality consumer uses replayed per-occurrence verdicts;
+existing score arithmetic, denominators, planner behavior and legacy classifications remain
+unchanged. Prior policy packets/reports cannot authorize current downstream preparation.
+
+TDD reproduced incorrect-address adoption and missing explicit verdicts in eight address
+cases. After blocking adoption, eight four-version report cases exposed confirmed errors
+being downgraded to UNKNOWN; consuming the explicit verdict corrected them. The twelve
+report cases passed (two error assessments and evidence uncertainty across four versions).
+Two further red tests showed unsupported failure assessments being accepted; address failures
+now require original name/destination/location and independent candidate citations. The
+identity/report files then passed 84 tests. Initial test invocations encountered missing
+pytest in system Python and inaccessible default temporary/cache directories; validation
+uses repository `.venv`, new workspace basetemp directories and disabled pytest cache.
+
+The first coordinate regression incorrectly expected the shared venue coordinates to
+disappear globally and failed three cases. Source inspection showed valid references in
+other versions independently retain those coordinates. The corrected public-boundary
+assertion preserves their evidence while proving V0's bad occurrence has a null endpoint,
+no expected route context, zero identity-eligible acquisition legs and zero sends. All
+three error/uncertainty cases passed. This is fixture correction, not suppression of a
+provider/planner error. No internal implementation mocking or actual provider send was used.
+
+The first full gate passed **2824 tests, 10 skipped in 361.36s**. A final legacy-compatibility
+regression initially stopped at stale snapshot linkage; rebuilding its matching synthetic
+snapshot exposed the real defect: an added same-name legacy metadata field supplied new FAIL
+classification. The quality consumer now reads the explicit verdict only from a source-bound
+model record, whose markers require exact LLM replay. Legacy reports keep their original
+classification. Identity and quality files passed **88 tests in 19.29s**, and Ruff passed.
+The final serial full backend gate completed on 2026-10-06 and passed **2825 tests,
+10 skipped in 339.67s**. Independent
+Standards and Spec review of `adaf288...1c43007` and pending current/dated documentation
+reported **zero actionable findings on each axis**; no review correction commit was needed.
+Checks passed for Ruff, diff whitespace, 201 tracked local documentation links, preserved
+explicit historical anchors and English additions. There is no configured mypy/pyright gate.
+Ignored log identifiers are `.scratch/issue72/address-full-backend.log` and
+`.scratch/issue72/address-full-backend-final.log`. The implementation is locally complete;
+Git publication remains separately authorized.
+
+Protected-source replay verified all 61 prior hashes unchanged. New ignored evidence
+identifiers are `artifacts/llm-identity-address-fail-20261005/packet.json`,
+`pending-report.json` and `offline-acceptance.json`. The packet covers the same nine
+references and prepares the inherited model name only. No fresh result is supplied, so
+all nine current-policy verdicts remain UNKNOWN; no old response is rewritten or used
+to invent smoke failures. Fresh paid judgment remains separately authorized. No formal
+benchmark, version comparison, freeze or research conclusion is claimed.
+
+<a id="identity-smoke-preparation-2026-10-06"></a>
+
+### Frozen one-call V0 identity smoke preparation (2026-10-06)
+
+[Issue #73](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/73) approved preparation, offline checks, local commits, review and documentation only.
+The development executor freezes the existing material through the policy-2 judgment packet;
+its new model response remains absent. Default preparation has no network transport. Execution
+requires explicit approval of the exact manifest digest and consumes one bound directory.
+The model is gpt-6-luna, low reasoning, no tools, store=false, one POST, zero retries,
+20,000 estimated input tokens including 1,024 reserve, 4,000 output tokens and a 60-second
+HTTP deadline. Reported usage above the allowance stops import after receipt; the surrogate
+input-token estimate is a preflight guard, not an exact provider tokenizer or invoice ceiling.
+Standard retail reference prices checked on 2026-10-06 are USD 0.10/M input and 0.50/M
+output. The maximum reference estimate is USD 0.004 against a USD 0.005 allowance;
+cache-write/regional/provider adjustments and an actual Foundry invoice remain unavailable.
+No Google acquisition, planner generation, route execution or V1-V3 live expansion is included.
+
+The initial public-seam red gate could not import the missing executor. The first implementation
+revealed frozen material must be thawed before the identity interface accepts it; that adaptation
+was corrected. The first isolated executor gate passed 13 tests. Terminal coverage was then
+extended to tool output, incomplete/partial decisions and source mutation during a call;
+executor plus identity policy passed 52 tests. Ruff caught an approval-digest variable in the
+wrong test scope; it was moved and lint passed. The full backend gate passed **2842 tests, 10 skipped in 397.57s**. A redundant identical
+source check was removed without behavior change during that gate; the final executor
+retest passed **17 tests in 9.60s**. Ruff and syntax checks passed. Both Standards and
+Spec reviewed committed implementation `abc2663` against fixed base
+`f29d8a2a110b7577fe0d320b7ba8c82e7a7cf902` and returned zero findings.
+The pre-existing unrelated `.gitignore` change was preserved and excluded.
+
+A completed execution receipt means valid processing, including FAIL/UNKNOWN judgments,
+not that all venues passed. Address failures have null canonical identity, no candidate-based
+repair and no new coordinates/route endpoints. The old 61-file evidence remains byte-identical.
+Source-bound raw bytes, usage, model envelope and accepted report are separate evidence;
+malformed returns cannot create an accepted report. Any failure stops permanently for that
+execution directory; unknown billing stays null. A future live child must receive the exact
+revision, hashes, command, limits, stopping criteria and user approval before dispatch.
+
+The actual preparation at local evidence identifier
+`artifacts/llm-identity-smoke-20261006/preparation.json` contains nine references and
+**16,498 estimated input tokens including reserve**. Its manifest digest is
+`6387cb507b7e2fdbf1a44badbd977c0fa2c7a5962c913ade01fc3afabc054e02`;
+wire-request digest is
+`8a7740e37a384b0803345b95a92f0bdde21fcbf1776c2a14f7436c3349aeb7e0`.
+All 61 additional protected originals and 69 total frozen source files verified unchanged.
+Implementation hashes are separately bound. The execution directory does not yet exist:
+actual new model/Places/Routes sends and incremental charges are zero. No fresh judgments
+or route facts are available; the current-policy pending verdicts remain UNKNOWN. The
+previous six historical adoptions and four UNKNOWN routes are preserved as historical
+results, not silently upgraded. No particular new PASS/FAIL count is an acceptance target.
+
+The private handoff supplies the exact future command and final local revision. Public
+operational instructions are in the [evaluation README](../../../backend/evaluation/README.md#prepared-one-call-identity-development-smoke).
+This is a validated preparation and local implementation, pending Git publication and
+separate live-plan approval. Neither is a formal benchmark, version freeze or research
+conclusion. The request is a single uniform judgment over saved V0 claims and independent
+facts; all V0-V3 planner behavior and score formulas remain unchanged.
+
+#### Exact-plan approval and prelaunch automatic review block (2026-10-06)
+
+The user subsequently approved the exact frozen single-call plan in the current chat.
+The parent saved local evidence identifier
+`artifacts/llm-identity-smoke-20261006/live-authorization.json` and delegated execution
+only to a current-session `gpt-6.1-sol` child at medium reasoning with no history fork,
+as required by the [smoke policy](../../agents/smoke-tests.md). The approved model under
+test remained `gpt-6-luna` at low reasoning. Source revision was
+`c9965bdd5f651efc6f8c5f2a05b9c7c7f099b149`; only the known unrelated `.gitignore` edit
+was present. The request, manifest, source files, endpoint and limits were unchanged.
+
+The child verified 61/61 protected originals, 69/69 source files and 2/2 implementation
+hashes both before and after the blocked dispatch, plus exact manifest/wire digests,
+HEAD and branch. Automatic approval review rejected the exact execution command before
+it launched. Its stated reasons were insufficient explicit trusted authorization for
+the locally derived identity payload to the specific Azure destination, and a perceived
+model configuration mismatch with smoke policy. This is a reviewer block, not an observed
+provider failure or a measured policy deviation. The documented child/model-under-test
+separation was unchanged. The child stopped and did not retry.
+
+Actual model/Google/planner sends and incremental charges are **zero**. No process exit,
+HTTP status, duration, provider usage, response, identity verdict or provider invoice
+was observed. The bound execution directory remains absent. All nine current-policy
+pending verdicts remain UNKNOWN; source evidence was not edited. The parent independently
+rechecked the same hashes and inspected the frozen wire schema/destination without
+network work. The payload consists of the nine supplied claims, independent candidates,
+provider observations and source associations, plus judgment instructions/output schema.
+The configured destination and full data scope are being presented to the user to address
+the automatic review's request for explicit external-send approval. No new attempt is
+made by this record; the one-call allowance remains unconsumed.
+
+Local evidence identifiers are `blocked-execution.json` next to the preparation and the
+updated private handoff. No code or tests changed, so the prior 2842-pass full backend
+and 17-pass executor gates remain the engineering checks; documentation links/diffs and
+remote tracker readback are checked for this record. This blocked development smoke is
+not a benchmark, a version freeze or a semantic judgment on any real venue.
+
+<a id="identity-smoke-execution-2026-10-06"></a>
+
+### Approved single-call V0 identity execution and rejected import (2026-10-06)
+
+After the prelaunch block above, the parent displayed the exact configured Azure destination,
+nine-reference data scope and model-under-test configuration. The human explicitly approved
+that external send and repeated approval after an interrupted turn. A read-only preflight
+confirmed no matching live process or execution directory, no consumed request, and unchanged
+manifest, wire and implementation/source hashes. Only documentation differed from c9965bd;
+execution revision was **ffb2db3da6e76b80f9a3fd90b38394b8fb4c7b77**, on feature/evaluation,
+with the unrelated pre-existing `.gitignore` edit preserved. The parent recorded local
+`explicit-send-authorization.json` and updated the private handoff. A current-session
+`gpt-6.1-sol`/medium child used a bounded five-turn history fork, permitted by smoke policy,
+to retain direct human consent context. The model under test stayed `gpt-6-luna`/low.
+
+Automatic review allowed the exact command this time. The unchanged manifest digest was
+`6387cb507b7e2fdbf1a44badbd977c0fa2c7a5962c913ade01fc3afabc054e02` and the wire digest
+`8a7740e37a384b0803345b95a92f0bdde21fcbf1776c2a14f7436c3349aeb7e0`. The one real POST
+returned **HTTP 200**, response status completed, in **7.175079 seconds**. Request/response
+UTC timestamps were `2026-10-05T14:57:13.015153+00:00` and
+`2026-10-05T14:57:20.190232+00:00`: **2026-10-06 01:57:13-01:57:20 AEDT** in the client
+calendar. Process exit was **1**, execution receipt stopped with ValueError, and no
+accepted `identity-report.json` was generated. There were no retries, alternate execution
+methods, new Google acquisition, planner reruns or V1-V3 live expansion.
+
+Observed usage was **14,403 input / 967 output / 15,370 total**, cached input 0, reasoning
+0 and cache-write input **14,400**. The executor's frozen base retail calculation recorded
+**USD 0.0019238**. Its declared calculation omits cache-write premiums. Using the
+[official model rates](https://developers.openai.com/api/docs/models/gpt-6-luna) checked
+2026-10-06 (USD 0.10/M ordinary input, 0.125/M cache writes and 0.50/M output), the parent
+separately calculated an adjusted standard retail reference of **USD 0.0022838**:
+three ordinary input tokens, 14,400 cache-write tokens and 967 output tokens. Both
+references are below the USD 0.005 allowance; neither is an Azure invoice. Provider/regional
+adjustments and child/session billing remain outside this model-test reference calculation.
+Original execution usage/cost evidence was not rewritten to absorb the derived estimate.
+
+The raw byte digest was
+`d6f747af929131e4cbd6667e709cb4bb9a42deaacc2ee26f0daf3272b2d262c9`.
+The child preserved `execution.json`, `response.bin` and `model-result.json` under local
+identifier `artifacts/llm-identity-smoke-20261006/execution/`. The parent independently
+verified raw-byte/envelope hashes, exact packet binding, nine unique owned references and
+all **61/61 protected originals, 69/69 sources and 2/2 implementation hashes**. All original
+V0 claims and old smoke evidence remain byte-identical. A read-only public-interface replay
+reproduced **Unsupported identity judgment citation**; no response was edited or repaired.
+
+All nine raw decisions said match/different_precision/consistent. However, each cited
+`case.candidates.display_name` and `case.candidates.formatted_address`; the importer accepts
+`candidate.display_name` and `candidate.formatted_address`, while `case.candidates` alone
+is a separate supported whole-set citation. The protected subject additionally cited a
+null `claim.location` and assessed it as different_precision instead of the required
+not_supplied. The first unsupported citation rejects the complete batch. The parent and
+child inspection of the other malformed fields is diagnostic, not an accepted semantic
+judgment or a human identity gate. Raw matches cannot be counted as PASS, adopted identities,
+new canonical coordinates or route endpoints. Current pending verdicts remain **nine UNKNOWN**;
+this rejected evaluator response is not evidence of nine V0 address failures. Genuine planner
+mistakes remain possible and must not be manufactured or repaired.
+
+The parent saved local `live-assessment.json` and a readable `results.md` beside the preparation,
+containing original claims, independent selected candidate facts, raw rationales/citations,
+rejection diagnostics and distinct usage/cost evidence. These are ignored diagnostic
+artifacts, not current contracts or accepted reports. The consumed execution directory cannot
+be reused. The private handoff records the terminal outcome. No code/tests changed; the
+prior 2842-pass/10-skip full backend and 17-pass executor gates remain the engineering
+checks, and this failed live integration plus exact offline rejection is recorded separately.
+Tracked link/diff checks and remote tracker readback cover the documentation update.
+
+The bounded execution and assessment are complete; the smoke acceptance is **not passed**.
+The proposed next correction is to constrain supported evidence_fields in the model schema
+and clarify/guard missing-address output. It is not implemented here, and no further paid
+request is authorized. Original provider/model evidence must stay intact through any later
+correction. Git publication remains separately unauthorized. This is development smoke
+failure evidence, not a benchmark, version freeze, formal comparison or research conclusion.
+
+<a id="version-specific-evaluator-backlog-2026-10-06"></a>
+
+### Version-specific evaluator decision and classified backlog (2026-10-06)
+
+The user clarified that evaluator V0 introduces an LLM primarily to correspond
+model-generated POI claims with independent API candidates, while V1-V3 evaluation
+introduces no model, including for user-named requirements. API-backed name/address
+differences remain errors; intended-venue recognition cannot repair an original wrong
+address. The earlier all-version LLM design is superseded as a requirement, without
+changing current code or relabeling historical evidence. Independently missing/failed
+evidence remains UNKNOWN; no V0 failure is presumed or manufactured.
+
+The user explicitly requested backlog organization, classification and Issue publication.
+At this specification-only checkpoint, source revision is local unpublished
+`1a3e17f05e49b0f6f9e36661d13b32b0fda3f27f` on feature/evaluation, with the pre-existing
+unrelated `.gitignore` modification preserved. Current resolver behavior remains the
+uniform `llm_identity_judgment_2` policy. No implementation or test pass for the new
+requirement is claimed, and publication is not implementation approval.
+
+[Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74) owns the
+accepted specification and five OPEN, ready-for-agent children:
+
+| Category | Ticket | Immediate blocker |
+| --- | --- | --- |
+| Enhancement: deterministic V1-V3 evaluation and V0 dispatch | [#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/75) | None; implementation approval still required |
+| Bug: V0 correspondence/citation/missing-address contract | [#76](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/76) | #75 |
+| Enhancement: fresh V0 smoke preparation | [#77](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/77) | #76 |
+| Enhancement: revised offline V0 route preparation | [#78](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/78) | #76 |
+| Enhancement: reviewed Git delivery and historical reconciliation | [#79](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/79) | #77 and #78 |
+
+All five native parent/child relationships and five native blocking edges were
+created and read back. New bodies, exact titles, OPEN state and category/readiness/group
+labels were verified against their drafts. Existing #72/#73/#70 gained current-follow-up
+notes and enhancement categories while retaining their titles, historical bodies and
+OPEN state. No Issue was closed. #67 remains the historical parent; its human identity
+and audit gates are not requirements for this iteration. GitHub owns live state;
+local draft scripts/material are ignored publishing aids, not another tracker.
+
+The source-bound correction/report path is tested inside each implementation ticket;
+there is no separate horizontal testing ticket. Smoke preparation and route preparation
+can proceed independently after #76. An accepted real identity report is still a data
+gate for real route readiness, so preparing a smoke alone cannot unlock queries. The
+consumed #73 allowance and rejected raw response remain intact. #79 does not require a
+paid smoke to deliver offline-validated code with accurately documented limitations.
+
+Current project status and the identity contract distinguish the accepted requirement
+from implemented behavior. Remote content/state/label/relationship readback passed;
+128 tracked local link targets across four updated documents, preserved historical
+anchors, new anchors, English content and diff checks passed. No code tests or live
+calls are run. Prior engineering gates remain historical. No planner output, raw provider
+artifact, score formula, model/Google request, Git push/PR/merge, formal benchmark or
+version freeze is introduced by publishing this backlog.
+
+<a id="evaluator-checkpoint-delivery-2026-10-06"></a>
+
+### Authorized existing evaluator checkpoint delivery (2026-10-06)
+
+After requesting delivery of the existing local commits, the human explicitly chose
+full delivery: push, create a PR, review and merge after successful checks. This
+authorization covers the existing checkpoint before #75 implementation, not the
+pending version-specific evaluator or a fresh live request. The final four consecutive
+documentation commits had previously been consolidated at the user's explicit request
+into `b2bbf75`, with an identical tree and preserved `.gitignore` bytes; the original
+documentation objects remain in a local backup ref for historical receipts.
+
+[PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80) publishes the
+ten existing commits from `f011a29` through `b2bbf75`. Review base is
+`5d21d6b4685c7793f27954d7c175bed9524b3803` (main at dispatch), merge base
+`56cae0c96c618a6c03ce25a29277132b08589b9d`, and reviewed head
+`b2bbf75fbf3d5f110955da035ef857604efc96d6`, on feature/evaluation.
+The pre-existing unrelated `.gitignore` edit remains unstaged and excluded; ignored
+raw/scratch artifacts are not published. This delivery-state documentation is a
+separate follow-up commit, without implementation changes.
+
+Independent Standards and Spec agents each found **zero actionable findings** across
+the combined release diff. They checked current policies/contracts, source-bound
+identity replay and no-repair FAIL propagation, CLI/consumer integration, offline route
+readiness, one-attempt execution and truthful historical/current status. The accepted
+V0-only model / deterministic V1-V3 replacement is explicitly unimplemented. No code
+correction was needed. The final documentation delta is separately checked before
+merge; the pre-merge PR comment records its final head, both axes and validation scope.
+
+The reused serial backend gate is **2842 passed, 10 skipped in 397.57s**; final executor
+17 and executor/identity 52 also remain valid prior evidence. No code/test file changed
+after `abc2663`; a new full run is not claimed. Initial delivery checks passed 281 tracked
+local targets across 14 changed documents and base-to-head whitespace. No mypy/pyright
+gate or CI check is configured. The absence of CI is not a passed CI result.
+
+Historical #70/#72 scopes can close after verified merge, and #67 after delivery of its
+two original offline slices (#69 and #70). #73 can close as frozen preparation and
+execution-evidence delivery complete: **its live import failed, nine verdicts remain
+UNKNOWN, no accepted report exists, the allowance is consumed and no retry is
+authorized**. The response correction belongs to #76 and fresh-plan preparation to #77.
+Four route verdicts remain UNKNOWN with zero executable requests. #74-#79 remain OPEN;
+this delivery does not implement or close their subsequent scopes. Actual merge and
+Issue outcomes are recorded in the accessible PR/tracker, rather than anticipated here.
+
+No new model, Google or planner call, original-output repair, score-formula change,
+formal benchmark, version comparison or freeze occurs in this delivery. Source hashes
+in historical execution manifests are not rewritten to absorb Git history consolidation.
