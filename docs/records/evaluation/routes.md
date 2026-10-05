@@ -510,6 +510,124 @@ implementation tests or new model/Google calls were run. Local evidence identifi
 `artifacts/v0-identity-prototype-20261005/authorization.json`.
 Current observed state remains **zero adopted identities; four UNKNOWN routes**.
 
+<a id="v0-identity-adoption-acceptance-2026-10-05"></a>
+
+## V0 offline identity adoption acceptance — 2026-10-05
+
+Status: **Implemented and offline validated; Git delivery pending.** The user explicitly
+authorized [#69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69) through
+`implement`, after specification finalization. This authorization covers offline adoption,
+consumer handoff, tests, local commits, review and related documentation; it does not cover
+[#70](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/70), new live calls or Git
+publication. Parent #67 and both children remain open at this local checkpoint.
+
+Review fixed point: `5449afc5ef7b5fede61d564cf66b6e0f36d39be8` on `feature/evaluation`.
+Implementation/tests were committed before review as `6055905` (`feat: adopt V0 identity
+proposals through offline replay (#69)`). Review corrections are separately retained in
+`481d531` (`fix: preserve native decisions and exact audit chronology (#69)`). An unrelated
+pre-existing `.gitignore` change remains excluded. Ignored sources/new derived artifacts
+are local evidence, not fresh-clone dependencies; raw payloads were not force-added.
+The [identity contract](../../contracts/0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
+owns current policy; this dated record preserves observed validation.
+
+### Implemented boundary and actual replay
+
+The explicit resolver and CLI replay original V0 input/result/provenance/projection,
+independent snapshot, saved judge request/schema, short-reference map and actual #66
+response. Candidate facts are matched by exact canonical ID rather than provider ordering.
+Saved raw partial/repeated address components retain their wire facts and native diagnosis;
+no components/citations are invented or stripped. Allowlisted field presence/types and
+independent name/address support gate model adoption without a rationale/title classifier.
+Consumers recompute the whole bound report before identity readiness, coordinate extraction
+and evidence/route preparation. Changed IDs, policy labels or audit/review state are rejected.
+Default/native and V1-V3 paths, score/mask formulas and all planner entry points are unchanged.
+
+Actual replay has nine references: **six adopted, three review-pending, zero
+unknown/ineligible**. No genuine human decisions were fabricated. The saved historical
+audit seed/count were retained; its authorized packet and exact send/response binding were
+verified. Local receipts are supplied evidence, not cryptographic certification of time or
+reviewer identity. Six existing independent snapshot coordinates passed the native bridge,
+with zero diagnostics; native route preparation produced two query contexts.
+
+| Reference | Original structured claim | Result | Reason |
+| --- | --- | --- | --- |
+| Requirement subject | Gyeongbokgung Palace | Pending | `high_impact_review` |
+| Planned visit | Gyeongbokgung Palace | Pending | `high_impact_review` |
+| Planned visit | National Museum of Korean Contemporary History | Adopted | `model_supported_association` |
+| Planned visit | Bukchon Hanok Village | Adopted | `model_supported_association` |
+| Planned visit | Insadong | Adopted | `model_supported_association` |
+| Planned visit | Seoul Museum of History | Adopted | `model_supported_association` |
+| Planned visit | Gwangjang Market | Adopted | `model_supported_association` |
+| Planned visit | Changdeokgung Palace | Adopted | `model_supported_association` |
+| Planned visit | Jongmyo Shrine | Pending | `audit_pending` |
+
+| Date | Directed endpoints | Mode | Declared / nominal gap minutes | Identity/context result | Route feasibility |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-07 | Gyeongbokgung -> National Museum of Korean Contemporary History | WALK | 20 / 30 | Blocked by origin high-impact review | UNKNOWN |
+| 2026-10-08 | Bukchon Hanok Village -> Insadong | WALK | 25 / 35 | Both adopted; verified saved coordinates; query context prepared | UNKNOWN |
+| 2026-10-09 | Seoul Museum of History -> Gwangjang Market | TRANSIT | 35 / 45 | Both adopted; verified saved coordinates; query context prepared | UNKNOWN |
+| 2026-10-10 | Changdeokgung -> Jongmyo | WALK | 20 / 30 | Blocked by destination audit review | UNKNOWN |
+
+No new journey observations or route feasibility score were produced. UNKNOWN describes
+the unchanged absence of independent route evidence, not a newly measured journey result.
+The original itinerary was preserved, including its estimated durations and nominal gaps.
+Issue #70 still must prepare concrete requests, budget and conditional dependencies; these
+two contexts alone do not authorize or define live collection.
+
+Original V0 SHA-256 remains
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+All 61 protected historical pilot hashes are unchanged. This task made **zero model,
+Places or Routes sends**, adding no charges for those APIs and fetching no bill. Existing
+historical usage/cost records remain unchanged. Local evidence identifiers are
+`artifacts/v0-identity-adoption-20261005/{material.json,identity-report.json,coordinate-preparation.json,route-preparation.json,offline-acceptance.json,execution-report.md}`.
+The bundle and its source files must remain locally available for consumer replay.
+
+### Development failures, corrections and checks
+
+1. Public-boundary TDD began with a missing resolver/import gate. Windows global-temp
+   permissions required task-local pytest temp/cache directories; fixture transport had
+   to match the existing async acquisition interface and snapshot filename convention.
+2. Actual saved-material replay exposed candidate ordering and historical provenance
+   compatibility. Match complete candidate facts by exact ID, verify original provenance
+   independently, and retain the original historical freeze's actual source population.
+   Existing SDK wire hashes use their saved JSON serialization, distinct from compact
+   RTPEval digests. UTC send dates use the declared Sydney authorization timezone.
+3. Raw partial address components initially left one proposal ineligible. The accepted
+   wire policy allows absent optional provider types, preserves raw fields and rejects
+   malformed cited types; no synthetic components or semantic comparator veto were added.
+   Actual replay then became six adopted/three pending. Initial expectations about missing
+   coordinates were corrected after inspecting the saved independent snapshot: it already
+   contains six valid adopted-venue coordinates, yielding two contexts without Details calls.
+4. Consumer regressions exposed a substituted native policy stamp and malformed native
+   `records` handling. Structured assistance markers require replay even when relabeled;
+   malformed native reports retain the existing replay-required result. Response provenance
+   and unexpected tool output are checked. Provider timestamp skew cannot substitute for
+   the saved authorized preflight/send binding.
+5. First full backend gate: **2745 passed, 10 skipped, 1 failed in 336.65s**. The evaluator
+   dependency guard rejected new framework/typing dependencies. The guard was retained;
+   strict saved-schema validation now uses only permitted standard-library imports.
+   Related retest: **382 passed, 1 skipped**; the corrected full run passed **2747 with
+   10 skips in 357.18s**, before subsequent review regressions.
+6. Initial Standards review: zero findings. Initial Spec review: two findings—precise
+   authorization timestamps were reduced to dates, and missing model freeze downgraded
+   accepted native decisions. Three regression cases reproduced the errors. The separate
+   correction commit compares offset-aware precise timestamps and retains native decisions/
+   audit selection when model freeze is absent. Additional cases cover naive timestamps
+   and valid earlier authorization. Related retest: **388 passed, 1 skipped in 38.18s**;
+   the adoption suite now contains **47 cases**. Both review rechecks have zero findings.
+7. Actual module CLI replay returns exit 3 and exactly the saved identity report. The first
+   subprocess used Windows GBK and failed on Korean output; the documented UTF-8 environment
+   setting produced valid JSON without changing production behavior. Ruff passes. Final
+   full backend validation after review corrections: **2752 passed, 10 skipped in 250.11s**.
+   The skips are existing environment/opt-in cases. Tracked link/anchor and whitespace
+   checks passed; the final documentation/acceptance commit is separate from implementation
+   and review corrections.
+
+These are implementation checks over one saved development sample, not formal accuracy,
+human gold, a version freeze or evidence that any journey is feasible. Genuine high-impact
+and audit review remains the blocker for three references; collecting independent route
+evidence remains separate from matching and preparation.
+
 <a id="snapshot-coordinate-bridge-2026-10-03"></a>
 
 ## Snapshot-coordinate bridge — 2026-10-03

@@ -230,7 +230,9 @@ available, unsupported location tokens cannot borrow favorable formatted prose. 
 components remain diagnostic. No substring city test, geocoding, alias inference, extra request,
 LLM call or old-snapshot backfill is added. Planner field masks/budgets are unchanged.
 
-`association_policy_version=structural_claims_typed_addresses_3` is required downstream.
+The default/native path requires
+`association_policy_version=structural_claims_typed_addresses_3` downstream. The explicit
+V0-only policy below has a separate replay-aware consumer boundary.
 `subject_scope_version=required_excluded_fixed_time_1` and `reference_set_digest` bind the
 recomputed reference population. Old derived reports require offline replay and new affected
 plans; fixed-time subjects may change high-impact review even with unchanged source hashes.
@@ -240,6 +242,70 @@ Reports retain independent decision path, candidate/observation/rule/audit hashe
 review and complete history, resolved/unresolved states and consistent/conflicting/unverifiable/
 absent claimed-ID association. High-impact/audit queues hide source versions. Reviewed rejection
 is unresolved, not automatically fictional; an empty queue does not imply every venue grounded.
+
+### V0-only model-assisted offline adoption
+
+`resolve_v0_identities(intake, bundle_path, reviews=None)` explicitly selects
+`association_policy_version=v0_model_assisted_association_1`. It imports saved model
+material; it does not call a model or provider. Native `resolve_identities` and its CLI
+retain their existing policy. Model assistance applies only to the selected group's V0
+final visits. Requirement-subject proposals are retained for review. Other versions and
+planner execution remain unchanged.
+
+The `rtpeval_v0_identity_material_1` bundle declares `artifact_root`, `group_id`, an
+IANA `authorization_timezone`, and `artifacts` with root-relative paths and byte SHA-256
+values. Required roles are `intake`, `result`, `input`, `provenance`, `snapshot`,
+`judge_input`, `reference_maps`, `requests`, `response` and `audit_plan`. The saved
+`freeze`, `authorization` and `attempts` establish the historical audit binding;
+missing freeze/authorization retains `audit_freeze_unverified` for new model-supported
+adoptions, preserving native accepted decisions and audit selection. Paths cannot escape
+the declared root. The result must actually be V0, match
+the selected run/input/provenance hashes and reproduce its stored final projection.
+
+Replay the independent identity snapshot against the recomputed plan. Each judging case
+must contain the exact structured claim and independent candidate facts for its reference;
+candidate ordering may differ, facts may not. Require complete unique V0/subject packet
+coverage, exact short-reference map/schema/request correspondence, a completed response
+from the requested model, and exact restoration with per-reference candidate ownership.
+Unexpected tools or stale/corrupt/foreign material reject the import without partial adoption.
+
+For a `match`, require citations to `candidate.display_name` and
+`candidate.formatted_address`. The only additional supported paths are
+`candidate.address_components`, `claim.place_name`, `claim.destination` and
+`claim.location`. Each cited field must exist, be nonempty and have its declared wire
+shape; claim fields are comparison inputs, not independent facts. Invalid citations
+remain explicit per-reference ineligibility. Preserve unknown/no-match decisions and
+all citations; do not classify rationale/title wording, provider rank or confidence.
+
+Cited raw address components require a nonempty list of objects with nonempty `longText`;
+optional `shortText` is a string and optional `types` is a list of nonempty strings.
+Absent types and repeated valid provider types are preserved, not synthesized or rejected
+by the native semantic comparator. Uncited optional malformed fields remain diagnostic.
+Scoped records retain `native_reason` and the restored `model_proposal`, including its
+eligibility. This policy does not independently adjudicate raw geographic meaning.
+
+Latest genuine human decisions and native candidate support take precedence. An eligible
+ordinary unmatched V0 visit may resolve with `decision_route=model_assisted`; protected
+subjects/visits and selected audits remain pending without genuine confirmation. Extend
+deterministic selection across scoped native/model automatic candidates using the saved
+positive count and seed. Native V1-V3 audits retain their existing selections. The
+authorized preflight manifest must bind the source, judging packet, map and audit plan;
+the saved send must bind the exact request and response. Date-only authorization uses
+the explicitly declared timezone; precise authorization timestamps require an offset and
+must precede the send. Provider clock timestamps are retained as provenance,
+not an arbitrary tolerance-based freeze test. Local authorization/receipt records are
+supplied evidence, not cryptographic proof of human identity or chronology.
+
+Reports carry bound artifact/model/map/proposal/audit provenance, original review input,
+`adoption_counts` and directed `leg_identity_eligibility`. Consumers recompute the report
+from the bound bundle and supplied reviews and require exact equality before identity
+readiness, coordinate extraction or evidence/route preparation. A substituted policy stamp
+or changed IDs/audit/review state does not unlock those consumers. The bundle and its source
+files must remain available locally; an isolated report is insufficient. Supplied human
+reviews retain the native review trust boundary; replay does not certify the reviewer.
+Score/mask formulas are unchanged. Identity eligibility proves neither coordinates nor
+route feasibility. See the [CLI guide](../../backend/evaluation/README.md#intake-and-identity)
+and [dated acceptance](../records/evaluation/routes.md#v0-identity-adoption-acceptance-2026-10-05).
 
 <a id="rtpeval-snapshot-contract"></a>
 <a id="rtpeval-snapshot-contract--ticket-04-snapshot-implementation-contract"></a>

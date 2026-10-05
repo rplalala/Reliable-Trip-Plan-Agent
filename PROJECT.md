@@ -130,6 +130,15 @@ local uncertainty; extraction adds no provider requests or planner/model work. T
 coordinate envelope remains available. This bridge preserves V0-V3 planning behavior and
 existing evaluation score/mask rules; see the [current contract](docs/contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03).
 
+The explicit V0-only offline identity policy is locally implemented under
+[#69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69), with source-bound
+short-reference restoration and consumer replay. Its saved #66 acceptance adopts six
+of nine references, retains three genuine-review cases, extracts six existing independent
+coordinates and prepares two route query contexts. Default/native and V1-V3 paths remain
+unchanged. No new journey evidence was acquired; all four route feasibility verdicts remain
+UNKNOWN. See the [identity contract](docs/contracts/0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
+and [dated acceptance](docs/records/evaluation/routes.md#v0-identity-adoption-acceptance-2026-10-05).
+
 Accepted Ticket 05 decision: same-scope overlapping protected intervals become one
 occupancy blocker while preserving and checking each original obligation separately.
 Different scopes must not be flattened. Protections are conflict boundaries, not
@@ -164,7 +173,14 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest recorded full backend gate: **2705 passed, 10 skipped in 421.67s**, from the
+Latest full backend gate: **2752 passed, 10 skipped in 250.11s**, after #69's separate
+review corrections. The new adoption suite has 47 cases; related validation passed
+388 with one skip. Ruff and Standards/Spec rechecks pass. The
+[dated acceptance](docs/records/evaluation/routes.md#v0-identity-adoption-acceptance-2026-10-05)
+retains the initial dependency failure, corrections and full retests. These gates are offline;
+Git delivery remains pending.
+
+The preceding full backend gate was **2705 passed, 10 skipped in 421.67s**, from the
 2026-10-05 [short-reference delivery validation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05),
 tracked under [#66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66).
 Earlier review corrections passed **89** executor/Repair and **42** native-policy
@@ -324,10 +340,12 @@ then [independent route request preparation #70](https://github.com/rplalala/Rel
 which is blocked by #69. The specification retains default-off V0 model-assisted
 association, source/replay validation and genuine high-impact/audit review. It
 distinguishes raw address wire validity from native semantic-comparison diagnostics.
-Implementation and subsequent independent acquisition still require separate approval;
-both tickets remain open, and neither authorizes live calls. Earlier offline source/hash
-and proposal restoration checks add no adopted identity or route evidence. The new
-V0's four routes remain UNKNOWN. See the dated
+The user then separately authorized implementing #69. Its opt-in offline resolver,
+replay-aware consumers and saved-material validation are locally implemented; Git delivery
+is pending. Six references are adopted and three remain under genuine review. #70 is not
+implemented or approved, and subsequent independent acquisition needs a separate budget
+approval. Both tickets remain open; neither permits live calls. The new V0's four route
+feasibility verdicts remain UNKNOWN. See the dated
 [regression preparation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-preparation-2026-10-05)
 and [specification finalization](docs/records/evaluation/routes.md#v0-adoption-specification-finalization-2026-10-05).
 

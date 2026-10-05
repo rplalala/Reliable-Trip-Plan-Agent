@@ -170,6 +170,12 @@ identity_report, snapshot_directory)` and optional `identity_snapshot_directory`
 preparation/scoring and their CLI. The existing reviewed
 coordinate envelope remains supported; selecting both sources is a material error.
 
+The explicit [V0 model-assisted policy](0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
+is accepted only after recomputing its report from bound saved inputs and genuine supplied
+reviews. Merely changing a policy string or canonical ID is rejected before coordinate,
+evidence-plan or route preparation. Native reports retain their existing path. This
+extension supplies no journey observations, acquisition budget or new scoring thresholds.
+
 Replay the identity-phase snapshot through existing safe-path/raw-hash validation, recompute
 its identity plan from the supplied intake, and verify that its derived identity evidence
 matches the adopted report. Only exact adopted canonical IDs may contribute coordinates.
