@@ -43,8 +43,10 @@ core design. Read only relevant contract sections.
 - [Development commands](guides/development.md) and [runtime configuration](../config/README.md).
 - [Historical records](records/README.md): milestone freezes, development evidence,
   topic-specific validation and benchmark-design history. They do not override core design.
-- [Tracker conventions](agents/issue-tracker.md), [triage labels](agents/triage-labels.md)
-  and [document ownership](agents/domain.md) configure the engineering skills.
+- [Agent entry point](../AGENTS.md) routes to [task/Git/skill workflow](agents/workflow.md),
+  [version lifecycle](agents/versions.md) and [live smoke delegation](agents/smoke-tests.md).
+  [Tracker conventions](agents/issue-tracker.md), [triage labels](agents/triage-labels.md)
+  and [document ownership/archive rules](agents/domain.md) configure the engineering skills.
 - [Current consolidation Issue #36](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/36)
   records this task's specification and acceptance; old-design comments identify successors.
 

@@ -16,7 +16,8 @@ version-comparison experiments, thesis writing and final research conclusions
 require separate authorization. Development smoke results are bounded evidence,
 not general quality rankings or automatic version freezes.
 
-[AGENTS.md](AGENTS.md) owns collaboration, language, approval, Git and archive rules.
+[AGENTS.md](AGENTS.md) and its linked policies own collaboration, language, approval,
+Git and archive rules; detailed rules are loaded for the relevant operation.
 Repository content is English; user-facing development discussion is Chinese.
 
 ## 2. Architecture and version boundaries
