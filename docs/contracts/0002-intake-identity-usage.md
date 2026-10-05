@@ -178,9 +178,40 @@ original source artifacts and historical reports. The density table remains
 
 ## Independent identity and adjudication
 
-<a id="uniform-llm-identity"></a>
+<a id="version-specific-identity-requirement"></a>
 
-### Current uniform LLM identity judgment
+### Accepted version-specific requirement (implementation pending)
+
+Accepted by the user on 2026-10-06 and published in
+[parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74).
+V0 introduces an LLM primarily to correspond original freely generated POI claims
+with supplied independent API candidates, when available. Correspondence is distinct
+from original-claim correctness: recognizing a venue cannot repair a wrong submitted
+address or certify opening/route feasibility. Insufficient support remains UNKNOWN.
+
+V1-V3 evaluation uses independent API evidence and deterministic program rules
+throughout, without an evaluator model call, model-result dependency or model fallback.
+Original API-backed names/addresses are compared with corresponding API facts;
+differences count as errors without model-based precision, translation or semantic
+equivalence. User-named requirements and optional V3 projections follow this same
+version rule. Verifiable bindings identify claims; planner decisions/caches do not
+replace independent evidence. Unresolved/ambiguous evidence remains visible without
+borrowing V0 model judgments. Wrong original addresses and different venues are FAIL;
+failed/missing API evidence is UNKNOWN. Original claims and erroneous endpoints are
+never repaired, and score arithmetic is unchanged.
+
+[#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/75) owns the version
+dispatch and deterministic evaluation path; [#76](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/76)
+owns the V0 correspondence/citation/missing-address correction. These are published
+specifications, **not implemented behavior**. The uniform policy documented below
+still describes the current code. Old artifacts retain their original policies and
+replay provenance; changing this design does not upgrade old evidence or authorize
+implementation, a paid call or Git delivery.
+
+<a id="uniform-llm-identity"></a>
+<a id="current-uniform-llm-identity-judgment"></a>
+
+### Implemented uniform LLM identity judgment (replacement pending)
 
 Accepted 2026-10-05 under [Issue #72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72).
 `resolve_identities(intake, evidence, *, model_result=None)` uses

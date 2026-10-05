@@ -105,11 +105,25 @@ Details: [shared output](docs/0003-itinerary-transport.md),
 Evaluation is independently run over a curated, source-linked batch. Planner
 validation, caches and internal decisions are not independent factual ground truth.
 
+The user accepted a version-specific evaluator requirement on 2026-10-06:
+V0 introduces an LLM primarily to correspond generated POI claims with independent
+API candidates; V1-V3 evaluation uses API evidence and program rules without an
+evaluator model or model fallback, including user-named requirements. API-backed
+name/address differences are errors; original mistakes are preserved, and insufficient
+evidence remains UNKNOWN. This supersedes the all-version LLM design, but is **not
+implemented** yet. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
+owns five classified follow-ups: version routing #75, V0 response contract #76,
+fresh-smoke preparation #77, offline route integration #78 and Git delivery #79.
+Only backlog publication was authorized in this task; implementation, fresh paid
+execution and Git delivery retain their own approval boundaries. See the
+[accepted requirement](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
+and [publication record](docs/records/evaluation/intake-identity-usage.md#version-specific-evaluator-backlog-2026-10-06).
+
 | Ticket | Implementation checkpoint |
 | --- | --- |
 | 01: Intake/projection | Implemented and offline-validated, including provenance, transport sources and [ordinary-output compatibility](docs/records/evaluation/intake-identity-usage.md#rtpeval-ticket-01-03-acceptance) |
 | 02: Usage capture/report | Implemented and offline-validated; opt-in capture plus [offline cost/bill accounting](docs/contracts/0002-intake-identity-usage.md#offline-cost-accounting); no automatic formal run or bill fetching |
-| 03: Identity/judgment | Uniform source-bound LLM judgments for V0-V3 under #72; no mandatory human identity confirmation or sampling; explicit historical replay retains old evidence |
+| 03: Identity/judgment | Implemented uniform source-bound LLM judgments under #72; accepted #74 version-specific replacement is pending implementation; no mandatory human identity gate; historical replay retains old evidence |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented, offline-validated and published; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed |
 | 06: Opening checks | Offline parser/scorer/CLI implemented and reviewed; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) completed; [acceptance and scoped supplements](docs/records/evaluation/opening.md#rtpeval-ticket-06-acceptance) |
@@ -131,7 +145,7 @@ local uncertainty; extraction adds no provider requests or planner/model work. T
 coordinate envelope remains available. This bridge preserves V0-V3 planning behavior and
 existing evaluation score/mask rules; see the [current contract](docs/contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03).
 
-The current [uniform identity policy](docs/contracts/0002-intake-identity-usage.md#uniform-llm-identity)
+The implemented [uniform identity policy](docs/contracts/0002-intake-identity-usage.md#uniform-llm-identity)
 under [#72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72) delegates identity
 to supplied LLM judgments across V0-V3, protected subjects and optional V3 projections.
 Following the user's clarification, recognizable venues with incorrect submitted addresses
@@ -139,9 +153,30 @@ and addresses denoting other venues both produce grounding FAIL, without canonic
 or corrected coordinate/endpoint substitution. Original outputs remain intact; all versions
 use the same standard and evidence insufficiency remains UNKNOWN. Score arithmetic is unchanged.
 Exact packet/response/report replay checks integrity; semantic judgments
-remain fallible. No new paid request is authorized. Historical smoke files remain intact;
+remain fallible. The separately approved #73 request returned but failed import. Historical smoke files remain intact;
 their old model responses lack the new address assessments and cannot establish new-policy
 judgments. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
+
+Under [#73](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/73), the one-call
+V0 identity development executor is locally implemented and offline validated. The prepared
+nine-reference packet freezes 61 protected originals and estimates 16,498 input tokens
+including reserve. Approved limits are one `gpt-6-luna` request, low reasoning, zero retries,
+20,000 input/4,000 output tokens, 60 seconds and USD 0.005 retail-reference allowance
+(USD 0.004 maximum standard estimate; Foundry invoice unavailable). After the initial
+prelaunch review block, the user explicitly approved the specific destination and data
+scope. A required `gpt-6.1-sol`/medium execution child sent the unchanged request once:
+HTTP 200 in 7.175079s, 14,403 input and 967 output tokens. The completed raw response
+suggested nine matches but failed source-bound import because every decision used
+unsupported citation paths; the protected subject also cited a null location and assessed
+it as differing precision. No accepted report exists, so all nine current-policy pending
+verdicts remain UNKNOWN. The USD 0.0019238 executor base reference excludes cache-write
+premium; the observed 14,400 cache-write tokens imply a USD 0.0022838 adjusted standard
+retail reference. Actual Foundry billing remains unknown. All 61 protected originals,
+69 sources and 2 implementation hashes remain unchanged; no retry or output correction
+occurred. The single-call allowance is consumed. The next proposed correction is stricter
+output citation/null-address constraints; it is not implemented by this execution.
+See [commands](backend/evaluation/README.md#prepared-one-call-identity-development-smoke)
+and the [dated execution record](docs/records/evaluation/intake-identity-usage.md#identity-smoke-execution-2026-10-06).
 
 The historical V0-only offline identity policy was delivered through PR #71 under
 [#69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69), with source-bound
@@ -198,7 +233,14 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest full backend gate (2026-10-06, #72 address/no-repair clarification): **2825 passed,
+Latest full backend gate (2026-10-06, #73 smoke preparation): **2842 passed, 10 skipped
+in 397.57s**. The final isolated executor gate passed 17 tests; executor plus identity
+policy passed 52. Ruff passes. Standards and Spec each have zero findings. Implementation
+and tests are committed locally as `abc2663`. That offline acceptance itself did not
+authorize paid execution; the later explicit-send approval and rejected one-call integration
+are recorded above. Git delivery remains separately unauthorized.
+
+Previous full backend gate (2026-10-06, #72 address/no-repair clarification): **2825 passed,
 10 skipped in 339.67s**. The initial address gate passed 2824 with 10 skips; a further
 legacy-verdict regression was corrected before the final serial run. Identity and quality
 files passed 88 tests. Ruff passes. Standards and Spec have zero actionable findings;
@@ -207,9 +249,10 @@ files passed 88 tests. Ruff passes. Standards and Spec have zero actionable find
 preserves the actual red/green and fixture-correction sequence. All 61 protected source
 hashes remain unchanged; new model/Places/Routes sends and incremental charges are zero.
 Implementation/test commit is `1c43007`. #72 is locally complete pending Git publication
-and separately authorized fresh model judgment. The newly prepared nine-reference smoke
-packet has no fresh response, so all current-policy verdicts remain UNKNOWN; historical
-reports are preserved. #70's request preparation remains historical in its
+and separately authorized fresh model judgment. At that #72 checkpoint, the prepared
+nine-reference packet had no fresh response. The later #73 response failed import as
+recorded above, so current-policy verdicts remain UNKNOWN; historical reports are preserved.
+#70's request preparation remains historical in its
 [dated record](docs/records/evaluation/routes.md#v0-route-request-preparation-2026-10-05).
 
 The earlier short-reference full backend gate was **2705 passed, 10 skipped in 421.67s**, from the

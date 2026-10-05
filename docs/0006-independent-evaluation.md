@@ -50,7 +50,15 @@ and [dated bridge record](records/evaluation/routes.md#snapshot-coordinate-bridg
 
 ## Scoring semantics and uncertainty
 
-Place identity uses the [uniform LLM judgment contract](contracts/0002-intake-identity-usage.md#uniform-llm-identity)
+The user accepted a [version-specific evaluator requirement](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
+on 2026-10-06: V0 introduces an LLM primarily for generated-POI correspondence with
+independent API candidates; V1-V3 evaluation uses API evidence and program rules without
+an evaluator model or fallback, including user-named requirements. Original API-backed
+name/address differences count as errors, without repair. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
+owns the classified follow-ups. This requirement is not implemented yet; the following
+paragraph describes current code, and historical evidence is not reclassified.
+
+Implemented place identity uses the [uniform LLM judgment contract](contracts/0002-intake-identity-usage.md#uniform-llm-identity)
 for V0-V3, with independent candidates and exact source-bound offline replay. High-impact
 references and sampling no longer require human identity confirmation. Address correctness
 remains a separate assessment: recognizing a venue does not repair the delivered address

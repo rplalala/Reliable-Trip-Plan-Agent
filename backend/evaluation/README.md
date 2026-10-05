@@ -147,7 +147,49 @@ The [historical material contract](../../docs/contracts/0002-intake-identity-usa
 defines the V0 source bundle. Both policies retain the original files. Save stdout as UTF-8
 without BOM. New consumers replay the complete source-bound model material; historical
 consumers replay their frozen inputs. A copied or edited report cannot unlock preparation.
-No planner version or provider caller changes.
+No planner version or production provider caller changes.
+
+### Prepared one-call identity development smoke
+
+`tools.validation.identity_judgment_smoke` is a separate development executor for a verified
+V0 material bundle. Preparation is offline; execution requires explicit user approval of
+the exact manifest digest and the [smoke execution handoff](../../docs/agents/smoke-tests.md).
+Existing historical authorization is used only to verify source material. It grants no
+new request authority. Configure `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT` and
+`AZURE_OPENAI_API_KEY` through the existing V0 settings; no credentials are written to the
+preparation. The request itself selects `gpt-6-luna`.
+
+```powershell
+.venv/Scripts/python.exe -m tools.validation.identity_judgment_smoke prepare --material v0-identity-material.json --directory artifacts/new-identity-smoke
+# Execute only after this exact preparation and its limits receive user approval:
+.venv/Scripts/python.exe -m tools.validation.identity_judgment_smoke execute --preparation artifacts/new-identity-smoke/preparation.json --approved-manifest-sha256 APPROVED_DIGEST
+```
+
+Optional `--protected-hashes` reads a JSON `file_hashes` map to preserve additional original
+files. The preparation binds verified source hashes, implementation hashes, the original
+identity packet, exact wire request, endpoint, token/retail-reference limits and a single
+execution directory. Re-preparation over an existing directory is rejected. One approved
+execution consumes its directory, even when it fails; reusing it cannot send again.
+The SDK has zero retries, redirects are disabled, and the HTTP boundary checks the exact
+POST/request and rechecks sources before its sole attempt. Changed source material after
+the response prevents import. No planner or Google calls are included.
+
+The fixed development limits are one request, low reasoning, no tools, `store=false`,
+20,000 estimated input tokens including 1,024 reserve, 4,000 output tokens and a 60-second
+HTTP deadline. The locally cached tokenizer is a surrogate preflight estimate. Excessive
+reported usage stops import after receipt; these checks cannot guarantee the provider's
+tokenizer or invoice ceiling. Standard retail reference rates are dated in the manifest,
+with a USD 0.005 reference allowance and a USD 0.004 maximum standard estimate. Cached-input,
+cache-write, regional and Foundry billing differences are not verified invoice evidence.
+
+`execution.json` records attempts, usage, reference cost, raw byte digest and terminal error
+type without SDK exception text or headers. Received complete raw bytes stay in `response.bin`;
+`model-result.json` is imported through the current source-bound policy. Only a valid complete
+result produces `identity-report.json`. Execution exit 0 means valid processing, including
+FAIL/UNKNOWN; exit 1 means a terminal execution/import error. Missing approval or changed
+preparation raises before sending. Original claims stay intact; wrong addresses remain FAIL
+with null canonical identity. No paid execution is implied by preparation or an offline test.
+
 Fresh-clone tests use synthetic fixtures rather than requiring ignored live artifacts:
 
 ```powershell
