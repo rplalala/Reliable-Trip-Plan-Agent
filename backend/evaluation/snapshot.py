@@ -468,12 +468,18 @@ def identity_evidence(snapshot):
 def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
     """Inventory canonical venues and candidate legs without choosing departure semantics."""
     from .identity import ASSOCIATION_POLICY_VERSION, IDENTITY_VERSION
+    from .identity_adoption import needs_v0_replay
+    from .preparation import identity_ready
 
     prepared = _prepared(intake)
     report = identity_report.to_dict() if hasattr(identity_report, "to_dict") else identity_report
+    model_policy = needs_v0_replay(report)
+    if model_policy and not identity_ready(prepared, report):
+        raise ValueError("Model-assisted identity report requires verified replay")
     if (
         report.get("schema_version") != IDENTITY_VERSION
-        or report.get("association_policy_version") != ASSOCIATION_POLICY_VERSION
+        or not model_policy
+        and report.get("association_policy_version") != ASSOCIATION_POLICY_VERSION
         or report.get("batch_id") != prepared["batch_id"]
         or report.get("batch_revision") != prepared["revision"]
         or report.get("source_hashes") != prepared["source_hashes"]
