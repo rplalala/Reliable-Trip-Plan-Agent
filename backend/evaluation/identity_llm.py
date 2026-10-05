@@ -276,6 +276,8 @@ def _decisions(intake, evidence, cases, material):
                 or any(
                     not isinstance(c, dict)
                     or not text(c.get("longText"))
+                    or "shortText" in c
+                    and not isinstance(c["shortText"], str)
                     or "types" in c
                     and (not isinstance(c["types"], list) or not all(text(t) for t in c["types"]))
                     for c in value

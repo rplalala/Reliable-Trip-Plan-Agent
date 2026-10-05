@@ -219,6 +219,7 @@ def test_address_identity_and_uncertainty_are_separate(
         "missing_address",
         "bad_components",
         "malformed_content",
+        "bad_short_text",
     ],
 )
 def test_invalid_model_material_is_not_adopted(batch, mutation):
@@ -251,7 +252,11 @@ def test_invalid_model_material_is_not_adopted(batch, mutation):
     elif mutation == "malformed_content":
         response["output"][0]["content"] = ["invalid content"]
     else:
-        observed["records"][0]["search"]["candidates"][0]["address_components"] = "not-components"
+        observed["records"][0]["search"]["candidates"][0]["address_components"] = (
+            [{"longText": "Example City", "shortText": 42, "types": ["locality"]}]
+            if mutation == "bad_short_text"
+            else "not-components"
+        )
         result = model_material(
             intake,
             observed,
@@ -269,6 +274,9 @@ def test_invalid_model_material_is_not_adopted(batch, mutation):
         result["response_sha256"] = canonical_digest(response)
     with pytest.raises(ValueError):
         resolve_identities(intake, observed, model_result=result)
+    pending = resolve_identities(intake, observed).to_dict()
+    pending["identity_llm_replay"]["model_result"] = result
+    assert not identity_ready(intake.to_dict(), pending)
 
 
 def test_default_cli_prepares_and_imports_model_result_without_audit(batch, capsys):
@@ -415,3 +423,23 @@ def test_claimed_wrong_id_and_conflicting_observations_remain_visible_to_model(b
     assert record["canonical_place_id"] == "right-venue"
     assert record["claimed_id_association"] == "conflicting"
     assert record["original_claim"]["location"] == "Declared address"
+
+
+def test_valid_raw_address_components_leave_semantic_judgment_with_model(batch):
+    intake = prepared(batch)
+    refs = identity_references(intake)
+    observed = evidence(intake, [search(r, r["name"]) for r in refs])
+    observed["records"][0]["search"]["candidates"][0]["address_components"] = [
+        {"longText": "District", "shortText": "Dist", "types": ["sublocality"]},
+        {"longText": "Neighborhood", "types": ["sublocality"]},
+    ]
+
+    def cite(row, case):
+        if case["candidates"][0].get("address_components"):
+            row["evidence_fields"].append("candidate.address_components")
+
+    report = resolve_identities(
+        intake, observed, model_result=model_material(intake, observed, decisions=cite)
+    ).to_dict()
+    assert report["status"] == "complete"
+    assert identity_ready(intake.to_dict(), report)
