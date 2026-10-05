@@ -3,7 +3,7 @@
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -207,6 +207,15 @@ def _source(prepared, values, refs):
     return selected
 
 
+def _authorization_precedes_send(value, started, timezone):
+    try:
+        authorized_date = date.fromisoformat(value)
+    except ValueError:
+        authorized = datetime.fromisoformat(value)
+        return authorized.utcoffset() is not None and authorized <= started
+    return authorized_date <= started.astimezone(ZoneInfo(timezone)).date()
+
+
 def _freeze_verified(values, artifacts, request):
     if values.get("freeze") is None or values.get("authorization") is None:
         return False
@@ -241,8 +250,9 @@ def _freeze_verified(values, artifacts, request):
         and send.get("request") == request
         and send.get("request_sha256") == _wire_digest(request)
         and send.get("response_sha256") == artifacts["response"]["sha256"]
-        and datetime.fromisoformat(authorization["authorized_at"]).date()
-        <= started.astimezone(ZoneInfo(values["authorization_timezone"])).date(),
+        and _authorization_precedes_send(
+            authorization["authorized_at"], started, values["authorization_timezone"]
+        ),
         "freeze",
         "Frozen request/response chronology mismatch",
     )

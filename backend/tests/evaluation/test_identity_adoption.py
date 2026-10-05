@@ -565,3 +565,36 @@ def test_saved_response_requires_provenance_and_no_unexpected_tools(adoption_cas
 def test_provider_clock_does_not_replace_authorized_preflight_and_send_binding(adoption_case):
     intake, _, bundle, _, _, _, _, _ = adoption_case
     assert resolve_v0_identities(intake, bundle).to_dict()["adoption_counts"]["adopted"] == 1
+
+
+@pytest.mark.parametrize(
+    "authorized_at",
+    ["2026-10-05T23:00:00+11:00", "2026-10-05T00:00:00Z", "2026-10-05T00:00:00"],
+)
+def test_precise_authorization_after_send_is_rejected(adoption_case, authorized_at):
+    intake, _, _, material, save, persist, _, _ = adoption_case
+    authorization = json.loads((Path(material["artifact_root"]) / "authorization.json").read_text())
+    authorization["authorized_at"] = authorized_at
+    material["artifacts"]["authorization"] = save("authorization.json", authorization)
+    with pytest.raises(ValueError, match="chronology"):
+        resolve_v0_identities(intake, persist())
+
+
+def test_precise_authorization_before_send_preserves_automatic_adoption(adoption_case):
+    intake, _, _, material, save, persist, _, _ = adoption_case
+    authorization = json.loads((Path(material["artifact_root"]) / "authorization.json").read_text())
+    authorization["authorized_at"] = "2026-10-04T23:00:00Z"
+    material["artifacts"]["authorization"] = save("authorization.json", authorization)
+    assert resolve_v0_identities(intake, persist()).to_dict()["adoption_counts"]["adopted"] == 1
+
+
+@pytest.mark.parametrize("adoption_case", [{"strict": True, "missing_freeze": True}], indirect=True)
+def test_missing_model_freeze_keeps_already_accepted_native_associations(adoption_case):
+    intake, evidence, bundle, _, _, _, _, _ = adoption_case
+    native = resolve_identities(intake, evidence, audit_plan=plan(intake)).to_dict()
+    assisted = resolve_v0_identities(intake, bundle).to_dict()
+    for previous in native["records"]:
+        current = next(
+            r for r in assisted["records"] if r["reference_id"] == previous["reference_id"]
+        )
+        assert {key: current[key] for key in previous} == previous

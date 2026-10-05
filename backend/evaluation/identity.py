@@ -536,9 +536,10 @@ def _resolve_identities(intake, evidence, reviews=None, audit_plan=None, assista
             if ref["reference_id"] in assistance.reference_ids
             and proposals[ref["reference_id"]] is not None
         ]
-        selected_audit = (selected_audit - assistance.reference_ids) | _audit_selection(
-            audit_plan, prepared, scoped
-        )
+        if assistance.audit_frozen:
+            selected_audit = (selected_audit - assistance.reference_ids) | _audit_selection(
+                audit_plan, prepared, scoped
+            )
     records, queue = [], []
     request_contexts = {group["group_id"]: group["input"] for group in prepared["inventory"]}
     for ref in refs:
@@ -559,7 +560,7 @@ def _resolve_identities(intake, evidence, reviews=None, audit_plan=None, assista
         elif (
             assistance is not None
             and rid in assistance.reference_ids
-            and proposed is not None
+            and reason == "model_supported_association"
             and not assistance.audit_frozen
         ):
             reason = "audit_freeze_unverified"
