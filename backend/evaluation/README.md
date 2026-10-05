@@ -21,7 +21,7 @@ acceptance records and Issue comments preserve historical decisions, not alterna
 | --- | --- | --- |
 | Batch/artifact wire and deferred tracks | [Artifacts](../../docs/contracts/0001-evaluation-artifacts.md) | [intake](intake.py), [records](records.py), [projection](projection.py) |
 | Structural claims and occurrence association | [Intake/claims](../../docs/contracts/0002-intake-identity-usage.md#claims) | [preparation](preparation.py), [claims](_claims.py) |
-| Independent identity judgment | [Identity](../../docs/contracts/0002-intake-identity-usage.md#identity) | [LLM judgments](identity_llm.py), [legacy replay](identity.py), [V0 material](identity_adoption.py) |
+| Independent identity judgment | [Identity](../../docs/contracts/0002-intake-identity-usage.md#identity) | [Version dispatch/API checks](identity_program.py), [V0 correspondence/historical LLM](identity_llm.py), [legacy replay](identity.py), [V0 material](identity_adoption.py) |
 | Request planning and frozen replay | [Snapshots](../../docs/contracts/0002-intake-identity-usage.md#snapshots) | [snapshot](snapshot.py) |
 | Opt-in usage and descriptive resources | [Usage](../../docs/contracts/0002-intake-identity-usage.md#usage) | [usage capture](../app/observability/usage_capture.py), [usage_report](usage_report.py) |
 | Reviewed requirements, time and occupancy | [Requirement/schedule](../../docs/contracts/0003-requirement-schedule.md) | [requirement_schedule](requirement_schedule.py), [schedule_time](schedule_time.py), [occupancy](occupancy.py) |
@@ -108,6 +108,7 @@ retains the observed validation sequence and limits.
 .venv/Scripts/python.exe -m backend.evaluation.snapshot_cli identity-plan manifest.json
 .venv/Scripts/python.exe -m backend.evaluation.snapshot_cli replay identity-snapshot --expected-plan identity-plan.json
 .venv/Scripts/python.exe -m backend.evaluation.snapshot_cli identity-evidence identity-snapshot
+.venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json
 .venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json --prepare --model YOUR_JUDGMENT_MODEL
 .venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json --model-result identity-model-result.json
 ```
@@ -115,20 +116,22 @@ retains the observed validation sequence and limits.
 An acquisition caller separately uses `build_identity_plan`, injected async
 `acquire_snapshot`, immutable `load_snapshot`, then `identity_evidence`.
 There is no built-in live Google client or acquisition CLI. The caller owns credentials,
-authorization and explicit send ceilings. Identity now uses the
-[uniform LLM policy](../../docs/contracts/0002-intake-identity-usage.md#uniform-llm-identity)
-for V0-V3, protected subjects and optional V3 projections. No human confirmation or sampling
-is mandatory. `--prepare` prints a frozen packet; it does not execute a model. Import a
+authorization and explicit send ceilings. Identity uses the
+[version-specific policy](../../docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement).
+V1-V3 final/optional visits and shared requirement subjects use program rules over independent
+API facts, with literal name/address equality and no model fallback. No model result is needed
+for those references. No human confirmation or sampling is mandatory. `--prepare` prints a
+V0-only frozen packet; it does not execute a model. Import a
 separately authorized saved response through the contract's model-result envelope. The
-command has no built-in model execution client. Missing results remain unresolved without
-native string-matching fallback. Semantic judgments remain fallible. Intake exits 0 for
+command has no built-in model execution client. Missing V0 results remain UNKNOWN;
+API-backed references continue independently. V0 semantic judgments remain fallible. Intake exits 0 for
 accepted material or 2 for correction. Identity exits 0 for packet preparation/completed
 judgments (including confirmed failures), 3 for UNKNOWN/missing judgment, and 2 for
 material/linkage errors. Incorrect submitted addresses and different venues are grounding
 FAIL, even when the intended venue is recognizable. Their canonical ID stays null: candidate
 facts cannot supply corrected route endpoints. Original outputs and denominators are retained.
 
-For uniform judgment over a verified V0 material bundle:
+For V0 correspondence within a verified material bundle:
 
 ```powershell
 .venv/Scripts/python.exe -m backend.evaluation.identity_adoption_cli v0-identity-material.json --prepare --model YOUR_JUDGMENT_MODEL
@@ -141,6 +144,8 @@ converted. For exact historical replay use `--legacy` with the original audit/re
 ```powershell
 .venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json audit-plan.json --legacy --reviews identity-reviews.json
 .venv/Scripts/python.exe -m backend.evaluation.identity_adoption_cli v0-identity-material.json --legacy
+# Explicit replay of the superseded all-version LLM policy:
+.venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json --historical-llm --model-result historical-model-result.json
 ```
 
 The [historical material contract](../../docs/contracts/0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
@@ -148,6 +153,13 @@ defines the V0 source bundle. Both policies retain the original files. Save stdo
 without BOM. New consumers replay the complete source-bound model material; historical
 consumers replay their frozen inputs. A copied or edited report cannot unlock preparation.
 No planner version or production provider caller changes.
+
+Offline regression coverage: `backend/tests/evaluation/test_identity_program.py` exercises
+mixed-version resolver/CLI-to-quality and V3-pair flows with disabled model/network clients,
+independent synthetic snapshots, strict field equality, FAIL/UNKNOWN preservation, unadopted
+coordinates/endpoints and stale/forged/historical material rejection. Existing historical
+policy tests explicitly select their replay path. Run these tests with the backend gates;
+no paid acquisition or smoke execution is part of this validation.
 
 ### Prepared one-call identity development smoke
 

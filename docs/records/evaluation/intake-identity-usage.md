@@ -1754,3 +1754,77 @@ Issue outcomes are recorded in the accessible PR/tracker, rather than anticipate
 No new model, Google or planner call, original-output repair, score-formula change,
 formal benchmark, version comparison or freeze occurs in this delivery. Source hashes
 in historical execution manifests are not rewritten to absorb Git history consolidation.
+
+<a id="version-specific-identity-implementation-2026-10-06"></a>
+
+### Version-specific identity implementation (#75, 2026-10-06)
+
+The human authorized #75 implementation, offline tests, local commits and Standards/Spec
+review, then resumed work with the implement skill after a waiting/handoff interval.
+Fixed review base is `819f0c3c5956c43f6c799feb128fb5a74bb4f2f5`; implementation/tests are
+committed as `ffa36a4d96cbf87ad3557dab44b5665495221d2c`. At this validation checkpoint,
+current documentation is an unstaged draft and the unrelated `.gitignore` change remains
+unstaged. No branch switch, push, PR, merge, tracker mutation or paid execution is included.
+
+The current public resolver produces `versioned_api_identity_1`: V1-V3 primary visits
+use independent ID-linked Details and literal original/API name/address comparisons.
+Missing output-contract fields are FAIL; unavailable or unlinked independent evidence
+is UNKNOWN. Shared named requirements use independent verification of retained bindings
+or unique deterministic search. V0 correspondence packets contain only V0 primary visits;
+foreign/historical packets and modified reports cannot supply current verdicts. Exact
+consumer replay retains original claims, FAIL/UNKNOWN and null canonical endpoints.
+Opening/route reports retain identity verdicts separately from their own unavailable facts.
+Old uniform LLM and human/audit policies remain explicitly replayable, with original
+artifacts untouched. Generation behavior, score formulas and population rules are unchanged.
+
+Public-interface TDD first showed exact V1/API matches staying UNKNOWN without model
+results; the program path made these PASS and exact address mismatches FAIL. A second
+slice exposed missing requirement-binding support, then verified independent Details
+without admitting shared subjects into model packets. Consumer tests exposed absent
+endpoint/coordinate failure metadata and verified its preservation without adopting
+corrected endpoints. Missing structured names/addresses initially stayed UNKNOWN when
+Details were absent; proven contract omissions now remain FAIL independently of availability.
+
+The broader evaluator/executor gate initially reported **957 passed, 1 skipped, 1 failed**
+in 175.75s. The executor prepared a scoped V0 packet but still imported through the old
+uniform resolver, yielding a stopped offline SDK receipt. Its import was routed through
+the public version dispatcher, and the test expectation now scopes model UNKNOWN to V0.
+No citation/schema repair from #76 was introduced. The correction and final program
+regressions passed **37 tests** in 8.34s, using synthetic local evidence and MockTransport.
+
+Before review corrections, the serial full backend gate at `ffa36a4` passed
+**2862 tests, 10 skipped in 273.87s**:
+`.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider
+--basetemp=.scratch/pytest-75-full --tb=short --show-capture=no`.
+The local `.scratch/pytest-75-full.txt` is an ignored evidence identifier, not a published
+dependency. Global `ruff check backend tools --no-cache` passed; formatting checks passed
+all 18 changed Python files. A broader format check reported 61 pre-existing unrelated
+files, which were preserved. No configured mypy/pyright or CI result is claimed.
+Initial tracked documentation link checks passed 216 repository-relative targets.
+The final documentation check passed 217 targets against the Git index; whitespace
+checks also passed. Current contracts, navigation and this dated record are committed
+as a separate documentation group after the correction review.
+
+Independent Standards review found no hard documented-standard violations and one P3
+terminology issue: the programmatic replay branch still used `model_policy` and a
+model-assisted diagnostic, and the V0 material docstring described uniform LLM behavior.
+Independent Spec review found one P2: malformed/conflicting typed destination components
+in an unbound requirement search escaped as `ValueError`, aborting the complete CLI batch
+instead of producing local UNKNOWN. Both findings were corrected in the separate commit
+`a53aa8110d06f52777fabe7b9a3cd31709c19a30`, preserving the original implementation commit.
+
+Six public CLI regression cases initially produced **3 failed, 3 passed**: null, non-array
+and conflicting components reproduced the batch abort, while exact, ambiguous and wrong-query
+cases already behaved correctly. The correction catches the typed-destination exception
+locally; all six preserve valid V1 PASS records. The broader correction gate passed
+**246 tests in 33.48s** across program/historical identity, V0 adoption, snapshots,
+coordinates, quality and V3-pair consumers; its ignored evidence identifier is
+`.scratch/pytest-75-review-green.txt`. Global Ruff lint and changed-file formatting passed
+again. The full suite was not repeated for this bounded correction; its earlier result is
+not presented as a post-correction full run. Both review axes rechecked `a53aa81` and the
+final documentation drafts with **zero unresolved findings**.
+
+The V0 response correction (#76),
+fresh smoke plan (#77), revised offline route integration (#78) and publication (#79)
+remain separate scopes. No accepted real current-policy V0 identity report, new route
+fact, billing result, formal benchmark, version comparison or freeze is established here.

@@ -38,6 +38,10 @@ approval/validation history remain in records and linked Issues; legacy deep lin
 to the corresponding current topic. Implementation status stays explicit in the evaluation
 core design. Read only relevant contract sections.
 
+The [version-specific identity contract](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
+owns deterministic V1-V3 API checks and V0-only model correspondence; historical uniform
+LLM reports retain an explicit replay path.
+
 ## Other responsibilities
 
 - [Development commands](guides/development.md) and [runtime configuration](../config/README.md).
