@@ -457,6 +457,59 @@ Local evidence identifier: `artifacts/followup-plans-20261005/offline-preflight.
 the linked Issues contain self-contained public plans, not local-file dependencies.
 Current observed status stays **zero adopted identities; four UNKNOWN routes**.
 
+<a id="v0-adoption-specification-finalization-2026-10-05"></a>
+
+## V0 adoption specification finalization — 2026-10-05
+
+Status: **Specified; implementation and acquisition not yet approved.** The user
+approved finalizing [parent #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67)
+and publishing implementation slices. The first is
+[offline identity adoption #69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69);
+the second is [route request preparation #70](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/70).
+GitHub native sub-issue links attach both to #67; a native blocking dependency
+makes #70 wait for #69. All three remain open. The preceding Proposed record is
+historical; the finalized specification and ticket acceptance live in GitHub.
+
+Inspected revision: `1326970a2aff91248761a16290288d3cd62a2a67` on
+`feature/evaluation`. An unrelated untracked `.archify/` directory was present
+and excluded; an unrelated `.gitignore` change appeared during planning and was
+also excluded. This checkpoint changes planning records and project status only,
+with ignored tracker drafts/receipts; no implementation or runtime policy changed.
+
+Observed during targeted inspection: identity readiness and evidence-plan
+preparation currently require the native association policy. A proposal cannot
+become an accepted downstream report merely by replacing its policy stamp. The
+first slice therefore includes explicit replay-aware consumer validation along
+with offline adoption. The second consumes that handoff to prepare actual Details
+and conditional/ready directed route requests. Neither slice includes live collection.
+
+The saved #66 response cites claim fields and independent candidate name/address
+fields, including raw address components. The earlier seven ordinary-reference
+diagnostics report `Conflicting address components`, with no shape-invalid items
+listed in their diagnostic examples. The native comparator requires one consistent
+value set per address type; repeated provider types can violate that comparison
+rule. The accepted specification distinguishes this comparison limitation from
+invalid wire shapes. The new policy will validate field presence/types and preserve
+diagnostics without giving the native comparator another semantic veto; it will
+not declare cited raw geography programmatically verified. Structurally invalid
+cited fields remain ineligible, and historical snapshots/citations cannot be repaired
+to force adoption. This is a specified boundary, not a validated accuracy claim.
+
+The audit seed/count were already included in the saved #63 authorization and
+#66 frozen packet. Implementation must verify that linkage and pre-response freeze,
+not retrospectively choose a favorable audit. Genuine human decisions, high-impact
+review and selected audits retain precedence. Actual adoption and eligible-leg counts
+may remain partial; ticket acceptance does not require nine adoptions or four PASS results.
+
+Checks at this planning checkpoint: parent/child bodies were read back exactly,
+existing labels and native relationships verified, original V0 and the 61 pilot
+source hashes checked, and tracked documentation links/whitespace checked. No
+implementation tests or new model/Google calls were run. Local evidence identifiers:
+`artifacts/short-id-live-20261005/packet/live/execution.json`,
+`artifacts/v0-route-execution-20261005/address-diagnostics.json` and
+`artifacts/v0-identity-prototype-20261005/authorization.json`.
+Current observed state remains **zero adopted identities; four UNKNOWN routes**.
+
 <a id="snapshot-coordinate-bridge-2026-10-03"></a>
 
 ## Snapshot-coordinate bridge — 2026-10-03

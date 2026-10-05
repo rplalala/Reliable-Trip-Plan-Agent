@@ -318,13 +318,18 @@ also authorized publication and #66 closeout through
 merge and Issue lifecycle state. No short-reference
 restoration failure occurred in these six samples. See the dated
 [execution acceptance](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05).
-The second proposes default-off V0 model-assisted association while
-retaining genuine high-impact/audit review; policy implementation and subsequent
-independent acquisition require separate approval. Offline source/hash and proposal
-restoration checks passed; these preparation checks add no adopted identity or
-route evidence. The new V0's four routes remain UNKNOWN. See the dated
+The user subsequently approved finalizing #67 and publishing its two implementation
+slices: [offline V0 identity adoption #69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69),
+then [independent route request preparation #70](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/70),
+which is blocked by #69. The specification retains default-off V0 model-assisted
+association, source/replay validation and genuine high-impact/audit review. It
+distinguishes raw address wire validity from native semantic-comparison diagnostics.
+Implementation and subsequent independent acquisition still require separate approval;
+both tickets remain open, and neither authorizes live calls. Earlier offline source/hash
+and proposal restoration checks add no adopted identity or route evidence. The new
+V0's four routes remain UNKNOWN. See the dated
 [regression preparation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-preparation-2026-10-05)
-and [adoption design preparation](docs/records/evaluation/routes.md#v0-adoption-design-preparation-2026-10-05).
+and [specification finalization](docs/records/evaluation/routes.md#v0-adoption-specification-finalization-2026-10-05).
 
 Tickets 01-12 have completed their approved implementation, offline validation,
 review and engineering delivery scopes. On 2026-10-04, the user separately authorized
