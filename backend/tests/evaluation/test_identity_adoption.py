@@ -34,6 +34,13 @@ def adoption_case(batch, tmp_path, request):
     """Persist independently supplied synthetic facts and original model wire material."""
     options = getattr(request, "param", {})
     manifest, results, write, batch_save, root = batch
+    if options.get("transport_mode"):
+        results["v0"]["itinerary"]["days"][0]["activities"][1]["transport"] = {
+            "mode": options["transport_mode"],
+            "from_activity_id": "a",
+            "to_activity_id": "b",
+        }
+        write("v0")
     if options.get("high_impact"):
         spec = json.loads((root / "requirements.json").read_text())
         spec["subjects"] = [{"subject_id": "subject-a", "place_name": "Museum A"}]
@@ -61,7 +68,7 @@ def adoption_case(batch, tmp_path, request):
     async def transport(request):
         name = request["parameters"]["query"]
         candidate = {
-            "id": "canonical-" + name,
+            "id": "shared-venue" if options.get("shared_venue") else "canonical-" + name,
             "displayName": {
                 "text": name if options.get("strict") else name.replace("Museum", "Gallery")
             },
@@ -69,6 +76,8 @@ def adoption_case(batch, tmp_path, request):
             "businessStatus": "OPERATIONAL",
             "location": {"latitude": 10 if name == "Museum A" else 11, "longitude": 20},
         }
+        if options.get("coordinates_missing"):
+            candidate.pop("location")
         if options.get("components") == "partial":
             candidate["addressComponents"] = [{"longText": "Museum grounds"}]
         elif options.get("components") == "repeated":
@@ -111,7 +120,9 @@ def adoption_case(batch, tmp_path, request):
         "decisions": [
             {
                 "reference_id": ref["reference_id"],
-                "candidate_id": "canonical-" + ref["name"],
+                "candidate_id": "shared-venue"
+                if options.get("shared_venue")
+                else "canonical-" + ref["name"],
                 "decision": "match",
                 "rationale": "The supplied name variant and address denote the intended museum.",
                 "evidence_fields": [
