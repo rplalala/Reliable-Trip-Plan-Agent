@@ -1,6 +1,6 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-10-05.
+Current source of truth. Updated 2026-10-06.
 Detailed design, development and acceptance records are indexed in
 [docs/README.md](docs/README.md).
 
@@ -134,8 +134,11 @@ existing evaluation score/mask rules; see the [current contract](docs/contracts/
 The current [uniform identity policy](docs/contracts/0002-intake-identity-usage.md#uniform-llm-identity)
 under [#72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72) delegates identity
 to supplied LLM judgments across V0-V3, protected subjects and optional V3 projections.
-Address assessments preserve original claims and distinguish incorrect addresses from
-other venues. Exact packet/response/report replay checks integrity; semantic judgments
+Following the user's clarification, recognizable venues with incorrect submitted addresses
+and addresses denoting other venues both produce grounding FAIL, without canonical adoption
+or corrected coordinate/endpoint substitution. Original outputs remain intact; all versions
+use the same standard and evidence insufficiency remains UNKNOWN. Score arithmetic is unchanged.
+Exact packet/response/report replay checks integrity; semantic judgments
 remain fallible. No new paid request is authorized. Historical smoke files remain intact;
 their old model responses lack the new address assessments and cannot establish new-policy
 judgments. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
@@ -195,19 +198,21 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest full backend gate (2026-10-05, #72 after review corrections): **2807 passed,
-10 skipped in 328.32s**. The final LLM-policy suite has 30 cases; the related correction
-retest passed 301. Ruff passes. Standards and Spec rechecks have zero remaining actionable
-findings. A prior full recheck had one existing 20ms SQL cancellation timing failure;
-the retrieval test file independently passed 16, and the final serial full suite passed.
-The [dated identity record](docs/records/evaluation/intake-identity-usage.md#uniform-llm-identity-2026-10-05)
-preserves the actual failure/correction/retest sequence. All 61 protected source hashes
-remain unchanged; new model/Places/Routes sends and incremental charges are zero.
-#72 is locally complete pending Git publication and separately authorized fresh model
-judgment. #70's earlier gate and request preparation remain historical in its
+Latest full backend gate (2026-10-06, #72 address/no-repair clarification): **2825 passed,
+10 skipped in 339.67s**. The initial address gate passed 2824 with 10 skips; a further
+legacy-verdict regression was corrected before the final serial run. Identity and quality
+files passed 88 tests. Ruff passes. Standards and Spec have zero actionable findings;
+201 tracked documentation links and preserved historical anchors pass. The
+[dated address record](docs/records/evaluation/intake-identity-usage.md#address-failure-no-repair-2026-10-05)
+preserves the actual red/green and fixture-correction sequence. All 61 protected source
+hashes remain unchanged; new model/Places/Routes sends and incremental charges are zero.
+Implementation/test commit is `1c43007`. #72 is locally complete pending Git publication
+and separately authorized fresh model judgment. The newly prepared nine-reference smoke
+packet has no fresh response, so all current-policy verdicts remain UNKNOWN; historical
+reports are preserved. #70's request preparation remains historical in its
 [dated record](docs/records/evaluation/routes.md#v0-route-request-preparation-2026-10-05).
 
-The preceding full backend gate was **2705 passed, 10 skipped in 421.67s**, from the
+The earlier short-reference full backend gate was **2705 passed, 10 skipped in 421.67s**, from the
 2026-10-05 [short-reference delivery validation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05),
 tracked under [#66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66).
 Earlier review corrections passed **89** executor/Repair and **42** native-policy

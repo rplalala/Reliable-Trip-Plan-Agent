@@ -108,7 +108,12 @@ fractions accompany coverage (P+F)/N, U/N, F/N and conditional P/(P+F). UNKNOWN 
 UNKNOWN; conditional compliance does not determine the score. Parent obligations,
 logical commitments, primary visits and combined route legs retain one weight.
 Grounding uses source occurrences/validated identity records rather than caller summary
-counts. Claimed-ID conflicts and unknown role populations remain separate records.
+counts. Under the current uniform LLM policy, replayed `grounding_verdict` supplies PASS,
+FAIL or UNKNOWN: confirmed incorrect addresses and different venues are FAIL without canonical
+adoption or corrected endpoint substitution. Earlier explicitly replayed legacy reports retain
+their original resolved/unresolved classification. This changes claim classification, not
+score arithmetic or denominators. Missing evidence remains UNKNOWN. Claimed-ID conflicts and
+unknown role populations remain separate records.
 
 All-four proven N=0 excludes a dimension jointly. Included single-version N=0 keeps
 raw N/A/null rates and contributes zero. Unresolved applicability preserves partial

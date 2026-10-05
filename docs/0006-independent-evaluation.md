@@ -54,7 +54,11 @@ Place identity uses the [uniform LLM judgment contract](contracts/0002-intake-id
 for V0-V3, with independent candidates and exact source-bound offline replay. High-impact
 references and sampling no longer require human identity confirmation. Address correctness
 remains a separate assessment: recognizing a venue does not repair the delivered address
-or establish opening/route feasibility. Explicit historical human identity replay is retained.
+or establish opening/route feasibility. Both a recognizable venue with an incorrect submitted
+address and an address identifying another venue produce grounding FAIL and prohibit canonical
+adoption for downstream coordinates/endpoints. Insufficient evidence stays UNKNOWN. All versions
+use the same standard; evaluation does not hide baseline errors or presume a version must fail.
+Explicit historical human identity replay is retained.
 Blinded preference review and other human supplements keep their separate responsibilities.
 
 | Term | Meaning |

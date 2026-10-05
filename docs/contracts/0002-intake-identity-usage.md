@@ -184,7 +184,7 @@ original source artifacts and historical reports. The density table remains
 
 Accepted 2026-10-05 under [Issue #72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72).
 `resolve_identities(intake, evidence, *, model_result=None)` uses
-`association_policy_version=llm_identity_judgment_1` for every V0-V3 primary visit,
+`association_policy_version=llm_identity_judgment_2` for every V0-V3 primary visit,
 relevant REQUIRED/EXCLUDED/fixed-time subject, and available V3 optional projection.
 High-impact metadata remains descriptive. No reference requires human identity confirmation
 or sampling. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
@@ -211,29 +211,44 @@ Every decision contains `reference_id`, `decision` (`match`, `unknown`, `no_supp
 coverage and per-reference candidate ownership. Address assessments are `equivalent`,
 `different_precision`, `incorrect_claim`, `different_place`, `unknown` and `not_supplied`.
 Destination assessments are `consistent`, `contradictory` and `unknown`. Only a `match` with
-a consistent destination and without `different_place`/`unknown` address assessment adopts.
-`not_supplied` must agree with the absence of an original location. `incorrect_claim` can
-identify the intended venue while retaining the wrong original address. Adoption does not
-validate or repair that address. Geographic meaning is judged by the LLM; structural checks
-cannot guarantee semantic correctness. Opening/route evidence is still independently needed.
+a consistent destination and an `equivalent`, `different_precision` or `not_supplied`
+address assessment adopts. `not_supplied` must agree with the absence of an original location.
+Under the user's subsequent 2026-10-05 clarification, both `incorrect_claim` (recognizable
+intended venue, wrong submitted address) and `different_place` are delivered-claim failures.
+They receive `grounding_verdict=FAIL`, an unresolved identity and a null canonical ID;
+recognizing an intended venue must not provide corrected addresses, coordinates or downstream
+route endpoints. Evidence insufficiency remains `UNKNOWN`. The same rule applies to V0-V3,
+without presuming that any particular version must fail. Geographic meaning is judged by the
+LLM; structural checks cannot guarantee semantic correctness. Opening/route evidence is still
+independently needed. Score arithmetic, denominators and planner outputs are unchanged.
 
 Every match cites `claim.place_name`, `claim.destination`, `candidate.display_name` and
 `candidate.formatted_address`; supplied location/ID additionally require `claim.location`
 and `claim.claimed_place_id`. Optional supported paths are `claim.original_title`,
-`candidate.address_components` and `candidate.observations`. Unsupported/empty citations,
+`candidate.address_components` and `candidate.observations`. Every address failure additionally
+requires original name, destination and location plus independent candidate name/address
+citations. A failure without a selected candidate instead cites nonempty `case.candidates`,
+the complete supplied independent set. Unsupported or insufficient failure support rejects
+the import; it does not establish FAIL. Unsupported/empty citations,
 malformed cited components (including non-string optional `shortText`), foreign/partial
 decisions, stale packets and response-hash
 changes reject material without partial adoption. Unknown/no-match and contradictory
 assessments retain unresolved identities and their denominators. A missing result never
 enables automatic name matching or a human fallback.
 
-Reports retain `decision_route=llm_judgment`, original claims, model judgments and saved
-provenance. `review_queue` and review histories are empty; `review_hash` and `audit_plan_hash`
+Reports retain `grounding_verdict` (`PASS`, `FAIL`, `UNKNOWN`), original claims, model judgments
+and saved provenance; adopted records retain `decision_route=llm_judgment`. Claimed-ID
+association can remain diagnostic against a selected candidate without adopting that ID.
+`review_queue` and review histories are empty; `review_hash` and `audit_plan_hash`
 are null and no human audit is selected. `judgment_queue` describes unresolved references,
-not a retry instruction or human workload. Status is `complete` when all references resolve,
-otherwise `needs_model_judgment`. Consumers replay `identity_llm_replay` against the current
+not a retry instruction or human workload, and contains only UNKNOWN references. Confirmed
+address failures are completed judgments, never automatic repair/retry requests. Status is
+`complete` when no UNKNOWN references remain, otherwise `needs_model_judgment`; complete
+processing can include FAIL. Consumers replay `identity_llm_replay` against the current
 intake and require exact report equality before coordinates, evidence, schedule, quality
-and routes. Substituting a legacy stamp cannot bypass replay. V0 route-request packages
+and routes. Substituting an earlier policy stamp cannot bypass replay. Policy 1 packets/reports
+cannot establish current-policy judgments; historical files remain unchanged and require their
+original code revision for reproduction. V0 route-request packages
 also bind the original snapshot evidence. Schema/packet fingerprints identify this policy.
 
 `resolve_v0_identities(intake, bundle_path, *, model_result=None)` verifies the existing

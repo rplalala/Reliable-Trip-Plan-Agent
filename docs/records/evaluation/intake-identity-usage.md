@@ -1422,3 +1422,67 @@ fresh model judgment; its original six-adoption report and all four UNKNOWN rout
 remain historical evidence. No planner rerun, score change, formal benchmark, version freeze
 or research conclusion is claimed. Blinded preference work and other human supplements are
 outside this place-identity change.
+
+<a id="address-failure-no-repair-2026-10-05"></a>
+
+### Delivered-address failure clarification - 2026-10-05 to 2026-10-06
+
+After the uniform-policy local acceptance, the user clarified that both a recognizable
+intended venue with a wrong submitted address and an address denoting another venue must
+count as errors. Evaluation must preserve baseline mistakes rather than repair V0. The
+same evidence standard applies to every version; an expectation that V0 can err is not
+permission to manufacture failures. This is an in-scope correction under #72, with fixed
+review base `adaf2888b78f9d6cacddd41510f0077720cbe7e3`. The pre-existing unrelated
+`.gitignore` change is excluded; no live sends or Git publication are authorized.
+Implementation/test commit: `1c43007`.
+
+Policy `llm_identity_judgment_2` marks supported `incorrect_claim` and `different_place`
+assessments as grounding FAIL and refuses canonical adoption. The chosen candidate remains
+diagnostic model material, including claimed-ID conflicts, but cannot supply corrected
+addresses, coordinates or route endpoints for that occurrence. UNKNOWN remains for
+insufficient evidence. Confirmed failures complete their judgments rather than entering
+an automatic repair/retry queue. The quality consumer uses replayed per-occurrence verdicts;
+existing score arithmetic, denominators, planner behavior and legacy classifications remain
+unchanged. Prior policy packets/reports cannot authorize current downstream preparation.
+
+TDD reproduced incorrect-address adoption and missing explicit verdicts in eight address
+cases. After blocking adoption, eight four-version report cases exposed confirmed errors
+being downgraded to UNKNOWN; consuming the explicit verdict corrected them. The twelve
+report cases passed (two error assessments and evidence uncertainty across four versions).
+Two further red tests showed unsupported failure assessments being accepted; address failures
+now require original name/destination/location and independent candidate citations. The
+identity/report files then passed 84 tests. Initial test invocations encountered missing
+pytest in system Python and inaccessible default temporary/cache directories; validation
+uses repository `.venv`, new workspace basetemp directories and disabled pytest cache.
+
+The first coordinate regression incorrectly expected the shared venue coordinates to
+disappear globally and failed three cases. Source inspection showed valid references in
+other versions independently retain those coordinates. The corrected public-boundary
+assertion preserves their evidence while proving V0's bad occurrence has a null endpoint,
+no expected route context, zero identity-eligible acquisition legs and zero sends. All
+three error/uncertainty cases passed. This is fixture correction, not suppression of a
+provider/planner error. No internal implementation mocking or actual provider send was used.
+
+The first full gate passed **2824 tests, 10 skipped in 361.36s**. A final legacy-compatibility
+regression initially stopped at stale snapshot linkage; rebuilding its matching synthetic
+snapshot exposed the real defect: an added same-name legacy metadata field supplied new FAIL
+classification. The quality consumer now reads the explicit verdict only from a source-bound
+model record, whose markers require exact LLM replay. Legacy reports keep their original
+classification. Identity and quality files passed **88 tests in 19.29s**, and Ruff passed.
+The final serial full backend gate completed on 2026-10-06 and passed **2825 tests,
+10 skipped in 339.67s**. Independent
+Standards and Spec review of `adaf288...1c43007` and pending current/dated documentation
+reported **zero actionable findings on each axis**; no review correction commit was needed.
+Checks passed for Ruff, diff whitespace, 201 tracked local documentation links, preserved
+explicit historical anchors and English additions. There is no configured mypy/pyright gate.
+Ignored log identifiers are `.scratch/issue72/address-full-backend.log` and
+`.scratch/issue72/address-full-backend-final.log`. The implementation is locally complete;
+Git publication remains separately authorized.
+
+Protected-source replay verified all 61 prior hashes unchanged. New ignored evidence
+identifiers are `artifacts/llm-identity-address-fail-20261005/packet.json`,
+`pending-report.json` and `offline-acceptance.json`. The packet covers the same nine
+references and prepares the inherited model name only. No fresh result is supplied, so
+all nine current-policy verdicts remain UNKNOWN; no old response is rewritten or used
+to invent smoke failures. Fresh paid judgment remains separately authorized. No formal
+benchmark, version comparison, freeze or research conclusion is claimed.

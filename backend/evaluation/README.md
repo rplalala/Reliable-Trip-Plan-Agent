@@ -122,8 +122,11 @@ is mandatory. `--prepare` prints a frozen packet; it does not execute a model. I
 separately authorized saved response through the contract's model-result envelope. The
 command has no built-in model execution client. Missing results remain unresolved without
 native string-matching fallback. Semantic judgments remain fallible. Intake exits 0 for
-accepted material or 2 for correction. Identity exits 0 for packet preparation/all resolved,
-3 for unresolved/missing judgment, and 2 for material/linkage errors.
+accepted material or 2 for correction. Identity exits 0 for packet preparation/completed
+judgments (including confirmed failures), 3 for UNKNOWN/missing judgment, and 2 for
+material/linkage errors. Incorrect submitted addresses and different venues are grounding
+FAIL, even when the intended venue is recognizable. Their canonical ID stays null: candidate
+facts cannot supply corrected route endpoints. Original outputs and denominators are retained.
 
 For uniform judgment over a verified V0 material bundle:
 
