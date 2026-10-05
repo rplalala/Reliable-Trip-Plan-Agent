@@ -8,8 +8,11 @@ from pathlib import Path
 
 import pytest
 
-from backend.evaluation.identity import identity_references, resolve_identities
-from backend.evaluation.identity_adoption import resolve_v0_identities
+from backend.evaluation.identity import identity_references
+from backend.evaluation.identity import resolve_legacy_identities as resolve_identities
+from backend.evaluation.identity_adoption import (
+    resolve_legacy_v0_identities as resolve_v0_identities,
+)
 from backend.evaluation.identity_assistance import IdentityAssistancePacket
 from backend.evaluation.intake import load_batch
 from backend.evaluation.records import canonical_digest
@@ -50,6 +53,7 @@ def adoption_case(batch, tmp_path, request):
                 "kind": "required_visit",
                 "resolution": "resolved",
                 "subject_ref": "subject-a",
+                "count": {"mode": "exact", "value": 1},
                 "source_refs": [{"field_path": "additional_preferences", "quote": "architecture"}],
             }
         ]
@@ -521,7 +525,7 @@ def test_offline_cli_reports_pending_review_and_material_errors(adoption_case, c
     from backend.evaluation.identity_adoption_cli import main
 
     _, _, bundle, _, _, _, _, _ = adoption_case
-    assert main([str(bundle)]) == 3
+    assert main([str(bundle), "--legacy"]) == 3
     report = json.loads(capsys.readouterr().out)
     assert report["adoption_counts"]["adopted"] == 1
     assert main([str(bundle) + ".missing"]) == 2

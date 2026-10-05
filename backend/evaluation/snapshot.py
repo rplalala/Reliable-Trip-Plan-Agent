@@ -469,11 +469,12 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
     """Inventory canonical venues and candidate legs without choosing departure semantics."""
     from .identity import ASSOCIATION_POLICY_VERSION, IDENTITY_VERSION
     from .identity_adoption import needs_v0_replay
+    from .identity_llm import needs_llm_replay
     from .preparation import identity_ready
 
     prepared = _prepared(intake)
     report = identity_report.to_dict() if hasattr(identity_report, "to_dict") else identity_report
-    model_policy = needs_v0_replay(report)
+    model_policy = needs_v0_replay(report) or needs_llm_replay(report)
     if model_policy and not identity_ready(prepared, report):
         raise ValueError("Model-assisted identity report requires verified replay")
     if (

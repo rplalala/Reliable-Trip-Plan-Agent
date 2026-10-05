@@ -6,7 +6,9 @@ import socket
 
 import pytest
 
-from backend.evaluation.identity_adoption import resolve_v0_identities
+from backend.evaluation.identity_adoption import (
+    resolve_legacy_v0_identities as resolve_v0_identities,
+)
 from backend.evaluation.route_requests import preflight_v0_route_requests, prepare_v0_route_requests
 from backend.evaluation.snapshot import AcquisitionPolicy, Response, acquire_snapshot
 from backend.tests.evaluation.test_identity import review_envelope

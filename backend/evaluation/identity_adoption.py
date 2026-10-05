@@ -385,7 +385,19 @@ def load_v0_material(intake, bundle_path):
     )
 
 
-def resolve_v0_identities(intake, bundle_path, reviews=None):
+def resolve_v0_identities(intake, bundle_path, reviews=None, *, model_result=None):
+    """Use uniform LLM judgments over the verified independent V0 material."""
+    from .identity_llm import resolve_llm_identities
+
+    if reviews is not None:
+        raise ValueError("Human decisions require explicit legacy V0 replay")
+    material = load_v0_material(intake, bundle_path)
+    return resolve_llm_identities(
+        thaw(material.intake), thaw(material.evidence), model_result=model_result
+    )
+
+
+def resolve_legacy_v0_identities(intake, bundle_path, reviews=None):
     """Explicit opt-in; native resolution remains independently callable and unchanged."""
     material = load_v0_material(intake, bundle_path)
     return _resolve_identities(
@@ -400,7 +412,7 @@ def verify_v0_report(intake, report):
         _, digest = _read(Path(replay["bundle"]["path"]))
         if digest != replay["bundle"]["sha256"]:
             return False
-        expected = resolve_v0_identities(intake, replay["bundle"]["path"], replay["reviews"])
+        expected = resolve_legacy_v0_identities(intake, replay["bundle"]["path"], replay["reviews"])
         return expected.to_dict() == report
     except (ValueError, TypeError, KeyError, OSError, StopIteration):
         return False

@@ -6,8 +6,9 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from .identity_adoption import load_v0_material, verify_v0_report
+from .identity_adoption import load_v0_material
 from .intake import _read
+from .preparation import identity_ready
 from .records import MaterialError, canonical_digest, freeze, require, thaw
 from .routes import prepare_routes
 from .snapshot import build_identity_plan, load_snapshot
@@ -273,7 +274,10 @@ def prepare_v0_route_requests(
             else thaw(identity_report)
         )
         require(
-            verify_v0_report(intake, identity), "identity", "Replay-verified V0 report required"
+            identity_ready(intake, identity)
+            and identity.get("evidence_hash") == canonical_digest(thaw(material.evidence)),
+            "identity",
+            "Replay-verified V0 report required",
         )
         bundle, _ = _read(Path(bundle_path))
         root = (Path(bundle_path).resolve().parent / bundle["artifact_root"]).resolve()
