@@ -25,7 +25,7 @@ from backend.evaluation.snapshot import (
 )
 from backend.evaluation.snapshot_coordinates import prepare_snapshot_coordinates
 from backend.evaluation.v3_pair_report import build_v3_pair_report
-from backend.tests.evaluation.test_identity import details, evidence, prepared
+from backend.tests.evaluation.test_identity import details, evidence, prepared, search
 from backend.tests.evaluation.test_identity_llm import model_material
 from backend.tests.evaluation.test_requirement_schedule import context
 
@@ -383,3 +383,67 @@ def test_api_provenance_and_acquisition_failures_do_not_become_pass(batch, fault
         )
         assert record["grounding_verdict"] == "UNKNOWN"
         assert record["canonical_place_id"] is None
+
+
+@pytest.mark.parametrize(
+    "variant",
+    [
+        "exact",
+        "ambiguous",
+        "null_components",
+        "wrong_components",
+        "conflicting_components",
+        "wrong_query",
+    ],
+)
+def test_unbound_requirement_uncertainty_is_local_and_cli_continues(batch, capsys, variant):
+    manifest, _results, write, save, root = batch
+    spec = json.loads((root / "requirements.json").read_text())
+    spec["subjects"] = [{"subject_id": "museum", "place_name": "Museum A"}]
+    spec["obligations"] = [
+        {
+            "obligation_id": "visit",
+            "kind": "required_visit",
+            "resolution": "resolved",
+            "subject_ref": "museum",
+            "count": {"mode": "exact", "value": 1},
+            "source_refs": [{"field_path": "additional_preferences", "quote": "architecture"}],
+        }
+    ]
+    manifest["groups"][0]["requirement_spec_ref"] = save(
+        "requirements.json", spec, spec["schema_version"]
+    )
+    intake = identified_batch(batch)
+    refs = identity_references(intake)
+    subject = next(r for r in refs if r["kind"] == "requirement_subject")
+    observation = search(subject, "Museum A", place_id="venue-a")
+    candidate = observation["search"]["candidates"][0]
+    if variant == "ambiguous":
+        observation["search"]["actual_result_count"] = 2
+    elif variant == "null_components":
+        candidate["address_components"] = None
+    elif variant == "wrong_components":
+        candidate["address_components"] = "bad"
+    elif variant == "conflicting_components":
+        candidate["address_components"] = [
+            {"longText": "Example City", "types": ["locality"]},
+            {"longText": "Other City", "types": ["locality"]},
+        ]
+    elif variant == "wrong_query":
+        observation["search"]["query"] = "another search"
+    observed = evidence(
+        intake,
+        [observation]
+        + [details(r, r["name"], r["claimed_place_id"]) for r in refs if r["version"] == "v1"],
+    )
+    save("observed.json", observed)
+    code = identity_main([str(write()), str(root / "observed.json")])
+    out = json.loads(capsys.readouterr().out)
+    assert code == 3, out
+    assert identity_ready(intake.to_dict(), out)
+    record = next(r for r in out["records"] if r["kind"] == "requirement_subject")
+    assert record["grounding_verdict"] == ("PASS" if variant == "exact" else "UNKNOWN")
+    assert [r["grounding_verdict"] for r in out["records"] if r["version"] == "v1"] == [
+        "PASS",
+        "PASS",
+    ]

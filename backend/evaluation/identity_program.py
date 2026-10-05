@@ -61,7 +61,11 @@ def _check(ref, observation, binding=None):
         candidate = _candidate(search["candidates"][0])
         if candidate is None:
             return "UNKNOWN", "malformed_subject_candidate", None
-        if not destination_matches(ref["destination"], candidate):
+        try:
+            destination_verified = destination_matches(ref["destination"], candidate)
+        except ValueError:
+            return "UNKNOWN", "subject_destination_evidence_malformed", None
+        if not destination_verified:
             return "UNKNOWN", "subject_destination_unverified", None
     if ref["name"] != candidate["display_name"]:
         return "FAIL", "api_name_mismatch", None

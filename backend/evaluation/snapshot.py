@@ -481,14 +481,14 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
 
     prepared = _prepared(intake)
     report = identity_report.to_dict() if hasattr(identity_report, "to_dict") else identity_report
-    model_policy = (
+    replay_policy = (
         needs_v0_replay(report) or needs_llm_replay(report) or needs_versioned_replay(report)
     )
-    if model_policy and not identity_ready(prepared, report):
-        raise ValueError("Model-assisted identity report requires verified replay")
+    if replay_policy and not identity_ready(prepared, report):
+        raise ValueError("Identity report requires verified replay")
     if (
         report.get("schema_version") != IDENTITY_VERSION
-        or not model_policy
+        or not replay_policy
         and report.get("association_policy_version") != ASSOCIATION_POLICY_VERSION
         or report.get("batch_id") != prepared["batch_id"]
         or report.get("batch_revision") != prepared["revision"]

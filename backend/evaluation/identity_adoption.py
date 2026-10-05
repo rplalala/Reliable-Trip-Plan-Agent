@@ -386,7 +386,7 @@ def load_v0_material(intake, bundle_path):
 
 
 def resolve_v0_identities(intake, bundle_path, reviews=None, *, model_result=None):
-    """Use uniform LLM judgments over the verified independent V0 material."""
+    """Verify V0 correspondence material and dispatch programmatic shared-subject checks."""
     from .identity import resolve_identities
 
     if reviews is not None:
