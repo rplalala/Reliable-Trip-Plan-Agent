@@ -37,6 +37,18 @@ def adoption_case(batch, tmp_path, request):
     """Persist independently supplied synthetic facts and original model wire material."""
     options = getattr(request, "param", {})
     manifest, results, write, batch_save, root = batch
+    if options.get("repeat_visits"):
+        from backend.tests.evaluation.test_intake import activity
+
+        results["v0"]["itinerary"]["days"][0]["activities"].extend(
+            [
+                activity("t2", "Walking", "11:30", "11:50", "transport"),
+                activity("c", "Museum A again", "12:00", "13:00", place="Museum A"),
+                activity("t3", "Walking", "13:00", "13:20", "transport"),
+                activity("d", "Museum B again", "13:30", "14:30", place="Museum B"),
+            ]
+        )
+        write("v0")
     if options.get("claimed_location"):
         results["v0"]["itinerary"]["days"][0]["activities"][0]["location"] = options[
             "claimed_location"

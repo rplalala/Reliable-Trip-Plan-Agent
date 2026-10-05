@@ -11,7 +11,10 @@ from .route_requests import prepare_v0_route_requests
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("bundle")
-    parser.add_argument("identity_report")
+    parser.add_argument(
+        "identity_report", nargs="?", help="Current report; omitted means no new V0 model evidence"
+    )
+    parser.add_argument("--legacy", action="store_true", help="Explicit historical identity replay")
     parser.add_argument("--prepared-at", required=True, help="Offset-aware preparation timestamp")
     parser.add_argument("--context")
     parser.add_argument("--occupancy-reviews")
@@ -31,6 +34,7 @@ def main(argv=None):
             occupancy_reviews=read(args.occupancy_reviews),
             route_reviews=read(args.route_reviews),
             details_snapshot_directory=args.details_snapshot,
+            legacy=args.legacy,
         ).to_dict()
     except (ValueError, TypeError, KeyError, OSError) as exc:
         print(json.dumps({"status": "needs_material_correction", "diagnostic": str(exc)}))

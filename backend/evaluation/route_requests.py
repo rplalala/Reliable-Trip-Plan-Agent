@@ -6,14 +6,16 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
+from .identity import resolve_identities
 from .identity_adoption import load_v0_material
+from .identity_program import POLICY_VERSION as IDENTITY_POLICY_VERSION
 from .intake import _read
 from .preparation import identity_ready
 from .records import MaterialError, canonical_digest, freeze, require, thaw
 from .routes import prepare_routes
 from .snapshot import build_identity_plan, load_snapshot
 
-PACKAGE_VERSION = "rtpeval_v0_route_requests_1"
+PACKAGE_VERSION = "rtpeval_v0_route_requests_2"
 DETAILS_MASK = "id,location"
 ROUTES_MASK = "originIndex,destinationIndex,status,condition,distanceMeters,duration,fallbackInfo"
 PRICE_URL = "https://developers.google.com/maps/billing-and-pricing/pricing"
@@ -258,20 +260,29 @@ def prepare_v0_route_requests(
     occupancy_reviews=None,
     route_reviews=None,
     details_snapshot_directory=None,
+    legacy=False,
 ):
-    """Recompute the adopted handoff and retain original V0 leg blockers."""
+    """Replay current identities by default and retain every original V0 leg blocker."""
     base = {"schema_version": PACKAGE_VERSION, "legs": [], "requests": [], "diagnostics": []}
     try:
         now = datetime.fromisoformat(prepared_at)
+        require(type(legacy) is bool, "legacy", "Explicit boolean replay policy required")
         require(
             now.utcoffset() is not None, "prepared_at", "Offset-aware preparation time required"
         )
         material = load_v0_material(None, bundle_path)
         intake = thaw(material.intake)
         identity = (
-            identity_report.to_dict()
+            resolve_identities(intake, thaw(material.evidence)).to_dict()
+            if identity_report is None
+            else identity_report.to_dict()
             if hasattr(identity_report, "to_dict")
             else thaw(identity_report)
+        )
+        require(
+            legacy or identity.get("association_policy_version") == IDENTITY_POLICY_VERSION,
+            "identity/policy",
+            "Current version-specific identity report required; historical replay is explicit",
         )
         require(
             identity_ready(intake, identity)
@@ -302,7 +313,11 @@ def prepare_v0_route_requests(
             ends = [original[k]["record_id"] for k in ("from_source", "to_source")]
             used.update(pid for pid in original["canonical_endpoints"] if pid is not None)
             blockers = [
-                {"reference_id": rid, "reason": references[rid]["reason"]}
+                {
+                    "reference_id": rid,
+                    "reason": references[rid]["reason"],
+                    "grounding_verdict": references[rid].get("grounding_verdict"),
+                }
                 for rid in ends
                 if references[rid]["resolution"] != "resolved"
             ]
@@ -311,6 +326,22 @@ def prepare_v0_route_requests(
                     **original,
                     "identity_eligible": not blockers,
                     "identity_blockers": blockers,
+                    "identity_endpoints": [
+                        {
+                            key: references[rid][key]
+                            for key in (
+                                "reference_id",
+                                "resolution",
+                                "canonical_place_id",
+                                "reason",
+                                "grounding_verdict",
+                                "original_claim",
+                                "candidate_correspondence",
+                            )
+                            if key in references[rid]
+                        }
+                        for rid in ends
+                    ],
                     "verdict": "N/A" if original["applicability"] == "N/A" else "UNKNOWN",
                 }
             )
@@ -402,7 +433,19 @@ def prepare_v0_route_requests(
         require(details <= 8 and len(base["legs"]) <= 4, "limits", "Planning ceiling exceeded")
         base.update(
             prepared_at=prepared_at,
+            identity_policy={
+                "association_policy_version": identity["association_policy_version"],
+                "legacy": legacy,
+                "current_v0_model_result_present": identity.get(
+                    "identity_versioned_replay", {}
+                ).get("model_result")
+                is not None,
+                "report_origin": "derived_without_model_result"
+                if identity_report is None
+                else "supplied",
+            },
             replay_inputs={
+                "legacy": legacy,
                 "schedule_context": schedule_context,
                 "occupancy_reviews": occupancy_reviews,
                 "route_reviews": route_reviews,
@@ -453,6 +496,10 @@ def prepare_v0_route_requests(
                 ),
                 "missing_coordinate_venues": len(used - point_map.keys()),
                 "identity_eligible_legs": sum(leg["identity_eligible"] for leg in base["legs"]),
+                "eligible_endpoint_occurrences": sum(
+                    pid is not None for leg in base["legs"] for pid in leg["canonical_endpoints"]
+                ),
+                "eligible_endpoint_venues": len(used),
                 "coordinate_ready_legs": sum(leg["coordinate_ready"] for leg in base["legs"]),
                 "reused_coordinates": reused_count,
                 "supplied_details_observed_sends": observed_sends,
