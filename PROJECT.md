@@ -109,7 +109,7 @@ validation, caches and internal decisions are not independent factual ground tru
 | --- | --- |
 | 01: Intake/projection | Implemented and offline-validated, including provenance, transport sources and [ordinary-output compatibility](docs/records/evaluation/intake-identity-usage.md#rtpeval-ticket-01-03-acceptance) |
 | 02: Usage capture/report | Implemented and offline-validated; opt-in capture plus [offline cost/bill accounting](docs/contracts/0002-intake-identity-usage.md#offline-cost-accounting); no automatic formal run or bill fetching |
-| 03: Identity/adjudication | Implemented and offline-validated; independent supplied-ID/name-search paths, manual review and automatic-result audit; structural claims and optional typed-address evidence supported |
+| 03: Identity/judgment | Uniform source-bound LLM judgments for V0-V3 under #72; no mandatory human identity confirmation or sampling; explicit historical replay retains old evidence |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented, offline-validated and published; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed |
 | 06: Opening checks | Offline parser/scorer/CLI implemented and reviewed; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) completed; [acceptance and scoped supplements](docs/records/evaluation/opening.md#rtpeval-ticket-06-acceptance) |
@@ -131,7 +131,16 @@ local uncertainty; extraction adds no provider requests or planner/model work. T
 coordinate envelope remains available. This bridge preserves V0-V3 planning behavior and
 existing evaluation score/mask rules; see the [current contract](docs/contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03).
 
-The explicit V0-only offline identity policy is delivered through PR #71 under
+The current [uniform identity policy](docs/contracts/0002-intake-identity-usage.md#uniform-llm-identity)
+under [#72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72) delegates identity
+to supplied LLM judgments across V0-V3, protected subjects and optional V3 projections.
+Address assessments preserve original claims and distinguish incorrect addresses from
+other venues. Exact packet/response/report replay checks integrity; semantic judgments
+remain fallible. No new paid request is authorized. Historical smoke files remain intact;
+their old model responses lack the new address assessments and cannot establish new-policy
+judgments. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
+
+The historical V0-only offline identity policy was delivered through PR #71 under
 [#69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69), with source-bound
 short-reference restoration and consumer replay. Its saved #66 acceptance adopts six
 of nine references, retains three genuine-review cases, extracts six existing independent
@@ -186,14 +195,17 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest full backend gate: **2777 passed, 10 skipped in 399.30s**, after #70's
-request/preflight/budget implementation. The new request suite has 25 cases; the combined
-identity/request gate passed 72. Ruff passes. Actual module CLI exits 3 with complete
-blocked/conditional output; exact network-blocked replay preserves all 61 protected
-hashes and sends zero requests. See the
-[dated request preparation](docs/records/evaluation/routes.md#v0-route-request-preparation-2026-10-05)
-for TDD, review and limits. #69's delivered checkpoint passed 2752 with 10 skips and
-its independent delivery reviews had no findings; #70 remains local pending publication.
+Latest full backend gate (2026-10-05, #72 after review corrections): **2807 passed,
+10 skipped in 328.32s**. The final LLM-policy suite has 30 cases; the related correction
+retest passed 301. Ruff passes. Standards and Spec rechecks have zero remaining actionable
+findings. A prior full recheck had one existing 20ms SQL cancellation timing failure;
+the retrieval test file independently passed 16, and the final serial full suite passed.
+The [dated identity record](docs/records/evaluation/intake-identity-usage.md#uniform-llm-identity-2026-10-05)
+preserves the actual failure/correction/retest sequence. All 61 protected source hashes
+remain unchanged; new model/Places/Routes sends and incremental charges are zero.
+#72 is locally complete pending Git publication and separately authorized fresh model
+judgment. #70's earlier gate and request preparation remain historical in its
+[dated record](docs/records/evaluation/routes.md#v0-route-request-preparation-2026-10-05).
 
 The preceding full backend gate was **2705 passed, 10 skipped in 421.67s**, from the
 2026-10-05 [short-reference delivery validation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05),

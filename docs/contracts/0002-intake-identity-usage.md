@@ -178,6 +178,77 @@ original source artifacts and historical reports. The density table remains
 
 ## Independent identity and adjudication
 
+<a id="uniform-llm-identity"></a>
+
+### Current uniform LLM identity judgment
+
+Accepted 2026-10-05 under [Issue #72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72).
+`resolve_identities(intake, evidence, *, model_result=None)` uses
+`association_policy_version=llm_identity_judgment_1` for every V0-V3 primary visit,
+relevant REQUIRED/EXCLUDED/fixed-time subject, and available V3 optional projection.
+High-impact metadata remains descriptive. No reference requires human identity confirmation
+or sampling. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
+
+`prepare_identity_judgment(intake, evidence, *, model)` returns an immutable
+`rtpeval_identity_judgment_packet_1` with the complete source-bound request and short-ID map.
+Cases contain original name/title, destination, location and claimed ID, independent
+candidates, supplied provider observations and source references. Equal IDs are deduplicated
+for selection while conflicting observations remain visible. The caller supplies an explicit
+model. The request uses no tools and a strict `IdentityJudgments` output schema. Preparing a
+packet does not execute a model/provider. Planner claims and provider rank are not evidence.
+
+Supply a saved `rtpeval_identity_model_result_1` envelope with `packet`, offset-aware
+`requested_at`/`retrieved_at`, `response` and `response_sha256`. Its packet must exactly equal
+fresh preparation for the current intake/evidence/model. The response must be completed,
+have a nonempty ID and matching model, and have exactly one assistant `output_text` in
+message/reasoning output; tool output is rejected. The response digest is
+`canonical_digest(response)`. These supplied receipts support reproducibility, not
+cryptographic proof of a send or model accuracy. New paid collection requires authorization.
+
+Every decision contains `reference_id`, `decision` (`match`, `unknown`, `no_supported_match`),
+`candidate_id`, nonempty `rationale`, `evidence_fields`, `address_assessment` and
+`destination_assessment`. Exact short-ID restoration requires complete unique reference
+coverage and per-reference candidate ownership. Address assessments are `equivalent`,
+`different_precision`, `incorrect_claim`, `different_place`, `unknown` and `not_supplied`.
+Destination assessments are `consistent`, `contradictory` and `unknown`. Only a `match` with
+a consistent destination and without `different_place`/`unknown` address assessment adopts.
+`not_supplied` must agree with the absence of an original location. `incorrect_claim` can
+identify the intended venue while retaining the wrong original address. Adoption does not
+validate or repair that address. Geographic meaning is judged by the LLM; structural checks
+cannot guarantee semantic correctness. Opening/route evidence is still independently needed.
+
+Every match cites `claim.place_name`, `claim.destination`, `candidate.display_name` and
+`candidate.formatted_address`; supplied location/ID additionally require `claim.location`
+and `claim.claimed_place_id`. Optional supported paths are `claim.original_title`,
+`candidate.address_components` and `candidate.observations`. Unsupported/empty citations,
+malformed cited components (including non-string optional `shortText`), foreign/partial
+decisions, stale packets and response-hash
+changes reject material without partial adoption. Unknown/no-match and contradictory
+assessments retain unresolved identities and their denominators. A missing result never
+enables automatic name matching or a human fallback.
+
+Reports retain `decision_route=llm_judgment`, original claims, model judgments and saved
+provenance. `review_queue` and review histories are empty; `review_hash` and `audit_plan_hash`
+are null and no human audit is selected. `judgment_queue` describes unresolved references,
+not a retry instruction or human workload. Status is `complete` when all references resolve,
+otherwise `needs_model_judgment`. Consumers replay `identity_llm_replay` against the current
+intake and require exact report equality before coordinates, evidence, schedule, quality
+and routes. Substituting a legacy stamp cannot bypass replay. V0 route-request packages
+also bind the original snapshot evidence. Schema/packet fingerprints identify this policy.
+
+`resolve_v0_identities(intake, bundle_path, *, model_result=None)` verifies the existing
+source-linked V0 material before applying this same policy. The historical proposal response
+is not reinterpreted as a new-schema judgment. All identity CLIs support
+`--prepare --model MODEL` and `--model-result FILE` without live execution.
+
+### Explicit historical replay
+
+`resolve_legacy_identities`, `resolve_legacy_v0_identities`, and CLI `--legacy` reproduce
+the prior contracts below for frozen evidence. Historical human decisions are preserved;
+they are not fabricated or rewritten as model decisions. Default API/CLI calls reject
+human/audit inputs unless this explicit legacy path is selected. Consumers retain old
+policy compatibility for historical reproduction.
+
 Ticket 03 reads accepted projection references, reviewed REQUIRED/EXCLUDED/fixed-time
 subjects, independent observations, a predeclared audit and optional decisions. It uses
 neither planner evidence nor provider rank as confidence. Each established primary visit is
@@ -230,7 +301,7 @@ available, unsupported location tokens cannot borrow favorable formatted prose. 
 components remain diagnostic. No substring city test, geocoding, alias inference, extra request,
 LLM call or old-snapshot backfill is added. Planner field masks/budgets are unchanged.
 
-The default/native path requires
+The historical native replay path requires
 `association_policy_version=structural_claims_typed_addresses_3` downstream. The explicit
 V0-only policy below has a separate replay-aware consumer boundary.
 `subject_scope_version=required_excluded_fixed_time_1` and `reference_set_digest` bind the

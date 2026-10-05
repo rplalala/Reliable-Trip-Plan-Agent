@@ -1350,3 +1350,75 @@ The local log is `artifacts/seoul-cost-20261005/delivery-correction-tests.txt`; 
 ignored evidence, not a published dependency. No source artifacts, invoices, paid calls,
 planner behavior or route execution changed. Final delivery review and merge status are
 recorded on PR #60 and Issue #59.
+
+<a id="uniform-llm-identity-2026-10-05"></a>
+
+## Uniform LLM identity judgment — 2026-10-05
+
+The user approved replacing mandatory human place-identity confirmation with LLM judgments
+under [Issue #72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72). The decision
+applies to evaluator V0-V3, relevant requirement subjects and optional V3 projections;
+individual names in a live smoke are evidence, not design rules or fixed test cases.
+Implementation baseline: `b158c916148d92d0f73907054aa492f12062004f`; implementation/test
+commit: `9f1cd71`. The unrelated pre-existing `.gitignore` change remains outside the task.
+Git publication and fresh live model/Places/Routes calls were not authorized.
+
+The [current contract](../../contracts/0002-intake-identity-usage.md#uniform-llm-identity)
+prepares immutable packets with original claims, independent candidate observations and
+short references. Every adopted identity comes from supplied model judgments; high-impact
+and sampling no longer impose human gates. Model output explicitly assesses address and
+destination compatibility. An identified venue can coexist with an incorrect original
+address; the original claim is retained. Unknown/no-supported-match and contradictions
+keep unresolved identities, denominator coverage and downstream uncertainty. Exact
+request/response/report replay checks integrity, not semantic correctness or human accuracy.
+Explicit legacy entry points reproduce frozen native/V0 human-policy reports.
+
+Public-boundary TDD first failed on the missing packet module, then missing model adoption,
+downstream replay and CLI preparation. Later tests exposed acceptance of malformed cited
+address components, a malformed-record marker scan and a controlled CLI replay mismatch.
+The controlled mismatch came from JSON field order changing a serialized request string;
+canonical request serialization fixed it without changing source bytes. A source-linked
+synthetic high-impact fixture also needed its declared required-visit count to enter route
+preparation; the fixture now supplies an exact count of one. A final malformed model-content
+regression reproduced an AttributeError and now rejects that material as a ValueError.
+Synthetic evidence covers all versions, optional projections, protected subjects, unknown
+and no-match outputs, wrong claimed IDs, address states, packet/response/report tampering,
+three CLIs, coordinates and V0 route-request preparation with a network guard.
+
+The first full backend gate passed **2804 tests with 10 skips in 353.61s**. Final focused
+coverage after the extra malformed-content regression passed **28 tests in 5.44s**; Ruff
+passed. Standards and Spec each found one issue during independent review. Standards found stale
+PROJECT.md validation metadata, corrected in the pending documentation. Spec found that cited
+address components lacked optional `shortText` type validation. The synthetic regression first
+reproduced acceptance of `shortText: 42`; correction `e8a7293` rejects the complete import and
+consumer replay while keeping valid repeated provider types available to the model. Both
+review rechecks have **zero remaining actionable findings**. Correction retests passed **301
+identity/snapshot/schedule/request tests in 38.57s** and **30 LLM tests in 5.24s**.
+
+The follow-up full run passed 2804 with 10 skips but failed one existing retrieval test,
+`test_sql_timeout_and_caller_cancellation_are_distinct[True]`, in 342.20s. It configures a
+20ms SQL timeout and distinguishes cancellation after an asyncio event. The complete
+retrieval test file independently passed **16 tests in 7.77s**. Timing interference while
+another focused test run was active is an inference, not a confirmed production defect.
+No retrieval code or timeout test was changed. The final serial full backend gate after
+correction passed **2807 tests with 10 skips in 328.32s**, without another test run active.
+The final code revision is `e8a7293`; implementation and correction remain separate commits.
+Ruff, tracked-link checks, preserved historical anchors and protected-file hashes pass.
+Status: locally implemented, offline validated and independently reviewed; Git publication
+and fresh paid judgment collection remain pending separate authorization.
+No mypy/pyright configuration is present. Local logs are ignored evidence identifiers:
+`.scratch/issue72/full-backend.log`, `full-backend-final.log`, `full-backend-serial.log`,
+`review-retest.log`, `review-focused.log` and `retrieval-recheck.log` under that directory.
+
+Offline replay of saved smoke material verified all **61 protected file hashes unchanged**.
+The new derived packet covers nine references (one requirement subject and eight visits),
+has zero human gates and produced zero new model/provider sends or incremental charges.
+Its explicit model is inherited from the saved material solely to prepare the request.
+The prior response lacks the new address assessments; it was not fabricated or reinterpreted
+as a current-policy response. Derived local evidence identifiers are
+`artifacts/llm-identity-policy-20261005/packet.json`, `pending-report.json` and
+`offline-acceptance.json`. New-policy acceptance for that smoke awaits separately authorized
+fresh model judgment; its original six-adoption report and all four UNKNOWN route verdicts
+remain historical evidence. No planner rerun, score change, formal benchmark, version freeze
+or research conclusion is claimed. Blinded preference work and other human supplements are
+outside this place-identity change.

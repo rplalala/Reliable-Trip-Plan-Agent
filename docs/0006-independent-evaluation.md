@@ -50,12 +50,20 @@ and [dated bridge record](records/evaluation/routes.md#snapshot-coordinate-bridg
 
 ## Scoring semantics and uncertainty
 
+Place identity uses the [uniform LLM judgment contract](contracts/0002-intake-identity-usage.md#uniform-llm-identity)
+for V0-V3, with independent candidates and exact source-bound offline replay. High-impact
+references and sampling no longer require human identity confirmation. Address correctness
+remains a separate assessment: recognizing a venue does not repair the delivered address
+or establish opening/route feasibility. Explicit historical human identity replay is retained.
+Blinded preference review and other human supplements keep their separate responsibilities.
+
 | Term | Meaning |
 | --- | --- |
 | Submitted group | One request and its source-linked selected version artifacts; inclusion is not proof of quality |
 | Claim | A proposition represented in the submitted output or reviewed obligation |
 | Independent observation | Separately sourced evidence with declared identity/query/time applicability |
-| Adjudication | Recorded human resolution of an ambiguous or audited association; not planner self-validation |
+| Identity judgment | LLM association with supplied independent candidates, preserving original claims and uncertainty |
+| Historical adjudication | Human resolution in an explicitly replayed legacy identity report |
 | Compliance | Outcome against an applicable criterion, distinct from evidence availability |
 | Common mask | The explicitly shared comparison set; missing evidence must remain visible |
 | UNKNOWN | An unresolved applicable fact/outcome, not a passing check or a zero-valued measurement |

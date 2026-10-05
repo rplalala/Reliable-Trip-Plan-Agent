@@ -21,7 +21,7 @@ acceptance records and Issue comments preserve historical decisions, not alterna
 | --- | --- | --- |
 | Batch/artifact wire and deferred tracks | [Artifacts](../../docs/contracts/0001-evaluation-artifacts.md) | [intake](intake.py), [records](records.py), [projection](projection.py) |
 | Structural claims and occurrence association | [Intake/claims](../../docs/contracts/0002-intake-identity-usage.md#claims) | [preparation](preparation.py), [claims](_claims.py) |
-| Independent identities and review | [Identity](../../docs/contracts/0002-intake-identity-usage.md#identity) | [identity](identity.py), [addresses](_addresses.py), [V0 offline adoption](identity_adoption.py) |
+| Independent identity judgment | [Identity](../../docs/contracts/0002-intake-identity-usage.md#identity) | [LLM judgments](identity_llm.py), [legacy replay](identity.py), [V0 material](identity_adoption.py) |
 | Request planning and frozen replay | [Snapshots](../../docs/contracts/0002-intake-identity-usage.md#snapshots) | [snapshot](snapshot.py) |
 | Opt-in usage and descriptive resources | [Usage](../../docs/contracts/0002-intake-identity-usage.md#usage) | [usage capture](../app/observability/usage_capture.py), [usage_report](usage_report.py) |
 | Reviewed requirements, time and occupancy | [Requirement/schedule](../../docs/contracts/0003-requirement-schedule.md) | [requirement_schedule](requirement_schedule.py), [schedule_time](schedule_time.py), [occupancy](occupancy.py) |
@@ -108,37 +108,48 @@ retains the observed validation sequence and limits.
 .venv/Scripts/python.exe -m backend.evaluation.snapshot_cli identity-plan manifest.json
 .venv/Scripts/python.exe -m backend.evaluation.snapshot_cli replay identity-snapshot --expected-plan identity-plan.json
 .venv/Scripts/python.exe -m backend.evaluation.snapshot_cli identity-evidence identity-snapshot
-.venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json audit-plan.json --reviews identity-reviews.json
+.venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json --prepare --model YOUR_JUDGMENT_MODEL
+.venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json --model-result identity-model-result.json
 ```
 
 An acquisition caller separately uses `build_identity_plan`, injected async
 `acquire_snapshot`, immutable `load_snapshot`, then `identity_evidence`.
 There is no built-in live Google client or acquisition CLI. The caller owns credentials,
-authorization and explicit send ceilings. An identity audit plan is mandatory; unresolved
-review cases remain visible instead of being silently accepted. Intake exits 0 for accepted
-material or 2 for correction. Identity exits 0 for complete, 3 for pending review, 2 for
-material/linkage errors; complete does not mean every identity is resolved.
+authorization and explicit send ceilings. Identity now uses the
+[uniform LLM policy](../../docs/contracts/0002-intake-identity-usage.md#uniform-llm-identity)
+for V0-V3, protected subjects and optional V3 projections. No human confirmation or sampling
+is mandatory. `--prepare` prints a frozen packet; it does not execute a model. Import a
+separately authorized saved response through the contract's model-result envelope. The
+command has no built-in model execution client. Missing results remain unresolved without
+native string-matching fallback. Semantic judgments remain fallible. Intake exits 0 for
+accepted material or 2 for correction. Identity exits 0 for packet preparation/all resolved,
+3 for unresolved/missing judgment, and 2 for material/linkage errors.
 
-For explicit V0-only adoption of an already saved short-reference response:
+For uniform judgment over a verified V0 material bundle:
 
 ```powershell
-.venv/Scripts/python.exe -m backend.evaluation.identity_adoption_cli v0-identity-material.json --reviews identity-reviews.json
+.venv/Scripts/python.exe -m backend.evaluation.identity_adoption_cli v0-identity-material.json --prepare --model YOUR_JUDGMENT_MODEL
+.venv/Scripts/python.exe -m backend.evaluation.identity_adoption_cli v0-identity-material.json --model-result identity-model-result.json
 ```
 
-Omit `--reviews` when no genuine decisions exist; high-impact and sampled cases remain
-pending. The [material contract](../../docs/contracts/0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
-defines the bundle, root-relative hash-bound sources, saved independent snapshot,
-judge/map/schema/request/response and historical audit freeze/authorization/send records.
-The CLI reads its frozen intake from that bundle, writes JSON to stdout, and uses the same
-0/3/2 completion/pending/material-error exit codes. Save stdout as UTF-8 without BOM as
-described above. Consumers re-read these local files and recompute the report; copying
-only the report or changing a policy string cannot unlock downstream preparation.
-The default identity command remains native; no planner version or provider caller changes.
+The historical proposal response lacks the new address assessments and is not silently
+converted. For exact historical replay use `--legacy` with the original audit/review inputs:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.identity_cli manifest.json identity-evidence.json audit-plan.json --legacy --reviews identity-reviews.json
+.venv/Scripts/python.exe -m backend.evaluation.identity_adoption_cli v0-identity-material.json --legacy
+```
+
+The [historical material contract](../../docs/contracts/0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
+defines the V0 source bundle. Both policies retain the original files. Save stdout as UTF-8
+without BOM. New consumers replay the complete source-bound model material; historical
+consumers replay their frozen inputs. A copied or edited report cannot unlock preparation.
+No planner version or provider caller changes.
 Fresh-clone tests use synthetic fixtures rather than requiring ignored live artifacts:
 
 ```powershell
 New-Item -ItemType Directory -Path artifacts/evaluation-adoption -Force | Out-Null
-.venv/Scripts/python.exe -m pytest backend/tests/evaluation/test_identity_adoption.py -q --basetemp artifacts/evaluation-adoption/test-01 -o cache_dir=artifacts/evaluation-adoption/cache
+.venv/Scripts/python.exe -m pytest backend/tests/evaluation/test_identity_llm.py backend/tests/evaluation/test_identity_adoption.py -q --basetemp artifacts/evaluation-adoption/test-01 -o cache_dir=artifacts/evaluation-adoption/cache
 ```
 
 <a id="v0-route-requests"></a>
@@ -453,7 +464,8 @@ python -m backend.evaluation.controlled_cli replay case.json
 python -m backend.evaluation.controlled_cli prepare case.json execution.json requirements.json
 python -m backend.evaluation.controlled_cli identity-references preparation.json
 python -m backend.evaluation.controlled_cli identity-plan preparation.json
-python -m backend.evaluation.controlled_cli identity preparation.json observations.json audit.json --reviews identity-reviews.json
+python -m backend.evaluation.controlled_cli identity preparation.json observations.json --prepare --model YOUR_JUDGMENT_MODEL
+python -m backend.evaluation.controlled_cli identity preparation.json observations.json --model-result identity-model-result.json
 python -m backend.evaluation.controlled_cli evidence-plan preparation.json identity.json --context context.json --route-reviews route-reviews.json --coordinates coordinates.json
 python -m backend.evaluation.controlled_cli report case.json execution.json requirements.json expectations.json identity.json snapshot --context context.json --route-reviews route-reviews.json --coordinates coordinates.json --expected-plan plan.json --generated-at 2026-10-04T00:00:00Z
 python -m backend.evaluation.controlled_cli batch controlled-batch.json --generated-at 2026-10-04T00:00:00Z
