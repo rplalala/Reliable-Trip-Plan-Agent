@@ -167,6 +167,11 @@ def _check(activity, identity, reference, records, context_zone):
     )
     return {
         "source": activity["source"],
+        **(
+            {"identity_grounding_verdict": identity["grounding_verdict"]}
+            if "programmatic_judgment" in identity
+            else {}
+        ),
         "declared_day": activity["declared_day"],
         "activity_id": raw.get("activity_id"),
         "reference_id": reference["reference_id"],

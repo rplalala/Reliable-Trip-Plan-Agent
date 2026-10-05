@@ -140,6 +140,15 @@ def prepare_routes(
                     legs = [
                         prepare_leg(leg, occupancy, zone, identities) for leg in projection["legs"]
                     ]
+                    for leg in legs:
+                        endpoint_records = [
+                            identities[s["record_id"]]
+                            for s in (leg["from_source"], leg["to_source"])
+                        ]
+                        if any("programmatic_judgment" in r for r in endpoint_records):
+                            leg["identity_grounding_verdicts"] = [
+                                r.get("grounding_verdict") for r in endpoint_records
+                            ]
                     review = policies.get(group["group_id"])
                     for leg in legs:
                         if (

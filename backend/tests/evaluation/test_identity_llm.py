@@ -7,11 +7,12 @@ import socket
 import pytest
 
 from backend.evaluation.controlled_cli import main as controlled_main
-from backend.evaluation.identity import identity_references, resolve_identities
+from backend.evaluation.identity import identity_references
 from backend.evaluation.identity_adoption import resolve_v0_identities
 from backend.evaluation.identity_adoption_cli import main as v0_main
 from backend.evaluation.identity_cli import main as identity_main
-from backend.evaluation.identity_llm import prepare_identity_judgment
+from backend.evaluation.identity_llm import prepare_identity_judgment as _prepare_identity_judgment
+from backend.evaluation.identity_llm import resolve_llm_identities as resolve_identities
 from backend.evaluation.preparation import identity_ready
 from backend.evaluation.records import canonical_digest
 from backend.evaluation.route_requests import prepare_v0_route_requests
@@ -25,6 +26,10 @@ pytest_plugins = (
     "backend.tests.evaluation.test_intake",
     "backend.tests.evaluation.test_identity_adoption",
 )
+
+
+def prepare_identity_judgment(intake, evidence, *, model):
+    return _prepare_identity_judgment(intake, evidence, model=model, historical=True)
 
 
 def test_packet_covers_protected_subjects_and_all_versions(batch):
@@ -67,8 +72,10 @@ def test_packet_covers_protected_subjects_and_all_versions(batch):
     assert all(r["review_history"] == [] for r in judged["records"])
 
 
-def model_material(intake, observed, *, decisions=None):
-    packet = prepare_identity_judgment(intake, observed, model="fixture-model").to_dict()
+def model_material(intake, observed, *, decisions=None, historical=True):
+    packet = _prepare_identity_judgment(
+        intake, observed, model="fixture-model", historical=historical
+    ).to_dict()
     cases = json.loads(packet["request"]["input"])["cases"]
     rows = []
     for case in cases:
@@ -337,7 +344,7 @@ def test_default_cli_prepares_and_imports_model_result_without_audit(batch, caps
     assert identity_main(args) == 3
     pending = json.loads(capsys.readouterr().out)
     assert pending["review_queue"] == []
-    save("model.json", model_material(intake, observed))
+    save("model.json", model_material(intake, observed, historical=False))
     assert identity_main(args + ["--model-result", str(root / "model.json")]) == 0
     report = json.loads(capsys.readouterr().out)
     assert identity_ready(intake.to_dict(), report)
@@ -386,7 +393,7 @@ def test_v0_material_cli_coordinates_and_routes_use_model_policy(
     pending = json.loads(capsys.readouterr().out)
     assert pending["audit_selected_reference_ids"] == []
     assert pending["review_queue"] == []
-    material = model_material(intake, observed)
+    material = model_material(intake, observed, historical=False)
     path = bundle.parent / "new-model.json"
     path.write_text(json.dumps(material), encoding="utf-8")
     assert v0_main([str(bundle), "--model-result", str(path)]) == 0
@@ -432,7 +439,9 @@ def test_v0_address_errors_cannot_borrow_candidate_coordinates(
             row["evidence_fields"].append("claim.location")
 
     report = resolve_v0_identities(
-        intake, bundle, model_result=model_material(intake, observed, decisions=choose)
+        intake,
+        bundle,
+        model_result=model_material(intake, observed, decisions=choose, historical=False),
     ).to_dict()
     assert identity_ready(intake.to_dict(), report)
     coordinates = prepare_snapshot_coordinates(
@@ -441,7 +450,6 @@ def test_v0_address_errors_cannot_borrow_candidate_coordinates(
     assert coordinates["status"] == "complete", coordinates["diagnostics"]
     # The correct-address references in other versions can retain the shared coordinates.
     assert {r["place_id"] for r in coordinates["records"]} == {
-        "canonical-Museum A",
         "canonical-Museum B",
     }
     routes = prepare_routes(
@@ -474,7 +482,7 @@ def test_controlled_identity_cli_has_the_same_offline_judgment_policy(batch, cap
     assert json.loads(capsys.readouterr().out)["review_queue"] == []
     assert controlled_main(args + ["--prepare", "--model", "fixture-model"]) == 0
     assert "request_sha256" in json.loads(capsys.readouterr().out)
-    save("model.json", model_material(intake, observed))
+    save("model.json", model_material(intake, observed, historical=False))
     assert controlled_main(args + ["--model-result", str(root / "model.json")]) == 0
     assert identity_ready(intake.to_dict(), json.loads(capsys.readouterr().out))
 

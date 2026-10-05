@@ -387,12 +387,12 @@ def load_v0_material(intake, bundle_path):
 
 def resolve_v0_identities(intake, bundle_path, reviews=None, *, model_result=None):
     """Use uniform LLM judgments over the verified independent V0 material."""
-    from .identity_llm import resolve_llm_identities
+    from .identity import resolve_identities
 
     if reviews is not None:
         raise ValueError("Human decisions require explicit legacy V0 replay")
     material = load_v0_material(intake, bundle_path)
-    return resolve_llm_identities(
+    return resolve_identities(
         thaw(material.intake), thaw(material.evidence), model_result=model_result
     )
 

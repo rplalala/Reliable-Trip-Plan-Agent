@@ -113,7 +113,10 @@ def test_single_sdk_call_imports_failure_and_unknown_without_repair(adoption_cas
     assert report["records"][0]["grounding_verdict"] == "FAIL"
     assert report["records"][0]["canonical_place_id"] is None
     assert report["records"][0]["original_claim"]["location"] == "Wrong submitted address"
-    assert all(r["grounding_verdict"] == "UNKNOWN" for r in report["records"][1:])
+    assert all(
+        r["grounding_verdict"] == "UNKNOWN" for r in report["records"][1:] if r["version"] == "v0"
+    )
+    assert all("model_judgment" not in r for r in report["records"] if r["version"] != "v0")
     assert report["review_queue"] == []
     with pytest.raises(FileExistsError):
         run(plan, lambda _: pytest.fail("Repeated execution"))

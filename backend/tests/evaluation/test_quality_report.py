@@ -6,7 +6,8 @@ import json
 
 import pytest
 
-from backend.evaluation.identity import identity_references, resolve_identities
+from backend.evaluation.identity import identity_references
+from backend.evaluation.identity_llm import resolve_llm_identities as resolve_identities
 from backend.evaluation.quality_report import build_quality_report
 from backend.evaluation.records import canonical_digest
 from backend.evaluation.routes import prepare_routes

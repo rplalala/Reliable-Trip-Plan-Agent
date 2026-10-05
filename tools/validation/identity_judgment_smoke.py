@@ -11,11 +11,11 @@ import httpx
 from openai import AsyncOpenAI
 
 from backend.app.runtime.token_counting import count_tokens
+from backend.evaluation.identity import resolve_identities
 from backend.evaluation.identity_adoption import load_v0_material
 from backend.evaluation.identity_llm import (
     RESULT_VERSION,
     prepare_identity_judgment,
-    resolve_llm_identities,
 )
 from backend.evaluation.records import canonical_digest, thaw
 
@@ -220,7 +220,7 @@ async def execute_smoke(plan, *, approved_manifest_sha256=None, api_key, transpo
         }
         save(directory, "model-result.json", result)
         material = load_v0_material(None, plan["bundle_path"])
-        report = resolve_llm_identities(
+        report = resolve_identities(
             thaw(material.intake), thaw(material.evidence), model_result=result
         ).to_dict()
         save(directory, "identity-report.json", report)

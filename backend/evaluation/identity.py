@@ -495,12 +495,12 @@ def _summaries(references, records, prepared):
 
 
 def resolve_identities(intake, evidence, reviews=None, audit_plan=None, *, model_result=None):
-    """Resolve every identity through source-bound LLM judgments without human gates."""
-    from .identity_llm import resolve_llm_identities
+    """Dispatch V0 correspondence and deterministic independent V1-V3 checks."""
+    from .identity_program import resolve_versioned_identities
 
     if reviews is not None or audit_plan is not None:
         raise ValueError("Human/audit inputs require explicit legacy identity replay")
-    return resolve_llm_identities(intake, evidence, model_result=model_result)
+    return resolve_versioned_identities(intake, evidence, model_result=model_result)
 
 
 def resolve_legacy_identities(intake, evidence, reviews=None, audit_plan=None):

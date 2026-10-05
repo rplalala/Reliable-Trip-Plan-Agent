@@ -101,9 +101,11 @@ def judgment_schema():
     }
 
 
-def _cases(prepared, evidence):
+def _cases(prepared, evidence, *, v0_only=False):
     refs = identity_references(prepared)
     observed = _observation_index(evidence, refs, prepared)
+    if v0_only:
+        refs = [r for r in refs if r["version"] == "v0" and r["kind"] == "primary_visit"]
     cases = []
     for ref in refs:
         detail, search = _evidence_candidates(observed.get(ref["reference_id"]))
@@ -134,12 +136,12 @@ def _cases(prepared, evidence):
     return refs, observed, cases
 
 
-def prepare_identity_judgment(intake, evidence, *, model):
+def prepare_identity_judgment(intake, evidence, *, model, historical=False):
     """Freeze a complete model request without executing a model or provider."""
     if not text(model):
         raise ValueError("An explicit judgment model is required")
     prepared = _intake_dict(intake)
-    refs, _, cases = _cases(prepared, evidence)
+    refs, _, cases = _cases(prepared, evidence, v0_only=not historical)
     if not refs:
         raise ValueError("No applicable identity references")
     packet = _packet(cases)
@@ -162,10 +164,12 @@ def prepare_identity_judgment(intake, evidence, *, model):
             }
         },
     }
+    scope = {} if historical else {"association_policy_version": "v0_identity_correspondence_1"}
     return IdentityJudgmentPacket(
         freeze(
             {
                 "schema_version": PACKET_VERSION,
+                **scope,
                 "batch_id": prepared["batch_id"],
                 "batch_revision": prepared["revision"],
                 "intake_sha256": digest(prepared),
@@ -179,14 +183,16 @@ def prepare_identity_judgment(intake, evidence, *, model):
     )
 
 
-def _decisions(intake, evidence, cases, material):
+def _decisions(intake, evidence, cases, material, *, historical=True):
     if material is None:
         return {}, None
     if not isinstance(material, dict) or material.get("schema_version") != RESULT_VERSION:
         raise ValueError("Invalid identity model result envelope")
     saved = material["packet"]
     model = saved["request"]["model"]
-    expected = prepare_identity_judgment(intake, evidence, model=model).to_dict()
+    expected = prepare_identity_judgment(
+        intake, evidence, model=model, historical=historical
+    ).to_dict()
     if saved != expected:
         raise ValueError("Identity model packet/source mismatch")
     start = datetime.fromisoformat(material["requested_at"])
@@ -332,11 +338,13 @@ def _decisions(intake, evidence, cases, material):
     }
 
 
-def resolve_llm_identities(intake, evidence, *, model_result=None):
+def resolve_llm_identities(intake, evidence, *, model_result=None, v0_only=False):
     """Keep missing judgments unresolved; no human or automatic-name fallback."""
     prepared = _intake_dict(intake)
-    refs, observed, cases = _cases(prepared, evidence)
-    decisions, provenance = _decisions(prepared, evidence, cases, model_result)
+    refs, observed, cases = _cases(prepared, evidence, v0_only=v0_only)
+    decisions, provenance = _decisions(
+        prepared, evidence, cases, model_result, historical=not v0_only
+    )
     subjects = [r for r in refs if r["kind"] == "requirement_subject"]
     records = []
     for ref in refs:

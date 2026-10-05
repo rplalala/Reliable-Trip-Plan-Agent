@@ -77,7 +77,7 @@ def _grounding(projection, identities):
                 {
                     "state": (
                         identity["grounding_verdict"]
-                        if "model_judgment" in identity
+                        if "model_judgment" in identity or "programmatic_judgment" in identity
                         else "PASS"
                         if identity["resolution"] == "resolved"
                         else "UNKNOWN"
