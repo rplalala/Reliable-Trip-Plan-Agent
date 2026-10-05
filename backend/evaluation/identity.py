@@ -496,6 +496,10 @@ def _summaries(references, records, prepared):
 
 def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
     """Resolve offline observations; preserve pending and unknown identity states."""
+    return _resolve_identities(intake, evidence, reviews, audit_plan)
+
+
+def _resolve_identities(intake, evidence, reviews=None, audit_plan=None, assistance=None):
     prepared = _intake_dict(intake)
     refs = identity_references(prepared)
     observations = _observation_index(evidence, refs, prepared)
@@ -514,6 +518,28 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
         prepared,
         [ref for ref in refs if proposals[ref["reference_id"]] is not None],
     )
+    native_reasons = dict(reasons)
+    if assistance is not None:
+        for ref in refs:
+            rid = ref["reference_id"]
+            decision = assistance.decisions.get(rid)
+            if decision is None or high_impact[rid] or proposals[rid] is not None:
+                continue
+            if decision["eligibility"] == "eligible":
+                proposals[rid] = {"place_id": decision["candidate_id"]}
+                reasons[rid] = "model_supported_association"
+            else:
+                reasons[rid] = decision["eligibility"]
+        scoped = [
+            ref
+            for ref in refs
+            if ref["reference_id"] in assistance.reference_ids
+            and proposals[ref["reference_id"]] is not None
+        ]
+        if assistance.audit_frozen:
+            selected_audit = (selected_audit - assistance.reference_ids) | _audit_selection(
+                audit_plan, prepared, scoped
+            )
     records, queue = [], []
     request_contexts = {group["group_id"]: group["input"] for group in prepared["inventory"]}
     for ref in refs:
@@ -531,9 +557,22 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
                 reason = "reviewed_confirmation"
             else:
                 reason = "reviewed_" + latest["decision"]
+        elif (
+            assistance is not None
+            and rid in assistance.reference_ids
+            and reason == "model_supported_association"
+            and not assistance.audit_frozen
+        ):
+            reason = "audit_freeze_unverified"
         elif proposed is not None and rid not in selected_audit:
             canonical = proposed["place_id"]
-            route = "independent_id_details" if text(ref["claimed_place_id"]) else "name_search"
+            route = (
+                "model_assisted"
+                if reason == "model_supported_association"
+                else "independent_id_details"
+                if text(ref["claimed_place_id"])
+                else "name_search"
+            )
         elif rid in selected_audit:
             reason = "audit_pending"
         status = "resolved" if canonical is not None else "unresolved"
@@ -564,6 +603,9 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
                 )
             ),
         }
+        if assistance is not None and rid in assistance.reference_ids:
+            record["native_reason"] = native_reasons[rid]
+            record["model_proposal"] = thaw(assistance.decisions[rid])
         competing = competing_title(ref["original_title"], ref["name"])
         if competing:
             record["competing_claim"] = claim_evidence(
@@ -597,6 +639,16 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
                     "evidence_hash": record["evidence_hash"],
                 }
             )
+    extra = {}
+    if assistance is not None:
+        from .identity_adoption import POLICY_VERSION, adoption_summary
+
+        extra = {
+            "association_policy_version": POLICY_VERSION,
+            "model_assistance_provenance": thaw(assistance.provenance),
+            "model_assistance_replay": {"bundle": thaw(assistance.replay), "reviews": reviews},
+            **adoption_summary(prepared, records, assistance),
+        }
     return IdentityResult(
         "needs_adjudication" if queue else "complete",
         freeze(
@@ -615,6 +667,7 @@ def resolve_identities(intake, evidence, reviews=None, audit_plan=None):
                 "records": records,
                 "review_queue": queue,
                 "groups": _summaries(refs, records, prepared),
+                **extra,
             }
         ),
     )

@@ -10,6 +10,12 @@ from .records import require, text
 
 
 def identity_ready(intake, identity):
+    from .identity_adoption import POLICY_VERSION, needs_v0_replay, verify_v0_report
+
+    if needs_v0_replay(identity):
+        return identity.get("association_policy_version") == POLICY_VERSION and verify_v0_report(
+            intake, identity
+        )
     refs = identity_references(intake)
     if not isinstance(identity, dict) or (
         identity.get("status") not in ("complete", "needs_adjudication")

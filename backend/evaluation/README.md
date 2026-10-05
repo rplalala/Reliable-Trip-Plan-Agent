@@ -21,7 +21,7 @@ acceptance records and Issue comments preserve historical decisions, not alterna
 | --- | --- | --- |
 | Batch/artifact wire and deferred tracks | [Artifacts](../../docs/contracts/0001-evaluation-artifacts.md) | [intake](intake.py), [records](records.py), [projection](projection.py) |
 | Structural claims and occurrence association | [Intake/claims](../../docs/contracts/0002-intake-identity-usage.md#claims) | [preparation](preparation.py), [claims](_claims.py) |
-| Independent identities and review | [Identity](../../docs/contracts/0002-intake-identity-usage.md#identity) | [identity](identity.py), [addresses](_addresses.py) |
+| Independent identities and review | [Identity](../../docs/contracts/0002-intake-identity-usage.md#identity) | [identity](identity.py), [addresses](_addresses.py), [V0 offline adoption](identity_adoption.py) |
 | Request planning and frozen replay | [Snapshots](../../docs/contracts/0002-intake-identity-usage.md#snapshots) | [snapshot](snapshot.py) |
 | Opt-in usage and descriptive resources | [Usage](../../docs/contracts/0002-intake-identity-usage.md#usage) | [usage capture](../app/observability/usage_capture.py), [usage_report](usage_report.py) |
 | Reviewed requirements, time and occupancy | [Requirement/schedule](../../docs/contracts/0003-requirement-schedule.md) | [requirement_schedule](requirement_schedule.py), [schedule_time](schedule_time.py), [occupancy](occupancy.py) |
@@ -118,6 +118,28 @@ authorization and explicit send ceilings. An identity audit plan is mandatory; u
 review cases remain visible instead of being silently accepted. Intake exits 0 for accepted
 material or 2 for correction. Identity exits 0 for complete, 3 for pending review, 2 for
 material/linkage errors; complete does not mean every identity is resolved.
+
+For explicit V0-only adoption of an already saved short-reference response:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.identity_adoption_cli v0-identity-material.json --reviews identity-reviews.json
+```
+
+Omit `--reviews` when no genuine decisions exist; high-impact and sampled cases remain
+pending. The [material contract](../../docs/contracts/0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
+defines the bundle, root-relative hash-bound sources, saved independent snapshot,
+judge/map/schema/request/response and historical audit freeze/authorization/send records.
+The CLI reads its frozen intake from that bundle, writes JSON to stdout, and uses the same
+0/3/2 completion/pending/material-error exit codes. Save stdout as UTF-8 without BOM as
+described above. Consumers re-read these local files and recompute the report; copying
+only the report or changing a policy string cannot unlock downstream preparation.
+The default identity command remains native; no planner version or provider caller changes.
+Fresh-clone tests use synthetic fixtures rather than requiring ignored live artifacts:
+
+```powershell
+New-Item -ItemType Directory -Path artifacts/evaluation-adoption -Force | Out-Null
+.venv/Scripts/python.exe -m pytest backend/tests/evaluation/test_identity_adoption.py -q --basetemp artifacts/evaluation-adoption/test-01 -o cache_dir=artifacts/evaluation-adoption/cache
+```
 
 <a id="offline-evaluation-preparation-and-metrics-tickets-01-06"></a>
 <a id="ticket-05-offline-requirement-and-schedule-metrics"></a>
