@@ -21,7 +21,7 @@ from .intake import _constant, _float, _pairs
 from .records import canonical_digest as digest
 from .records import freeze, text, thaw
 
-POLICY_VERSION = "llm_identity_judgment_1"
+POLICY_VERSION = "llm_identity_judgment_2"
 PACKET_VERSION = "rtpeval_identity_judgment_packet_1"
 RESULT_VERSION = "rtpeval_identity_model_result_1"
 ADDRESS_STATES = (
@@ -43,10 +43,15 @@ For address_assessment distinguish equivalent wording, different_precision, inco
 (the intended venue is identifiable but the original address is wrong), different_place,
 unknown, and not_supplied. A match must not have different_place or unknown address assessment.
 Different branches/cities are different_place, not harmless spelling differences. Insufficient
-facts mean unknown. An incorrect original address may coexist with an identified venue;
-preserve the original claim. Destination must be consistent for a match. Cite the original
+facts mean unknown. An incorrect original address may coexist with an identified venue,
+but incorrect_claim and different_place are failures of the delivered claim: neither may
+be adopted or replaced with candidate facts for downstream checks. Preserve the original
+claim. Destination must be consistent for a match. Cite the original
 claim fields and independent candidate name/address supporting each match. Explain all
-judgments; do not certify opening hours, routes, or factual accuracy of model judgments."""
+judgments. An address failure requires claim.place_name, claim.destination, claim.location
+and independent candidate support. Without a selected candidate, cite case.candidates (the
+complete supplied independent set); without that support, use unknown. Do not certify opening
+hours, routes, or factual accuracy of model judgments."""
 
 
 @dataclass(frozen=True)
@@ -263,12 +268,15 @@ def _decisions(intake, evidence, cases, material):
             "candidate.formatted_address",
             "candidate.address_components",
             "candidate.observations",
+            "case.candidates",
         }
         for field in cited:
             if field not in allowed:
                 raise ValueError("Unsupported identity judgment citation")
             owner, key = field.split(".")
-            value = (case["claim"] if owner == "claim" else candidate or {}).get(key)
+            value = (
+                case["claim"] if owner == "claim" else case if owner == "case" else candidate or {}
+            ).get(key)
             if not value or isinstance(value, str) and not text(value):
                 raise ValueError("Empty identity judgment citation")
             if key == "address_components" and (
@@ -284,6 +292,17 @@ def _decisions(intake, evidence, cases, material):
                 )
             ):
                 raise ValueError("Malformed cited address components")
+        if row["address_assessment"] in ("incorrect_claim", "different_place"):
+            required = {"claim.place_name", "claim.destination", "claim.location"}
+            required.update(
+                {"candidate.display_name", "candidate.formatted_address"}
+                if candidate
+                else {"case.candidates"}
+            )
+            if not required <= cited:
+                raise ValueError(
+                    "Address failure requires original and independent evidence citations"
+                )
         if row["decision"] == "match":
             required = {
                 "claim.place_name",
@@ -325,16 +344,21 @@ def resolve_llm_identities(intake, evidence, *, model_result=None):
         detail, search = _evidence_candidates(observation)
         judgment = decisions.get(ref["reference_id"])
         canonical = None
+        verdict = "UNKNOWN"
         reason = "model_judgment_missing"
         if judgment:
             reason = "model_" + judgment["decision"]
-            if judgment["decision"] == "match":
+            if judgment["address_assessment"] in ("incorrect_claim", "different_place"):
+                verdict = "FAIL"
+                reason = "model_address_" + judgment["address_assessment"]
+            elif judgment["decision"] == "match":
                 if judgment["destination_assessment"] != "consistent" or judgment[
                     "address_assessment"
                 ] in ("different_place", "unknown"):
                     reason = "model_conflicting_assessment"
                 else:
                     canonical = judgment["candidate_id"]
+                    verdict = "PASS"
         records.append(
             {
                 **{
@@ -352,8 +376,11 @@ def resolve_llm_identities(intake, evidence, *, model_result=None):
                 "resolution": "resolved" if canonical else "unresolved",
                 "reason": reason,
                 "canonical_place_id": canonical,
+                "grounding_verdict": verdict,
                 "decision_route": "llm_judgment" if canonical else None,
-                "claimed_id_association": _claimed_id_status(ref, observation, canonical),
+                "claimed_id_association": _claimed_id_status(
+                    ref, observation, judgment["candidate_id"] if judgment else None
+                ),
                 "high_impact": _high_impact(ref, subjects, observed),
                 "audit_selected": False,
                 "evidence_hash": digest(observation),
@@ -373,7 +400,7 @@ def resolve_llm_identities(intake, evidence, *, model_result=None):
     queue = [
         {"reference_id": r["reference_id"], "reason": r["reason"]}
         for r in records
-        if r["resolution"] == "unresolved"
+        if r["grounding_verdict"] == "UNKNOWN"
     ]
     return IdentityResult(
         "needs_model_judgment" if queue else "complete",

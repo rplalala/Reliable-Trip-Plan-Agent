@@ -37,6 +37,11 @@ def adoption_case(batch, tmp_path, request):
     """Persist independently supplied synthetic facts and original model wire material."""
     options = getattr(request, "param", {})
     manifest, results, write, batch_save, root = batch
+    if options.get("claimed_location"):
+        results["v0"]["itinerary"]["days"][0]["activities"][0]["location"] = options[
+            "claimed_location"
+        ]
+        write("v0")
     if options.get("transport_mode"):
         results["v0"]["itinerary"]["days"][0]["activities"][1]["transport"] = {
             "mode": options["transport_mode"],

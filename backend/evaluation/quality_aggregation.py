@@ -75,7 +75,13 @@ def _grounding(projection, identities):
             identity = identities[activity["source"]["record_id"]]
             checks.append(
                 {
-                    "state": "PASS" if identity["resolution"] == "resolved" else "UNKNOWN",
+                    "state": (
+                        identity["grounding_verdict"]
+                        if "model_judgment" in identity
+                        else "PASS"
+                        if identity["resolution"] == "resolved"
+                        else "UNKNOWN"
+                    ),
                     "source": activity["source"],
                     "identity": identity,
                 }

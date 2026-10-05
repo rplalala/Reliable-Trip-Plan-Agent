@@ -141,14 +141,25 @@ def test_consumers_replay_llm_report_and_reject_tampering(batch):
     ).to_dict()
     assert identity_ready(intake.to_dict(), report)
     assert len(build_evidence_plan(intake, report, [])["requests"]) == 1
-    for tamper in ("canonical_place_id", "policy", "provenance", "original_claim"):
+    for tamper in (
+        "canonical_place_id",
+        "policy",
+        "prior_policy",
+        "provenance",
+        "original_claim",
+        "grounding_verdict",
+    ):
         forged = copy.deepcopy(report)
         if tamper == "policy":
             forged["association_policy_version"] = "structural_claims_typed_addresses_3"
+        elif tamper == "prior_policy":
+            forged["association_policy_version"] = "llm_identity_judgment_1"
         elif tamper == "provenance":
             forged["model_judgment_provenance"]["response_id"] = "forged"
         elif tamper == "original_claim":
             forged["records"][0]["original_claim"]["location"] = "silently repaired"
+        elif tamper == "grounding_verdict":
+            forged["records"][0][tamper] = "FAIL"
         else:
             forged["records"][0][tamper] = "foreign-id"
         assert not identity_ready(intake.to_dict(), forged)
@@ -161,7 +172,7 @@ def test_consumers_replay_llm_report_and_reject_tampering(batch):
     [
         ("equivalent", "match", "consistent", True),
         ("different_precision", "match", "consistent", True),
-        ("incorrect_claim", "match", "consistent", True),
+        ("incorrect_claim", "match", "consistent", False),
         ("different_place", "match", "consistent", False),
         ("unknown", "match", "consistent", False),
         ("equivalent", "match", "contradictory", False),
@@ -192,16 +203,51 @@ def test_address_identity_and_uncertainty_are_separate(
                 row["evidence_fields"].append("claim.location")
             else:
                 row.update(candidate_id=None, evidence_fields=[])
+                if assessment in ("incorrect_claim", "different_place"):
+                    row["evidence_fields"] = [
+                        "claim.place_name",
+                        "claim.destination",
+                        "claim.location",
+                        "case.candidates",
+                    ]
 
     report = resolve_identities(
         intake, observed, model_result=model_material(intake, observed, decisions=choose)
     ).to_dict()
     record = next(r for r in report["records"] if r["reference_id"] == ref["reference_id"])
     assert (record["resolution"] == "resolved") == resolved
+    if assessment in ("incorrect_claim", "different_place"):
+        assert record["grounding_verdict"] == "FAIL"
+        assert record["canonical_place_id"] is None
+    elif not resolved:
+        assert record["grounding_verdict"] == "UNKNOWN"
+    else:
+        assert record["grounding_verdict"] == "PASS"
     assert record["model_judgment"]["address_assessment"] == assessment
     assert record["original_claim"]["location"] == "Original declared address"
     assert intake.to_dict() == original
-    assert len(report["judgment_queue"]) == 7 + (not resolved)
+    assert len(report["judgment_queue"]) == 7 + (
+        not resolved and assessment not in ("incorrect_claim", "different_place")
+    )
+
+
+@pytest.mark.parametrize("assessment", ["incorrect_claim", "different_place"])
+def test_address_failure_requires_a_supplied_location_and_independent_citations(batch, assessment):
+    def location(_, results, _save, _root):
+        results["v0"]["itinerary"]["days"][0]["activities"][0]["location"] = "Wrong address"
+        return "v0"
+
+    intake = prepared(batch, location)
+    observed = evidence(intake, [search(r, r["name"]) for r in identity_references(intake)])
+
+    def unsupported(row, case):
+        row.update(decision="unknown", candidate_id=None, address_assessment=assessment)
+        row["evidence_fields"] = ["claim.location"] if case["claim"]["location"] else []
+
+    with pytest.raises(ValueError):
+        resolve_identities(
+            intake, observed, model_result=model_material(intake, observed, decisions=unsupported)
+        )
 
 
 @pytest.mark.parametrize(
@@ -366,6 +412,57 @@ def test_v0_material_cli_coordinates_and_routes_use_model_policy(
     assert package["counts"]["actual_sends"] == 0
 
 
+@pytest.mark.parametrize("adoption_case", [{"claimed_location": "Wrong address"}], indirect=True)
+@pytest.mark.parametrize("assessment", ["incorrect_claim", "different_place", "unknown"])
+def test_v0_address_errors_cannot_borrow_candidate_coordinates(
+    adoption_case, assessment, monkeypatch
+):
+    intake, observed, bundle, _, _, _, _, _ = adoption_case
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("Address evaluation must remain offline")
+
+    monkeypatch.setattr(socket.socket, "connect", forbidden)
+    monkeypatch.setattr(socket, "getaddrinfo", forbidden)
+    original = copy.deepcopy(intake.to_dict())
+
+    def choose(row, case):
+        if case["claim"]["location"]:
+            row["address_assessment"] = assessment
+            row["evidence_fields"].append("claim.location")
+
+    report = resolve_v0_identities(
+        intake, bundle, model_result=model_material(intake, observed, decisions=choose)
+    ).to_dict()
+    assert identity_ready(intake.to_dict(), report)
+    coordinates = prepare_snapshot_coordinates(
+        intake, report, bundle.parent / "identity-snapshot"
+    ).to_dict()
+    assert coordinates["status"] == "complete", coordinates["diagnostics"]
+    # The correct-address references in other versions can retain the shared coordinates.
+    assert {r["place_id"] for r in coordinates["records"]} == {
+        "canonical-Museum A",
+        "canonical-Museum B",
+    }
+    routes = prepare_routes(
+        intake,
+        report,
+        schedule_context=context(intake),
+        identity_snapshot_directory=bundle.parent / "identity-snapshot",
+    ).to_dict()
+    assert routes["status"] == "complete", routes["diagnostics"]
+    v0 = next(r for r in routes["results"] if r["version"] == "v0")
+    assert v0["legs"][0]["canonical_endpoints"] == [None, "canonical-Museum B"]
+    assert v0["legs"][0]["expected_context"] is None
+    package = prepare_v0_route_requests(
+        bundle, report, prepared_at="2026-10-06T10:00:00Z", schedule_context=context(intake)
+    ).to_dict()
+    assert package["status"] == "complete", package["diagnostics"]
+    assert package["counts"]["identity_eligible_legs"] == 0
+    assert package["counts"]["actual_sends"] == 0
+    assert intake.to_dict() == original
+
+
 def test_controlled_identity_cli_has_the_same_offline_judgment_policy(batch, capsys):
     _, _, _, save, root = batch
     intake = prepared(batch)
@@ -420,7 +517,8 @@ def test_claimed_wrong_id_and_conflicting_observations_remain_visible_to_model(b
         intake, observed, model_result=model_material(intake, observed, decisions=choose)
     ).to_dict()
     record = next(r for r in report["records"] if r["reference_id"] == ref["reference_id"])
-    assert record["canonical_place_id"] == "right-venue"
+    assert record["canonical_place_id"] is None
+    assert record["grounding_verdict"] == "FAIL"
     assert record["claimed_id_association"] == "conflicting"
     assert record["original_claim"]["location"] == "Declared address"
 
