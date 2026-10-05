@@ -374,7 +374,7 @@ def test_current_import_requires_complete_owned_decisions_and_exact_provenance(b
 
 @pytest.mark.parametrize(
     "assessment,destination",
-    [("unknown", "consistent"), ("equivalent", "unknown"), ("equivalent", "contradictory")],
+    [("unknown", "consistent"), ("equivalent", "unknown")],
 )
 def test_correspondence_with_insufficient_correctness_support_stays_unknown(
     batch, assessment, destination
@@ -400,3 +400,57 @@ def test_correspondence_with_insufficient_correctness_support_stays_unknown(
     assert visit["grounding_verdict"] == "UNKNOWN"
     assert visit["canonical_place_id"] is None
     assert identity_ready(intake.to_dict(), report)
+
+
+@pytest.mark.parametrize("decision", ["match", "unknown", "no_supported_match"])
+def test_supported_destination_conflict_is_fail_without_an_original_address(batch, decision):
+    intake = prepared(batch)
+    refs = [r for r in identity_references(intake) if r["version"] == "v0"]
+    observed = evidence(intake, [search(r, r["name"], address="Other City") for r in refs])
+
+    def conflict(row, _case):
+        row.update(decision=decision, destination_assessment="contradictory")
+        if decision != "match":
+            row.update(
+                candidate_id=None,
+                evidence_fields=["claim.place_name", "claim.destination", "case.candidates"],
+            )
+
+    material = model_material(intake, observed, decisions=conflict, historical=False)
+    report = resolve_identities(intake, observed, model_result=material).to_dict()
+    visit = next(r for r in report["records"] if r["version"] == "v0")
+    assert visit["candidate_correspondence"]["decision"] == decision
+    assert visit["model_judgment"]["address_assessment"] == "not_supplied"
+    assert visit["grounding_verdict"] == "FAIL"
+    assert visit["canonical_place_id"] is None
+    assert visit["original_claim"]["location"] is None
+    assert identity_ready(intake.to_dict(), report)
+    leg = next(
+        r
+        for r in prepare_routes(intake, report, context(intake)).to_dict()["results"]
+        if r["version"] == "v0"
+    )["legs"][0]
+    assert leg["canonical_endpoints"] == [None, None]
+    assert leg["identity_grounding_verdicts"] == ["FAIL", "FAIL"]
+    assert leg["expected_context"] is None
+
+
+@pytest.mark.parametrize("fault", ["original_support", "candidate_support", "empty_candidates"])
+def test_destination_failure_requires_original_and_independent_citations(batch, fault):
+    intake = prepared(batch)
+    refs = [r for r in identity_references(intake) if r["version"] == "v0"]
+    observed = evidence(
+        intake, [] if fault == "empty_candidates" else [search(r, r["name"]) for r in refs]
+    )
+
+    def unsupported(row, _case):
+        row.update(decision="unknown", candidate_id=None, destination_assessment="contradictory")
+        row["evidence_fields"] = (
+            ["case.candidates"]
+            if fault == "original_support"
+            else ["claim.place_name", "claim.destination"]
+        )
+
+    material = model_material(intake, observed, decisions=unsupported, historical=False)
+    with pytest.raises(ValueError, match="Destination failure"):
+        resolve_identities(intake, observed, model_result=material)

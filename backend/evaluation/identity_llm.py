@@ -73,6 +73,10 @@ Use only supplied facts; do not invent candidates, coordinates, opening/route ev
 corrected planner output. Original claims are comparison inputs, not independent evidence.
 Compare name, destination, supplied ID and all conflicting provider observations. Provider
 rank is not confidence. Destination must be consistent for adoption. Explain every judgment.
+An independently supported contradictory destination is a delivered-claim failure even
+when no original address was supplied. It requires claim.place_name, claim.destination and
+candidate.display_name/candidate.formatted_address, or the complete nonempty case.candidates
+without a selected candidate. Without that support use unknown, not contradictory.
 Use only the evidence_fields schema enum, citing actual nonempty fields of this case and
 its selected candidate. A match requires claim.place_name, claim.destination,
 candidate.display_name and candidate.formatted_address; also cite claim.location and
@@ -365,16 +369,21 @@ def _decisions(intake, evidence, cases, material, *, historical=True):
                 )
             ):
                 raise ValueError("Malformed cited address components")
-        if row["address_assessment"] in ("incorrect_claim", "different_place"):
-            required = {"claim.place_name", "claim.destination", "claim.location"}
+        address_failure = row["address_assessment"] in ("incorrect_claim", "different_place")
+        destination_failure = not historical and row["destination_assessment"] == "contradictory"
+        if address_failure or destination_failure:
+            required = {"claim.place_name", "claim.destination"}
+            if address_failure:
+                required.add("claim.location")
             required.update(
                 {"candidate.display_name", "candidate.formatted_address"}
                 if candidate
                 else {"case.candidates"}
             )
             if not required <= cited:
+                failure = "Address" if address_failure else "Destination"
                 raise ValueError(
-                    "Address failure requires original and independent evidence citations"
+                    f"{failure} failure requires original and independent evidence citations"
                 )
         if row["decision"] == "match":
             required = {
@@ -389,7 +398,7 @@ def _decisions(intake, evidence, cases, material, *, historical=True):
                 required.add("claim.claimed_place_id")
             if not required <= cited:
                 raise ValueError("Independent and original identity support citations required")
-            if (row["address_assessment"] == "not_supplied") == has_location:
+            if historical and (row["address_assessment"] == "not_supplied") == has_location:
                 raise ValueError("Address assessment contradicts original location presence")
         decisions[row["reference_id"]] = row
     return decisions, {
@@ -426,6 +435,9 @@ def resolve_llm_identities(intake, evidence, *, model_result=None, v0_only=False
             if judgment["address_assessment"] in ("incorrect_claim", "different_place"):
                 verdict = "FAIL"
                 reason = "model_address_" + judgment["address_assessment"]
+            elif v0_only and judgment["destination_assessment"] == "contradictory":
+                verdict = "FAIL"
+                reason = "model_destination_contradictory"
             elif judgment["decision"] == "match":
                 if judgment["destination_assessment"] != "consistent" or judgment[
                     "address_assessment"
