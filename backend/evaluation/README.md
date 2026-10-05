@@ -130,6 +130,16 @@ judgments (including confirmed failures), 3 for UNKNOWN/missing judgment, and 2 
 material/linkage errors. Incorrect submitted addresses and different venues are grounding
 FAIL, even when the intended venue is recognizable. Their canonical ID stays null: candidate
 facts cannot supply corrected route endpoints. Original outputs and denominators are retained.
+Current V0 packets use `v0_identity_correspondence_2`: citation paths are schema enums
+shared with import. Address-presence schema alternatives bind short reference IDs;
+every absent/null/blank address requires `not_supplied` and forbids `claim.location` citations.
+A supplied address forbids `not_supplied`, including UNKNOWN/no-match decisions.
+`candidate_correspondence` retains the validated match separately from original-claim
+`grounding_verdict`; recognizing a candidate does not repair an erroneous occurrence.
+Supported destination contradictions remain FAIL even without a supplied original address;
+the response must cite original name/destination and independent candidate support.
+Old policy-1 packets and rejected historical output cannot be normalized or relabeled for
+current import. The frozen historical all-version schema remains explicitly replayable.
 
 For V0 correspondence within a verified material bundle:
 
@@ -160,6 +170,10 @@ independent synthetic snapshots, strict field equality, FAIL/UNKNOWN preservatio
 coordinates/endpoints and stale/forged/historical material rejection. Existing historical
 policy tests explicitly select their replay path. Run these tests with the backend gates;
 no paid acquisition or smoke execution is part of this validation.
+`backend/tests/evaluation/test_identity_v0_contract.py` covers current schema alternatives,
+supported/nonempty and rejected citations, complete owned decision coverage, exact provenance,
+CLI import, preserved correspondence versus FAIL/UNKNOWN, quality fractions and null route
+endpoints using synthetic local snapshots. SDK execution tests use MockTransport only.
 
 ### Prepared one-call identity development smoke
 

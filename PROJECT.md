@@ -118,18 +118,22 @@ The backlog task authorized specification publication only. The user subsequentl
 authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
 follow-ups. The user subsequently authorized #75 implementation, offline testing, local
-commits and dual review. #76-#79 remain separate scopes; no new paid execution or Git
+commits and dual review, followed by #76's V0 response-contract correction. #75 and #76
+are implemented locally; #77-#79 remain separate scopes. No new paid execution or Git
 publication is authorized. GitHub owns live Issue state. See the
 [accepted requirement](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
 and [publication record](docs/records/evaluation/intake-identity-usage.md#version-specific-evaluator-backlog-2026-10-06).
 The [#75 implementation record](docs/records/evaluation/intake-identity-usage.md#version-specific-identity-implementation-2026-10-06)
 records local validation and review; it grants no paid run or publication authority.
+The [#76 correction record](docs/records/evaluation/intake-identity-usage.md#v0-correspondence-contract-correction-2026-10-06)
+records schema/import agreement, required `not_supplied` for missing addresses, preserved
+candidate correspondence versus original-claim FAIL/UNKNOWN, and unchanged historical evidence.
 
 | Ticket | Implementation checkpoint |
 | --- | --- |
 | 01: Intake/projection | Implemented and offline-validated, including provenance, transport sources and [ordinary-output compatibility](docs/records/evaluation/intake-identity-usage.md#rtpeval-ticket-01-03-acceptance) |
 | 02: Usage capture/report | Implemented and offline-validated; opt-in capture plus [offline cost/bill accounting](docs/contracts/0002-intake-identity-usage.md#offline-cost-accounting); no automatic formal run or bill fetching |
-| 03: Identity/judgment | #75 implements version-specific API checks, V0-only correspondence packets and exact consumer replay locally; no evaluator model/fallback for V1-V3 or shared subjects; historical policies/evidence remain explicitly replayable |
+| 03: Identity/judgment | #75 implements version-specific API checks and exact consumer replay; #76 aligns V0 citation/address schema and import with separate correspondence/correctness records; no evaluator model/fallback for V1-V3 or shared subjects; historical policies/evidence remain explicitly replayable |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented, offline-validated and published; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed |
 | 06: Opening checks | Offline parser/scorer/CLI implemented and reviewed; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) completed; [acceptance and scoped supplements](docs/records/evaluation/opening.md#rtpeval-ticket-06-acceptance) |

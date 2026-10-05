@@ -55,20 +55,24 @@ on 2026-10-06: V0 introduces an LLM primarily for generated-POI correspondence w
 independent API candidates; V1-V3 evaluation uses API evidence and program rules without
 an evaluator model or fallback, including user-named requirements. Original API-backed
 name/address differences count as errors, without repair. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
-owns the classified follow-ups. Version dispatch is locally implemented under #75;
-V0 response correction, fresh-smoke preparation, offline route integration and delivery
+owns the classified follow-ups. Version dispatch (#75) and the V0 citation/missing-address
+response correction (#76) are implemented locally; fresh-smoke preparation, offline route integration and delivery
 remain separate follow-ups. Historical evidence is not reclassified.
 
 Implemented identity uses the [version-specific contract](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement):
 V1-V3 use ID-linked API Details and literal name/address equality; shared named requirements
 use independent Details bindings or unambiguous deterministic search. V0-only packets match
-generated claims with independent candidates. Reports require exact source-bound replay. High-impact
+generated claims with independent candidates. Citation enums and address-presence alternatives
+agree with import validation; absent addresses require `not_supplied` without claiming an error.
+Candidate correspondence and original-claim correctness remain separate in verified reports.
+Reports require exact source-bound replay. High-impact
 references and sampling no longer require human identity confirmation. Address correctness
 remains a separate assessment: recognizing a venue does not repair the delivered address
 or establish opening/route feasibility. Both a recognizable venue with an incorrect submitted
 address and an address identifying another venue produce grounding FAIL and prohibit canonical
-adoption for downstream coordinates/endpoints. Insufficient evidence stays UNKNOWN. All versions
-use the same standard; evaluation does not hide baseline errors or presume a version must fail.
+adoption for downstream coordinates/endpoints. Insufficient evidence stays UNKNOWN.
+Supported V0 destination conflicts also remain FAIL even when the original address is absent.
+All versions use the same standard; evaluation does not hide baseline errors or presume a version must fail.
 Explicit historical human and uniform LLM identity replay is retained.
 Blinded preference review and other human supplements keep their separate responsibilities.
 

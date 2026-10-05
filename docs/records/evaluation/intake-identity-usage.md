@@ -1828,3 +1828,80 @@ The V0 response correction (#76),
 fresh smoke plan (#77), revised offline route integration (#78) and publication (#79)
 remain separate scopes. No accepted real current-policy V0 identity report, new route
 fact, billing result, formal benchmark, version comparison or freeze is established here.
+
+<a id="v0-correspondence-contract-correction-2026-10-06"></a>
+
+### V0 correspondence contract correction (#76, 2026-10-06)
+
+The human explicitly authorized implementation of #76 after local #75 completion.
+Fixed review base is `1bd405768dfe8bb01088845efdecb2ae5933fba3`, on feature/evaluation.
+The unrelated pre-existing `.gitignore` edit remains unstaged and outside this task.
+Implementation/tests are committed as `0e5aba66682e24958102089d3eb53b5f4ba69856`.
+This is a local implementation and offline validation event, not a live smoke, formal
+benchmark, research conclusion, version freeze or GitHub publication.
+
+Public-interface TDD reproduced missing citation enums at preparation and missing-address
+decisions incorrectly accepting `unknown`, `different_precision` or `equivalent` without
+a supplied address. The current packet now shares citation paths with import, and uses
+address-presence alternatives bound to owned short reference IDs. Missing addresses require
+`not_supplied` for all decisions and exclude `claim.location`; supplied addresses forbid
+`not_supplied`. Model instructions agree with both schema and import. The V0 policy changes
+to `v0_identity_correspondence_2`, creating new packet/request provenance. The original
+historical all-version schema/instructions remain unchanged. Old or rejected envelopes
+are not normalized, repaired or relabeled; #73 raw response/consumed execution files were
+not edited, and no paid model, Places or Routes request was made.
+
+A downstream regression first exposed absent correspondence metadata, then a missing V0
+identity verdict on route legs. Current records now retain `candidate_correspondence`
+separately from original-claim `grounding_verdict`; coordinate/opening/route consumers
+preserve V0 verdict metadata as well as programmatic verdicts. Recognized wrong addresses
+and different venues remain FAIL with null canonical IDs and no corrected endpoints.
+Insufficient correctness evidence stays UNKNOWN. Quality and requirement descriptors
+retain the original identity records; score formulas, denominators and generation are
+unchanged. Synthetic snapshot tests check these behaviors through public consumers.
+
+The regression harness was corrected for required acquisition ceilings, the existing
+coordinate status (`complete`), the quality report's `primary_metrics` location and the
+identity CLI's decisive-FAIL exit code (`0`). These were test assumptions, not production
+contract changes. After the citation/address/import and consumer corrections, the related
+identity/program/historical/offline-SDK gate passed **111 tests in 14.22s**. The pre-review V0
+contract gate passed **40 tests in 4.33s**. No live POI names were added as reusable fixtures.
+Global Ruff lint (`backend tools scripts`), six changed-file format checks and changed-module
+Python compilation passed. No configured mypy/pyright or remote CI result is claimed.
+
+The first serial full backend gate reported **2907 passed, 10 skipped, 1 failed in 275.48s**.
+The evaluator architecture guard rejected the new `copy` import, which is outside its
+standard-library allowlist. Schema cloning now uses the existing JSON roundtrip, without
+relaxing that guard or touching provider/model material. The intake/identity/program/
+historical/offline-SDK correction gate then passed **249 tests, 1 skipped in 24.05s**.
+Ignored local evidence identifiers are `.scratch/pytest-76-full.txt`,
+`.scratch/pytest-76-full-corrected.txt` and `.scratch/pytest-76-full-final.txt`; none is a
+published dependency. The intermediate corrected full run was stopped without a complete
+result when review found a behavior requiring another code change; it is not a passing gate.
+
+Independent Standards review found zero hard violations and one P3 possible duplication:
+current match rows checked address presence twice. Independent Spec review found one P2:
+supported destination contradictions still produced UNKNOWN, particularly when missing
+addresses required `not_supplied`. Three synthetic no-address cases first reproduced
+UNKNOWN for match/unknown/no-supported-match decisions. Correction commit
+`4c98f56e235de6d4d96de7ce0c24052be7149c78` makes supported current V0 destination conflicts
+FAIL, requires original name/destination plus independent candidate support, and preserves
+historical behavior. Missing evidence rejects import rather than certifying a failure.
+The late historical address guard no longer repeats the current-path check.
+Additional negative citation tests briefly had a misplaced test body (three NameErrors);
+restoring its public quality/route assertions resolved the harness error. The final affected
+gate passed **254 tests, 1 skipped in 22.15s**, covering intake's architecture guard,
+current/historical identity, program dispatch and offline SDK execution. Ruff and changed-file
+format checks passed again. Both axes rechecked the committed correction with zero unresolved
+code findings. A duplicated destination-conflict paragraph in the contract draft was removed.
+
+The final serial full backend gate at `4c98f56` passed **2913 tests, 10 skipped in 276.95s**:
+`.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider
+--basetemp=.scratch/pytest-76-full-final --tb=short --show-capture=no`.
+Global Ruff lint, six changed Python format checks and whitespace checks passed. Final
+documentation checks passed 189 tracked local link targets and the new record anchor.
+Both independent axes reviewed the final documentation drafts with **zero unresolved findings**.
+Current contract, project status, CLI usage guide and this dated acceptance record form a
+separate final documentation commit after implementation and review corrections. The only
+remaining worktree edit is the unrelated pre-existing `.gitignore` change.
+#77/#78/#79 remain separate scopes with their original approval gates.

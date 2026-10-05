@@ -221,13 +221,46 @@ not abort other references. Shared subjects never enter V0 model packets. A conf
 programmatic subject failure is retained as a FAIL component in associated requirement checks.
 
 Default `prepare_identity_judgment(..., model=MODEL)` includes only V0 primary visits,
-with packet policy `v0_identity_correspondence_1`; source digests and short-reference
-ownership bind eligibility. V0 decisions retain the existing address/destination/citation
-contract below. Foreign decisions, historical all-version packets and edited policy/version
+with packet policy `v0_identity_correspondence_2`; source digests and short-reference
+ownership bind eligibility. Foreign decisions, historical all-version packets and edited policy/version
 markers cannot pass current import. Absence of a V0 result leaves V0 UNKNOWN while V1-V3
 and shared subjects still evaluate. No resolver/CLI executes a model or provider.
-[#76](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/76) still owns the separate
-V0 citation/null-address response correction; #77/#78/#79 remain separate scopes.
+
+The V0 response correction is implemented locally under
+[#76](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/76). The model's primary
+purpose is correspondence to supplied independent candidates, or insufficient support;
+it cannot invent candidates, facts, coordinates, opening/route evidence or corrected output.
+`evidence_fields` uses the same supported-path set as import validation:
+`claim.place_name`, `claim.destination`, `claim.location`, `claim.claimed_place_id`,
+`claim.original_title`, `candidate.display_name`, `candidate.formatted_address`,
+`candidate.address_components`, `candidate.observations` and `case.candidates`.
+Citations must refer to actual nonempty fields owned by that claim and selected candidate,
+or the case's supplied candidate set. Returned paths are never normalized or repaired.
+Matches require claim name/destination and candidate name/address, plus original location
+and claimed ID when supplied. Cited address components must retain their typed structure.
+
+The schema partitions owned short reference IDs by original-address presence. Every
+decision for an absent/null/blank original location requires `not_supplied` and its citation
+enum excludes `claim.location`; decisions with a supplied address cannot use `not_supplied`.
+Instructions and import enforce the same rule. Absence alone does not prove an address error.
+Complete unique reference coverage and candidate ownership remain mandatory.
+Validated V0 records expose `candidate_correspondence` (restored candidate ID and decision)
+separately from `grounding_verdict` and original claims. Supported `incorrect_claim` or
+`different_place` assessments remain FAIL even for a recognized candidate; they require
+original name/destination/location and independent candidate name/address, or the complete
+nonempty `case.candidates` when no candidate is selected. Insufficient correctness support
+remains UNKNOWN. Neither FAIL nor UNKNOWN adopts a canonical ID or a corrected endpoint.
+A supported `destination_assessment=contradictory` also produces FAIL, including when the
+original address is absent. It requires original name/destination and candidate name/address,
+or the complete nonempty candidate set without a selection. Missing original or independent
+support is rejected at import; the model must use UNKNOWN when evidence is insufficient.
+Historical uniform replay retains its original destination-conflict behavior.
+
+The new V0 instructions/schema/policy produce new packet and request hashes; current import
+requires that exact packet and response provenance. The historical uniform schema/instructions
+remain unchanged under explicit replay. Old V0 policy-1 packets and the rejected #73 envelope
+cannot be relabeled as accepted current reports. Raw responses and consumed execution evidence
+are retained unchanged. #77/#78/#79 remain separate scopes; this contract grants no new call.
 
 The complete `identity_versioned_replay` stores independent evidence and the optional
 V0 result. Consumers reconstruct the exact report from the original intake before using
