@@ -1706,3 +1706,51 @@ anchors, new anchors, English content and diff checks passed. No code tests or l
 calls are run. Prior engineering gates remain historical. No planner output, raw provider
 artifact, score formula, model/Google request, Git push/PR/merge, formal benchmark or
 version freeze is introduced by publishing this backlog.
+
+<a id="evaluator-checkpoint-delivery-2026-10-06"></a>
+
+### Authorized existing evaluator checkpoint delivery (2026-10-06)
+
+After requesting delivery of the existing local commits, the human explicitly chose
+full delivery: push, create a PR, review and merge after successful checks. This
+authorization covers the existing checkpoint before #75 implementation, not the
+pending version-specific evaluator or a fresh live request. The final four consecutive
+documentation commits had previously been consolidated at the user's explicit request
+into `b2bbf75`, with an identical tree and preserved `.gitignore` bytes; the original
+documentation objects remain in a local backup ref for historical receipts.
+
+[PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80) publishes the
+ten existing commits from `f011a29` through `b2bbf75`. Review base is
+`5d21d6b4685c7793f27954d7c175bed9524b3803` (main at dispatch), merge base
+`56cae0c96c618a6c03ce25a29277132b08589b9d`, and reviewed head
+`b2bbf75fbf3d5f110955da035ef857604efc96d6`, on feature/evaluation.
+The pre-existing unrelated `.gitignore` edit remains unstaged and excluded; ignored
+raw/scratch artifacts are not published. This delivery-state documentation is a
+separate follow-up commit, without implementation changes.
+
+Independent Standards and Spec agents each found **zero actionable findings** across
+the combined release diff. They checked current policies/contracts, source-bound
+identity replay and no-repair FAIL propagation, CLI/consumer integration, offline route
+readiness, one-attempt execution and truthful historical/current status. The accepted
+V0-only model / deterministic V1-V3 replacement is explicitly unimplemented. No code
+correction was needed. The final documentation delta is separately checked before
+merge; the pre-merge PR comment records its final head, both axes and validation scope.
+
+The reused serial backend gate is **2842 passed, 10 skipped in 397.57s**; final executor
+17 and executor/identity 52 also remain valid prior evidence. No code/test file changed
+after `abc2663`; a new full run is not claimed. Initial delivery checks passed 281 tracked
+local targets across 14 changed documents and base-to-head whitespace. No mypy/pyright
+gate or CI check is configured. The absence of CI is not a passed CI result.
+
+Historical #70/#72 scopes can close after verified merge, and #67 after delivery of its
+two original offline slices (#69 and #70). #73 can close as frozen preparation and
+execution-evidence delivery complete: **its live import failed, nine verdicts remain
+UNKNOWN, no accepted report exists, the allowance is consumed and no retry is
+authorized**. The response correction belongs to #76 and fresh-plan preparation to #77.
+Four route verdicts remain UNKNOWN with zero executable requests. #74-#79 remain OPEN;
+this delivery does not implement or close their subsequent scopes. Actual merge and
+Issue outcomes are recorded in the accessible PR/tracker, rather than anticipated here.
+
+No new model, Google or planner call, original-output repair, score-formula change,
+formal benchmark, version comparison or freeze occurs in this delivery. Source hashes
+in historical execution manifests are not rewritten to absorb Git history consolidation.

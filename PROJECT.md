@@ -114,8 +114,11 @@ evidence remains UNKNOWN. This supersedes the all-version LLM design, but is **n
 implemented** yet. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
 owns five classified follow-ups: version routing #75, V0 response contract #76,
 fresh-smoke preparation #77, offline route integration #78 and Git delivery #79.
-Only backlog publication was authorized in this task; implementation, fresh paid
-execution and Git delivery retain their own approval boundaries. See the
+The backlog task authorized specification publication only. The user subsequently
+authorized full Git delivery of the existing implementation through
+[PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
+follow-ups. New implementation and fresh paid execution remain separately approved
+scopes; #75-#79 are still pending. See the
 [accepted requirement](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
 and [publication record](docs/records/evaluation/intake-identity-usage.md#version-specific-evaluator-backlog-2026-10-06).
 
@@ -236,9 +239,14 @@ budgets are distinct. [Development guide](docs/guides/development.md) owns comma
 Latest full backend gate (2026-10-06, #73 smoke preparation): **2842 passed, 10 skipped
 in 397.57s**. The final isolated executor gate passed 17 tests; executor plus identity
 policy passed 52. Ruff passes. Standards and Spec each have zero findings. Implementation
-and tests are committed locally as `abc2663`. That offline acceptance itself did not
+and tests are published as `abc2663` in
+[PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80). That offline acceptance itself did not
 authorize paid execution; the later explicit-send approval and rejected one-call integration
-are recorded above. Git delivery remains separately unauthorized.
+are recorded above. The user subsequently authorized full Git delivery of the existing
+ten-commit checkpoint. Both combined-delivery review axes report zero findings;
+no code/test file changed after `abc2663`, so that full gate is reused rather than
+claimed as a new run. PR status owns merge state. See the
+[delivery record](docs/records/evaluation/intake-identity-usage.md#evaluator-checkpoint-delivery-2026-10-06).
 
 Previous full backend gate (2026-10-06, #72 address/no-repair clarification): **2825 passed,
 10 skipped in 339.67s**. The initial address gate passed 2824 with 10 skips; a further
@@ -248,8 +256,9 @@ files passed 88 tests. Ruff passes. Standards and Spec have zero actionable find
 [dated address record](docs/records/evaluation/intake-identity-usage.md#address-failure-no-repair-2026-10-05)
 preserves the actual red/green and fixture-correction sequence. All 61 protected source
 hashes remain unchanged; new model/Places/Routes sends and incremental charges are zero.
-Implementation/test commit is `1c43007`. #72 is locally complete pending Git publication
-and separately authorized fresh model judgment. At that #72 checkpoint, the prepared
+Implementation/test commit is `1c43007`, published in PR #80. #72's original uniform-policy
+implementation is complete; the accepted version-specific replacement belongs to #75.
+At that #72 checkpoint, the prepared
 nine-reference packet had no fresh response. The later #73 response failed import as
 recorded above, so current-policy verdicts remain UNKNOWN; historical reports are preserved.
 #70's request preparation remains historical in its
