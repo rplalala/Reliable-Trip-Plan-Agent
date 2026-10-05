@@ -141,6 +141,40 @@ New-Item -ItemType Directory -Path artifacts/evaluation-adoption -Force | Out-Nu
 .venv/Scripts/python.exe -m pytest backend/tests/evaluation/test_identity_adoption.py -q --basetemp artifacts/evaluation-adoption/test-01 -o cache_dir=artifacts/evaluation-adoption/cache
 ```
 
+<a id="v0-route-requests"></a>
+
+### Offline V0 route requests and budget
+
+After replaying the opt-in identity report, prepare the request inventory without acquiring evidence:
+
+```powershell
+$env:PYTHONIOENCODING = 'utf-8'
+.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json identity-report.json --context schedule-context.json --route-reviews route-reviews.json --prepared-at 2026-10-05T10:23:02Z | Set-Content -Encoding utf8NoBOM request-package.json
+```
+
+Optional `--occupancy-reviews` retains reviewed occupancy; `--details-snapshot` consumes already supplied
+independent Details with the package's exact `details_plan`. It sends nothing and never retries bad evidence.
+Saved coordinates are reused only after source replay and ID/numeric validation. The current provider
+preparation profile is KR, checked 2026-10-05. Original mode/timing/continuous windows and blocked legs stay visible.
+WALK coverage and TRANSIT's unverified regional support can leave zero ready Routes.
+
+Exit 0 means complete preparation without pending applicable legs, 3 means a complete blocked/conditional
+inventory, and 2 means invalid material. Save UTF-8 without BOM. Completion is not route feasibility or acquisition
+approval. Masks, dated prices, source hashes, actual versus hypothetical budgets and stops are in the
+[request contract](../../docs/contracts/0004-opening-routes.md#v0-route-request-package).
+
+Library seams: `prepare_v0_route_requests` and `preflight_v0_route_requests` in [route_requests](route_requests.py).
+Preflight recomputes the frozen package before checking ledger/request limits and always returns
+`live_authorized=false`. No provider or model client is present. Execution requires separate inventory/budget
+approval and a current-session execution child configured `gpt-6.1-sol` / `medium`.
+
+Fresh-clone fixtures are independently runnable:
+
+```powershell
+New-Item -ItemType Directory -Path artifacts/evaluation-route-requests -Force | Out-Null
+.venv/Scripts/python.exe -m pytest backend/tests/evaluation/test_route_requests.py -q --basetemp artifacts/evaluation-route-requests/test-01 -o cache_dir=artifacts/evaluation-route-requests/cache
+```
+
 <a id="offline-evaluation-preparation-and-metrics-tickets-01-06"></a>
 <a id="ticket-05-offline-requirement-and-schedule-metrics"></a>
 <a id="ticket-06-offline-opening-compliance"></a>

@@ -963,3 +963,85 @@ Closeout documentation check: English content and **180 existing local Markdown
 targets** across ten documents passed. The permanent historical proposal passes
 reverse-apply validation against the committed repair. Its unified-diff context markers
 are preserved as patch syntax; they are not ordinary prose whitespace.
+
+
+<a id="v0-route-request-preparation-2026-10-05"></a>
+
+## V0 independent route request and budget preparation — 2026-10-05
+
+Issue #69 was merged through PR #71 at merge commit `5d21d6b4685c7793f27954d7c175bed9524b3803`.
+Issue #70 is implemented locally for offline preparation only; Git publication and live execution remain unapproved.
+Review base: `f011a2929f9235f30a546f872f3a879cd6aaeed6`.
+
+The unchanged saved V0/#66 material replays six adopted identities and three genuine-review-pending references.
+All four original legs remain UNKNOWN. Native occupancy, continuous windows, mode, original estimate and timing remain in the JSON package.
+
+| Date | Directed endpoints | Mode | Original estimate / nominal gap (min) | Identity / coordinates | Request state | Reasons |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-07 | Gyeongbokgung Palace -> National Museum of Korean Contemporary History | WALK | 20 / 30 | False / False | blocked | identity_unresolved, regional_walk_unavailable_or_low_quality, independent_coordinates_missing |
+| 2026-10-08 | Bukchon Hanok Village -> Insadong | WALK | 25 / 35 | True / True | blocked | regional_walk_unavailable_or_low_quality |
+| 2026-10-09 | Seoul Museum of History -> Gwangjang Market | TRANSIT | 35 / 45 | True / True | conditional | regional_transit_coverage_unverified |
+| 2026-10-10 | Changdeokgung Palace -> Jongmyo Shrine | WALK | 20 / 30 | False / False | blocked | identity_unresolved, regional_walk_unavailable_or_low_quality, independent_coordinates_missing |
+
+Six independent saved coordinates were reused. Two legs have adopted identities and complete coordinates.
+Missing coordinate venues: zero. Proposed Details: zero. Directed request inventory: two;
+one WALK request is blocked by regional coverage and one TRANSIT request is conditional on verified region support.
+Executable/approval-ready Routes: zero. Identity-blocked legs have no invented request or endpoint ID.
+
+### Frozen request and price assumptions
+
+- Details: `id,location`, Place Details Essentials; exact returned ID must match the replay-adopted canonical ID.
+- Routes: 1x1 Compute Route Matrix, preserving WALK or TRANSIT. Mask:
+  `originIndex,destinationIndex,status,condition,distanceMeters,duration,fallbackInfo`.
+  TRANSIT retains its original `2026-10-09T03:00:00+00:00` departure; WALK sends no historical departure.
+- Global first paid tier checked 2026-10-05: USD 5 per 1,000 Details requests or matrix elements;
+  USD 0.005 per item. No free credit, volume discount, tax or actual invoice is assumed.
+- Current proposed retail budget: **USD 0.00**, zero sends. Two unready inventory items total USD 0.01 hypothetically;
+  this is not an allowance. The ticket's 8 Details + 4 Routes ceiling would be USD 0.06 at these rates.
+- Single-call timeout: 20 seconds; total deadline: 300 seconds; zero retries/searches/model calls.
+  Counters reserve the next item before a send; changed input/inventory, unsupported context, identity/coordinate mismatch,
+  any provider failure/timeout or limit stops execution. No acquisition executor was implemented.
+
+### Provider limitations and approval boundary
+
+The [official country coverage table](https://developers.google.com/maps/coverage) labels KR walking/driving
+unavailable or low quality and omits transit coverage. This is not proof that a route does not exist.
+TRANSIT is in the [matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix),
+but country support and actual schedule availability are unverified. The matrix reference allows past TRANSIT times
+without a guaranteed horizon; the Compute Routes 7/100-day horizon is not imported.
+No mode substitution, retiming, itinerary optimization, genuine review fabrication or new feasibility score occurred.
+[Official prices](https://developers.google.com/maps/billing-and-pricing/pricing) and
+[SKU triggers](https://developers.google.com/maps/billing-and-pricing/sku-details) support the dated estimates.
+
+Actual module CLI exits 3 with a complete blocked/conditional JSON package. Exact library replay and request preflight
+passed with network/DNS blocked and zero attempts. All 61 protected original hashes are unchanged.
+Local evidence identifiers: `artifacts/v0-route-requests-20261005/request-package.json`, `offline-acceptance.json` and `preparation-report.md`. These ignored artifacts are not fresh-clone dependencies; the synthetic fixture suite is tracked.
+
+Later execution needs a revised, demonstrably supported exact inventory, a separately approved budget and a current-session
+execution child configured `gpt-6.1-sol` / `medium`. Genuine pending identity/audit reviews remain prerequisites for their legs.
+This is engineering preparation, not a formal benchmark, accuracy result or version freeze.
+
+
+### Implementation, validation and review sequence
+
+Review fixed point: `f011a2929f9235f30a546f872f3a879cd6aaeed6`.
+Implementation/tests were committed as `677a7e2` before independent Standards and Spec review.
+TDD first failed at the absent public request entry point. Later red cases exposed missing
+Details/conditional inventories, supplied-Details validation, same-canonical N/A handling,
+evidence chronology and absent preflight. Those boundaries were implemented without changing
+native scoring or relaxing existing snapshot/identity guards. Focused request gate: 23 passed;
+then CLI/conflicting-coordinate checks brought the suite to 25 and the combined adoption/request
+gate to **72 passed**. Ruff passed. The full backend gate passed **2777, 10 skipped in 399.30s**.
+The skips are existing environment/opt-in cases. No mypy/pyright gate is configured.
+Actual public module execution produced complete JSON and exit 3; exact library replay,
+network/DNS blocking and budget preflight passed. Zero network attempts/sends were observed;
+all 61 protected source hashes remain unchanged and original V0 SHA-256 is still
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
+
+Standards and Spec independent reviews both found zero actionable findings; no correction
+commit was needed. The final contract, CLI instructions, PROJECT state and dated evidence
+were checked for tracked links/anchors, English additions and whitespace before their
+separate documentation commit. Issue #70 acceptance describes this local checkpoint and
+remains OPEN pending separate Git publication. Its prior dedicated `smoke tests` wording
+was updated to the current-session `gpt-6.1-sol` / `medium` execution-child policy.
+No acquisition executor or paid request was implemented or run; execution needs separate approval.

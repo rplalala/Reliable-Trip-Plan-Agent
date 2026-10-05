@@ -210,6 +210,81 @@ validation and Ticket 07 provider/mode applicability are distinct: supported pre
 modifiers/locales and exact departure are checked when interpreting frozen evidence.
 Unsupported valid-wire context stays UNKNOWN without shifting dates or modes.
 
+<a id="v0-route-request-package"></a>
+
+## Offline V0 independent request package
+
+`prepare_v0_route_requests(bundle_path, identity_report, *, prepared_at,
+schedule_context=None, occupancy_reviews=None, route_reviews=None,
+details_snapshot_directory=None)` returns immutable `RouteRequestPackage`, schema
+`rtpeval_v0_route_requests_1`. It replays the original V0/#66 material and the exact
+adoption report before using the existing occupancy/window preparation. It keeps
+every selected V0 leg, source endpoints/dates/mode/estimate and continuous window,
+identity blockers and coordinate readiness. Native scorers and V0-V3 planners are unchanged.
+
+This preparation currently uses the explicitly selected KR provider profile checked
+2026-10-05; it does not infer geographic support from names. The
+[official coverage table](https://developers.google.com/maps/coverage) marks KR walking
+and driving unavailable or low quality and omits transit coverage. Those facts retain
+blocked WALK and conditional TRANSIT inventories, rather than a provider NO_ROUTE
+or factual FAIL. The [matrix reference](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
+supports explicit TRANSIT departures including past timestamps, but supplies no guaranteed
+schedule horizon. Do not copy Compute Routes' 7/100-day horizon into this method.
+WALK stays time independent and cannot certify historical/future conditions.
+
+Only adopted endpoint canonical IDs enter the venue inventory. Exact IDs deduplicate
+Details while preserving every reference link. Replayed saved independent coordinates
+retain raw hashes, pointers, request keys and timestamps. Reused Details additionally
+require requested/returned canonical-ID equality. Missing coordinates may produce
+`id,location` Details requests; invalid/conflicting observations remain blocked and
+do not automatically backfill. Planner/model points are never admitted.
+
+Supplied Details must use the package's exact `details_plan`. Offline snapshot replay
+checks its intake/identity link, plan, safe paths, raw hashes and zero-retry attempt
+ledger. Only exact requested/returned adopted IDs and strict finite numeric coordinates
+in range contribute. Evidence later than preparation is invalid. Unavailable/bad
+responses stay diagnostic without proposing retries. An invalid plan/source rejects the
+whole package rather than yielding partial requests.
+
+Directed requests retain source WALK/TRANSIT and explicit original TRANSIT departure.
+Requests without coordinates or required departure have no executable body. Full query,
+coordinates/evidence and mask determine exact request keys; duplicate queries retain
+leg links rather than collapsing occurrences. Every leg retains `UNKNOWN` without
+independent journey evidence; confirmed same-canonical legs retain native `N/A`.
+`ready_for_approval`, `conditional` and `blocked` describe preparation, never authorization.
+
+Masks/SKUs are frozen: Details `id,location` uses Place Details Essentials; 1x1 Compute
+Route Matrix uses `originIndex,destinationIndex,status,condition,distanceMeters,duration,fallbackInfo`
+and Compute Route Matrix Essentials without Pro/Enterprise modifiers. The
+[official price list](https://developers.google.com/maps/billing-and-pricing/pricing) and
+[SKU triggers](https://developers.google.com/maps/billing-and-pricing/sku-details), checked
+2026-10-05, give USD 5/1,000 per Details request or matrix element at the global first
+paid tier. No credit, discount, tax or actual invoice is assumed. Proposed sends/cost
+and unready hypothetical inventory are separate; the eight-Details/four-Routes ceiling
+is a planning bound, not an allowance.
+
+The frozen package includes source hashes, `inventory_sha256`, masks/options/SKUs,
+dated links, per-item/aggregate estimates, missing billing, a 20-second single-call
+timeout, 300-second total deadline, exact operation counters and zero retries/search/model
+calls. `preflight_v0_route_requests(bundle_path, identity_report, package, *, ledger,
+next_request_key)` recomputes the package and checks exact sent keys, pending-item
+cost/time reservation, duplicate/foreign requests, forbidden calls and limits. Its
+result always says `live_authorized=false`. Source/inventory changes, unsupported context,
+identity/coordinate mismatch, any provider failure/timeout or limit require stopping.
+No live acquisition executor is implemented by this package.
+
+The ledger has `sent_request_keys`, finite nonnegative `elapsed_seconds` and `cost_usd`,
+and nonnegative integer `retry_sends`, `search_sends`, `model_sends`. Counts refer to
+attempted sends (one element per matrix); cost must cover their undiscounted estimate.
+Supplied snapshot sends are historical observations, separate from zero preparation sends.
+Changed readiness needs a regenerated inventory and separate budget approval. Later
+authorized execution uses the current session's execution child under the
+[smoke policy](../agents/smoke-tests.md), `gpt-6.1-sol` / `medium`.
+
+The [dated preparation acceptance](../records/evaluation/routes.md#v0-route-request-preparation-2026-10-05)
+owns the actual four-leg inventory and limitations; the [package guide](../../backend/evaluation/README.md#v0-route-requests)
+owns CLI invocation and exit codes.
+
 <a id="rtpeval-route-contract--route-evaluator-contract--draft"></a>
 <a id="rtpeval-route-contract--purpose-and-inputs"></a>
 <a id="rtpeval-route-contract--checked-repository-contracts"></a>
