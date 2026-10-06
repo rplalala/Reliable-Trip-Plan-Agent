@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from .intake import _read
+from ..intake import _read
 from .route_requests import prepare_v0_route_requests
 
 

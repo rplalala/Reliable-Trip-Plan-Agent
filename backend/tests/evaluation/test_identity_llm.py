@@ -15,10 +15,10 @@ from backend.evaluation.identity_llm import prepare_identity_judgment as _prepar
 from backend.evaluation.identity_llm import resolve_llm_identities as resolve_identities
 from backend.evaluation.preparation import identity_ready
 from backend.evaluation.records import canonical_digest
-from backend.evaluation.route_requests import prepare_v0_route_requests
 from backend.evaluation.routes import prepare_routes
 from backend.evaluation.snapshot import build_evidence_plan
 from backend.evaluation.snapshot_coordinates import prepare_snapshot_coordinates
+from backend.evaluation.tools.route_requests import prepare_v0_route_requests
 from backend.tests.evaluation.test_identity import evidence, prepared, search
 from backend.tests.evaluation.test_requirement_schedule import context
 

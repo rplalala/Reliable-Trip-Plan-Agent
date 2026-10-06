@@ -10,9 +10,12 @@ import pytest
 from backend.evaluation.identity import resolve_identities
 from backend.evaluation.identity_adoption import load_v0_material
 from backend.evaluation.records import thaw
-from backend.evaluation.route_requests import preflight_v0_route_requests, prepare_v0_route_requests
-from backend.evaluation.route_requests_cli import main
 from backend.evaluation.snapshot import AcquisitionPolicy, Response, acquire_snapshot
+from backend.evaluation.tools.route_requests import (
+    preflight_v0_route_requests,
+    prepare_v0_route_requests,
+)
+from backend.evaluation.tools.route_requests_cli import main
 from backend.tests.evaluation.test_identity_llm import model_material
 from backend.tests.evaluation.test_requirement_schedule import context
 from backend.tests.evaluation.test_route_requests import reviewed_identity

@@ -6,14 +6,14 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from .identity import resolve_identities
-from .identity_adoption import load_v0_material
-from .identity_program import POLICY_VERSION as IDENTITY_POLICY_VERSION
-from .intake import _read
-from .preparation import identity_ready
-from .records import MaterialError, canonical_digest, freeze, require, thaw
-from .routes import prepare_routes
-from .snapshot import build_identity_plan, load_snapshot
+from ..identity import resolve_identities
+from ..identity_adoption import load_v0_material
+from ..identity_program import POLICY_VERSION as IDENTITY_POLICY_VERSION
+from ..intake import _read
+from ..preparation import identity_ready
+from ..records import MaterialError, canonical_digest, freeze, require, thaw
+from ..routes import prepare_routes
+from ..snapshot import build_identity_plan, load_snapshot
 
 PACKAGE_VERSION = "rtpeval_v0_route_requests_2"
 DETAILS_MASK = "id,location"

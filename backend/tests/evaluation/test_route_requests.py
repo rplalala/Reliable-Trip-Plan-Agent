@@ -9,8 +9,11 @@ import pytest
 from backend.evaluation.identity_adoption import (
     resolve_legacy_v0_identities as resolve_v0_identities,
 )
-from backend.evaluation.route_requests import preflight_v0_route_requests, prepare_v0_route_requests
 from backend.evaluation.snapshot import AcquisitionPolicy, Response, acquire_snapshot
+from backend.evaluation.tools.route_requests import (
+    preflight_v0_route_requests,
+    prepare_v0_route_requests,
+)
 from backend.tests.evaluation.test_identity import review_envelope
 from backend.tests.evaluation.test_requirement_schedule import context
 
@@ -298,7 +301,7 @@ def test_conflicting_saved_coordinates_block_reuse_and_do_not_propose_backfill(a
 
 
 def test_cli_preserves_unknown_and_reports_invalid_input_without_network(adoption_case, capsys):
-    from backend.evaluation.route_requests_cli import main
+    from backend.evaluation.tools.route_requests_cli import main
 
     intake, _, bundle, _, save, _, _, _ = adoption_case
     report_path = (
