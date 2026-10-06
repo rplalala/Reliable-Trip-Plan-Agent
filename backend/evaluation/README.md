@@ -195,9 +195,11 @@ execution directory is now consumed; do not reuse it or infer route validation f
 The subsequent [#85 offline refresh](../../docs/records/evaluation/intake-identity-usage.md#v0-target-smoke-refresh-2026-10-06)
 binds merged #83 source and all nine V0 visit/target references (fourteen candidate
 appearances). Real cached-tokenizer sizing is 16,111 input tokens, or 17,135 with reserve,
-exceeding the current 16,000 preparation ceiling. The guard correctly rejects preparation;
-the saved blocked draft is not an executable manifest and grants no live authority.
-An 18,000 input ceiling / USD 0.0042 allowance is an unapproved next offline proposal.
+exceeding the original 16,000 preparation ceiling. The guard rejected that preparation;
+the preserved blocked draft is not an executable manifest and grants no live authority.
+The user subsequently approved only the offline smoke-limit correction and re-preparation:
+the tool now uses an 18,000 input ceiling / USD 0.0042 reference allowance. A compatible
+new manifest still requires separate exact-plan live approval; historical approval is not reused.
 Do not substitute the historical eight-visit request or trim candidate evidence to fit.
 
 `tools.validation.identity_judgment_smoke` is a separate development executor for a verified
@@ -231,14 +233,14 @@ POST/request and rechecks sources before its sole attempt. Changed source materi
 the response prevents import. No planner or Google calls are included.
 
 The fixed development limits are one request, low reasoning, no tools, `store=false`,
-16,000 estimated input tokens including 1,024 reserve, 3,000 output tokens and a 60-second
+18,000 estimated input tokens including 1,024 reserve, 3,000 output tokens and a 60-second
 HTTP deadline. The locally cached tokenizer is a surrogate preflight estimate. Excessive
 reported usage stops import after receipt; these checks cannot guarantee the provider's
-tokenizer or invoice ceiling. The fresh proposed reference allowance is USD 0.004; it
+tokenizer or invoice ceiling. The fresh proposed live reference allowance is USD 0.0042; it
 requires new exact-plan approval and does not inherit #73's consumed allowance. Official
 OpenAI reference rates checked 2026-10-06 are USD 0.10 ordinary input, 0.01 cached input,
 0.125 cache writes and 0.50 output per million tokens. At these caps the maximum standard
-reference is USD 0.0035; a regional +10% scenario is USD 0.00385. Output already includes
+reference is USD 0.00375; a regional +10% scenario is USD 0.004125. Output already includes
 reasoning. Receipts retain original usage, partition reported input categories, and label
 missing categories as a conservative reference upper bound rather than observed zero.
 Malformed or excessive category counts stop import. These standard/regional scenarios do
