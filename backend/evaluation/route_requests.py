@@ -42,10 +42,10 @@ def _money(units):
     return format(Decimal(units) * Decimal("0.005"), ".6f")
 
 
-def _budget(details, ready, conditional):
+def _budget(details, ready, conditional, region_code):
     return {
         "currency": "USD",
-        "checked_on": "2026-10-05",
+        "checked_on": "2026-10-07" if region_code == "AU" else "2026-10-05",
         "price_url": PRICE_URL,
         "sku_url": SKU_URL,
         "rate_per_1000_usd": "5.00",
@@ -60,11 +60,13 @@ def _budget(details, ready, conditional):
     }
 
 
-def _provider(leg, now):
+def _provider(leg, now, region_code):
     mode = leg["mode"]
     checks = []
-    if mode in ("WALK", "DRIVE"):
+    if mode in ("WALK", "DRIVE") and region_code == "KR":
         checks.append("regional_" + mode.lower() + "_unavailable_or_low_quality")
+    elif mode == "WALK":
+        pass
     elif mode == "TRANSIT":
         checks.append("regional_transit_coverage_unverified")
         if leg["evaluation_departure"] is None:
@@ -74,14 +76,16 @@ def _provider(leg, now):
     else:
         checks.append("provider_mode_unsupported")
     return {
-        "region_code": "KR",
-        "checked_on": "2026-10-05",
+        "region_code": region_code,
+        "checked_on": "2026-10-07" if region_code == "AU" else "2026-10-05",
         "coverage_url": COVERAGE_URL,
         "method_url": MATRIX_URL,
         "readiness_checks": checks,
         "temporal_semantics": "Explicit original departure for TRANSIT; WALK is time independent",
         "limitations": [
-            "KR walking/driving coverage is unavailable or low quality, not proof of no route",
+            "AU walking coverage is documented; exact pair success is not yet observed"
+            if region_code == "AU"
+            else "KR walking/driving coverage is unavailable or low quality, not proof of no route",
             "The country coverage table omits transit; API regional support is unverified",
             "Matrix permits past TRANSIT timestamps but documents no guaranteed schedule horizon",
             "Compute Routes 7/100-day horizon is not copied to Compute Route Matrix",
@@ -261,11 +265,17 @@ def prepare_v0_route_requests(
     route_reviews=None,
     details_snapshot_directory=None,
     legacy=False,
+    region_code="KR",
 ):
     """Replay current identities by default and retain every original V0 leg blocker."""
     base = {"schema_version": PACKAGE_VERSION, "legs": [], "requests": [], "diagnostics": []}
     try:
         now = datetime.fromisoformat(prepared_at)
+        require(
+            isinstance(region_code, str) and region_code in ("KR", "AU"),
+            "provider/region_code",
+            "Explicit KR or AU provider region required",
+        )
         require(type(legacy) is bool, "legacy", "Explicit boolean replay policy required")
         require(
             now.utcoffset() is not None, "prepared_at", "Offset-aware preparation time required"
@@ -291,6 +301,13 @@ def prepare_v0_route_requests(
             "Replay-verified V0 report required",
         )
         bundle, _ = _read(Path(bundle_path))
+        if region_code == "AU":
+            group = next(g for g in intake["inventory"] if g["group_id"] == bundle["group_id"])
+            require(
+                group["input"]["destination"].rsplit(",", 1)[-1].strip().casefold() == "australia",
+                "provider/region_code",
+                "AU profile requires an original destination explicitly declaring Australia",
+            )
         root = (Path(bundle_path).resolve().parent / bundle["artifact_root"]).resolve()
         snapshot_directory = (root / bundle["artifacts"]["snapshot"]["path"]).parent
         routes = prepare_routes(
@@ -395,7 +412,7 @@ def prepare_v0_route_requests(
                 d for d in coordinate_diagnostics if d["place_id"] not in used - blocked
             ] + diagnostic
         for leg in base["legs"]:
-            provider = _provider(leg, now)
+            provider = _provider(leg, now, region_code)
             leg["provider"] = provider
             leg["coordinate_ready"] = all(pid in point_map for pid in leg["canonical_endpoints"])
             leg["readiness_checks"] = list(
@@ -409,7 +426,10 @@ def prepare_v0_route_requests(
             leg["request"] = _route_request(leg, point_map)
             leg["request_state"] = (
                 "blocked"
-                if not leg["identity_eligible"] or leg["mode"] != "TRANSIT"
+                if not leg["identity_eligible"]
+                or region_code == "AU"
+                and leg["request"] is None
+                or leg["mode"] not in (("WALK", "TRANSIT") if region_code == "AU" else ("TRANSIT",))
                 else "conditional"
                 if leg["readiness_checks"]
                 else "ready_for_approval"
@@ -417,17 +437,21 @@ def prepare_v0_route_requests(
             if leg["request"]:
                 leg["request"]["state"] = leg["request_state"]
                 leg["request"]["leg_ids"] = [leg["leg_id"]]
-        ready = sum(leg["request_state"] == "ready_for_approval" for leg in base["legs"])
         details = len(base["requests"])
         route_requests = {}
         for leg in base["legs"]:
             request = leg["request"]
             if request is not None:
                 if request["key"] in route_requests:
-                    route_requests[request["key"]]["leg_ids"].append(leg["leg_id"])
+                    previous = route_requests[request["key"]]
+                    previous["leg_ids"].append(leg["leg_id"])
+                    # A duplicate link cannot promote a blocked/conditional query to ready.
+                    if request["state"] == "blocked" or previous["state"] == "ready_for_approval":
+                        previous["state"] = request["state"]
                 else:
                     route_requests[request["key"]] = thaw(freeze(request))
         base["requests"].extend(route_requests[key] for key in sorted(route_requests))
+        ready = sum(r["state"] == "ready_for_approval" for r in route_requests.values())
         unready = sum(r["state"] != "ready_for_approval" for r in route_requests.values())
         conditional = sum(r["state"] == "conditional" for r in route_requests.values())
         require(details <= 8 and len(base["legs"]) <= 4, "limits", "Planning ceiling exceeded")
@@ -462,7 +486,7 @@ def prepare_v0_route_requests(
             coordinates=points,
             reference_links=links,
             coordinate_diagnostics=coordinate_diagnostics,
-            budget=_budget(details, ready, unready),
+            budget=_budget(details, ready, unready, region_code),
             limits={
                 "max_details_sends": details,
                 "max_routes_sends": ready,
@@ -505,6 +529,8 @@ def prepare_v0_route_requests(
                 "supplied_details_observed_sends": observed_sends,
             },
         )
+        if region_code == "AU":
+            base["replay_inputs"]["region_code"] = region_code
         base["inventory_sha256"] = canonical_digest(base)
         return RouteRequestPackage("complete", freeze(base))
     except (MaterialError, ValueError, TypeError, KeyError, OSError, StopIteration) as exc:
