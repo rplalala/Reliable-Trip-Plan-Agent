@@ -465,3 +465,105 @@ configuration, with a 2-5 reference range and applicability/permission checks).
 Independent evaluator density deductions remain post-output scoring. This correction
 changes neither those existing policies nor score formulas and does not establish
 an uncontaminated benchmark or authorize formal comparison.
+
+<a id="sydney-v0-natural-generation-smoke-2026-10-07"></a>
+
+## Sydney V0 natural-input generation smoke - 2026-10-07
+
+Date: 2026-10-07, Australia/Sydney. Outcome: generation completed; independent
+evaluator acceptance remains pending. The user approved starting the corrected
+preparation/execution after clarifying that daily density scoring must not supply
+generation quotas. Input preparation commit: `3ae6a070ae6ab7134906720e4ff1be6cb2c7214b`.
+Only the new [natural request](../../../tools/validation/packets/sydney-v0-route-smoke/request-natural.json)
+and evaluator usage documentation changed at that revision. Production V0-V3,
+prompts, shared requirements policy, Repair and score formulas were unchanged.
+The unrelated unstaged `.gitignore` addition `.archify/` was preserved.
+
+The new input removes only `with exactly two primary sightseeing visits per day`
+from the earlier preference text. Four days, dates October 14-17, two travelers,
+AUD 1600, relaxed pace, required Sydney Opera House once, natural interests and
+walking/public-transport preferences remain identical. No suggested daily count
+replaces the deleted condition. The old counted input and all original stop evidence
+remain unchanged; this is a separately approved case, not a retry or repaired result.
+
+### Offline preparation and execution boundary
+
+Schema and current trusted-day validation passed against October 7. Exact input
+comparison confirmed only the unwanted daily hint was removed. The parent captured
+the actual SDK body using MockTransport and stopped before HTTP dispatch. Eight
+guard cases passed: valid body and rejection of model mismatch, streaming, tools,
+priority tier, missing output cap, exceeded send count and exceeded input bound.
+The first JSON-body surrogate was 9,843 tokens; with the 2,048 reserve it was 11,891.
+All 206 source/input hashes, 15 original-run files and 153 earlier evidence files
+(146 originals plus seven preparation files) passed verification before execution.
+
+The plan used the unchanged two-node V0 runner with a private bounded transport:
+at most two Responses POSTs, zero retries, 32,000 input tokens per send, 8,192 output
+tokens per send, 120 seconds per request and 250 seconds total. Its worst retail
+references were USD 0.016192 standard / 0.01781120 regional against a USD 0.020000
+reference allowance. Actual Foundry billing was not guaranteed by that allowance.
+There was no daily output-count success condition, independent API acquisition,
+model fallback or output repair. The execution child used `gpt-6.1-sol` / `medium`
+in the current session, following the frozen source/input/helper/wire handoff.
+
+### Observed result and faithful offline replay
+
+The child executed the helper exactly once. Exit code 0, status `completed`, two
+model sends, zero retries, 40.625 seconds. Both responses were HTTP 200, provider
+`completed`, model `gpt-6-luna`, service tier `default`. Requests did not override
+reasoning effort; both original responses report `medium` / `standard`.
+Twelve capture JSON files retain six stages for each call, with no reported capture
+errors. Source HEAD and all protected hashes were unchanged after execution.
+
+The original PlanningResult has seven model-declared main POIs across four days:
+2/2/2/1. It also has four WALK transport activities, one generic Haymarket food
+activity and two optional unscheduled references. The generic activity and references
+are not counted as main visits. Day four remains below the existing soft generation
+target; it was neither rejected nor filled to improve density scoring. Sydney Opera
+House appears once as a named model claim. The requirements draft has no hard
+semantic conditions; its named Opera House visit obligation retains exact count one.
+
+All seven main claims have supplied location text and null provider IDs, consistent
+with plain V0 output. No independent name/address correctness, operating access or
+route duration is established by those fields. One declared WALK terminates at the
+generic food activity; no canonical venue endpoint is invented for it. Independent
+projection/evidence preparation must preserve unresolved applicability and endpoints.
+No automatic score, independent identity verdict or factual route verdict was emitted.
+
+The parent replayed the two saved provider responses through the existing DTO mapping
+and unchanged `run_v0`, with DNS/socket connections blocked. The reconstructed
+PlanningResult equals the original result field-for-field, including diagnostics.
+This assessment made zero network requests and did not modify original raw bytes.
+Validation here is input/schema/wire/limit/hash checking and saved-response replay;
+the earlier 3,017-pass/10-skip suite remains evidence for unchanged production code,
+not a new test run or proof of factual itinerary quality.
+
+### Usage, evidence and remaining scope
+
+| Request | Ordinary input | Cache-write | Cached input | Output | Included reasoning |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Requirements | 3 | 145 | 8,918 | 2,047 | 1,266 |
+| Itinerary | 3 | 3,823 | 0 | 4,756 | 2,070 |
+| Total | 6 | 3,968 | 8,918 | 6,803 | 3,336 |
+
+Total input is 12,892 tokens; total input plus output is 19,695. Reasoning is already
+included in output. Actual second-wire surrogate was 4,204 tokens before reserve.
+Using the [official Luna retail rates](https://developers.openai.com/api/docs/models/gpt-6-luna)
+rechecked October 7, references are USD 0.001131105 for requirements and 0.002856175
+for itinerary, totaling USD 0.003987280 standard / 0.004386008 regional +10%.
+The actual Azure/Foundry invoice remains unknown.
+
+Private historical evidence identifiers, not published dependencies:
+`artifacts/sydney-v0-natural-generation-smoke-20261007/{plan.json,input.json,first-wire.json,offline-check.json,original-run-hashes.json,assessment.json}`
+and `execution/{execution.json,request-1.json,request-2.json,response-1.bin,response-2.bin,result.json,capture/}`.
+Frozen input SHA256: `1b3c50ad9ce9c58a4caf047388f3c4131faa0cddb0ffff2467dd8b2f1593d6ba`.
+Response hashes: `580ec34e5ae57b19d6e93938de2827a47fcc9cc2317a18aee75e3c6c2d31c89d`
+and `0d6504a20e57c59ac2b58a599e3a968b2d11d248480982523137360ad2d56575`.
+Result hash: `d8ca6c8ac44aa2438f2efe65534b57488be81dbed217bc7d66626801f78431c7`.
+
+This one-use execution plan is consumed. Independent identity candidate acquisition,
+opening/route evidence, applicable reviewed RequirementSpec and final scoring still
+need preparation against this actual original output. The earlier eight-venue/four-leg
+scenario is not a source of replacement output or permission to drop difficult claims.
+No independent API sends, V1-V3 live execution, formal comparison, version freeze,
+tracker mutation, push, PR or merge occurred.

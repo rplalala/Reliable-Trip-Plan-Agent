@@ -212,10 +212,39 @@ and consumed one-use plan remain preserved. Generation flow, scoring and V0-V3 c
 are unchanged; this is not a passed generation smoke or final evaluator acceptance.
 See the [generation stop record](docs/records/v0-v3/development-pilots.md#sydney-v0-generation-smoke-2026-10-07).
 The user clarified that density scoring must not become a generation constraint.
-A subsequent smoke input should omit the agent-added daily count entirely, preserving
+A subsequent smoke input must omit the agent-added daily count entirely, preserving
 natural preferences and independent scoring; softening it to a suggested count would
-still steer the case toward the scoring table. No replacement input or live run has
-been executed under this clarification.
+still steer the case toward the scoring table. The user then approved starting that
+corrected run. The new natural input retains all other facts/preferences, with the
+counted input preserved. On 2026-10-07, V0 generation completed with two model sends,
+zero retries and a valid original PlanningResult. Declared daily main roles are
+2/2/2/1, retained without count-based rejection or repair. Offline saved-response
+runner replay matches the original result exactly. Standard retail reference is
+USD 0.003987280, actual Foundry billing unknown. This completes generation-only smoke;
+independent identity/opening/route evidence, scoring and four-version acceptance
+remain pending. Product V0-V3 and scoring code are unchanged. See the
+[natural-input execution record](docs/records/v0-v3/development-pilots.md#sydney-v0-natural-generation-smoke-2026-10-07).
+The approved Sydney identity next step completed on 2026-10-07 with eight independent
+Places searches and one V0-only model request, zero retries. Seven original primary
+claims yield six PASS and one retained FAIL; the independently sourced Opera House
+target yields PASS. Free official-source inspection flags the Australian Museum address
+FAIL as a possible model false positive, without overriding the saved report. Powerhouse
+is identified but its API business status is temporarily closed. Offline snapshot/report
+replay matches exactly with zero network attempts and all frozen hashes unchanged.
+This is a single-source identity development view, not qualified four-version intake;
+opening, routes, scoring and final acceptance remain pending. See the
+[identity execution and assessment](docs/records/evaluation/intake-identity-usage.md#sydney-v0-identity-smoke-2026-10-07).
+The Sydney V0 opening/route smoke completed on 2026-10-08: six Details requests and
+two WALK Matrix requests, all HTTP 200, zero retries/model calls, USD 0.130 retail
+reference with actual billing unknown. Identity-FAIL venues and dependent routes were
+not queried. Native opening yields four PASS and three UNKNOWN; routes yield two PASS
+and one retained UNKNOWN. Powerhouse is temporarily closed with no returned hours;
+Opera House also lacks hours. Exact-once requirement counting and non-overlap retain
+uncertainty from unresolved occurrences/occupancy. Saved-evidence replay is exact and
+all 182 frozen files are preserved. The four-version quality consumer correctly rejects
+this single-source view; no final total or complete version acceptance is established.
+Generation, original itinerary and scoring code are unchanged. See the
+[opening/route assessment](docs/records/evaluation/routes.md#sydney-v0-opening-routes-smoke-2026-10-08).
 The user clarified that smoke is a development check, not an actual system stage, and
 requested an evaluation `tools/` boundary. V0 smoke request/budget preparation now lives
 under `backend/evaluation/tools/`; Product planning and independent final scoring do not

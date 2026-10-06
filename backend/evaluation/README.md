@@ -318,12 +318,30 @@ independent density scoring does not supply generation quotas. It is a generatio
 input, not a generated output, reviewed RequirementSpec or API snapshot. The earlier
 [counted request](../../tools/validation/packets/sydney-v0-route-smoke/request.json)
 is preserved as historical evidence. Its non-generation USD 0.3522 price scenario
-includes unready routes and does not authorize their execution. The later bounded
-generation-only smoke stopped after one requirements response because exact daily
+includes unready routes and does not authorize their execution. That counted-input
+generation smoke stopped after one requirements response because exact daily
 cardinality is an unsupported hard semantic condition. It produced no itinerary or
 evaluator bundle; the consumed plan cannot be reused. Original input and raw output
 remain preserved, and actual billing is unknown. See the
 [generation stop record](../../docs/records/v0-v3/development-pilots.md#sydney-v0-generation-smoke-2026-10-07).
+The separately approved natural-input V0 smoke completed with two model sends,
+zero retries and a valid original result; saved-response runner replay matches
+exactly. Its declared main counts are 2/2/2/1, retained without quantity repair.
+No independent identity, opening, route or score acceptance follows from generation.
+See the [natural execution record](../../docs/records/v0-v3/development-pilots.md#sydney-v0-natural-generation-smoke-2026-10-07).
+The subsequent [Sydney identity smoke](../../docs/records/evaluation/intake-identity-usage.md#sydney-v0-identity-smoke-2026-10-07)
+acquired eight independent searches and made one V0-only model request: six primary
+PASS, one retained primary FAIL and one requirement-target PASS. Official-source
+inspection flags a possible address false positive; it does not rewrite the report.
+This single-source library view is not a qualified four-version intake or a legacy
+adoption bundle. Opening, route and final score evidence remains outstanding.
+The subsequent [opening/route execution](../../docs/records/evaluation/routes.md#sydney-v0-opening-routes-smoke-2026-10-08)
+made six Details and two WALK Matrix requests, with no model calls or retries. Identity
+FAIL blocked acquisition for the affected venue/leg. Native opening reports four PASS
+and three UNKNOWN; routes report two PASS and one UNKNOWN, retaining the unbound day-four
+transport separately. Requirement/schedule reports retain unresolved evidence. Final
+quality reporting rejects this V0-only view with `Exactly four versions required`;
+the smoke does not bypass intake or establish an overall quality score.
 The dated input needs trusted-day revalidation before later use.
 
 Prepare from an exact current `versioned_api_identity_2` report without acquiring evidence:
@@ -335,7 +353,7 @@ $env:PYTHONIOENCODING = 'utf-8'
 .venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli v0-identity-material.json --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
 # Historical identity reports require explicit replay; they never replace current evidence.
 .venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli v0-identity-material.json historical-identity.json --legacy --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
-# Australian source material only; no Sydney V0 identity bundle has been acquired yet.
+# Illustrative qualified Australian material; the single-source smoke view is not this CLI bundle.
 .venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli sydney-identity-material.json identity-report.json --region AU --context schedule-context.json --prepared-at 2026-10-07T00:00:00Z
 ```
 

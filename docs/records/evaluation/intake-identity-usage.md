@@ -2748,3 +2748,103 @@ repeating the unchanged full suite. #85's execution/assessment acceptance is sat
 GitHub owns its reconciled lifecycle. No Git push, PR, merge, formal comparison, score
 conclusion, route validation or version freeze is included. Any further live acquisition
 or model request needs its own approved scope and budget.
+
+<a id="sydney-v0-identity-smoke-2026-10-07"></a>
+
+#### Sydney natural-input V0 identity execution and assessment (2026-10-07)
+
+Status: executed and assessed as an identity-only development smoke. The user approved
+the next step after natural-input generation and had authorized prepared bounded smoke
+execution without another prompt. Source HEAD was
+`961eb750ed827016ec9d5cab83661671faad2672`. The unrelated `.gitignore` addition remained
+byte-identical and excluded. No tracked planner/evaluator implementation changed.
+
+The original natural input/result retain SHA-256
+`1b3c50ad9ce9c58a4caf047388f3c4131faa0cddb0ffff2467dd8b2f1593d6ba` and
+`d8ca6c8ac44aa2438f2efe65534b57488be81dbed217bc7d66626801f78431c7`.
+An explicitly labelled single-source library view reuses current projection and identity
+modules. It is not qualified four-version batch intake or final quality scoring; no missing
+versions were fabricated. Parent agent source review covers only the named Opera House
+obligation and retained natural soft preferences, not full requirements or human acceptance.
+The target address remains null and is independent of the generated visit's address.
+Seven original primary visits and one required target produce eight searches. Two optional
+recommendations are listed separately, unverified and excluded from primary counts.
+
+The one-use private adapter froze 134 acquisition dependencies and 153 model dependencies.
+Acquisition digest:
+`c71005079bd782ff212690d2c5783635b66fc22be6e33ccd6117657982ea7724`.
+Model preparation digest:
+`c8009011cf4201818f153f80ea6cead5935b1e4168325dd62c42de4d42310bb8`.
+SDK-wire offline interception passed, retaining all eight cases and thirteen candidate
+appearances. Input estimate including the 1,024 reserve was 15,827, below 18,000.
+Mock empty results remained pending UNKNOWN and were never substituted for live evidence.
+
+The current-session execution child used `gpt-6.1-sol` / `medium`. Google acquisition
+completed with eight Text Search POSTs, all HTTP 200, zero retries or pagination, from
+`2026-10-07T01:35:50.758045+00:00` to `01:35:55.147184+00:00`.
+The Pro-level field mask includes ID/name/address/components/business status/coordinates
+and pagination; it requests no opening hours. Seven searches return one candidate each;
+the Art Gallery search returns six, all retained without rank selection. No Details,
+Routes, opening, planner, database or embedding call occurred.
+
+Automatic approval review initially rejected model execution before process launch for
+insufficiently specific external-transfer authorization. Zero model sends occurred then.
+Inspection established that the actual request contains only location claims, independent
+API candidates and provenance, without the full itinerary, dates, traveler count, budget,
+preferences or secrets. Its configured service is the same destination as the prior
+human-approved Sydney generation. This evidence and existing human authorization were
+submitted to approval review again; the same operation was approved, without bypass or
+live retry. The child then executed once, exited zero and recorded completed/HTTP 200.
+Model send/retrieval timestamps were `2026-10-07T01:41:40.174117+00:00` and
+`2026-10-07T01:41:47.886985+00:00`. Actual model: `gpt-6-luna`, low reasoning, one send,
+zero retries, 3,000 output limit, 60-second HTTP timeout, no tools and `store=false`.
+The response/report inspection inadvertently emitted a nested preserved provider response
+into tool output; subsequent reporting used field projections. No credential was emitted
+and no original evidence was modified.
+
+Reported input is 13,570 tokens: 3 ordinary, 13,567 cache-write, zero cached. Output is
+1,021, including 264 reasoning tokens; total 14,591. Standard model retail reference is
+USD 0.002206675, regional +10% USD 0.0024273425, below the USD 0.0042 allowance.
+Eight Google calls have a USD 0.256 retail reference, with no free quota assumed.
+Combined standard reference is USD 0.258206675 against the prepared USD 0.2602
+allowance. These use the checked official [model pricing](https://developers.openai.com/api/docs/models/gpt-6-luna)
+and [Places pricing](https://developers.google.com/maps/billing-and-pricing/pricing);
+actual provider invoices remain unavailable.
+
+Import under `versioned_api_identity_2` / `v0_identity_correspondence_3` yields complete:
+**six primary PASS, one primary FAIL, zero UNKNOWN; one required-target PASS**.
+Australian Museum candidate correspondence is match, but the model judges the original
+`College Street, Sydney` incorrect against API address
+`1 William St, Darlinghurst NSW 2010, Australia`. The original claim retains
+`model_address_incorrect_claim`, FAIL and null canonical ID; correspondence does not repair
+it or supply a route endpoint. Free [official visitor-source inspection](https://australian.museum/visit/guides-maps/)
+on the same date confirms the main entrance is at the College/William Street corner.
+This suggests a model false positive, not a confirmed claim error. The supplemental
+inspection is recorded separately and does not alter frozen model input/output or override
+the evaluator verdict. No genuine human adjudication has occurred.
+
+The Opera House target retains `not_supplied` for its null address and matches the same
+independent ID as the original visit. This establishes identity correspondence, not final
+requirement-schedule acceptance. Powerhouse's identity PASS coexists with observed API
+`CLOSED_TEMPORARILY`; it does not establish opening on the planned future visit date.
+
+Parent assessment replayed the immutable snapshot and model response through current public
+resolvers and obtained the exact saved report. Original claims, failed null endpoint,
+V0-only routing and target address remained unchanged; all 134/153 frozen dependency
+hashes, earlier stopped/completed generation evidence and `.gitignore` passed preservation.
+The first offline assessment guard replaced the socket class and broke SSL import before
+replay; restricting outbound socket methods instead corrected this local guard. Retest
+passed with zero DNS/network/client attempts and no additional live sends. Documentation
+links, anchors, English-only content and diff whitespace were checked separately. The
+unchanged implementation's prior 3017-pass/10-skip backend gate is reused, not rerun here.
+
+Local-only evidence identifier: `artifacts/sydney-v0-identity-smoke-20261007`, preserving
+the source review/view, acquisition receipt/raw bytes/snapshot, model preparation,
+response/model-result/report and separate parent `assessment.json`. Raw model response
+SHA-256: `05b0532d89761cae7067edafc119cd5c787a96da5e45aa3ed8549ea31838c25f`;
+report: `2db272e6b93ab4e7a4400d43a8a3b15876676a956fb70ece0c4429d84aadacde`.
+Raw payloads and the one-use adapter remain ignored. Generation and scoring formulas,
+V1-V3 behavior and original 2/2/2/1 counts remain unchanged. Both execution allowances
+are consumed; no rerun is implied. Opening, routes, final scoring and four-version
+acceptance remain outstanding. No push, PR, merge, tracker mutation, formal comparison
+or version freeze is included.

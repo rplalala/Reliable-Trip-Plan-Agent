@@ -1672,3 +1672,124 @@ original/frozen file checks pass again after the implementation commit. Existing
 claims, FAIL/UNKNOWN outcomes and Sydney's pending live prerequisites are unchanged.
 This completes the requested development-tool directory boundary, without making smoke
 a product stage, changing evaluation formulas or authorizing another execution.
+
+<a id="sydney-v0-opening-routes-smoke-2026-10-08"></a>
+
+## Sydney V0 opening and route smoke (2026-10-08)
+
+Status: executed and assessed as bounded development evidence. Source revision:
+`8b70852431631f32a87c2c49bd0838c2570f38b4`. The unrelated `.gitignore` change retains
+its original bytes and is excluded. No tracked system/evaluator implementation changed.
+The approved scope acquires independent opening and route evidence over the saved natural
+Sydney V0 result. Identity-FAIL venues and their dependent routes are excluded from live
+acquisition; original failures, unavailable checks and denominators remain in reports.
+No address diagnosis, candidate-address repair or replacement itinerary is included.
+
+The source is the [natural generation](../v0-v3/development-pilots.md#sydney-v0-natural-generation-smoke-2026-10-07)
+and [identity assessment](intake-identity-usage.md#sydney-v0-identity-smoke-2026-10-07).
+Current `versioned_api_identity_2` replay matches before preparation. The single-source
+library view remains an explicit diagnostic scope, not qualified four-version intake.
+RequirementSpec review remains identity-focused and agent-supplied, not full human
+acceptance. Independently reviewed [IANA Sydney timezone](https://data.iana.org/time-zones/tzdb/zone1970.tab)
+supports offset interpretation. Source review finds no hard transport-mode restriction:
+walking/public transport is a soft preference, and actual WALK modes come from the raw
+output. No default mode or daily visit quota is injected.
+
+The existing snapshot-coordinate bridge provides six adopted venue coordinates without
+new coordinate requests. Native route preparation retains three primary-pair legs;
+Australian Museum to QVB has a null failed endpoint and no query. Opera House to MCA
+and Art Gallery to Mrs Macquarie's Chair produce two time-independent WALK queries.
+The fourth raw transport activity points at an unnamed generic food activity and remains
+unbound; it is not converted into an invented fourth route or named Haymarket venue.
+Six unique accepted venue IDs generate Details requests, with Opera House visit/target
+deduplicated. Australian Museum has no Details request.
+
+Details uses `id,businessStatus,timeZone,currentOpeningHours,regularOpeningHours`, not
+wildcard fields. Hours trigger [Place Details Enterprise](https://developers.google.com/maps/documentation/places/web-service/place-details).
+Each independent Matrix is 1x1 with `originIndex,destinationIndex,status,condition,distanceMeters,duration`.
+WALK bodies use independently acquired coordinates, no departure or regional override.
+[AU coverage](https://developers.google.com/maps/coverage) and
+[Matrix wire](https://developers.google.com/maps/documentation/routes/compute_route_matrix)
+were rechecked on the execution date. Time-independent walking estimates cannot certify
+conditions on the future itinerary date. No Search, model, planner, database or embedding
+request is included.
+
+Prepared limits: eight sends, zero retries/redirects, 20-second HTTP and 200-second total
+timeout. [Published global first-tier pricing](https://developers.google.com/maps/billing-and-pricing/pricing)
+gives six Enterprise Details at USD 0.020 each plus two Matrix Essentials elements at
+USD 0.005 each: USD 0.130 reference allowance. Free quotas are not assumed. Actual
+account allowance, invoice, taxes and volume tier are unavailable.
+
+The first offline preflight read opening checks at the wrong private report path and
+stopped with KeyError after mock evidence collection; no live send occurred. A fresh r2
+adapter/preparation corrected the nested report path and retained the original preparation
+and mock evidence. Two fixture snapshots make sixteen synthetic sends, separated from live
+evidence: complete regular hours yield six PASS plus the failed-identity UNKNOWN; missing
+hours yield seven UNKNOWN. Exact HTTP serialization/masks were intercepted for all eight
+wires with DNS/outbound sockets prohibited. Source/endpoint/mode/count guards pass without
+repairing missing evidence. No production implementation or frozen original source was patched.
+
+Executable preparation canonical SHA-256:
+`e29f7d9fa5bfb1ed9edb1e63c6a53879432e7b6c2c38ec5357b3ba438112d036`.
+Adapter SHA-256:
+`e9546af3c32189a277e85ee79a852ade56760e77dd9ee938957f454f2e0c06d4`.
+The required current-session execution child used `gpt-6.1-sol` / `medium`; no model was
+called by this smoke. It verified HEAD, trusted Sydney date, unused output directory,
+manifest and 182 bound file hashes before one execution. The process exits zero,
+receipt completed, with six Details and two Matrix requests, all HTTP 200 and zero retries.
+UTC execution spans `2026-10-08T00:44:27.270733+00:00` to
+`2026-10-08T00:44:29.821421+00:00`. Retail reference is USD 0.130, not an observed invoice.
+Raw response bytes precede interpretation; all eight raw hashes and 182 source hashes
+remain unchanged afterward. The consumed execution directory/allowance is not reusable.
+
+Native offline results:
+
+| Check | Result | Evidence or limitation |
+| --- | --- | --- |
+| MCA visit opening | PASS | Applicable current hours cover the full October 14 visit |
+| QVB, Art Gallery, Mrs Macquarie's Chair opening | PASS each | Weaker regular-hours fallback for dates outside the acquisition current window |
+| Opera House opening | UNKNOWN | Both hours fields absent; operational business status does not establish hours |
+| Powerhouse opening | UNKNOWN | `CLOSED_TEMPORARILY`, both hours fields absent; no fabricated empty-period closure |
+| Australian Museum opening | UNKNOWN, not queried | Retained identity FAIL prevents independent opening validation |
+| Opera House to MCA WALK | PASS | 893 seconds / 1,108 metres against the original 20-minute interval |
+| Art Gallery to Mrs Macquarie's Chair WALK | PASS | 1,083 seconds / 1,384 metres against the original 20-minute interval |
+| Australian Museum to QVB route | UNKNOWN, not queried | Failed canonical endpoint remains null |
+
+Opening totals are four PASS, zero FAIL, three UNKNOWN; routes retain two PASS, zero FAIL,
+one UNKNOWN among three primary-pair checks. The separate fourth unbound transport and
+unresolved generic role remain visible. Source PASS only denotes each contract's evidence
+and rule scope, not booking certainty or overall itinerary acceptance.
+
+The native requirement report retains exact-once Opera House as UNKNOWN: one confirmed
+occurrence, upper bound three due to the failed-identity museum occurrence and unresolved
+generic food occurrence. Target identity PASS is distinct from a complete exact-count proof.
+Non-overlap has ten known commitment checks passing, two unresolved candidate units and a
+null complete denominator; its full verdict remains UNKNOWN. Density retains original main
+counts 2/2/2/1 and the unresolved generic possibility on day four. No record is removed or
+reclassified to obtain a score.
+
+Free [Powerhouse official-source inspection](https://powerhouse.com.au/visit/ultimo) confirms
+current closure for revitalisation. It supplies no reopening date or literal opening period
+for October 17. This observation is retained separately; the native scorer consumes saved
+Google hours and does not import website prose or turn missing periods into a synthetic FAIL.
+The original identity FAIL remains accepted for this smoke, without a new address review.
+
+Parent assessment runs the unchanged opening, routes and requirement/schedule libraries
+twice with networking prohibited and obtains identical reports. Saved raw bytes, canonical
+snapshot linkage, original outputs, FAIL/null endpoints, earlier generation/identity artifacts
+and all 182 bound sources pass preservation. The quality consumer is exercised separately
+and correctly rejects the V0-only material: `needs_material_correction`,
+`Exactly four versions required`. No overall score, forged companion versions or modified
+score formula is produced. The unchanged code retains its prior 3017-pass/10-skip offline
+backend gate; this task adds preflight, exact replay and documentation checks, not another
+full code test run or independent implementation review.
+
+Local evidence identifiers are `artifacts/sydney-v0-opening-routes-smoke-20261008`
+(initial offline preflight) and `artifacts/sydney-v0-opening-routes-smoke-20261008-r2`
+(executable preparation, receipt/raw bytes/snapshot, three native reports, quality-scope
+diagnostic, parent assessment and supplemental closure observation). Private adapters and
+runtime payloads stay ignored. Tracked status/navigation and this record are committed
+locally after English, target/anchor and whitespace checks. No push, PR, merge, tracker
+mutation, version freeze, formal comparison or paid retry is included. This completes the
+bounded acquisition and V0 component replay; incomplete opening/occupancy evidence and
+qualified four-version final acceptance remain outstanding.
