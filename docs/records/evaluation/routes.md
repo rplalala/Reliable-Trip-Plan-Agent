@@ -1045,3 +1045,105 @@ separate documentation commit. Issue #70 acceptance describes this local checkpo
 remains OPEN pending separate Git publication. Its prior dedicated `smoke tests` wording
 was updated to the current-session `gpt-6.1-sol` / `medium` execution-child policy.
 No acquisition executor or paid request was implemented or run; execution needs separate approval.
+
+<a id="versioned-v0-route-readiness-2026-10-06"></a>
+
+## Version-specific V0 route readiness (#78, 2026-10-06)
+
+The user authorized #78 implementation with offline work only and zero paid calls,
+after #75/#76 corrections and #77 preparation. Fixed review base is
+`769a066ac73f71fb4bbc4b6987522a42d57bb0ea`, on `feature/evaluation`.
+Implementation/tests are committed as `571ed9506ae08cbd70cb5cce736a5acbab05d59a`.
+The unrelated existing `.gitignore` edit remains excluded. This is local development
+acceptance, not a live smoke, route feasibility result, score comparison, formal benchmark,
+version freeze or Git publication. #79 requires separate scope and action authorization.
+
+The existing #70 preparation capability is reused. Package schema is now
+`rtpeval_v0_route_requests_2`: the default requires exact current version-specific identity
+replay, and explicit `legacy=True`/`--legacy` preserves historical input replay. Historical
+saved artifacts are not relabeled or rewritten. An omitted current report derives pending
+identity from verified independent material with no model result, retaining original legs
+and model-evidence blockers. Current reports have no mandatory human identity/audit gate.
+Per-leg endpoint declarations retain original claims, candidate correspondence and separate
+grounding verdicts. FAIL/UNKNOWN exclude canonical endpoints and candidate-coordinate repair;
+they do not manufacture a route-feasibility FAIL. Eligible occurrence and unique-venue
+counts remain separate from coordinate readiness and deduplicated request counts.
+
+Public-interface TDD reproduced four integration gaps: missing current evidence discarded
+all original legs; a historical adoption report was accepted by default; output omitted
+current policy/endpoint counts; and endpoint blockers omitted grounding verdict metadata.
+Each slice was corrected and retested through `prepare_v0_route_requests`. The CLI test
+first failed because the identity-report positional argument was mandatory; it now supports
+the same missing-evidence preparation and explicit historical selection. Historical tests
+select legacy replay instead of silently exercising it as current policy.
+
+The synthetic current-policy suite demonstrates PASS without human review, confirmed
+wrong-address FAIL and legitimate UNKNOWN exclusion, stale/forged reports, corrupt original
+or snapshot sources, invalid/missing/wrong-ID/conflicting coordinates, exact Details ID
+checks, repeated occurrence/query deduplication, original TRANSIT departures, blocked DRIVE
+coverage and preflight that never grants execution. A repeated-visit fixture retains three
+directed legs and six endpoint occurrences while deduplicating to two venue IDs and two
+WALK matrix queries. No planner or model coordinate backfill is supplied. The related
+current/historical identity, adoption, route request and snapshot-coordinate gate passed
+**178 tests in 55.46s**. Global Ruff lint passed; `.scratch/pytest-78-related.txt` is an
+ignored local evidence identifier.
+
+The real package uses #77's exact current pending identity report with eight V0 UNKNOWN
+references, not the six historical #70 adoptions. Ignored evidence identifier:
+`artifacts/v0-route-requests-78-20261006`. Preparation timestamp is
+`2026-10-05T23:53:05.083299+00:00` (2026-10-06 in the user's Australia/Sydney timezone).
+It binds the verified original bundle and original reviewed context. All **four original
+directed legs** retain their source IDs, mode, date/time, estimates, occupancy, gap and
+selected window values. They remain **UNKNOWN/blocked** with zero identity-eligible legs,
+eligible endpoint occurrences/venues, reused coordinates, Details, conditional/ready
+Routes or directed request inventory. Proposed and hypothetical inventory budgets are
+**USD 0**. Zero missing-coordinate venues describes the empty eligible population; it
+does not establish complete endpoints or coordinate readiness. The old 8-Details/4-Routes
+planning ceiling and 2026-10-05 price assumptions remain a historical bound, not a new
+allowance or provider invoice. Actual model/Google/Routes/planner sends and incremental
+charges during preparation are **zero**.
+
+Inventory SHA-256:
+`d085383d3250835891b2b67e8e7a95418bd30445d4de14f0f495f6c97c21ab61`.
+Request-package file SHA-256:
+`239df2ee99c95540fc6ff37835c9ad51c080dccc40f23058a8bbb442f98fffb3`.
+The private offline audit confirms **81 protected file hashes unchanged**, including
+original #70/#73/#77 material and the consumed #73 execution evidence. These ignored paths
+are historical evidence identifiers, not fresh-clone or published documentation dependencies.
+No real provider payload is promoted into reusable test fixtures or tracked docs.
+
+Actual module CLI replay, with DNS and socket connections prohibited, produced the same
+JSON package as the library and **exit 3**, meaning complete blocked preparation. The
+first CLI harness incorrectly supplied a JSON-null optional occupancy-review file, which
+was rejected as a non-object envelope. Its output is preserved as `cli-package.json`;
+the corrected harness omits that absent optional flag and saves `cli-package-corrected.json`.
+No production code change was needed for this harness correction. Exact preflight is
+stopped/not authorized because no ready request exists. No acquisition executor is added.
+
+Independent implementation Standards and Spec reviews each found **zero findings**;
+no tracked correction commit was needed. The final serial full backend gate at `571ed95`
+passed **2945 tests, 10 skipped in 414.43s**:
+`.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider
+--basetemp .scratch/pytest-78-full --tb=short --show-capture=no`.
+The evidence identifier `.scratch/pytest-78-full.txt` is ignored and not a public dependency.
+Global Ruff and five changed Python format checks pass. No configured mypy/pyright or
+remote CI outcome is claimed. Independent final documentation Standards and Spec reviews
+each found **zero findings**. All 162 tracked local Markdown targets and anchors pass;
+added documentation is English, and the 81 protected file hashes remain unchanged.
+Documentation is committed separately from implementation and tests. The pre-existing
+unrelated `.gitignore` edit is excluded from both commits.
+The [official coverage table](https://developers.google.com/maps/coverage) and
+[matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
+were reread on 2026-10-06: KR WALK/DRIVE remain unavailable or low quality, transit is
+absent from the coverage table, and the matrix accepts past TRANSIT departure timestamps
+without certifying actual historical schedule availability. Unsupported context remains
+UNKNOWN; no alternate DRIVE query, date shift, planner rerun or route score is introduced.
+
+The preserved #77 plan and request hashes remain unchanged, but #78 modifies two files
+in its frozen implementation set (`route_requests.py`, `route_requests_cli.py`). That old
+manifest therefore cannot pass current execution preflight. No new smoke manifest is
+generated under #78; future execution requires a fresh exact freeze and separate approval,
+then the current-session `gpt-6.1-sol` / `medium` execution child. Only genuinely accepted
+new current identity evidence can remove actual endpoint blockers. Any future Places or
+Routes acquisition also needs a demonstrably supported exact inventory and separate budget
+approval. Original artifacts, planner V0-V3 behavior and score arithmetic are unchanged.

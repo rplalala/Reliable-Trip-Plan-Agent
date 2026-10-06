@@ -242,18 +242,36 @@ New-Item -ItemType Directory -Path artifacts/evaluation-adoption -Force | Out-Nu
 
 ### Offline V0 route requests and budget
 
-After replaying the opt-in identity report, prepare the request inventory without acquiring evidence:
+Prepare from an exact current `versioned_api_identity_1` report without acquiring evidence:
 
 ```powershell
 $env:PYTHONIOENCODING = 'utf-8'
 .venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json identity-report.json --context schedule-context.json --route-reviews route-reviews.json --prepared-at 2026-10-05T10:23:02Z | Set-Content -Encoding utf8NoBOM request-package.json
+# Missing current report: derive a current pending report without any model result or send.
+.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
+# Historical identity reports require explicit replay; they never replace current evidence.
+.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json historical-identity.json --legacy --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
 ```
+
+Schema `rtpeval_v0_route_requests_2` binds the selected identity policy and exact replay
+inputs. Current reports require no human identity/audit gate; missing model evidence keeps
+original legs visible with UNKNOWN endpoints. Rejected/stale reports or corrupt sources
+return material diagnostics with no partial request inventory. A historical report supplied
+without `--legacy` is rejected; historical saved packages are not rewritten or relabeled.
+Each leg exposes original endpoint claims, candidate correspondence, grounding verdicts and
+identity blockers separately from its route verdict. FAIL/UNKNOWN endpoints cannot acquire
+canonical coordinates or substitute venues. Endpoint occurrence/unique-venue counts remain
+distinct from deduplicated Details/Routes request counts.
 
 Optional `--occupancy-reviews` retains reviewed occupancy; `--details-snapshot` consumes already supplied
 independent Details with the package's exact `details_plan`. It sends nothing and never retries bad evidence.
 Saved coordinates are reused only after source replay and ID/numeric validation. The current provider
 preparation profile is KR, checked 2026-10-05. Original mode/timing/continuous windows and blocked legs stay visible.
 WALK coverage and TRANSIT's unverified regional support can leave zero ready Routes.
+Omit absent optional review flags; a supplied review file must contain its JSON object
+envelope, not JSON null. Zero eligible venues is distinct from missing coordinates for
+eligible venues. Zero ready requests is a complete preparation outcome; it cannot remove
+actual identity blockers without separately accepted current evidence.
 
 Exit 0 means complete preparation without pending applicable legs, 3 means a complete blocked/conditional
 inventory, and 2 means invalid material. Save UTF-8 without BOM. Completion is not route feasibility or acquisition
@@ -269,7 +287,7 @@ Fresh-clone fixtures are independently runnable:
 
 ```powershell
 New-Item -ItemType Directory -Path artifacts/evaluation-route-requests -Force | Out-Null
-.venv/Scripts/python.exe -m pytest backend/tests/evaluation/test_route_requests.py -q --basetemp artifacts/evaluation-route-requests/test-01 -o cache_dir=artifacts/evaluation-route-requests/cache
+.venv/Scripts/python.exe -m pytest backend/tests/evaluation/test_route_requests.py backend/tests/evaluation/test_route_requests_versioned.py -q --basetemp artifacts/evaluation-route-requests/test-01 -o cache_dir=artifacts/evaluation-route-requests/cache
 ```
 
 <a id="offline-evaluation-preparation-and-metrics-tickets-01-06"></a>

@@ -119,10 +119,16 @@ authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
 follow-ups. The user subsequently authorized #75 implementation, offline testing, local
 commits and dual review, followed by #76's V0 response-contract correction. #75 and #76
-are implemented locally. The user then authorized #77 offline preparation, with zero
-paid calls. Its new V0-only frozen plan is prepared locally; #78/#79 remain separate
-scopes. No new paid execution or Git
-publication is authorized. GitHub owns live Issue state. See the
+are implemented and offline-validated. The user then authorized #77 offline preparation, with zero
+paid calls. Its V0-only frozen plan is preserved locally. The user then authorized #78
+offline route integration, also with zero paid calls; it is implemented offline with a
+blocked real package. The user then authorized #79 local delivery preparation only:
+commit/diff inventory, combined review, PR draft and Issue reconciliation material.
+The human subsequently authorized #79 normal push, PR creation, review with a published
+comment, merge after successful gates and closure of fully accepted associated Issues.
+[PR #81](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/81) publishes this iteration.
+No paid execution, branch switch, force push, history rewrite or branch deletion is included.
+GitHub owns actual PR/Issue state. See the
 [accepted requirement](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
 and [publication record](docs/records/evaluation/intake-identity-usage.md#version-specific-evaluator-backlog-2026-10-06).
 The [#75 implementation record](docs/records/evaluation/intake-identity-usage.md#version-specific-identity-implementation-2026-10-06)
@@ -137,6 +143,24 @@ charges are zero; the new execution directory is unconsumed. V0 remains UNKNOWN 
 new accepted model evidence. The proposed one-call token/cost limits require separate
 exact-plan approval and the required current-session execution child; #73's consumed
 allowance and rejected response grant no further execution authority.
+The [#78 route-readiness record](docs/records/evaluation/routes.md#versioned-v0-route-readiness-2026-10-06)
+records current-policy replay without human identity/audit gating and explicit historical
+replay. All four original V0 legs remain UNKNOWN/blocked, with zero eligible endpoints,
+reused coordinates, Details/Routes requests and proposed acquisition budget. Synthetic
+current reports demonstrate eligible and FAIL/UNKNOWN paths without inventing real results.
+Original #70/#73/#77 artifacts remain unchanged. #78 changes two implementation files
+frozen by #77, so the preserved #77 manifest is currently stale for execution; any future
+smoke needs a fresh exact freeze and separate approval. No live evidence was added.
+
+The [#79 delivery preparation record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-delivery-preparation-2026-10-06)
+records the preparation checkpoint: remote `main` at `a983f35` and source branch at
+`819f0c3`, with ten completed-slice commits through `92f92fe`, plus local preparation
+documentation. PR #80 is already merged and #67/#70/#72/#73 are verified CLOSED;
+their historical work is not newly outgoing. The
+[authorized publication record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-publication-2026-10-06)
+links PR #81 and records the actual published review scope; GitHub owns #74-#79 lifecycle.
+Delivery retains zero real ready requests, #73 failed-import evidence and #77's stale
+execution freeze. No accepted live evidence or fresh execution authorization is added.
 
 | Ticket | Implementation checkpoint |
 | --- | --- |
@@ -146,7 +170,7 @@ allowance and rejected response grant no further execution authority.
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented, offline-validated and published; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed |
 | 06: Opening checks | Offline parser/scorer/CLI implemented and reviewed; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) completed; [acceptance and scoped supplements](docs/records/evaluation/opening.md#rtpeval-ticket-06-acceptance) |
-| 07: Route checks | Offline preparation/scorer/CLI implemented and reviewed, including decisive partial FAIL, zero-grace hard boundaries and the [snapshot-coordinate bridge](docs/records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03); [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) completed; [original acceptance](docs/records/evaluation/routes.md#rtpeval-ticket-07-acceptance) |
+| 07: Route checks | Offline preparation/scorer/CLI implemented and reviewed, including decisive partial FAIL, zero-grace hard boundaries, the [snapshot-coordinate bridge](docs/records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03) and [current V0 route readiness](docs/records/evaluation/routes.md#versioned-v0-route-readiness-2026-10-06); [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) completed; [original acceptance](docs/records/evaluation/routes.md#rtpeval-ticket-07-acceptance) |
 | 08: Multimetric report | Offline report/CLI implemented and reviewed; exact shared-mask scores with separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) completed; [acceptance](docs/records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) |
 | 09: Blinded ranking | Offline package/import/report and React renderer completed; IANA time-zone selection, HH:mm and confirmed answer clearing; user-reported browser acceptance complete; [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) completed; [acceptance](docs/records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) |
 | 10: V3 before/after | Offline preparation/report/CLI implemented, reviewed and published; adopted source lineage precedes unique fallback and residual review; separate paired mask, exact deltas and independent continuity; [contract](docs/contracts/0005-quality-human-review.md#v3-pairs) and [acceptance](docs/records/evaluation/v3-pair-report.md); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) completed |
@@ -253,7 +277,15 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest full backend gate (2026-10-06, #77 offline preparation, implementation `5f0e1b4`):
+Latest full backend gate (2026-10-06, #78 offline route readiness, implementation `571ed95`):
+**2945 passed, 10 skipped in 414.43s**. The related current/historical identity, route
+request and coordinate gate passed 178. Global Ruff and five changed Python format
+checks pass. Independent implementation Standards and Spec reviews each found zero
+findings. Real library/module replay retains four UNKNOWN/blocked legs, zero requests
+and budget, and 81 unchanged protected file hashes. See the
+[#78 acceptance record](docs/records/evaluation/routes.md#versioned-v0-route-readiness-2026-10-06).
+
+Previous full backend gate (2026-10-06, #77 offline preparation, implementation `5f0e1b4`):
 **2926 passed, 10 skipped in 283.85s**. The related identity/executor gate passed 138;
 global Ruff and changed-file format checks pass. The concrete fresh preparation has
 zero sends/charges; provider invoices and new accepted V0 model evidence remain unavailable.

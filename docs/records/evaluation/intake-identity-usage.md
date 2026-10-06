@@ -2007,3 +2007,156 @@ UNKNOWN evidence remain until genuinely new accepted evidence exists. #78 route 
 and #79 publication remain separate scopes; no full planner rerun or version expansion is
 authorized here. The Issue remains a tracker-owned lifecycle item; this local record does
 not claim closure or authorize a send.
+
+<a id="evaluator-iteration-delivery-preparation-2026-10-06"></a>
+
+### Evaluator iteration delivery preparation (#79, 2026-10-06)
+
+The human authorized local delivery material only, with zero paid calls and explicitly
+deferred push, PR creation and merge. This scope includes read-only remote inspection,
+commit/diff inventory, independent combined review, PR/Issue reconciliation drafts,
+current-state documentation and local commits. No branch switch, Issue mutation,
+implementation change, new smoke freeze or paid execution is included. Starting local
+head is `92f92fe85c48a501c08dba16858a60947fd43563` on feature/evaluation; the only
+pre-existing worktree change is the unrelated `.gitignore` edit, excluded and preserved.
+
+#### Actual delivery range and corrected historical assumptions
+
+Read-only GitHub checks verify `main` at
+`a983f350f9d3f1e943b4f2acf63af641ab676f85` and remote feature/evaluation at
+`819f0c3c5956c43f6c799feb128fb5a74bb4f2f5`, matching the local remote references.
+[PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80) is MERGED at
+that main commit (2026-10-05T17:10:26Z); no open PR exists for feature/evaluation.
+Historical #67/#70/#72/#73 are already CLOSED. Thus the ticket's instruction to include
+earlier unpublished work is resolved from actual state: those historical changes are
+already published, not new outgoing changes and not reasons to reopen their Issues.
+
+The fixed combined-review command is
+`git diff a983f350f9d3f1e943b4f2acf63af641ab676f85...92f92fe85c48a501c08dba16858a60947fd43563`;
+its merge-base is `819f0c3`. The completed-slice range has **ten commits, 32 changed
+files, 2718 insertions and 168 deletions** before this preparation documentation:
+
+| Commit | Slice and purpose |
+| --- | --- |
+| `ffa36a4` | #75 version dispatch, independent API evaluation, consumers and tests |
+| `a53aa81` | #75 separate review correction for local malformed requirement evidence |
+| `1bd4057` | #75 current contracts and acceptance |
+| `0e5aba6` | #76 supported V0 citations and absent-address output/import contract |
+| `4c98f56` | #76 separate supported destination-conflict correction |
+| `f53c2b1` | #76 correction and validation record |
+| `5f0e1b4` | #77 fresh offline V0-only smoke preparation and rehearsal |
+| `769a066` | #77 preparation evidence and approval boundary |
+| `571ed95` | #78 current-policy route readiness and public-interface tests |
+| `92f92fe` | #78 current route contract and real blocked-package evidence |
+
+The proposed normal publication would push the existing feature/evaluation branch,
+then, if separately authorized, create a new PR targeting main. Merge is a further
+explicit action; current authorization stops at local preparation. Final preparation
+documentation is a separate local commit appended to this inventory, without rewriting,
+amending or squashing prior implementation/correction commits. Exact final head is
+recorded in the local delivery manifest and chat closeout after the documentation commit.
+
+#### Validation, reviews and limitations
+
+The root inspected the complete changed-file inventory, implementation/consumer diff,
+contracts and dated records; independent Standards and Spec reviewers each inspected
+the full fixed 32-file diff and all ten commits. **Standards: zero actionable findings.
+Spec: zero findings.** No implementation correction is needed. The earlier #75/#76
+review findings remain in their original dated sections with separate correction commits;
+combined delivery review does not erase those failures or replace their validation sequence.
+
+The serial full backend result at `571ed95` is reused: **2945 passed, 10 skipped in
+414.43s**; the related identity/route/coordinate gate passed **178**. These counts
+overlap. No Python, planner, dependency or configuration file changed after that tested
+state; no new full run is claimed. Delivery checks pass global Ruff and formatting for
+all **24 changed Python files**. No configured mypy/pyright or new PR CI result is claimed.
+Initial document verification caught a newly drafted route-contract anchor that did not
+exist. The link was corrected to the existing contract anchor without changing runtime
+behavior; repeat checks pass **257 tracked local Markdown targets/anchors**, English
+added content and whitespace. The **81 protected source hashes** remain unchanged.
+Independent final preparation-material reviews also report **Standards: zero actionable
+findings; Spec: zero findings**, covering current-state documentation, PR draft, Issue
+map and manifest/audit material. No code correction or further backend test run is needed.
+Excluded-path/content inspection and a credential-shape scan find no secrets or ignored
+raw/scratch files in the proposed diff; the heuristic scan is not a proof of all secret absence.
+
+The [current identity contract](../../contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
+and [route contract](../../contracts/0004-opening-routes.md#route-preparation-and-wire)
+represent deterministic V1-V3 checks, V0-only correspondence, exact replay and
+no-repair FAIL/UNKNOWN propagation. Generation and scoring arithmetic are unchanged.
+The [#78 record](routes.md#versioned-v0-route-readiness-2026-10-06) remains the actual
+real-package evidence: **four UNKNOWN/blocked original legs, zero eligible endpoints,
+Details/Routes requests and proposed acquisition budget; 81 protected file hashes unchanged**.
+Synthetic tests demonstrate policy behavior, not actual venue/route accuracy.
+
+#73's HTTP-success/import-failure, nine UNKNOWN verdicts, raw response and consumed
+allowance remain preserved. No fresh accepted real current-policy V0 model report exists.
+#77's original offline preparation checkpoint contains eight V0 references and nine
+independent candidates, but #78 changed two frozen implementation files. Its preserved
+manifest is stale for execution. No refreeze occurs here; a future smoke needs a fresh
+exact freeze, separate approval and the required current-session execution child.
+Paid smoke is not required to publish offline-validated implementation/preparation.
+
+#### Prepared materials and pending tracker actions
+
+Ignored `.scratch/delivery-79/` contains `manifest.json`, `commits.txt`, the full proposed
+diff, a self-contained English PR title/body draft and an Issue reconciliation draft.
+These paths are private preparation identifiers, not published document dependencies
+or an alternative live specification. The manifest binds the actual local head, base,
+commit list, code blobs, diff digest and reused test state. No raw provider/model payload,
+endpoint credential or runtime artifact is promoted into it or tracked documentation.
+
+Read-only Issue snapshots observe #74-#79 OPEN. The local map proposes evidence-based
+acceptance reconciliation only after authorized publication/readback; no automatic closing
+references are added. Historical #67/#70/#72/#73 closures remain intact. Any #77 closure
+must state completed historical offline preparation without claiming current executability.
+#79's publication/readback/reconciliation criteria remain pending, so neither it nor
+parent #74 is described as fully complete. Stale parent implementation statements are
+listed for later authorized synchronization, not silently updated in the tracker now.
+
+Before any approved publication, refresh remote main/source heads, local head and existing
+PR state; reassess changed scope before pushing. PR creation requires its own approval
+and attachment/readback; merging and Issue reconciliation require their applicable explicit
+authorization. This local preparation has **zero new model/Google/planner sends, zero
+incremental charges and zero remote mutations**. It establishes no version freeze,
+formal benchmark/comparison, thesis result or research conclusion.
+
+<a id="evaluator-iteration-publication-2026-10-06"></a>
+
+#### Authorized publication and pre-merge checkpoint (2026-10-06)
+
+After the local preparation above, the human explicitly authorized normal push, PR
+creation, review followed by a published comment and merge, plus closure of associated
+Issues only if all acceptance conditions are met. Zero paid calls remains binding.
+This supersedes the preparation-only Git boundary; it does not approve a live smoke,
+force push, history rewrite, branch deletion or branch switch.
+
+Normal push published `3f2143b7a58e46cf6597cd5cf400ff5bfa737531` to feature/evaluation.
+Remote readback confirmed the exact head. Newly created
+[PR #81](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/81), attached to the task,
+targets main at `a983f350f9d3f1e943b4f2acf63af641ab676f85`. Its initial readback confirms
+the prepared **11 commits / 32 files**, a non-draft, mergeable/CLEAN PR and an empty
+check rollup. No new configured CI outcome exists; absence of checks is not a passed CI.
+The repository permits merge commits, which retain the implementation/correction history.
+
+This authorization/current-state documentation is an additional local documentation
+commit, published into the same PR before final review/comment/merge. The actual final
+head and independent Standards/Spec outcomes are recorded in the pre-merge PR comment;
+the fixed base and implementation content retain the earlier full combined-review scope.
+No Python, planner, dependency or configuration change follows the tested `571ed95` state.
+The reused **2945 passed / 10 skipped** full backend and **178** related gate remain valid;
+fresh backend or live validation is not claimed. Final document/exclusion/hash checks cover
+this additional documentation delta, with the unrelated `.gitignore` bytes preserved.
+
+The original #73 rejected response/consumed allowance and all 81 protected file hashes
+remain unchanged. The real current route package still has four UNKNOWN/blocked legs and
+zero eligible endpoints, acquisition requests or proposed budget. #77 remains historical
+offline preparation with a stale execution manifest, requiring a fresh exact freeze and
+separate approval for any future send. Its completion never certifies current executability.
+
+At this pre-merge checkpoint, #74-#79 are OPEN. After verified merge, authorized
+reconciliation checks existing acceptance wording, preserves historical decisions and
+adds self-contained evidence before closing only fully met scopes. #67/#70/#72/#73 stay
+closed without repeated mutations. Actual merge and final lifecycle outcomes belong to
+the linked PR/Issues; this pre-merge record does not anticipate their success. No paid
+call, new original-output repair, scoring change, formal evaluation or freeze occurs.
