@@ -72,9 +72,9 @@ def test_packet_covers_protected_subjects_and_all_versions(batch):
     assert all(r["review_history"] == [] for r in judged["records"])
 
 
-def model_material(intake, observed, *, decisions=None, historical=True):
+def model_material(intake, observed, *, decisions=None, historical=True, legacy_v0=False):
     packet = _prepare_identity_judgment(
-        intake, observed, model="fixture-model", historical=historical
+        intake, observed, model="fixture-model", historical=historical, legacy_v0=legacy_v0
     ).to_dict()
     cases = json.loads(packet["request"]["input"])["cases"]
     rows = []
@@ -96,6 +96,12 @@ def model_material(intake, observed, *, decisions=None, historical=True):
             "address_assessment": "not_supplied",
             "destination_assessment": "consistent" if candidate else "unknown",
         }
+        if not historical and case["kind"] == "requirement_subject" and candidate:
+            if case["claim"]["claimed_place_id"]:
+                row["evidence_fields"].append("claim.claimed_place_id")
+            if case["claim"]["location"]:
+                row["address_assessment"] = "equivalent"
+                row["evidence_fields"].append("claim.location")
         if decisions:
             decisions(row, case)
         rows.append(row)
@@ -396,7 +402,7 @@ def test_v0_material_cli_coordinates_and_routes_use_model_policy(
     material = model_material(intake, observed, historical=False)
     path = bundle.parent / "new-model.json"
     path.write_text(json.dumps(material), encoding="utf-8")
-    assert v0_main([str(bundle), "--model-result", str(path)]) == 0
+    assert v0_main([str(bundle), "--model-result", str(path)]) == 3
     report = json.loads(capsys.readouterr().out)
     assert report == resolve_v0_identities(intake, bundle, model_result=material).to_dict()
     coords = prepare_snapshot_coordinates(

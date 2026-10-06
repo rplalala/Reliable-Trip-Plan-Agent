@@ -80,7 +80,7 @@ def prepare_snapshot_coordinates(intake, identity_report, snapshot_directory):
             pid = adopted["canonical_place_id"]
             if pid is None:
                 continue
-            rid = adopted["reference_id"]
+            rid = adopted.get("evidence_reference_id", adopted["reference_id"])
             require(
                 adopted["evidence_hash"] == canonical_digest(observed.get(rid))
                 and adopted["observation_id"] == observed[rid]["observation_id"],

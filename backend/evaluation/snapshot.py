@@ -461,6 +461,8 @@ def identity_evidence(snapshot):
                         data.update(
                             actual_result_count=len(raw), candidates=[_place(p) for p in raw]
                         )
+                        if "nextPageToken" in payload:
+                            data["next_page_token"] = payload["nextPageToken"]
             item[kind] = data
         records.append(item)
     return {
@@ -476,7 +478,8 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
     from .identity import ASSOCIATION_POLICY_VERSION, IDENTITY_VERSION
     from .identity_adoption import needs_v0_replay
     from .identity_llm import needs_llm_replay
-    from .identity_program import needs_versioned_replay
+    from .identity_program import POLICY_VERSION, needs_versioned_replay
+    from .identity_targets import versioned_references
     from .preparation import identity_ready
 
     prepared = _prepared(intake)
@@ -495,7 +498,12 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
         or report.get("source_hashes") != prepared["source_hashes"]
     ):
         raise ValueError("Identity report batch/source mismatch")
-    expected = {r["reference_id"]: r for r in identity_references(prepared)}
+    references = (
+        versioned_references(prepared)
+        if report.get("association_policy_version") == POLICY_VERSION
+        else identity_references(prepared)
+    )
+    expected = {r["reference_id"]: r for r in references}
     identities = {r["reference_id"]: r for r in report["records"]}
     if set(expected) != set(identities) or len(identities) != len(report["records"]):
         raise ValueError("Identity report reference coverage mismatch")
@@ -508,7 +516,9 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
             raise ValueError("Invalid identity resolution")
     plan, requests = _base(prepared, "evidence", paired), {}
     plan["identity_report_hash"] = _hash(report)
-    for ref in _references(prepared, paired):
+    for ref in references:
+        if not paired and ref["projection"] not in (None, "final"):
+            continue
         record = identities[ref["reference_id"]]
         item = {
             "reference_id": ref["reference_id"],

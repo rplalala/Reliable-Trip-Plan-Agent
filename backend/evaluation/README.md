@@ -21,7 +21,7 @@ acceptance records and Issue comments preserve historical decisions, not alterna
 | --- | --- | --- |
 | Batch/artifact wire and deferred tracks | [Artifacts](../../docs/contracts/0001-evaluation-artifacts.md) | [intake](intake.py), [records](records.py), [projection](projection.py) |
 | Structural claims and occurrence association | [Intake/claims](../../docs/contracts/0002-intake-identity-usage.md#claims) | [preparation](preparation.py), [claims](_claims.py) |
-| Independent identity judgment | [Identity](../../docs/contracts/0002-intake-identity-usage.md#identity) | [Version dispatch/API checks](identity_program.py), [V0 correspondence/historical LLM](identity_llm.py), [legacy replay](identity.py), [V0 material](identity_adoption.py) |
+| Independent identity judgment | [Identity](../../docs/contracts/0002-intake-identity-usage.md#identity) | [Version dispatch/API checks](identity_program.py), [target ownership](identity_targets.py), [V0 correspondence/historical LLM](identity_llm.py), [legacy replay](identity.py), [V0 material](identity_adoption.py) |
 | Request planning and frozen replay | [Snapshots](../../docs/contracts/0002-intake-identity-usage.md#snapshots) | [snapshot](snapshot.py) |
 | Opt-in usage and descriptive resources | [Usage](../../docs/contracts/0002-intake-identity-usage.md#usage) | [usage capture](../app/observability/usage_capture.py), [usage_report](usage_report.py) |
 | Reviewed requirements, time and occupancy | [Requirement/schedule](../../docs/contracts/0003-requirement-schedule.md) | [requirement_schedule](requirement_schedule.py), [schedule_time](schedule_time.py), [occupancy](occupancy.py) |
@@ -118,10 +118,12 @@ An acquisition caller separately uses `build_identity_plan`, injected async
 There is no built-in live Google client or acquisition CLI. The caller owns credentials,
 authorization and explicit send ceilings. Identity uses the
 [version-specific policy](../../docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement).
-V1-V3 final/optional visits and shared requirement subjects use program rules over independent
+V1-V3 final/optional visits and their requirement targets use program rules over independent
 API facts, with literal name/address equality and no model fallback. No model result is needed
 for those references. No human confirmation or sampling is mandatory. `--prepare` prints a
-V0-only frozen packet; it does not execute a model. Import a
+V0-only frozen packet covering generated visits and user-requested requirement targets;
+it does not execute a model. Target judgments belong to their own version, while
+independent acquisition evidence can be shared. Import a
 separately authorized saved response through the contract's model-result envelope. The
 command has no built-in model execution client. Missing V0 results remain UNKNOWN;
 API-backed references continue independently. V0 semantic judgments remain fallible. Intake exits 0 for
@@ -130,7 +132,8 @@ judgments (including confirmed failures), 3 for UNKNOWN/missing judgment, and 2 
 material/linkage errors. Incorrect submitted addresses and different venues are grounding
 FAIL, even when the intended venue is recognizable. Their canonical ID stays null: candidate
 facts cannot supply corrected route endpoints. Original outputs and denominators are retained.
-Current V0 packets use `v0_identity_correspondence_2`: citation paths are schema enums
+Current reports use `versioned_api_identity_2`; V0 packets use
+`v0_identity_correspondence_3`: citation paths are schema enums
 shared with import. Address-presence schema alternatives bind short reference IDs;
 every absent/null/blank address requires `not_supplied` and forbids `claim.location` citations.
 A supplied address forbids `not_supplied`, including UNKNOWN/no-match decisions.
@@ -140,6 +143,10 @@ Supported destination contradictions remain FAIL even without a supplied origina
 the response must cite original name/destination and independent candidate support.
 Old policy-1 packets and rejected historical output cannot be normalized or relabeled for
 current import. The frozen historical all-version schema remains explicitly replayable.
+
+`--historical-program` explicitly replays the former `versioned_api_identity_1`
+shared-target policy and `v0_identity_correspondence_2` packet. Its material cannot
+pass current import. `--historical-llm` remains the older all-version replay.
 
 For V0 correspondence within a verified material bundle:
 
@@ -203,9 +210,9 @@ are written to preparation. The request itself selects `gpt-6-luna`.
 Optional `--protected-hashes` reads a JSON `file_hashes` map to preserve additional original
 files. The preparation binds verified source hashes, implementation hashes, the original
 identity packet, exact wire request, endpoint, token/retail-reference limits and a single
-execution directory. Schema `rtpeval_identity_smoke_preparation_2` recomputes V0 primary
+execution directory. Schema `rtpeval_identity_smoke_preparation_2` recomputes V0 visit/target
 references and candidate counts under the corrected output contract, excluding V1-V3
-and shared requirement subjects from the model request. It writes `preparation.json`,
+from the model request; V0 requirement targets are included. It writes `preparation.json`,
 `pending-identity-report.json` and private `handoff.md`; append the reviewed source revision
 and configuration prerequisites before any future dispatch. The pending report has no new
 V0 model evidence. Implementation hashes cover evaluator modules, local reference/token
@@ -250,7 +257,7 @@ New-Item -ItemType Directory -Path artifacts/evaluation-adoption -Force | Out-Nu
 
 ### Offline V0 route requests and budget
 
-Prepare from an exact current `versioned_api_identity_1` report without acquiring evidence:
+Prepare from an exact current `versioned_api_identity_2` report without acquiring evidence:
 
 ```powershell
 $env:PYTHONIOENCODING = 'utf-8'

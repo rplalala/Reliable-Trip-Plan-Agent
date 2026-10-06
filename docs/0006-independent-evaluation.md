@@ -60,9 +60,14 @@ response correction (#76) are implemented locally; fresh-smoke preparation, offl
 remain separate follow-ups. Historical evidence is not reclassified.
 
 Implemented identity uses the [version-specific contract](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement):
-V1-V3 use ID-linked API Details and literal name/address equality; shared named requirements
-use independent Details bindings or unambiguous deterministic search. V0-only packets match
-generated claims with independent candidates. Citation enums and address-presence alternatives
+V1-V3 use ID-linked API Details and literal name/address equality. RequirementSpec
+meaning and API acquisition evidence are shared, but target identities are version-owned
+under [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83). V1-V3 targets
+use independent Details bindings or complete search evidence with a unique strict matching
+ID after filtering by name, destination and supplied address. V0-only packets match
+generated claims and user-requested targets with their independent candidates.
+Requirement checks compare IDs within the same version before counting visits or
+evaluating dates/time conditions. Citation enums and address-presence alternatives
 agree with import validation; absent addresses require `not_supplied` without claiming an error.
 Candidate correspondence and original-claim correctness remain separate in verified reports.
 Reports require exact source-bound replay. High-impact

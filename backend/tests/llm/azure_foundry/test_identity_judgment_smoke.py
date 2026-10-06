@@ -144,17 +144,17 @@ def test_fresh_preparation_delivers_v0_scope_and_pending_report_without_sends(
     assert plan["schema_version"] == "rtpeval_identity_smoke_preparation_2"
     assert plan["data_scope"] == {
         "versions": ["v0"],
-        "kinds": ["primary_visit"],
-        "reference_count": 2,
-        "candidate_count": 2,
-        "original_addresses_missing": 2,
+        "kinds": ["primary_visit", "requirement_subject"],
+        "reference_count": 3,
+        "candidate_count": 3,
+        "original_addresses_missing": 3,
     }
     assert plan["request_counts"] == {"model": 1, "google": 0, "planner": 0, "routes": 0}
     assert plan["execution_gate"]["status"] == "awaiting_new_exact_plan_approval"
     assert plan["execution_gate"]["historical_allowance_reused"] is False
     assert plan["execution_gate"]["child_model"] == "gpt-6.1-sol"
     assert plan["execution_gate"]["child_reasoning_effort"] == "medium"
-    assert plan["packet"]["association_policy_version"] == "v0_identity_correspondence_2"
+    assert plan["packet"]["association_policy_version"] == "v0_identity_correspondence_3"
     pending = json.loads((tmp_path / "prepared/pending-identity-report.json").read_text())
     assert all(
         r["grounding_verdict"] == "UNKNOWN" for r in pending["records"] if r["version"] == "v0"
