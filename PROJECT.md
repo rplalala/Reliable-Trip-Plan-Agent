@@ -128,7 +128,9 @@ resolves the baseline test limitation with explicit expiry-phase assertions; pro
 generation and budgets are unchanged. The full backend now passes 2983 tests with
 10 skipped. See the
 [acceptance record](docs/records/evaluation/intake-identity-usage.md#version-owned-requirement-targets-2026-10-06).
-No new paid execution or Git publication is authorized.
+The user subsequently authorized push, PR creation, published review and conditional
+merge/closure of #83 through [PR #84](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/84).
+GitHub owns the final delivery lifecycle. No new paid execution or smoke is authorized.
 The backlog task authorized specification publication only. The user subsequently
 authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these

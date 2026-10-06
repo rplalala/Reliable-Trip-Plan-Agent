@@ -2404,3 +2404,31 @@ without production code or generation changes. Its fresh full backend run passed
 **2983 tests / 10 skipped / zero failures**. This resolves the baseline limitation for
 the current offline gate while preserving the original failure/retest account above;
 it adds no live evidence or Git publication authorization.
+
+<a id="requirement-target-delivery-2026-10-06"></a>
+
+### Authorized requirement-target delivery (#83, 2026-10-06)
+
+After all offline acceptance items passed, the user explicitly authorized push, PR
+creation, published review, conditional merge and closure of #83. The source branch
+`feature/evaluation` was fast-forward pushed from `e6cd6e5` to `42fce73`; no force push,
+history rewrite, branch switch or branch deletion occurred. It carried seven local
+commits: the #82 preparation/execution records, #83 implementation and separate review
+correction/acceptance, and the V3 deadline-phase correction/acceptance. The unrelated
+`.gitignore` edit remains excluded. [PR #84](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/84)
+was created against `main` at `e2ff2a722f03eaddeb0ff3655768e30c6da4990a`.
+
+The complete combined release is reviewed from that fixed main baseline through the
+actual published PR head. The fresh **2983 passed / 10 skipped / zero failures** backend
+gate is valid for its unchanged code, configuration and dependencies; later delivery
+documentation is checked separately. Ruff, compile and tracked-document checks passed.
+The repository has no CI workflow, configured mypy/pyright gate, branch protection or
+ruleset at this checkpoint; absent checks are not reported as CI passes. Normal merge
+is selected to retain implementation and correction history. Published Standards/Spec
+conclusions and final merge/Issue lifecycle are owned by PR #84 and Issue #83; creation
+does not anticipate a successful merge before review completes.
+
+This approval supersedes the preceding no-publication checkpoints only for this Git
+delivery. It authorizes zero new model, Places, Routes, planner, database or embedding
+service calls, zero paid execution and no smoke, formal evaluation or version freeze.
+The prepared nine-reference packet and consumed historical #82 allowance remain unchanged.
