@@ -1431,3 +1431,169 @@ no pytest gate is rerun and no new runtime validation is claimed. Prior focused
 182-pass and full 2998-pass/10-skipped gates describe the unchanged implementation.
 All four original route feasibility results remain **UNKNOWN**; generation, identity
 behavior for independently runnable V0-V3 and score formulas are unchanged.
+
+<a id="sydney-offline-route-preparation-2026-10-07"></a>
+
+## Sydney AU preparation and preserved KR replay (2026-10-07)
+
+Status: implemented and prepared offline; live execution is not authorized. The user
+approved a new Sydney V0 scenario, explicit AU preparation/CLI selection, evidence and
+budget preparation, regressions, local commits and independent Standards/Spec review,
+with unchanged generation/scoring and zero paid calls. They first requested squashing
+the five latest consecutive docs commits. Those were `eac3b621`, `d26be76`, `a4dfc2e`,
+`49a6fef` and `bc4de3e`, all unpublished locally. They are replaced by `c49e9819f69ce2465d43cdc5bd6d2176a35f5028`
+(`docs: consolidate V0 smoke acceptance and route readiness`), whose parent is the
+unchanged `f4499f2` test commit. Its tree equals the former `bc4de3e` tree exactly.
+Original objects remain under local recovery ref
+`refs/codex-backups/docs-before-squash-20261007`; historical evidence hashes are not
+rewritten. The source/review fixed point for this implementation is `c49e981`.
+The unrelated `.gitignore` edit remains excluded and byte-identical. No remote history,
+branch switch, push, PR, merge, tracker operation or provider contact is included.
+
+### Explicit country profile and preserved behavior
+
+[Google's current coverage table](https://developers.google.com/maps/coverage) marks AU
+WALK/DRIVE available with good quality/availability, while excluding TRANSIT coverage.
+The [Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
+supports explicit TRANSIT departure, but national or pair-level transit support is not
+assumed from the consumer map or that coverage row. No API probe occurred.
+
+The public `prepare_v0_route_requests(..., region_code="AU")` and CLI `--region AU`
+select the new dated Australian profile. The original input must explicitly declare
+Australia, such as `Sydney, Australia`; other/unknown declarations and unsupported
+region values reject all inventory. This binds a declared country, not geographic
+inference, geocoding or proof of coordinate-country membership. Default/explicit KR
+retains its dated 2026-10-05 metadata and exact serialization, including omission of
+a new region replay field. AU selection is replay-bound and participates in the
+inventory digest; changing it stops preflight.
+
+AU WALK needs replayed current identity, independent coordinates, a continuous free
+span and no original leg blocker before becoming ready for approval. Missing points
+can propose exact Details and keep the route conditional; failed/unknown identity
+remains blocked without model/planner coordinate repair. A same-canonical N/A leg
+gets no route allowance. TRANSIT stays conditional with original explicit departure
+and additional historical-availability checks when applicable. DRIVE remains unsupported
+by this existing WALK/TRANSIT acquisition path, without a new route implementation.
+There is no regional, mode, time or model fallback. All factual route components remain
+UNKNOWN without acquired independent route observations, and original FAIL/UNKNOWN
+identity outcomes continue downstream unchanged.
+
+Matrix budgets/counters count deduplicated sends, not repeated leg occurrences. Three
+synthetic legs containing two unique WALK queries therefore reserve two sends and
+USD 0.010000, retaining all three occurrences and their source links. A duplicate link
+cannot promote a blocked/conditional query into a ready query. Request options, masks,
+WALK time-independence, TRANSIT time binding, scoring formulas, V0-only LLM identity
+and deterministic V1-V3 identity remain unchanged. No generation/runtime or shared
+score implementation was modified.
+
+### New scene and output-dependent budget
+
+The tracked [Sydney request](../../../tools/validation/packets/sydney-v0-route-smoke/request.json)
+uses October 14-17, 2026, two travelers, AUD 1600, exactly two primary sightseeing
+visits per day and a required Sydney Opera House visit, with architecture, museums,
+harbour views, food and walking/public transport preferences. Its schema and trip-date
+window pass offline validation against the trusted planning reference October 7 in
+Australia/Sydney. Later execution must validate the actual trusted day; frozen dates
+must not be silently shifted after expiry. The request is scenario input, not a
+guarantee of what the unchanged generator will produce.
+
+A historical five-day Sydney V0 `itinerary_2` result exists from September 25, but no
+current reusable identity bundle/snapshot/report accompanies it. It is protected and
+not truncated into the current eight-Details/four-leg ceiling, regenerated, repaired or
+presented as a new result. There is currently no new Sydney V0 output, independently
+reviewed RequirementSpec, identity API snapshot, current V0 correspondence response,
+canonical venue list or actual route package. Synthetic test output cannot fill those
+gaps. Original Seoul packages and all four original UNKNOWN route results remain intact.
+
+The fresh private identifier `artifacts/sydney-offline-20261007` contains source binding,
+protected/output hashes, a staged price draft, empty ledger, exact default-KR replay,
+foreign-AU rejection and non-executable handoff. It is not a live acquisition manifest.
+The source input and request inventory are separate: the latter must be frozen from
+actual future raw output and eligible independent evidence. Exceeding the existing
+eight endpoint venues/four original legs stops preparation; it never selects a favorable
+subset or increases limits automatically.
+
+| Future stage / hypothetical inventory | Public-price reference | Present readiness |
+| --- | --- | --- |
+| V0 two-node generation | Unknown; no exact wire/token/output ceilings frozen | No generation allowance |
+| Nine initial identity Text Searches (8 visits + 1 named subject) | USD 0.288 | Queries/output-dependent; not acquired |
+| V0-only identity correspondence, one send | USD 0.0042 reference allowance | Exact packet absent |
+| Up to eight missing-coordinate Details | USD 0.040 | May be zero with valid future search coordinates |
+| Up to four unique matrix elements | USD 0.020 | Hypothetical; TRANSIT not counted as ready |
+| Non-generation scenario subtotal | **USD 0.3522** | Not executable or an invoice ceiling |
+
+The [Google price list](https://developers.google.com/maps/billing-and-pricing/pricing)
+gives global first paid-tier Text Search Pro at USD 32/1,000 and Details/Matrix
+Essentials at USD 5/1,000. The proposed identity
+[Text Search mask](https://developers.google.com/maps/documentation/places/web-service/text-search)
+contains ID, display name, formatted address/components, business status, coordinates
+and next-page token, without opening/review fields that elevate the SKU. No remaining
+free allowance, tax, discount or invoice is assumed. No pagination or retry sends are
+reserved; incomplete evidence is retained as unresolved, not repaired by another send.
+Actual distinct reference/query counts may differ, so this is a bounded planning
+scenario for later exact preparation, not a claim that nine queries are already ready.
+
+[OpenAI's current GPT-6 Luna page](https://developers.openai.com/api/docs/models/gpt-6-luna)
+lists per-million token references USD 0.10 input, 0.01 cached input, 0.125 cache write
+and 0.50 output. Keeping the existing identity proposal at 18,000 input/3,000 output
+with low reasoning gives USD 0.003750 worst retail reference when all input is cache
+write, or USD 0.004125 under the regional +10% scenario, within the unchanged USD
+0.0042 reference allowance. Reasoning is included in output, not added twice. That
+identity-only limit does not cap generation. The current V0 two-node default generation
+calls have no explicit per-call output ceiling or frozen payload in this preparation;
+their actual model configuration/usage and Foundry billing remain unverified. A bounded
+generation handoff must precede any paid approval, without changing generation flow.
+No total execution ceiling is claimed by summing an unknown generation cost with the
+non-generation subtotal. Existing #85's consumed allowance is not reused.
+
+All current provider/model/probe/retry send limits and incremental spend are **zero**;
+no SDK client, live executor or execution child is constructed by preparation. Future
+approved stages require exact inputs, usable evidence, implementation/request hashes,
+masks/SKUs, supported departure/mode and separate budgets under the smoke policy.
+Changing to Sydney does not waive uncertainty, certify every route or authorize another
+request. This development preparation introduces no formal benchmark or version freeze.
+
+### Validation sequence
+
+Public-interface TDD first failed for the missing `region_code` keyword, then passed
+after explicit AU preparation was implemented (31 tests including current KR checks).
+The CLI slice failed for missing `--region AU`, then its two public-interface checks
+passed. The duplicate-query slice failed because three leg occurrences reserved three
+sends rather than two; deduplicated budgeting made all three slices pass. Negative
+regressions cover invalid/foreign region, unchanged default KR, missing current model
+evidence/coordinates, TRANSIT original time, unsupported DRIVE, N/A and tampered profile.
+The focused route/identity-adoption gate passes **121 tests / zero failures** in 28.46s.
+A Ruff ambiguous test variable was corrected before final global lint and four-file
+format checks passed. No configured mypy/pyright gate is present.
+
+The first local preparation launch lacked the repository import path and stopped before
+writing outputs. Correcting its local launcher path allowed network-prohibited preparation
+to pass. The saved #86 package replays exactly under default KR, and attempting AU on
+the original Seoul input rejects it without partial inventory. **146 protected original
+and preparation files** remain byte-identical; of the prior 69 implementation/dependency
+hashes, **67 are unchanged** and only the two authorized route-preparation/CLI files
+changed. Seven new preparation outputs are frozen separately; `.gitignore` is unchanged.
+The fresh full backend offline gate passes **3017 tests, 10 skipped, zero failures**
+in 341.21s. The repository external-network guard remains active; provider/model tests
+use synthetic or mocked evidence. The log is preserved separately from the seven frozen
+preparation outputs. The implementation, direct regressions and tracked Sydney source
+request were committed together as `6fc9a2a091f19e757c8f3ed0dcbd6345f18f3635`
+(`feat(evaluation): prepare Sydney routes with explicit AU profile`) before review.
+
+Independent read-only Standards and Spec agents reviewed all five committed files
+from fixed point `c49e9819f69ce2465d43cdc5bd6d2176a35f5028` through that implementation
+commit. Standards reports **zero documented-standard violations and zero actionable
+code smells**; Spec reports **zero missing/incorrect requirements or scope expansions**.
+Both checked explicit AU selection, conservative readiness and unique-request budgets,
+profile replay and default-KR preservation against the approved offline scope. Neither
+review ran tests or contacted providers; the reported test gate is the preserved parent
+run. Uncommitted final docs and the unrelated `.gitignore` were outside their review
+scope. No implementation correction commit is needed.
+
+The final four-document check validates **190 actual tracked local targets/anchors**,
+English additions, retained existing anchors and whitespace. Protected source files,
+all seven frozen preparation outputs and `.gitignore` pass SHA-256 preservation again.
+Final acceptance documentation is committed separately after implementation review.
+Remaining execution prerequisites are a bounded generation plan, actual new Sydney V0
+output, reviewed independent requirements, API identity evidence and an exact separately
+approved route inventory/budget; this acceptance does not certify live AU routes.

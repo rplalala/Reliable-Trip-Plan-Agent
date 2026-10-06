@@ -190,6 +190,18 @@ accepts explicit departure, but reviewed documentation does not confirm this KR 
 All four route verdicts remain UNKNOWN; generation, score formulas and V0-V3 behavior
 are unchanged. Current authorized sends and costs remain zero. See the cited
 [support and budget assessment](docs/records/evaluation/routes.md#kr-route-support-budget-2026-10-07).
+The user then approved switching the next offline V0 scene to Sydney and first
+squashing the five consecutive local docs commits. Those commits are consolidated
+without changing the file tree; original revisions remain recoverable locally.
+The route preparer now accepts explicit AU selection while preserving default KR
+replay. Complete Australian WALK preparation can be ready for approval, but factual
+routes stay UNKNOWN until independent evidence; TRANSIT remains conditional.
+The new four-day Sydney input is prepared with no generated result or API evidence.
+The non-generation public-price scenario is USD 0.3522, including unready requests;
+V0 generation still needs a bounded plan, so no total live budget is ready. Generation
+flow, score formulas and independently runnable V0-V3 are unchanged. All live sends
+and incremental spending remain zero. See the
+[Sydney preparation record](docs/records/evaluation/routes.md#sydney-offline-route-preparation-2026-10-07).
 The backlog task authorized specification publication only. The user subsequently
 authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these

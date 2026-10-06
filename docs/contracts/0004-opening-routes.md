@@ -240,8 +240,8 @@ occurrences; `eligible_endpoint_venues` counts their unique IDs. Neither implies
 are identity-eligible, coordinate-ready or provider-supported. Unknown identity cannot be
 replaced by historical adoptions to enlarge the request inventory.
 
-This preparation currently uses the explicitly selected KR provider profile checked
-2026-10-05; it does not infer geographic support from names. The
+The default preparation retains the KR provider profile checked 2026-10-05; it does
+not infer geographic support from names. The
 [official coverage table](https://developers.google.com/maps/coverage) marks KR walking
 and driving unavailable or low quality and omits transit coverage. Those facts retain
 blocked WALK and conditional TRANSIT inventories, rather than a provider NO_ROUTE
@@ -249,6 +249,27 @@ or factual FAIL. The [matrix reference](https://developers.google.com/maps/docum
 supports explicit TRANSIT departures including past timestamps, but supplies no guaranteed
 schedule horizon. Do not copy Compute Routes' 7/100-day horizon into this method.
 WALK stays time independent and cannot certify historical/future conditions.
+
+`region_code="AU"` (CLI `--region AU`) explicitly selects the Australian profile,
+checked 2026-10-07. The original input destination must explicitly declare Australia
+(for example, `Sydney, Australia`); unresolved or foreign declarations reject the
+whole package. This is a source-bound declaration check, not a geographic lookup or
+independent proof that coordinates lie in Australia. The official coverage table marks
+Australian WALK available with good coverage/quality. WALK can be `ready_for_approval`
+only after current identity replay, independent coordinates, a resolved continuous
+window and all other leg checks pass. Missing coordinates/windows remain conditional;
+failed/unresolved identity stays blocked. Readiness leaves factual feasibility UNKNOWN.
+AU TRANSIT retains the unverified-coverage and original-departure conditions. DRIVE
+remains unsupported by this WALK/TRANSIT acquisition path despite national driving
+coverage; there is no mode fallback. Unsupported region values are rejected.
+
+AU selection is frozen in `replay_inputs` and the inventory digest; profile changes
+fail exact preflight replay. Omitted region and explicit KR produce the unchanged
+historical structure without an added replay field, so saved KR packages remain exact.
+Budget and send counters count unique directed matrix requests, retaining every leg
+occurrence. Duplicate links cannot promote a blocked/conditional query to ready. Neither
+AU selection nor preflight creates live authority or actual route evidence. See the
+[Sydney offline acceptance](../records/evaluation/routes.md#sydney-offline-route-preparation-2026-10-07).
 
 Only adopted endpoint canonical IDs enter the venue inventory. Exact IDs deduplicate
 Details while preserving every reference link. Replayed saved independent coordinates

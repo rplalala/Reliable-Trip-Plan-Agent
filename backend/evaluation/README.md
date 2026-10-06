@@ -291,6 +291,21 @@ an offline adapter remain unresolved. Kakao/ODsay general TRANSIT cannot establi
 original explicit departure; Google KR TRANSIT coverage remains unconfirmed. The saved
 #86 package, zero-send preflight and all four UNKNOWN verdicts are preserved.
 
+The [Sydney offline preparation](../../docs/records/evaluation/routes.md#sydney-offline-route-preparation-2026-10-07)
+adds explicit `--region AU` / `region_code="AU"`. Australian WALK can become ready for
+approval with complete independent identity/coordinates/window checks; it stays UNKNOWN
+without route evidence. TRANSIT remains conditional and DRIVE is unsupported by this
+acquisition path. The input must explicitly declare Australia. Default KR output/replay
+is unchanged; region is never inferred or a live authorization. Unique requests determine
+budgets, while repeated leg occurrences remain visible.
+
+The new [Sydney source request](../../tools/validation/packets/sydney-v0-route-smoke/request.json)
+is four days (October 14-17), two travelers and AUD 1600, with two primary visits per day
+and required Sydney Opera House. It is a new generation input, not a generated output,
+reviewed RequirementSpec or API snapshot. Its non-generation USD 0.3522 price scenario
+includes unready routes; generation/actual billing remain unbounded and no execution
+allowance is prepared. The dated input needs trusted-day revalidation before later use.
+
 Prepare from an exact current `versioned_api_identity_2` report without acquiring evidence:
 
 ```powershell
@@ -300,6 +315,8 @@ $env:PYTHONIOENCODING = 'utf-8'
 .venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
 # Historical identity reports require explicit replay; they never replace current evidence.
 .venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json historical-identity.json --legacy --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
+# Australian source material only; no Sydney V0 identity bundle has been acquired yet.
+.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli sydney-identity-material.json identity-report.json --region AU --context schedule-context.json --prepared-at 2026-10-07T00:00:00Z
 ```
 
 Schema `rtpeval_v0_route_requests_2` binds the selected identity policy and exact replay
