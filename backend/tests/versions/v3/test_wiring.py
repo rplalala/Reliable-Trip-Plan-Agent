@@ -316,23 +316,60 @@ def test_cancel_propagates_without_nearby_and_releases_owned_runtime():
     assert not places.nearby and runtime.closes == 1
 
 
-def test_whole_request_expiry_during_primary_prevents_postwork():
+def test_whole_request_expiry_during_primary_prevents_postwork(monkeypatch):
+    clock = [monotonic()]
+
     class SlowModel(Model):
+        primary_started = False
+        primary_cancelled = False
+
         async def generate_structured(self, **kwargs):
-            await asyncio.sleep(10)
+            self.primary_started = True
+            clock[0] += 601
+            try:
+                await asyncio.Event().wait()
+            except asyncio.CancelledError:
+                self.primary_cancelled = True
+                raise
 
     model, places, runtime = SlowModel(), Places(), OwnedRetrieval()
+
+    async def scenario():
+        # Freeze the monotonic time boundary so cold setup cannot choose the expiry phase.
+        monkeypatch.setattr(asyncio.get_running_loop(), "time", lambda: clock[0])
+        monkeypatch.setattr("backend.app.versions.v3.runner.monotonic", lambda: clock[0])
+        monkeypatch.setattr("backend.app.versions.v3.resources.monotonic", lambda: clock[0])
+        await execute(model, places, runtime)
+
     with pytest.raises(TimeoutError):
-        asyncio.run(execute(model, places, runtime, development_timeout_seconds=0.1))
+        asyncio.run(scenario())
+    assert model.primary_started and model.primary_cancelled
     assert not places.nearby and model.repair_calls == 0
-    assert runtime.closes == 1
+    assert runtime.enters == runtime.prepares == runtime.closes == 1
 
 
 def test_deadline_includes_pre_graph_preparation():
-    places = Places()
+    model, places = Model(), Places()
+
+    def forbidden_factory():
+        pytest.fail("An expired request must not create a retrieval runtime")
+
     with pytest.raises(TimeoutError):
-        asyncio.run(execute(places=places, request_started_at=monotonic() - 601))
-    assert not places.search_requests
+        asyncio.run(
+            run_v3(
+                make_request(),
+                model,
+                places,
+                FakeWeatherProvider(),
+                FakeRoutesProvider(),
+                reference_date=date(2026, 9, 11),
+                retrieval_factory=forbidden_factory,
+                development_timeout_seconds=600,
+                request_started_at=monotonic() - 601,
+            )
+        )
+    assert not places.search_requests and not places.nearby
+    assert not model.calls and not model.semantic_calls and model.repair_calls == 0
 
 
 def test_primary_failure_does_not_enter_repair_or_nearby():
