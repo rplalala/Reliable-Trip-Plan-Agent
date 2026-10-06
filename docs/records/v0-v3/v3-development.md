@@ -2274,3 +2274,70 @@ observed 0->1 priority/repair path. Review-off behavior, exemptions, unassessed 
 and hard-removal coverage-debt exception retain offline evidence only. No benchmark,
 freeze, whole-trip feasibility or historical repair claim. Existing Preference Gate Step1
 contract mismatch is unchanged and was not exercised by this successful normal input.
+
+<a id="deadline-phase-regression-2026-10-06"></a>
+
+## Offline V3 deadline-phase regression correction (2026-10-06)
+
+The user approved offline diagnosis and correction of the V3 timeout baseline failure,
+regressions, local commits and independent Standards/Spec review. Generation semantics,
+production limits and zero-paid-call/no-push/PR/merge boundaries remain unchanged. The
+fixed review base is `54a59427f2a3233196c92068cdde048ace1e9bef` on
+`feature/evaluation`; the unrelated pre-existing `.gitignore` edit remains excluded.
+This is a subsequent engineering correction, not a new V3 freeze or formal evaluation.
+
+The immediate context is the full backend failure retained by the
+[#83 identity acceptance](../evaluation/intake-identity-usage.md#version-owned-requirement-targets-2026-10-06).
+The original `test_whole_request_expiry_during_primary_prevents_postwork` used a
+0.1-second wall-clock allowance and asserted one retrieval close without establishing
+that primary generation or lazy retrieval initialization had started. An isolated
+rerun reproduced `runtime.closes == 0` versus expected one, in 3.67 seconds including
+test setup. Ranked hypotheses were premature expiry, a real cleanup omission, and
+another stage changing the terminal error. An offline public-entry probe recorded
+only synthetic stage names and resource counts, not provider payloads or credentials.
+At 0.1 seconds, primary generation was never entered and retrieval enter/prepare/close
+were all zero. A 2.0-second diagnostic allowance reached primary generation and
+enter/prepare/close were all one; both cases raised TimeoutError and skipped Nearby.
+The evidence identifies a test phase-selection assumption, not a demonstrated runtime
+resource leak. Increasing a production budget or eagerly creating unused resources
+would not be a correction for that test assumption.
+
+The corrected regression freezes the time boundary during setup, advances it beyond
+the existing request deadline only when the injected primary model operation begins,
+then waits for real `asyncio.timeout_at` cancellation. It asserts that primary actually
+started and was cancelled, owned retrieval entered/prepared/closed once, and neither
+Repair nor Nearby followed. The complementary pre-graph expiry test calls public
+`run_v3` with a forbidden retrieval factory and verifies that no place query, model,
+semantic model, Repair or Nearby operation begins. Time and external provider boundaries
+are substituted; the real graph, timeout scheduler and resource-release implementation
+remain in use. No internal dispatcher or cleanup method is mocked.
+
+The original failing test was run before correction. Its corrected single-test gate
+passed, followed by both deadline-phase tests (**2 passed**), and the full V3 version
+suite (**425 passed**, 22.14 seconds). Ruff, compilation and whitespace checks passed.
+The test plus current lifecycle clarification were committed before review as
+`4c466d5` (`test: trigger V3 deadline expiry in the intended phase`). Independently
+reviewing all committed changes against the fixed base found **zero Standards findings**
+and **zero Spec findings**; no correction commit was needed. Production application
+code, dependency versions, runtime configuration, generation/scoring policies and
+V0-V2 behavior were unchanged. The change clarifies the existing distinction between
+an uncreated lazy runtime and an owned runtime requiring cleanup, including caller
+ownership.
+
+Local evidence identifiers are `artifacts/v3-timeout-baseline/repro-01.txt`,
+`probe-01.txt`, `primary-green-01.txt`, `phase-green-01.txt` and `v3-green-01.txt`
+in that directory. The diagnostic probe is clearly marked as debug-only scratch,
+outside tracked test ownership. All tests use injected synthetic responses and the
+normal external-network prohibition; Windows asyncio internal loopback is permitted.
+Actual model, Places, Routes, database and embedding service calls are zero, as are
+paid calls. No live smoke, benchmark, remote code publication or branch switch occurred.
+
+The final fresh full backend gate passed **2983 tests / 10 skipped / zero failures**
+in 332.87 seconds. Its local receipt is
+`artifacts/v3-timeout-baseline/full-green-01.txt`. This actual complete run includes
+the prior #83 identity corrections and the stronger V3 timeout tests; it resolves
+the previously recorded baseline limitation without deriving a green result from
+separate partial runs. Final documentation checks verify new prose is English,
+new local links/anchors resolve through tracked files, and production code/configuration/
+dependencies have no difference from the fixed base. No new runtime instrumentation
+was introduced, and no further broad rerun was necessary after this passing gate.

@@ -122,8 +122,11 @@ targets filter complete candidates by literal name, destination and supplied add
 before requiring one distinct ID. The current report/packet policies are
 `versioned_api_identity_2` and `v0_identity_correspondence_3`; historical #82 results
 retain their original policy. This correction is implemented and independently reviewed
-offline; evaluator tests pass. The full-backend gate retains an independently reproduced
-baseline V3 timeout-test failure. See the
+offline; evaluator tests pass. The subsequently approved
+[V3 deadline regression correction](docs/records/v0-v3/v3-development.md#deadline-phase-regression-2026-10-06)
+resolves the baseline test limitation with explicit expiry-phase assertions; production
+generation and budgets are unchanged. The full backend now passes 2983 tests with
+10 skipped. See the
 [acceptance record](docs/records/evaluation/intake-identity-usage.md#version-owned-requirement-targets-2026-10-06).
 No new paid execution or Git publication is authorized.
 The backlog task authorized specification publication only. The user subsequently

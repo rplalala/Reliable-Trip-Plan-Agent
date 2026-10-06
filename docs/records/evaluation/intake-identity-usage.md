@@ -2395,3 +2395,12 @@ paid calls **zero**. No new live result, execution manifest or allowance is clai
 The eight old PASS visits and historical requirement UNKNOWN remain unchanged under
 their original policy. A future complete nine-reference result requires separately
 approved preparation/execution and cannot reuse the consumed #82 allowance.
+
+The user subsequently approved offline diagnosis and correction of the recorded V3
+baseline failure. The separately owned
+[V3 deadline-phase record](../v0-v3/v3-development.md#deadline-phase-regression-2026-10-06)
+documents the phase-selection test assumption and stronger public-entry regressions,
+without production code or generation changes. Its fresh full backend run passed
+**2983 tests / 10 skipped / zero failures**. This resolves the baseline limitation for
+the current offline gate while preserving the original failure/retest account above;
+it adds no live evidence or Git publication authorization.
