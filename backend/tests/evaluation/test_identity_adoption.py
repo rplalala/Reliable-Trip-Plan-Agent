@@ -4,6 +4,7 @@ import asyncio
 import copy
 import hashlib
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -33,7 +34,25 @@ pytest_plugins = ("backend.tests.evaluation.test_intake",)
 
 
 @pytest.fixture
-def adoption_case(batch, tmp_path, request):
+def snapshot_clock(monkeypatch):
+    """Keep synthetic acquisitions independent of the machine's wall clock."""
+    from backend.evaluation import snapshot
+
+    class SnapshotClock(datetime):
+        instant = datetime(2026, 10, 6, 9, tzinfo=UTC)
+
+        @classmethod
+        def now(cls, tz=None):
+            return (
+                cls.instant.astimezone(tz) if tz is not None else cls.instant.replace(tzinfo=None)
+            )
+
+    monkeypatch.setattr(snapshot, "datetime", SnapshotClock)
+    return SnapshotClock
+
+
+@pytest.fixture
+def adoption_case(batch, tmp_path, request, snapshot_clock):
     """Persist independently supplied synthetic facts and original model wire material."""
     options = getattr(request, "param", {})
     manifest, results, write, batch_save, root = batch

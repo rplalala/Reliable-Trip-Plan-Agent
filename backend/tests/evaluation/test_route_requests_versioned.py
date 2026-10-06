@@ -3,6 +3,7 @@
 import asyncio
 import json
 import socket
+from datetime import UTC, datetime
 
 import pytest
 
@@ -26,6 +27,97 @@ def current_identity(case, decisions=None):
     intake, observed = case[:2]
     result = model_material(intake, observed, historical=False, decisions=decisions)
     return resolve_identities(intake, observed, model_result=result).to_dict()
+
+
+@pytest.mark.parametrize("legacy", [False, True])
+@pytest.mark.parametrize(
+    "prepared_at, complete",
+    [
+        ("2026-10-06T08:59:59Z", False),
+        ("2026-10-06T09:00:00Z", True),
+        ("2026-10-06T09:00:01Z", True),
+    ],
+)
+def test_snapshot_time_boundary_is_stable_for_current_and_legacy_routes(
+    adoption_case, prepared_at, complete, legacy
+):
+    intake, _, bundle, _, _, _, _, _ = adoption_case
+    identity = reviewed_identity(adoption_case) if legacy else current_identity(adoption_case)
+    report = prepare_v0_route_requests(
+        bundle, identity, prepared_at=prepared_at, schedule_context=context(intake), legacy=legacy
+    ).to_dict()
+    if complete:
+        assert report["status"] == "complete", report["diagnostics"]
+        assert report["counts"]["actual_sends"] == 0
+    else:
+        assert report["status"] == "needs_material_correction"
+        assert report["requests"] == report["legs"] == []
+        assert report["diagnostics"] == [
+            {
+                "reason": "artifact_integrity_error",
+                "pointer": "snapshot/time",
+                "explanation": "Identity evidence is later than preparation",
+            }
+        ]
+
+
+@pytest.mark.parametrize("adoption_case", [{"coordinates_missing": True}], indirect=True)
+@pytest.mark.parametrize("legacy", [False, True])
+@pytest.mark.parametrize("second, complete", [(0, True), (1, False)])
+def test_supplied_details_after_preparation_are_rejected_with_a_controlled_clock(
+    adoption_case, snapshot_clock, tmp_path, legacy, second, complete
+):
+    intake, _, bundle, _, _, _, _, _ = adoption_case
+    identity = reviewed_identity(adoption_case) if legacy else current_identity(adoption_case)
+    before = prepare_v0_route_requests(
+        bundle,
+        identity,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
+        legacy=legacy,
+    ).to_dict()
+    assert before["counts"]["details_requests"] == 2
+    snapshot_clock.instant = datetime(2026, 10, 6, 10, 0, second, tzinfo=UTC)
+
+    async def respond(request):
+        return Response(
+            200,
+            json.dumps(
+                {
+                    "id": request["parameters"]["place_id"],
+                    "location": {"latitude": 10, "longitude": 20},
+                }
+            ).encode(),
+        )
+
+    directory = tmp_path / "timed-details"
+    asyncio.run(
+        acquire_snapshot(
+            before["details_plan"], directory, respond, AcquisitionPolicy(2, max_attempts=1)
+        )
+    )
+    report = prepare_v0_route_requests(
+        bundle,
+        identity,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
+        legacy=legacy,
+        details_snapshot_directory=directory,
+    ).to_dict()
+    if complete:
+        assert report["status"] == "complete", report["diagnostics"]
+        assert report["counts"]["actual_sends"] == 0
+        assert report["counts"]["supplied_details_observed_sends"] == 2
+    else:
+        assert report["status"] == "needs_material_correction"
+        assert report["requests"] == report["legs"] == []
+        assert report["diagnostics"] == [
+            {
+                "reason": "artifact_integrity_error",
+                "pointer": "details/time",
+                "explanation": "Details evidence is later than preparation",
+            }
+        ]
 
 
 def test_missing_current_model_evidence_retains_original_blocked_leg(adoption_case, monkeypatch):
