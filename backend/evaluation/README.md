@@ -180,7 +180,10 @@ endpoints using synthetic local snapshots. SDK execution tests use MockTransport
 The [post-merge #82 refresh](../../docs/records/evaluation/intake-identity-usage.md#post-merge-v0-smoke-refresh-2026-10-06)
 replaces the stale #77 execution proposal with a new offline manifest bound to the merged
 implementation. Both historical material and failed attempts remain preserved. The fresh
-directory is unconsumed; readiness and Issue publication grant no execution authority.
+directory was unconsumed at preparation; readiness and Issue publication grant no execution
+authority. Its subsequently approved [one-call execution](../../docs/records/evaluation/intake-identity-usage.md#v0-identity-smoke-execution-2026-10-06)
+imported eight V0 primary PASS while preserving a requirement-subject UNKNOWN. That
+execution directory is now consumed; do not reuse it or infer route validation from identity.
 
 `tools.validation.identity_judgment_smoke` is a separate development executor for a verified
 V0 material bundle. Preparation is offline; execution requires explicit user approval of

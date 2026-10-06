@@ -2240,3 +2240,74 @@ success from accepted import. Invalid/partial/foreign/citation/usage/source resu
 legitimate FAIL/UNKNOWN remain valid imports with original claims and null canonical
 endpoints. #73's consumed allowance remains consumed. Issue #82 stays open for the
 unapproved future slice; no paid send, push, PR, merge, formal run or freeze is authorized.
+
+<a id="v0-identity-smoke-execution-2026-10-06"></a>
+
+### Approved V0 identity smoke execution (#82, 2026-10-06)
+
+After the offline refresh and parameter explanation, the user explicitly approved the
+V0 identity smoke in the current session. This supersedes the preparation-only boundary
+for exactly one frozen attempt, not any further request or Git publication. The
+[approval receipt](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/82#issuecomment-6007810684)
+binds canonical manifest
+`c3f59f878c0e060d3c4fd3248d1f75d5e78ccf669f307f2de3bd78f6b39f9e20`, private destination,
+eight primary V0 references/nine independent supplied candidates and the existing
+token/time/zero-retry/USD 0.004 retail-reference limits. Current source and documentation
+review base are `1220da6720ac65f7289a53c45b881515ed5673bf` on `feature/evaluation`;
+no runtime changes follow the frozen `e6cd6e5` implementation. The unrelated `.gitignore`
+edit remains excluded. All 91 source and 68 implementation/dependency hashes matched
+before dispatch; credentials were present, destination/deployment matched and the
+bound execution directory was absent. No secrets or private endpoint are recorded here.
+
+Only the current-session `gpt-6.1-sol` / `medium` execution child ran the exact approved
+`identity_judgment_smoke execute` command, once. The provider request itself used
+`gpt-6-luna` / `low`, with `store=false` and no tools. Process exit was **0**; the
+request started at **2026-10-06T02:04:58.521275+00:00** and the complete raw response
+was retrieved at **2026-10-06T02:05:04.486105+00:00**. HTTP was **200**, provider status
+`completed`, with no reported error/incomplete code. Actual sends were **one model,
+zero retries, zero Places/Google, zero Routes and zero planner**. No additional request
+was dispatched, and there was no configured-limit or scope deviation.
+
+HTTP success is distinct from accepted import. The complete source-bound response
+imported successfully through `versioned_api_identity_1`: all **eight V0 primary
+references are PASS**, with `match` correspondence; none are FAIL/UNKNOWN in this
+particular response. A separate requirement subject was excluded from the model
+request and remains **UNKNOWN**. Consequently the overall identity report is still
+**`needs_evidence`**. These are observed outcomes, not an all-PASS requirement or a
+claim that every user requirement has independent verification.
+
+Reported usage: **10,842 input tokens**, partitioned into **10,839 cache-write,
+zero cached and three ordinary input tokens**; **808 output tokens**, including
+**zero reported reasoning tokens**; **11,650 total tokens**. Zero reported reasoning
+tokens do not change the requested `low` setting or establish an absence of internal
+reasoning. At the frozen retail-reference rates, standard cost is **USD 0.001759175**;
+the regional +10% reference scenario is **USD 0.0019350925**, both below USD 0.004.
+The receipt basis is `reported_categories`, not a missing-category estimate. These
+reference calculations are not actual Foundry billing: invoice, SKU/tier, credits
+and tax remain unavailable. No model fee of zero is claimed for this live request.
+
+The consumed private execution identifier is
+`artifacts/v0-identity-smoke-82-20261006/execution`. It retains `response.bin`,
+`execution.json`, `model-result.json` and `identity-report.json`. Raw response SHA-256:
+`dbf3ff340a86ee7a7b771736ab26759b8c29c103b8751bb1be1bac8e4180fe7d`.
+The immutable original #73 failure/consumed allowance, #77 stale preparation and
+#70/#78 route material remain intact. Old pending reports are not overwritten by
+the new accepted report; their UNKNOWN verdicts retain their historical meaning.
+
+Parent assessment was entirely offline, with DNS/socket connection prohibited. It
+verified all protected/source implementation hashes, receipt/raw/model-result digests,
+and exact replay of the accepted identity report against original material. All
+original claims and all non-V0 records are unchanged. FAIL/UNKNOWN canonical-null
+invariants remain checked without repairing output. The private assessment identifier
+is `artifacts/v0-identity-smoke-82-20261006/execution-assessment.json`; it is local
+evidence, not a public document dependency. No runtime correction or new test was
+required; the preceding **100 passed** fixture gate and unchanged-code full backend
+gate are reused, not new test/CI runs or repeated live validation.
+
+This is bounded development smoke evidence, not a formal benchmark, human review,
+version comparison, freeze, scoring run or route feasibility result. Preserved
+route packages retain their original blocked outcomes; no route package or score
+was regenerated. Any route preparation/acquisition or further identity attempt
+requires its own approved scope. The one-call directory and allowance are consumed;
+do not delete/regenerate them to retry. Issue #82 owns final acceptance and lifecycle;
+local documentation does not anticipate remote closure or authorize push/PR/merge.

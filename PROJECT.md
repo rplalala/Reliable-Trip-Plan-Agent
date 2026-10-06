@@ -158,8 +158,14 @@ merged implementation to a new manifest and an absent execution directory, recom
 eight V0 references/nine candidates, and protects 91 source files plus 68 implementation
 and dependency files. The original request and eight pending UNKNOWN verdicts are unchanged.
 See the [post-merge refresh record](docs/records/evaluation/intake-identity-usage.md#post-merge-v0-smoke-refresh-2026-10-06).
-The Issue remains open for future execution requiring separate exact-plan approval;
-no execution child, paid send or new Git publication is authorized by this refresh.
+That preparation granted no execution or Git publication authority. The user then
+explicitly approved its exact one-call V0 identity smoke. The required current-session
+execution child completed one request with zero retries: HTTP 200 and accepted import,
+eight V0 primary PASS and one unchanged requirement-subject UNKNOWN. See the
+[execution acceptance](docs/records/evaluation/intake-identity-usage.md#v0-identity-smoke-execution-2026-10-06).
+The report remains `needs_evidence`; route feasibility, scoring and a full planner rerun
+were not evaluated. The directory and allowance are consumed; no further call or new
+Git publication is authorized. GitHub owns #82's final acceptance/lifecycle state.
 
 The [#79 delivery preparation record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-delivery-preparation-2026-10-06)
 records the preparation checkpoint: remote `main` at `a983f35` and source branch at
