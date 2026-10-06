@@ -311,10 +311,13 @@ acquisition path. The input must explicitly declare Australia. Default KR output
 is unchanged; region is never inferred or a live authorization. Unique requests determine
 budgets, while repeated leg occurrences remain visible.
 
-The new [Sydney source request](../../tools/validation/packets/sydney-v0-route-smoke/request.json)
-is four days (October 14-17), two travelers and AUD 1600, with two primary visits per day
-and required Sydney Opera House. It is a new generation input, not a generated output,
-reviewed RequirementSpec or API snapshot. Its non-generation USD 0.3522 price scenario
+The current [Sydney source request](../../tools/validation/packets/sydney-v0-route-smoke/request-natural.json)
+is four days (October 14-17), two travelers and AUD 1600, with relaxed pace, natural
+interests and required Sydney Opera House. It specifies no daily attraction count;
+independent density scoring does not supply generation quotas. It is a generation
+input, not a generated output, reviewed RequirementSpec or API snapshot. The earlier
+[counted request](../../tools/validation/packets/sydney-v0-route-smoke/request.json)
+is preserved as historical evidence. Its non-generation USD 0.3522 price scenario
 includes unready routes and does not authorize their execution. The later bounded
 generation-only smoke stopped after one requirements response because exact daily
 cardinality is an unsupported hard semantic condition. It produced no itinerary or
