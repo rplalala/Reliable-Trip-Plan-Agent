@@ -125,8 +125,8 @@ retain their original policy. This correction is implemented and independently r
 offline; evaluator tests pass. The subsequently approved
 [V3 deadline regression correction](docs/records/v0-v3/v3-development.md#deadline-phase-regression-2026-10-06)
 resolves the baseline test limitation with explicit expiry-phase assertions; production
-generation and budgets are unchanged. The full backend now passes 2983 tests with
-10 skipped. See the
+generation and budgets are unchanged. The full backend gate at that delivery passed
+2983 tests with 10 skipped. See the
 [acceptance record](docs/records/evaluation/intake-identity-usage.md#version-owned-requirement-targets-2026-10-06).
 The user subsequently authorized push, PR creation, published review and conditional
 merge/closure of #83 through [PR #84](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/84).
@@ -138,7 +138,16 @@ candidate appearances. Its measured surrogate input plus reserve is 17,135 token
 so the unchanged 16,000-token preparation guard rejects an executable manifest.
 See the [blocked refresh record](docs/records/evaluation/intake-identity-usage.md#v0-target-smoke-refresh-2026-10-06).
 An 18,000-token input ceiling and USD 0.0042 reference allowance are proposed for a
-separately approved offline correction; neither is implemented or live-approved.
+separately approved offline correction at that checkpoint. The user subsequently
+approved that smoke-only limit correction, regression coverage and re-preparation.
+The tool now uses those limits; live execution remains separately unapproved.
+The new compatible manifest retains all nine references and fourteen candidate
+appearances; its 17,135-token estimate fits the new ceiling with 865 remaining.
+The smoke gate passes 35 tests. A fresh full backend run has 2948 passed, 40 failed
+and 10 skipped; unchanged route fixtures mix a real acquisition clock with fixed
+preparation time. A temporary controlled-clock diagnostic makes all 40 pass; that
+diagnostic does not replace the failed full gate or implement a fixture correction.
+See the [offline correction record](docs/records/evaluation/intake-identity-usage.md#v0-smoke-capacity-correction-2026-10-06).
 All original evidence remains preserved, and this task makes zero paid calls.
 The backlog task authorized specification publication only. The user subsequently
 authorized full Git delivery of the existing implementation through
@@ -318,7 +327,16 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest full backend gate (2026-10-06, #78 offline route readiness, implementation `571ed95`):
+Latest full backend run (2026-10-06, #85 smoke-only capacity correction):
+**2948 passed, 40 failed, 10 skipped in 305.95s**. The smoke-specific gate passes
+35 tests; all full-gate failures are unchanged route tests affected by their fixture
+clock/preparation-time mismatch. This limitation is diagnosed but not repaired within
+the smoke-only scope. See the [capacity correction and baseline diagnosis](docs/records/evaluation/intake-identity-usage.md#v0-smoke-capacity-correction-2026-10-06).
+
+Previous #83/V3 full backend gate: **2983 passed, 10 skipped**; see the
+[deadline-phase acceptance](docs/records/v0-v3/v3-development.md#deadline-phase-regression-2026-10-06).
+
+Previous full backend gate (2026-10-06, #78 offline route readiness, implementation `571ed95`):
 **2945 passed, 10 skipped in 414.43s**. The related current/historical identity, route
 request and coordinate gate passed 178. Global Ruff and five changed Python format
 checks pass. Independent implementation Standards and Spec reviews each found zero

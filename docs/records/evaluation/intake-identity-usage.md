@@ -2528,3 +2528,79 @@ private destination, exact packet/pending-report replay and absence of runtime c
 This preparation adds no live evidence, formal benchmark, score comparison,
 route validation, version freeze or Git publication authorization. Issue #85 remains
 open for the blocked prerequisite and separately approved future execution/assessment.
+
+<a id="v0-smoke-capacity-correction-2026-10-06"></a>
+
+#### Approved offline capacity correction and re-preparation (2026-10-06)
+
+The user then explicitly approved only the proposed **18,000 input tokens / USD 0.0042
+reference allowance**, regression coverage and offline re-preparation. Review fixed
+point: `435cccfee77c0149e3c82d5e1b02d77a34031a17`. Implementation/test commit:
+`ae196e2cd8de11a511f273f91943cd8028af4ddf` (`fix: raise V0 identity smoke capacity for #85`).
+It changes exactly two smoke-tool constants and the directly related tests/operational
+README. Reserve 1,024, output 3,000, model `gpt-6-luna` / `low`, one send, zero retries,
+60-second HTTP timeout, no tools and `store=false` stay as specified. Production
+V0-V3 generation budgets, identity rules, score formulas and dependencies are unchanged.
+The unrelated unstaged `.gitignore` edit remains byte-identical and excluded.
+
+The updated allowance regression first failed against the original 16,000 cap, then
+passed after the two-constant correction. Five new parameterized cases verify an intact
+original claim sized between the old/new input ceilings, pre-directory rejection above
+the new ceiling, valid reported 18,000 input / 3,000 output at the most expensive input
+category, rejection at 18,001 input or 3,001 output, preserved raw mock responses and
+non-reusable consumed attempts. The focused smoke gate passed **35 tests in 13.29s**.
+The preparation tests forbid live SDK construction; SDK execution tests use only
+`httpx.MockTransport` and the backend external-network guard. Ruff and compilation pass.
+
+One fresh full backend run completed with **2948 passed, 40 failed, 10 skipped in
+305.95s**. It is a failed full gate, not a pass or reuse of the earlier green gate.
+All failures occur in unchanged identity/route-request tests that fix preparation at
+`2026-10-06T10:00:00Z` while their synthetic snapshot acquisition uses the real clock.
+The first isolated reproduction returned `needs_material_correction`, diagnostic
+`artifact_integrity_error` at `snapshot/time`, explanation `Identity evidence is later
+than preparation`; its saved synthetic snapshot finished at
+`2026-10-06T11:24:49.380188+00:00`. Restoring the original smoke constants in an isolated
+process reproduces that failure (**1 failed**). Fixing only the snapshot clock to
+09:00 UTC in a temporary diagnostic process makes every full-run failure pass
+(**40 passed in 13.92s**). Both diagnostic processes report one pytest import-rewrite
+warning; neither changes tracked code or tests. These controlled observations support
+a pre-existing fixture-clock limitation, not a smoke capacity regression. The separate
+route-test correction is outside the smoke-only authorization and remains unimplemented.
+
+Local evidence identifiers are `artifacts/smoke-85-limit-validation/red-01.txt`,
+`green-01.txt`, `focused-01.txt`, `full-01.txt`, `probe-01.txt`, `baseline-old-01.txt` and
+`baseline-clock-01.txt` under the same directory. The prior green full gate and earlier
+blocked preparation remain historical evidence; they do not erase this failure.
+
+The new one-use preparation identifier is
+`artifacts/v0-identity-smoke-85-refreshed-20261006`. Its compatible
+`rtpeval_identity_smoke_preparation_2` manifest and private handoff bind implementation
+`ae196e2`, the merged identity baseline and **108 protected source/file hashes plus
+69 implementation/dependency hashes**. The additional six protected files preserve
+the entire meaningful blocked #85 preparation/check record. Historical 91 sources,
+four #82 execution outputs and ten #82 preparation/execution files remain unchanged.
+The packet and exact wire are identical to the blocked nine-reference
+draft, preserving all fourteen candidate appearances and the original pending report.
+
+New manifest SHA-256:
+`425a0684faeaee51763d9dc9a00467557c266df29d5c049d41e361580a4a1993`.
+Wire request SHA-256 remains
+`f829b61a0b912c035f21c00033c6bb474de4ecd7d62fce46466c4e4bcd6fdc17`.
+The real cached-tokenizer estimate remains **17,135 including reserve**, leaving 865
+surrogate tokens below the new input ceiling. At the same documented reference prices,
+maximum standard reference is **USD 0.00375**, regional +10% **USD 0.004125**, within
+the new USD 0.0042 reference allowance. These are offline sizing/reference scenarios,
+not actual usage, a provider-tokenizer guarantee or a Foundry invoice ceiling.
+
+The execution directory remains absent; no execution child, credential probe, planner,
+Places/Google, Routes or model call occurs. Actual sends and incremental charges are
+**zero**. Offline re-preparation does not approve live execution, publication, repair,
+all-PASS outcomes, a formal benchmark or a version freeze. Issue #85 stays open for a
+separately approved exact-plan execution and assessment; the fixture-clock limitation
+must remain explicit in any subsequent delivery decision.
+
+Independent Standards and Spec reviews of fixed base `435cccf` through implementation
+`ae196e2` each report **zero findings**. The Spec reviewer separately verified all
+108 source hashes, 69 implementation hashes, packet/wire/pending replay and absent
+execution directory. No review correction is needed. Final documentation is checked
+separately and committed after review; private raw files remain ignored.
