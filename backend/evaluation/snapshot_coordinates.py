@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+from .identity_program import POLICY_VERSION
 from .intake import _read
 from .preparation import identity_ready
 from .records import MaterialError, canonical_digest, freeze, require, thaw
@@ -54,7 +55,9 @@ def prepare_snapshot_coordinates(intake, identity_report, snapshot_directory):
             "snapshot/plan",
             "Identity snapshot intake/plan mismatch",
         )
-        evidence = identity_evidence(snapshot)
+        evidence = identity_evidence(
+            snapshot, historical=identity.get("association_policy_version") != POLICY_VERSION
+        )
         require(
             identity["evidence_hash"] == canonical_digest(evidence),
             "identity/evidence_hash",

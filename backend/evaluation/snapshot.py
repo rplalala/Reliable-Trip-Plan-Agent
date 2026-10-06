@@ -420,7 +420,7 @@ def _place(raw):
     }
 
 
-def identity_evidence(snapshot):
+def identity_evidence(snapshot, *, historical=False):
     """Convert independent snapshot observations to Ticket 03's existing wire."""
     from .identity import EVIDENCE_VERSION
 
@@ -461,7 +461,7 @@ def identity_evidence(snapshot):
                         data.update(
                             actual_result_count=len(raw), candidates=[_place(p) for p in raw]
                         )
-                        if "nextPageToken" in payload:
+                        if not historical and "nextPageToken" in payload:
                             data["next_page_token"] = payload["nextPageToken"]
             item[kind] = data
         records.append(item)

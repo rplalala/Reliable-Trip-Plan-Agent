@@ -20,6 +20,8 @@ from backend.evaluation.snapshot import (
     build_identity_plan,
     identity_evidence,
 )
+from backend.evaluation.snapshot_cli import main as snapshot_main
+from backend.evaluation.snapshot_coordinates import prepare_snapshot_coordinates
 from backend.tests.evaluation.test_identity import details, evidence, prepared, search
 from backend.tests.evaluation.test_identity_llm import model_material
 from backend.tests.evaluation.test_requirement_schedule import context
@@ -427,3 +429,77 @@ def test_strict_destination_and_supplied_address_disambiguate_same_name_ids(batc
         r for r in report["records"] if r["kind"] == "requirement_subject" and r["version"] == "v1"
     )
     assert target["canonical_place_id"] == "venue-a"
+
+
+def test_historical_paginated_snapshot_keeps_original_evidence_derivation(batch, capsys):
+    intake = requirement_batch(batch, bound=False)
+
+    async def transport(request):
+        return Response(
+            200,
+            json.dumps(
+                {
+                    "places": [
+                        {
+                            "id": "venue-a",
+                            "displayName": {"text": request["parameters"]["query"]},
+                            "formattedAddress": "10 Main St, Example City, Country",
+                            "location": {"latitude": 1, "longitude": 2},
+                        }
+                    ],
+                    "nextPageToken": "remaining-page",
+                }
+            ).encode(),
+        )
+
+    directory = batch[4] / "snapshot"
+    snapshot = asyncio.run(
+        acquire_snapshot(
+            build_identity_plan(intake),
+            directory,
+            transport,
+            AcquisitionPolicy(max_sends=20, max_attempts=1),
+        )
+    )
+    old_evidence = identity_evidence(snapshot)
+    for record in old_evidence["records"]:
+        record["search"].pop("next_page_token", None)
+    assert snapshot_main(["identity-evidence", str(directory), "--historical"]) == 0
+    assert json.loads(capsys.readouterr().out) == old_evidence
+    old_report = resolve_versioned_identities(intake, old_evidence, historical=True).to_dict()
+    assert identity_ready(intake.to_dict(), old_report)
+    coordinates = prepare_snapshot_coordinates(intake, old_report, directory).to_dict()
+    assert coordinates["status"] == "complete", coordinates["diagnostics"]
+    assert [r["place_id"] for r in coordinates["records"]] == ["venue-a"]
+
+
+@pytest.mark.parametrize("token", [None, "", 0, False, [], {}])
+def test_malformed_pagination_metadata_cannot_prove_complete_search(batch, token):
+    intake = requirement_batch(batch, bound=False)
+    subject = next(r for r in identity_references(intake) if r["kind"] == "requirement_subject")
+    observation = search(subject, "Museum A", place_id="venue-a")
+    observation["search"]["next_page_token"] = token
+    report = resolve_identities(intake, evidence(intake, [observation])).to_dict()
+    targets = [r for r in report["records"] if r["kind"] == "requirement_subject"]
+    assert {r["grounding_verdict"] for r in targets} == {"UNKNOWN"}
+
+
+@pytest.mark.parametrize("destination", ["Region, Country", "District, Country"])
+def test_explicit_region_destination_matches_with_city_components_present(batch, destination):
+    intake = requirement_batch(batch, bound=False, destination=destination)
+    subject = next(r for r in identity_references(intake) if r["kind"] == "requirement_subject")
+    observation = search(subject, "Museum A", place_id="venue-a")
+    observation["search"]["candidates"][0]["address_components"] = [
+        {"longText": "Example City", "types": ["locality", "political"]},
+        {"longText": "Region", "types": ["administrative_area_level_1", "political"]},
+        {"longText": "District", "types": ["administrative_area_level_2", "political"]},
+        {"longText": "Country", "types": ["country", "political"]},
+    ]
+    report = resolve_identities(intake, evidence(intake, [observation])).to_dict()
+    targets = [r for r in report["records"] if r["kind"] == "requirement_subject"]
+    assert {r["version"]: r["grounding_verdict"] for r in targets} == {
+        "v0": "UNKNOWN",
+        "v1": "PASS",
+        "v2": "PASS",
+        "v3": "PASS",
+    }

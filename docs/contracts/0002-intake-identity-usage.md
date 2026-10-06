@@ -224,7 +224,8 @@ borrow a V0 decision. Each version's projections share its target result.
 Without a binding, V1-V3 resolution requires the exact original query, declared
 20-result scope, independent-source/retrieval provenance and the complete retained set.
 The candidate count must equal the declared result count; a full 20-result page or
-retained next-page token remains UNKNOWN because completeness is unverified. Malformed
+retained next-page token remains UNKNOWN because completeness is unverified. A present
+pagination field with an empty or non-string value is malformed and also UNKNOWN. Malformed
 candidates or conflicting facts for one ID also remain UNKNOWN. Filter all candidates
 by literal original name, verified destination and any supplied literal formatted
 address, then require one distinct surviving ID. Zero/multiple matches are UNKNOWN;
@@ -249,6 +250,11 @@ Explicit `--historical-program` replays `versioned_api_identity_1`, including sh
 programmatic targets, the original single-result rule and V0 packet policy
 `v0_identity_correspondence_2`. Old packets cannot pass current import; saved reports
 replay against their original policy. Historical raw smoke files are never rewritten.
+Snapshot coordinate consumers select evidence derivation from the replay-verified report
+policy; explicit historical V0 material loaders and CLI modes preserve the original wire
+without adding new pagination metadata. `snapshot_cli identity-evidence --historical`
+derives that original wire. Current derivation retains pagination uncertainty; historical
+compatibility never removes it from a current-policy report.
 
 The V0 response correction is implemented locally under
 [#76](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/76). The model's primary

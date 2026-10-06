@@ -65,10 +65,15 @@ def strict_destination_matches(value, candidate):
         return False
     typed = components(candidate, literal=True, hierarchical=True)
     if typed:
-        cities = (
-            typed.get("locality")
-            or typed.get("administrative_area_level_1")
-            or typed.get("administrative_area_level_2", set())
+        destinations = set().union(
+            *(
+                typed.get(kind, set())
+                for kind in (
+                    "locality",
+                    "administrative_area_level_1",
+                    "administrative_area_level_2",
+                )
+            )
         )
         qualifiers = set().union(
             *(
@@ -80,7 +85,7 @@ def strict_destination_matches(value, candidate):
                 )
             )
         )
-        return parts[0] in cities and all(part in qualifiers for part in parts[1:])
+        return parts[0] in destinations and all(part in qualifiers for part in parts[1:])
     address = {piece.strip() for piece in re.split(r"[,;]", candidate["formatted_address"])}
     return all(part in address for part in parts)
 

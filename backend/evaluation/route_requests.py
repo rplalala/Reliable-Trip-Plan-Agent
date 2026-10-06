@@ -270,7 +270,7 @@ def prepare_v0_route_requests(
         require(
             now.utcoffset() is not None, "prepared_at", "Offset-aware preparation time required"
         )
-        material = load_v0_material(None, bundle_path)
+        material = load_v0_material(None, bundle_path, historical=legacy)
         intake = thaw(material.intake)
         identity = (
             resolve_identities(intake, thaw(material.evidence)).to_dict()

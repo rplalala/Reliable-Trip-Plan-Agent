@@ -30,6 +30,8 @@ def subject_bindings(intake):
 
 
 def _subject_search(ref, search):
+    if "next_page_token" in search and not text(search["next_page_token"]):
+        return "UNKNOWN", "subject_pagination_malformed", None
     if search["actual_result_count"] != len(search["candidates"]) or (
         search["actual_result_count"] >= search["requested_page_size"]
         or search.get("next_page_token")

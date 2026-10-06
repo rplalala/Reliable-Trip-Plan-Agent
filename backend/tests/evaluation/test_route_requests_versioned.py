@@ -7,6 +7,8 @@ import socket
 import pytest
 
 from backend.evaluation.identity import resolve_identities
+from backend.evaluation.identity_adoption import load_v0_material
+from backend.evaluation.records import thaw
 from backend.evaluation.route_requests import preflight_v0_route_requests, prepare_v0_route_requests
 from backend.evaluation.route_requests_cli import main
 from backend.evaluation.snapshot import AcquisitionPolicy, Response, acquire_snapshot
@@ -69,6 +71,28 @@ def test_historical_adoption_requires_explicit_legacy_replay(adoption_case):
     assert legacy["replay_inputs"]["legacy"] is True
 
 
+@pytest.mark.parametrize("adoption_case", [{"pagination": True}], indirect=True)
+def test_historical_paginated_v0_bundle_replays_without_changing_current_evidence(adoption_case):
+    intake, observed, bundle, _, _, _, _, _ = adoption_case
+    historical = reviewed_identity(adoption_case)
+    assert load_v0_material(intake, bundle, historical=True).evidence is not None
+    current = load_v0_material(intake, bundle)
+    assert all(
+        r["search"]["next_page_token"] == "remaining-page"
+        for r in thaw(current.evidence)["records"]
+    )
+    assert all("next_page_token" not in r["search"] for r in observed["records"])
+    replay = prepare_v0_route_requests(
+        bundle,
+        historical,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
+        legacy=True,
+    ).to_dict()
+    assert replay["status"] == "complete", replay["diagnostics"]
+    assert replay["counts"]["reused_coordinates"] == 2
+
+
 @pytest.mark.parametrize("adoption_case", [{"high_impact": True}], indirect=True)
 def test_current_matches_need_no_human_identity_gate_and_reuse_independent_points(adoption_case):
     intake, _, bundle, _, _, _, _, _ = adoption_case
@@ -79,7 +103,7 @@ def test_current_matches_need_no_human_identity_gate_and_reuse_independent_point
     ).to_dict()
     assert report["status"] == "complete"
     assert report["identity_policy"] == {
-        "association_policy_version": "versioned_api_identity_1",
+        "association_policy_version": "versioned_api_identity_2",
         "legacy": False,
         "current_v0_model_result_present": True,
         "report_origin": "supplied",

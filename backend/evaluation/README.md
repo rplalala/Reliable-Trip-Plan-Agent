@@ -594,6 +594,9 @@ The evidence-plan command emits a route preparation containing `evidence_plan`; 
 plan separately for snapshot acquisition/verification. Collection remains the existing
 injected-transport `acquire_snapshot` API and requires its own authorization if live.
 The saved-snapshot replay and identity-evidence commands remain in `snapshot_cli`.
+Use `identity-evidence DIRECTORY --historical` only to derive the original evidence wire
+for historical policy replay. Current evidence keeps pagination metadata and uncertainty;
+coordinate consumers select the derivation using the verified report's policy.
 Independent identity observations, positive-count audit plan, schedule context, coordinates,
 requirements and review material retain their existing schemas. No four-version manifest
 is required for these controlled commands.
