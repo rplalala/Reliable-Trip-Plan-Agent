@@ -2311,3 +2311,87 @@ was regenerated. Any route preparation/acquisition or further identity attempt
 requires its own approved scope. The one-call directory and allowance are consumed;
 do not delete/regenerate them to retry. Issue #82 owns final acceptance and lifecycle;
 local documentation does not anticipate remote closure or authorize push/PR/merge.
+
+<a id="version-owned-requirement-targets-2026-10-06"></a>
+
+### Version-owned requirement targets (#83, 2026-10-06)
+
+The user approved a follow-up Issue, offline implementation, local commits and independent
+Standards/Spec review. [Issue #83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83)
+owns the self-contained scope. Review fixed base is
+`2bfe17cc12cde0f5b4dd5b8be04ae54e57f68af9` on `feature/evaluation`. The pre-existing
+`.gitignore` edit remains excluded. This approval authorizes no model/provider execution,
+paid request, push, PR, merge, branch switch, formal comparison or version freeze.
+
+The original shared program target was inconsistent with the approved V0 correspondence
+path. The new design shares reviewed RequirementSpec meaning and independent acquisition
+evidence, while keeping target identity judgments owned by each submitted version. V0
+primary visits and requirement targets use V0-only supplied-candidate correspondence;
+V1-V3 use independent program checks with no model dependency or fallback. Each version's
+required/excluded/fixed-time checks compare its adopted visit and target IDs before
+counting dates, times or visits. Final/optional projections of one version share that
+version's target. Current report/packet policies are `versioned_api_identity_2` and
+`v0_identity_correspondence_3`; old packets cannot establish new judgments. Generation,
+scoring arithmetic, original output and route FAIL/UNKNOWN populations are unchanged.
+
+For unbound V1-V3 targets, complete provenance-linked search evidence is strictly filtered
+by original literal name, destination and supplied address before adopting one distinct
+ID. Zero/multiple surviving IDs, a saturated page, retained pagination, incomplete or
+malformed evidence remain UNKNOWN. Duplicate-ID facts must agree. Typed sublocality levels
+are separate; explicit locality/administrative-region and country values can support the
+original destination without translation, fuzzy matching, rank selection or inference.
+Proven errors remain FAIL, and no canonical ID is adopted for FAIL/UNKNOWN.
+
+Implementation and directly related regressions were committed before review as
+`0fe87c9` (`fix: scope requirement target identity by version for #83`). Public-seam
+TDD first reproduced shared target ownership, premature multi-hit rejection, typed
+address handling, borrowed requirement results, missing provenance and conflicting
+duplicate-ID acceptance. Fixes made the targeted cases pass. An existing smoke fixture
+still expected two references after the V0 target was added; its scope assertion was
+updated. The intermediate relevant gate reached **150 passed / 1 failed**, followed
+by **58 passed** for the new target tests and smoke preparation tests.
+
+Independent initial review found **one Standards P2** and **two Spec P2s**. New regression
+tests reproduced historical paginated coordinate replay failure (one failure), falsey
+malformed pagination acceptance (six failures), and city components masking explicit
+region/district destinations (two failures). Separate correction commit `904e318`
+(`fix: preserve historical evidence and strict target checks for #83`) keeps original
+evidence derivation on replay-verified historical reports/material/CLI/route paths,
+preserves pagination on current reports, rejects malformed pagination and supports the
+explicit region values. The snapshot CLI now exposes historical wire derivation
+explicitly. Both reviewers rechecked all committed changes against the fixed base:
+**zero remaining Standards findings; zero remaining Spec findings**. No review correction
+was amended into the implementation commit.
+
+The final focused gate passed **87 tests**, including the current target contract,
+historical paginated coordinates and V0 route material, and offline smoke-tool tests.
+Ruff, evaluator compile checks and whitespace checks passed. The first full backend run
+completed with **2971 passed / 10 skipped / 2 failed**. One failure was a stale route-test
+policy assertion, corrected in `904e318` and passing the focused gate. The other is the
+untouched V3 whole-request 0.1-second timeout test: isolated rerun reached a different
+pre-primary failure boundary, and an extracted fixed-base Git snapshot reproduced
+`runtime.closes == 0` versus expected one. No planner/runtime/test-version files differ
+from that baseline. This is an existing environment-sensitive test limitation, not a
+green full-backend result; changing generation or expanding into V3 is outside this
+Issue. Early Windows sandbox/temp-path failures were rerun with fresh task-local pytest
+directories and the normal external-socket prohibition; asyncio internal loopback was
+allowed. No external provider connection was made.
+
+The complete evaluator rerun passed **1053 tests / 1 skipped** after the corrections
+(329.35 seconds). Its snapshot-CLI pagination test was also exercised by the final
+87-test gate after the CLI change. Private test receipts are
+`artifacts/identity-83/full-01.txt`, `evaluation-final-02.txt` and `review-green-02.txt`
+in that directory. These document separate actual runs, not a recomputed all-green
+full-backend result. No further broad rerun was needed after the passing relevant gates.
+
+Final DNS/socket-blocked assessment verified all **91 original source hashes**, all
+**four #82 execution files** and exact historical report replay. The new offline-only
+packet has **nine V0 references: eight primary visits and one requirement target**, with
+**14 candidate appearances**. Exact regeneration matches its saved packet. Its local
+evidence identifiers are `artifacts/identity-83/offline-v0-packet.json` and
+`artifacts/identity-83/final-offline-assessment.json`; these are private aids, not public
+document dependencies. Actual model/Places/Routes/planner sends are **zero**, incremental
+paid calls **zero**. No new live result, execution manifest or allowance is claimed.
+The eight old PASS visits and historical requirement UNKNOWN remain unchanged under
+their original policy. A future complete nine-reference result requires separately
+approved preparation/execution and cannot reuse the consumed #82 allowance.

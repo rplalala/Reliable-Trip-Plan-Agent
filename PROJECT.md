@@ -121,8 +121,11 @@ shared; final requirement counting consumes each version's own target. Unbound p
 targets filter complete candidates by literal name, destination and supplied address
 before requiring one distinct ID. The current report/packet policies are
 `versioned_api_identity_2` and `v0_identity_correspondence_3`; historical #82 results
-retain their original policy. This correction is undergoing offline verification and
-dual review; no new paid execution or Git publication is authorized.
+retain their original policy. This correction is implemented and independently reviewed
+offline; evaluator tests pass. The full-backend gate retains an independently reproduced
+baseline V3 timeout-test failure. See the
+[acceptance record](docs/records/evaluation/intake-identity-usage.md#version-owned-requirement-targets-2026-10-06).
+No new paid execution or Git publication is authorized.
 The backlog task authorized specification publication only. The user subsequently
 authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
