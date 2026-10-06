@@ -216,11 +216,29 @@ Unsupported valid-wire context stays UNKNOWN without shifting dates or modes.
 
 `prepare_v0_route_requests(bundle_path, identity_report, *, prepared_at,
 schedule_context=None, occupancy_reviews=None, route_reviews=None,
-details_snapshot_directory=None)` returns immutable `RouteRequestPackage`, schema
-`rtpeval_v0_route_requests_1`. It replays the original V0/#66 material and the exact
-adoption report before using the existing occupancy/window preparation. It keeps
+details_snapshot_directory=None, legacy=False)` returns immutable `RouteRequestPackage`, schema
+`rtpeval_v0_route_requests_2`. It replays the original V0/#66 material and the exact
+current `versioned_api_identity_1` report before using the existing occupancy/window preparation. It keeps
 every selected V0 leg, source endpoints/dates/mode/estimate and continuous window,
 identity blockers and coordinate readiness. Native scorers and V0-V3 planners are unchanged.
+
+Default replay rejects historical identity policies. `legacy=True` (CLI `--legacy`) is
+an explicit historical input path; it cannot establish current acceptance or rewrite old
+saved packages. Supplying `identity_report=None` derives the current report from verified
+independent material without a model result or call; it preserves missing-evidence UNKNOWN
+blockers. Current identity replay has no mandatory human/audit gate. Supplied reports must
+replay exactly against original intake and independent facts; rejected/corrupt sources
+return `needs_material_correction` with no partial requests. The package records policy,
+legacy selection, report origin and presence of a current V0 model result.
+
+Per-leg `identity_endpoints` retain original claims, canonical identity (or null), candidate
+correspondence and grounding verdicts. `identity_blockers` expose the failed/unresolved
+endpoint reason and verdict. Confirmed address errors retain FAIL and null endpoints;
+candidate coordinates cannot repair them. The separate route verdict remains UNKNOWN
+without journey evidence. `eligible_endpoint_occurrences` counts non-null directed endpoint
+occurrences; `eligible_endpoint_venues` counts their unique IDs. Neither implies all legs
+are identity-eligible, coordinate-ready or provider-supported. Unknown identity cannot be
+replaced by historical adoptions to enlarge the request inventory.
 
 This preparation currently uses the explicitly selected KR provider profile checked
 2026-10-05; it does not infer geographic support from names. The
@@ -281,8 +299,10 @@ Changed readiness needs a regenerated inventory and separate budget approval. La
 authorized execution uses the current session's execution child under the
 [smoke policy](../agents/smoke-tests.md), `gpt-6.1-sol` / `medium`.
 
-The [dated preparation acceptance](../records/evaluation/routes.md#v0-route-request-preparation-2026-10-05)
-owns the actual four-leg inventory and limitations; the [package guide](../../backend/evaluation/README.md#v0-route-requests)
+The [current-policy acceptance](../records/evaluation/routes.md#versioned-v0-route-readiness-2026-10-06)
+records the zero-ready real package and synthetic revised-policy demonstration. The
+[historical preparation acceptance](../records/evaluation/routes.md#v0-route-request-preparation-2026-10-05)
+retains the older four-leg inventory and limitations; the [package guide](../../backend/evaluation/README.md#v0-route-requests)
 owns CLI invocation and exit codes.
 
 <a id="rtpeval-route-contract--route-evaluator-contract--draft"></a>
