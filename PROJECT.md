@@ -131,6 +131,15 @@ generation and budgets are unchanged. The full backend now passes 2983 tests wit
 The user subsequently authorized push, PR creation, published review and conditional
 merge/closure of #83 through [PR #84](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/84).
 GitHub owns the final delivery lifecycle. No new paid execution or smoke is authorized.
+The user subsequently authorized [follow-up #85](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/85)
+and offline smoke-plan refresh only. The merged #83 source is bound to a new private
+blocked draft covering eight V0 visits and one V0 requirement target, with fourteen
+candidate appearances. Its measured surrogate input plus reserve is 17,135 tokens,
+so the unchanged 16,000-token preparation guard rejects an executable manifest.
+See the [blocked refresh record](docs/records/evaluation/intake-identity-usage.md#v0-target-smoke-refresh-2026-10-06).
+An 18,000-token input ceiling and USD 0.0042 reference allowance are proposed for a
+separately approved offline correction; neither is implemented or live-approved.
+All original evidence remains preserved, and this task makes zero paid calls.
 The backlog task authorized specification publication only. The user subsequently
 authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these

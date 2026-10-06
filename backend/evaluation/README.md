@@ -192,6 +192,14 @@ authority. Its subsequently approved [one-call execution](../../docs/records/eva
 imported eight V0 primary PASS while preserving a requirement-subject UNKNOWN. That
 execution directory is now consumed; do not reuse it or infer route validation from identity.
 
+The subsequent [#85 offline refresh](../../docs/records/evaluation/intake-identity-usage.md#v0-target-smoke-refresh-2026-10-06)
+binds merged #83 source and all nine V0 visit/target references (fourteen candidate
+appearances). Real cached-tokenizer sizing is 16,111 input tokens, or 17,135 with reserve,
+exceeding the current 16,000 preparation ceiling. The guard correctly rejects preparation;
+the saved blocked draft is not an executable manifest and grants no live authority.
+An 18,000 input ceiling / USD 0.0042 allowance is an unapproved next offline proposal.
+Do not substitute the historical eight-visit request or trim candidate evidence to fit.
+
 `tools.validation.identity_judgment_smoke` is a separate development executor for a verified
 V0 material bundle. Preparation is offline; execution requires explicit user approval of
 the exact manifest digest and the [smoke execution handoff](../../docs/agents/smoke-tests.md).

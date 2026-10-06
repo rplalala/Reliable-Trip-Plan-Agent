@@ -2432,3 +2432,99 @@ This approval supersedes the preceding no-publication checkpoints only for this 
 delivery. It authorizes zero new model, Places, Routes, planner, database or embedding
 service calls, zero paid execution and no smoke, formal evaluation or version freeze.
 The prepared nine-reference packet and consumed historical #82 allowance remain unchanged.
+
+<a id="v0-target-smoke-refresh-2026-10-06"></a>
+
+### V0 visit/target smoke refresh and input-limit block (#85, 2026-10-06)
+
+Status: offline preparation and bounded sizing validated; executable preparation blocked.
+The user authorized follow-up Issue creation and offline plan refresh, with zero paid
+calls. [Issue #85](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/85) owns
+the live follow-up state. The source baseline is the completed #83/#84 merge
+`5dee3b97df79d0267a8c6d0bb2205d68106a2bdf`; preparation HEAD
+`2da623932b5e07accc67103738103e2e2e8fcaa3` has the same tracked tree. The branch remains
+`feature/evaluation`, and the unrelated unstaged `.gitignore` edit is preserved and
+excluded. No production code, tests, configuration, dependencies, generation flow,
+score formula or V1-V3 behavior changes in this refresh.
+
+The current `v0_identity_correspondence_3` packet replays exactly from preserved material:
+**nine V0 references = eight primary visits + one V0 requirement target**, with
+**fourteen candidate appearances**. The target now belongs to V0's correspondence path;
+V1-V3 retain program identity checks and receive no model evidence or fallback. Original
+claims and all supplied factual candidates remain intact. The old #82 report replays
+under its original policy; its eight PASS and shared-target UNKNOWN are historical
+results, not current-policy results. No new correspondence verdict or route feasibility
+is observed here, and FAIL/UNKNOWN must remain intact in any future assessment.
+
+#### Observed preparation failure and proposed next scope
+
+The scratch launcher first needed the repository import path (`PYTHONPATH=.`); after
+that local invocation correction, the real public preparation function rejected the
+request with `Estimated input exceeds smoke allowance`. DNS, socket connects and live
+SDK construction were blocked throughout actual preparation. Independent sizing with
+the checksummed, locally cached o200k tokenizer measured **16,111 input tokens**, or
+**17,135 including the existing 1,024 reserve**. This exceeds the unchanged 16,000
+limit by 1,135. The guard runs before directory creation or any send; it behaved as
+intended. This is an input-capacity finding, not an API/model failure. No vocabulary
+download, credential probe, execution child, provider request or paid retry occurred.
+
+The revised handoff is explicitly blocked; it does not include an executable dispatch
+command or a `preparation.json` accepted by the executor. Approval of the blocked draft
+alone cannot make the unchanged executor accept this request. The proposed next scope
+is a separately authorized offline correction to the smoke-only limits and regression
+coverage, followed by a fresh compatible manifest and another one-use directory:
+
+| Limit | Current unchanged executor | Unapproved next proposal |
+| --- | --- | --- |
+| Input tokens, including 1,024 reserve | 16,000 | 18,000 |
+| Output tokens | 3,000 | 3,000 |
+| Requests / retries / HTTP timeout | 1 / 0 / 60 seconds | 1 / 0 / 60 seconds |
+| Standard reference maximum | USD 0.0035 | USD 0.00375 |
+| Regional +10% reference maximum | USD 0.00385 | USD 0.004125 |
+| Reference allowance | USD 0.004 | USD 0.0042 |
+
+The proposed input ceiling leaves 865 surrogate tokens beyond this reserved estimate.
+The model remains `gpt-6-luna`, reasoning `low`, `store=false`, without tools. The prices
+are reused from the tool's documented 2026-10-06 reference basis, without a new pricing
+network request: USD 0.10 ordinary input, 0.01 cached input, 0.125 cache writes and 0.50
+output per million tokens. The maximum assumes all input billed as cache writes and
+counts output/reasoning once. The proposal increases the regional reference maximum
+by USD 0.000275; it is not a Foundry invoice or provider-tokenizer guarantee. No budget
+change is implemented or authorized for execution. Candidate truncation, a different
+eight-visit scope, additional requests and repairs are not used to bypass the guard.
+
+#### Frozen offline evidence and boundaries
+
+The private evidence identifier is `artifacts/v0-identity-smoke-85-20261006`, containing
+`blocked-preparation.json`, `pending-identity-report.json`, `handoff.md`,
+`offline-acceptance.json` and subsequent offline check receipts. This is a local evidence
+identifier, not a published dependency. The blocked draft binds the merged revision,
+exact packet/wire request, private destination, **102 protected source/file hashes**
+and **69 current implementation/dependency hashes**, current limits and the unapproved
+proposal. All **91 historical source hashes**, **four #82 execution outputs** and
+**ten existing #82 preparation/execution files** remain byte-identical; the #83 offline
+packet is also protected. Old #82 implementation hashes are historical, not asserted
+to match the deliberately changed #83 implementation.
+
+Blocked draft SHA-256:
+`f693b1d5c9e852c6ccd74f870400c3c25c37f9d240117fbbd643d69cafc3897f`.
+Wire request SHA-256:
+`f829b61a0b912c035f21c00033c6bb474de4ecd7d62fce46466c4e4bcd6fdc17`.
+No compatible executable manifest or execution directory exists. #73 and #82 allowances
+remain consumed, and their original attempts/results cannot be deleted or regenerated
+for a retry. A future live request requires the compatible new manifest, separate exact
+user approval and a newly dispatched current-session `gpt-6.1-sol` / `medium` child under
+the [smoke policy](../../agents/smoke-tests.md). Credential prerequisites belong in the
+private handoff; no credentials or private provider destination are tracked.
+
+The unchanged-code full backend gate remains **2983 passed / 10 skipped** from the
+[V3 deadline-phase correction](../v0-v3/v3-development.md#deadline-phase-regression-2026-10-06).
+Fresh focused synthetic smoke tests passed **30 tests / zero failures** in 18.22 seconds,
+using mock transports and the backend external-network guard. No implementation or
+synthetic test needed correction. The separate real-packet capacity check reproduced
+the intended pre-send rejection; fixture test success is not real-packet readiness.
+Document/hash checks verify tracked links, anchors, English additions, exclusion of the
+private destination, exact packet/pending-report replay and absence of runtime changes.
+This preparation adds no live evidence, formal benchmark, score comparison,
+route validation, version freeze or Git publication authorization. Issue #85 remains
+open for the blocked prerequisite and separately approved future execution/assessment.
