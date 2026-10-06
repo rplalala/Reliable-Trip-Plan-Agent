@@ -218,7 +218,7 @@ Unsupported valid-wire context stays UNKNOWN without shifting dates or modes.
 schedule_context=None, occupancy_reviews=None, route_reviews=None,
 details_snapshot_directory=None, legacy=False)` returns immutable `RouteRequestPackage`, schema
 `rtpeval_v0_route_requests_2`. It replays the original V0/#66 material and the exact
-current `versioned_api_identity_1` report before using the existing occupancy/window preparation. It keeps
+current `versioned_api_identity_2` report before using the existing occupancy/window preparation. It keeps
 every selected V0 leg, source endpoints/dates/mode/estimate and continuous window,
 identity blockers and coordinate readiness. Native scorers and V0-V3 planners are unchanged.
 

@@ -24,6 +24,12 @@ def main(argv=None):
         sub = commands.add_parser(name)
         sub.add_argument("directory")
         sub.add_argument("--expected-plan")
+        if name == "identity-evidence":
+            sub.add_argument(
+                "--historical",
+                action="store_true",
+                help="Derive the original evidence wire for historical report replay",
+            )
     args = parser.parse_args(argv)
     try:
         if args.command.endswith("plan"):
@@ -40,7 +46,9 @@ def main(argv=None):
             expected = _read(Path(args.expected_plan))[0] if args.expected_plan else None
             snapshot = load_snapshot(args.directory, expected_plan=expected)
             output = (
-                identity_evidence(snapshot) if args.command == "identity-evidence" else snapshot
+                identity_evidence(snapshot, historical=args.historical)
+                if args.command == "identity-evidence"
+                else snapshot
             )
     except (ValueError, TypeError, KeyError, OSError) as exc:
         print(

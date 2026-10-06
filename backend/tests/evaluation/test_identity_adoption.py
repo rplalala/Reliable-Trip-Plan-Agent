@@ -114,7 +114,10 @@ def adoption_case(batch, tmp_path, request):
             alternative = copy.deepcopy(candidate)
             alternative.update(id="alternate-gallery", displayName={"text": "Another gallery"})
             candidates.append(alternative)
-        return Response(200, json.dumps({"places": candidates}).encode())
+        payload = {"places": candidates}
+        if options.get("pagination"):
+            payload["nextPageToken"] = "remaining-page"
+        return Response(200, json.dumps(payload).encode())
 
     directory = tmp_path / "identity-snapshot"
     snapshot = asyncio.run(
@@ -122,7 +125,7 @@ def adoption_case(batch, tmp_path, request):
             build_identity_plan(intake), directory, transport, AcquisitionPolicy(max_sends=10)
         )
     )
-    observed = identity_evidence(snapshot)
+    observed = identity_evidence(snapshot, historical=bool(options.get("pagination")))
     queued = {q["reference_id"]: q["search"]["candidates"] for q in observed["records"]}
     cases = [
         {

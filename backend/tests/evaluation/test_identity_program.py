@@ -63,7 +63,7 @@ def test_api_exact_match_without_model_and_wrong_address_is_fail(batch):
     assert intake.to_dict() == original
 
 
-def test_v0_packet_excludes_shared_subject_and_bound_requirement_needs_no_model(batch):
+def test_v0_packet_includes_own_subject_and_program_requirement_needs_no_model(batch):
     manifest, _results, _write, save, root = batch
     spec = json.loads((root / "requirements.json").read_text())
     spec["subjects"] = [
@@ -89,11 +89,11 @@ def test_v0_packet_excludes_shared_subject_and_bound_requirement_needs_no_model(
     packet = prepare_identity_judgment(intake, observed, model="fixture-model").to_dict()
     cases = json.loads(packet["request"]["input"])["cases"]
     assert {c["version"] for c in cases} == {"v0"}
-    assert {c["kind"] for c in cases} == {"primary_visit"}
+    assert {c["kind"] for c in cases} == {"primary_visit", "requirement_subject"}
     record = next(
         r
         for r in resolve_identities(intake, observed).to_dict()["records"]
-        if r["kind"] == "requirement_subject"
+        if r["kind"] == "requirement_subject" and r["version"] == "v1"
     )
     assert record["grounding_verdict"] == "PASS"
     assert record["canonical_place_id"] == "venue-a"
@@ -441,9 +441,15 @@ def test_unbound_requirement_uncertainty_is_local_and_cli_continues(batch, capsy
     out = json.loads(capsys.readouterr().out)
     assert code == 3, out
     assert identity_ready(intake.to_dict(), out)
-    record = next(r for r in out["records"] if r["kind"] == "requirement_subject")
+    record = next(
+        r for r in out["records"] if r["kind"] == "requirement_subject" and r["version"] == "v1"
+    )
     assert record["grounding_verdict"] == ("PASS" if variant == "exact" else "UNKNOWN")
-    assert [r["grounding_verdict"] for r in out["records"] if r["version"] == "v1"] == [
+    assert [
+        r["grounding_verdict"]
+        for r in out["records"]
+        if r["version"] == "v1" and r["kind"] == "primary_visit"
+    ] == [
         "PASS",
         "PASS",
     ]

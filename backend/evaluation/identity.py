@@ -165,7 +165,7 @@ def _candidate(raw):
     }
 
 
-def _observation_index(envelope, refs, prepared):
+def _observation_index(envelope, refs, prepared, *, allow_incomplete=False):
     if not isinstance(envelope, dict) or envelope.get("schema_version") != EVIDENCE_VERSION:
         raise ValueError("Unsupported identity evidence envelope")
     if (envelope.get("batch_id"), envelope.get("batch_revision")) != (
@@ -190,7 +190,9 @@ def _observation_index(envelope, refs, prepared):
         if record["observation_id"] in observation_ids:
             raise ValueError("Duplicate identity observation ID")
         observation_ids.add(record["observation_id"])
-        if record.get("source_kind") != "independent_google_places":
+        if record.get("source_kind") != "independent_google_places" and not (
+            allow_incomplete and record.get("source_kind") is None
+        ):
             raise ValueError("Identity observation must declare independent source")
         for key in ("details", "search"):
             observation = record.get(key)
@@ -203,10 +205,15 @@ def _observation_index(envelope, refs, prepared):
                 "malformed",
             ):
                 raise ValueError("Invalid identity observation state")
-            if observation["status"] == "available" and not text(observation.get("retrieved_at")):
+            if (
+                not allow_incomplete
+                and observation["status"] == "available"
+                and not text(observation.get("retrieved_at"))
+            ):
                 raise ValueError("Available identity observation needs retrieval time")
             if (
                 key == "search"
+                and not allow_incomplete
                 and observation["status"] == "available"
                 and not text(observation.get("query"))
             ):
@@ -224,17 +231,26 @@ def _observation_index(envelope, refs, prepared):
     return indexed
 
 
-def _evidence_candidates(record):
+def _evidence_candidates(record, *, require_provenance=False):
+    if require_provenance and record and record.get("source_kind") != "independent_google_places":
+        return None, []
     details = record.get("details") if record else None
     search = record.get("search") if record else None
     detail_candidate = (
         _candidate(details.get("place"))
-        if isinstance(details, dict) and details.get("status") == "available"
+        if isinstance(details, dict)
+        and details.get("status") == "available"
+        and (not require_provenance or text(details.get("retrieved_at")))
         else None
     )
     search_candidates = (
         [_candidate(item) for item in search["candidates"]]
-        if isinstance(search, dict) and search.get("status") == "available"
+        if isinstance(search, dict)
+        and search.get("status") == "available"
+        and (
+            not require_provenance
+            or (text(search.get("retrieved_at")) and text(search.get("query")))
+        )
         else []
     )
     return detail_candidate, [item for item in search_candidates if item is not None]

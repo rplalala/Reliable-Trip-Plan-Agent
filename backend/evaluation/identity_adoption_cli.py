@@ -20,7 +20,11 @@ def main(argv=None):
         def read(path):
             return _read(Path(path))[0] if path else None
 
-        material = load_v0_material(None, args.bundle)
+        material = load_v0_material(
+            None,
+            args.bundle,
+            historical=args.legacy or args.historical_llm or args.historical_program,
+        )
         result = identity_command(
             thaw(material.intake),
             thaw(material.evidence),

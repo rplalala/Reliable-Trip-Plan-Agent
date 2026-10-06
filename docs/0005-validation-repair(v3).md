@@ -85,6 +85,12 @@ stages cannot reset it. Exhaustion, cancellation, no authorized target, rejected
 and accepted repair are separate recorded outcomes. Final Nearby runs after final primary
 selection and cannot modify the accepted primary plan.
 
+Retrieval initialization is lazy. If the request expires before its factory runs, no
+runtime exists to release. A factory-created runtime is released once on timeout or
+cancellation; a caller-owned runtime remains caller-owned. Offline deadline regressions
+must establish which phase was reached before asserting its resource lifecycle, rather
+than relying on a short wall-clock delay to select that phase.
+
 ## Verification scope
 
 Offline tests exercise authorization, regressions, component interactions, rejection and

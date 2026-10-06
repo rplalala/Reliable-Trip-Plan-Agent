@@ -22,7 +22,8 @@ from .records import canonical_digest as digest
 from .records import freeze, text, thaw
 
 POLICY_VERSION = "llm_identity_judgment_2"
-V0_POLICY_VERSION = "v0_identity_correspondence_2"
+LEGACY_V0_POLICY_VERSION = "v0_identity_correspondence_2"
+V0_POLICY_VERSION = "v0_identity_correspondence_3"
 PACKET_VERSION = "rtpeval_identity_judgment_packet_1"
 RESULT_VERSION = "rtpeval_identity_model_result_1"
 ADDRESS_STATES = (
@@ -149,14 +150,21 @@ def judgment_schema(*, historical=True):
     }
 
 
-def _cases(prepared, evidence, *, v0_only=False):
+def _cases(prepared, evidence, *, v0_only=False, legacy_v0=False):
     refs = identity_references(prepared)
-    observed = _observation_index(evidence, refs, prepared)
+    observed = _observation_index(evidence, refs, prepared) if not v0_only or legacy_v0 else {}
     if v0_only:
-        refs = [r for r in refs if r["version"] == "v0" and r["kind"] == "primary_visit"]
+        if not legacy_v0:
+            from .identity_targets import versioned_observations, versioned_references
+
+            refs = versioned_references(prepared)
+            observed = versioned_observations(prepared, evidence, refs)
+        refs = [r for r in refs if r["version"] == "v0"]
     cases = []
     for ref in refs:
-        detail, search = _evidence_candidates(observed.get(ref["reference_id"]))
+        detail, search = _evidence_candidates(
+            observed.get(ref["reference_id"]), require_provenance=v0_only and not legacy_v0
+        )
         candidates = {}
         for candidate in ([detail] if detail else []) + search:
             pid = candidate["place_id"]
@@ -212,12 +220,12 @@ def _correspondence_schema(packet):
     return schema
 
 
-def prepare_identity_judgment(intake, evidence, *, model, historical=False):
+def prepare_identity_judgment(intake, evidence, *, model, historical=False, legacy_v0=False):
     """Freeze a complete model request without executing a model or provider."""
     if not text(model):
         raise ValueError("An explicit judgment model is required")
     prepared = _intake_dict(intake)
-    refs, _, cases = _cases(prepared, evidence, v0_only=not historical)
+    refs, _, cases = _cases(prepared, evidence, v0_only=not historical, legacy_v0=legacy_v0)
     if not refs:
         raise ValueError("No applicable identity references")
     packet = _packet(cases)
@@ -244,7 +252,14 @@ def prepare_identity_judgment(intake, evidence, *, model, historical=False):
             }
         },
     }
-    scope = {} if historical else {"association_policy_version": V0_POLICY_VERSION}
+    if not historical and not legacy_v0:
+        request["instructions"] += (
+            "\nV0 requirement_subject cases represent the original user-requested venue, "
+            "not a planner visit. Resolve them only against their own independent candidates. "
+            "Their judgments belong to V0 only. Do not borrow another case's decision."
+        )
+    policy = LEGACY_V0_POLICY_VERSION if legacy_v0 else V0_POLICY_VERSION
+    scope = {} if historical else {"association_policy_version": policy}
     return IdentityJudgmentPacket(
         freeze(
             {
@@ -263,7 +278,7 @@ def prepare_identity_judgment(intake, evidence, *, model, historical=False):
     )
 
 
-def _decisions(intake, evidence, cases, material, *, historical=True):
+def _decisions(intake, evidence, cases, material, *, historical=True, legacy_v0=False):
     if material is None:
         return {}, None
     if not isinstance(material, dict) or material.get("schema_version") != RESULT_VERSION:
@@ -271,7 +286,7 @@ def _decisions(intake, evidence, cases, material, *, historical=True):
     saved = material["packet"]
     model = saved["request"]["model"]
     expected = prepare_identity_judgment(
-        intake, evidence, model=model, historical=historical
+        intake, evidence, model=model, historical=historical, legacy_v0=legacy_v0
     ).to_dict()
     if saved != expected:
         raise ValueError("Identity model packet/source mismatch")
@@ -402,7 +417,15 @@ def _decisions(intake, evidence, cases, material, *, historical=True):
                 raise ValueError("Address assessment contradicts original location presence")
         decisions[row["reference_id"]] = row
     return decisions, {
-        **({"association_policy_version": V0_POLICY_VERSION} if not historical else {}),
+        **(
+            {
+                "association_policy_version": LEGACY_V0_POLICY_VERSION
+                if legacy_v0
+                else V0_POLICY_VERSION
+            }
+            if not historical
+            else {}
+        ),
         "model": model,
         "response_id": response["id"],
         "request_sha256": expected["request_sha256"],
@@ -414,12 +437,12 @@ def _decisions(intake, evidence, cases, material, *, historical=True):
     }
 
 
-def resolve_llm_identities(intake, evidence, *, model_result=None, v0_only=False):
+def resolve_llm_identities(intake, evidence, *, model_result=None, v0_only=False, legacy_v0=False):
     """Keep missing judgments unresolved; no human or automatic-name fallback."""
     prepared = _intake_dict(intake)
-    refs, observed, cases = _cases(prepared, evidence, v0_only=v0_only)
+    refs, observed, cases = _cases(prepared, evidence, v0_only=v0_only, legacy_v0=legacy_v0)
     decisions, provenance = _decisions(
-        prepared, evidence, cases, model_result, historical=not v0_only
+        prepared, evidence, cases, model_result, historical=not v0_only, legacy_v0=legacy_v0
     )
     subjects = [r for r in refs if r["kind"] == "requirement_subject"]
     records = []
@@ -448,6 +471,11 @@ def resolve_llm_identities(intake, evidence, *, model_result=None, v0_only=False
                     verdict = "PASS"
         records.append(
             {
+                **(
+                    {"evidence_reference_id": ref["evidence_reference_id"]}
+                    if "evidence_reference_id" in ref
+                    else {}
+                ),
                 **{
                     k: ref[k]
                     for k in (

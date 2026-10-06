@@ -200,9 +200,11 @@ borrowing V0 model judgments. Wrong original addresses and different venues are 
 failed/missing API evidence is UNKNOWN. Original claims and erroneous endpoints are
 never repaired, and score arithmetic is unchanged.
 
-Implemented locally under [#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/75).
+Implemented under [#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/75),
+with version-owned requirement targets corrected locally under
+[#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83).
 `resolve_identities(intake, evidence, *, model_result=None)` produces
-`association_policy_version=versioned_api_identity_1`. Every V1-V3 final/optional
+`association_policy_version=versioned_api_identity_2`. Every V1-V3 final/optional
 primary visit requires its original `source_place_id`, structured `place_name` and
 `location`. Proven missing fields are FAIL even without an API response. Independent
 Details must have an available observation with retrieval provenance, the requested ID
@@ -213,18 +215,46 @@ Only PASS adopts a canonical ID. FAIL/UNKNOWN retain null canonical IDs and orig
 
 Reviewed requirement subjects can retain an optional `source_place_id`; it is a claim
 binding, not factual evidence. Identity planning independently requests its Details.
-Without a binding, deterministic resolution requires the exact original search query,
-the declared 20-result scope, a complete unique candidate and verified destination.
-Ambiguous/missing search evidence remains UNKNOWN. Shared subjects always use program
-checks; malformed/conflicting typed destination components are a local UNKNOWN and do
-not abort other references. Shared subjects never enter V0 model packets. A confirmed
-programmatic subject failure is retained as a FAIL component in associated requirement checks.
+RequirementSpec meaning and acquisition references remain shared, but target identity
+results belong to each submitted version. Target reference IDs hash their source with
+the version; `evidence_reference_id` links to the original shared acquisition reference.
+V0 targets use only V0 model correspondence. V1-V3 targets use program rules and never
+borrow a V0 decision. Each version's projections share its target result.
 
-Default `prepare_identity_judgment(..., model=MODEL)` includes only V0 primary visits,
-with packet policy `v0_identity_correspondence_2`; source digests and short-reference
+Without a binding, V1-V3 resolution requires the exact original query, declared
+20-result scope, independent-source/retrieval provenance and the complete retained set.
+The candidate count must equal the declared result count; a full 20-result page or
+retained next-page token remains UNKNOWN because completeness is unverified. A present
+pagination field with an empty or non-string value is malformed and also UNKNOWN. Malformed
+candidates or conflicting facts for one ID also remain UNKNOWN. Filter all candidates
+by literal original name, verified destination and any supplied literal formatted
+address, then require one distinct surviving ID. Zero/multiple matches are UNKNOWN;
+rank never chooses a candidate. Identical repeated observations of one ID are allowed.
+Destination tokens use literal typed long/short component values, with explicit locality
+or administrative region and country evidence; without typed components they require
+exact formatted-address tokens. Hierarchical sublocality levels remain separate and
+do not conflict through their generic sublocality tag. Conflicting/malformed typed
+components cannot be overridden by formatted text. Historical address rules are unchanged.
+Missing source/retrieval/query provenance remains a local UNKNOWN; false source declarations,
+invalid batch/reference linkage and impossible count structure remain material errors.
+
+Default `prepare_identity_judgment(..., model=MODEL)` includes V0 primary visits and
+V0 requirement targets only, with packet policy `v0_identity_correspondence_3`;
+source digests and short-reference
 ownership bind eligibility. Foreign decisions, historical all-version packets and edited policy/version
 markers cannot pass current import. Absence of a V0 result leaves V0 UNKNOWN while V1-V3
-and shared subjects still evaluate. No resolver/CLI executes a model or provider.
+targets still evaluate. Confirmed target FAIL is retained as a component of that
+version's associated requirement checks. No resolver/CLI executes a model or provider.
+
+Explicit `--historical-program` replays `versioned_api_identity_1`, including shared
+programmatic targets, the original single-result rule and V0 packet policy
+`v0_identity_correspondence_2`. Old packets cannot pass current import; saved reports
+replay against their original policy. Historical raw smoke files are never rewritten.
+Snapshot coordinate consumers select evidence derivation from the replay-verified report
+policy; explicit historical V0 material loaders and CLI modes preserve the original wire
+without adding new pagination metadata. `snapshot_cli identity-evidence --historical`
+derives that original wire. Current derivation retains pagination uncertainty; historical
+compatibility never removes it from a current-policy report.
 
 The V0 response correction is implemented locally under
 [#76](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/76). The model's primary

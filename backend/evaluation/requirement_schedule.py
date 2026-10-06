@@ -213,6 +213,7 @@ def _requirement_checks(group, projection, identity_index, timezone):
         for item in identity_index.values()
         if item["kind"] == "requirement_subject"
         and item["group_id"] == group["group_id"]
+        and item["version"] in (None, projection["planner_version"])
         and item["resolution"] == "resolved"
     }
     subject_failures = {
@@ -220,7 +221,8 @@ def _requirement_checks(group, projection, identity_index, timezone):
         for item in identity_index.values()
         if item["kind"] == "requirement_subject"
         and item["group_id"] == group["group_id"]
-        and "programmatic_judgment" in item
+        and item["version"] in (None, projection["planner_version"])
+        and ("programmatic_judgment" in item or "candidate_correspondence" in item)
         and item["grounding_verdict"] == "FAIL"
     }
     checks = []

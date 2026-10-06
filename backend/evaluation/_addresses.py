@@ -6,7 +6,7 @@ from ._claims import normalized
 from .records import text
 
 
-def components(candidate):
+def components(candidate, *, literal=False, hierarchical=False):
     raw = candidate.get("address_components")
     if "address_components" not in candidate:
         return {}
@@ -19,13 +19,17 @@ def components(candidate):
         kinds = item.get("types")
         if not isinstance(kinds, list) or not kinds or not all(text(k) for k in kinds):
             raise ValueError("Address component requires types")
-        values = {normalized(item["longText"])}
+        values = {item["longText"] if literal else normalized(item["longText"])}
         if "shortText" in item:
             if not text(item["shortText"]):
                 raise ValueError("Invalid shortText")
-            values.add(normalized(item["shortText"]))
+            values.add(item["shortText"] if literal else normalized(item["shortText"]))
         for kind in kinds:
-            if kind == "political":
+            if kind == "political" or (
+                hierarchical
+                and kind == "sublocality"
+                and any(k.startswith("sublocality_level_") for k in kinds)
+            ):
                 continue
             if kind in result and result[kind] != values:
                 raise ValueError("Conflicting address components")
@@ -52,6 +56,38 @@ def destination_matches(value, candidate):
         )
     )
     return parts[0] in typed["locality"] and all(p in qualifiers for p in parts[1:])
+
+
+def strict_destination_matches(value, candidate):
+    """Verify every literal destination token without legacy semantic normalization."""
+    parts = [piece.strip() for piece in re.split(r"[,;]", value)]
+    if not parts or any(not part for part in parts):
+        return False
+    typed = components(candidate, literal=True, hierarchical=True)
+    if typed:
+        destinations = set().union(
+            *(
+                typed.get(kind, set())
+                for kind in (
+                    "locality",
+                    "administrative_area_level_1",
+                    "administrative_area_level_2",
+                )
+            )
+        )
+        qualifiers = set().union(
+            *(
+                typed.get(kind, set())
+                for kind in (
+                    "country",
+                    "administrative_area_level_1",
+                    "administrative_area_level_2",
+                )
+            )
+        )
+        return parts[0] in destinations and all(part in qualifiers for part in parts[1:])
+    address = {piece.strip() for piece in re.split(r"[,;]", candidate["formatted_address"])}
+    return all(part in address for part in parts)
 
 
 def street_forms(typed):

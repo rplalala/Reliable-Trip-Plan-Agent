@@ -2160,3 +2160,275 @@ adds self-contained evidence before closing only fully met scopes. #67/#70/#72/#
 closed without repeated mutations. Actual merge and final lifecycle outcomes belong to
 the linked PR/Issues; this pre-merge record does not anticipate their success. No paid
 call, new original-output repair, scoring change, formal evaluation or freeze occurs.
+
+<a id="post-merge-v0-smoke-refresh-2026-10-06"></a>
+
+### Post-merge V0 smoke refresh (#82, 2026-10-06)
+
+The user explicitly authorized a follow-up Issue and refreshed offline plan, with zero
+paid calls and no execution. [Issue #82](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/82)
+owns this preparation and a separately gated future execution slice. Completed #74-#79
+remain historical acceptance; #77's preserved plan is stale after #78 changed
+`route_requests.py` and `route_requests_cli.py`. It is not silently updated or retried.
+
+Fixed review/source base is `e6cd6e5eb38cf02fb12316a50d9cf4e439f22381` on
+`feature/evaluation`. Merged main `e2ff2a722f03eaddeb0ff3655768e30c6da4990a` has the same
+tree `74d90ef5d127c1eb92d7ecde96a465f1b0f7b606`. These are the resulting refs after the
+user-authorized compression of three docs commits and remote main history update;
+PR #81's historical merge receipt retains `eae5411` and its original published head.
+This refresh makes no new Git publication or history change. Only current/dated
+documentation changes are tracked; the unrelated `.gitignore` edit remains excluded.
+No runtime, dependency, generation flow, V0-V3 behavior or scoring formula changes.
+
+The new private preparation identifier is `artifacts/v0-identity-smoke-82-20261006`.
+Its manifest, pending identity report, handoff and offline acceptance receipt bind
+**91 source hashes and 68 implementation/dependency hashes**. The expanded source guard
+includes original material, #73 consumed failure evidence, the stale #77 preparation,
+and #70/#78 route material. All protected bytes remain unchanged. The new execution
+directory is absent; preparation blocks DNS, socket connections and model-client creation.
+The exact configured HTTPS Responses destination and configuration prerequisites stay
+in the private handoff, alongside source revisions, command/digest and output paths.
+The reference map is `packet.reference_maps`; cases are in `wire_request.input` JSON.
+Private raw claims/candidates, destination and secrets are excluded from tracked material.
+Local identifiers here are evidence references, not public navigation dependencies.
+
+Current scope is **eight V0 primary references and nine independent API candidates**,
+all eight original addresses supplied. Shared requirement subjects and V1-V3 remain
+programmatically verified outside the model request. The eight pending V0 UNKNOWN
+verdicts are byte-identical to #77's pending report; no fresh accepted real model result
+exists. The four preserved route legs remain UNKNOWN/blocked with zero acquisition
+requests. Raw output is not repaired, and all-PASS is not an acceptance target.
+
+New canonical manifest SHA-256:
+`c3f59f878c0e060d3c4fd3248d1f75d5e78ccf669f307f2de3bd78f6b39f9e20`.
+Wire-request SHA-256:
+`ffc53c919ddc9b51a59b720a019f0197d1058222fd71263ef8a57a042d584d56`.
+The wire is intentionally unchanged: #78 changed the implementation inventory, not
+the V0 request/schema. The new manifest binds current hashes, expanded preservation
+and a fresh directory; an unchanged wire never renews the old approval.
+
+Proposed request: **one `gpt-6-luna` call, low reasoning, `store=false`, no tools**;
+16,000 input/3,000 output token caps, 1,024 input reserve, 60-second HTTP timeout and
+zero retries. Offline sizing remains **12,652 tokens including reserve**, using the
+cached tokenizer with networking prohibited. Google, planner and Routes proposals are zero.
+[Official model prices](https://developers.openai.com/api/docs/models/gpt-6-luna) and
+[cache categories](https://developers.openai.com/api/docs/guides/prompt-caching) were
+rechecked 2026-10-06: per million tokens USD 0.10 ordinary input, 0.01 cached input,
+0.125 cache writes and 0.50 output. Input categories partition the input total; output
+already includes reasoning. The standard maximum reference is USD 0.0035, regional
++10% scenario USD 0.00385, and proposed fresh reference allowance USD 0.004. These
+are retail references, not an established Foundry service tier or invoice ceiling.
+Actual incremental preparation charges are USD 0; provider invoice remains unavailable.
+
+Fresh offline executor/current-contract/route tests passed **100 in 46.65s** using
+synthetic fixtures and injected transports. They cover preparation without credentials,
+V0-only routing, complete owned decisions, citations, missing original addresses,
+successful correspondence, confirmed FAIL, legitimate UNKNOWN, source changes, usage
+categories and terminal attempt consumption. Test attempts use separate synthetic
+directories, never the actual new execution directory. The first scratch launcher used
+an unsupported relative Python module name and exited before preparation; the corrected
+`runpy.run_path` launch prepared successfully. No code correction or new test was needed.
+The ignored local test receipt is `.scratch/pytest-82-offline.txt`. The earlier full
+backend **2945 passed / 10 skipped** at `571ed95` still covers unchanged runtime code;
+it is reused evidence, not a fresh full-suite or CI result. No new live evidence exists.
+
+Only separate approval of this exact new manifest/destination/data scope/limits may
+authorize a future send, after hash revalidation. Dispatch must then use a current-session
+`gpt-6.1-sol` / `medium` execution child; none is dispatched now. One attempt consumes
+its directory even on error. Preserve raw bytes, usage and failures; distinguish HTTP
+success from accepted import. Invalid/partial/foreign/citation/usage/source results stop;
+legitimate FAIL/UNKNOWN remain valid imports with original claims and null canonical
+endpoints. #73's consumed allowance remains consumed. Issue #82 stays open for the
+unapproved future slice; no paid send, push, PR, merge, formal run or freeze is authorized.
+
+<a id="v0-identity-smoke-execution-2026-10-06"></a>
+
+### Approved V0 identity smoke execution (#82, 2026-10-06)
+
+After the offline refresh and parameter explanation, the user explicitly approved the
+V0 identity smoke in the current session. This supersedes the preparation-only boundary
+for exactly one frozen attempt, not any further request or Git publication. The
+[approval receipt](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/82#issuecomment-6007810684)
+binds canonical manifest
+`c3f59f878c0e060d3c4fd3248d1f75d5e78ccf669f307f2de3bd78f6b39f9e20`, private destination,
+eight primary V0 references/nine independent supplied candidates and the existing
+token/time/zero-retry/USD 0.004 retail-reference limits. Current source and documentation
+review base are `1220da6720ac65f7289a53c45b881515ed5673bf` on `feature/evaluation`;
+no runtime changes follow the frozen `e6cd6e5` implementation. The unrelated `.gitignore`
+edit remains excluded. All 91 source and 68 implementation/dependency hashes matched
+before dispatch; credentials were present, destination/deployment matched and the
+bound execution directory was absent. No secrets or private endpoint are recorded here.
+
+Only the current-session `gpt-6.1-sol` / `medium` execution child ran the exact approved
+`identity_judgment_smoke execute` command, once. The provider request itself used
+`gpt-6-luna` / `low`, with `store=false` and no tools. Process exit was **0**; the
+request started at **2026-10-06T02:04:58.521275+00:00** and the complete raw response
+was retrieved at **2026-10-06T02:05:04.486105+00:00**. HTTP was **200**, provider status
+`completed`, with no reported error/incomplete code. Actual sends were **one model,
+zero retries, zero Places/Google, zero Routes and zero planner**. No additional request
+was dispatched, and there was no configured-limit or scope deviation.
+
+HTTP success is distinct from accepted import. The complete source-bound response
+imported successfully through `versioned_api_identity_1`: all **eight V0 primary
+references are PASS**, with `match` correspondence; none are FAIL/UNKNOWN in this
+particular response. A separate requirement subject was excluded from the model
+request and remains **UNKNOWN**. Consequently the overall identity report is still
+**`needs_evidence`**. These are observed outcomes, not an all-PASS requirement or a
+claim that every user requirement has independent verification.
+
+Reported usage: **10,842 input tokens**, partitioned into **10,839 cache-write,
+zero cached and three ordinary input tokens**; **808 output tokens**, including
+**zero reported reasoning tokens**; **11,650 total tokens**. Zero reported reasoning
+tokens do not change the requested `low` setting or establish an absence of internal
+reasoning. At the frozen retail-reference rates, standard cost is **USD 0.001759175**;
+the regional +10% reference scenario is **USD 0.0019350925**, both below USD 0.004.
+The receipt basis is `reported_categories`, not a missing-category estimate. These
+reference calculations are not actual Foundry billing: invoice, SKU/tier, credits
+and tax remain unavailable. No model fee of zero is claimed for this live request.
+
+The consumed private execution identifier is
+`artifacts/v0-identity-smoke-82-20261006/execution`. It retains `response.bin`,
+`execution.json`, `model-result.json` and `identity-report.json`. Raw response SHA-256:
+`dbf3ff340a86ee7a7b771736ab26759b8c29c103b8751bb1be1bac8e4180fe7d`.
+The immutable original #73 failure/consumed allowance, #77 stale preparation and
+#70/#78 route material remain intact. Old pending reports are not overwritten by
+the new accepted report; their UNKNOWN verdicts retain their historical meaning.
+
+Parent assessment was entirely offline, with DNS/socket connection prohibited. It
+verified all protected/source implementation hashes, receipt/raw/model-result digests,
+and exact replay of the accepted identity report against original material. All
+original claims and all non-V0 records are unchanged. FAIL/UNKNOWN canonical-null
+invariants remain checked without repairing output. The private assessment identifier
+is `artifacts/v0-identity-smoke-82-20261006/execution-assessment.json`; it is local
+evidence, not a public document dependency. No runtime correction or new test was
+required; the preceding **100 passed** fixture gate and unchanged-code full backend
+gate are reused, not new test/CI runs or repeated live validation.
+
+This is bounded development smoke evidence, not a formal benchmark, human review,
+version comparison, freeze, scoring run or route feasibility result. Preserved
+route packages retain their original blocked outcomes; no route package or score
+was regenerated. Any route preparation/acquisition or further identity attempt
+requires its own approved scope. The one-call directory and allowance are consumed;
+do not delete/regenerate them to retry. Issue #82 owns final acceptance and lifecycle;
+local documentation does not anticipate remote closure or authorize push/PR/merge.
+
+<a id="version-owned-requirement-targets-2026-10-06"></a>
+
+### Version-owned requirement targets (#83, 2026-10-06)
+
+The user approved a follow-up Issue, offline implementation, local commits and independent
+Standards/Spec review. [Issue #83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83)
+owns the self-contained scope. Review fixed base is
+`2bfe17cc12cde0f5b4dd5b8be04ae54e57f68af9` on `feature/evaluation`. The pre-existing
+`.gitignore` edit remains excluded. This approval authorizes no model/provider execution,
+paid request, push, PR, merge, branch switch, formal comparison or version freeze.
+
+The original shared program target was inconsistent with the approved V0 correspondence
+path. The new design shares reviewed RequirementSpec meaning and independent acquisition
+evidence, while keeping target identity judgments owned by each submitted version. V0
+primary visits and requirement targets use V0-only supplied-candidate correspondence;
+V1-V3 use independent program checks with no model dependency or fallback. Each version's
+required/excluded/fixed-time checks compare its adopted visit and target IDs before
+counting dates, times or visits. Final/optional projections of one version share that
+version's target. Current report/packet policies are `versioned_api_identity_2` and
+`v0_identity_correspondence_3`; old packets cannot establish new judgments. Generation,
+scoring arithmetic, original output and route FAIL/UNKNOWN populations are unchanged.
+
+For unbound V1-V3 targets, complete provenance-linked search evidence is strictly filtered
+by original literal name, destination and supplied address before adopting one distinct
+ID. Zero/multiple surviving IDs, a saturated page, retained pagination, incomplete or
+malformed evidence remain UNKNOWN. Duplicate-ID facts must agree. Typed sublocality levels
+are separate; explicit locality/administrative-region and country values can support the
+original destination without translation, fuzzy matching, rank selection or inference.
+Proven errors remain FAIL, and no canonical ID is adopted for FAIL/UNKNOWN.
+
+Implementation and directly related regressions were committed before review as
+`0fe87c9` (`fix: scope requirement target identity by version for #83`). Public-seam
+TDD first reproduced shared target ownership, premature multi-hit rejection, typed
+address handling, borrowed requirement results, missing provenance and conflicting
+duplicate-ID acceptance. Fixes made the targeted cases pass. An existing smoke fixture
+still expected two references after the V0 target was added; its scope assertion was
+updated. The intermediate relevant gate reached **150 passed / 1 failed**, followed
+by **58 passed** for the new target tests and smoke preparation tests.
+
+Independent initial review found **one Standards P2** and **two Spec P2s**. New regression
+tests reproduced historical paginated coordinate replay failure (one failure), falsey
+malformed pagination acceptance (six failures), and city components masking explicit
+region/district destinations (two failures). Separate correction commit `904e318`
+(`fix: preserve historical evidence and strict target checks for #83`) keeps original
+evidence derivation on replay-verified historical reports/material/CLI/route paths,
+preserves pagination on current reports, rejects malformed pagination and supports the
+explicit region values. The snapshot CLI now exposes historical wire derivation
+explicitly. Both reviewers rechecked all committed changes against the fixed base:
+**zero remaining Standards findings; zero remaining Spec findings**. No review correction
+was amended into the implementation commit.
+
+The final focused gate passed **87 tests**, including the current target contract,
+historical paginated coordinates and V0 route material, and offline smoke-tool tests.
+Ruff, evaluator compile checks and whitespace checks passed. The first full backend run
+completed with **2971 passed / 10 skipped / 2 failed**. One failure was a stale route-test
+policy assertion, corrected in `904e318` and passing the focused gate. The other is the
+untouched V3 whole-request 0.1-second timeout test: isolated rerun reached a different
+pre-primary failure boundary, and an extracted fixed-base Git snapshot reproduced
+`runtime.closes == 0` versus expected one. No planner/runtime/test-version files differ
+from that baseline. This is an existing environment-sensitive test limitation, not a
+green full-backend result; changing generation or expanding into V3 is outside this
+Issue. Early Windows sandbox/temp-path failures were rerun with fresh task-local pytest
+directories and the normal external-socket prohibition; asyncio internal loopback was
+allowed. No external provider connection was made.
+
+The complete evaluator rerun passed **1053 tests / 1 skipped** after the corrections
+(329.35 seconds). Its snapshot-CLI pagination test was also exercised by the final
+87-test gate after the CLI change. Private test receipts are
+`artifacts/identity-83/full-01.txt`, `evaluation-final-02.txt` and `review-green-02.txt`
+in that directory. These document separate actual runs, not a recomputed all-green
+full-backend result. No further broad rerun was needed after the passing relevant gates.
+
+Final DNS/socket-blocked assessment verified all **91 original source hashes**, all
+**four #82 execution files** and exact historical report replay. The new offline-only
+packet has **nine V0 references: eight primary visits and one requirement target**, with
+**14 candidate appearances**. Exact regeneration matches its saved packet. Its local
+evidence identifiers are `artifacts/identity-83/offline-v0-packet.json` and
+`artifacts/identity-83/final-offline-assessment.json`; these are private aids, not public
+document dependencies. Actual model/Places/Routes/planner sends are **zero**, incremental
+paid calls **zero**. No new live result, execution manifest or allowance is claimed.
+The eight old PASS visits and historical requirement UNKNOWN remain unchanged under
+their original policy. A future complete nine-reference result requires separately
+approved preparation/execution and cannot reuse the consumed #82 allowance.
+
+The user subsequently approved offline diagnosis and correction of the recorded V3
+baseline failure. The separately owned
+[V3 deadline-phase record](../v0-v3/v3-development.md#deadline-phase-regression-2026-10-06)
+documents the phase-selection test assumption and stronger public-entry regressions,
+without production code or generation changes. Its fresh full backend run passed
+**2983 tests / 10 skipped / zero failures**. This resolves the baseline limitation for
+the current offline gate while preserving the original failure/retest account above;
+it adds no live evidence or Git publication authorization.
+
+<a id="requirement-target-delivery-2026-10-06"></a>
+
+### Authorized requirement-target delivery (#83, 2026-10-06)
+
+After all offline acceptance items passed, the user explicitly authorized push, PR
+creation, published review, conditional merge and closure of #83. The source branch
+`feature/evaluation` was fast-forward pushed from `e6cd6e5` to `42fce73`; no force push,
+history rewrite, branch switch or branch deletion occurred. It carried seven local
+commits: the #82 preparation/execution records, #83 implementation and separate review
+correction/acceptance, and the V3 deadline-phase correction/acceptance. The unrelated
+`.gitignore` edit remains excluded. [PR #84](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/84)
+was created against `main` at `e2ff2a722f03eaddeb0ff3655768e30c6da4990a`.
+
+The complete combined release is reviewed from that fixed main baseline through the
+actual published PR head. The fresh **2983 passed / 10 skipped / zero failures** backend
+gate is valid for its unchanged code, configuration and dependencies; later delivery
+documentation is checked separately. Ruff, compile and tracked-document checks passed.
+The repository has no CI workflow, configured mypy/pyright gate, branch protection or
+ruleset at this checkpoint; absent checks are not reported as CI passes. Normal merge
+is selected to retain implementation and correction history. Published Standards/Spec
+conclusions and final merge/Issue lifecycle are owned by PR #84 and Issue #83; creation
+does not anticipate a successful merge before review completes.
+
+This approval supersedes the preceding no-publication checkpoints only for this Git
+delivery. It authorizes zero new model, Places, Routes, planner, database or embedding
+service calls, zero paid execution and no smoke, formal evaluation or version freeze.
+The prepared nine-reference packet and consumed historical #82 allowance remain unchanged.

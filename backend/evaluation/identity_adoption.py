@@ -259,7 +259,7 @@ def _freeze_verified(values, artifacts, request):
     return True
 
 
-def load_v0_material(intake, bundle_path):
+def load_v0_material(intake, bundle_path, *, historical=False):
     """Re-read frozen source, snapshot and wire bytes without any network dependency."""
     prepared = _value(intake)
     path = Path(bundle_path).resolve()
@@ -284,7 +284,7 @@ def load_v0_material(intake, bundle_path):
     refs = identity_references(prepared)
     selected = _source(prepared, values, refs)
     snapshot = load_snapshot(paths["snapshot"].parent, expected_plan=build_identity_plan(prepared))
-    observed = identity_evidence(snapshot)
+    observed = identity_evidence(snapshot, historical=historical)
     observations = {r["reference_id"]: r for r in observed["records"]}
     judge = values["judge_input"]
     require(text(judge.get("instructions")), "judge", "Judging instructions required")
@@ -386,7 +386,7 @@ def load_v0_material(intake, bundle_path):
 
 
 def resolve_v0_identities(intake, bundle_path, reviews=None, *, model_result=None):
-    """Verify V0 correspondence material and dispatch programmatic shared-subject checks."""
+    """Verify V0 material and dispatch version-owned visit/requirement-target checks."""
     from .identity import resolve_identities
 
     if reviews is not None:
@@ -399,7 +399,7 @@ def resolve_v0_identities(intake, bundle_path, reviews=None, *, model_result=Non
 
 def resolve_legacy_v0_identities(intake, bundle_path, reviews=None):
     """Explicit opt-in; native resolution remains independently callable and unchanged."""
-    material = load_v0_material(intake, bundle_path)
+    material = load_v0_material(intake, bundle_path, historical=True)
     return _resolve_identities(
         thaw(material.intake), thaw(material.evidence), reviews, thaw(material.audit_plan), material
     )

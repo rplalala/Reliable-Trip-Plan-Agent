@@ -114,6 +114,23 @@ evidence remains UNKNOWN. Version dispatch is locally implemented under #75, sup
 the default all-version LLM path. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
 owns five classified follow-ups: version routing #75, V0 response contract #76,
 fresh-smoke preparation #77, offline route integration #78 and Git delivery #79.
+The subsequent approved offline correction [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83)
+separates user-requested target identity by version: V0 uses model correspondence,
+V1-V3 use independent program checks. RequirementSpec meaning and API evidence remain
+shared; final requirement counting consumes each version's own target. Unbound program
+targets filter complete candidates by literal name, destination and supplied address
+before requiring one distinct ID. The current report/packet policies are
+`versioned_api_identity_2` and `v0_identity_correspondence_3`; historical #82 results
+retain their original policy. This correction is implemented and independently reviewed
+offline; evaluator tests pass. The subsequently approved
+[V3 deadline regression correction](docs/records/v0-v3/v3-development.md#deadline-phase-regression-2026-10-06)
+resolves the baseline test limitation with explicit expiry-phase assertions; production
+generation and budgets are unchanged. The full backend now passes 2983 tests with
+10 skipped. See the
+[acceptance record](docs/records/evaluation/intake-identity-usage.md#version-owned-requirement-targets-2026-10-06).
+The user subsequently authorized push, PR creation, published review and conditional
+merge/closure of #83 through [PR #84](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/84).
+GitHub owns the final delivery lifecycle. No new paid execution or smoke is authorized.
 The backlog task authorized specification publication only. The user subsequently
 authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
@@ -152,6 +169,21 @@ Original #70/#73/#77 artifacts remain unchanged. #78 changes two implementation 
 frozen by #77, so the preserved #77 manifest is currently stale for execution; any future
 smoke needs a fresh exact freeze and separate approval. No live evidence was added.
 
+The user subsequently authorized [follow-up #82](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/82)
+and a refreshed offline V0 plan, with zero paid calls and no execution. It binds the
+merged implementation to a new manifest and an absent execution directory, recomputes
+eight V0 references/nine candidates, and protects 91 source files plus 68 implementation
+and dependency files. The original request and eight pending UNKNOWN verdicts are unchanged.
+See the [post-merge refresh record](docs/records/evaluation/intake-identity-usage.md#post-merge-v0-smoke-refresh-2026-10-06).
+That preparation granted no execution or Git publication authority. The user then
+explicitly approved its exact one-call V0 identity smoke. The required current-session
+execution child completed one request with zero retries: HTTP 200 and accepted import,
+eight V0 primary PASS and one unchanged requirement-subject UNKNOWN. See the
+[execution acceptance](docs/records/evaluation/intake-identity-usage.md#v0-identity-smoke-execution-2026-10-06).
+The report remains `needs_evidence`; route feasibility, scoring and a full planner rerun
+were not evaluated. The directory and allowance are consumed; no further call or new
+Git publication is authorized. GitHub owns #82's final acceptance/lifecycle state.
+
 The [#79 delivery preparation record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-delivery-preparation-2026-10-06)
 records the preparation checkpoint: remote `main` at `a983f35` and source branch at
 `819f0c3`, with ten completed-slice commits through `92f92fe`, plus local preparation
@@ -166,7 +198,7 @@ execution freeze. No accepted live evidence or fresh execution authorization is 
 | --- | --- |
 | 01: Intake/projection | Implemented and offline-validated, including provenance, transport sources and [ordinary-output compatibility](docs/records/evaluation/intake-identity-usage.md#rtpeval-ticket-01-03-acceptance) |
 | 02: Usage capture/report | Implemented and offline-validated; opt-in capture plus [offline cost/bill accounting](docs/contracts/0002-intake-identity-usage.md#offline-cost-accounting); no automatic formal run or bill fetching |
-| 03: Identity/judgment | #75 implements version-specific API checks and exact consumer replay; #76 aligns V0 citation/address schema and import with separate correspondence/correctness records; no evaluator model/fallback for V1-V3 or shared subjects; historical policies/evidence remain explicitly replayable |
+| 03: Identity/judgment | #75 implements version-specific API checks and exact consumer replay; #76 aligns V0 citation/address schema and import; #83 scopes target identity by version and strictly filters complete program search evidence; no evaluator model/fallback for V1-V3; historical policies/evidence remain explicitly replayable |
 | 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
 | 05: Requirement/schedule metrics | Implemented, offline-validated and published; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed |
 | 06: Opening checks | Offline parser/scorer/CLI implemented and reviewed; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) completed; [acceptance and scoped supplements](docs/records/evaluation/opening.md#rtpeval-ticket-06-acceptance) |

@@ -57,7 +57,7 @@ def test_current_packet_enumerates_supported_citations_and_preserves_historical_
         "candidate.observations",
         "case.candidates",
     ]
-    assert packet["association_policy_version"] == "v0_identity_correspondence_2"
+    assert packet["association_policy_version"] == "v0_identity_correspondence_3"
     cases = json.loads(packet["request"]["input"])["cases"]
     assert {c["version"] for c in cases} == {"v0"}
     absent = next(
@@ -315,7 +315,7 @@ def test_supported_nonempty_citations_import_through_cli_with_short_ids(batch, c
     assert [r["grounding_verdict"] for r in visits] == ["PASS", "PASS"]
     assert (
         report["model_judgment_provenance"]["association_policy_version"]
-        == "v0_identity_correspondence_2"
+        == "v0_identity_correspondence_3"
     )
     assert identity_ready(original, report)
     assert material == saved and intake.to_dict() == original
