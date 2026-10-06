@@ -196,12 +196,33 @@ without changing the file tree; original revisions remain recoverable locally.
 The route preparer now accepts explicit AU selection while preserving default KR
 replay. Complete Australian WALK preparation can be ready for approval, but factual
 routes stay UNKNOWN until independent evidence; TRANSIT remains conditional.
-The new four-day Sydney input is prepared with no generated result or API evidence.
+The four-day Sydney input initially had no generated result or API evidence.
 The non-generation public-price scenario is USD 0.3522, including unready requests;
-V0 generation still needs a bounded plan, so no total live budget is ready. Generation
-flow, score formulas and independently runnable V0-V3 are unchanged. All live sends
-and incremental spending remain zero. See the
+it does not establish an executable identity/route allowance. See the
 [Sydney preparation record](docs/records/evaluation/routes.md#sydney-offline-route-preparation-2026-10-07).
+The user subsequently authorized prepared smoke execution without another approval.
+On 2026-10-07, a bounded V0 generation-only smoke made one successful model request,
+then stopped with `unsupported_hard_requirements`: an agent-added exact daily
+two-primary-visit condition is hard semantic text without a registered executable
+predicate. This was smoke-input contamination, not a user-requested daily quota. Offline
+saved-draft replay reproduces the same clarification. No itinerary, API evidence,
+independent identity/route/score result or paid retry exists. Standard retail reference
+is USD 0.002808675; the actual Foundry invoice is unknown. The original input/output
+and consumed one-use plan remain preserved. Generation flow, scoring and V0-V3 code
+are unchanged; this is not a passed generation smoke or final evaluator acceptance.
+See the [generation stop record](docs/records/v0-v3/development-pilots.md#sydney-v0-generation-smoke-2026-10-07).
+The user clarified that density scoring must not become a generation constraint.
+A subsequent smoke input should omit the agent-added daily count entirely, preserving
+natural preferences and independent scoring; softening it to a suggested count would
+still steer the case toward the scoring table. No replacement input or live run has
+been executed under this clarification.
+The user clarified that smoke is a development check, not an actual system stage, and
+requested an evaluation `tools/` boundary. V0 smoke request/budget preparation now lives
+under `backend/evaluation/tools/`; Product planning and independent final scoring do not
+call it. Core identity/scorers and their CLIs stay at the evaluation package root. This
+directory migration changes module/CLI paths only, preserving V0-V3 behavior, AU/KR
+preparation rules and score formulas. See the
+[tool-boundary record](docs/records/evaluation/routes.md#evaluation-development-tool-boundary-2026-10-07).
 The backlog task authorized specification publication only. The user subsequently
 authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these

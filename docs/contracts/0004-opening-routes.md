@@ -214,9 +214,16 @@ Unsupported valid-wire context stays UNKNOWN without shifting dates or modes.
 
 ## Offline V0 independent request package
 
+This development smoke utility lives in
+[`backend.evaluation.tools.route_requests`](../../backend/evaluation/tools/route_requests.py).
+It is not an actual product planning stage or a prerequisite for final evaluator scoring.
+The core `routes.py` preparation/scorer remains separate and is consumed by quality reports.
+The CLI entry is `python -m backend.evaluation.tools.route_requests_cli`; the former
+root-level tool paths are historical identifiers, not current entry points.
+
 `prepare_v0_route_requests(bundle_path, identity_report, *, prepared_at,
 schedule_context=None, occupancy_reviews=None, route_reviews=None,
-details_snapshot_directory=None, legacy=False)` returns immutable `RouteRequestPackage`, schema
+details_snapshot_directory=None, legacy=False, region_code="KR")` returns immutable `RouteRequestPackage`, schema
 `rtpeval_v0_route_requests_2`. It replays the original V0/#66 material and the exact
 current `versioned_api_identity_2` report before using the existing occupancy/window preparation. It keeps
 every selected V0 leg, source endpoints/dates/mode/estimate and continuous window,

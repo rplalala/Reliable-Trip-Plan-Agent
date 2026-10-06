@@ -30,6 +30,13 @@ acceptance records and Issue comments preserve historical decisions, not alterna
 | Anonymous packages, revisions and human reports | [Human](../../docs/contracts/0005-quality-human-review.md#human) | [human_tasks](human_tasks.py), [human_answers](human_answers.py), [human_report](human_report.py) |
 | Frozen V3 execution and controlled outcomes | [Controlled Repair](../../docs/contracts/0001-evaluation-artifacts.md#controlled-repair) | [controlled CLI](controlled_cli.py), [replay](controlled_replay.py), [report](controlled_report.py) |
 
+Development verification utilities live in `tools/` within this package. The V0
+[route request tool](tools/route_requests.py) and its
+[CLI](tools/route_requests_cli.py) prepare smoke inventories and budgets; neither
+Product planning nor the final quality scorer calls them. Smoke is a development
+activity, not a product runtime stage. Core identity, snapshot and scoring modules
+and their CLIs remain at the package root. A CLI is not necessarily a smoke utility.
+
 ## Offline workflow and CLI
 
 Run from the repository root with the existing Python environment. Names below represent
@@ -273,7 +280,12 @@ New-Item -ItemType Directory -Path artifacts/evaluation-adoption -Force | Out-Nu
 
 <a id="v0-route-requests"></a>
 
-### Offline V0 route requests and budget
+### Development-only V0 smoke route requests and budget
+
+This tool is in `backend.evaluation.tools`, separate from ordinary evaluator scoring.
+It consumes core evaluator preparations without becoming a required scoring step.
+Use the new module path below; the former root-level tool modules are retired.
+Historical records and frozen manifests retain the paths of their own revisions.
 
 The [#86 offline refresh](../../docs/records/evaluation/routes.md#accepted-v0-identity-route-refresh-2026-10-07)
 uses #85's accepted current report: all four original legs are identity-eligible and reuse
@@ -303,20 +315,25 @@ The new [Sydney source request](../../tools/validation/packets/sydney-v0-route-s
 is four days (October 14-17), two travelers and AUD 1600, with two primary visits per day
 and required Sydney Opera House. It is a new generation input, not a generated output,
 reviewed RequirementSpec or API snapshot. Its non-generation USD 0.3522 price scenario
-includes unready routes; generation/actual billing remain unbounded and no execution
-allowance is prepared. The dated input needs trusted-day revalidation before later use.
+includes unready routes and does not authorize their execution. The later bounded
+generation-only smoke stopped after one requirements response because exact daily
+cardinality is an unsupported hard semantic condition. It produced no itinerary or
+evaluator bundle; the consumed plan cannot be reused. Original input and raw output
+remain preserved, and actual billing is unknown. See the
+[generation stop record](../../docs/records/v0-v3/development-pilots.md#sydney-v0-generation-smoke-2026-10-07).
+The dated input needs trusted-day revalidation before later use.
 
 Prepare from an exact current `versioned_api_identity_2` report without acquiring evidence:
 
 ```powershell
 $env:PYTHONIOENCODING = 'utf-8'
-.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json identity-report.json --context schedule-context.json --route-reviews route-reviews.json --prepared-at 2026-10-05T10:23:02Z | Set-Content -Encoding utf8NoBOM request-package.json
+.venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli v0-identity-material.json identity-report.json --context schedule-context.json --route-reviews route-reviews.json --prepared-at 2026-10-05T10:23:02Z | Set-Content -Encoding utf8NoBOM request-package.json
 # Missing current report: derive a current pending report without any model result or send.
-.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
+.venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli v0-identity-material.json --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
 # Historical identity reports require explicit replay; they never replace current evidence.
-.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json historical-identity.json --legacy --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
+.venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli v0-identity-material.json historical-identity.json --legacy --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
 # Australian source material only; no Sydney V0 identity bundle has been acquired yet.
-.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli sydney-identity-material.json identity-report.json --region AU --context schedule-context.json --prepared-at 2026-10-07T00:00:00Z
+.venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli sydney-identity-material.json identity-report.json --region AU --context schedule-context.json --prepared-at 2026-10-07T00:00:00Z
 ```
 
 Schema `rtpeval_v0_route_requests_2` binds the selected identity policy and exact replay
@@ -344,7 +361,7 @@ inventory, and 2 means invalid material. Save UTF-8 without BOM. Completion is n
 approval. Masks, dated prices, source hashes, actual versus hypothetical budgets and stops are in the
 [request contract](../../docs/contracts/0004-opening-routes.md#v0-route-request-package).
 
-Library seams: `prepare_v0_route_requests` and `preflight_v0_route_requests` in [route_requests](route_requests.py).
+Library seams: `prepare_v0_route_requests` and `preflight_v0_route_requests` in [route_requests](tools/route_requests.py).
 Preflight recomputes the frozen package before checking ledger/request limits and always returns
 `live_authorized=false`. No provider or model client is present. Execution requires separate inventory/budget
 approval and a current-session execution child configured `gpt-6.1-sol` / `medium`.

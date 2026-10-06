@@ -373,3 +373,95 @@ or live retry resulted from this test-only correction. Preparation and a separat
 preflight check passed without external requests.
 
 Historical execution specification: [Issue #39](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/39).
+
+<a id="sydney-v0-generation-smoke-2026-10-07"></a>
+
+## Sydney V0 generation smoke stop - 2026-10-07
+
+Date: 2026-10-07, Australia/Sydney. Outcome: stopped, not passed. Source revision:
+`c2750d57b7b2f8e8c3ee6641bb7cd81edf3755c9`. Production code was unchanged; an
+ignored one-use execution helper applied transport/token limits to the existing V0
+runner. The unrelated unstaged `.gitignore` addition `.archify/` was preserved.
+The user authorized prepared smoke execution without another approval. The parent
+prepared and assessed this run; a current-session execution child used
+`gpt-6.1-sol` with `medium` effort and executed only the frozen handoff.
+
+The source input is the existing four-day Sydney request (October 14-17, two
+travelers, AUD 1600, required Sydney Opera House). The generation-only plan allowed
+at most two Responses POSTs, zero retries, 32,000 input tokens per send, 8,192 output
+tokens per send, 120 seconds per HTTP request and 250 seconds total. The input
+surrogate counted the entire SDK JSON body plus a 2,048-token reserve; the first
+body measured 9,851 tokens before that reserve. Offline interception captured the
+actual SDK body before dispatch. Seven guard cases passed: valid wire, rejected
+model mismatch, missing output cap, streaming, tools, priority tier and exceeded
+send count. The private worst-case retail references were USD 0.016192 standard
+and USD 0.01781120 regional, below the USD 0.020000 reference allowance. These
+references did not guarantee a Foundry invoice ceiling or authorize API acquisition.
+
+Execution made exactly one POST, with HTTP 200 and provider status `completed`,
+using `gpt-6-luna`. The request did not explicitly set reasoning effort; the original
+response reports `medium`. Elapsed time was 24.860 seconds. The unchanged runner
+then raised `ClarificationRequired`; the itinerary node was never invoked. There
+was no retry, fallback, output repair, other-version run or independent API call.
+
+Offline replay of the saved domain draft through `interpret_preferences`, with
+DNS/socket connections blocked, reproduces code `unsupported_hard_requirements`
+for `semantic_1`. Its text is `Plan exactly two primary sightseeing visits per day.`
+with strength `hard`, scope `itinerary_style`, capability `semantic_only`, result
+`unknown` and disposition `clarify`. The exact quote is grounded in the original
+input. Shared requirements policy currently has no registered predicate to certify
+this daily cardinality. The required Opera House visit is represented separately
+as an executable named visit obligation. This stop is consistent with the current
+[shared requirements boundary](../../0002-requirements-evidence.md#input-gate-and-provenance-contract);
+it is not a route timeout or an independent evaluator verdict. The same shared
+hard-semantic gate precedes V1-V3 generation; those versions were not run here.
+
+Reported usage: 9,074 input tokens (3 ordinary, 9,071 cache-write, 0 cached), 3,349
+output tokens, 12,423 total. The 1,915 reasoning tokens are included in output.
+Using the frozen [official Luna retail reference](https://developers.openai.com/api/docs/models/gpt-6-luna),
+rates per million were USD 0.10 ordinary input, 0.125 cache-write, 0.01 cached input
+and 0.50 output. Recomputed standard reference is USD 0.002808675; regional +10%
+is USD 0.00308954250. The executor's preliminary references, USD 0.00280875 and
+0.003089625, were corrected by this explicit partition calculation. Actual Azure/
+Foundry billing remains unknown; these are not observed invoice charges.
+
+Evidence identifiers (private historical paths, not published dependencies):
+`artifacts/sydney-v0-generation-smoke-20261007/{plan.json,first-wire.json,assessment.json}`
+and `execution/{execution.json,request-1.json,response-1.bin,capture/}`. Original raw
+response SHA256: `cdc2e2b18bd7312a011cf8c121ed6971b4602d2ec1f24dc4b62b7ec4f64266b5`.
+The assessment verified all 206 frozen source/input files, the helper/first-wire/input
+hashes, 146 protected original files and seven earlier frozen Sydney preparation
+files. The first sandboxed replay produced no result before it was interrupted;
+the same network-blocked replay then passed outside the sandbox. Neither assessment
+attempt made a network request or changed the original receipts or provider bytes.
+
+No `result.json`, accepted itinerary, identity snapshot, route evidence, final score
+or four-version acceptance result exists. No production fix was made; the prior
+3,017-pass/10-skip backend gate belongs to the unchanged tool-boundary implementation,
+not this live result. The consumed execution directory remains one-use. The parent's
+initial suggestion to soften the daily count or add hard-count support was superseded
+by the user's boundary clarification below; it grants no implementation authority.
+No formal benchmark, version freeze, tracker mutation, push, PR or merge occurred.
+
+### User clarification: density scoring is not a generation quota
+
+The user subsequently clarified that no exact daily count was requested for V0-V2.
+The parent had added `exactly two primary sightseeing visits per day` to the smoke
+input. This confounded natural planning requirements with a count favored by the
+independent scoring table. The model faithfully extracting that hard wording does
+not justify a shared-input feature fix or reinterpret it as the user's requirement.
+The preparation error is separate from the observed, contract-consistent gate stop.
+
+The corrected next-step recommendation is to omit the added daily count entirely
+from a new smoke input, keeping the natural relaxed-pace preference. Replacing it
+with a suggested count would still steer generation. Preserve this consumed input,
+response and receipt; do not rewrite history or use evaluator scores to select a
+replacement output. No new input or paid execution was performed by this correction.
+
+Current code already shares a soft first-generation target of 2-5 main POIs; it is
+explicitly not an unconditional quota or hard user requirement. V3 alone has internal
+quantity validation/repair (`quantity_review_enabled: true` in current runtime
+configuration, with a 2-5 reference range and applicability/permission checks).
+Independent evaluator density deductions remain post-output scoring. This correction
+changes neither those existing policies nor score formulas and does not establish
+an uncontaminated benchmark or authorize formal comparison.

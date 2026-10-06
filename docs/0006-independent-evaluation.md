@@ -40,6 +40,15 @@ Snapshot acquisition currently accepts injected transport; it is not a built-in 
 Google collection client. Formal external acquisition, retention checks, case construction,
 budgets and execution need separately approved plans.
 
+Development smoke helpers are separate from ordinary evaluator consumers. The
+[V0 route request preparer](../backend/evaluation/tools/route_requests.py) and its CLI
+live under `backend/evaluation/tools/`; they prepare acquisition inventories and budgets
+for explicitly approved development checks. They are not product runtime stages or
+dependencies of final quality scoring. Core intake, independent identity, snapshot,
+schedule/opening/route scorers and report CLIs stay in `backend/evaluation/`. Product
+planning does not import this evaluation package. V3's internal validation/repair remains
+part of planning and is distinct from independent evaluation.
+
 Route preparation can extract coordinates offline from a verified identity-phase snapshot
 whose evidence matches the adopted canonical identities. This reuses saved independent
 observations with separate coordinate provenance; it does not borrow planner coordinates or

@@ -1597,3 +1597,78 @@ Final acceptance documentation is committed separately after implementation revi
 Remaining execution prerequisites are a bounded generation plan, actual new Sydney V0
 output, reviewed independent requirements, API identity evidence and an exact separately
 approved route inventory/budget; this acceptance does not certify live AU routes.
+
+<a id="evaluation-development-tool-boundary-2026-10-07"></a>
+
+## Development tool boundary within evaluation (2026-10-07)
+
+The user clarified that V0 smoke is a development verification activity, not an actual
+system execution stage, and requested `tools/` inside `backend/evaluation` to separate
+responsibilities. The approved local migration starts from
+`0e52c28691ebd1775b254c646f13c38a4f01a500`. The pre-existing `.gitignore` edit remains
+outside scope. No paid/live call, push, PR, merge, branch switch or tracker update is
+authorized or performed. This is a directory boundary, not a new country-inference
+feature, execution plan or formal benchmark.
+
+The V0 `route_requests.py` and `route_requests_cli.py` development utilities now live
+under `backend/evaluation/tools/`, with a package marker. They prepare smoke request
+inventories, budgets and preflight checks using existing evaluator materials. Neither
+Product planning nor final quality scoring imports them. Core identity/snapshots,
+schedule/opening/route scorers, quality consumers and their legitimate CLI entries stay
+at the evaluation root. V3's internal validation/repair stays in `backend/app` as part
+of planning. Repository-level data/validation/diagnostic tools are not moved.
+
+Current callers use `backend.evaluation.tools.route_requests`; the development command
+uses `python -m backend.evaluation.tools.route_requests_cli`. The former root-level tool
+modules are retired. Current guide/contracts/README navigation give the new paths;
+historical commands, raw artifacts and frozen manifests retain the identifiers/hashes
+of their original revisions. They are not rewritten to pretend the migration existed
+when their evidence was acquired. Preparation behavior, AU/KR rules, wire schema,
+source integrity, limits, uncertainty and scoring formulas are unchanged.
+
+The existing public regression import was first pointed at the new package and failed
+collection because it did not yet exist. Moving the two modules, fixing relative core
+imports and updating the four existing test consumers resolved that missing-package
+failure. An initial focused run then had **109 fixture setup errors** because its new
+basetemp parent directory had not been created; no behavior assertion ran. Creating
+the dedicated parent and using a fresh basetemp yielded **109 passed / zero failures**
+in 23.92s. Initial lint found three import-order issues; Ruff fixed them and normalized
+the changed files. Global Ruff, the seven-file format check and the new module's actual
+`--help` entry all pass. No new behavior or mirror tests were added for this relocation.
+
+Static AST comparison against the fixed base confirms the two tool bodies and four
+existing regression bodies differ only in import paths and test import ordering. Its
+first comparison treated Ruff's sorted imports as a body mismatch; normalizing import
+order in that local checker resolves the diagnostic without a source behavior change.
+**146 protected original/preparation files** and **seven frozen Sydney preparation
+outputs** remain byte-identical, as does the excluded `.gitignore`. Private evidence is
+kept under the new identifier `artifacts/evaluation-tools-move-20261007`, separate from
+earlier frozen evidence. Implementation-path hashes from old manifests continue to
+describe their old revisions; they are not relabeled as current bindings.
+
+With DNS/socket connections prohibited, the moved public library replays the original
+saved #86 KR request package exactly, including its inventory digest and all four
+UNKNOWN route verdicts. This is a replay of existing independent material, not new
+route acquisition or authority to execute a frozen manifest at a changed code revision.
+
+The fresh full backend offline gate passes **3017 tests, 10 skipped, zero failures**
+in 435.91s, with the external-network test guard active. Its new log is retained separately
+from old frozen outputs. The pure module migration and four existing regression import
+updates were committed before review as
+`2a2b1e1a04a052b84ff51911871486a41af307d7`
+(`refactor(evaluation): isolate development route tools`). No planner or evaluator
+scoring implementation changed.
+
+Independent read-only Standards and Spec agents reviewed the complete committed diff
+from the fixed base through `2a2b1e1`. Standards reports **zero documented-standard
+violations and zero actionable code smells**. Spec reports **zero missing/incorrect
+requirements or scope expansions**. Both excluded unstaged final documentation and
+the unrelated `.gitignore`, and neither independently executed tests or network calls.
+No correction commit is needed. Final acceptance documentation follows separately.
+
+The six-document check passes **242 actual tracked local targets/anchors**, English
+additions, retained historical anchors and whitespace. The migration-only AST and
+original/frozen file checks pass again after the implementation commit. Existing source
+claims, FAIL/UNKNOWN outcomes and Sydney's pending live prerequisites are unchanged.
+This completes the requested development-tool directory boundary, without making smoke
+a product stage, changing evaluation formulas or authorizing another execution.
