@@ -2160,3 +2160,83 @@ adds self-contained evidence before closing only fully met scopes. #67/#70/#72/#
 closed without repeated mutations. Actual merge and final lifecycle outcomes belong to
 the linked PR/Issues; this pre-merge record does not anticipate their success. No paid
 call, new original-output repair, scoring change, formal evaluation or freeze occurs.
+
+<a id="post-merge-v0-smoke-refresh-2026-10-06"></a>
+
+### Post-merge V0 smoke refresh (#82, 2026-10-06)
+
+The user explicitly authorized a follow-up Issue and refreshed offline plan, with zero
+paid calls and no execution. [Issue #82](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/82)
+owns this preparation and a separately gated future execution slice. Completed #74-#79
+remain historical acceptance; #77's preserved plan is stale after #78 changed
+`route_requests.py` and `route_requests_cli.py`. It is not silently updated or retried.
+
+Fixed review/source base is `e6cd6e5eb38cf02fb12316a50d9cf4e439f22381` on
+`feature/evaluation`. Merged main `e2ff2a722f03eaddeb0ff3655768e30c6da4990a` has the same
+tree `74d90ef5d127c1eb92d7ecde96a465f1b0f7b606`. These are the resulting refs after the
+user-authorized compression of three docs commits and remote main history update;
+PR #81's historical merge receipt retains `eae5411` and its original published head.
+This refresh makes no new Git publication or history change. Only current/dated
+documentation changes are tracked; the unrelated `.gitignore` edit remains excluded.
+No runtime, dependency, generation flow, V0-V3 behavior or scoring formula changes.
+
+The new private preparation identifier is `artifacts/v0-identity-smoke-82-20261006`.
+Its manifest, pending identity report, handoff and offline acceptance receipt bind
+**91 source hashes and 68 implementation/dependency hashes**. The expanded source guard
+includes original material, #73 consumed failure evidence, the stale #77 preparation,
+and #70/#78 route material. All protected bytes remain unchanged. The new execution
+directory is absent; preparation blocks DNS, socket connections and model-client creation.
+The exact configured HTTPS Responses destination and configuration prerequisites stay
+in the private handoff, alongside source revisions, command/digest and output paths.
+The reference map is `packet.reference_maps`; cases are in `wire_request.input` JSON.
+Private raw claims/candidates, destination and secrets are excluded from tracked material.
+Local identifiers here are evidence references, not public navigation dependencies.
+
+Current scope is **eight V0 primary references and nine independent API candidates**,
+all eight original addresses supplied. Shared requirement subjects and V1-V3 remain
+programmatically verified outside the model request. The eight pending V0 UNKNOWN
+verdicts are byte-identical to #77's pending report; no fresh accepted real model result
+exists. The four preserved route legs remain UNKNOWN/blocked with zero acquisition
+requests. Raw output is not repaired, and all-PASS is not an acceptance target.
+
+New canonical manifest SHA-256:
+`c3f59f878c0e060d3c4fd3248d1f75d5e78ccf669f307f2de3bd78f6b39f9e20`.
+Wire-request SHA-256:
+`ffc53c919ddc9b51a59b720a019f0197d1058222fd71263ef8a57a042d584d56`.
+The wire is intentionally unchanged: #78 changed the implementation inventory, not
+the V0 request/schema. The new manifest binds current hashes, expanded preservation
+and a fresh directory; an unchanged wire never renews the old approval.
+
+Proposed request: **one `gpt-6-luna` call, low reasoning, `store=false`, no tools**;
+16,000 input/3,000 output token caps, 1,024 input reserve, 60-second HTTP timeout and
+zero retries. Offline sizing remains **12,652 tokens including reserve**, using the
+cached tokenizer with networking prohibited. Google, planner and Routes proposals are zero.
+[Official model prices](https://developers.openai.com/api/docs/models/gpt-6-luna) and
+[cache categories](https://developers.openai.com/api/docs/guides/prompt-caching) were
+rechecked 2026-10-06: per million tokens USD 0.10 ordinary input, 0.01 cached input,
+0.125 cache writes and 0.50 output. Input categories partition the input total; output
+already includes reasoning. The standard maximum reference is USD 0.0035, regional
++10% scenario USD 0.00385, and proposed fresh reference allowance USD 0.004. These
+are retail references, not an established Foundry service tier or invoice ceiling.
+Actual incremental preparation charges are USD 0; provider invoice remains unavailable.
+
+Fresh offline executor/current-contract/route tests passed **100 in 46.65s** using
+synthetic fixtures and injected transports. They cover preparation without credentials,
+V0-only routing, complete owned decisions, citations, missing original addresses,
+successful correspondence, confirmed FAIL, legitimate UNKNOWN, source changes, usage
+categories and terminal attempt consumption. Test attempts use separate synthetic
+directories, never the actual new execution directory. The first scratch launcher used
+an unsupported relative Python module name and exited before preparation; the corrected
+`runpy.run_path` launch prepared successfully. No code correction or new test was needed.
+The ignored local test receipt is `.scratch/pytest-82-offline.txt`. The earlier full
+backend **2945 passed / 10 skipped** at `571ed95` still covers unchanged runtime code;
+it is reused evidence, not a fresh full-suite or CI result. No new live evidence exists.
+
+Only separate approval of this exact new manifest/destination/data scope/limits may
+authorize a future send, after hash revalidation. Dispatch must then use a current-session
+`gpt-6.1-sol` / `medium` execution child; none is dispatched now. One attempt consumes
+its directory even on error. Preserve raw bytes, usage and failures; distinguish HTTP
+success from accepted import. Invalid/partial/foreign/citation/usage/source results stop;
+legitimate FAIL/UNKNOWN remain valid imports with original claims and null canonical
+endpoints. #73's consumed allowance remains consumed. Issue #82 stays open for the
+unapproved future slice; no paid send, push, PR, merge, formal run or freeze is authorized.

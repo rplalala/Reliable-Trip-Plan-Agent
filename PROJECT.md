@@ -152,6 +152,15 @@ Original #70/#73/#77 artifacts remain unchanged. #78 changes two implementation 
 frozen by #77, so the preserved #77 manifest is currently stale for execution; any future
 smoke needs a fresh exact freeze and separate approval. No live evidence was added.
 
+The user subsequently authorized [follow-up #82](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/82)
+and a refreshed offline V0 plan, with zero paid calls and no execution. It binds the
+merged implementation to a new manifest and an absent execution directory, recomputes
+eight V0 references/nine candidates, and protects 91 source files plus 68 implementation
+and dependency files. The original request and eight pending UNKNOWN verdicts are unchanged.
+See the [post-merge refresh record](docs/records/evaluation/intake-identity-usage.md#post-merge-v0-smoke-refresh-2026-10-06).
+The Issue remains open for future execution requiring separate exact-plan approval;
+no execution child, paid send or new Git publication is authorized by this refresh.
+
 The [#79 delivery preparation record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-delivery-preparation-2026-10-06)
 records the preparation checkpoint: remote `main` at `a983f35` and source branch at
 `819f0c3`, with ten completed-slice commits through `92f92fe`, plus local preparation

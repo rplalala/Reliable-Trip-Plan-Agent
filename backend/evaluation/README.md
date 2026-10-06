@@ -177,6 +177,11 @@ endpoints using synthetic local snapshots. SDK execution tests use MockTransport
 
 ### Prepared one-call identity development smoke
 
+The [post-merge #82 refresh](../../docs/records/evaluation/intake-identity-usage.md#post-merge-v0-smoke-refresh-2026-10-06)
+replaces the stale #77 execution proposal with a new offline manifest bound to the merged
+implementation. Both historical material and failed attempts remain preserved. The fresh
+directory is unconsumed; readiness and Issue publication grant no execution authority.
+
 `tools.validation.identity_judgment_smoke` is a separate development executor for a verified
 V0 material bundle. Preparation is offline; execution requires explicit user approval of
 the exact manifest digest and the [smoke execution handoff](../../docs/agents/smoke-tests.md).
