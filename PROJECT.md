@@ -122,8 +122,10 @@ commits and dual review, followed by #76's V0 response-contract correction. #75 
 are implemented locally. The user then authorized #77 offline preparation, with zero
 paid calls. Its V0-only frozen plan is preserved locally. The user then authorized #78
 offline route integration, also with zero paid calls; it is implemented locally with a
-blocked real package. #79 Git delivery remains a separate scope. No new paid execution or Git
-publication is authorized. GitHub owns live Issue state. See the
+blocked real package. The user then authorized #79 local delivery preparation only:
+commit/diff inventory, combined review, PR draft and Issue reconciliation material.
+No new paid execution, push, PR creation, merge, branch switch or tracker mutation is
+authorized. GitHub owns live Issue state. See the
 [accepted requirement](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
 and [publication record](docs/records/evaluation/intake-identity-usage.md#version-specific-evaluator-backlog-2026-10-06).
 The [#75 implementation record](docs/records/evaluation/intake-identity-usage.md#version-specific-identity-implementation-2026-10-06)
@@ -146,6 +148,14 @@ current reports demonstrate eligible and FAIL/UNKNOWN paths without inventing re
 Original #70/#73/#77 artifacts remain unchanged. #78 changes two implementation files
 frozen by #77, so the preserved #77 manifest is currently stale for execution; any future
 smoke needs a fresh exact freeze and separate approval. No live evidence was added.
+
+The [#79 delivery preparation record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-delivery-preparation-2026-10-06)
+records the verified remote `main` at `a983f35` and source branch at `819f0c3`, with ten
+completed-slice commits through `92f92fe` awaiting publication, plus local preparation
+documentation. PR #80 is already merged and #67/#70/#72/#73 are verified CLOSED;
+their historical work is not newly outgoing. #74-#79 remain OPEN. The proposed delivery
+retains zero real ready requests, #73 failed-import evidence and #77's stale execution
+freeze. Publication and actual Issue reconciliation remain pending separate authorization.
 
 | Ticket | Implementation checkpoint |
 | --- | --- |
