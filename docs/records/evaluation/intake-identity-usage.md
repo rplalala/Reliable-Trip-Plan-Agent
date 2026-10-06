@@ -1754,3 +1754,409 @@ Issue outcomes are recorded in the accessible PR/tracker, rather than anticipate
 No new model, Google or planner call, original-output repair, score-formula change,
 formal benchmark, version comparison or freeze occurs in this delivery. Source hashes
 in historical execution manifests are not rewritten to absorb Git history consolidation.
+
+<a id="version-specific-identity-implementation-2026-10-06"></a>
+
+### Version-specific identity implementation (#75, 2026-10-06)
+
+The human authorized #75 implementation, offline tests, local commits and Standards/Spec
+review, then resumed work with the implement skill after a waiting/handoff interval.
+Fixed review base is `819f0c3c5956c43f6c799feb128fb5a74bb4f2f5`; implementation/tests are
+committed as `ffa36a4d96cbf87ad3557dab44b5665495221d2c`. At this validation checkpoint,
+current documentation is an unstaged draft and the unrelated `.gitignore` change remains
+unstaged. No branch switch, push, PR, merge, tracker mutation or paid execution is included.
+
+The current public resolver produces `versioned_api_identity_1`: V1-V3 primary visits
+use independent ID-linked Details and literal original/API name/address comparisons.
+Missing output-contract fields are FAIL; unavailable or unlinked independent evidence
+is UNKNOWN. Shared named requirements use independent verification of retained bindings
+or unique deterministic search. V0 correspondence packets contain only V0 primary visits;
+foreign/historical packets and modified reports cannot supply current verdicts. Exact
+consumer replay retains original claims, FAIL/UNKNOWN and null canonical endpoints.
+Opening/route reports retain identity verdicts separately from their own unavailable facts.
+Old uniform LLM and human/audit policies remain explicitly replayable, with original
+artifacts untouched. Generation behavior, score formulas and population rules are unchanged.
+
+Public-interface TDD first showed exact V1/API matches staying UNKNOWN without model
+results; the program path made these PASS and exact address mismatches FAIL. A second
+slice exposed missing requirement-binding support, then verified independent Details
+without admitting shared subjects into model packets. Consumer tests exposed absent
+endpoint/coordinate failure metadata and verified its preservation without adopting
+corrected endpoints. Missing structured names/addresses initially stayed UNKNOWN when
+Details were absent; proven contract omissions now remain FAIL independently of availability.
+
+The broader evaluator/executor gate initially reported **957 passed, 1 skipped, 1 failed**
+in 175.75s. The executor prepared a scoped V0 packet but still imported through the old
+uniform resolver, yielding a stopped offline SDK receipt. Its import was routed through
+the public version dispatcher, and the test expectation now scopes model UNKNOWN to V0.
+No citation/schema repair from #76 was introduced. The correction and final program
+regressions passed **37 tests** in 8.34s, using synthetic local evidence and MockTransport.
+
+Before review corrections, the serial full backend gate at `ffa36a4` passed
+**2862 tests, 10 skipped in 273.87s**:
+`.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider
+--basetemp=.scratch/pytest-75-full --tb=short --show-capture=no`.
+The local `.scratch/pytest-75-full.txt` is an ignored evidence identifier, not a published
+dependency. Global `ruff check backend tools --no-cache` passed; formatting checks passed
+all 18 changed Python files. A broader format check reported 61 pre-existing unrelated
+files, which were preserved. No configured mypy/pyright or CI result is claimed.
+Initial tracked documentation link checks passed 216 repository-relative targets.
+The final documentation check passed 217 targets against the Git index; whitespace
+checks also passed. Current contracts, navigation and this dated record are committed
+as a separate documentation group after the correction review.
+
+Independent Standards review found no hard documented-standard violations and one P3
+terminology issue: the programmatic replay branch still used `model_policy` and a
+model-assisted diagnostic, and the V0 material docstring described uniform LLM behavior.
+Independent Spec review found one P2: malformed/conflicting typed destination components
+in an unbound requirement search escaped as `ValueError`, aborting the complete CLI batch
+instead of producing local UNKNOWN. Both findings were corrected in the separate commit
+`a53aa8110d06f52777fabe7b9a3cd31709c19a30`, preserving the original implementation commit.
+
+Six public CLI regression cases initially produced **3 failed, 3 passed**: null, non-array
+and conflicting components reproduced the batch abort, while exact, ambiguous and wrong-query
+cases already behaved correctly. The correction catches the typed-destination exception
+locally; all six preserve valid V1 PASS records. The broader correction gate passed
+**246 tests in 33.48s** across program/historical identity, V0 adoption, snapshots,
+coordinates, quality and V3-pair consumers; its ignored evidence identifier is
+`.scratch/pytest-75-review-green.txt`. Global Ruff lint and changed-file formatting passed
+again. The full suite was not repeated for this bounded correction; its earlier result is
+not presented as a post-correction full run. Both review axes rechecked `a53aa81` and the
+final documentation drafts with **zero unresolved findings**.
+
+The V0 response correction (#76),
+fresh smoke plan (#77), revised offline route integration (#78) and publication (#79)
+remain separate scopes. No accepted real current-policy V0 identity report, new route
+fact, billing result, formal benchmark, version comparison or freeze is established here.
+
+<a id="v0-correspondence-contract-correction-2026-10-06"></a>
+
+### V0 correspondence contract correction (#76, 2026-10-06)
+
+The human explicitly authorized implementation of #76 after local #75 completion.
+Fixed review base is `1bd405768dfe8bb01088845efdecb2ae5933fba3`, on feature/evaluation.
+The unrelated pre-existing `.gitignore` edit remains unstaged and outside this task.
+Implementation/tests are committed as `0e5aba66682e24958102089d3eb53b5f4ba69856`.
+This is a local implementation and offline validation event, not a live smoke, formal
+benchmark, research conclusion, version freeze or GitHub publication.
+
+Public-interface TDD reproduced missing citation enums at preparation and missing-address
+decisions incorrectly accepting `unknown`, `different_precision` or `equivalent` without
+a supplied address. The current packet now shares citation paths with import, and uses
+address-presence alternatives bound to owned short reference IDs. Missing addresses require
+`not_supplied` for all decisions and exclude `claim.location`; supplied addresses forbid
+`not_supplied`. Model instructions agree with both schema and import. The V0 policy changes
+to `v0_identity_correspondence_2`, creating new packet/request provenance. The original
+historical all-version schema/instructions remain unchanged. Old or rejected envelopes
+are not normalized, repaired or relabeled; #73 raw response/consumed execution files were
+not edited, and no paid model, Places or Routes request was made.
+
+A downstream regression first exposed absent correspondence metadata, then a missing V0
+identity verdict on route legs. Current records now retain `candidate_correspondence`
+separately from original-claim `grounding_verdict`; coordinate/opening/route consumers
+preserve V0 verdict metadata as well as programmatic verdicts. Recognized wrong addresses
+and different venues remain FAIL with null canonical IDs and no corrected endpoints.
+Insufficient correctness evidence stays UNKNOWN. Quality and requirement descriptors
+retain the original identity records; score formulas, denominators and generation are
+unchanged. Synthetic snapshot tests check these behaviors through public consumers.
+
+The regression harness was corrected for required acquisition ceilings, the existing
+coordinate status (`complete`), the quality report's `primary_metrics` location and the
+identity CLI's decisive-FAIL exit code (`0`). These were test assumptions, not production
+contract changes. After the citation/address/import and consumer corrections, the related
+identity/program/historical/offline-SDK gate passed **111 tests in 14.22s**. The pre-review V0
+contract gate passed **40 tests in 4.33s**. No live POI names were added as reusable fixtures.
+Global Ruff lint (`backend tools scripts`), six changed-file format checks and changed-module
+Python compilation passed. No configured mypy/pyright or remote CI result is claimed.
+
+The first serial full backend gate reported **2907 passed, 10 skipped, 1 failed in 275.48s**.
+The evaluator architecture guard rejected the new `copy` import, which is outside its
+standard-library allowlist. Schema cloning now uses the existing JSON roundtrip, without
+relaxing that guard or touching provider/model material. The intake/identity/program/
+historical/offline-SDK correction gate then passed **249 tests, 1 skipped in 24.05s**.
+Ignored local evidence identifiers are `.scratch/pytest-76-full.txt`,
+`.scratch/pytest-76-full-corrected.txt` and `.scratch/pytest-76-full-final.txt`; none is a
+published dependency. The intermediate corrected full run was stopped without a complete
+result when review found a behavior requiring another code change; it is not a passing gate.
+
+Independent Standards review found zero hard violations and one P3 possible duplication:
+current match rows checked address presence twice. Independent Spec review found one P2:
+supported destination contradictions still produced UNKNOWN, particularly when missing
+addresses required `not_supplied`. Three synthetic no-address cases first reproduced
+UNKNOWN for match/unknown/no-supported-match decisions. Correction commit
+`4c98f56e235de6d4d96de7ce0c24052be7149c78` makes supported current V0 destination conflicts
+FAIL, requires original name/destination plus independent candidate support, and preserves
+historical behavior. Missing evidence rejects import rather than certifying a failure.
+The late historical address guard no longer repeats the current-path check.
+Additional negative citation tests briefly had a misplaced test body (three NameErrors);
+restoring its public quality/route assertions resolved the harness error. The final affected
+gate passed **254 tests, 1 skipped in 22.15s**, covering intake's architecture guard,
+current/historical identity, program dispatch and offline SDK execution. Ruff and changed-file
+format checks passed again. Both axes rechecked the committed correction with zero unresolved
+code findings. A duplicated destination-conflict paragraph in the contract draft was removed.
+
+The final serial full backend gate at `4c98f56` passed **2913 tests, 10 skipped in 276.95s**:
+`.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider
+--basetemp=.scratch/pytest-76-full-final --tb=short --show-capture=no`.
+Global Ruff lint, six changed Python format checks and whitespace checks passed. Final
+documentation checks passed 189 tracked local link targets and the new record anchor.
+Both independent axes reviewed the final documentation drafts with **zero unresolved findings**.
+Current contract, project status, CLI usage guide and this dated acceptance record form a
+separate final documentation commit after implementation and review corrections. The only
+remaining worktree edit is the unrelated pre-existing `.gitignore` change.
+#77/#78/#79 remain separate scopes with their original approval gates.
+
+<a id="fresh-v0-smoke-preparation-2026-10-06"></a>
+
+### Fresh V0 identity smoke preparation (#77, 2026-10-06)
+
+The user explicitly authorized #77 implementation with offline preparation only and zero
+paid calls. Fixed review base is `f53c2b13922f8a6c7fad71f77bf00e9ad15b9490`, following #76,
+on `feature/evaluation`. Implementation and public-interface tests are committed as
+`5f0e1b4e3370c1900439bb2758d91f04d164b5d6`. The unrelated pre-existing `.gitignore` edit
+remains excluded. This event prepares a reviewable request; it establishes no new live
+model/Places/Routes evidence, score comparison, formal benchmark, freeze or Git publication.
+
+The verified original bundle is the ignored local historical identifier
+`artifacts/v0-identity-adoption-20261005/material.json`. Current policy recomputes **eight
+V0 primary references and nine independent API candidates**, rather than assuming the old
+nine-reference model population. Shared requirement subjects and V1-V3 stay on program
+verification and are absent from the request. All eight originals have supplied addresses;
+the missing-address contract is rehearsed separately with synthetic null-address fixtures.
+The real current pending report retains **eight V0 UNKNOWN** results and zero non-V0
+model judgments. No rejected historical response is imported or repaired.
+
+The fresh private preparation identifier is `artifacts/v0-identity-smoke-77-20261006`.
+Its manifest, pending report, complete destination/data handoff and offline audit bind
+**73 source hashes and 68 implementation/dependency hashes**. The 69 original source
+hashes remain unchanged; the additional protected files are the old #73 preparation and
+its three consumed execution files. The original #73 execution directory remains present
+and untouched; the newly bound execution directory does not exist. Token sizing uses the
+already cached, hash-checked local o200k vocabulary, with **12,652 tokens including 1,024
+reserve**. No tokenizer download or model client is allowed during actual preparation.
+Raw claims, candidate payloads, private endpoint and secrets are excluded from tracked docs.
+These local identifiers are evidence references, not dependencies for public instructions.
+
+The concrete frozen preparation has manifest SHA-256
+`14304cf36f3e138011e3a1b3ae5f79b002026cc874d66148d12eb233786ce096`
+and wire-request SHA-256
+`ffc53c919ddc9b51a59b720a019f0197d1058222fd71263ef8a57a042d584d56`.
+The private handoff names source revision `5f0e1b4`, configured HTTPS Responses destination,
+original/candidate data scope, exact command/digest, credentials prerequisites, output
+paths, stops and the request-local reference map. Request proposal: **one `gpt-6-luna`
+call with low reasoning**, `store=false`, no tools, 16,000 input/3,000 output caps,
+60-second HTTP timeout and zero retries. Google, planner and Routes request counts are zero.
+This is a fresh proposal, not reuse of #73's consumed approval.
+
+[Official model pricing](https://developers.openai.com/api/docs/models/gpt-6-luna) and
+[cache usage](https://developers.openai.com/api/docs/guides/prompt-caching) were checked
+2026-10-06. Standard reference rates per million tokens are USD 0.10 ordinary input,
+0.01 cached input, 0.125 cache writes and 0.50 output; output already contains reasoning.
+Maximum uncached reference at the proposed caps is USD 0.0031, maximum standard input
+category reference is USD 0.0035, and a regional +10% scenario is USD 0.00385. The new
+proposed allowance is **USD 0.004**. This proxy cannot guarantee a Foundry invoice ceiling;
+provider SKU, tier, credits and tax are unverified. Execution preserves raw usage and
+prices supplied cache categories separately. Missing category counts produce an explicit
+conservative reference upper bound, not invented zero usage; invalid/overlapping category
+counts stop import. Provider invoice remains unavailable.
+
+Public-interface TDD first reproduced absent preparation metadata, then old token limits,
+ignored cache categories and invalid category acceptance (seven failing pricing cases).
+The relative-material-root regression reproduced resolving source files against the process
+directory instead of the bundle directory. Credential-free CLI preparation first rejected
+the new explicit endpoint argument. Corrections now emit schema version 2, a pending report
+and handoff, apply the new proposal/categories, resolve relative roots correctly and avoid
+credential loading for explicit offline destinations. The first preservation test briefly
+failed because its new `Path` import was missing; adding it corrected the harness.
+
+The default Windows sandbox hung creating an asyncio loopback socketpair before synthetic
+fixture setup. A faulthandler stack identified that restriction; the incomplete runs were
+stopped and are not passes. Offline pytest was then run outside that shell restriction,
+with repository external-network guards and injected HTTP transports still active. No
+paid invocation occurred. Actual preparation additionally prohibited DNS, socket connection
+and model-client creation. The executor gate passed **29 tests** before the final CLI slice;
+the related executor/current/program/historical/adoption gate passed **138 in 29.98s**.
+It covers successful matching, confirmed FAIL, legitimate UNKNOWN, invalid citations,
+null addresses, changed sources, raw evidence preservation and terminal attempt consumption.
+Global Ruff lint, two changed-file format checks and whitespace checks passed.
+
+Independent Standards review of the committed implementation and concrete handoff found
+zero findings. Independent Spec review found one P3 private-handoff navigation typo:
+the supplemental pointer used `reference_map` instead of the actual `reference_maps`.
+The pointer and private handoff audit hash were corrected; manifest/wire/source hashes
+remain unchanged. The private correction receipt preserves the previous/new handoff hashes.
+No tracked implementation correction was needed. The final serial full backend gate at
+`5f0e1b4` passed **2926 tests, 10 skipped in 283.85s**:
+`.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider
+--basetemp .scratch/pytest-77-full --tb=short --show-capture=no`.
+Its ignored local evidence identifier is `.scratch/pytest-77-full.txt`; it is not a public
+dependency. Global Ruff, two changed Python format checks and whitespace checks passed
+again. Documentation validation passed **174 tracked local link targets/anchors** and
+English-only added text. All 73 source and 68 implementation hashes still match; the new
+execution directory remains absent. Both independent axes reviewed the final documentation
+and corrected handoff with **zero unresolved findings**. Current contract, operational
+guide, project state and this dated record are saved in a separate final documentation
+commit. The unrelated `.gitignore` edit remains the only intended unstaged worktree change.
+
+Actual preparation sends and incremental charges are **zero**. Any subsequent live test
+requires explicit approval of this new exact manifest/limits and a current-session execution
+child configured `gpt-6.1-sol` / `medium`. HTTP success must be reported separately from
+accepted import; raw/usage/error evidence and failed directories must remain preserved.
+FAIL/UNKNOWN are valid results, without an all-match/PASS target. The old #73 failure and
+UNKNOWN evidence remain until genuinely new accepted evidence exists. #78 route integration
+and #79 publication remain separate scopes; no full planner rerun or version expansion is
+authorized here. The Issue remains a tracker-owned lifecycle item; this local record does
+not claim closure or authorize a send.
+
+<a id="evaluator-iteration-delivery-preparation-2026-10-06"></a>
+
+### Evaluator iteration delivery preparation (#79, 2026-10-06)
+
+The human authorized local delivery material only, with zero paid calls and explicitly
+deferred push, PR creation and merge. This scope includes read-only remote inspection,
+commit/diff inventory, independent combined review, PR/Issue reconciliation drafts,
+current-state documentation and local commits. No branch switch, Issue mutation,
+implementation change, new smoke freeze or paid execution is included. Starting local
+head is `92f92fe85c48a501c08dba16858a60947fd43563` on feature/evaluation; the only
+pre-existing worktree change is the unrelated `.gitignore` edit, excluded and preserved.
+
+#### Actual delivery range and corrected historical assumptions
+
+Read-only GitHub checks verify `main` at
+`a983f350f9d3f1e943b4f2acf63af641ab676f85` and remote feature/evaluation at
+`819f0c3c5956c43f6c799feb128fb5a74bb4f2f5`, matching the local remote references.
+[PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80) is MERGED at
+that main commit (2026-10-05T17:10:26Z); no open PR exists for feature/evaluation.
+Historical #67/#70/#72/#73 are already CLOSED. Thus the ticket's instruction to include
+earlier unpublished work is resolved from actual state: those historical changes are
+already published, not new outgoing changes and not reasons to reopen their Issues.
+
+The fixed combined-review command is
+`git diff a983f350f9d3f1e943b4f2acf63af641ab676f85...92f92fe85c48a501c08dba16858a60947fd43563`;
+its merge-base is `819f0c3`. The completed-slice range has **ten commits, 32 changed
+files, 2718 insertions and 168 deletions** before this preparation documentation:
+
+| Commit | Slice and purpose |
+| --- | --- |
+| `ffa36a4` | #75 version dispatch, independent API evaluation, consumers and tests |
+| `a53aa81` | #75 separate review correction for local malformed requirement evidence |
+| `1bd4057` | #75 current contracts and acceptance |
+| `0e5aba6` | #76 supported V0 citations and absent-address output/import contract |
+| `4c98f56` | #76 separate supported destination-conflict correction |
+| `f53c2b1` | #76 correction and validation record |
+| `5f0e1b4` | #77 fresh offline V0-only smoke preparation and rehearsal |
+| `769a066` | #77 preparation evidence and approval boundary |
+| `571ed95` | #78 current-policy route readiness and public-interface tests |
+| `92f92fe` | #78 current route contract and real blocked-package evidence |
+
+The proposed normal publication would push the existing feature/evaluation branch,
+then, if separately authorized, create a new PR targeting main. Merge is a further
+explicit action; current authorization stops at local preparation. Final preparation
+documentation is a separate local commit appended to this inventory, without rewriting,
+amending or squashing prior implementation/correction commits. Exact final head is
+recorded in the local delivery manifest and chat closeout after the documentation commit.
+
+#### Validation, reviews and limitations
+
+The root inspected the complete changed-file inventory, implementation/consumer diff,
+contracts and dated records; independent Standards and Spec reviewers each inspected
+the full fixed 32-file diff and all ten commits. **Standards: zero actionable findings.
+Spec: zero findings.** No implementation correction is needed. The earlier #75/#76
+review findings remain in their original dated sections with separate correction commits;
+combined delivery review does not erase those failures or replace their validation sequence.
+
+The serial full backend result at `571ed95` is reused: **2945 passed, 10 skipped in
+414.43s**; the related identity/route/coordinate gate passed **178**. These counts
+overlap. No Python, planner, dependency or configuration file changed after that tested
+state; no new full run is claimed. Delivery checks pass global Ruff and formatting for
+all **24 changed Python files**. No configured mypy/pyright or new PR CI result is claimed.
+Initial document verification caught a newly drafted route-contract anchor that did not
+exist. The link was corrected to the existing contract anchor without changing runtime
+behavior; repeat checks pass **257 tracked local Markdown targets/anchors**, English
+added content and whitespace. The **81 protected source hashes** remain unchanged.
+Independent final preparation-material reviews also report **Standards: zero actionable
+findings; Spec: zero findings**, covering current-state documentation, PR draft, Issue
+map and manifest/audit material. No code correction or further backend test run is needed.
+Excluded-path/content inspection and a credential-shape scan find no secrets or ignored
+raw/scratch files in the proposed diff; the heuristic scan is not a proof of all secret absence.
+
+The [current identity contract](../../contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
+and [route contract](../../contracts/0004-opening-routes.md#route-preparation-and-wire)
+represent deterministic V1-V3 checks, V0-only correspondence, exact replay and
+no-repair FAIL/UNKNOWN propagation. Generation and scoring arithmetic are unchanged.
+The [#78 record](routes.md#versioned-v0-route-readiness-2026-10-06) remains the actual
+real-package evidence: **four UNKNOWN/blocked original legs, zero eligible endpoints,
+Details/Routes requests and proposed acquisition budget; 81 protected file hashes unchanged**.
+Synthetic tests demonstrate policy behavior, not actual venue/route accuracy.
+
+#73's HTTP-success/import-failure, nine UNKNOWN verdicts, raw response and consumed
+allowance remain preserved. No fresh accepted real current-policy V0 model report exists.
+#77's original offline preparation checkpoint contains eight V0 references and nine
+independent candidates, but #78 changed two frozen implementation files. Its preserved
+manifest is stale for execution. No refreeze occurs here; a future smoke needs a fresh
+exact freeze, separate approval and the required current-session execution child.
+Paid smoke is not required to publish offline-validated implementation/preparation.
+
+#### Prepared materials and pending tracker actions
+
+Ignored `.scratch/delivery-79/` contains `manifest.json`, `commits.txt`, the full proposed
+diff, a self-contained English PR title/body draft and an Issue reconciliation draft.
+These paths are private preparation identifiers, not published document dependencies
+or an alternative live specification. The manifest binds the actual local head, base,
+commit list, code blobs, diff digest and reused test state. No raw provider/model payload,
+endpoint credential or runtime artifact is promoted into it or tracked documentation.
+
+Read-only Issue snapshots observe #74-#79 OPEN. The local map proposes evidence-based
+acceptance reconciliation only after authorized publication/readback; no automatic closing
+references are added. Historical #67/#70/#72/#73 closures remain intact. Any #77 closure
+must state completed historical offline preparation without claiming current executability.
+#79's publication/readback/reconciliation criteria remain pending, so neither it nor
+parent #74 is described as fully complete. Stale parent implementation statements are
+listed for later authorized synchronization, not silently updated in the tracker now.
+
+Before any approved publication, refresh remote main/source heads, local head and existing
+PR state; reassess changed scope before pushing. PR creation requires its own approval
+and attachment/readback; merging and Issue reconciliation require their applicable explicit
+authorization. This local preparation has **zero new model/Google/planner sends, zero
+incremental charges and zero remote mutations**. It establishes no version freeze,
+formal benchmark/comparison, thesis result or research conclusion.
+
+<a id="evaluator-iteration-publication-2026-10-06"></a>
+
+#### Authorized publication and pre-merge checkpoint (2026-10-06)
+
+After the local preparation above, the human explicitly authorized normal push, PR
+creation, review followed by a published comment and merge, plus closure of associated
+Issues only if all acceptance conditions are met. Zero paid calls remains binding.
+This supersedes the preparation-only Git boundary; it does not approve a live smoke,
+force push, history rewrite, branch deletion or branch switch.
+
+Normal push published `3f2143b7a58e46cf6597cd5cf400ff5bfa737531` to feature/evaluation.
+Remote readback confirmed the exact head. Newly created
+[PR #81](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/81), attached to the task,
+targets main at `a983f350f9d3f1e943b4f2acf63af641ab676f85`. Its initial readback confirms
+the prepared **11 commits / 32 files**, a non-draft, mergeable/CLEAN PR and an empty
+check rollup. No new configured CI outcome exists; absence of checks is not a passed CI.
+The repository permits merge commits, which retain the implementation/correction history.
+
+This authorization/current-state documentation is an additional local documentation
+commit, published into the same PR before final review/comment/merge. The actual final
+head and independent Standards/Spec outcomes are recorded in the pre-merge PR comment;
+the fixed base and implementation content retain the earlier full combined-review scope.
+No Python, planner, dependency or configuration change follows the tested `571ed95` state.
+The reused **2945 passed / 10 skipped** full backend and **178** related gate remain valid;
+fresh backend or live validation is not claimed. Final document/exclusion/hash checks cover
+this additional documentation delta, with the unrelated `.gitignore` bytes preserved.
+
+The original #73 rejected response/consumed allowance and all 81 protected file hashes
+remain unchanged. The real current route package still has four UNKNOWN/blocked legs and
+zero eligible endpoints, acquisition requests or proposed budget. #77 remains historical
+offline preparation with a stale execution manifest, requiring a fresh exact freeze and
+separate approval for any future send. Its completion never certifies current executability.
+
+At this pre-merge checkpoint, #74-#79 are OPEN. After verified merge, authorized
+reconciliation checks existing acceptance wording, preserves historical decisions and
+adds self-contained evidence before closing only fully met scopes. #67/#70/#72/#73 stay
+closed without repeated mutations. Actual merge and final lifecycle outcomes belong to
+the linked PR/Issues; this pre-merge record does not anticipate their success. No paid
+call, new original-output repair, scoring change, formal evaluation or freeze occurs.

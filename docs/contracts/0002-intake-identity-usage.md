@@ -180,7 +180,7 @@ original source artifacts and historical reports. The density table remains
 
 <a id="version-specific-identity-requirement"></a>
 
-### Accepted version-specific requirement (implementation pending)
+### Version-specific identity evaluation
 
 Accepted by the user on 2026-10-06 and published in
 [parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74).
@@ -200,27 +200,114 @@ borrowing V0 model judgments. Wrong original addresses and different venues are 
 failed/missing API evidence is UNKNOWN. Original claims and erroneous endpoints are
 never repaired, and score arithmetic is unchanged.
 
-[#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/75) owns the version
-dispatch and deterministic evaluation path; [#76](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/76)
-owns the V0 correspondence/citation/missing-address correction. These are published
-specifications, **not implemented behavior**. The uniform policy documented below
-still describes the current code. Old artifacts retain their original policies and
-replay provenance; changing this design does not upgrade old evidence or authorize
-implementation, a paid call or Git delivery.
+Implemented locally under [#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/75).
+`resolve_identities(intake, evidence, *, model_result=None)` produces
+`association_policy_version=versioned_api_identity_1`. Every V1-V3 final/optional
+primary visit requires its original `source_place_id`, structured `place_name` and
+`location`. Proven missing fields are FAIL even without an API response. Independent
+Details must have an available observation with retrieval provenance, the requested ID
+equal to the original ID and the returned ID equal to that request. Missing/failed,
+malformed or unlinked Details are UNKNOWN. Name and address use literal field equality;
+no normalization, translation, precision, semantic or fuzzy rescue is applied.
+Only PASS adopts a canonical ID. FAIL/UNKNOWN retain null canonical IDs and original claims.
+
+Reviewed requirement subjects can retain an optional `source_place_id`; it is a claim
+binding, not factual evidence. Identity planning independently requests its Details.
+Without a binding, deterministic resolution requires the exact original search query,
+the declared 20-result scope, a complete unique candidate and verified destination.
+Ambiguous/missing search evidence remains UNKNOWN. Shared subjects always use program
+checks; malformed/conflicting typed destination components are a local UNKNOWN and do
+not abort other references. Shared subjects never enter V0 model packets. A confirmed
+programmatic subject failure is retained as a FAIL component in associated requirement checks.
+
+Default `prepare_identity_judgment(..., model=MODEL)` includes only V0 primary visits,
+with packet policy `v0_identity_correspondence_2`; source digests and short-reference
+ownership bind eligibility. Foreign decisions, historical all-version packets and edited policy/version
+markers cannot pass current import. Absence of a V0 result leaves V0 UNKNOWN while V1-V3
+and shared subjects still evaluate. No resolver/CLI executes a model or provider.
+
+The V0 response correction is implemented locally under
+[#76](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/76). The model's primary
+purpose is correspondence to supplied independent candidates, or insufficient support;
+it cannot invent candidates, facts, coordinates, opening/route evidence or corrected output.
+`evidence_fields` uses the same supported-path set as import validation:
+`claim.place_name`, `claim.destination`, `claim.location`, `claim.claimed_place_id`,
+`claim.original_title`, `candidate.display_name`, `candidate.formatted_address`,
+`candidate.address_components`, `candidate.observations` and `case.candidates`.
+Citations must refer to actual nonempty fields owned by that claim and selected candidate,
+or the case's supplied candidate set. Returned paths are never normalized or repaired.
+Matches require claim name/destination and candidate name/address, plus original location
+and claimed ID when supplied. Cited address components must retain their typed structure.
+
+The schema partitions owned short reference IDs by original-address presence. Every
+decision for an absent/null/blank original location requires `not_supplied` and its citation
+enum excludes `claim.location`; decisions with a supplied address cannot use `not_supplied`.
+Instructions and import enforce the same rule. Absence alone does not prove an address error.
+Complete unique reference coverage and candidate ownership remain mandatory.
+Validated V0 records expose `candidate_correspondence` (restored candidate ID and decision)
+separately from `grounding_verdict` and original claims. Supported `incorrect_claim` or
+`different_place` assessments remain FAIL even for a recognized candidate; they require
+original name/destination/location and independent candidate name/address, or the complete
+nonempty `case.candidates` when no candidate is selected. Insufficient correctness support
+remains UNKNOWN. Neither FAIL nor UNKNOWN adopts a canonical ID or a corrected endpoint.
+A supported `destination_assessment=contradictory` also produces FAIL, including when the
+original address is absent. It requires original name/destination and candidate name/address,
+or the complete nonempty candidate set without a selection. Missing original or independent
+support is rejected at import; the model must use UNKNOWN when evidence is insufficient.
+Historical uniform replay retains its original destination-conflict behavior.
+
+The new V0 instructions/schema/policy produce new packet and request hashes; current import
+requires that exact packet and response provenance. The historical uniform schema/instructions
+remain unchanged under explicit replay. Old V0 policy-1 packets and the rejected #73 envelope
+cannot be relabeled as accepted current reports. Raw responses and consumed execution evidence
+are retained unchanged. #78/#79 remain separate scopes; this contract grants no new call.
+
+Fresh preparation under #77 uses `rtpeval_identity_smoke_preparation_2`, recomputes the
+current V0 primary population, and freezes original/candidate material, implementation,
+strict request/schema, reference map, HTTPS destination and a new execution directory.
+The offline pending report supplies no new V0 model evidence. The private handoff owns
+exact proposed limits, source revision, data/destination scope, counts, output paths and
+stops. Prices retain ordinary/cached/write input categories and output (including reasoning);
+missing categories use a labelled conservative reference upper bound, with the original
+usage preserved. Reference prices and regional scenarios are distinct from unavailable
+provider invoices. One attempt consumes the bound directory, even on HTTP/import failure.
+Neither preparation nor ticket completion authorizes execution: a new exact-plan approval
+and the current-session child required by smoke policy are mandatory. Historical #73
+failure evidence, raw response and consumed directory remain untouched; FAIL/UNKNOWN are
+valid outcomes without an all-match acceptance target. See the
+[operational guide](../../backend/evaluation/README.md#prepared-one-call-identity-development-smoke)
+and [preparation record](../records/evaluation/intake-identity-usage.md#fresh-v0-smoke-preparation-2026-10-06).
+
+The complete `identity_versioned_replay` stores independent evidence and the optional
+V0 result. Consumers reconstruct the exact report from the original intake before using
+it. Programmatic record/replay markers trigger verification even after policy substitution.
+`programmatic_judgment`, `grounding_verdict`, original claims and observation hashes remain
+visible. Quality and paired reports count grounding FAIL directly. Requirement/schedule
+descriptions retain identity checks; coordinate preparation lists unadopted references;
+opening and route checks retain identity verdicts separately from their own feasibility
+verdicts. An identity failure supplies no corrected coordinates or route context. Opening
+and route facts can remain UNKNOWN when their independent evidence is unavailable.
+Score arithmetic, masks, denominators and planner generation behavior are unchanged.
+Status is `complete` when all identity verdicts are decisive (including FAIL), otherwise
+`needs_evidence`; UNKNOWN is never dropped from downstream populations.
+
+Explicit historical replay preserves the old policies and evidence, without relabeling
+them as current programmatic reports. New implementation does not rewrite original files
+or grant paid execution, publication, formal-run or freeze authorization.
 
 <a id="uniform-llm-identity"></a>
 <a id="current-uniform-llm-identity-judgment"></a>
 
-### Implemented uniform LLM identity judgment (replacement pending)
+### Historical uniform LLM identity judgment
 
 Accepted 2026-10-05 under [Issue #72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72).
-`resolve_identities(intake, evidence, *, model_result=None)` uses
+Explicit `resolve_llm_identities(intake, evidence, *, model_result=None)` uses
 `association_policy_version=llm_identity_judgment_2` for every V0-V3 primary visit,
 relevant REQUIRED/EXCLUDED/fixed-time subject, and available V3 optional projection.
 High-impact metadata remains descriptive. No reference requires human identity confirmation
 or sampling. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
 
-`prepare_identity_judgment(intake, evidence, *, model)` returns an immutable
+`prepare_identity_judgment(intake, evidence, *, model, historical=True)` returns an immutable
 `rtpeval_identity_judgment_packet_1` with the complete source-bound request and short-ID map.
 Cases contain original name/title, destination, location and claimed ID, independent
 candidates, supplied provider observations and source references. Equal IDs are deduplicated
@@ -282,10 +369,11 @@ cannot establish current-policy judgments; historical files remain unchanged and
 original code revision for reproduction. V0 route-request packages
 also bind the original snapshot evidence. Schema/packet fingerprints identify this policy.
 
-`resolve_v0_identities(intake, bundle_path, *, model_result=None)` verifies the existing
-source-linked V0 material before applying this same policy. The historical proposal response
-is not reinterpreted as a new-schema judgment. All identity CLIs support
-`--prepare --model MODEL` and `--model-result FILE` without live execution.
+Current `resolve_v0_identities(intake, bundle_path, *, model_result=None)` verifies the
+source-linked V0 material before applying version-specific dispatch. The historical proposal
+response is not reinterpreted as a new-schema judgment. All identity CLIs support
+`--prepare --model MODEL` and `--model-result FILE` without live execution; add
+`--historical-llm` only for an explicitly selected uniform historical replay.
 
 ### Explicit historical replay
 
@@ -294,6 +382,8 @@ the prior contracts below for frozen evidence. Historical human decisions are pr
 they are not fabricated or rewritten as model decisions. Default API/CLI calls reject
 human/audit inputs unless this explicit legacy path is selected. Consumers retain old
 policy compatibility for historical reproduction.
+Uniform LLM reports use `resolve_llm_identities` and CLI `--historical-llm`, preserving
+the exact old packet and report shape. `--legacy` and `--historical-llm` cannot be combined.
 
 Ticket 03 reads accepted projection references, reviewed REQUIRED/EXCLUDED/fixed-time
 subjects, independent observations, a predeclared audit and optional decisions. It uses

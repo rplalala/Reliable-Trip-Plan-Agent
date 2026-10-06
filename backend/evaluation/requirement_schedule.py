@@ -95,6 +95,7 @@ def _occurrences(projection, identity_index, timezone):
                 "activity": activity,
                 "interval": interval,
                 "primary": activity["evaluation_role"] == "primary_visit",
+                "identity": record,
                 "canonical_id": record.get("canonical_place_id")
                 if record.get("resolution") == "resolved"
                 else None,
@@ -214,6 +215,14 @@ def _requirement_checks(group, projection, identity_index, timezone):
         and item["group_id"] == group["group_id"]
         and item["resolution"] == "resolved"
     }
+    subject_failures = {
+        item["source"].get("subject_id"): item
+        for item in identity_index.values()
+        if item["kind"] == "requirement_subject"
+        and item["group_id"] == group["group_id"]
+        and "programmatic_judgment" in item
+        and item["grounding_verdict"] == "FAIL"
+    }
     checks = []
     for obligation in group["requirement_spec"]["obligations"]:
         components = []
@@ -279,6 +288,9 @@ def _requirement_checks(group, projection, identity_index, timezone):
             )
         else:
             components.append({"kind": kind, "state": "UNKNOWN", "reason": "pending_check"})
+        failure = subject_failures.get(obligation.get("subject_ref"))
+        if failure:
+            components.append({"kind": "subject_identity", "state": "FAIL", "identity": failure})
         checks.append(
             {
                 "check_id": stable_id([projection["context"], obligation["obligation_id"]]),
@@ -390,6 +402,11 @@ def _descriptive(group, projection, occurrences):
     }
     return {
         "coverage": coverage,
+        **(
+            {"identity_checks": [item["identity"] for item in occurrences]}
+            if any("programmatic_judgment" in item["identity"] for item in occurrences)
+            else {}
+        ),
         "density": density,
         "repetition": {
             "venues": venues,

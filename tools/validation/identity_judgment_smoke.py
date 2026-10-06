@@ -11,30 +11,40 @@ import httpx
 from openai import AsyncOpenAI
 
 from backend.app.runtime.token_counting import count_tokens
+from backend.evaluation.identity import resolve_identities
 from backend.evaluation.identity_adoption import load_v0_material
 from backend.evaluation.identity_llm import (
     RESULT_VERSION,
     prepare_identity_judgment,
-    resolve_llm_identities,
 )
-from backend.evaluation.records import canonical_digest, thaw
+from backend.evaluation.records import canonical_digest, text, thaw
 
 MODEL = "gpt-6-luna"
 LIMITS = {
     "max_sends": 1,
     "max_retries": 0,
-    "max_input_tokens": 20000,
+    "max_input_tokens": 16000,
     "input_token_reserve": 1024,
-    "max_output_tokens": 4000,
+    "max_output_tokens": 3000,
     "http_timeout_seconds": 60,
-    "retail_reference_allowance_usd": 0.005,
+    "retail_reference_allowance_usd": 0.004,
 }
 PRICING = {
     "checked_on": "2026-10-06",
     "source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
     "input_per_million_usd": 0.10,
+    "cached_input_per_million_usd": 0.01,
+    "cache_write_per_million_usd": 0.125,
     "output_per_million_usd": 0.50,
-    "basis": "Standard uncached retail reference; Foundry invoice unavailable.",
+    "cache_source": "https://developers.openai.com/api/docs/guides/prompt-caching",
+    "usage_categories": {
+        "input": "input_tokens minus cached_tokens and cache_write_tokens",
+        "cached_input": "input_tokens_details.cached_tokens",
+        "cache_write": "input_tokens_details.cache_write_tokens",
+        "output": "output_tokens, including reasoning; never add reasoning again",
+    },
+    "regional_multiplier_scenario": 1.10,
+    "basis": "Standard retail reference; regional +10% scenario; Foundry invoice unavailable.",
 }
 
 
@@ -57,7 +67,7 @@ def _plan(bundle_path, endpoint, directory, protected_files):
     material = load_v0_material(None, bundle_path)
     bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
     sources = {str(bundle_path): file_digest(bundle_path), **protected_files}
-    root = Path(bundle["artifact_root"])
+    root = (bundle_path.parent / bundle["artifact_root"]).resolve()
     for ref in bundle["artifacts"].values():
         if ref is not None:
             sources[str((root / ref["path"]).resolve())] = ref["sha256"]
@@ -75,15 +85,23 @@ def _plan(bundle_path, endpoint, directory, protected_files):
     estimated = count_tokens(json.dumps(wire, ensure_ascii=False)) + LIMITS["input_token_reserve"]
     if estimated > LIMITS["max_input_tokens"]:
         raise ValueError("Estimated input exceeds smoke allowance")
+    cases = json.loads(wire["input"])["cases"]
+    maximum = (
+        LIMITS["max_input_tokens"] * PRICING["cache_write_per_million_usd"]
+        + LIMITS["max_output_tokens"] * PRICING["output_per_million_usd"]
+    ) / 1000000
+    repository = Path(__file__).resolve().parents[2]
+    implementation = [
+        Path(__file__).resolve(),
+        repository / "backend/model_references.py",
+        repository / "backend/app/runtime/token_counting.py",
+        repository / "pyproject.toml",
+        repository / "uv.lock",
+        *sorted((repository / "backend/evaluation").glob("*.py")),
+    ]
     return {
-        "schema_version": "rtpeval_identity_smoke_preparation_1",
-        "implementation_hashes": {
-            str(path): file_digest(path)
-            for path in (
-                Path(__file__).resolve(),
-                Path(__file__).resolve().parents[2] / "backend/evaluation/identity_llm.py",
-            )
-        },
+        "schema_version": "rtpeval_identity_smoke_preparation_2",
+        "implementation_hashes": {str(path): file_digest(path) for path in implementation},
         "bundle_path": str(bundle_path),
         "endpoint": endpoint,
         "execution_directory": str(directory / "execution"),
@@ -94,13 +112,25 @@ def _plan(bundle_path, endpoint, directory, protected_files):
         "wire_request_sha256": canonical_digest(wire),
         "limits": dict(LIMITS),
         "pricing": dict(PRICING),
-        "reference_count": len(json.loads(wire["input"])["cases"]),
+        "reference_count": len(cases),
+        "data_scope": {
+            "versions": sorted({c["version"] for c in cases}),
+            "kinds": sorted({c["kind"] for c in cases}),
+            "reference_count": len(cases),
+            "candidate_count": sum(len(c["candidates"]) for c in cases),
+            "original_addresses_missing": sum(not text(c["claim"]["location"]) for c in cases),
+        },
+        "request_counts": {"model": 1, "google": 0, "planner": 0, "routes": 0},
+        "execution_gate": {
+            "status": "awaiting_new_exact_plan_approval",
+            "historical_allowance_reused": False,
+            "current_session_child_required": True,
+            "child_model": "gpt-6.1-sol",
+            "child_reasoning_effort": "medium",
+        },
         "estimated_input_tokens_with_reserve": estimated,
-        "maximum_standard_retail_reference_usd": (
-            LIMITS["max_input_tokens"] * PRICING["input_per_million_usd"]
-            + LIMITS["max_output_tokens"] * PRICING["output_per_million_usd"]
-        )
-        / 1000000,
+        "maximum_standard_retail_reference_usd": maximum,
+        "maximum_regional_retail_reference_usd": maximum * PRICING["regional_multiplier_scenario"],
         "preparation": {"actual_sends": 0, "incremental_charges_usd": 0},
     }
 
@@ -112,7 +142,60 @@ def prepare_smoke(bundle_path, *, endpoint, directory, protected_files=None):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=False)
     save(directory, "preparation.json", plan)
+    material = load_v0_material(None, bundle_path)
+    pending = resolve_identities(thaw(material.intake), thaw(material.evidence)).to_dict()
+    save(directory, "pending-identity-report.json", pending)
+    (directory / "handoff.md").write_text(_handoff(plan), encoding="utf-8")
     return plan
+
+
+def _handoff(plan):
+    """Private, reviewable instructions; the frozen manifest never grants execution."""
+    directory = Path(plan["execution_directory"]).parent
+    command = (
+        ".venv/Scripts/python.exe -m tools.validation.identity_judgment_smoke execute "
+        f'--preparation "{directory / "preparation.json"}" '
+        f"--approved-manifest-sha256 {canonical_digest(plan)}"
+    )
+    return f"""# V0 identity development smoke preparation
+
+No live execution is authorized by this preparation. A future user must approve this
+new exact manifest and its limits; the historical one-call allowance is not reused.
+
+Manifest SHA-256: `{canonical_digest(plan)}`
+Wire request SHA-256: `{plan["wire_request_sha256"]}`
+Destination: `{plan["endpoint"]}responses`
+Data scope: `{json.dumps(plan["data_scope"], sort_keys=True)}`
+Planned requests: `{json.dumps(plan["request_counts"], sort_keys=True)}`
+Model: `{plan["wire_request"]["model"]}`.
+Reasoning: `{plan["wire_request"]["reasoning"]["effort"]}`.
+Limits: `{json.dumps(plan["limits"], sort_keys=True)}`
+Price reference: `{json.dumps(plan["pricing"], sort_keys=True)}`
+Maximum standard retail reference: USD {plan["maximum_standard_retail_reference_usd"]:.6f}.
+Regional +10% reference scenario: USD {plan["maximum_regional_retail_reference_usd"]:.6f}.
+Provider invoice is unavailable. Token sizing is an offline surrogate, not an invoice ceiling.
+Missing cache categories use an explicitly labelled conservative reference upper bound.
+
+Private originals and independent facts are linked by `source_hashes` in `preparation.json`.
+The packet contains original claims and supplied candidates with request-local references.
+The current pending report is `pending-identity-report.json`; V0 has no new model evidence.
+Model/Google/planner/Routes sends during preparation: 0. Incremental charges: USD 0.
+
+Only a current-session execution child using `gpt-6.1-sol` with `medium` reasoning may
+perform a subsequently approved live execution. Provide source revision, frozen hashes,
+credentials/configuration prerequisites and the exact command without copying secrets:
+
+```powershell
+{command}
+```
+
+The bound execution directory is `{plan["execution_directory"]}`. One attempt consumes it,
+including errors; do not delete or regenerate it to retry. HTTP success does not establish
+import success. Invalid/partial/foreign/citation/usage/source results stop without acceptance.
+Preserve `response.bin`, `execution.json`, `model-result.json` and, only if import succeeds,
+`identity-report.json`. FAIL and legitimate UNKNOWN are valid imported outcomes. They keep
+original claims and null canonical endpoints; no all-match or all-PASS target is imposed.
+"""
 
 
 def _usage_cost(raw):
@@ -126,14 +209,42 @@ def _usage_cost(raw):
         value = usage.get(key)
         if not isinstance(value, int) or isinstance(value, bool) or not 0 <= value <= limit:
             raise ValueError("Invalid or excessive reported token usage")
-    # Deliberately do not assume cached-input discounts or provider invoice equivalence.
+    details = usage.get("input_tokens_details")
+    if details is None:
+        details = {}
+    if not isinstance(details, dict):
+        raise ValueError("Invalid input token categories")
+    counts = {}
+    for key in ("cached_tokens", "cache_write_tokens"):
+        value = details.get(key)
+        if value is not None and (
+            not isinstance(value, int) or isinstance(value, bool) or value < 0
+        ):
+            raise ValueError("Invalid input token categories")
+        counts[key] = value
+    cached, writes = counts["cached_tokens"], counts["cache_write_tokens"]
+    if (cached or 0) + (writes or 0) > usage["input_tokens"]:
+        raise ValueError("Input token categories exceed total")
+    # Unknown cached tokens earn no assumed discount; unknown writes use the highest rate.
+    priced_cached = cached or 0
+    priced_writes = usage["input_tokens"] - priced_cached if writes is None else writes
+    ordinary = usage["input_tokens"] - priced_cached - priced_writes
     cost = (
-        usage["input_tokens"] * PRICING["input_per_million_usd"]
+        ordinary * PRICING["input_per_million_usd"]
+        + priced_cached * PRICING["cached_input_per_million_usd"]
+        + priced_writes * PRICING["cache_write_per_million_usd"]
         + usage["output_tokens"] * PRICING["output_per_million_usd"]
     ) / 1000000
-    if cost > LIMITS["retail_reference_allowance_usd"]:
+    regional = cost * PRICING["regional_multiplier_scenario"]
+    if regional > LIMITS["retail_reference_allowance_usd"]:
         raise ValueError("Retail reference allowance exceeded")
-    return cost
+    return {
+        "retail_reference_usd": cost,
+        "regional_retail_reference_usd": regional,
+        "retail_reference_basis": "reported_categories"
+        if cached is not None and writes is not None
+        else "missing_category_upper_bound",
+    }
 
 
 class _SingleRequest(httpx.AsyncBaseTransport):
@@ -165,7 +276,7 @@ class _SingleRequest(httpx.AsyncBaseTransport):
             raise ValueError("Unsuccessful HTTP response")
         value = json.loads(raw)
         self.receipt["usage"] = value.get("usage")
-        self.receipt["retail_reference_usd"] = _usage_cost(value)
+        self.receipt.update(_usage_cost(value))
         self.receipt["response_id"] = value.get("id")
         return response
 
@@ -220,7 +331,7 @@ async def execute_smoke(plan, *, approved_manifest_sha256=None, api_key, transpo
         }
         save(directory, "model-result.json", result)
         material = load_v0_material(None, plan["bundle_path"])
-        report = resolve_llm_identities(
+        report = resolve_identities(
             thaw(material.intake), thaw(material.evidence), model_result=result
         ).to_dict()
         save(directory, "identity-report.json", report)
@@ -241,6 +352,9 @@ def main(argv=None):
     prepare = commands.add_parser("prepare")
     prepare.add_argument("--material", required=True)
     prepare.add_argument("--directory", required=True)
+    prepare.add_argument(
+        "--endpoint", help="Explicit HTTPS destination for credential-free preparation"
+    )
     prepare.add_argument("--protected-hashes", help="JSON file containing a file_hashes map")
     execute = commands.add_parser("execute")
     execute.add_argument("--preparation", required=True)
@@ -248,7 +362,6 @@ def main(argv=None):
     args = parser.parse_args(argv)
     from backend.app.versions.v0.config import V0Settings
 
-    settings = V0Settings()
     if args.command == "prepare":
         protected = None
         if args.protected_hashes:
@@ -257,7 +370,7 @@ def main(argv=None):
             ]
         plan = prepare_smoke(
             args.material,
-            endpoint=str(settings.azure_openai_endpoint),
+            endpoint=args.endpoint or str(V0Settings().azure_openai_endpoint),
             directory=args.directory,
             protected_files=protected,
         )
@@ -270,6 +383,7 @@ def main(argv=None):
             )
         )
         return 0
+    settings = V0Settings()
     plan = json.loads(Path(args.preparation).read_text(encoding="utf-8"))
     if str(settings.azure_openai_endpoint).rstrip("/") + "/" != plan["endpoint"]:
         raise ValueError("Configured endpoint differs from approved preparation")

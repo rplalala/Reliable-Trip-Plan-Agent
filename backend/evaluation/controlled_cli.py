@@ -134,7 +134,10 @@ def main(argv=None):
             ],
         }
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False))
-    if args.command == "identity" and result.get("status") == "needs_model_judgment":
+    if args.command == "identity" and result.get("status") in (
+        "needs_model_judgment",
+        "needs_evidence",
+    ):
         return 3
     return 0 if result.get("status", "complete") in {"complete", "accepted"} else 2
 

@@ -47,7 +47,11 @@ def test_pending_identity_stays_visible_and_preparation_has_no_network(adoption_
     monkeypatch.setattr(socket.socket, "connect", forbidden)
     monkeypatch.setattr(socket, "getaddrinfo", forbidden)
     report = prepare_v0_route_requests(
-        bundle, identity, prepared_at="2026-10-06T10:00:00Z", schedule_context=context(intake)
+        bundle,
+        identity,
+        legacy=True,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
     ).to_dict()
     assert report["status"] == "complete"
     assert len(report["legs"]) == 1
@@ -65,6 +69,7 @@ def test_missing_coordinates_prepare_exact_details_and_conditional_routes(adopti
     report = prepare_v0_route_requests(
         bundle,
         reviewed_identity(adoption_case),
+        legacy=True,
         prepared_at="2026-10-06T10:00:00Z",
         schedule_context=context(intake),
     ).to_dict()
@@ -96,7 +101,11 @@ def test_supplied_details_require_exact_identity_and_numeric_coordinates(
     intake, _, bundle, _, _, _, _, _ = adoption_case
     identity = reviewed_identity(adoption_case)
     before = prepare_v0_route_requests(
-        bundle, identity, prepared_at="2026-10-06T10:00:00Z", schedule_context=context(intake)
+        bundle,
+        identity,
+        legacy=True,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
     ).to_dict()
 
     async def fixture_response(request):
@@ -122,6 +131,7 @@ def test_supplied_details_require_exact_identity_and_numeric_coordinates(
     report = prepare_v0_route_requests(
         bundle,
         identity,
+        legacy=True,
         prepared_at="2026-10-06T10:00:00Z",
         schedule_context=context(intake),
         details_snapshot_directory=snapshot,
@@ -151,7 +161,11 @@ def test_forged_handoff_fails_without_partial_request_inventory(adoption_case, f
     else:
         identity["model_assistance_replay"]["reviews"]["records"][0]["decision"] = "reject"
     report = prepare_v0_route_requests(
-        bundle, identity, prepared_at="2026-10-06T10:00:00Z", schedule_context=context(intake)
+        bundle,
+        identity,
+        legacy=True,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
     ).to_dict()
     assert report["status"] == "needs_material_correction"
     assert report["requests"] == []
@@ -166,6 +180,7 @@ def test_details_deduplicate_exact_canonical_venue_and_preserve_both_reference_l
     report = prepare_v0_route_requests(
         bundle,
         reviewed_identity(adoption_case),
+        legacy=True,
         prepared_at="2026-10-06T10:00:00Z",
         schedule_context=context(intake),
     ).to_dict()
@@ -183,6 +198,7 @@ def test_transit_keeps_original_departure_and_unverified_historical_context(adop
     report = prepare_v0_route_requests(
         bundle,
         reviewed_identity(adoption_case),
+        legacy=True,
         prepared_at="2026-10-06T10:00:00Z",
         schedule_context=context(intake),
     ).to_dict()
@@ -199,6 +215,7 @@ def test_evidence_later_than_preparation_is_rejected(adoption_case):
     report = prepare_v0_route_requests(
         bundle,
         reviewed_identity(adoption_case),
+        legacy=True,
         prepared_at="2020-01-01T00:00:00Z",
         schedule_context=context(intake),
     ).to_dict()
@@ -225,7 +242,11 @@ def test_preflight_counters_stop_without_granting_live_authorization(adoption_ca
     intake, _, bundle, _, _, _, _, _ = adoption_case
     identity = reviewed_identity(adoption_case)
     report = prepare_v0_route_requests(
-        bundle, identity, prepared_at="2026-10-06T10:00:00Z", schedule_context=context(intake)
+        bundle,
+        identity,
+        legacy=True,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
     ).to_dict()
     next_key = report["requests"][0]["key"]
     ledger = {
@@ -267,6 +288,7 @@ def test_conflicting_saved_coordinates_block_reuse_and_do_not_propose_backfill(a
     report = prepare_v0_route_requests(
         bundle,
         reviewed_identity(adoption_case),
+        legacy=True,
         prepared_at="2026-10-06T10:00:00Z",
         schedule_context=context(intake),
     ).to_dict()
@@ -289,6 +311,7 @@ def test_cli_preserves_unknown_and_reports_invalid_input_without_network(adoptio
             [
                 str(bundle),
                 str(report_path),
+                "--legacy",
                 "--context",
                 str(context_path),
                 "--prepared-at",

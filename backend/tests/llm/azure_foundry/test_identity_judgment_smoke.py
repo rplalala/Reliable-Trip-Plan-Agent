@@ -1,7 +1,9 @@
 """Frozen development smoke through the SDK and offline HTTP boundary."""
 
 import asyncio
+import hashlib
 import json
+from pathlib import Path
 
 import httpx
 import pytest
@@ -34,7 +36,7 @@ def run(plan, respond, *, approval=True, approved_digest=None):
     )
 
 
-def output(plan, *, failure=False):
+def output(plan, *, failure=False, match=False):
     rows = []
     for case in json.loads(plan["wire_request"]["input"])["cases"]:
         rows.append(
@@ -44,10 +46,26 @@ def output(plan, *, failure=False):
                 "candidate_id": None,
                 "rationale": "Insufficient independent facts.",
                 "evidence_fields": [],
-                "address_assessment": "unknown",
+                "address_assessment": "unknown" if case["claim"]["location"] else "not_supplied",
                 "destination_assessment": "unknown",
             }
         )
+        if match:
+            rows[-1].update(
+                decision="match",
+                candidate_id=case["candidates"][0]["place_id"],
+                rationale="Supplied independent fields establish this candidate.",
+                evidence_fields=[
+                    "claim.place_name",
+                    "claim.destination",
+                    "candidate.display_name",
+                    "candidate.formatted_address",
+                ],
+                address_assessment="equivalent" if case["claim"]["location"] else "not_supplied",
+                destination_assessment="consistent",
+            )
+            if case["claim"]["location"]:
+                rows[-1]["evidence_fields"].append("claim.location")
     if failure:
         rows[0].update(
             decision="match",
@@ -77,6 +95,78 @@ def test_preparation_and_unapproved_execution_send_nothing(adoption_case, tmp_pa
     assert not (tmp_path / "prepared" / "execution").exists()
 
 
+def test_offline_cli_preparation_needs_no_credentials(adoption_case, tmp_path, monkeypatch, capsys):
+    from backend.app.versions.v0 import config
+    from tools.validation.identity_judgment_smoke import main
+
+    monkeypatch.setattr(
+        config, "V0Settings", lambda: pytest.fail("Offline CLI must not load credentials")
+    )
+    assert (
+        main(
+            [
+                "prepare",
+                "--material",
+                str(adoption_case[2]),
+                "--directory",
+                str(tmp_path / "cli-prepared"),
+                "--endpoint",
+                ENDPOINT,
+            ]
+        )
+        == 0
+    )
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["reference_count"] == 2
+    assert (tmp_path / "cli-prepared/handoff.md").is_file()
+
+
+@pytest.mark.parametrize("adoption_case", [{"high_impact": True}], indirect=True)
+def test_fresh_preparation_delivers_v0_scope_and_pending_report_without_sends(
+    adoption_case, tmp_path, monkeypatch
+):
+    import socket
+
+    from openai import AsyncOpenAI
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("Offline preparation must not create clients or network connections")
+
+    monkeypatch.setattr(AsyncOpenAI, "__init__", forbidden)
+    monkeypatch.setattr(socket, "getaddrinfo", forbidden)
+    monkeypatch.setattr(socket.socket, "connect", forbidden)
+    before = {
+        str(p): hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in adoption_case[2].parent.rglob("*")
+        if p.is_file()
+    }
+    plan = prepared(adoption_case, tmp_path)
+    assert plan["schema_version"] == "rtpeval_identity_smoke_preparation_2"
+    assert plan["data_scope"] == {
+        "versions": ["v0"],
+        "kinds": ["primary_visit"],
+        "reference_count": 2,
+        "candidate_count": 2,
+        "original_addresses_missing": 2,
+    }
+    assert plan["request_counts"] == {"model": 1, "google": 0, "planner": 0, "routes": 0}
+    assert plan["execution_gate"]["status"] == "awaiting_new_exact_plan_approval"
+    assert plan["execution_gate"]["historical_allowance_reused"] is False
+    assert plan["execution_gate"]["child_model"] == "gpt-6.1-sol"
+    assert plan["execution_gate"]["child_reasoning_effort"] == "medium"
+    assert plan["packet"]["association_policy_version"] == "v0_identity_correspondence_2"
+    pending = json.loads((tmp_path / "prepared/pending-identity-report.json").read_text())
+    assert all(
+        r["grounding_verdict"] == "UNKNOWN" for r in pending["records"] if r["version"] == "v0"
+    )
+    assert all("model_judgment" not in r for r in pending["records"] if r["version"] != "v0")
+    handoff = (tmp_path / "prepared/handoff.md").read_text()
+    assert ENDPOINT in handoff and canonical_digest(plan) in handoff
+    assert "No live execution is authorized" in handoff
+    assert "gpt-6.1-sol" in handoff and "pending-identity-report.json" in handoff
+    assert {p: hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in before} == before
+
+
 @pytest.mark.parametrize("change", ["source", "request", "endpoint", "limits"])
 def test_changed_preparation_is_rejected_before_send(adoption_case, tmp_path, change):
     plan = prepared(adoption_case, tmp_path)
@@ -91,6 +181,74 @@ def test_changed_preparation_is_rejected_before_send(adoption_case, tmp_path, ch
         plan["limits"]["max_sends"] = 2
     with pytest.raises(ValueError):
         run(plan, lambda _: pytest.fail("Unexpected send"), approved_digest=approved_digest)
+
+
+def test_new_allowance_covers_supported_price_categories(adoption_case, tmp_path):
+    plan = prepared(adoption_case, tmp_path)
+    assert plan["limits"]["max_input_tokens"] == 16000
+    assert plan["limits"]["max_output_tokens"] == 3000
+    assert plan["limits"]["retail_reference_allowance_usd"] == 0.004
+    assert plan["pricing"]["cached_input_per_million_usd"] == 0.01
+    assert plan["pricing"]["cache_write_per_million_usd"] == 0.125
+    assert plan["maximum_standard_retail_reference_usd"] == pytest.approx(0.0035)
+    assert plan["maximum_regional_retail_reference_usd"] == pytest.approx(0.00385)
+
+
+def test_relative_material_root_and_critical_implementation_are_frozen(adoption_case, tmp_path):
+    bundle = json.loads(adoption_case[2].read_text())
+    bundle["artifact_root"] = "."
+    adoption_case[2].write_text(json.dumps(bundle), encoding="utf-8")
+    plan = prepared(adoption_case, tmp_path)
+    frozen = {Path(p).relative_to(Path.cwd()).as_posix() for p in plan["implementation_hashes"]}
+    assert {
+        "tools/validation/identity_judgment_smoke.py",
+        "backend/evaluation/identity.py",
+        "backend/evaluation/identity_adoption.py",
+        "backend/evaluation/identity_llm.py",
+        "backend/evaluation/records.py",
+        "backend/model_references.py",
+        "backend/app/runtime/token_counting.py",
+    } <= frozen
+    receipt = run(plan, lambda _: httpx.Response(200, json=sdk_response(output(plan))))
+    assert receipt["status"] == "completed"
+
+
+@pytest.mark.parametrize("writes", [200, None])
+def test_sdk_usage_prices_categories_or_explicit_upper_bound(adoption_case, tmp_path, writes):
+    plan = prepared(adoption_case, tmp_path)
+    response = sdk_response(output(plan), input_tokens=1000, output_tokens=100)
+    response["usage"]["input_tokens_details"] = {"cached_tokens": 600}
+    if writes is not None:
+        response["usage"]["input_tokens_details"]["cache_write_tokens"] = writes
+    receipt = run(plan, lambda _: httpx.Response(200, json=response))
+    assert receipt["status"] == "completed"
+    assert receipt["usage"] == response["usage"]
+    assert receipt["provider_invoice_usd"] is None
+    assert receipt["retail_reference_usd"] == pytest.approx(0.000101 if writes == 200 else 0.000106)
+    assert receipt["retail_reference_basis"] == (
+        "reported_categories" if writes == 200 else "missing_category_upper_bound"
+    )
+
+
+@pytest.mark.parametrize(
+    "details",
+    [
+        {"cached_tokens": True},
+        {"cache_write_tokens": -1},
+        {"cached_tokens": 80, "cache_write_tokens": 50},
+        "invalid",
+    ],
+)
+def test_invalid_usage_categories_stop_and_consume_attempt(adoption_case, tmp_path, details):
+    plan = prepared(adoption_case, tmp_path)
+    response = sdk_response(output(plan), input_tokens=120)
+    response["usage"]["input_tokens_details"] = details
+    receipt = run(plan, lambda _: httpx.Response(200, json=response))
+    assert receipt["status"] == "stopped" and receipt["model_sends"] == 1
+    assert (tmp_path / "prepared/execution/response.bin").is_file()
+    assert not (tmp_path / "prepared/execution/identity-report.json").exists()
+    with pytest.raises(FileExistsError):
+        run(plan, lambda _: pytest.fail("Repeated failed execution"))
 
 
 @pytest.mark.parametrize(
@@ -113,10 +271,25 @@ def test_single_sdk_call_imports_failure_and_unknown_without_repair(adoption_cas
     assert report["records"][0]["grounding_verdict"] == "FAIL"
     assert report["records"][0]["canonical_place_id"] is None
     assert report["records"][0]["original_claim"]["location"] == "Wrong submitted address"
-    assert all(r["grounding_verdict"] == "UNKNOWN" for r in report["records"][1:])
+    assert all(
+        r["grounding_verdict"] == "UNKNOWN" for r in report["records"][1:] if r["version"] == "v0"
+    )
+    assert all("model_judgment" not in r for r in report["records"] if r["version"] != "v0")
     assert report["review_queue"] == []
     with pytest.raises(FileExistsError):
         run(plan, lambda _: pytest.fail("Repeated execution"))
+
+
+def test_supported_match_with_null_original_address_imports_without_repair(adoption_case, tmp_path):
+    plan = prepared(adoption_case, tmp_path)
+    receipt = run(plan, lambda _: httpx.Response(200, json=sdk_response(output(plan, match=True))))
+    assert receipt["status"] == "completed"
+    report = json.loads((tmp_path / "prepared/execution/identity-report.json").read_text())
+    v0 = [r for r in report["records"] if r["version"] == "v0"]
+    assert all(r["grounding_verdict"] == "PASS" for r in v0)
+    assert all(r["original_claim"]["location"] is None for r in v0)
+    assert all(r["canonical_place_id"] is not None for r in v0)
+    assert all("model_judgment" not in r for r in report["records"] if r["version"] != "v0")
 
 
 @pytest.mark.parametrize(
@@ -132,6 +305,8 @@ def test_single_sdk_call_imports_failure_and_unknown_without_repair(adoption_cas
         "tools",
         "incomplete",
         "partial",
+        "unsupported_citation",
+        "null_address_contract",
     ],
 )
 def test_terminal_errors_keep_one_attempt_without_import(adoption_case, tmp_path, problem):
@@ -153,6 +328,10 @@ def test_terminal_errors_keep_one_attempt_without_import(adoption_case, tmp_path
             value["decisions"][0]["reference_id"] = "foreign-reference"
         if problem == "partial":
             value["decisions"].pop()
+        if problem == "unsupported_citation":
+            value["decisions"][0]["evidence_fields"] = ["candidate.website"]
+        if problem == "null_address_contract":
+            value["decisions"][0]["address_assessment"] = "equivalent"
         response = sdk_response(value, input_tokens=20001 if problem == "usage" else 120)
         if problem == "missing_usage":
             response.pop("usage")

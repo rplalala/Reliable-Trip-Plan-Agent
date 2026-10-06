@@ -68,6 +68,9 @@ def _request(requests, operation, parameters):
 def build_identity_plan(intake, paired=False):
     """Retain original references while deduplicating identical independent requests."""
     prepared = _prepared(intake)
+    from .identity_program import subject_bindings
+
+    bindings = subject_bindings(prepared)
     plan, requests = _base(prepared, "identity", paired), {}
     for ref in _references(prepared, paired):
         item = {"reference_id": ref["reference_id"], "source": ref["source"], "requests": {}}
@@ -82,12 +85,15 @@ def build_identity_plan(intake, paired=False):
                     "page_size": 20,
                 },
             )
-        if text(ref["claimed_place_id"]):
+        claimed = ref["claimed_place_id"] or bindings.get(
+            (ref["group_id"], ref["source"].get("subject_id"))
+        )
+        if text(claimed):
             item["requests"]["details"] = _request(
                 requests,
                 "places_details",
                 {
-                    "place_id": ref["claimed_place_id"],
+                    "place_id": claimed,
                 },
             )
         item["reason"] = None if item["requests"] else "missing_usable_identity_claim"
@@ -470,16 +476,19 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
     from .identity import ASSOCIATION_POLICY_VERSION, IDENTITY_VERSION
     from .identity_adoption import needs_v0_replay
     from .identity_llm import needs_llm_replay
+    from .identity_program import needs_versioned_replay
     from .preparation import identity_ready
 
     prepared = _prepared(intake)
     report = identity_report.to_dict() if hasattr(identity_report, "to_dict") else identity_report
-    model_policy = needs_v0_replay(report) or needs_llm_replay(report)
-    if model_policy and not identity_ready(prepared, report):
-        raise ValueError("Model-assisted identity report requires verified replay")
+    replay_policy = (
+        needs_v0_replay(report) or needs_llm_replay(report) or needs_versioned_replay(report)
+    )
+    if replay_policy and not identity_ready(prepared, report):
+        raise ValueError("Identity report requires verified replay")
     if (
         report.get("schema_version") != IDENTITY_VERSION
-        or not model_policy
+        or not replay_policy
         and report.get("association_policy_version") != ASSOCIATION_POLICY_VERSION
         or report.get("batch_id") != prepared["batch_id"]
         or report.get("batch_revision") != prepared["revision"]
