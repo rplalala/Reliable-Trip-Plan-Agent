@@ -1147,3 +1147,287 @@ then the current-session `gpt-6.1-sol` / `medium` execution child. Only genuinel
 new current identity evidence can remove actual endpoint blockers. Any future Places or
 Routes acquisition also needs a demonstrably supported exact inventory and separate budget
 approval. Original artifacts, planner V0-V3 behavior and score arithmetic are unchanged.
+
+<a id="accepted-v0-identity-route-refresh-2026-10-07"></a>
+
+## Offline route refresh from accepted #85 identity (#86, 2026-10-07)
+
+Status: prepared and verified offline. The user approved Issue creation and route-package
+refresh with zero paid calls on 2026-10-07 in Australia/Sydney. Fixed source revision:
+`d26be76b111ed275e0cde70658a0bbecebf018a4`. No production implementation, test fixture,
+generation, V1-V3 identity behavior, score formula or dependency changes are required.
+The only pre-existing tracked change is the unrelated `.gitignore` edit; it remains
+excluded and byte-identical. The Issue owns lifecycle and the approved preparation scope;
+no live, Git publication, research comparison or version-freeze authorization is added.
+
+The previous #78 real package used a current pending report and had zero eligible
+endpoints. This fresh package uses #85's accepted `versioned_api_identity_2` report and
+its `v0_identity_correspondence_3` saved response: eight V0 primary visits and one
+V0-owned requirement target PASS. The response, model envelope and report replay exactly
+through the public resolver against the original bundle and API evidence. The historical
+#70/#78 packages and #82/#85 consumed executions are preserved, not overwritten or
+relabeled. The V0 target's original missing address stays null; target identity is not
+substituted for endpoint occurrences or turned into another journey leg.
+
+The parent blocks DNS, connection APIs and live SDK construction while preparing.
+Preparation timestamp is `2026-10-06T13:05:17.093816+00:00`, or 00:05:17 AEDT on
+2026-10-07. Both `prepare_v0_route_requests` and the actual module CLI use this exact
+time and the original bundle, accepted #85 report, schedule context and route reviews.
+The absent optional occupancy review is omitted from the CLI rather than written as
+a JSON-null review envelope. No new human review is fabricated.
+
+All four original directed legs retain source reference IDs, modes, dates/times,
+estimates, occupancy/blocker fields, gap and selected continuous interval. Eight
+endpoint occurrences have eight distinct canonical venues, and all four legs are
+identity-eligible with no identity blockers. Eight source-linked independent snapshot
+coordinates pass replay, exact-ID, strict numeric and timestamp checks. All four legs
+are coordinate-ready, with zero missing-coordinate venues and zero proposed Details
+requests. No model/planner coordinate is accepted and no additional Details is fetched.
+
+| Original day | Mode | Original gap (minutes) | Identity / coordinates | Request state | Feasibility |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-07 | WALK | 30 | Eligible / ready | blocked | UNKNOWN |
+| 2026-10-08 | WALK | 35 | Eligible / ready | blocked | UNKNOWN |
+| 2026-10-09 | TRANSIT | 45 | Eligible / ready | conditional | UNKNOWN |
+| 2026-10-10 | WALK | 30 | Eligible / ready | blocked | UNKNOWN |
+
+All four directed Routes requests have materialized coordinate-backed bodies and exact
+keys, without execution. The existing KR preparation profile remains explicitly dated
+2026-10-05: WALK carries `regional_walk_unavailable_or_low_quality`, TRANSIT carries
+`regional_transit_coverage_unverified`. These are frozen contract assumptions, not a
+fresh coverage check on the event date or an API NO_ROUTE observation. Provider-supported
+legs and `ready_for_approval` Routes are both zero. No mode substitution, DRIVE fallback,
+date shift, planner rerun, removal of blocked legs or favorable route score is introduced.
+
+The package's existing price profile is also dated 2026-10-05, global first paid tier
+USD 5/1,000 Details requests or matrix elements, without credits/discounts. **Proposed
+ready-send budget is USD 0** (zero Details and zero ready Routes). The **four unready
+requests have hypothetical inventory cost USD 0.020000**; this field includes all three
+blocked WALK requests and the one conditional TRANSIT, not just the TRANSIT request.
+The **historical eight-Details/four-Routes planning bound is USD 0.060000**, not this
+package's proposed budget, an approved allowance or actual billing. No live pricing or
+coverage fetch occurs; account tier, free usage, taxes and invoice remain unavailable.
+
+The zero-send ledger remains empty. Prepared limits allow zero Details, zero Routes,
+zero search/model/retry sends and USD 0, with the unchanged 20-second per-call timeout
+and 300-second deadline. Preflight recomputes the exact frozen package for each of its
+four request keys, stops each as not ready with the zero-send limit exhausted, and
+always returns `live_authorized=false`. No live acquisition executor or execution child
+is created. Actual provider/model/planner sends and incremental charges are **zero**.
+
+The actual module CLI runs in a separate process with DNS and connections prohibited.
+Its UTF-8 output exactly matches the library package and its stderr is empty. Exit
+**3** means a complete inventory containing blocked/conditional applicable legs, not
+invalid material or completed route acquisition. No production correction is needed.
+The unchanged-code full backend gate remains **2998 passed / 10 skipped / zero failures**
+from the approved clock correction; it is reused and not rerun for this preparation.
+The focused identity adoption, current V0 contract, historical/current route preparation
+and smoke-tool gate passed **182 tests / zero failures in 39.58s** under the repository's
+external-network guard and mock transports. Two sandbox launches returned no pytest
+output before interruption; no test result is claimed for them. Running the same offline
+gate with an approved sandbox override produced the successful result. These launcher
+attempts did not send provider requests or alter the package; no code correction was
+needed. Local check evidence is `focused-tests-01.txt` (empty interrupted launch) and
+`focused-tests-03.txt` (command, successful terminal result and explicit capture limits)
+under the private package directory.
+
+The fresh private evidence identifier is `artifacts/v0-route-requests-86-20261007`.
+It contains the request package, exact present context/review envelopes, source binding,
+protected/output hashes, empty ledger, four preflight results, actual CLI output/stderr,
+offline acceptance, focused check log and a non-executable handoff. The handoff explicitly
+forbids sending and states remaining support/budget/approval prerequisites; private raw
+payloads, credentials and endpoints stay untracked. **120 protected original/source/
+preparation/execution files** and **69 implementation/dependency hashes** verify unchanged,
+including all #85 raw/model/report/receipt outputs and consumed-directory evidence.
+Ten new prepared output files are frozen separately, without overwriting old receipts.
+
+Inventory SHA-256:
+`3d138539bb3fafdb218f53313028450913bc86839f838b95c0669758ef1617b1`.
+Request-package file SHA-256:
+`ff16aa3bd539a08938df691e43d9b5645914282e3d6b78c3a34061884c10a3f5`.
+Accepted #85 identity-report file SHA-256:
+`068631d1a1a484f9be25074401f560d08861f0435007060b62280a6f4f254da9`.
+This is a new offline identity/coordinate-readiness observation, not independent journey
+validation. All four original route UNKNOWN results remain. Any future acquisition must
+first establish exact provider/method support and original departure applicability,
+regenerate the supported inventory and obtain separate budget/execution approval under
+the smoke policy. No all-PASS route requirement or paid retry is implied by preparation.
+
+
+Independent Standards and Spec reviews of fixed base
+`d26be76b111ed275e0cde70658a0bbecebf018a4` through preparation-document commit
+`a4dfc2e5cec282d218ab832f7ca24fc3647fa688` each report **zero findings**. Both independently
+verify the 120 protected files, 69 implementation/dependency hashes and 10 prepared
+outputs; Spec also checks preserved leg fields, coordinate provenance and input binding.
+No correction is required. Final tracked-document checks validate **183 local targets/
+anchors**, English additions and excluded private endpoint. The review acceptance is
+recorded separately after the reviewed commit; it changes no implementation or frozen
+preparation. #86's six offline acceptance criteria are satisfied, with its reconciled
+lifecycle owned by GitHub. The zero-ready inventory and route UNKNOWN outcomes remain
+explicit limitations, not unfinished work inside this preparation-only scope.
+
+<a id="kr-route-support-budget-2026-10-07"></a>
+
+## Free Korean route-source verification and budget preparation (2026-10-07)
+
+Status: public-documentation assessment complete; budget proposed, no provider
+integration or execution. The user approved free support verification, independent
+source selection and budget preparation. Fixed source revision is
+`49a6fef135945e3612722a10b4394e6afe49d846`; the unrelated pre-existing `.gitignore` edit
+is excluded and unchanged. The client date is 2026-10-07 in Australia/Sydney. Only
+public official documentation was browsed. No account/credential probe, provider API,
+model, planner, paid request, provider contact or tracker/Git publication occurred.
+This engineering assessment is not a formal benchmark or a comparison of V0-V3.
+
+Inputs remain #86's four original directed Seoul legs and accepted #85 identity report:
+WALK at noon KST on October 7, 8 and 10, with gaps of 30, 35 and 30 minutes; TRANSIT at
+noon KST on October 9, with a 45-minute gap. Eight independent coordinates are already
+bound to exact endpoint identities. No Details lookup is needed. The assessment does
+not repair original names, IDs, dates, modes, estimates, occupancy, windows or gaps.
+Public documentation supports technical candidates; it does not establish successful
+responses for these exact pairs, account entitlement or independently measured travel.
+
+### Sources and applicability
+
+Google's current [coverage table](https://developers.google.com/maps/coverage) still
+marks KR Walking Directions with a dash: unavailable or low quality/availability.
+It explicitly excludes public transit coverage and consumer Google Maps availability.
+Thus three Google WALK requests remain blocked, without a NO_ROUTE observation.
+The [Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
+accepts TRANSIT and RFC3339 departure time, including past departures, but the reviewed
+documentation does not confirm this KR transit pair or its timetable availability.
+The separate [Compute Routes transit guide](https://developers.google.com/maps/documentation/routes/transit-route)
+documents a seven-day past/100-day future window; that window is not transferred to
+Matrix. No method switch or API support probe occurred.
+
+The current [Kakao Map REST reference](https://developers.kakao.com/docs/en/kakaomap/rest-api)
+documents `GET /v2/routing/walk` and `/v2/routing/publictraffic`, with coordinate endpoints
+and WGS84. WALK success returns one route with distance in meters and time in seconds.
+The proposed WALK option is fixed `BROAD_FIRST`, with WGS84 input/output, before any
+response; alternative route modes are not tried after failure. Neither endpoint exposes
+a departure date/time parameter. WALK is therefore a candidate for the existing
+time-independent route-estimate contract, with the original itinerary time retained in
+the evidence envelope, not a claim of future conditions. General TRANSIT output cannot
+prove service at the original October 9 noon departure. These public V2 endpoints must
+not be confused with Kakao Mobility's separately contracted affiliate walking API.
+
+[TMAP pedestrian routing](https://tmap-skopenapi.readme.io/reference/%EB%B3%B4%ED%96%89%EC%9E%90-%EA%B2%BD%EB%A1%9C%EC%95%88%EB%82%B4)
+is a WALK alternative: it requires an app key, endpoint coordinates and encoded endpoint
+names, and supports WGS84GEO. Its [response specification](https://tmap-skopenapi.readme.io/reference/%EA%B2%BD%EB%A1%9C%EC%95%88%EB%82%B4-%EC%83%98%ED%94%8C%EC%98%88%EC%A0%9C)
+provides meters/seconds and route geometry. Its request has no departure date/time;
+the automobile time-machine API is not a WALK substitute. Reviewed
+[Naver Directions 5](https://api.ncloud-docs.com/docs/en/ai-naver-mapsdirections-driving)
+is driving routing, so it cannot preserve these WALK/TRANSIT modes. This is a conclusion
+about the reviewed public APIs, not all possible private products.
+
+ODsay's [reference](https://lab.odsay.com/guide/releaseReference) supports Seoul transit,
+general WALK and `maasRP` mode selection. The ordinary transit endpoint has no date/time
+input. `maasRP` accepts `SearchTime=yyyyMMddHHmm`, but the
+[operator clarification dated 2026-07-21](https://lab.odsay.com/community/boardView?seq=718)
+explicitly says this only constructs displayed departure/arrival fields by applying
+segment durations; it does not perform timetable-based routing. Consequently the
+presence of that parameter is not evidence of applicability to the original TRANSIT
+departure. Its total time is minutes, unlike Kakao/TMAP seconds; straight-line
+`pointDistance` is not a journey measurement. Subway timetable-only searches also do
+not establish a complete POI-to-POI leg with access/egress and the original date.
+
+| Source / method | Current engineering use | Remaining limitation |
+| --- | --- | --- |
+| Kakao Map V2 WALK | Primary technical candidate for the three WALK estimates | Exact pairs untested; account, retention and adapter unresolved |
+| TMAP pedestrian | Alternative WALK source, not automatic fallback | Exact pairs untested; account, retention and adapter unresolved |
+| Google Matrix WALK | Keep existing blocked profile | KR coverage marked unavailable or low quality |
+| Google Matrix TRANSIT | Conditional time-aware candidate only | Exact KR coverage and schedule applicability unconfirmed |
+| Kakao TRANSIT / ODsay general or MaaS TRANSIT | General route references only | Do not bind the original explicit departure |
+| Naver reviewed Directions API | No compatible inventory | DRIVE mode does not preserve submitted mode |
+
+Source independence also requires future acquisition directly from the selected
+provider for the preserved directed coordinates, with acquisition time, exact options,
+raw byte hash and source-linked normalization. The planner's own estimates, a map page,
+model inference or straight-line distance cannot substitute. Raw response formats must
+not be labeled as Google Matrix output. An alternative adapter is not implemented by
+this assessment. Error/status semantics require source-specific offline regressions;
+authentication, search-limit, snapping and malformed-response errors must not all be
+mapped to factual NO_ROUTE FAIL. The current route/scoring contract is unchanged.
+
+### Access, evidence retention and cost
+
+[Kakao usage policy](https://developers.kakao.com/docs/en/kakaomap/common) grants the
+free allowance only to the first activated app per developer account; other apps or
+excess use need the applicable paid configuration. The policy changed on July 21, 2026.
+The [quota/price page](https://developers.kakao.com/docs/en/getting-started/quota) lists
+1,000 daily calls each for WALK/TRANSIT and 10 KRW per additional call. No account was
+inspected, so eligibility and unused allowance remain unknown; free usage is not assumed.
+The reviewed price page does not establish tax treatment for this budget.
+
+[Kakao Operating Policy](https://developers.kakao.com/terms/en/site-policies) Article
+5(20) restricts caching purposes/currentness, and Article 5(30) restricts copying/use of
+obtained information without the applicable prior approval. Public documentation does
+not establish that this evaluator may keep immutable raw responses for long-lived
+replay. Applicability and an admissible retention strategy remain unresolved, rather
+than a finding that all evaluator use is prohibited. TMAP's
+[public terms entry](https://openapi.sk.com/stplat/usage/indexView) did not expose
+substantive retention clauses to the browsing tool; permission is likewise unconfirmed.
+No inquiry was sent or permanent archival right assumed.
+
+[ODsay prices and use-purpose conditions](https://lab.odsay.com/contact/contact) list
+Basic 30 calls/day free for specified users and Flex 25 KRW/call, VAT excluded. The
+same page requires prior consultation for analysis/research or other uses outside
+building its route-search service. That advertised unit price is not a quote or
+license for this evaluator purpose; its free allowance cannot be assumed applicable.
+No provider consultation, payment-card registration or account setup occurred.
+
+| Mutually exclusive planning scenario | Units | Published retail reference | Selected proposal |
+| --- | --- | --- | --- |
+| Kakao V2 WALK | Three calls at 10 KRW | **30 KRW**, tax treatment unconfirmed | Yes, pending prerequisites |
+| TMAP pedestrian Premium | Three calls at 11 KRW | 33 KRW, tax treatment unconfirmed | Alternative only |
+| ODsay Flex general TRANSIT | One call at 25 KRW | 25 KRW plus VAT; purpose quote unresolved | No; not date-applicable evidence |
+| Google Matrix conditional TRANSIT | One Essentials element | USD 0.005, account/taxes unknown | No; support unresolved |
+
+TMAP's [published pricing](https://openapi.sk.com/products/calc?menuSeq=5&svcSeq=4) places
+pedestrian routing in the route-guidance group with Free 1,000/day and Premium 11 KRW
+per call. Group sharing, remaining quota and applicable tax treatment are unverified.
+Google's [current pricing](https://developers.google.com/maps/billing-and-pricing/pricing)
+lists Matrix Essentials at USD 5/1,000 elements with 10,000 monthly free units; the
+[SKU conditions](https://developers.google.com/maps/billing-and-pricing/sku-details)
+distinguish higher-feature pricing. The unchanged simple TRANSIT matrix options have
+no higher-feature trigger identified. Neither published allowance is assumed available.
+These figures are separate currency scenarios, not summed or converted, provider quotes,
+guaranteed invoice ceilings or approved execution budgets. The original #86 USD 0.02
+unready inventory and USD 0.06 historical bound remain historical figures, not replaced
+with a false all-supported four-route budget.
+
+### Prepared draft and validation boundary
+
+The new private identifier is `artifacts/kr-route-support-budget-20261007`. Its
+`kr_route_support_budget_draft_1` contains three WALK draft parameter sets linked to
+the original source coordinates, an exact copy of all four original legs, source binding,
+protected/output hashes, empty ledger and non-executable handoff. It is not an
+`rtpeval_v0_route_requests_2` acquisition manifest or authenticated HTTP request.
+The proposed future inventory is at most **three Kakao WALK sends**, zero TRANSIT,
+alternative-provider, Details, geocoding, model, planner, health/probe or retry sends.
+Suggested limits retain 20 seconds per call and a 300-second total deadline, with
+one attempt reserved before each send and no automatic source switching. The 30 KRW
+reference needs confirmed account/tax/use conditions before an enforceable ceiling.
+No new source is `ready_for_execution`; current authorized sends and incremental
+spend are **zero**, including calls that might qualify for a free quota.
+
+Before execution, separately approved work must resolve admissible raw retention/use
+and account costs, implement/test the source-specific offline adapter, then freeze
+exact sources, parameters, units, time basis, implementation and budget for approval.
+Any later live task follows the current-session smoke execution policy. The TRANSIT
+leg needs a confirmed independent source preserving its original explicit departure;
+general route duration is not promoted into that evidence. No formal comparison,
+new Issue, provider contact, push, PR, merge or branch switch is included here.
+
+The original #86 request package and all 16 files in that completed preparation remain
+byte-identical. Together with the prior 120 protected files, **136 protected files** and
+**69 implementation/dependency hashes** pass preservation checks; the unrelated
+`.gitignore` hash also matches. Six new preparation outputs are frozen separately.
+The budget arithmetic and original-leg/coordinate bindings pass offline checks.
+All **168 tracked local Markdown targets/anchors** in the three changed documents,
+English additions and whitespace checks pass before commit;
+private endpoints/raw payloads remain excluded. This is a documentation-only assessment:
+no pytest gate is rerun and no new runtime validation is claimed. Prior focused
+182-pass and full 2998-pass/10-skipped gates describe the unchanged implementation.
+All four original route feasibility results remain **UNKNOWN**; generation, identity
+behavior for independently runnable V0-V3 and score formulas are unchanged.

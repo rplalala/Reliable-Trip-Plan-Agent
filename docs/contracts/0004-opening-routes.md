@@ -304,6 +304,10 @@ records the zero-ready real package and synthetic revised-policy demonstration. 
 [historical preparation acceptance](../records/evaluation/routes.md#v0-route-request-preparation-2026-10-05)
 retains the older four-leg inventory and limitations; the [package guide](../../backend/evaluation/README.md#v0-route-requests)
 owns CLI invocation and exit codes.
+The subsequent [accepted-identity offline refresh](../records/evaluation/routes.md#accepted-v0-identity-route-refresh-2026-10-07)
+records four identity-eligible, coordinate-ready legs from #85 while preserving the
+same provider limitations and UNKNOWN feasibility. It adds no acquisition authority
+or new provider/price verification to this contract.
 
 <a id="rtpeval-route-contract--route-evaluator-contract--draft"></a>
 <a id="rtpeval-route-contract--purpose-and-inputs"></a>

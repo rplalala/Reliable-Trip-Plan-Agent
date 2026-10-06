@@ -1,6 +1,6 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-10-06.
+Current source of truth. Updated 2026-10-07.
 Detailed design, development and acceptance records are indexed in
 [docs/README.md](docs/README.md).
 
@@ -140,15 +140,56 @@ See the [blocked refresh record](docs/records/evaluation/intake-identity-usage.m
 An 18,000-token input ceiling and USD 0.0042 reference allowance are proposed for a
 separately approved offline correction at that checkpoint. The user subsequently
 approved that smoke-only limit correction, regression coverage and re-preparation.
-The tool now uses those limits; live execution remains separately unapproved.
+The tool now uses those limits; live execution was still unapproved at that checkpoint.
 The new compatible manifest retains all nine references and fourteen candidate
 appearances; its 17,135-token estimate fits the new ceiling with 865 remaining.
-The smoke gate passes 35 tests. A fresh full backend run has 2948 passed, 40 failed
+The smoke gate at that checkpoint passed 35 tests. The capacity-run full gate had
+2948 passed, 40 failed
 and 10 skipped; unchanged route fixtures mix a real acquisition clock with fixed
-preparation time. A temporary controlled-clock diagnostic makes all 40 pass; that
-diagnostic does not replace the failed full gate or implement a fixture correction.
+preparation time. A temporary controlled-clock diagnostic made all 40 pass; that
+diagnostic did not replace that failed full gate or implement a fixture correction.
 See the [offline correction record](docs/records/evaluation/intake-identity-usage.md#v0-smoke-capacity-correction-2026-10-06).
-All original evidence remains preserved, and this task makes zero paid calls.
+The user subsequently approved the offline fixture-clock correction. Synthetic
+acquisition now uses a scoped, controllable test clock; Identity/Details evidence
+later than preparation is still rejected under both current and historical policies.
+The related gate passes 172 tests, and a fresh full backend gate passes 2998 with
+10 skipped and zero failures. See the [clock-baseline acceptance](docs/records/evaluation/intake-identity-usage.md#route-fixture-clock-baseline-2026-10-06).
+Production code and the prepared smoke manifest/historical artifacts remain unchanged.
+All original evidence remains preserved, and that fixture correction made zero paid calls.
+The user then explicitly approved the exact #85 manifest for one actual smoke request.
+The approved execution is complete: eight V0 visits and one V0 requirement target are
+PASS, with zero FAIL/UNKNOWN, one model send and zero retries. Offline import replay
+matches exactly, original claims and all 113 protected files remain unchanged, and
+V1-V3 receive no model results. Reported usage is 14,917 input / 1,064 output tokens;
+standard retail reference is USD 0.00239655 (regional +10% USD 0.002636205), with the
+provider invoice unknown. The one-use directory and allowance are consumed. See the
+[execution acceptance](docs/records/evaluation/intake-identity-usage.md#v0-target-identity-smoke-execution-2026-10-06).
+This identity-only development smoke adds no route/score validation, formal benchmark,
+version freeze or authority for another request, push, PR or merge.
+The user then approved [follow-up #86](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/86)
+and an offline V0 route-package refresh on 2026-10-07 (Australia/Sydney), with zero paid
+calls. Its fresh package retains the four original legs and removes their identity
+blockers using the accepted #85 report. Eight independent coordinates are reused; no
+Details request is needed. Under the existing dated KR provider profile, three WALK
+requests remain blocked and one TRANSIT remains conditional, with zero ready Routes.
+All four feasibility verdicts remain UNKNOWN. Proposed ready-send budget is USD 0;
+the four unready request estimates total USD 0.020000 under historical price assumptions,
+not an execution allowance. Actual CLI replay matches the library and returns exit 3;
+preflight stays not live authorized. See the [offline route refresh](docs/records/evaluation/routes.md#accepted-v0-identity-route-refresh-2026-10-07).
+No production change, paid request, new coverage/price verification or Git publication
+is included. Further supported-evidence planning needs separate scope approval.
+The user subsequently approved free Korean route-source verification and budget
+preparation. Official documentation identifies Kakao Map V2 WALK as the primary
+technical candidate for the three WALK legs, with TMAP pedestrian as an alternative.
+The proposed Kakao inventory is three calls, zero Details/model/retries, at a published
+reference total of 30 KRW. Account allowance, taxes, raw-response retention and a new
+offline adapter remain prerequisites; no executable package or live allowance exists.
+The original TRANSIT departure remains unresolved: Kakao has no departure input, and
+ODsay confirms that `maasRP.SearchTime` does not drive timetable routing. Google Matrix
+accepts explicit departure, but reviewed documentation does not confirm this KR route.
+All four route verdicts remain UNKNOWN; generation, score formulas and V0-V3 behavior
+are unchanged. Current authorized sends and costs remain zero. See the cited
+[support and budget assessment](docs/records/evaluation/routes.md#kr-route-support-budget-2026-10-07).
 The backlog task authorized specification publication only. The user subsequently
 authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
@@ -327,11 +368,18 @@ Technical references: [historical work breakdown](https://github.com/rplalala/Re
 from dated run plans into a new execution. Entry-point request deadlines and stage
 budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
 
-Latest full backend run (2026-10-06, #85 smoke-only capacity correction):
+Latest full backend gate (2026-10-06, approved offline route-fixture clock correction,
+test implementation `f4499f2`): **2998 passed, 10 skipped, zero failures in 304.32s**.
+The related identity/route/smoke gate passes 172 tests. Production timing, identity,
+generation budgets and scoring are unchanged; original and prepared smoke files are
+preserved. See the [clock-baseline acceptance](docs/records/evaluation/intake-identity-usage.md#route-fixture-clock-baseline-2026-10-06).
+
+Previous full backend run (2026-10-06, #85 smoke-only capacity correction):
 **2948 passed, 40 failed, 10 skipped in 305.95s**. The smoke-specific gate passes
 35 tests; all full-gate failures are unchanged route tests affected by their fixture
-clock/preparation-time mismatch. This limitation is diagnosed but not repaired within
-the smoke-only scope. See the [capacity correction and baseline diagnosis](docs/records/evaluation/intake-identity-usage.md#v0-smoke-capacity-correction-2026-10-06).
+clock/preparation-time mismatch. This limitation was diagnosed but not repaired within
+that smoke-only scope; the subsequently approved correction is recorded above.
+See the [capacity correction and baseline diagnosis](docs/records/evaluation/intake-identity-usage.md#v0-smoke-capacity-correction-2026-10-06).
 
 Previous #83/V3 full backend gate: **2983 passed, 10 skipped**; see the
 [deadline-phase acceptance](docs/records/v0-v3/v3-development.md#deadline-phase-regression-2026-10-06).

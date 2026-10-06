@@ -199,8 +199,16 @@ exceeding the original 16,000 preparation ceiling. The guard rejected that prepa
 the preserved blocked draft is not an executable manifest and grants no live authority.
 The user subsequently approved only the offline smoke-limit correction and re-preparation:
 the tool now uses an 18,000 input ceiling / USD 0.0042 reference allowance. A compatible
-new manifest still requires separate exact-plan live approval; historical approval is not reused.
+new manifest required separate exact-plan live approval; historical approval was not reused.
 Do not substitute the historical eight-visit request or trim candidate evidence to fit.
+
+The subsequent [approved #85 execution](../../docs/records/evaluation/intake-identity-usage.md#v0-target-identity-smoke-execution-2026-10-06)
+completed exactly one request with zero retries: eight visits and one V0-owned requirement
+target are PASS, with zero FAIL/UNKNOWN. Offline import replay is exact; the target's
+missing original address remains null with `not_supplied`. Original claims, V1-V3 records,
+all protected evidence and implementation hashes are unchanged. The fresh execution
+directory is now consumed. This identity-only result does not establish route feasibility,
+score results or another request's authority.
 
 `tools.validation.identity_judgment_smoke` is a separate development executor for a verified
 V0 material bundle. Preparation is offline; execution requires explicit user approval of
@@ -266,6 +274,22 @@ New-Item -ItemType Directory -Path artifacts/evaluation-adoption -Force | Out-Nu
 <a id="v0-route-requests"></a>
 
 ### Offline V0 route requests and budget
+
+The [#86 offline refresh](../../docs/records/evaluation/routes.md#accepted-v0-identity-route-refresh-2026-10-07)
+uses #85's accepted current report: all four original legs are identity-eligible and reuse
+eight independent coordinates, requiring no Details. The dated KR profile retains three
+blocked WALK requests and one conditional TRANSIT, zero ready Routes and four UNKNOWN
+feasibility verdicts. Actual CLI replay returns 3 and matches the library; the request
+package is complete preparation without live authority. No provider/price refresh or
+acquisition occurred; hypothetical inventory estimates are not a paid allowance.
+
+The later [free KR support and budget assessment](../../docs/records/evaluation/routes.md#kr-route-support-budget-2026-10-07)
+identifies Kakao Map V2 WALK as a documentation candidate for three calls (30 KRW
+published reference), with TMAP pedestrian as an alternative. This is an offline draft,
+not a supported provider in these commands. Retention/use conditions, account costs and
+an offline adapter remain unresolved. Kakao/ODsay general TRANSIT cannot establish the
+original explicit departure; Google KR TRANSIT coverage remains unconfirmed. The saved
+#86 package, zero-send preflight and all four UNKNOWN verdicts are preserved.
 
 Prepare from an exact current `versioned_api_identity_2` report without acquiring evidence:
 

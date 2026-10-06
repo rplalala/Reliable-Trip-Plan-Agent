@@ -2604,3 +2604,147 @@ Independent Standards and Spec reviews of fixed base `435cccf` through implement
 108 source hashes, 69 implementation hashes, packet/wire/pending replay and absent
 execution directory. No review correction is needed. Final documentation is checked
 separately and committed after review; private raw files remain ignored.
+
+<a id="route-fixture-clock-baseline-2026-10-06"></a>
+
+#### Approved offline route-fixture clock correction (2026-10-06)
+
+Status: validated offline. The user subsequently authorized fixing the fixture-clock
+baseline, superseding the earlier smoke-only task boundary for these tests. Review
+fixed point: `14ffd588eddd9a0a847cc473622943735f89911f`. Implementation/test commit:
+`f4499f22fab74f8bd99f91d93f79794a2d19b5dd`
+(`test: pin synthetic snapshot clocks before route preparation`). Only the adoption
+fixture and current-policy route test module change. Production code, provider/time
+validation, generation, V0-V3 identity rules, score formulas and budgets are unchanged.
+The unrelated `.gitignore` edit remains excluded and byte-identical.
+
+The feedback loop uses the public route preparation boundary under current and explicit
+historical policy. Six cases test evidence one second after preparation, equal to it,
+and one second before it. Before the fix, the two intended rejections passed while the
+four expected valid cases failed with `artifact_integrity_error` at `snapshot/time`.
+The `adoption_case` fixture now depends on a scoped `snapshot_clock` fixture, which
+replaces only the synthetic acquisition module's wall clock with 09:00 UTC on the
+fixture date. It remains active for that test's supplied Details acquisitions and is
+restored by pytest teardown. Other snapshot tests and process/system clocks are not
+globally frozen; asyncio and monotonic deadline clocks remain active.
+
+All six initial cases then passed. Four additional cases advance the same controlled
+clock for Details evidence at the 10:00 preparation boundary or one second after it,
+under both current and historical policies. Equal timestamps remain valid; future
+Identity or Details evidence still produces `needs_material_correction` with no partial
+legs/requests. The correction stabilizes synthetic evidence construction rather than
+relaxing the production rule or rewriting saved evidence.
+
+The related adoption, identity model-contract, current/historical route-request and
+smoke-tool gate passed **172 tests in 32.24s**. A fresh full backend gate passed
+**2998 tests / 10 skipped / zero failures in 304.32s**. All forty original failures
+are resolved in the actual tracked fixture implementation, without the prior temporary
+diagnostic launcher. Ruff, formatting, compilation and whitespace checks pass. Tests
+use synthetic injected transports and the backend external-network guard; no paid
+provider/model/planner/Places/Routes calls or live smoke execution occur.
+
+Local evidence identifiers are `artifacts/route-clock-baseline/red-01.txt`,
+`green-01.txt`, `focused-01.txt`, `full-01.txt`, `protected-before.json` and the final
+`offline-assessment.json` under that same directory. The earlier failed full run and
+controlled-clock diagnosis remain unchanged historical evidence. This new green run
+supersedes the unresolved fixture limitation for current offline readiness.
+
+Offline source preservation checks confirm **113 protected file hashes** and
+**69 implementation/dependency hashes** unchanged, including the fresh #85 manifest,
+handoff, pending report, acceptance/check receipts and all previously protected sources.
+The manifest recomputes identically with SHA-256
+`425a0684faeaee51763d9dc9a00467557c266df29d5c049d41e361580a4a1993`.
+Its execution directory remains absent, and no execution child is created. A separate
+local handoff addendum records this resolved test limitation; the original private
+smoke preparation and its earlier limitation account are preserved byte-for-byte.
+This test-only change does not require a new request freeze or grant live authority.
+Actual live sends and incremental charges are zero. Issue #85 remains open for separately
+authorized exact-plan execution/assessment; no push, PR, merge or version freeze occurs.
+
+Independent Standards and Spec reviews from `14ffd58` through test commit `f4499f2`
+each report **zero findings**. The Spec reviewer independently verifies all 113
+protected hashes and 69 implementation/dependency hashes. No correction commit is
+needed; final source-preservation and tracked-document checks pass, and the current
+status/evidence documentation is committed separately after review.
+
+<a id="v0-target-identity-smoke-execution-2026-10-06"></a>
+
+#### Approved V0 visit and requirement-target identity smoke (2026-10-06)
+
+Status: executed and assessed. After the capacity and clock corrections above, the user
+explicitly approved actual smoke for the exact prepared manifest. Execution source HEAD:
+`eac3b6215bc3ef1653f0b3fc79d60845456cd960`, including reviewed smoke implementation
+`ae196e2cd8de11a511f273f91943cd8028af4ddf` and reviewed fixture correction
+`f4499f22fab74f8bd99f91d93f79794a2d19b5dd`. The unrelated unstaged `.gitignore` change
+remains byte-identical and excluded. No production implementation changes occur in this
+event; documentation is committed separately after the offline assessment.
+
+The parent verified all 108 source hashes, 69 implementation/dependency hashes and
+113 protected original/source/preparation/receipt files before dispatch. Offline preflight
+blocked sockets and live SDK construction, checked saved configuration without printing
+secrets, confirmed the unused execution directory and recorded a new current-session
+exact-plan authorization. No credential probe or old allowance reuse occurred. The
+mandatory new execution child used `gpt-6.1-sol` / `medium`; the actual API request used
+`gpt-6-luna` / `low`, not the execution child's model settings.
+
+Manifest SHA-256:
+`425a0684faeaee51763d9dc9a00467557c266df29d5c049d41e361580a4a1993`.
+Wire request SHA-256:
+`f829b61a0b912c035f21c00033c6bb474de4ecd7d62fce46466c4e4bcd6fdc17`.
+The complete nine-reference packet retains eight primary visits, one V0-owned requirement
+target and fourteen candidate appearances. Limits were 18,000 input including the 1,024
+estimation reserve, 3,000 output, USD 0.0042 reference allowance, one send, zero retries,
+60-second HTTP timeout, no tools and `store=false`. Nothing was trimmed or repaired.
+
+The approved CLI ran once, exited zero and recorded `completed`. Request timestamp:
+`2026-10-06T12:14:24.083973+00:00`; retrieval timestamp:
+`2026-10-06T12:14:31.619827+00:00` (23:14:24 to 23:14:31 AEDT on the same date).
+HTTP status was 200 and provider status was completed. Actual model sends: **one**;
+retries: **zero**. There were no planner/generation, Places/Google, Routes, embedding,
+database or additional model requests. Both directory and allowance are consumed,
+including their original raw outputs; no rerun is authorized.
+
+Provider-reported input was **14,917 tokens**: 3 ordinary, 14,914 cache-write and zero
+cached. Output was **1,064**, including **203 reasoning** tokens; total was **15,981**.
+Reasoning is already part of output and is not billed twice. Standard retail reference
+was **USD 0.00239655**, regional +10% **USD 0.002636205**, using reported categories and
+the prepared documented price basis. Both are below the reference allowance. The actual
+Foundry invoice is unavailable; these references are not an actual billed charge.
+
+Import under `versioned_api_identity_2` / `v0_identity_correspondence_3` produced
+`complete`: **8 primary_visit PASS and 1 requirement_subject PASS; 0 FAIL, 0 UNKNOWN**.
+All nine correspondence decisions were `match` with `model_match` grounding reasons;
+review and judgment queues were empty. The V0 requirement target resolves to an API
+candidate through V0 model correspondence. Its original address remains null and its
+address assessment is `not_supplied`; the model did not supply or repair the original
+claim. This result is specific to the current V0-owned target and does not reinterpret
+#82's historical shared-target UNKNOWN.
+
+Parent assessment blocked networking and live SDK construction, replayed the saved
+response through the public identity resolver and obtained the exact saved report.
+Original claims and every non-V0 record match the pending report. All **108 source
+hashes, 69 implementation/dependency hashes and 113 protected historical/preparation
+files** remain unchanged. V1-V3 receive no model judgments; no downstream route or score
+run is inferred from their unchanged records. FAIL/UNKNOWN remain legitimate retained
+outcomes under the contract, although this particular run has none. No human adjudication
+or formal benchmark was performed.
+
+Raw response SHA-256:
+`8225a4cb6623d2606f0e9f36c4871c714fcf6294fe0ac985542699b85a0c0d4f`.
+Local-only evidence identifier: `artifacts/v0-identity-smoke-85-refreshed-20261006`.
+It preserves `live-authorization.json`, `execution/response.bin`, `execution/execution.json`,
+`execution/model-result.json`, `execution/identity-report.json` and the parent's separate
+`execution-assessment.json`; all four execution output hashes are recorded in that
+assessment. Raw provider payloads, private handoffs, endpoint and credentials remain
+untracked. The child reported a process deviation: a private handoff was emitted into
+its tool output during the initial read, without credential values; no raw provider body
+was printed. A local default-encoding read failed and was corrected to explicit UTF-8,
+without another model request. These do not change the single-send receipt.
+
+The prior full backend gate **2998 passed / 10 skipped / zero failures** and independent
+Standards/Spec **zero findings each** remain valid for the unchanged implementation.
+This event adds exact offline replay and documentation/link/hash checks, rather than
+repeating the unchanged full suite. #85's execution/assessment acceptance is satisfied;
+GitHub owns its reconciled lifecycle. No Git push, PR, merge, formal comparison, score
+conclusion, route validation or version freeze is included. Any further live acquisition
+or model request needs its own approved scope and budget.
