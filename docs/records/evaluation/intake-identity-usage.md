@@ -2120,3 +2120,43 @@ and attachment/readback; merging and Issue reconciliation require their applicab
 authorization. This local preparation has **zero new model/Google/planner sends, zero
 incremental charges and zero remote mutations**. It establishes no version freeze,
 formal benchmark/comparison, thesis result or research conclusion.
+
+<a id="evaluator-iteration-publication-2026-10-06"></a>
+
+#### Authorized publication and pre-merge checkpoint (2026-10-06)
+
+After the local preparation above, the human explicitly authorized normal push, PR
+creation, review followed by a published comment and merge, plus closure of associated
+Issues only if all acceptance conditions are met. Zero paid calls remains binding.
+This supersedes the preparation-only Git boundary; it does not approve a live smoke,
+force push, history rewrite, branch deletion or branch switch.
+
+Normal push published `3f2143b7a58e46cf6597cd5cf400ff5bfa737531` to feature/evaluation.
+Remote readback confirmed the exact head. Newly created
+[PR #81](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/81), attached to the task,
+targets main at `a983f350f9d3f1e943b4f2acf63af641ab676f85`. Its initial readback confirms
+the prepared **11 commits / 32 files**, a non-draft, mergeable/CLEAN PR and an empty
+check rollup. No new configured CI outcome exists; absence of checks is not a passed CI.
+The repository permits merge commits, which retain the implementation/correction history.
+
+This authorization/current-state documentation is an additional local documentation
+commit, published into the same PR before final review/comment/merge. The actual final
+head and independent Standards/Spec outcomes are recorded in the pre-merge PR comment;
+the fixed base and implementation content retain the earlier full combined-review scope.
+No Python, planner, dependency or configuration change follows the tested `571ed95` state.
+The reused **2945 passed / 10 skipped** full backend and **178** related gate remain valid;
+fresh backend or live validation is not claimed. Final document/exclusion/hash checks cover
+this additional documentation delta, with the unrelated `.gitignore` bytes preserved.
+
+The original #73 rejected response/consumed allowance and all 81 protected file hashes
+remain unchanged. The real current route package still has four UNKNOWN/blocked legs and
+zero eligible endpoints, acquisition requests or proposed budget. #77 remains historical
+offline preparation with a stale execution manifest, requiring a fresh exact freeze and
+separate approval for any future send. Its completion never certifies current executability.
+
+At this pre-merge checkpoint, #74-#79 are OPEN. After verified merge, authorized
+reconciliation checks existing acceptance wording, preserves historical decisions and
+adds self-contained evidence before closing only fully met scopes. #67/#70/#72/#73 stay
+closed without repeated mutations. Actual merge and final lifecycle outcomes belong to
+the linked PR/Issues; this pre-merge record does not anticipate their success. No paid
+call, new original-output repair, scoring change, formal evaluation or freeze occurs.

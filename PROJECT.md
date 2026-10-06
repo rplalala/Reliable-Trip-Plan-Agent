@@ -119,13 +119,16 @@ authorized full Git delivery of the existing implementation through
 [PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
 follow-ups. The user subsequently authorized #75 implementation, offline testing, local
 commits and dual review, followed by #76's V0 response-contract correction. #75 and #76
-are implemented locally. The user then authorized #77 offline preparation, with zero
+are implemented and offline-validated. The user then authorized #77 offline preparation, with zero
 paid calls. Its V0-only frozen plan is preserved locally. The user then authorized #78
-offline route integration, also with zero paid calls; it is implemented locally with a
+offline route integration, also with zero paid calls; it is implemented offline with a
 blocked real package. The user then authorized #79 local delivery preparation only:
 commit/diff inventory, combined review, PR draft and Issue reconciliation material.
-No new paid execution, push, PR creation, merge, branch switch or tracker mutation is
-authorized. GitHub owns live Issue state. See the
+The human subsequently authorized #79 normal push, PR creation, review with a published
+comment, merge after successful gates and closure of fully accepted associated Issues.
+[PR #81](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/81) publishes this iteration.
+No paid execution, branch switch, force push, history rewrite or branch deletion is included.
+GitHub owns actual PR/Issue state. See the
 [accepted requirement](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
 and [publication record](docs/records/evaluation/intake-identity-usage.md#version-specific-evaluator-backlog-2026-10-06).
 The [#75 implementation record](docs/records/evaluation/intake-identity-usage.md#version-specific-identity-implementation-2026-10-06)
@@ -150,12 +153,14 @@ frozen by #77, so the preserved #77 manifest is currently stale for execution; a
 smoke needs a fresh exact freeze and separate approval. No live evidence was added.
 
 The [#79 delivery preparation record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-delivery-preparation-2026-10-06)
-records the verified remote `main` at `a983f35` and source branch at `819f0c3`, with ten
-completed-slice commits through `92f92fe` awaiting publication, plus local preparation
+records the preparation checkpoint: remote `main` at `a983f35` and source branch at
+`819f0c3`, with ten completed-slice commits through `92f92fe`, plus local preparation
 documentation. PR #80 is already merged and #67/#70/#72/#73 are verified CLOSED;
-their historical work is not newly outgoing. #74-#79 remain OPEN. The proposed delivery
-retains zero real ready requests, #73 failed-import evidence and #77's stale execution
-freeze. Publication and actual Issue reconciliation remain pending separate authorization.
+their historical work is not newly outgoing. The
+[authorized publication record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-publication-2026-10-06)
+links PR #81 and records the actual published review scope; GitHub owns #74-#79 lifecycle.
+Delivery retains zero real ready requests, #73 failed-import evidence and #77's stale
+execution freeze. No accepted live evidence or fresh execution authorization is added.
 
 | Ticket | Implementation checkpoint |
 | --- | --- |
