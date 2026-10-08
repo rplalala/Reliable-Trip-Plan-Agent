@@ -25,7 +25,7 @@ def _now():
     return datetime.now(UTC).isoformat()
 
 
-def _options(options):
+def _options(options, *, allow_no_google=False):
     value = dict(options)
     required = {
         "max_google_sends",
@@ -42,7 +42,8 @@ def _options(options):
             "Explicit execution options required; credentials are not preparation data"
         )
     for key in ("max_google_sends", "max_input_tokens", "max_output_tokens"):
-        if type(value[key]) is not int or value[key] < 1:
+        minimum = 0 if key == "max_google_sends" and allow_no_google else 1
+        if type(value[key]) is not int or value[key] < minimum:
             raise ValueError("Positive integer execution limit required: " + key)
     for key in ("timeout_seconds", "total_timeout_seconds"):
         if type(value[key]) not in (int, float) or not math.isfinite(value[key]) or value[key] <= 0:
@@ -229,7 +230,9 @@ def _acquisition_links(unknowns, snapshots, identity):
             )
 
 
-def _report(preparation, execution, identity, evidence_plan, usage, generated_at):
+def _report(
+    preparation, execution, identity, evidence_plan, usage, generated_at, *, opening_judgment=None
+):
     from .cost_report import build_cost_report
     from .opening import score_opening
     from .quality_report import build_quality_report
@@ -246,6 +249,7 @@ def _report(preparation, execution, identity, evidence_plan, usage, generated_at
         expected_plan=evidence_plan,
         identity_snapshot_directory=execution / "identity-snapshot",
         generated_at=generated_at,
+        opening_judgment=opening_judgment,
     ).to_dict()
     snapshots = [
         load_snapshot(execution / name) for name in ("identity-snapshot", "evidence-snapshot")
@@ -270,6 +274,7 @@ def _report(preparation, execution, identity, evidence_plan, usage, generated_at
             execution / "evidence-snapshot",
             context["schedule_context"],
             expected_plan=evidence_plan,
+            opening_judgment=opening_judgment,
         ).to_dict(),
         "routes": score_routes(
             preparation["intake"],
@@ -472,18 +477,11 @@ async def execute_run(
     return report
 
 
-def replay_run(directory):
-    """Verify originals and all captured bytes, then independently recompose the final report."""
-    from .evaluation_transport import model_usage, usage_event
-    from .identity_program import resolve_versioned_identities
-    from .routes import prepare_routes
-    from .snapshot import _decode, identity_evidence, load_snapshot
-
-    preparation = _read(Path(directory) / "preparation.json")[0]
-    root = _verify(preparation)
-    execution = root / "execution"
+def verify_receipt(execution, preparation_sha256):
+    """Verify the closed inventory of an execution without replaying historical rules."""
+    execution = Path(execution)
     receipt = _read(execution / "receipt.json")[0]
-    if receipt["preparation_sha256"] != preparation["content_sha256"]:
+    if receipt["preparation_sha256"] != preparation_sha256:
         raise ValueError("Execution receipt belongs to another preparation")
     for name, sha in receipt["files"].items():
         path = (execution / name).resolve()
@@ -499,6 +497,20 @@ def replay_run(directory):
     }
     if files != set(receipt["files"]):
         raise ValueError("Execution receipt file inventory mismatch")
+    return _read(execution / "receipt.json")[1]
+
+
+def replay_run(directory):
+    """Verify originals and all captured bytes, then independently recompose the final report."""
+    from .evaluation_transport import model_usage, usage_event
+    from .identity_program import resolve_versioned_identities
+    from .routes import prepare_routes
+    from .snapshot import _decode, identity_evidence, load_snapshot
+
+    preparation = _read(Path(directory) / "preparation.json")[0]
+    root = _verify(preparation)
+    execution = root / "execution"
+    verify_receipt(execution, preparation["content_sha256"])
     saved = _read(execution / "report.json")[0]
     usage = _read(execution / "usage.json")[0]
     journal = [

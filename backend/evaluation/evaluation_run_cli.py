@@ -29,6 +29,23 @@ def main(argv=None, *, http_client=None):
         "replay", help="Recompute final reports with no network or credentials"
     )
     replay.add_argument("directory")
+    opening = commands.add_parser(
+        "prepare-opening",
+        help="Prepare incremental missing-hours model assessment from a completed run",
+    )
+    opening.add_argument("parent_directory")
+    for option in ("directory", "options", "prices"):
+        opening.add_argument("--" + option, required=True)
+    opening_execute = commands.add_parser(
+        "execute-opening", help="One approved opening model attempt; no Google acquisition"
+    )
+    opening_execute.add_argument("directory")
+    opening_execute.add_argument("--approved-sha256", required=True)
+    opening_execute.add_argument("--env-file")
+    opening_replay = commands.add_parser(
+        "replay-opening", help="Offline full report replay including opening model assessment"
+    )
+    opening_replay.add_argument("directory")
     args = parser.parse_args(argv)
     try:
         if args.command == "prepare":
@@ -67,6 +84,41 @@ def main(argv=None, *, http_client=None):
                     http_client=http_client,
                 )
             )
+        elif args.command == "prepare-opening":
+            from .opening_run import prepare_opening_run
+
+            preparation = prepare_opening_run(
+                args.parent_directory,
+                args.directory,
+                options=_read(Path(args.options))[0],
+                prices=_read(Path(args.prices))[0],
+            )
+            result = {
+                "status": "prepared",
+                "directory": preparation["directory"],
+                "preparation_sha256": preparation["content_sha256"],
+                "eligible_count": len(preparation["packet"]["cases"]),
+            }
+        elif args.command == "execute-opening":
+            from .opening_run import execute_opening_run
+
+            if args.env_file:
+                from dotenv import load_dotenv
+
+                load_dotenv(args.env_file, override=False)
+            preparation = _read(Path(args.directory) / "preparation.json")[0]
+            result = asyncio.run(
+                execute_opening_run(
+                    preparation,
+                    approved_sha256=args.approved_sha256,
+                    model_api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
+                    http_client=http_client,
+                )
+            )
+        elif args.command == "replay-opening":
+            from .opening_run import replay_opening_run
+
+            result = replay_opening_run(args.directory)
         else:
             result = replay_run(args.directory)
     except (ValueError, TypeError, KeyError, OSError) as exc:

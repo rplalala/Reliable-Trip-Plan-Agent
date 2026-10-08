@@ -65,6 +65,7 @@ def build_quality_report(
     expected_plan=None,
     identity_snapshot_directory=None,
     density_reviews=None,
+    opening_judgment=None,
     generated_at,
 ):
     """Compose existing offline scorers without accepting caller-authored metric summaries."""
@@ -79,6 +80,18 @@ def build_quality_report(
         "diagnostics": [],
     }
     status = "needs_material_correction"
+    if opening_judgment is not None:
+        profile = {
+            **RULES_PROFILE,
+            "profile_id": "rtpeval_access_quality_3",
+            "opening_pass_basis": "api_hours_or_llm_access_reasonableness",
+            "factual_hours_coverage": "separate_from_model_assessment",
+        }
+        base.update(
+            rules_profile=profile,
+            rules_profile_id=profile["profile_id"],
+            rules_profile_hash=canonical_digest(profile),
+        )
     try:
         require(isinstance(generated_at, str), "generated_at", "Offset-aware timestamp required")
         stamp = datetime.fromisoformat(generated_at)
@@ -117,6 +130,7 @@ def build_quality_report(
                 schedule_context,
                 paired=False,
                 expected_plan=expected_plan,
+                opening_judgment=opening_judgment,
             ).to_dict(),
             "routes": score_routes(
                 intake,

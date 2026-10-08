@@ -230,7 +230,7 @@ class EvaluationTransport:
             wire, event, {"X-Goog-Api-Key": self.google_key, "X-Goog-FieldMask": wire["field_mask"]}
         )
 
-    async def model(self, packet):
+    async def model(self, packet, *, operation="identity", reasoning_effort="low"):
         from backend.app.runtime.token_counting import count_tokens
 
         options = self.preparation["options"]
@@ -238,16 +238,17 @@ class EvaluationTransport:
             **packet["request"],
             "max_output_tokens": options["max_output_tokens"],
             "store": False,
-            "reasoning": {"effort": "low"},
+            "reasoning": {"effort": reasoning_effort},
         }
         if count_tokens(json.dumps(body)) + 1024 > options["max_input_tokens"]:
             raise ValueError("Complete identity packet exceeds input allowance")
         if self.model_calls:
             raise ValueError("Model send allowance consumed")
+        event_id = "v0-identity" if operation == "identity" else "opening-access"
         event = {
-            "event_id": "v0-identity",
+            "event_id": event_id,
             "provider": "azure_foundry",
-            "operation": "identity",
+            "operation": operation,
             "model": options["model"],
             "outcome": "completed",
             "input_tokens": options["max_input_tokens"],
@@ -271,7 +272,7 @@ class EvaluationTransport:
             {
                 "provider": "azure_foundry",
                 "operation": "model_http",
-                "model_event_id": "v0-identity",
+                "model_event_id": event_id,
                 "model_provider": "azure_foundry",
             },
             {"Authorization": "Bearer " + self.model_key},

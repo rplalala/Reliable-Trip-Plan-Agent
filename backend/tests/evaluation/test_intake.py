@@ -872,6 +872,7 @@ def test_no_planner_import_or_network_on_intake(batch, monkeypatch):
     # Token counting is a pure offline helper, not a planner or evidence client.
     execution_imports = {
         "evaluation_run": {"httpx"},
+        "opening_run": {"httpx"},  # #90 isolates one incremental model attempt here.
         "evaluation_transport": {"httpx", "urllib", "backend.app.runtime.token_counting"},
         "evaluation_run_cli": {"os", "dotenv"},
     }

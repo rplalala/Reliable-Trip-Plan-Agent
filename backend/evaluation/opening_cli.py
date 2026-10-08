@@ -16,6 +16,7 @@ def main(argv=None):
     parser.add_argument("snapshot_directory", help="Frozen evidence-phase snapshot directory")
     parser.add_argument("--context", help="Optional independently reviewed IANA time context JSON")
     parser.add_argument("--expected-plan", help="Optional trusted full acquisition plan JSON")
+    parser.add_argument("--opening-judgment", help="Saved source-bound access model material JSON")
     parser.add_argument("--paired", action="store_true", help="Also score available V3 projections")
     args = parser.parse_args(argv)
     try:
@@ -25,6 +26,9 @@ def main(argv=None):
         expected, expected_hash = (
             _read(Path(args.expected_plan)) if args.expected_plan else (None, None)
         )
+        judgment, judgment_hash = (
+            _read(Path(args.opening_judgment)) if args.opening_judgment else (None, None)
+        )
         result = score_opening(
             intake,
             identity,
@@ -32,12 +36,15 @@ def main(argv=None):
             context,
             paired=args.paired,
             expected_plan=expected,
+            opening_judgment=judgment,
         ).to_dict()
         result["preparation_file_sha256"] = {
             "identity": identity_hash,
             "context": context_hash,
             "expected_plan": expected_hash,
         }
+        if judgment is not None:
+            result["preparation_file_sha256"]["opening_judgment"] = judgment_hash
     except MaterialError as exc:
         result = {
             "schema_version": REPORT_VERSION,

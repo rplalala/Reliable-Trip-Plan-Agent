@@ -33,6 +33,13 @@ RULES = {
     "timezone": "independent_place_or_reviewed_context",
 }
 
+ACCESS_RULES = {
+    **RULES,
+    "version": "rtpeval_opening_rules_3",
+    "missing_hours_fallback": "llm_access_reasonableness_1",
+    "model_pass_is_verified_hours": False,
+}
+
 
 @dataclass(frozen=True)
 class OpeningResult:
@@ -245,7 +252,7 @@ def _summary(checks, nonapplicable):
     unresolved = sum(c["role"] == "unresolved" for c in nonapplicable)
     complete = sum(c["evidence_status"] == "complete" for c in checks)
     structure = sum(c["structurally_evaluable"] for c in checks)
-    return {
+    summary = {
         "state": "FAIL"
         if counts["FAIL"]
         else "UNKNOWN"
@@ -289,6 +296,13 @@ def _summary(checks, nonapplicable):
             )
         },
     }
+    if any("access_judgment" in c for c in checks):
+        summary["llm_decidable_count"] = sum(
+            c["basis"] == "llm_access_reasonableness" for c in checks
+        )
+        summary["llm_assessed_count"] = sum("access_judgment" in c for c in checks)
+        summary["basis_counts"]["llm_access_reasonableness"] = summary["llm_decidable_count"]
+    return summary
 
 
 def score_opening(
@@ -299,6 +313,7 @@ def score_opening(
     *,
     paired=False,
     expected_plan=None,
+    opening_judgment=None,
 ):
     """Replay a whole batch; invalid preparation never reduces the scored cohort."""
     prepared, identity = _value(intake), _value(identity_report)
@@ -338,6 +353,32 @@ def score_opening(
             else None,
             "schedule_context": canonical_digest(context) if context else None,
         }
+        judgments = {}
+        if opening_judgment is not None:
+            from .opening_judgment import prepare_packet, validate_material
+
+            material = _value(opening_judgment)
+            packet = prepare_packet(
+                prepared,
+                identity,
+                snapshot_directory,
+                context,
+                model=material["packet"]["model"],
+                paired=paired,
+                expected_plan=expected_plan,
+            )
+            judgments = validate_material(material, packet)
+            base.update(rules=ACCESS_RULES, rules_hash=canonical_digest(ACCESS_RULES))
+            base["source_hashes"]["opening_judgment"] = canonical_digest(material)
+            base["model_provenance"] = {
+                "packet_sha256": packet["content_sha256"],
+                "requested_model": packet["model"],
+                "reported_model": material["response"]["model"],
+                "prompt_sha256": packet["prompt_sha256"],
+                "requested_at": material["requested_at"],
+                "retrieved_at": material["retrieved_at"],
+                "usage": material["response"]["usage"],
+            }
         identities = {i["reference_id"]: i for i in identity["records"]}
         refs = {r["reference_id"]: r for r in snapshot["plan"]["references"]}
         records = {r["key"]: r for r in snapshot["records"]}
@@ -352,15 +393,23 @@ def score_opening(
                     for activity in projection["activities"]:
                         if activity["evaluation_role"] == "primary_visit":
                             rid = activity["source"]["record_id"]
-                            checks.append(
-                                _check(
-                                    activity,
-                                    identities[rid],
-                                    refs[rid],
-                                    records,
-                                    zones.get(group["group_id"]),
-                                )
+                            check = _check(
+                                activity,
+                                identities[rid],
+                                refs[rid],
+                                records,
+                                zones.get(group["group_id"]),
                             )
+                            if rid in judgments:
+                                decision = judgments[rid]
+                                check["access_judgment"] = decision
+                                check["explanation"] = decision["rationale"]
+                                if decision["state"] == "PASS":
+                                    check.update(state="PASS", basis="llm_access_reasonableness")
+                                    check["reasons"].append("llm_access_reasonableness_pass")
+                                else:
+                                    check["reasons"].append("llm_access_reasonableness_unknown")
+                            checks.append(check)
                     nonapplicable = [
                         {
                             "source": a["source"],
