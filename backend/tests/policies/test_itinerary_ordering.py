@@ -46,7 +46,8 @@ def make_itinerary(version, ordered=False):
 def test_shared_output_stably_orders_without_changing_fields(version, ordered):
     original = make_itinerary(version, ordered)
     before = original.model_dump()
-    places = [SimpleNamespace(place_id=a.source_place_id, name=a.place_name)
+    places = [SimpleNamespace(place_id=a.source_place_id, name=a.place_name,
+                              formatted_address=a.location)
               for day in original.days for a in day.activities]
     kwargs = {} if version == "v0" else {
         "places": places, "supplied_ids": [p.place_id for p in places],
