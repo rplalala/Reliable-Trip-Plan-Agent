@@ -14,6 +14,11 @@ def associated_place_id(record):
     return record["canonical_place_id"]
 
 
+def opening_place_id(check):
+    """Select the physical venue of a replayed opening check, including historical rows."""
+    return check.get("associated_place_id", check["canonical_place_id"])
+
+
 def _result(pid, reason):
     return {"state": "verified" if pid else "UNKNOWN", "place_id": pid, "reason": reason}
 

@@ -12,6 +12,7 @@ from ._route_evidence import components, conjunction, seconds_exact
 from ._v3_continuity import build_continuity
 from .controlled_models import FrozenModel
 from .occupancy import intersections, union
+from .place_association import opening_place_id
 from .preparation import _review_provenance
 from .records import canonical_digest, require
 from .schedule_time import Span, normalize_interval
@@ -189,7 +190,7 @@ def supplement_pair(pair, reviews, execution):
                         (i, f)
                         for i, f in enumerate(facts.opening)
                         if (f.canonical_place_id, str(f.date))
-                        == (check["canonical_place_id"], check["declared_day"])
+                        == (opening_place_id(check), check["declared_day"])
                     ]
                     used = used_open
                     apply = _opening
