@@ -42,6 +42,13 @@ def tokens(raw):
             "output_tokens",
         ),
         ("cached_input_tokens", ("input_token_details",), "cache_read", "input_tokens"),
+        (
+            "cache_write_input_tokens",
+            ("input_tokens_details", "prompt_tokens_details"),
+            "cache_write_tokens",
+            "input_tokens",
+        ),
+        ("cache_write_input_tokens", ("input_token_details",), "cache_creation", "input_tokens"),
         ("reasoning_tokens", ("output_token_details",), "reasoning", "output_tokens"),
     ):
         for container in containers:
@@ -65,6 +72,53 @@ def tokens(raw):
         derived = True
     return {
         **result,
+        "usage_details": {
+            key: value
+            for key, value in raw.items()
+            if key
+            in {
+                "input_tokens",
+                "output_tokens",
+                "total_tokens",
+                "prompt_tokens",
+                "completion_tokens",
+            }
+            and type(value) is int
+            and value >= 0
+        }
+        | {
+            key: {
+                name: count
+                for name, count in value.items()
+                if name
+                in {
+                    "cached_tokens",
+                    "cache_write_tokens",
+                    "cache_read",
+                    "cache_creation",
+                    "reasoning_tokens",
+                    "reasoning",
+                    "text_tokens",
+                    "audio_tokens",
+                    "image_tokens",
+                    "accepted_prediction_tokens",
+                    "rejected_prediction_tokens",
+                }
+                and type(count) is int
+                and count >= 0
+            }
+            for key, value in raw.items()
+            if key
+            in {
+                "input_tokens_details",
+                "output_tokens_details",
+                "prompt_tokens_details",
+                "completion_tokens_details",
+                "input_token_details",
+                "output_token_details",
+            }
+            and isinstance(value, dict)
+        },
         "total_status": "derived"
         if derived
         else "reported"

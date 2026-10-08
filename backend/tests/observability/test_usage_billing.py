@@ -34,6 +34,34 @@ def test_sdk_capture_retains_cache_and_reasoning_without_changing_totals():
     assert call["total_tokens"] == 120
 
 
+def test_capture_preserves_reported_cache_writes_and_numeric_usage_for_pricing():
+    rows = []
+
+    async def invoke():
+        async def response(**kwargs):
+            return {
+                "usage": {
+                    "input_tokens": 100,
+                    "output_tokens": 20,
+                    "input_tokens_details": {"cached_tokens": 40, "cache_write_tokens": 25},
+                    "output_tokens_details": {"reasoning_tokens": 10},
+                    "private_field": "SECRET",
+                }
+            }
+
+        await observe_sdk(response, usage_operation="test", usage_provider="fixture")
+
+    asyncio.run(capture_attempt(invoke, group_id="g", run_id="r", version="v1", sink=rows.append))
+    call = rows[0]["model_calls"][0]
+    assert call["cache_write_input_tokens"] == 25
+    assert call["usage_details"]["input_tokens_details"] == {
+        "cached_tokens": 40,
+        "cache_write_tokens": 25,
+    }
+    assert call["total_tokens"] == 120
+    assert "SECRET" not in str(rows)
+
+
 def test_http_capture_retains_only_bounded_billing_parameters():
     rows = []
 

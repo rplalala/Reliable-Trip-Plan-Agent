@@ -14,6 +14,7 @@ from .usage_report import summarize
 UNITS = {
     "input_tokens",
     "cached_input_tokens",
+    "cache_write_input_tokens",
     "output_tokens",
     "requests",
     "element_count",
@@ -92,6 +93,17 @@ def validate_prices(prices):
             raise ValueError("Unsupported billing unit or divisor")
         for rate in row["rates"].values():
             amount(rate)
+        if row.get("unreported_cache_policy") is not None:
+            if row["unreported_cache_policy"] != "uncached_write_rate" or not {
+                "input_tokens",
+                "cached_input_tokens",
+                "cache_write_input_tokens",
+            } <= set(row["rates"]):
+                raise ValueError("Unsupported unreported-cache price policy")
+            if amount(row["rates"]["cache_write_input_tokens"]) < amount(
+                row["rates"]["input_tokens"]
+            ):
+                raise ValueError("Conservative cache-write rate cannot be below ordinary input")
 
 
 def estimate(event, kind, usage, prices):
@@ -114,6 +126,8 @@ def estimate(event, kind, usage, prices):
     if len(matches) != 1:
         return None, None, "ambiguous_price" if matches else "missing_price_or_billing_context"
     row = matches[0]
+    if event.get("cache_write_input_tokens", 0) and "cache_write_input_tokens" not in row["rates"]:
+        return None, row, "missing_cache_write_price"
     if (
         kind == "model"
         and event["operation"] != "embedding"
@@ -125,16 +139,32 @@ def estimate(event, kind, usage, prices):
         or event["input_tokens"] > row["max_input_tokens"]
     ):
         return None, row, "unsupported_context_price"
+    assumptions = []
+    event = dict(event)
+    if row.get("unreported_cache_policy") == "uncached_write_rate":
+        if event.get("cached_input_tokens") is None:
+            event["cached_input_tokens"] = 0
+            assumptions.append("Unreported cache reads: no cache-read discount assumed.")
+        if event.get("cache_write_input_tokens") is None:
+            inputs, reads = event.get("input_tokens"), event.get("cached_input_tokens")
+            if type(inputs) is int and type(reads) is int and 0 <= reads <= inputs:
+                event["cache_write_input_tokens"] = inputs - reads
+                assumptions.append(
+                    "Unreported cache writes: all non-read input priced at the cache-write rate."
+                )
     units = {}
     for unit in row["rates"]:
         count = 1 if unit == "requests" else event.get(unit)
         if type(count) is not int or count < 0:
             return None, row, "missing_" + unit
         units[unit] = count
-    if "cached_input_tokens" in units:
-        if "input_tokens" not in units or units["cached_input_tokens"] > units["input_tokens"]:
+    partitions = sum(
+        units.get(key, 0) for key in ("cached_input_tokens", "cache_write_input_tokens")
+    )
+    if "cached_input_tokens" in units or "cache_write_input_tokens" in units:
+        if "input_tokens" not in units or partitions > units["input_tokens"]:
             return None, row, "invalid_cache_partition"
-        units["input_tokens"] -= units["cached_input_tokens"]
+        units["input_tokens"] -= partitions
     value = sum(
         (
             Decimal(count) * amount(row["rates"][unit]) / amount(row["per"])
@@ -142,7 +172,10 @@ def estimate(event, kind, usage, prices):
         ),
         Decimal(0),
     )
-    return value, {**row, "billable_units": units}, None
+    pricing = {**row, "billable_units": units}
+    if assumptions:
+        pricing["assumptions"] = assumptions
+    return value, pricing, None
 
 
 def totals(events, *, covered=True):
