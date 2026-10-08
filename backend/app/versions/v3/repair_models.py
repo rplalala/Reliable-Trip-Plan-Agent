@@ -209,6 +209,7 @@ class TargetProgress(ValidationModel):
 
 
 class RepairResult(ValidationModel):
+    soft_pace: dict = Field(default_factory=dict)
     pending_groups: tuple[dict, ...] = ()
     effective_patch: RepairPatch | None = None
     components: tuple[dict, ...] = ()

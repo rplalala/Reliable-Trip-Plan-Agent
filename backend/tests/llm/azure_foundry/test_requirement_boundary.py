@@ -558,6 +558,7 @@ def test_captured_b_draft_reexpressed_in_v2_keeps_meaning_and_party_scope():
         d.pop("intent_id")
     for e in data["experience_evidence_requests"]:
         e["requirement_ref"] = e.pop("requirement_id")
+    data["daily_pace"] = None  # Historical fixture has no reviewed pace interpretation.
     result, _ = asyncio.run(interpret(data, text=fixture["request"]))
     assert len(result.semantic_requirements) == 4 and len(result.subjects) == 1
     assert [r.normalized_text for r in result.semantic_requirements] == [

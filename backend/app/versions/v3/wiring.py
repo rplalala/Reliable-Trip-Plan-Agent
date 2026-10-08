@@ -119,6 +119,33 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
                     and dispensable_visit(draft, aid, context)
                 ):
                     permissions[aid].update({"replace", "delete"})
+        elif f.check == "soft_pace" and f.status == "NEEDS_REVIEW":
+            from backend.app.versions.v3.repair_targets import dispensable_visit
+
+            zero_counts = f.adopted_evidence.get("zero_counts", ())
+            count = f.adopted_evidence.get("count")
+            if not zero_counts or count is None:
+                continue
+            if count < min(zero_counts):
+                additions.update(f.dates)
+                direct_additions.update(f.dates)
+                dates.update(f.dates)
+            elif count > max(zero_counts):
+                if context is None or context.contract.visit_requirements is None:
+                    continue
+                selected = [
+                    aid
+                    for aid in f.activity_ids
+                    if aid in activities
+                    and not uncertain_binding(aid)
+                    and dispensable_visit(draft, aid, context)
+                ]
+                if not selected:
+                    continue
+                for aid in selected:
+                    permissions[aid].add("delete")
+            else:
+                continue
         elif f.check == "coverage" and (
             f.status == "NEEDS_REVIEW" or f.reason == "minimum_daily_coverage_missing"
         ):
@@ -178,7 +205,7 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
             dates.add(day)
             if (
                 (
-                    f.check in {"repetition", "overfull", "opening", "route"}
+                    f.check in {"repetition", "overfull", "opening", "route", "soft_pace"}
                     or f.reason == "experience_goal_dates_unmet"
                 )
                 and not uncertain_binding(aid)
@@ -206,7 +233,16 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
                     parent_id=f.finding_id,
                     date=day,
                     trigger_activity_ids=ids,
-                    minimum_count=min(policy.daily_main_min, rows[day].distinct_main_poi_count),
+                    minimum_count=min(
+                        policy.daily_main_min,
+                        rows[day].distinct_main_poi_count,
+                        min(
+                            (n for n in f.adopted_evidence.get("zero_counts", ()) if n >= 1),
+                            default=policy.daily_main_min,
+                        )
+                        if f.check == "soft_pace"
+                        else policy.daily_main_min,
+                    ),
                     allow_partial=partial,
                     reason="confirmed_visit_removal"
                     if c_removal
@@ -286,7 +322,7 @@ class V3PostPrimary:
                 daily_main_min=self.acq.runtime_config.v3_repair.daily_main_min,
                 daily_main_max=self.acq.runtime_config.v3_repair.daily_main_max,
                 review_targets=frozenset(
-                    (["coverage"] if self.quantity_review else [])
+                    (["coverage", "soft_pace"] if self.quantity_review else [])
                     + (
                         ["overfull"]
                         if self.acq.runtime_config.v3_repair.overfull_review_enabled
@@ -348,7 +384,7 @@ class V3PostPrimary:
         self.owner.phase = "repair"
         # Reuse existing intents only when a shortage authorizes additions.
         coverage_target = scope is not None and any(
-            f.check == "coverage" and f.finding_id in scope.target_ids
+            f.check in {"coverage", "soft_pace"} and f.finding_id in scope.target_ids
             for f in original_report.findings
         )
         intent_ids = (
@@ -480,9 +516,13 @@ class V3PostPrimary:
             for left, right in zip(ordered, ordered[1:], strict=False)
         ]
         final = final.model_copy(update={"route_diagnostics": route_diagnostics})
+        from backend.app.versions.v3.soft_pace import pace_summary
+
         outcome = V3Outcome(
+            soft_pace=pace_summary(original_report, final_report),
             review_policy={
                 "quantity": self.quantity_review,
+                "soft_pace": self.quantity_review,
                 "overfull": self.acq.runtime_config.v3_repair.overfull_review_enabled,
             },
             quantity_review_enabled=self.quantity_review,

@@ -358,6 +358,8 @@ def apply_patch(
 
 
 def finding_key(f):
+    if f.check == "soft_pace":
+        return f.check, f.dates
     if f.reason == "minimum_daily_coverage_missing":
         return "minimum_coverage", f.dates
     if f.reason == "conditional_coverage_deficit":
@@ -487,6 +489,15 @@ def compare(
             len((old_ids - new_ids) & (excluded | conflict_removals)) if day in permitted else 0
         )
         floor = min(scope.daily_main_min, before.distinct_main_poi_count - allowed_loss)
+        for f in initial_report.findings:
+            if f.check == "soft_pace" and f.finding_id in scope.target_ids and day in f.dates:
+                floor = min(
+                    floor,
+                    min(
+                        (n for n in f.adopted_evidence.get("zero_counts", ()) if n >= 1),
+                        default=floor,
+                    ),
+                )
         if current.target_status == "not_assessable" or current.distinct_main_poi_count < floor:
             rejections.append("Coverage regression is not authorized")
     if any(
@@ -511,6 +522,14 @@ def compare(
     progress = []
     business_values = []
     originals = {f.finding_id: f for f in initial_report.findings}
+    if any(
+        f.check == "soft_pace" and f.finding_id in scope.target_ids for f in initial_report.findings
+    ):
+        for key, f in old.items():
+            if f.check == "soft_pace" and f.magnitude is not None:
+                current = new.get(key)
+                if current is None or current.magnitude is None or current.magnitude > f.magnitude:
+                    rejections.append("Soft pace regression or lost comparable evidence")
     for target in scope.target_ids:
         f = originals[target]
         key = finding_key(f)
@@ -539,6 +558,10 @@ def compare(
                     distance(a.distinct_main_poi_count),
                     distance(b.distinct_main_poi_count),
                 )
+        elif f.check == "soft_pace":
+            current = new.get(key)
+            left = baseline.magnitude if baseline else None
+            right = current.magnitude if current else None
         elif f.check == "primary_policy" or f.reason == "experience_goal_count_unmet":
             left = f.magnitude
             right = max(

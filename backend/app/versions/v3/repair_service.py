@@ -490,6 +490,8 @@ async def run_repair_stage(
     )
     policy = budget.policy
     initial = assess(original, context)
+    from backend.app.versions.v3.soft_pace import pace_summary
+
     original_keys = {
         finding_key(f): f.finding_id for f in initial.findings if f.finding_id in scope.target_ids
     }
@@ -693,6 +695,7 @@ async def run_repair_stage(
     if last is None:
         return RepairResult(
             status="SKIPPED",
+            soft_pace=pace_summary(initial, initial),
             reason=stop,
             model_attempted=False,
             original=original,
@@ -853,6 +856,7 @@ async def run_repair_stage(
             ),
             "model_attempted": any(r.result.model_attempted for r in records),
             "adopted_report": final_report,
+            "soft_pace": pace_summary(initial, final_report),
         }
     )
 

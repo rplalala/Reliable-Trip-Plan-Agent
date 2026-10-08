@@ -482,6 +482,26 @@ def validate_draft(
             "open_semantics_not_executable_predicates",
             requirement_ids=tuple(r.requirement_id for r in contract.semantic_requirements),
         )
+    from backend.app.versions.v3.soft_pace import measure_pace
+
+    pace_rows = measure_pace(itinerary, contract, diagnostics, semantic_assessments)
+    for row in pace_rows:
+        penalty = row["penalty"]
+        add(
+            "soft_pace",
+            "UNKNOWN" if penalty is None else "PASS" if penalty == 0 else "NEEDS_REVIEW",
+            "soft_pace_unavailable" if penalty is None else "soft_pace_objective",
+            dates=(row["date"],),
+            activity_ids=row["activity_ids"],
+            magnitude=penalty,
+            evidence_refs=("policy:rtpeval_daily_density_2",),
+            adopted_evidence={
+                "count": row["count"],
+                "zero_counts": row["zero_counts"],
+                "policy": row["policy"],
+                "is_failure_constraint": False,
+            },
+        )
     targets = tuple(
         ImprovementTarget(
             finding_id=f.finding_id,
@@ -489,7 +509,15 @@ def validate_draft(
         )
         for f in findings
         if f.status == "CONFIRMED"
-        or (f.status == "NEEDS_REVIEW" and f.check in policy.review_targets)
+        or (
+            f.status == "NEEDS_REVIEW"
+            and f.check in policy.review_targets
+            and not (
+                f.check == "coverage"
+                and "soft_pace" in policy.review_targets
+                and any(row["date"] in f.dates and row["penalty"] is not None for row in pace_rows)
+            )
+        )
     )
     return ValidationReport(
         diagnostics=diagnostics,

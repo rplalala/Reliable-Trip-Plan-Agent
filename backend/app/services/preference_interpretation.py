@@ -51,6 +51,7 @@ def empty_preference_draft() -> InterpretationDraft:
         ),
         visit_requirements=(),
         time_protections=(),
+        daily_pace=({"date": None, "profile": "ordinary", "exact_count": None, "source_refs": ()},),
         named_places=(),
         requested_place_information=(),
         transport_preference=None,

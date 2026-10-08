@@ -174,7 +174,9 @@ def prepare_packet(
         "source_hashes": report["source_hashes"],
         "implementation_hashes": {
             path.name: hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in sorted(Path(__file__).parent.glob("*.py"))
+            for path in sorted(
+                [*Path(__file__).parent.glob("*.py"), Path(__file__).parents[1] / "pace_policy.py"]
+            )
         },
         "paired": paired,
         "cases": cases,

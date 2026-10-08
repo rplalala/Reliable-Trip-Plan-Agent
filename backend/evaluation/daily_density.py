@@ -2,16 +2,13 @@
 
 from fractions import Fraction
 
+from backend.pace_policy import PENALTIES, daily_penalty
+
 from ._schedule_preparation import _days, _sources
 from .preparation import _review_provenance
 from .quality_aggregation import _fraction
 from .records import require, text
 
-PENALTIES = {
-    "ordinary": [100, 40, 0, 10, 50, 80],
-    "relaxed": [100, 20, 0, 40, 70, 90],
-    "rich": [100, 60, 0, 0, 30, 70],
-}
 RULES = {
     "profile_id": "rtpeval_daily_density_2",
     "penalties_by_count_0_to_5": PENALTIES,
@@ -126,9 +123,7 @@ def prepare_density_policies(intake, reviews=None):
 
 
 def _penalty(count, policy):
-    if policy["exact_count"] is not None:
-        return 0 if count == policy["exact_count"] else 100
-    return PENALTIES[policy["profile"]][count] if count < 6 else 100
+    return daily_penalty(count, policy["profile"], policy["exact_count"])
 
 
 def score_daily_density(group, density, policy):

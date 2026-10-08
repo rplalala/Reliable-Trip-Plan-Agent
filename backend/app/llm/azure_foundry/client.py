@@ -57,7 +57,7 @@ def requirement_wire_format():
     return {
         "type": "json_schema",
         "json_schema": {
-            "name": "PreferenceDraftV9",
+            "name": "PreferenceDraftV10",
             "strict": True,
             "schema": schema,
         },
@@ -195,7 +195,7 @@ class AzureFoundryStructuredLLMClient:
             "prompt_hash": digest(system_prompt),
             "schema_hash": digest(wire),
             "config_hash": digest(self._requirement_config),
-            "prompt_version": "preference_prompt_18",
+            "prompt_version": "preference_prompt_19",
             "schema_version": "preference_draft_12",
             "config": self._requirement_config,
         }

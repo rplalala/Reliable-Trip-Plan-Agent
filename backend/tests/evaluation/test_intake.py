@@ -871,6 +871,7 @@ def test_no_planner_import_or_network_on_intake(batch, monkeypatch):
     # #87 isolates credential/HTTP access in the formal execution boundary.
     # Token counting is a pure offline helper, not a planner or evidence client.
     execution_imports = {
+        "daily_density": {"backend.pace_policy"},  # Numeric rules only; no planner state.
         "evaluation_run": {"httpx"},
         "opening_run": {"httpx"},  # #90 isolates one incremental model attempt here.
         "evaluation_transport": {"httpx", "urllib", "backend.app.runtime.token_counting"},

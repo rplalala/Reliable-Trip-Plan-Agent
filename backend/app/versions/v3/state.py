@@ -11,6 +11,7 @@ from backend.app.versions.v3.repair_models import RepairResult, RepairScope
 
 
 class V3Outcome(ValidationModel):
+    soft_pace: dict = Field(default_factory=dict)
     review_policy: dict = Field(default_factory=dict)
     quantity_review_enabled: bool
     draft: Itinerary

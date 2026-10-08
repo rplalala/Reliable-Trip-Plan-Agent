@@ -93,7 +93,7 @@ def candidate_targets(original, context, scope):
     for finding in report.findings:
         if finding.finding_id not in scope.target_ids:
             continue
-        if finding.check != "coverage" and finding.reason not in {
+        if finding.check not in {"coverage", "soft_pace"} and finding.reason not in {
             "required_identity_omitted",
             "required_visit_obligation_unmet",
             "experience_goal_count_unmet",
@@ -108,6 +108,12 @@ def candidate_targets(original, context, scope):
                 continue
             gap = (
                 max(
+                    0,
+                    min(finding.adopted_evidence.get("zero_counts", (0,)))
+                    - finding.adopted_evidence.get("count", 0),
+                )
+                if finding.check == "soft_pace"
+                else max(
                     0,
                     (
                         1

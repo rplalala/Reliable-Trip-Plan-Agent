@@ -64,6 +64,7 @@ def prepare_opening_run(parent_directory, directory, *, options, prices):
     paths = [
         *Path(__file__).parent.glob("*.py"),
         Path(__file__).parents[1] / "model_references.py",
+        Path(__file__).parents[1] / "pace_policy.py",
         Path(__file__).parents[1] / "app" / "runtime" / "token_counting.py",
     ]
     preparation = {

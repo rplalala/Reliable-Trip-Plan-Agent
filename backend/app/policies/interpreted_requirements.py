@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from backend.app.schemas.interpreted_requirements import (
     CanonicalSubject,
     ClarificationRequired,
+    DailyPace,
     DiscoveryIntent,
     ExperienceEvidenceRequest,
     InterpretationDraft,
@@ -101,6 +102,7 @@ def validate_canonical_requirements(contract, request: PlanningRequest):
         value.named_places,
         value.time_protections or (),
         value.visit_requirements or (),
+        value.daily_pace or (),
     ):
         for item in group:
             for ref in item.source_refs:
@@ -134,6 +136,17 @@ def validate_canonical_requirements(contract, request: PlanningRequest):
     for protection in value.time_protections or ():
         if any(not request.start_date <= d <= request.end_date for d in protection.dates):
             raise RequirementBoundaryError("time_protection_outside_request")
+    pace = value.daily_pace
+    if pace is not None:
+        if len({p.date for p in pace}) != len(pace) or sum(p.date is None for p in pace) != 1:
+            raise RequirementBoundaryError("invalid_daily_pace_scope")
+        for p in pace:
+            if p.date is not None and not request.start_date <= p.date <= request.end_date:
+                raise RequirementBoundaryError("daily_pace_outside_request")
+            if not p.source_refs and (
+                p.profile != "ordinary" or p.exact_count is not None or p.date is not None
+            ):
+                raise RequirementBoundaryError("daily_pace_source_required")
     _operational_sources(value, text)
     return value
 
@@ -348,6 +361,15 @@ def canonicalize_requirements(
                     )
                 )
         result = InterpretedTripRequirements(
+            daily_pace=None
+            if draft.daily_pace is None
+            else tuple(
+                DailyPace(
+                    **p.model_dump(exclude={"source_refs"}),
+                    source_refs=_sources(p.source_refs, text),
+                )
+                for p in draft.daily_pace
+            ),
             visit_requirements=visits,
             time_protections=protections,
             request_sha256=hashlib.sha256(text.encode()).hexdigest(),

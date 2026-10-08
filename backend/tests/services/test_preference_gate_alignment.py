@@ -29,6 +29,7 @@ def historical():
     saved = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assert json.loads(saved["raw_structured_text"]) == saved["payload"]
     payload = copy.deepcopy(saved["payload"])
+    payload["daily_pace"] = None  # Synthetic migration; historical pace is unassessed.
     # Synthetic wire-10 adaptation; the historical artifact above remains byte-for-byte intact.
     for row in payload.get("visit_requirements") or ():
         row.update(exact_visits=None, distinct_dates=False)
