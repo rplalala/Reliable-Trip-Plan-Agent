@@ -184,7 +184,9 @@ def prepare_packet(
         "request": {
             "model": model,
             "instructions": INSTRUCTIONS,
-            "input": json.dumps({"policy": POLICY, "cases": cases}, ensure_ascii=False),
+            "input": json.dumps(
+                {"policy": POLICY, "cases": cases}, ensure_ascii=False, sort_keys=True
+            ),
             "text": {
                 "format": {
                     "type": "json_schema",

@@ -7,6 +7,7 @@ import httpx
 import pytest
 
 from backend.evaluation.evaluation_run_cli import main
+from backend.evaluation.quality_report_cli import main as quality_cli
 from backend.tests.evaluation.test_evaluation_run import mock_provider, options, run_prices
 from backend.tests.evaluation.test_opening_judgment import landmarks, material, walks
 
@@ -152,10 +153,32 @@ def test_opening_execution_reuses_api_evidence_and_replays_full_report(
     )
     capsys.readouterr()
     assert len(calls) == 1
+    opening_originals = {str(p): p.read_bytes() for p in directory.rglob("*") if p.is_file()}
     monkeypatch.setattr(socket, "socket", lambda *a, **k: pytest.fail("Replay attempted network"))
     assert main(["replay-opening", str(directory)]) == 0
     assert json.loads(capsys.readouterr().out) == report
+    preparation = json.loads((parent / "preparation.json").read_bytes())
+    quality_args = [
+        preparation["manifest"],
+        str(parent / "execution" / "identity-report.json"),
+        str(parent / "execution" / "evidence-snapshot"),
+        "--identity-snapshot",
+        str(parent / "execution" / "identity-snapshot"),
+        "--expected-plan",
+        str(parent / "execution" / "evidence-plan.json"),
+        "--opening-judgment",
+        str(directory / "execution" / "model-result.json"),
+        "--generated-at",
+        report["generated_at"],
+    ]
+    assert quality_cli(quality_args) == 0
+    quality = json.loads(capsys.readouterr().out)
+    assert quality["status"] == "complete"
+    assert quality["groups"] == report["quality"]["groups"]
+    assert quality_cli(quality_args) == 0
+    assert json.loads(capsys.readouterr().out) == quality
     assert {str(p): p.read_bytes() for p in parent.rglob("*") if p.is_file()} == originals
+    assert {str(p): p.read_bytes() for p in directory.rglob("*") if p.is_file()} == opening_originals
 
 
 @pytest.mark.parametrize("fault", ["http_error", "partial_decisions", "missing_usage", "unknown"])

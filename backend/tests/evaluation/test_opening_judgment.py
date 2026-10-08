@@ -114,6 +114,30 @@ def landmarks(results):
             activities[index].update(title=name, place_name=name, notes="Visit the landmark.")
 
 
+def test_packet_and_import_ignore_intake_mapping_order(
+    opening_scenario, tmp_path, capsys
+):
+    from backend.evaluation.opening_judgment import prepare_packet
+
+    intake, identity, directory, _, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        change=walks,
+        payload={"timeZone": {"id": "Etc/UTC"}},
+    )
+    reordered = json.loads(json.dumps(intake.to_dict(), sort_keys=True))
+    assert len(packet["cases"]) == 8
+    assert prepare_packet(reordered, identity, directory, None, model="fixture-model") == packet
+    raw = material(packet)
+    original_bytes = json.dumps(raw)
+    expected = score_opening(intake, identity, directory, opening_judgment=raw).to_dict()
+    actual = score_opening(reordered, identity, directory, opening_judgment=raw).to_dict()
+    assert actual["status"] == "complete"
+    assert actual == expected
+    assert json.dumps(raw) == original_bytes
+
+
 def test_inferred_public_landmark_access_passes_equally_for_all_versions(
     opening_scenario, tmp_path, capsys
 ):
@@ -440,7 +464,10 @@ def test_direct_import_rejects_material_from_another_implementation(
 
 @pytest.mark.parametrize(
     "fault",
-    ["source", "quote", "request_model", "partial", "foreign", "failed", "usage", "timestamp"],
+    [
+        "source", "quote", "request_model", "request_input_order", "partial", "foreign",
+        "failed", "usage", "timestamp",
+    ],
 )
 def test_foreign_partial_or_malformed_judgments_are_rejected(
     opening_scenario, tmp_path, capsys, fault
@@ -461,6 +488,10 @@ def test_foreign_partial_or_malformed_judgments_are_rejected(
         decisions[0]["activity_quote"] = "Invented exterior visit"
     elif fault == "request_model":
         raw["request"]["model"] = "foreign-model"
+    elif fault == "request_input_order":
+        raw["request"]["input"] = json.dumps(
+            json.loads(raw["request"]["input"]), indent=2
+        )
     elif fault == "partial":
         decisions.pop()
     elif fault == "foreign":
