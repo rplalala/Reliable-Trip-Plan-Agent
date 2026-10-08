@@ -288,12 +288,17 @@ qualified four-version batch or total score exists. See the
 
 The subsequent generation/binding plan proposes USD 43 in retail-reference allowances:
 V1 11, V2 12, V3 14 and independent final evidence/V0 identity replay 6. This is a
-development plan with zero authorized paid sends. Existing dispatch lacks complete
-token/cost guards; Foundry account prices and server-side Web Search content cost remain
-unverified. Local TripWorld corpus hashes pass, but query embedding lacks OPENAI_API_KEY;
-database compatibility is untested. Genuine outputs must precede exact evaluator request
-planning and four-version attestation. See the
-[budget and execution preparation](docs/records/evaluation/intake-identity-usage.md#sydney-generation-and-evidence-budget-preparation-2026-10-08).
+development plan with zero authorized paid sends. The subsequent approved usage task
+adds an opt-in selected-version capture CLI and dated official-price references, including
+cache writes, embeddings, Web Search tools, Places masks and Matrix elements. Unavailable
+account billing uses explicit retail/proxy assumptions; unknown quantities remain
+unavailable. The user removed a complex spend guard from this implementation scope.
+Local TripWorld corpus hashes pass. A presence-only recheck found OPENAI_API_KEY in
+`.env`; the capture CLI now loads that base file only for explicit execution. Credential
+validity and database compatibility remain untested. Genuine outputs and full evidence capture must precede exact
+evaluator request planning and four-version attestation. See the
+[budget preparation](docs/records/evaluation/intake-identity-usage.md#sydney-generation-and-evidence-budget-preparation-2026-10-08)
+and [usage implementation](docs/records/evaluation/intake-identity-usage.md#sydney-usage-accounting-implementation-2026-10-08).
 
 The user clarified that smoke is a development check, not an actual system stage, and
 requested an evaluation `tools/` boundary. V0 smoke request/budget preparation now lives

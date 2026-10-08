@@ -1,6 +1,10 @@
 # Opt-in attempt usage capture
 
-This is a benchmark-producer helper, not an evaluator-owned planner runner. Existing scripts do not automatically collect a sidecar. Wrap the already authorized selected-version invocation and its client cleanup:
+Capture is owned by the selected-run producer. The opt-in
+[development CLI](../../evaluation/README.md#planner-usage-capture-cli) wraps the existing
+request runtime, including dependency setup and cleanup. Product APIs and existing runner
+scripts retain their current behavior. A custom producer can wrap its already authorized
+selected-version invocation and client cleanup:
 
 ```python
 from backend.app.observability.usage_capture import capture_attempt
@@ -32,4 +36,12 @@ For researcher-facing offline comparisons:
 .venv/Scripts/python.exe -m backend.evaluation.usage_report C:/batch/g1/v0_usage.json C:/batch/g1/v1_usage.json C:/batch/g1/v2_usage.json C:/batch/g1/v3_usage.json
 ```
 
-The report is descriptive, preserves request pairing/missingness and contributes no quality score. It is not displayed to blinded raters. Oracle capture, if later implemented, uses a separate namespace and ledger.
+The report is descriptive, preserves request pairing/missingness and contributes no quality score. It is not displayed to blinded raters. Independent oracle usage uses a separate namespace and ledger; native oracle snapshots
+can be normalized by the offline cost-report command.
+
+Reported `cache_write_input_tokens` supplements cached reads and reasoning tokens.
+`usage_details` preserves allowlisted nonnegative numeric provider fields, excluding
+private text. Cache reads and writes partition input; reasoning partitions output and
+carries no additional output charge. Missing cache quantities remain absent/null in usage.
+A price snapshot can explicitly request conservative missing-cache estimation; those
+assumptions appear in cost-report pricing and preserve the captured envelope.

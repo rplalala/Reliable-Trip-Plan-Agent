@@ -607,7 +607,9 @@ A minimal illustrative price file (synthetic rates, not a current provider quota
 For 1,000 input tokens including 400 cached, and 200 output tokens, this yields
 `0.0022` USD. Reasoning tokens are part of output, not another charge. Missing cache
 counts do not imply zero; a deliberate no-discount assumption needs a source-linked
-annotation, or the estimate stays unavailable. Each official price row must retain its
+annotation or explicit `unreported_cache_policy`, or the estimate stays unavailable.
+Cache writes use their separate rate and partition input with reads. Reported nonzero
+writes without a write rate keep costs unavailable. Each official price row must retain its
 source/date/currency, billing unit and applicable context. Explicit proxy prices and SKU
 scenarios must retain an `assumption`, rather than pretending unknown context is observed.
 
@@ -739,3 +741,61 @@ JSON artifact envelope (`path`, byte `sha256`, schema, media type and availabili
 entry declares `case_id`, `role` and `expected_goal_ids`. Missing or invalid reports remain
 unavailable inventory units. Counts describe submitted cases; no formal 32-case corpus,
 live usage/cost measurement, version ranking or causal conclusion is produced.
+
+<a id="planner-usage-capture-cli"></a>
+
+### Selected-version usage capture CLI
+
+Prepare without invoking providers (input must pass current-date admission):
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.tools.planner_usage_cli --version v1 --input-json original-input.json --runtime-config config/runtime.yaml --output-directory artifacts/usage-v1-preparation --group-id original-request --run-id v1-preparation
+```
+
+The directory must be new. Preparation saves exact input/configuration bytes,
+`runtime-policy.json`, `price-basis.json` and `manifest.json`; it constructs no provider
+runtime, requires no provider credentials and creates no result/usage file. Supply a new
+output path for execution; a preparation directory cannot be reused.
+
+Only after separate live approval, add `--execute` for one selected version and use its
+actual selected run ID. Execution loads the repository `.env` by default; `--env-file`
+selects another base file. V2/V3 can additionally load the approved local RAG environment
+with `--rag-env-file .env.tripworld`. Existing process values take precedence over the
+RAG file, which takes precedence over the base file; preparation loads neither file.
+Query embedding requires `OPENAI_API_KEY` and the
+existing compatible TripWorld database. The command uses existing runtime budgets,
+version-specific runners and dependency cleanup. `--execute` records operator intent;
+policy authorization and account invoice limits remain separate.
+
+Successful execution saves `result.json`, `usage.json`, `provenance.json`,
+`usage-summary.json`, `prices.json` and `cost-report.json`. Failures/cancellations retain
+observed usage, partial costs and `failure.json` with error type only. Exit 0 means
+preparation or this selected invocation completed; exit 1 means capture/execution failed.
+Invalid input, configuration or output conflicts raise an error before provider dispatch.
+Windows result writes use exact UTF-8 bytes to keep hashes consistent with capture.
+
+The frozen price basis was checked on 2026-10-08 using
+[OpenAI GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna),
+[query embedding](https://developers.openai.com/api/docs/models/text-embedding-3-small),
+[Web Search](https://developers.openai.com/api/docs/pricing) and
+[Google global pricing](https://developers.google.com/maps/billing-and-pricing/pricing).
+Foundry model/tool prices use the declared OpenAI proxy; Standard processing and no
+account discounts/free quota/tax are assumptions. Generated rows bind observed event IDs,
+model names, request masks/modes, billing units and acquisition day, retaining the
+reference check date. Refresh official references before relying on an older price basis.
+Unknown model identities, unsupported masks/modes, missing quantities and uncertain sends
+remain unpriced. Account invoices can later be imported through the offline cost command.
+
+Missing cached reads assume no discount only under the explicit conservative policy;
+missing writes price all non-read input at the write rate. Those assumptions appear in
+the pricing result, preserving usage missingness. Actual cache-hit events do not create
+another API charge, Matrix uses requested elements, model transport stays a backing
+observation and Repair stays a subset. Independent oracle snapshots/costs remain separate
+shared runs.
+
+Synthetic CLI tests check three sends, two Web Search tool calls, one cache reuse, six
+Matrix elements and reported model read/write partitions: the retail example totals
+USD 0.0821715. This is fixture arithmetic. Complete cost remains unavailable for
+unverified injected adapters. Full raw/query-vector/mechanism evidence and qualified
+four-version attestation require their separate producer flow; this usage command
+performs neither those steps nor independent evaluator requests.

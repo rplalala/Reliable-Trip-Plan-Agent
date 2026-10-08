@@ -3310,3 +3310,115 @@ resolve to current contracts/policies; local identifiers are not published navig
 Remaining work is a bounded capture-wrapper implementation/dry check, credential/account
 readiness and a concrete one-use approval handoff. The current 43 USD proposal grants no
 live authorization and cannot attest a four-version batch or issue its final score.
+
+<a id="sydney-usage-accounting-implementation-2026-10-08"></a>
+
+## Sydney usage-accounting implementation — 2026-10-08
+
+Status: implemented and offline-validated; no freeze, paid dispatch, formal comparison or
+qualified four-version batch. The human approved capture/price configuration and offline
+validation, then confirmed the public seams `capture_attempt`, `build_cost_report` and
+the capture CLI. The human explicitly deprioritized a complex execution/spend guard and
+accepted official-price estimates where account billing is inaccessible. That clarification
+supersedes the earlier plan's guard/account-price prerequisite for this implementation;
+live approval, credentials and full acceptance evidence remain separate.
+
+### Commit consolidation and review scope
+
+The requested seven contiguous documentation commits `1e9e612` through `23b4a85` were
+consolidated first into `72554d087a730972b39cc1d23fcc8149f7f458c0`, retaining parent
+`8df3d2f59867213570a4e0d330388e8b80db3028` and exact tree
+`264fe115a1215bdc740601a321da12e440a9324c`. Index and working files were unchanged;
+`refs/codex/backups/docs-consolidation-20261008-23b4a85` retains the former history.
+An initial atomic ref transaction failed because Windows text-mode input converted LF
+protocol records to CRLF; no reference changed. Repeating with literal LF bytes succeeded.
+No reset, push, force push, branch switch or deletion occurred.
+
+Implementation review base is `72554d0`; commit `43ca770` adds capture/price configuration
+and directly related tests. Standards review found no documented-rule breach and one
+possible duplicated-price smell; Spec review found zero issues. Correction `ef596e9`
+shares model, embedding, Places, Matrix, tool and long-context constants between the
+price basis and executable rows. Both axes rechecked the committed correction and
+reported zero remaining findings. Final correction `c444274` loads the existing base
+credential environment only for explicit execution; both axes rechecked it with zero
+findings. Related documentation is grouped in one final commit.
+The pre-existing uncommitted `.gitignore` change remains outside the task.
+
+### Implemented capture and price semantics
+
+The development CLI prepares a new output directory offline, or explicitly invokes one
+selected version through `RequestPlannerRuntime`. It preserves input/configuration bytes,
+effective policy/source/date/run linkage, exact serialized result, reported usage and a
+source-linked cost report. Product behavior, configured budgets and cleanup remain intact.
+Wrong version/structured trip facts are rejected before adopting a result. Failures and
+cancellation retain already observed usage; exception messages and secrets are excluded.
+
+Numeric capture retains SDK/LangChain cache-write partitions and allowlisted original
+usage details. Cost accounting separates reads/writes from ordinary input, preserves
+missingness, prevents model backing-HTTP double charging, charges Matrix elements and
+observed tool counts, and keeps oracle costs in their own namespace. Unsupported context
+remains unpriced. Missing cache details can use an explicit conservative retail assumption
+without modifying actual usage. Known nonzero writes require a write price.
+
+Official references checked on 2026-10-08 cover GPT-6 Luna, query embedding, Web Search,
+Google Places and route Matrix. Foundry estimates use the declared OpenAI proxy; account
+charges remain unavailable. Standard processing/no discounts/free quota/tax are explicit
+assumptions. Search-content token costs rely on provider-returned usage. The dated price
+basis and current instructions belong to the
+[contract](../../contracts/0002-intake-identity-usage.md#planner-usage-development-cli)
+and [guide](../../../backend/evaluation/README.md#planner-usage-capture-cli).
+
+### Failure, correction and retest sequence
+
+TDD first exposed missing cache-write capture and unsupported write billing units.
+Adding both preserved reported write counts and priced them separately. Missing cache
+quantities initially prevented a total; the explicit conservative policy now records its
+assumptions in pricing while preserving missing fields in usage. Windows text result
+output initially changed newlines and broke the captured SHA-256; exact UTF-8 byte writes
+restored lineage. Further regressions demonstrated incorrect IDs-only Text Search pricing,
+silent ordinary-rate treatment of known writes, different-input result adoption and
+cancelled attempts without a cost report. A later presence-only check found the embedding
+key in `.env`, but RAG read only process variables. A CLI regression first rejected the
+missing base-environment argument; adding execution-only base loading completed that
+configuration path while preserving process/RAG/base priority. Each behavior was corrected
+at the agreed public seams and retested. A draft failure test initially read outcome from
+`timing` instead of the envelope root; that assertion was corrected without changing the usage wire schema.
+
+Focused capture/cost/observability validation reached 97 passes, followed by 12 CLI passes
+including cancellation. The complete backend suite passed with **3060 passed, 10 skipped**
+in 380.86 seconds for the implementation. The review correction passed **98 related tests**;
+its final readability adjustment passed **12 CLI tests**. The environment-loading correction
+passed **100 related tests** and **14 final CLI tests**. The final complete backend suite
+at `c444274` passed with **3062 passed, 10 skipped** in 353.13 seconds. Relevant Ruff
+lint/format and Git diff checks passed. No mypy/pyright project configuration exists; no new tooling was
+installed. Tests use fixture/mock provider responses, not real generated itineraries.
+
+The mixed-provider fixture records three actual mock HTTP sends, two returned Web Search
+calls, one cache reuse and six Matrix elements. Model usage is 1,000 input, 200 output,
+400 cached-read and 300 cache-write tokens; the known retail subtotal is USD 0.0821715.
+This is synthetic arithmetic, not Sydney expenditure. Injected coverage remains unverified,
+so the complete total stays unavailable; no invoice or account charge is fabricated.
+
+Original Sydney input preparation at `43ca770` passed for V1, V2 and V3 under socket/DNS
+blocking, with zero network attempts, zero provider sends and no generated result/usage.
+Reviewed preparation at `c444274` repeated all three checks with zero network attempts,
+credential-file loads and provider sends. The exact input digest remains
+`1b3c50ad9ce9c58a4caf047388f3c4131faa0cddb0ffff2467dd8b2f1593d6ba`.
+The prior 862-file manifest was checked without restamping it: only the two authorized
+code owners (`usage.py` and `cost_report.py`) changed; no unexpected source change occurred.
+Earlier raw/artifact material and `.gitignore` retain their prior hashes.
+
+Local evidence identifier: `artifacts/sydney-usage-accounting-20261008`, containing
+consolidation metadata, TDD temporary directories, preservation audit, fixture reports,
+initial and reviewed offline preparations and check summaries. These ignored identifiers are historical
+evidence locations, not published navigation or tracker specifications.
+
+Presence-only recheck found `OPENAI_API_KEY` in `.env`, with no process or `.env.tripworld`
+copy. The CLI now loads the base file into the execution environment, after the optional
+RAG file and without overriding existing values. No credential value was recorded, exposed
+or written, and validity was not tested through a paid request. Database compatibility
+remains untested.
+The capture CLI provides usage/lineage only; full raw provider, query-vector and mechanism
+capture, real V1-V3 outputs, source reviews, qualified intake and independent final evidence
+remain incomplete. No original V0 regeneration, model/evaluator acquisition, DB operation,
+tracker publication, push, PR, merge or formal version conclusion was performed.

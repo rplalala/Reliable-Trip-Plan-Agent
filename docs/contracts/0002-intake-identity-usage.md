@@ -743,7 +743,8 @@ native oracle snapshots. They do not require a four-version comparison, invoke p
 fetch bills/prices or contact providers. Capture remains opt-in; planning behavior and
 quality scores are unchanged.
 
-Optional numeric capture retains SDK/LangChain cached-input and reasoning token details.
+Optional numeric capture retains SDK/LangChain cached-input, cache-write and reasoning
+token details, with allowlisted numeric originals in `usage_details`.
 Reasoning is already included in output tokens; it is not added to the total again.
 Google HTTP observations retain only bounded Places endpoint/field mask and route
 mode/routing preference, alongside requested matrix elements. Unique active model
@@ -758,9 +759,11 @@ No prompts, query text, coordinates, URLs, keys or raw responses are added to th
 `as_of`, inclusive `valid_from`, exclusive `valid_until`, exact event `match`, positive
 decimal-string `per` and decimal-string `rates`. Match includes kind, provider, operation
 and model identity for model rows; optional exact billing context selects an explicitly
-supplied SKU. Supported units are input, cached input, output tokens, requests, matrix
-elements and observed tool calls. Cached input is partitioned out of total input before
-applying its rate. Embeddings can have input-only prices. Unsupported or overlapping
+supplied SKU. Supported units are input, cached input, cache-write input, output tokens,
+requests, matrix elements and observed tool calls. Cached reads and writes are partitioned out of
+total input before applying their rates; their sum cannot exceed reported input.
+Observed nonzero writes without a write price leave the estimate unavailable. Embeddings
+can have input-only prices. Unsupported or overlapping
 prices, missing counts, incomplete outcomes and out-of-scope context leave costs unpriced.
 The calculator does not interpret free text to infer a SKU.
 
@@ -801,3 +804,50 @@ not a claim about Azure charges. Current-source prices used retrospectively and 
 cache/service-tier details must be stated. The [package guide](../../backend/evaluation/README.md#offline-cost-report)
 contains runnable import examples; dated acceptance belongs to the existing
 [usage record](../records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05).
+
+<a id="planner-usage-development-cli"></a>
+
+### Selected-version usage preparation and capture — 2026-10-08
+
+`backend.evaluation.tools.planner_usage_cli` prepares a one-use output directory with
+original input/configuration bytes, the effective runtime policy/digest, source revision,
+trusted current date, run identity and dated price basis. Preparation constructs no
+provider runtime and sends no request. `--execute` selects the existing
+`RequestPlannerRuntime` for one V0, V1, V2 or V3 invocation; live authorization remains
+owned by the current-session smoke policy. The runtime retains configured timeouts,
+version behavior and dependency cleanup. Execution loads the repository `.env` (or
+`--env-file`) after the optional RAG environment; process values take precedence, then
+RAG values, then base values. Preparation reads neither credential file, and values are
+not serialized. This interface adds no spend reservation guard.
+
+Completed execution saves exact serialized result bytes, `rtpeval_usage_1`,
+`rtpeval_provenance_1`, usage summary, `rtpeval_prices_1` and cost report. Result version
+and original structured trip facts must match before a result hash can be adopted.
+Failed/cancelled execution keeps observed usage and a cost report, with error type only
+and no adopted result. Output reuse is rejected. Injected clients retain unverified
+coverage; the checked default adapters are explicitly declared in the envelope.
+
+`reference_prices` binds dated official unit rates to saved event identity and observed
+billing context. GPT-6 Luna and `text-embedding-3-small` use exact known model identities;
+unknown deployments remain unpriced. GPT-6 Luna input above 272,000 tokens applies the
+published long-context multipliers. Known Places masks select the highest requested
+supported SKU; unknown fields or wildcard masks remain unpriced. Matrix prices use
+observed mode/routing preference and actual requested element counts. Retail references
+exclude account discounts, free quota, tax and credits. Foundry estimates explicitly use
+OpenAI prices as a proxy. Public HTML/noncommercial Open-Meteo use a declared free-use
+scenario. Search-content token cost is covered only insofar as provider usage reports it.
+
+A model price row may set `unreported_cache_policy="uncached_write_rate"` with input,
+read and write rates; the write rate must be at least the ordinary rate. Missing cache
+reads then assume no discount, and missing writes price all non-read input at the write
+rate. Pricing records assumed billable units and explanations, while usage retains
+missingness. Without this policy or a supported source annotation, missing quantities
+remain unpriced. These are estimates; account invoices and cache observations remain
+separate evidence.
+
+Capture covers usage and original result/configuration lineage. Full raw provider,
+query-vector and mechanism evidence, producer completion and qualified four-version
+intake retain their existing separate requirements. This command performs no independent
+evaluator acquisition or quality scoring. Its preparation/capture output cannot attest
+a completed four-version batch. Runnable instructions belong to the
+[package guide](../../backend/evaluation/README.md#planner-usage-capture-cli).
