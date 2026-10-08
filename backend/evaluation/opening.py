@@ -19,7 +19,7 @@ from .snapshot import build_evidence_plan, load_snapshot
 
 REPORT_VERSION = "rtpeval_opening_report_1"
 RULES = {
-    "version": "rtpeval_opening_rules_1",
+    "version": "rtpeval_opening_rules_2",
     "intervals": "half_open",
     "grace_seconds": 0,
     "compliance_denominator": "PASS+FAIL",
@@ -27,7 +27,9 @@ RULES = {
     "current_window_days": 7,
     "timestamp_fraction_digits": 6,
     "unknown_time_is_closed": False,
-    "basis_order": ["applicable_current", "eligible_regular"],
+    "basis_order": ["applicable_current", "regular_for_unresolved_intervals"],
+    "special_date_without_schedule": "diagnostic_only",
+    "open_now": "query_instant_not_planned_visit",
     "timezone": "independent_place_or_reviewed_context",
 }
 
@@ -158,10 +160,7 @@ def _check(activity, identity, reference, records, context_zone):
     bases = {s["basis"] for s in segments if s["basis"] != "unavailable"}
     basis = "mixed" if len(bases) > 1 else next(iter(bases), "unavailable")
     explanation = (
-        "The evidence indicates exceptional hours for this visit date, but lacks a "
-        "usable applicable schedule; regular weekly hours cannot establish compliance."
-        if "special_date_unresolved" in reasons
-        else "The full visit is covered by adopted opening evidence."
+        "The full visit is covered by adopted opening evidence."
         if state == "PASS"
         else "A positive-duration portion of the visit is confirmed closed."
         if state == "FAIL"
