@@ -3,9 +3,64 @@
 import hashlib
 import json
 
+import numpy as np
+
+from backend.app.tripworld.database.vectors import SPACE, SPACE_ID
+from backend.app.tripworld.retrieval.embedding import validate_vectors
+
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _read_json(path, diagnostics):
+    try:
+        return json.loads(path.read_bytes()), True
+    except (OSError, ValueError) as exc:
+        diagnostics.append(
+            {
+                "reason": "evidence_json_unavailable",
+                "file": path.name,
+                "error_type": type(exc).__name__,
+            }
+        )
+        return None, False
+
+
+def _valid_vectors(path, diagnostics):
+    try:
+        with np.load(path, allow_pickle=False) as bundle:
+            metadata = json.loads(str(bundle["metadata"]))
+            vectors = bundle["vectors"]
+            texts = metadata["text_sha256"]
+            validate_vectors(vectors, len(texts), 1536)
+            if (
+                metadata["version"] != "runtime_query_capture_1"
+                or metadata["space"] != SPACE
+                or metadata["space_id"] != SPACE_ID
+                or metadata["shape"] != list(vectors.shape)
+                or metadata["dtype"] != str(vectors.dtype)
+                or metadata["vectors_sha256"] != hashlib.sha256(vectors.tobytes()).hexdigest()
+                or not isinstance(texts, list)
+                or not texts
+                or any(
+                    not isinstance(t, str)
+                    or len(t) != 64
+                    or any(c not in "0123456789abcdef" for c in t)
+                    for t in texts
+                )
+            ):
+                raise ValueError("Invalid captured query-vector metadata")
+        return True
+    except Exception as exc:
+        diagnostics.append(
+            {
+                "reason": "query_vectors_unavailable",
+                "file": path.name,
+                "error_type": type(exc).__name__,
+            }
+        )
+        return False
 
 
 def build_evidence_index(output, manifest, raw, usage, *, adapter_coverage):
@@ -16,9 +71,18 @@ def build_evidence_index(output, manifest, raw, usage, *, adapter_coverage):
     events = raw.events if raw else []
     mechanism_path = output / "mechanism.json"
     if mechanism_path.is_file():
-        mechanism = json.loads(mechanism_path.read_bytes())
-        missing.extend(f"mechanism.{name}" for name in mechanism["missing_fields"])
-        diagnostics.extend(mechanism["diagnostics"])
+        mechanism, available = _read_json(mechanism_path, diagnostics)
+        if (
+            available
+            and isinstance(mechanism, dict)
+            and mechanism.get("schema_version") == "rtpeval_mechanism_capture_1"
+            and isinstance(mechanism.get("missing_fields"), list)
+            and isinstance(mechanism.get("diagnostics"), list)
+        ):
+            missing.extend(f"mechanism.{name}" for name in mechanism["missing_fields"])
+            diagnostics.extend(mechanism["diagnostics"])
+        else:
+            missing.append("mechanism")
     else:
         missing.append("mechanism")
     if adapter_coverage != "default_adapters":
@@ -42,14 +106,37 @@ def build_evidence_index(output, manifest, raw, usage, *, adapter_coverage):
         ):
             continue
         name = path.relative_to(output).as_posix()
-        artifacts.append({"path": name, "sha256": sha(path)})
+        try:
+            artifacts.append({"path": name, "sha256": sha(path)})
+        except OSError as exc:
+            artifacts.append({"path": name, "sha256": None, "availability": "unavailable"})
+            missing.append(f"artifact.{name}")
+            diagnostics.append(
+                {
+                    "reason": "evidence_file_unavailable",
+                    "file": name,
+                    "error_type": type(exc).__name__,
+                }
+            )
+            continue
         if name.startswith("evidence/vectors/") and path.suffix == ".npz":
-            vectors += 1
+            if _valid_vectors(path, diagnostics):
+                vectors += 1
+            else:
+                missing.append(f"vectors.{name}")
         if name.startswith("evidence/trace/") and path.suffix == ".json":
-            value = json.loads(path.read_bytes())
+            value, available = _read_json(path, diagnostics)
+            if not available:
+                missing.append(f"trace.{name}")
+                continue
             if path.name == "run.json":
-                trace_found = value.get("status") != "running" and not value.get("truncated")
-            if value.get("truncated"):
+                trace_found = (
+                    isinstance(value, dict)
+                    and bool(value.get("status"))
+                    and value["status"] != "running"
+                    and not value.get("truncated")
+                )
+            if isinstance(value, dict) and value.get("truncated"):
                 missing.append(f"trace.{name}")
     if not trace_found:
         missing.append("finished_trace")

@@ -203,9 +203,9 @@ def test_cli_reports_unread_and_oversized_streams_without_extra_reads(tmp_path):
     assert index["collection_status"] == "partial"
 
 
-@pytest.mark.parametrize("vector_write_fails", [False, True])
+@pytest.mark.parametrize("vector_write_outcome", ["complete", "open_failed", "partial_failed"])
 def test_cli_captures_sdk_embedding_vectors_and_clears_ambient_scope(
-    tmp_path, monkeypatch, vector_write_fails
+    tmp_path, monkeypatch, vector_write_outcome
 ):
     import httpx2
     import numpy as np
@@ -213,13 +213,16 @@ def test_cli_captures_sdk_embedding_vectors_and_clears_ambient_scope(
 
     from backend.app.tripworld.retrieval.runtime import RuntimeRetrieval
 
-    if vector_write_fails:
+    if vector_write_outcome != "complete":
         from pathlib import Path
 
         original_open = Path.open
 
         def open_vector(path, mode="r", *args, **kwargs):
             if path.suffix == ".npz" and mode == "xb":
+                if vector_write_outcome == "partial_failed":
+                    with original_open(path, mode, *args, **kwargs) as stream:
+                        stream.write(b"PK\x03\x04")
                 raise OSError("synthetic vector write failure")
             return original_open(path, mode, *args, **kwargs)
 
@@ -266,8 +269,8 @@ def test_cli_captures_sdk_embedding_vectors_and_clears_ambient_scope(
     index = json.loads((output / "evidence-index.json").read_bytes())
     vector_refs = [r for r in index["artifacts"] if r["path"].endswith(".npz")]
     assert len(sends) == len(index["http_events"]) == 1
-    if vector_write_fails:
-        assert not vector_refs
+    if vector_write_outcome != "complete":
+        assert len(vector_refs) == (1 if vector_write_outcome == "partial_failed" else 0)
         assert "query_vectors" in index["missing_fields"]
         return
     assert len(vector_refs) == 1
@@ -322,3 +325,59 @@ def test_cli_records_capture_write_failure_without_losing_result(tmp_path, monke
         if target == "usage"
         else (index["http_events"][0]["response_body_status"] == "write_failed")
     )
+
+
+@pytest.mark.parametrize("form", ["list", "partial_trace", "partial_mechanism"])
+def test_cli_inventory_retains_list_and_broken_json_payloads(tmp_path, monkeypatch, form):
+    from pathlib import Path
+
+    from backend.app.observability.run_trace import TracePayloadMode
+
+    original_text, original_bytes = Path.write_text, Path.write_bytes
+
+    def text_write(path, data, *args, **kwargs):
+        if form == "partial_trace" and path.name.endswith("_selected_place_evidence.json"):
+            original_text(path, '[{"incomplete":', *args, **kwargs)
+            raise OSError("synthetic interrupted trace write")
+        return original_text(path, data, *args, **kwargs)
+
+    def bytes_write(path, data):
+        if form == "partial_mechanism" and path.name == "mechanism.json":
+            original_bytes(path, b'{"schema_version":')
+            raise OSError("synthetic interrupted mechanism write")
+        return original_bytes(path, data)
+
+    monkeypatch.setattr(Path, "write_text", text_write)
+    monkeypatch.setattr(Path, "write_bytes", bytes_write)
+
+    class Runtime:
+        async def run(self, version, request, *, reference_date, tracer=None):
+            accepted_catalog([])
+            tracer.payload(
+                "evidence",
+                "selected_place_evidence",
+                [{"fixture": "selected place"}],
+                minimum_mode=TracePayloadMode.RAW,
+            )
+            return result(version, request)
+
+    assert (
+        main(
+            arguments(tmp_path) + ["--capture-evidence"], runtime=Runtime(), date_provider=REFERENCE
+        )
+        == 0
+    )
+    output = tmp_path / "capture"
+    index = json.loads((output / "evidence-index.json").read_bytes())
+    assert json.loads((output / "manifest.json").read_bytes())["status"] == "completed"
+    assert json.loads((output / "provenance.json").read_bytes())["result_sha256"] == (
+        hashlib.sha256((output / "result.json").read_bytes()).hexdigest()
+    )
+    if form == "list":
+        assert not index["diagnostics"]
+        assert "finished_trace" not in index["missing_fields"]
+    else:
+        assert index["collection_status"] == "partial"
+        assert any(row["reason"] == "evidence_json_unavailable" for row in index["diagnostics"])
+    for ref in index["artifacts"]:
+        assert hashlib.sha256((output / ref["path"]).read_bytes()).hexdigest() == ref["sha256"]
