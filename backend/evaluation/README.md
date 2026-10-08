@@ -514,7 +514,17 @@ Use that plan directly, or put the context array under `{"contexts": [...]}` in
 that CLI input. `--expected-plan` optionally enforces trusted full-plan equality.
 
 Library seams: `score_requirement_schedule`, `prepare_routes`, `score_opening`, and
-`score_routes`. These and identity/snapshot plan commands support `--paired` where
+`score_routes`. Opening rules version 2 uses valid regular hours for unresolved intervals
+after applicable current evidence; already established current closure/opening stays
+authoritative. Special-date markers alone do not veto regular hours, and `openNow=false`
+at query time does not close a planned visit. Regular evidence gives ordinary PASS/FAIL,
+with its basis recorded. `basis_segments.hours_fields` names contributing fields;
+`regular_fallback` exposes the scope, applied intervals and retained diagnostics.
+Missing both usable schedules remains UNKNOWN. Save rule-change recalculations outside
+the original frozen execution receipts; exact older reports require their original code.
+See the [opening contract](../../docs/contracts/0004-opening-routes.md#opening).
+
+These and identity/snapshot plan commands support `--paired` where
 declared, selecting available V3 draft/final-primary projections; paired scope must
 remain consistent across inputs. Ticket 10 combines these paired outputs below.
 Scorers exit 0 for complete processing, including FAIL/UNKNOWN,

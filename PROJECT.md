@@ -102,757 +102,112 @@ Details: [shared output](docs/0003-itinerary-transport.md),
 
 ## 4. RTPEval implementation status
 
-Evaluation is independently run over a curated, source-linked batch. Planner
-validation, caches and internal decisions are not independent factual ground truth.
+RTPEval runs independently over source-linked submitted outputs. Planner validation,
+internal findings and caches are not independent factual ground truth. The operational
+`evaluation_run_cli prepare / execute / replay` flow captures independent evidence,
+records actual requests/usage and produces native automatic reports for V0-V3 finals.
 
-The completed engineering implementation of
-[#87](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/87) adds a formal
-`evaluation_run_cli prepare / execute / replay` flow over four original final outputs.
-It captures fresh independent Search/Details, V0-only correspondence, coordinates,
-hours/routes and all native automatic metrics, preserving failure receipts and
-source-linked uncertainty. V0 current-policy decisions bind complete relevant case sets;
-unrelated batch changes do not invalidate unchanged facts. Known-time V0 transport
-occupancy no longer requires primary route endpoints. Planner generation is unchanged.
-Independent Standards/Spec findings were corrected and rechecked. The initial full
-backend gate passed 3098 tests with 10 skipped; the later review corrections passed
-23 public-boundary tests. The user subsequently approved the frozen Sydney execution
-package: 86 Google sends, one V0 model send, zero retries and USD 2 reference allowance.
-Fresh execution completed with 64 Google sends and one V0 model send, all HTTP 200,
-in 28.14 seconds. Retail reference cost is USD 1.3090408; actual billing is unavailable.
-Network-blocked CLI replay exactly reproduces the saved report, verifies all 205 receipt
-files and preserves the four originals. The automatic flow is accepted under current
-policy at that acceptance checkpoint with 15 UNKNOWNs: 14 missing-hours checks and one
-conservative V1 exact-count check.
-Two V1 literal address FAILs reflect API abbreviations, and six daily density FAILs are
-soft pace penalties. Powerhouse's captured temporary closure remains an explicit limitation
-of the opening scorer. No planner repair, formal comparison, human review or freeze occurred.
-See the [implementation record](docs/records/evaluation/intake-identity-usage.md#formal-four-final-execution-2026-10-09)
-and [fresh execution acceptance](docs/records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09).
+| Capability | Current behavior | Detailed owner |
+| --- | --- | --- |
+| Intake and identity | Original claims, source hashes and version-owned targets; V0 model correspondence, V1-V3 independent API/program checks without evaluator-model fallback | [Intake/identity/usage](docs/contracts/0002-intake-identity-usage.md) |
+| Evidence and accounting | Frozen Search/Details/Matrix snapshots, failure receipts, source-linked coordinates, actual usage and explicit retail estimates when billing is unavailable | [Artifacts](docs/contracts/0001-evaluation-artifacts.md), [usage](docs/contracts/0002-intake-identity-usage.md#offline-cost-accounting) |
+| Requirements and schedule | Explicit counts/dates/exclusions/fixed times; verified occurrence associations with separate grounding; V0 declared transport occupancy and V1-V3 transfers | [Requirements/schedule](docs/contracts/0003-requirement-schedule.md) |
+| Opening | Applicable current facts take precedence; valid regular hours decide unresolved intervals; query-time openNow and special markers alone do not prove visit closure | [Opening/routes](docs/contracts/0004-opening-routes.md#opening) |
+| Routes | Independent coordinates and mode/time-applicable route evidence against original reserved duration; unsupported provider scope remains unresolved | [Opening/routes](docs/contracts/0004-opening-routes.md#route-wire) |
+| Quality and density | Five automatic dimensions with separate evidence availability; source-linked pace deductions adjust the final total without adding hard generation quotas | [Quality/density](docs/contracts/0005-quality-human-review.md) |
+| Additional evaluation tracks | Blinded review, V3 paired reports, controlled Repair and mechanism/official-claim audit interfaces are implemented; their execution and research populations require their own scope | [Evaluation design](docs/0006-independent-evaluation.md), [artifacts](docs/contracts/0001-evaluation-artifacts.md) |
 
-The subsequent offline correction
-[#88](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/88) advances
-requirement/schedule rules to version 3. Verified physical occurrence associations now
-establish requirement matches/nonmatches without weakening grounding or borrowing another
-version's requirement target. Saved-evidence CLI recalculation changes V1's exact-once
-bounds from 1..3 to 1..1, yielding requirement PASS and score 68 instead of 48. The two
-grounding FAILs, fourteen opening UNKNOWNs and all other dimensions remain unchanged.
-The full backend gate passed 3112 tests with 10 skipped; the targeted file passed 50.
-Standards and Spec reviews each found zero issues. No new provider call occurred;
-the original report and 205 receipt files are unchanged and exactly replay with the
-original rules. Opening access/evidence/closure refinements remain advisory, not implemented.
-See the [correction acceptance](docs/records/evaluation/intake-identity-usage.md#requirement-physical-association-correction-2026-10-09)
-and [opening boundary proposal](docs/records/evaluation/opening.md#opening-access-boundary-proposal-2026-10-09).
+Current identity policies are `versioned_api_identity_3` and
+`v0_identity_correspondence_3`; requirement/schedule rules are version 3 and opening
+rules are version 2. Verified physical associations can support occurrence matching,
+opening and route checks while original grounding FAILs remain visible. Requirement
+targets belong to their own version. Historical reports retain their original policies,
+code and source bindings; a rule change produces a separate recalculation.
 
-The user accepted a version-specific evaluator requirement on 2026-10-06:
-V0 introduces an LLM primarily to correspond generated POI claims with independent
-API candidates; V1-V3 evaluation uses API evidence and program rules without an
-evaluator model or model fallback, including user-named requirements. API-backed
-name/address differences are errors; original mistakes are preserved, and insufficient
-evidence remains UNKNOWN. Version dispatch is locally implemented under #75, superseding
-the default all-version LLM path. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
-owns five classified follow-ups: version routing #75, V0 response contract #76,
-fresh-smoke preparation #77, offline route integration #78 and Git delivery #79.
-The subsequent approved offline correction [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83)
-separates user-requested target identity by version: V0 uses model correspondence,
-V1-V3 use independent program checks. RequirementSpec meaning and API evidence remain
-shared; final requirement counting consumes each version's own target. Unbound program
-targets filter complete candidates by literal name, destination and supplied address
-before requiring one distinct ID. At that checkpoint the report/packet policies were
-`versioned_api_identity_2` and `v0_identity_correspondence_3`; historical #82 results
-retain their original policy. This correction is implemented and independently reviewed
-offline; evaluator tests pass. The subsequently approved
-[V3 deadline regression correction](docs/records/v0-v3/v3-development.md#deadline-phase-regression-2026-10-06)
-resolves the baseline test limitation with explicit expiry-phase assertions; production
-generation and budgets are unchanged. The full backend gate at that delivery passed
-2983 tests with 10 skipped. See the
-[acceptance record](docs/records/evaluation/intake-identity-usage.md#version-owned-requirement-targets-2026-10-06).
-The user subsequently authorized push, PR creation, published review and conditional
-merge/closure of #83 through [PR #84](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/84).
-GitHub owns the final delivery lifecycle. No new paid execution or smoke is authorized.
-The user subsequently authorized [follow-up #85](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/85)
-and offline smoke-plan refresh only. The merged #83 source is bound to a new private
-blocked draft covering eight V0 visits and one V0 requirement target, with fourteen
-candidate appearances. Its measured surrogate input plus reserve is 17,135 tokens,
-so the unchanged 16,000-token preparation guard rejects an executable manifest.
-See the [blocked refresh record](docs/records/evaluation/intake-identity-usage.md#v0-target-smoke-refresh-2026-10-06).
-An 18,000-token input ceiling and USD 0.0042 reference allowance are proposed for a
-separately approved offline correction at that checkpoint. The user subsequently
-approved that smoke-only limit correction, regression coverage and re-preparation.
-The tool now uses those limits; live execution was still unapproved at that checkpoint.
-The new compatible manifest retains all nine references and fourteen candidate
-appearances; its 17,135-token estimate fits the new ceiling with 865 remaining.
-The smoke gate at that checkpoint passed 35 tests. The capacity-run full gate had
-2948 passed, 40 failed
-and 10 skipped; unchanged route fixtures mix a real acquisition clock with fixed
-preparation time. A temporary controlled-clock diagnostic made all 40 pass; that
-diagnostic did not replace that failed full gate or implement a fixture correction.
-See the [offline correction record](docs/records/evaluation/intake-identity-usage.md#v0-smoke-capacity-correction-2026-10-06).
-The user subsequently approved the offline fixture-clock correction. Synthetic
-acquisition now uses a scoped, controllable test clock; Identity/Details evidence
-later than preparation is still rejected under both current and historical policies.
-The related gate passes 172 tests, and a fresh full backend gate passes 2998 with
-10 skipped and zero failures. See the [clock-baseline acceptance](docs/records/evaluation/intake-identity-usage.md#route-fixture-clock-baseline-2026-10-06).
-Production code and the prepared smoke manifest/historical artifacts remain unchanged.
-All original evidence remains preserved, and that fixture correction made zero paid calls.
-The user then explicitly approved the exact #85 manifest for one actual smoke request.
-The approved execution is complete: eight V0 visits and one V0 requirement target are
-PASS, with zero FAIL/UNKNOWN, one model send and zero retries. Offline import replay
-matches exactly, original claims and all 113 protected files remain unchanged, and
-V1-V3 receive no model results. Reported usage is 14,917 input / 1,064 output tokens;
-standard retail reference is USD 0.00239655 (regional +10% USD 0.002636205), with the
-provider invoice unknown. The one-use directory and allowance are consumed. See the
-[execution acceptance](docs/records/evaluation/intake-identity-usage.md#v0-target-identity-smoke-execution-2026-10-06).
-This identity-only development smoke adds no route/score validation, formal benchmark,
-version freeze or authority for another request, push, PR or merge.
-The user then approved [follow-up #86](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/86)
-and an offline V0 route-package refresh on 2026-10-07 (Australia/Sydney), with zero paid
-calls. Its fresh package retains the four original legs and removes their identity
-blockers using the accepted #85 report. Eight independent coordinates are reused; no
-Details request is needed. Under the existing dated KR provider profile, three WALK
-requests remain blocked and one TRANSIT remains conditional, with zero ready Routes.
-All four feasibility verdicts remain UNKNOWN. Proposed ready-send budget is USD 0;
-the four unready request estimates total USD 0.020000 under historical price assumptions,
-not an execution allowance. Actual CLI replay matches the library and returns exit 3;
-preflight stays not live authorized. See the [offline route refresh](docs/records/evaluation/routes.md#accepted-v0-identity-route-refresh-2026-10-07).
-No production change, paid request, new coverage/price verification or Git publication
-is included. Further supported-evidence planning needs separate scope approval.
-The user subsequently approved free Korean route-source verification and budget
-preparation. Official documentation identifies Kakao Map V2 WALK as the primary
-technical candidate for the three WALK legs, with TMAP pedestrian as an alternative.
-The proposed Kakao inventory is three calls, zero Details/model/retries, at a published
-reference total of 30 KRW. Account allowance, taxes, raw-response retention and a new
-offline adapter remain prerequisites; no executable package or live allowance exists.
-The original TRANSIT departure remains unresolved: Kakao has no departure input, and
-ODsay confirms that `maasRP.SearchTime` does not drive timetable routing. Google Matrix
-accepts explicit departure, but reviewed documentation does not confirm this KR route.
-All four route verdicts remain UNKNOWN; generation, score formulas and V0-V3 behavior
-are unchanged. Current authorized sends and costs remain zero. See the cited
-[support and budget assessment](docs/records/evaluation/routes.md#kr-route-support-budget-2026-10-07).
-The user then approved switching the next offline V0 scene to Sydney and first
-squashing the five consecutive local docs commits. Those commits are consolidated
-without changing the file tree; original revisions remain recoverable locally.
-The route preparer now accepts explicit AU selection while preserving default KR
-replay. Complete Australian WALK preparation can be ready for approval, but factual
-routes stay UNKNOWN until independent evidence; TRANSIT remains conditional.
-The four-day Sydney input initially had no generated result or API evidence.
-The non-generation public-price scenario is USD 0.3522, including unready requests;
-it does not establish an executable identity/route allowance. See the
-[Sydney preparation record](docs/records/evaluation/routes.md#sydney-offline-route-preparation-2026-10-07).
-The user subsequently authorized prepared smoke execution without another approval.
-On 2026-10-07, a bounded V0 generation-only smoke made one successful model request,
-then stopped with `unsupported_hard_requirements`: an agent-added exact daily
-two-primary-visit condition is hard semantic text without a registered executable
-predicate. This was smoke-input contamination, not a user-requested daily quota. Offline
-saved-draft replay reproduces the same clarification. No itinerary, API evidence,
-independent identity/route/score result or paid retry exists. Standard retail reference
-is USD 0.002808675; the actual Foundry invoice is unknown. The original input/output
-and consumed one-use plan remain preserved. Generation flow, scoring and V0-V3 code
-are unchanged; this is not a passed generation smoke or final evaluator acceptance.
-See the [generation stop record](docs/records/v0-v3/development-pilots.md#sydney-v0-generation-smoke-2026-10-07).
-The user clarified that density scoring must not become a generation constraint.
-A subsequent smoke input must omit the agent-added daily count entirely, preserving
-natural preferences and independent scoring; softening it to a suggested count would
-still steer the case toward the scoring table. The user then approved starting that
-corrected run. The new natural input retains all other facts/preferences, with the
-counted input preserved. On 2026-10-07, V0 generation completed with two model sends,
-zero retries and a valid original PlanningResult. Declared daily main roles are
-2/2/2/1, retained without count-based rejection or repair. Offline saved-response
-runner replay matches the original result exactly. Standard retail reference is
-USD 0.003987280, actual Foundry billing unknown. This completes generation-only smoke;
-independent identity/opening/route evidence, scoring and four-version acceptance
-remain pending. Product V0-V3 and scoring code are unchanged. See the
-[natural-input execution record](docs/records/v0-v3/development-pilots.md#sydney-v0-natural-generation-smoke-2026-10-07).
-The approved Sydney identity next step completed on 2026-10-07 with eight independent
-Places searches and one V0-only model request, zero retries. Seven original primary
-claims yield six PASS and one retained FAIL; the independently sourced Opera House
-target yields PASS. Free official-source inspection flags the Australian Museum address
-FAIL as a possible model false positive, without overriding the saved report. Powerhouse
-is identified but its API business status is temporarily closed. Offline snapshot/report
-replay matches exactly with zero network attempts and all frozen hashes unchanged.
-This is a single-source identity development view, not qualified four-version intake;
-opening, routes, scoring and final acceptance remain pending. See the
-[identity execution and assessment](docs/records/evaluation/intake-identity-usage.md#sydney-v0-identity-smoke-2026-10-07).
-The Sydney V0 opening/route smoke completed on 2026-10-08: six Details requests and
-two WALK Matrix requests, all HTTP 200, zero retries/model calls, USD 0.130 retail
-reference with actual billing unknown. Identity-FAIL venues and dependent routes were
-not queried. Native opening yields four PASS and three UNKNOWN; routes yield two PASS
-and one retained UNKNOWN. Powerhouse is temporarily closed with no returned hours;
-Opera House also lacks hours. Exact-once requirement counting and non-overlap retain
-uncertainty from unresolved occurrences/occupancy. Saved-evidence replay is exact and
-all 182 frozen files are preserved. The four-version quality consumer correctly rejects
-this single-source view; no final total or complete version acceptance is established.
-Generation, original itinerary and scoring code are unchanged. See the
-[opening/route assessment](docs/records/evaluation/routes.md#sydney-v0-opening-routes-smoke-2026-10-08).
-The accepted 2026-10-08 offline correction separates primary-claim grounding from
-physical API association under `versioned_api_identity_3`. Original name/address FAIL,
-null canonical claim adoption and requirement-counting rules remain intact. Verified
-V0 correspondence or an independently verified original V1-V3 ID can supply opening/
-route evidence against the original time, mode and reserved duration. The V0 packet
-protocol remains `v0_identity_correspondence_3`; V1-V3 use no evaluator model or searched
-replacement. Explicit policy-2 replay preserves historical reports and blocking rules.
-Sydney saved-evidence replay retains six primary PASS and one FAIL, with seven verified
-physical associations; Australian Museum remains FAIL and gains only evidence-plan
-eligibility. No new Museum Details or route request was sent at that correction
-checkpoint. The correction's
-implementation, review and validation are recorded in the
-[association acceptance](docs/records/evaluation/intake-identity-usage.md#physical-association-with-retained-grounding-fail-2026-10-08).
-Generator behavior and scoring formulas are unchanged. Final genuine V0-V3 intake,
-complete independent evidence and requirement review remain pending; this is not final
-version acceptance, a freeze or a formal comparison. Tracker publication of a new
-follow-up Issue remains unapproved; no push, PR, merge or new live execution is included.
+The latest Sydney engineering case has four original outputs, reviewed requirements,
+fresh independent evidence and a completed native evaluator flow. V2/V3 generation
+includes captured embedding/SQL retrieval; V3 exercised Repair. Zero-network replay
+preserves all originals and the original execution receipt. Under current recalculated
+rules, results are:
 
-The approved [Museum follow-up preparation](docs/records/evaluation/routes.md#sydney-museum-follow-up-preparation-2026-10-08)
-retains the existing V0 correspondence and address FAIL. Original Museum-to-QVB
-transport is WALK with a 20-minute reservation; no DRIVE extension is needed.
-After exact-plan approval, the configured execution child completed one Museum
-Details and one WALK Matrix request, both HTTP 200 with zero retries. Retail reference
-is USD 0.025; actual billing is unknown. Museum opening PASS uses regular-hours fallback;
-the 562-second/678-metre WALK fits the original interval. Combined opening is five PASS
-and two UNKNOWN; all three evaluable routes PASS, retaining unresolved generic transport.
-Eight prior observations keep their raw bytes/timestamps. Offline reports replay exactly,
-all 240 frozen hashes passed before documentation updates, and requirement/schedule
-sections remain identical to the prior report. The quality consumer still rejects the
-V0-only view, so no overall score or genuine V0-V3 final acceptance follows. The one-use
-directory and allowance are consumed. See the
-[execution assessment](docs/records/evaluation/routes.md#sydney-museum-follow-up-execution-2026-10-08).
+| Version | Overall score | Opening UNKNOWN | Grounding FAIL |
+| --- | ---: | ---: | ---: |
+| V0 | 89.2857 | 2 | 0 |
+| V1 | 68.0000 | 4 | 2 |
+| V2 | 75.0000 | 4 | 0 |
+| V3 | 81.1111 | 4 | 0 |
 
-The approved Sydney four-version offline inventory found one linked original V0 result
-and no matching V1-V3 result in accessible structured local material. The complete
-RequirementSpec meaning is now user-reviewed; agent pace/activity/occupancy reviews
-retain relaxed pacing without a daily quota and keep the generic food block occupied.
-Changed intake cannot reuse the old identity packet/evidence bindings. No new request,
-qualified four-version batch or total score exists. See the
-[material preparation record](docs/records/evaluation/intake-identity-usage.md#sydney-four-version-material-preparation-2026-10-08).
+The hard Opera House exact-once obligation is PASS for all four outputs. Fourteen
+opening checks lack both current and regular hours; successful HTTP acquisition does
+not supply those missing facts. V1's two literal address FAILs reflect API abbreviations.
+Six density FAILs are auxiliary soft pace penalties. Powerhouse's undated temporary
+closure is retained without proving access on the planned date. This one engineering
+case establishes runnable integration, not a formal ranking or version freeze.
 
-The subsequent generation/binding plan proposes USD 43 in retail-reference allowances:
-V1 11, V2 12, V3 14 and independent final evidence/V0 identity replay 6. This is a
-development plan with zero authorized paid sends. The subsequent approved usage task
-adds an opt-in selected-version capture CLI and dated official-price references, including
-cache writes, embeddings, Web Search tools, Places masks and Matrix elements. Unavailable
-account billing uses explicit retail/proxy assumptions; unknown quantities remain
-unavailable. The user removed a complex spend guard from this implementation scope.
-Local TripWorld corpus hashes pass. A presence-only recheck found OPENAI_API_KEY in
-`.env`; the capture CLI now loads that base file only for explicit execution. Credential
-validity and database compatibility were untested at that preparation stage. The approved follow-up implemented opt-in
-mechanism, RAW trace, credential-filtered owned HTTP and query-vector capture to the CLI,
-with exact original-result/file hashes and explicit partial evidence. The separate DB check
-was waived; normal future RAG initialization is unchanged. The V1-V3 one-use handoff proposes
-generation-only retail allowances of USD 11/12/14 (USD 37 total), retaining the original V0
-and excluding independent evaluation. Existing runtime limits remain in force; these
-reference allowances do not guarantee an invoice cap. Implementation and offline checks
-authorize no live dispatch. Genuine outputs and complete selected evidence must precede exact
-evaluator request planning and four-version attestation. See the
-[budget preparation](docs/records/evaluation/intake-identity-usage.md#sydney-generation-and-evidence-budget-preparation-2026-10-08)
-and [generation evidence preparation](docs/records/evaluation/intake-identity-usage.md#sydney-generation-evidence-and-handoff-2026-10-08).
-
-The user subsequently approved that exact one-use generation package. V1 and V2
-each produced an original result with matching usage/mechanism/index/provenance bindings;
-all 149 observed HTTP sends have complete captures and verified file hashes. Their
-combined retail/proxy estimate is USD 4.388204290; actual account billing is unavailable.
-V2 RAG database preparation/connection hit its 10-second suboperation timeout before
-retrieval or embedding, so its result retains degraded RAG and no query vectors.
-The parent applied the package stop before V3. No retry, DB probe, V0 rerun or independent
-evaluator acquisition occurred; original V0 and both new results remain preserved.
-Genuine V2 retrieval, V3 generation and subsequent four-version evidence qualification
-remain pending. See the [execution and stop record](docs/records/v0-v3/development-pilots.md#sydney-v1-v3-generation-execution-2026-10-08).
-Subsequent authorized read-only diagnosis confirmed the current Docker database healthy
-and host `SELECT 1` successful in 0.031 seconds, while the same sandbox check timed out.
-At that point host connectivity was verified; corpus compatibility, genuine retrieval
-and V3 generation remained unverified. The earlier stop and original evidence remain unchanged.
-The subsequent authorized host resumption completed both V2 and V3 after read-only
-runtime/corpus compatibility passed. Each performed one embedding and one SQL retrieval,
-with query vectors matched to original HTTP responses; V3 exercised one Repair round.
-All 181 new HTTP captures and result/evidence hashes passed assessment, and 541 earlier
-original files remained unchanged. A generation-only binding now links retained V0/V1
-and the new V2/V3 originals, preserving the earlier degraded V2 separately. New retail/proxy
-estimate: USD 4.787736595; cumulative V1-V3 workflow including the degraded attempt:
-USD 9.175940885. Actual account billing remains unavailable. Producer/final-source review,
-changed-intake V0 identity and exact independent evidence planning still precede evaluator
-qualification or scoring. See the [host resumption record](docs/records/v0-v3/development-pilots.md#sydney-generation-host-resumption-2026-10-08).
-
-The subsequently authorized offline evaluator intake now accepts the actual selected
-V0/V1/V2/V3 originals as one source-linked development group. Producer completion and
-final-source reviews are agent attestations; the complete RequirementSpec retains its
-existing human review. Native identity, requirement/schedule, opening, routes and quality
-consumers run and replay exactly, with zero new provider/model calls. All 34 final primary
-grounding/opening checks and all 18 candidate route checks remain UNKNOWN; 53 decidable
-non-overlap checks PASS. These are incomplete independent-evidence results, not final
-quality acceptance or a version ranking. V0's unresolved transport population leaves its
-total unavailable. Twelve distinct claimed-ID Details requests need identity fields,
-and V0 needs one new batch-bound correspondence judgment before complete final-evidence
-planning. Paid acquisition remains unapproved. See the
-[four-version offline assessment](docs/records/evaluation/intake-identity-usage.md#sydney-four-version-offline-evaluator-intake-2026-10-08).
-
-The user clarified that smoke is a development check, not an actual system stage, and
-requested an evaluation `tools/` boundary. V0 smoke request/budget preparation now lives
-under `backend/evaluation/tools/`; Product planning and independent final scoring do not
-call it. Core identity/scorers and their CLIs stay at the evaluation package root. This
-directory migration changes module/CLI paths only, preserving V0-V3 behavior, AU/KR
-preparation rules and score formulas. See the
-[tool-boundary record](docs/records/evaluation/routes.md#evaluation-development-tool-boundary-2026-10-07).
-The backlog task authorized specification publication only. The user subsequently
-authorized full Git delivery of the existing implementation through
-[PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80), before these
-follow-ups. The user subsequently authorized #75 implementation, offline testing, local
-commits and dual review, followed by #76's V0 response-contract correction. #75 and #76
-are implemented and offline-validated. The user then authorized #77 offline preparation, with zero
-paid calls. Its V0-only frozen plan is preserved locally. The user then authorized #78
-offline route integration, also with zero paid calls; it is implemented offline with a
-blocked real package. The user then authorized #79 local delivery preparation only:
-commit/diff inventory, combined review, PR draft and Issue reconciliation material.
-The human subsequently authorized #79 normal push, PR creation, review with a published
-comment, merge after successful gates and closure of fully accepted associated Issues.
-[PR #81](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/81) publishes this iteration.
-No paid execution, branch switch, force push, history rewrite or branch deletion is included.
-GitHub owns actual PR/Issue state. See the
-[accepted requirement](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
-and [publication record](docs/records/evaluation/intake-identity-usage.md#version-specific-evaluator-backlog-2026-10-06).
-The [#75 implementation record](docs/records/evaluation/intake-identity-usage.md#version-specific-identity-implementation-2026-10-06)
-records local validation and review; it grants no paid run or publication authority.
-The [#76 correction record](docs/records/evaluation/intake-identity-usage.md#v0-correspondence-contract-correction-2026-10-06)
-records schema/import agreement, required `not_supplied` for missing addresses, preserved
-candidate correspondence versus original-claim FAIL/UNKNOWN, and unchanged historical evidence.
-The [#77 preparation record](docs/records/evaluation/intake-identity-usage.md#fresh-v0-smoke-preparation-2026-10-06)
-records eight current V0 primary references and nine independent candidates, a fresh
-private destination/manifest/handoff and offline rehearsals. Actual sends and incremental
-charges are zero; the new execution directory is unconsumed. V0 remains UNKNOWN without
-new accepted model evidence. The proposed one-call token/cost limits require separate
-exact-plan approval and the required current-session execution child; #73's consumed
-allowance and rejected response grant no further execution authority.
-The [#78 route-readiness record](docs/records/evaluation/routes.md#versioned-v0-route-readiness-2026-10-06)
-records current-policy replay without human identity/audit gating and explicit historical
-replay. All four original V0 legs remain UNKNOWN/blocked, with zero eligible endpoints,
-reused coordinates, Details/Routes requests and proposed acquisition budget. Synthetic
-current reports demonstrate eligible and FAIL/UNKNOWN paths without inventing real results.
-Original #70/#73/#77 artifacts remain unchanged. #78 changes two implementation files
-frozen by #77, so the preserved #77 manifest is currently stale for execution; any future
-smoke needs a fresh exact freeze and separate approval. No live evidence was added.
-
-The user subsequently authorized [follow-up #82](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/82)
-and a refreshed offline V0 plan, with zero paid calls and no execution. It binds the
-merged implementation to a new manifest and an absent execution directory, recomputes
-eight V0 references/nine candidates, and protects 91 source files plus 68 implementation
-and dependency files. The original request and eight pending UNKNOWN verdicts are unchanged.
-See the [post-merge refresh record](docs/records/evaluation/intake-identity-usage.md#post-merge-v0-smoke-refresh-2026-10-06).
-That preparation granted no execution or Git publication authority. The user then
-explicitly approved its exact one-call V0 identity smoke. The required current-session
-execution child completed one request with zero retries: HTTP 200 and accepted import,
-eight V0 primary PASS and one unchanged requirement-subject UNKNOWN. See the
-[execution acceptance](docs/records/evaluation/intake-identity-usage.md#v0-identity-smoke-execution-2026-10-06).
-The report remains `needs_evidence`; route feasibility, scoring and a full planner rerun
-were not evaluated. The directory and allowance are consumed; no further call or new
-Git publication is authorized. GitHub owns #82's final acceptance/lifecycle state.
-
-The [#79 delivery preparation record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-delivery-preparation-2026-10-06)
-records the preparation checkpoint: remote `main` at `a983f35` and source branch at
-`819f0c3`, with ten completed-slice commits through `92f92fe`, plus local preparation
-documentation. PR #80 is already merged and #67/#70/#72/#73 are verified CLOSED;
-their historical work is not newly outgoing. The
-[authorized publication record](docs/records/evaluation/intake-identity-usage.md#evaluator-iteration-publication-2026-10-06)
-links PR #81 and records the actual published review scope; GitHub owns #74-#79 lifecycle.
-Delivery retains zero real ready requests, #73 failed-import evidence and #77's stale
-execution freeze. No accepted live evidence or fresh execution authorization is added.
-
-| Ticket | Implementation checkpoint |
-| --- | --- |
-| 01: Intake/projection | Implemented and offline-validated, including provenance, transport sources and [ordinary-output compatibility](docs/records/evaluation/intake-identity-usage.md#rtpeval-ticket-01-03-acceptance) |
-| 02: Usage capture/report | Implemented and offline-validated; opt-in capture plus [offline cost/bill accounting](docs/contracts/0002-intake-identity-usage.md#offline-cost-accounting); no automatic formal run or bill fetching |
-| 03: Identity/judgment | #75 implements version-specific API checks and exact consumer replay; #76 aligns V0 citation/address schema and import; #83 scopes target identity by version and strictly filters complete program search evidence; no evaluator model/fallback for V1-V3; historical policies/evidence remain explicitly replayable |
-| 04: Evidence snapshots | Implemented and offline-validated through injected transport; linked identity snapshots also supply route coordinates offline; not a built-in operational Google client |
-| 05: Requirement/schedule metrics | Implemented, offline-validated and published; [#17](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) closed as completed |
-| 06: Opening checks | Offline parser/scorer/CLI implemented and reviewed; [#18](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/18) completed; [acceptance and scoped supplements](docs/records/evaluation/opening.md#rtpeval-ticket-06-acceptance) |
-| 07: Route checks | Offline preparation/scorer/CLI implemented and reviewed, including decisive partial FAIL, zero-grace hard boundaries, the [snapshot-coordinate bridge](docs/records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03) and [current V0 route readiness](docs/records/evaluation/routes.md#versioned-v0-route-readiness-2026-10-06); [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19) completed; [original acceptance](docs/records/evaluation/routes.md#rtpeval-ticket-07-acceptance) |
-| 08: Multimetric report | Offline report/CLI implemented and reviewed; exact shared-mask scores with separate availability/provenance; [#20](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20) completed; [acceptance](docs/records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) |
-| 09: Blinded ranking | Offline package/import/report and React renderer completed; IANA time-zone selection, HH:mm and confirmed answer clearing; user-reported browser acceptance complete; [#21](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/21) completed; [acceptance](docs/records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) |
-| 10: V3 before/after | Offline preparation/report/CLI implemented, reviewed and published; adopted source lineage precedes unique fallback and residual review; separate paired mask, exact deltas and independent continuity; [contract](docs/contracts/0005-quality-human-review.md#v3-pairs) and [acceptance](docs/records/evaluation/v3-pair-report.md); [#22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22) completed |
-| 11: Controlled Repair | Offline real V3 replay, strict frozen ports/time/cache, independent targets/controls, human supplementation and CLI implemented, reviewed and published; [contract](docs/contracts/0001-evaluation-artifacts.md#controlled-repair) and [acceptance](docs/records/evaluation/2026-10-04-controlled-repair.md); [#23](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) completed; formal case construction/execution remains separately authorized |
-| 12: Mechanism/evidence audit | Selected-source mechanism report, exact official-claim audit queue/reviews, researcher CLI and default-off local submission/selection capture implemented, reviewed and published; [contract](docs/contracts/0001-evaluation-artifacts.md#mechanism-official-audit) and [offline acceptance](docs/records/evaluation/2026-10-04-mechanism-official-audit.md); [#24](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24) completed; formal audit/execution remains separately authorized |
-
-Evaluation uses transport activities for V0 and application transfers for V1-V3,
-including optional V3 draft/final projections. Ignored sources retain provenance
-and diagnostics but contribute no transport occupancy or fallback. Missing transfers
-remain missing. Independent evidence is still needed for factual feasibility.
-
-Route preparation can reuse coordinates already present in a verified independent identity
-snapshot after canonical ID adoption. Missing, invalid or conflicting coordinates remain
-local uncertainty; extraction adds no provider requests or planner/model work. The reviewed
-coordinate envelope remains available. This bridge preserves V0-V3 planning behavior and
-existing evaluation score/mask rules; see the [current contract](docs/contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03).
-
-The current [version-specific identity policy](docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
-uses original IDs, independent API Details and literal name/address comparisons for V1-V3,
-including optional V3 projections. Shared named requirements use independently verified
-bindings or unique deterministic search. V0 model correspondence never supplies these
-results. FAIL/UNKNOWN retain original claims and null canonical endpoints; downstream
-reports retain identity failures separately from unavailable opening/route facts. Exact
-report replay rejects edited/stale verdicts. Generation and score arithmetic are unchanged.
-The superseded [#72 uniform LLM policy](docs/contracts/0002-intake-identity-usage.md#uniform-llm-identity)
-remains explicitly replayable for historical evidence. V0 semantic judgments remain fallible.
-The separately approved #73 request returned but failed import. Historical smoke files remain intact;
-their old model responses lack the new address assessments and cannot establish new-policy
-judgments. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
-
-Under [#73](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/73), the one-call
-V0 identity development executor is locally implemented and offline validated. The prepared
-nine-reference packet freezes 61 protected originals and estimates 16,498 input tokens
-including reserve. Approved limits are one `gpt-6-luna` request, low reasoning, zero retries,
-20,000 input/4,000 output tokens, 60 seconds and USD 0.005 retail-reference allowance
-(USD 0.004 maximum standard estimate; Foundry invoice unavailable). After the initial
-prelaunch review block, the user explicitly approved the specific destination and data
-scope. A required `gpt-6.1-sol`/medium execution child sent the unchanged request once:
-HTTP 200 in 7.175079s, 14,403 input and 967 output tokens. The completed raw response
-suggested nine matches but failed source-bound import because every decision used
-unsupported citation paths; the protected subject also cited a null location and assessed
-it as differing precision. No accepted report exists, so all nine pending verdicts under
-that frozen policy remain UNKNOWN. The USD 0.0019238 executor base reference excludes cache-write
-premium; the observed 14,400 cache-write tokens imply a USD 0.0022838 adjusted standard
-retail reference. Actual Foundry billing remains unknown. All 61 protected originals,
-69 sources and 2 implementation hashes remain unchanged; no retry or output correction
-occurred. The single-call allowance is consumed. The next proposed correction is stricter
-output citation/null-address constraints; it is not implemented by this execution.
-See [commands](backend/evaluation/README.md#prepared-one-call-identity-development-smoke)
-and the [dated execution record](docs/records/evaluation/intake-identity-usage.md#identity-smoke-execution-2026-10-06).
-
-The historical V0-only offline identity policy was delivered through PR #71 under
-[#69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69), with source-bound
-short-reference restoration and consumer replay. Its saved #66 acceptance adopts six
-of nine references, retains three genuine-review cases, extracts six existing independent
-coordinates and prepares two route query contexts. Default/native and V1-V3 paths remain
-unchanged. No new journey evidence was acquired; all four route feasibility verdicts remain
-UNKNOWN. See the [identity contract](docs/contracts/0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
-and [dated acceptance](docs/records/evaluation/routes.md#v0-identity-adoption-acceptance-2026-10-05).
-
-The separately authorized #70 offline request/budget package is locally implemented.
-It replays that handoff, retains four legs, reuses six independent coordinates and finds
-no missing coordinate venues. Details requests are zero; two directed inventory items
-remain unready (one blocked WALK, one conditional TRANSIT), with zero ready Routes.
-The checked KR coverage profile does not establish usable WALK or regional TRANSIT
-support. Proposed sends/cost are zero; the two hypothetical items total USD 0.01 at the
-2026-10-05 global first paid tier. All four verdicts remain UNKNOWN. No live executor,
-paid request, planner/scoring change or fabricated review was introduced. See the
-[request contract](docs/contracts/0004-opening-routes.md#v0-route-request-package) and
-[dated preparation](docs/records/evaluation/routes.md#v0-route-request-preparation-2026-10-05).
-
-
-Accepted Ticket 05 decision: same-scope overlapping protected intervals become one
-occupancy blocker while preserving and checking each original obligation separately.
-Different scopes must not be flattened. Protections are conflict boundaries, not
-additional non-overlap score units. Explicit dated fixed-visit checks support exact
-start, whole-window containment and minimum/exact duration. Unstated named-visit
-counts permit exactly one visit for the trip, including fixed-time-only obligations.
-Only explicit repeated-visit permission enables at-least-one time matching; explicit
-count/date quotas still apply. Ticket 05 implements these rules after accepted intake;
-see its [offline acceptance](docs/records/evaluation/requirements.md#rtpeval-ticket-05-acceptance). Unknown
-applicability, identity, date/time or journey correspondence remains visible rather
-than shrinking a denominator. Old identity reports require offline replay for the
-extended fixed-time subject policy.
-
-RTPEval migrated to [GitHub parent Issue #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12)
-on 2026-10-01 under explicit publication/tracker authorization. All 12 Tickets are
-published as #13-#24; 01-04 were closed/completed using their existing offline evidence.
-GitHub owns formal specs, live task state, dependencies and discussion. Detailed
-contracts remain in core docs and acceptance records in docs/records/; local source tickets are
-historical planning aids. Completed legacy features are mapped in the
-[2026-10-03 consolidation](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/36#issuecomment-5956795623). See the original [migration acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12#issuecomment-5956797691).
-
-Current task state: [GitHub parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12).
-Technical references: [historical work breakdown](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12#issuecomment-5956237972),
-[evaluator design](docs/0006-independent-evaluation.md),
-[package guide](backend/evaluation/README.md), and
-[Ticket 05](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17).
+Evidence: [generation and host resumption](docs/records/v0-v3/development-pilots.md#sydney-generation-host-resumption-2026-10-08),
+[fresh evaluator acceptance](docs/records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09),
+[requirement correction](docs/records/evaluation/intake-identity-usage.md#requirement-physical-association-correction-2026-10-09),
+and [opening fallback acceptance](docs/records/evaluation/opening.md#regular-opening-fallback-acceptance-2026-10-09).
+Commands and input preparation: [evaluation package guide](backend/evaluation/README.md).
 
 ## 5. Configuration, evidence and limitations
 
-`config/runtime.yaml` and the typed runtime configuration own active tunable limits;
-[config reference](config/README.md) explains them. Do not copy old budget values
-from dated run plans into a new execution. Entry-point request deadlines and stage
-budgets are distinct. [Development guide](docs/guides/development.md) owns commands.
+`config/runtime.yaml` and typed runtime configuration own active limits;
+[config reference](config/README.md) explains them. Entry-point deadlines and stage
+budgets are distinct. Dated execution allowances do not become runtime defaults.
+[Development guide](docs/guides/development.md) owns runnable commands.
 
-Latest full backend gate (2026-10-06, approved offline route-fixture clock correction,
-test implementation `f4499f2`): **2998 passed, 10 skipped, zero failures in 304.32s**.
-The related identity/route/smoke gate passes 172 tests. Production timing, identity,
-generation budgets and scoring are unchanged; original and prepared smoke files are
-preserved. See the [clock-baseline acceptance](docs/records/evaluation/intake-identity-usage.md#route-fixture-clock-baseline-2026-10-06).
+Latest full backend validation: **3124 passed, 10 skipped** on 2026-10-09
+for the opening fallback correction; the public scorer/CLI gate passes **96**.
+Standards and Spec reviews each found zero issues.
+The latest recorded frontend gate is **98 passed**, with TypeScript, build and lint
+passing; this backend task does not rerun or imply new frontend validation.
+Actual failure/correction/retest sequences belong in the linked acceptance records.
 
-Previous full backend run (2026-10-06, #85 smoke-only capacity correction):
-**2948 passed, 40 failed, 10 skipped in 305.95s**. The smoke-specific gate passes
-35 tests; all full-gate failures are unchanged route tests affected by their fixture
-clock/preparation-time mismatch. This limitation was diagnosed but not repaired within
-that smoke-only scope; the subsequently approved correction is recorded above.
-See the [capacity correction and baseline diagnosis](docs/records/evaluation/intake-identity-usage.md#v0-smoke-capacity-correction-2026-10-06).
+Remaining limitations:
 
-Previous #83/V3 full backend gate: **2983 passed, 10 skipped**; see the
-[deadline-phase acceptance](docs/records/v0-v3/v3-development.md#deadline-phase-regression-2026-10-06).
+- Missing opening/access facts, unsupported route-provider scopes and unresolved
+  identity/time/role evidence remain visible. A complete process can contain UNKNOWN.
+- V0 semantic correspondence is fallible. V1-V3 literal name/address grounding can
+  reject abbreviations even when physical association is verified.
+- Undated business status does not establish future closure dates. Exterior/public-area
+  access and an official-evidence fallback are not implemented by the opening correction.
+- The retained KR V0 route package has unresolved provider/departure support. Proposed
+  alternate providers need an approved adapter/evidence scope; Sydney acceptance does
+  not resolve those historical legs. See [route support](docs/records/evaluation/routes.md#kr-route-support-budget-2026-10-07).
+- Provider invoices and some billed quantities are unavailable; explicit retail/proxy
+  estimates are not actual bills. RAG coverage and retrieval performance remain bounded
+  by corpus/runtime evidence, not a general availability guarantee.
+- Blinded, controlled-Repair and official-audit interfaces exist, but the latest Sydney
+  automatic run did not execute those separate tracks or a formal benchmark.
 
-Previous full backend gate (2026-10-06, #78 offline route readiness, implementation `571ed95`):
-**2945 passed, 10 skipped in 414.43s**. The related current/historical identity, route
-request and coordinate gate passed 178. Global Ruff and five changed Python format
-checks pass. Independent implementation Standards and Spec reviews each found zero
-findings. Real library/module replay retains four UNKNOWN/blocked legs, zero requests
-and budget, and 81 unchanged protected file hashes. See the
-[#78 acceptance record](docs/records/evaluation/routes.md#versioned-v0-route-readiness-2026-10-06).
-
-Previous full backend gate (2026-10-06, #77 offline preparation, implementation `5f0e1b4`):
-**2926 passed, 10 skipped in 283.85s**. The related identity/executor gate passed 138;
-global Ruff and changed-file format checks pass. The concrete fresh preparation has
-zero sends/charges; provider invoices and new accepted V0 model evidence remain unavailable.
-Independent Standards review found no findings; Spec found a private handoff field-pointer
-typo, corrected without changing the frozen request or implementation. See the
-[#77 acceptance record](docs/records/evaluation/intake-identity-usage.md#fresh-v0-smoke-preparation-2026-10-06).
-
-Previous full backend gate (2026-10-06, #73 smoke preparation): **2842 passed, 10 skipped
-in 397.57s**. The final isolated executor gate passed 17 tests; executor plus identity
-policy passed 52. Ruff passes. Standards and Spec each have zero findings. Implementation
-and tests are published as `abc2663` in
-[PR #80](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/80). That offline acceptance itself did not
-authorize paid execution; the later explicit-send approval and rejected one-call integration
-are recorded above. The user subsequently authorized full Git delivery of the existing
-ten-commit checkpoint. Both combined-delivery review axes report zero findings;
-no code/test file changed after `abc2663`, so that full gate is reused rather than
-claimed as a new run. PR status owns merge state. See the
-[delivery record](docs/records/evaluation/intake-identity-usage.md#evaluator-checkpoint-delivery-2026-10-06).
-
-Previous full backend gate (2026-10-06, #72 address/no-repair clarification): **2825 passed,
-10 skipped in 339.67s**. The initial address gate passed 2824 with 10 skips; a further
-legacy-verdict regression was corrected before the final serial run. Identity and quality
-files passed 88 tests. Ruff passes. Standards and Spec have zero actionable findings;
-201 tracked documentation links and preserved historical anchors pass. The
-[dated address record](docs/records/evaluation/intake-identity-usage.md#address-failure-no-repair-2026-10-05)
-preserves the actual red/green and fixture-correction sequence. All 61 protected source
-hashes remain unchanged; new model/Places/Routes sends and incremental charges are zero.
-Implementation/test commit is `1c43007`, published in PR #80. #72's original uniform-policy
-implementation is complete; the accepted version-specific replacement belongs to #75.
-At that #72 checkpoint, the prepared
-nine-reference packet had no fresh response. The later #73 response failed import as
-recorded above, so current-policy verdicts remain UNKNOWN; historical reports are preserved.
-#70's request preparation remains historical in its
-[dated record](docs/records/evaluation/routes.md#v0-route-request-preparation-2026-10-05).
-
-The earlier short-reference full backend gate was **2705 passed, 10 skipped in 421.67s**, from the
-2026-10-05 [short-reference delivery validation](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05),
-tracked under [#66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66).
-Earlier review corrections passed **89** executor/Repair and **42** native-policy
-tests; Standards and Spec rechecks have no remaining findings.
-Primary generation, Repair, review profiling, official reasoning and Product decoration
-now restore supplied identities from short model references. The subsequent authorized
-six-case live adapter smoke passed in **18.016 seconds**, with six model sends and no
-retries, tools or Google calls. Reported usage was **12,832 input / 1,604 output**;
-the Standard retail estimate is **USD 0.0020852**, excluding unpriced cache-write or
-regional adjustments; actual billing is unavailable. The V0 evaluator test produced
-nine bounded proposals, with zero native adoptions. This is selected-boundary evidence,
-not full planner orchestration or an identity-accuracy result. Four V0 routes remain UNKNOWN.
-The preceding Issue #59 gate was **2655 passed, 10 skipped in 323.62s**, before review
-corrections; subsequent focused gates were **80**, **288, 1 skipped**, and **95**.
-The [offline cost acceptance](docs/records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05)
-retains failures, corrections, retests and dual-axis review evidence.
-Earlier Issue #57, Issue #53 and Ticket 11/12 results remain historical in their records.
-The skips are environment/opt-in cases. No live services or formal corpus were used
-in the offline test gates;
-earlier approved supplements remain distinct evidence.
-The separately approved [V0 structured transport smoke](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-live-2026-10-05)
-completed on 2026-10-05: one V0 run, two Foundry invocations, 30.516 seconds,
-four structured transport declarations and 4/4 native bindings with no unbound claims
-or projection diagnostics. Each day has two declared primary POIs. Original Seoul
-evidence remains unchanged. This verifies the new representation in one live sample;
-no independent route feasibility, four-version score comparison or freeze is claimed.
-The subsequent [bounded V0 route diagnostic](docs/records/evaluation/routes.md#new-v0-route-execution-2026-10-05)
-under [#61](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/61) sent nine
-successful Places searches in 3.328 seconds, with no Details, Routes, LLM calls or retries.
-All four route verdicts remain UNKNOWN: identity handling stopped on high-impact human
-review and restrictive address-component parsing. The observed retail estimate is
-USD 0.315; actual billing is unavailable. Offline replay was identical and original
-V0/older Seoul evidence remained unchanged. Route feasibility is still unverified.
-The subsequent [V0-only identity pilot](docs/records/evaluation/routes.md#v0-identity-assistance-pilot-2026-10-05)
-under [#63](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/63) made one
-`gpt-6-luna` request and produced nine bounded matching proposals, including two name
-variants, consistent with owner-agent checking of the existing candidate fields.
-Reported usage was 4,213 input / 1,007 output tokens; retail estimate USD 0.0009248,
-actual billing unavailable. Native adoption remains zero and four routes remain UNKNOWN.
-No production integration, genuine human accuracy estimate or V1-V3 change is claimed.
-The later reference audit prepared a separate short-ID packet for those same nine
-references and twelve candidates. Programmatic re-encoding/restoration was identical;
-all 61 old authorized file hashes remained unchanged. This did not rerun the model,
-establish a new accuracy result or change the four UNKNOWN route verdicts.
-Latest recorded full frontend gate: **98 passed**, with TypeScript, blind build and
-lint passing for Ticket 09. These are dated development checkpoints, not formal
-benchmark results. Failure/correction/retest sequences stay
-in the [RTPEval records](docs/README.md#detailed-technical-contracts).
-
-The authorized Berlin three-day smoke ran V0-V3 once each. V0 produced six estimated
-transport activities. V1/V2/V3 produced no model transport activities and application
-bindings for all 8/6/5 cross-place adjacencies. V3 had no authorized Repair targets,
-so this batch did not exercise live Repair. The allowance is exhausted.
-
-Remaining limits include partial RAG/evidence coverage, UNKNOWN opening/access/cost
-facts, incomplete billed usage, retrieval performance variation and unresolved
-semantic/identity cases. Structural transfer binding does not prove real-world
-route feasibility. Earlier live Repair observations do not validate every later path.
-
-Evidence owners: [latest smoke and closeout](docs/records/v0-v3/transport-responsibility-smoke.md),
-[V3 development history](docs/records/v0-v3/v3-development.md),
-[shared development history](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/development_record.md), and
-[known issues](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/known_issues.md). Local logs/artifacts and ignored thesis archives
-are evidence records, not current project authority or guaranteed fresh-clone assets.
-
-Separately authorized 2026-10-04 Seoul four-day pilot completed the real V0-V3 →
-saved originals/usage/mechanism → independent Google evidence → Evaluator → reports
-chain with agent reviews. All four live invocations completed; 82 independent sends
-returned HTTP 200 without retries. The final replay audit passed 29 requirements.
-V1-V3 auxiliary totals were 100 in their implemented metric populations; V0's total
-remained unavailable due to unresolved transport association and one identity.
-V3 adopted one added visit (7 → 8); independent paired quality stayed 100 → 100.
-This is one engineering smoke, not a version ranking or human participant study.
-No frozen controlled case was replayed and the official-claim audit population was
-empty. Production/runtime behavior was unchanged. The
-[dated pilot record](docs/records/evaluation/2026-10-04-seoul-live-pilot.md) owns the
-actual inputs, agent-review boundaries, failure/correction/retest sequence and
-known association limitations; raw artifacts stay ignored and local.
-
-The user-authorized 2026-10-04 evaluator density change now adds source-linked
-ordinary/relaxed/rich daily deductions to final and V3 paired reports. The original
-five-dimensional `auxiliary_total` remains diagnostic; `overall_total` subtracts the
-mean requested-date deduction, clamped at zero. Matching explicit daily counts override
-defaults. Nonempty user preferences require independent density review; unresolved
-policy/counts keep the adjusted total unavailable. Report schemas are version 2;
-planner V0-V3 behavior is unchanged. The final table in
-[Issue #52](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/52) uses
-`rtpeval_daily_density_2`: ordinary three-visit days deduct 10; relaxed
-three/four/five-visit days deduct 40/70/90; rich pace has the smallest four/five-visit
-deductions. An offline replay of the preserved Seoul evidence
-produced V1 85, V2 90, V3 100 and V3 draft/final 95 → 100; V0 remains unavailable.
-This is development acceptance of the revised rules, not a new live run or formal
-version comparison. The [density contract](docs/contracts/0005-quality-human-review.md#daily-density)
-and [acceptance record](docs/records/evaluation/2026-10-04-daily-density.md) own the rules,
-validation and limitations.
-
-The 2026-10-04 evaluator correction under
-[Issue #53](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/53) removes title
-vetoes of structured role/identity claims, excludes declared free time from POI counts,
-and prevents unrelated notes from changing V0 mode/transport association. Genuine
-unknown roles, date attribution, endpoint conflicts and identity review/audit remain.
-That correction introduced projection policy `structural_claims_directed_occurrences_4`
-and identity association `structural_claims_typed_addresses_3`. The density table and
-V0-V3 planners were unchanged by that correction.
-See the [intake contract](docs/contracts/0002-intake-identity-usage.md#claims) and
-[correction acceptance](docs/records/evaluation/intake-identity-usage.md#free-text-scoring-corrections-2026-10-04).
-
-The separately authorized density delivery through `300ee039` was merged in
-[PR #54](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54), with both review
-axes clear and Issue #52 verified closed. The separately authorized Issue #53 release
-was merged on 2026-10-05 in [PR #55](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/55)
-through `96e4f6d`, including the earlier `main_poi` correction. Both review axes had
-zero remaining findings; Issue #53's nine acceptance criteria were verified checked
-and its state CLOSED. No new code testing was needed for the final documentation-only
-review correction; its 2576-pass/10-skip gate remained valid at that publication checkpoint.
-
-The subsequent authorized 2026-10-05 Seoul offline replay used these delivered policies
-and preserved original observations and agent decisions. Updated identity, route plans,
-snapshot bindings and V3 edit provenance passed the native evaluator entry points twice
-with identical output bytes. Network/DNS calls were blocked, with zero attempts; all
-313 source files and 5 density-baseline files retained their hashes. Scores remained
-V0 unavailable, V1 85, V2 90, V3 100 and V3 draft/final 95 to 100. Visit counts,
-deductions, substantive primary metrics, schedule measures and occupancy were unchanged.
-V0 still has four unresolved candidate commitments/modes and one unresolved identity;
-its non-overlap denominator makes the total unavailable. Changed policy/hash/observation
-references describe replay linkage, not new observations or new adjudications. This
-single-case regression does not establish live failure frequency or a formal ranking.
-See the [publication and replay acceptance](docs/records/evaluation/intake-identity-usage.md#prose-publication-and-seoul-replay-2026-10-05).
-
-The 2026-10-05 implementation under
-[Issue #57](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/57) adds V0
-`Activity.transport` declarations: mode and directed activity IDs. V0's provider
-schema/mapping/prompt emits them; the evaluator reads them before prose, with
-independent per-field review precedence. Projection policy is now
-`structural_claims_directed_occurrences_5`. Missing/null objects retain legacy input
-compatibility, while invalid IDs and null/unsupported modes remain unresolved.
-V1-V3 provider schemas and transfer authority, identity rules and density penalties
-remain unchanged. Validation is offline; preserved Seoul results are not retrofitted,
-and this task supplies no new live result or score comparison. See the
-[structured transport acceptance](docs/records/evaluation/intake-identity-usage.md#v0-structured-transport-2026-10-05).
+Detailed engineering history is indexed in [records](docs/records/README.md), including
+[evaluator records](docs/records/evaluation/intake-identity-usage.md),
+[V3 development](docs/records/v0-v3/v3-development.md) and
+[shared transport validation](docs/records/v0-v3/transport-responsibility-smoke.md).
+Ignored logs, artifacts and thesis notes are local evidence, not project authorities
+or guaranteed fresh-clone assets.
 
 ## 6. Next work and authorization boundary
 
-On 2026-10-05 the user approved creating and preparing two follow-ups:
-[short-reference live regression #66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66)
-and [V0-only proposal adoption/route handoff #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67).
-The user subsequently authorized #66 implementation and its live budget. Its executor,
-offline SDK preflight, dual-axis review and six-case live smoke are complete. The user
-also authorized publication and #66 closeout through
-[PR #68](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/68); GitHub owns final
-merge and Issue lifecycle state. No short-reference
-restoration failure occurred in these six samples. See the dated
-[execution acceptance](docs/records/v0-v3/semantic-reference-correction.md#short-reference-live-regression-execution-2026-10-05).
-The user subsequently approved finalizing #67 and publishing its two implementation
-slices: [offline V0 identity adoption #69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69),
-then [independent route request preparation #70](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/70),
-which originally depended on #69. The specification retains default-off V0 model-assisted
-association, source/replay validation and genuine high-impact/audit review. It distinguishes
-raw address wire validity from native semantic-comparison diagnostics.
-The user separately authorized #69 implementation and then its full delivery through
-[PR #71](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/71): independent Standards
-and Spec reviews found no remaining findings, the PR merged on 2026-10-05 through
-`56cae0c`, and #69 is verified CLOSED with all ten criteria checked. The unrelated later
-agent-policy commit was excluded; no branch switch or history rewriting occurred.
-Six references are adopted and three remain under genuine review.
-The user then authorized #70 offline route request/budget preparation through the evaluator
-handoff. Its public preparation, supplied-Details validation, preflight/budget and CLI are
-locally implemented and offline validated; it remains OPEN pending separately authorized
-Git publication. The resulting inventory has zero executable provider-supported Routes
-and a zero proposed acquisition budget. New evidence collection requires a revised
-supported inventory and separate budget approval, followed by a current-session execution
-child configured `gpt-6.1-sol` / `medium`. Four V0 route verdicts remain UNKNOWN.
-Neither this preparation nor the earlier allowances authorize live calls, formal comparisons,
-version freezes or V0 itinerary repair. See the dated
-[request acceptance](docs/records/evaluation/routes.md#v0-route-request-preparation-2026-10-05)
-and [specification finalization](docs/records/evaluation/routes.md#v0-adoption-specification-finalization-2026-10-05).
+The approved offline scope of [opening fallback #89](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/89)
+is complete: scorer/CLI correction, regression tests, saved-evidence recalculation,
+review and local documentation/commits. No new provider calls are authorized.
+Earlier one-use generation/evaluator allowances are consumed.
 
-Tickets 01-12 have completed their approved implementation, offline validation,
-review and engineering delivery scopes. On 2026-10-04, the user separately authorized
-a normal push of feature/evaluation and verified acceptance updates/closure of
-Tickets 10-12, followed by parent #12. The 56 prepared commits were published through
-`bab0d5315f9a6dcaecb8327c1017bfe94269f2c1`; exact remote head and seven linked
-contract/acceptance/navigation blobs were verified. Tickets 01-12 (#13-#24) and
-parent #12 were then verified closed/completed. Documentation migration #36 remains
-separately completed. See the [published parent acceptance](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12#issuecomment-5973135724)
-and [delivery record](docs/records/evaluation/2026-10-04-mechanism-official-audit.md#engineering-publication-and-tracker-closeout--2026-10-04).
-GitHub owns live lifecycle state; these observations describe this delivery checkpoint.
-
-The user separately approved offline CLI usage acceptance under
-[#49](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/49). The five synthetic
-workflows and two material-error examples passed through actual module processes;
-the new regression gate passed 9 tests and the full backend gate passed 2490 with 10
-skipped. This task adds tests and usage documentation, with no production behavior change
-or live/formal execution. See the [usage guide](backend/evaluation/README.md#start-with-the-synthetic-usage-packet)
-and [dated record](docs/records/evaluation/2026-10-04-evaluation-usage.md). At that
-acceptance checkpoint, its new commits and documentation were local pending publication.
-
-The 2026-10-03 documentation migration consolidates durable scratch specifications
-into core docs and dated records, preserves local spec/child-ticket working files,
-and maps completed legacy work to GitHub Issues. `.scratch/` is local and ignored;
-published documents depend only on tracked repository assets or accessible remote
-URLs. GitHub owns task state; local ticket copies are planning aids, not a second
-live tracker. See [tracker conventions](docs/agents/issue-tracker.md) and the
-[core design/proposal index](docs/README.md).
-
-That earlier delivery published the existing engineering work and synchronized acceptance;
-it created no PR or merge and did not switch branches. No additional test/live run,
-budget increase, formal corpus/comparison/analysis or version freeze occurred. The
-final documentation closeout records these observed outcomes in a separate commit.
-
-No further development or research task is authorized by completion. Read PROJECT.md,
-the relevant current contract and live Issues before proposing a separately scoped
-next task. Future push, PR creation, merge, branch switching and Issue mutations retain
-the repository's explicit authorization rules.
-
-Per-ticket approvals and task discussion remain in the relevant GitHub Issues.
+After acceptance, the remaining opening facts require a separately scoped evidence
+plan if further resolution is wanted. Public-area intent, business-status policy,
+address equivalence and formal research are distinct follow-ups. Completion grants
+no new execution, freeze, push, PR, merge or branch-switch authority.
+GitHub Issues own specifications and live task state; earlier approvals and deliveries
+remain in their dated records rather than a chronological status diary here.
 
 ## 7. Keeping this file current
 
-This file owns current scope, version boundaries, status, limitations and next work.
-Update the relevant section in place when the state changes. Keep only the latest
-clearly dated validation summary here; place full failure/correction/retest sequences,
-per-run budgets, identifiers and commit diaries in their linked development or
-acceptance records. Use [docs/README.md](docs/README.md) to locate those records.
-
-Historical statements labelled Current/Next remain historical when preserved in a
-record. They must not override this current summary or authorize another execution.
+Maintain current capability, version boundaries, latest validation, unresolved limits
+and authorized next work in place. Keep one current validation checkpoint, with explicit
+scope and date. Put request counts, cost inventories, commit diaries, approval sequences
+and failure/correction/retest details in their existing dated record owners, then link
+them from the relevant current topic. Do not append each completed task to this file.
+Historical records and previous PROJECT revisions do not override current scope or
+renew execution authority. Use [docs/README.md](docs/README.md) for detailed navigation.

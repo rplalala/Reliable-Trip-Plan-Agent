@@ -52,6 +52,13 @@ FAIL/UNKNOWN outcomes and conservative semantic limits remain visible in the
 This establishes an engineering execution path, not a formal version comparison or
 all-facts-verified result.
 
+Opening rules evaluate the planned visit interval. Applicable current open/closed facts
+take precedence; valid regular hours determine unresolved time, including current-field
+defects and special-date markers without a usable schedule. Regular hours produce ordinary
+PASS/FAIL with explicit basis and fallback provenance. Query-time `openNow=false` does not
+establish closure at a later visit; missing both usable schedules remains UNKNOWN.
+The [opening contract](contracts/0004-opening-routes.md#opening) owns these current rules.
+
 Development smoke helpers are separate from ordinary evaluator consumers. The
 [V0 route request preparer](../backend/evaluation/tools/route_requests.py) and its CLI
 live under `backend/evaluation/tools/`; they prepare acquisition inventories and budgets

@@ -319,7 +319,11 @@ next task and needs separate approval.
 
 ## Opening access boundary proposal — 2026-10-09
 
-Status: advisory, not implemented or an authorization for evidence acquisition. Prepared
+Status at the #88 checkpoint: advisory, not implemented or an authorization for evidence
+acquisition. The subsequent [#89 acceptance](#regular-opening-fallback-acceptance-2026-10-09)
+supersedes the proposed provisional verdict with ordinary regular-basis PASS/FAIL and
+implements regular fallback. Access-intent and business-status refinements remain proposals.
+Prepared
 alongside [#88](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/88), at local
 implementation revision `2f9dd6f` with related documentation pending and an excluded
 pre-existing `.gitignore` edit. The implemented requirement correction is recorded in
@@ -359,3 +363,96 @@ outside-interval seconds. Distinguish `hours_missing`, `access_scope_unresolved`
 `exception_hours_missing`, `closure_dates_unresolved` and `evidence_conflict` in reports.
 Keep outcome, evidence basis and verified coverage separate. Exact schema, aggregation
 and acquisition changes require a separately approved implementation scope.
+
+<a id="regular-opening-fallback-acceptance-2026-10-09"></a>
+
+## Regular opening fallback acceptance — 2026-10-09
+
+Status: implemented and offline validated under
+[#89](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/89). Review fixed base:
+`fb517bbd6e122432e852f593fd0ccf26ec25adca`; implementation/test commit: `4043dba`.
+Related final documentation is a separate coherent group. The pre-existing `.gitignore`
+edit was excluded and retains its original bytes.
+
+### Approved boundary and implementation
+
+The user clarified that valid regular hours should determine PASS/FAIL unless evidence
+applicable to the planned visit establishes an exception. An overnight query returning
+`openNow=false` describes that instant, not later visit feasibility. This supersedes the
+earlier provisional-PASS proposal. Google separately defines query-time `openNow`,
+seven-day current schedules and temporary business closure in its
+[official resource reference](https://developers.google.com/maps/documentation/places/web-service/reference/rest/v1/places).
+
+`rtpeval_opening_rules_2` retains usable applicable current open/closed intervals and fills
+only unresolved time with regular hours. Missing/null/malformed current fields, uncertain
+collection dates and truncated boundaries can fall back; current established closure
+still yields FAIL. Special markers and parsing defects remain diagnostic rather than
+vetoing regular evidence. The actual adopted fields and fallback scope/open/closed spans
+are visible in `basis_segments`. Source/timezone validation, local date/window bounds,
+whole-interval zero grace, invalid-clock UNKNOWN and independent identity replay remain.
+Undated business status, exterior access and new evidence collection are outside this fix.
+
+### Failure, correction and checks
+
+At the approved `score_opening` seam, three current-field defect cases first reproduced
+UNKNOWN instead of the expected regular-basis PASS. Minimal fallback made all three pass.
+The next marker-only regression reproduced UNKNOWN, then passed after removing that veto
+and retaining a marker diagnostic. A mixed-interval provenance regression first failed
+because the new fields were absent. After implementation, its expected span fixture needed
+the existing `seconds` field; correcting that expectation completed the test.
+
+The initial wider opening gate passed 83 tests and failed two former-policy expectations:
+the final truncated minute and undated current evidence across collection midnight were
+now decided from regular hours. Their assertions were updated to the approved policy,
+retaining current diagnostics and actual mixed/regular basis. Added guards cover null and
+invalid current payloads, malformed markers, regular FAIL, partial-current provenance,
+preserved current closure and partial evidence without usable regular fallback.
+
+The final scorer/actual CLI gate passed **96** tests. The actual CLI verifies the Sydney
+02:00 query against a 10:00-11:00 visit: regular 09:00-17:00 gives PASS despite
+`openNow=false`; explicit applicable current empty periods gives FAIL; absent schedules
+stays UNKNOWN. Repeated CLI output is identical and socket access/source mutation is
+blocked. The full backend gate passed **3124 tests, 10 skipped** in 287.56 seconds.
+Ruff, changed-file formatting and diff checks passed. Independent Standards and Spec
+reviews of the committed implementation each reported zero findings.
+
+### Original-source recalculation and historical replay
+
+The public opening CLI ran twice with identical output; the quality CLI also completed,
+all exit 0. DNS/socket connection attempts were blocked and remained zero. Preparation
+verification before/after and receipt hashes preserved all four original outputs, the
+original report and all 205 receipt files. The separate opening report identifies rules
+version 2; it does not replace the original acquisition or its receipt.
+
+All fourteen real opening UNKNOWNs still lack both requested hours fields. Original
+opening state/basis/time magnitudes are unchanged. All quality dimensions, density and
+overall scores match the accepted #88 recalculation: V0 89.2857, V1 68.0000, V2 75.0000,
+V3 81.1111. No missing facts were inferred and no additional provider/model cost occurred.
+An isolated process loaded the trusted original opening parser/scorer and requirement
+scorer from `ee0f4947edb32fe2f7a07f5b4fd7c1ee98fd6531`; formal CLI replay reproduced the
+original report exactly with zero network attempts and no checkout mutation.
+
+Local evidence identifiers, not published dependencies:
+`artifacts/sydney-opening-policy-recalculation-20261009-r1/{opening.json,quality.json,recalculation-check.json,original-rules-replay-check.json}`.
+The source package remains `artifacts/sydney-fresh-evaluation-preparation-20261009-r1/run`.
+
+| Material | SHA-256 |
+| --- | --- |
+| Original report, unchanged | `09272f235cadc20aeb94f4c6a4f5945f35a77faaf89637611beb422695e0b459` |
+| Original receipt, unchanged | `ca5852385f6fcdeb1279afbb25ddfdc8da8d11a64514836b88bf824406bae0e1` |
+| Rules-2 opening report | `7fbd06aa0bd789484162bde710a4caab555fbf2bc173f69a50f3c25d27f53471` |
+| Current quality recalculation | `b8e9b3328680e137c2b078acb5850e53e6ead621285d5bf7ccfd23f4ff0695d3` |
+
+### Current project-state maintenance
+
+PROJECT.md had grown to 858 lines, with repeated run approvals, intermediate failures,
+request/cost inventories, commit histories and superseded claims labelled latest/current.
+It now keeps current version mechanisms, capability/contract navigation, one latest
+validation checkpoint, the current Sydney integration result, limitations and authorization
+boundary. Execution details remain in their existing dated record owners; the full former
+state is retained in Git at the fixed base. Removed historical statements do not renew
+old allowances or obscure current acceptance. No new chronological task paragraph is
+appended to the concise current-state file.
+
+This correction includes no new access-intent schema, official evidence collector, planner
+change, formal comparison, provider send, push, PR, merge, branch switch or version freeze.

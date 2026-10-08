@@ -1,6 +1,6 @@
 # Independent opening and route compliance
 
-Current implemented Tickets 06-07 contract, reconciled 2026-10-03. These are offline
+Current implemented Tickets 06-07 contract, reconciled 2026-10-09. These are offline
 preparation/parsing/scoring rules, not a live collection client or formal experiment.
 Shared [artifact/time](0001-evaluation-artifacts.md), [identity/snapshot](0002-intake-identity-usage.md)
 and [occupancy](0003-requirement-schedule.md#occupancy) contracts retain their ownership.
@@ -54,7 +54,7 @@ and final_primary projections independently, with the same paired snapshot scope
 No Repair delta or route verdict is calculated. Library entry:
 `score_opening(intake, identity_report, snapshot_directory, schedule_context=None,
 *, paired=False, expected_plan=None)` returns immutable `OpeningResult`.
-Schema: `rtpeval_opening_report_1`; rules: `rtpeval_opening_rules_1`.
+Schema: `rtpeval_opening_report_1`; rules: `rtpeval_opening_rules_2`.
 
 Exit 0 means complete processing, including visit FAIL/UNKNOWN; exit 2 means material
 correction or identity replay. JSON is printed to stdout. Preparation file hashes,
@@ -95,14 +95,33 @@ missing-close periods do not imply continuous access. Split periods retain lunch
 overnight and previous-day contributions and weekly rollover are supported.
 
 Current applicability uses the selected attempt's place-local request date plus six
-calendar dates. Post-trip current hours cannot become historical evidence. Applicable
-current defects block regular substitution; eligible outside dates use weaker regular
-fallback. Known special dates lacking usable applicable current evidence remain UNKNOWN
-with the exceptional-hours explanation. Collection crossing local midnight retains
-uncertainty, while consistent literal dated spans may still prove opening. A truncated
-23:59 close does not invent closure or opening in the final minute. Each date segment
-records `selected_basis` and factual `basis`; unusable evidence has basis unavailable.
-A visit's factual basis is current, regular, mixed or unavailable.
+calendar dates. Post-trip current hours cannot become historical evidence. Usable
+applicable current facts take precedence over regular hours for their established open
+and closed intervals. Missing, null, malformed or incomplete current hours permit regular
+fallback only over the remaining unresolved time; known current closure is never erased.
+Dates outside the current window use regular hours directly. A valid regular schedule
+establishes ordinary PASS or FAIL; no separate provisional verdict is introduced.
+
+A special-date marker without an applicable schedule is diagnostic, not proof of closure
+and not a veto of regular hours. Marker presence and parsing defects remain visible as
+`special_date_marker` and `special_dates_invalid`. Collection crossing local midnight
+retains current-evidence uncertainty; consistent literal dated spans may still prove
+opening, and regular hours can resolve the remaining uncertainty. A truncated 23:59 close
+does not itself establish the final minute; applicable regular fallback can cover it.
+`openNow` describes the query instant and cannot establish closure at the planned visit.
+Undated `businessStatus` is not converted to a future dated closure by this scorer.
+
+Each date segment records preferred `selected_basis`, factual `basis` and the actual
+`hours_fields` contributing open/closed spans. `hours_field` is that single field, or null
+for mixed/unavailable evidence. `regular_fallback` is null when unneeded, otherwise it
+records unresolved scope, applied regular open/closed intervals and regular diagnostics;
+`regular_fallback_used` marks an actual contribution. Current parsing reasons remain
+visible even if regular evidence determines PASS or FAIL. Missing both usable schedules
+retains UNKNOWN. A visit's factual basis is current, regular, mixed or unavailable.
+
+Rules version 2 replaces the former current-defect/special-marker veto. Exact reproduction
+of rules-1 reports uses their original code revision; save new policy recalculations
+separately from original source artifacts and frozen execution receipts.
 
 Half-open containment has zero grace: ending at close can PASS; any positive known
 closure overlap yields FAIL even with other unknown time. Partial valid spans may prove
