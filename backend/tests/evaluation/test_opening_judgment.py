@@ -184,6 +184,59 @@ def test_public_landmark_packet_retains_only_supplied_provider_types(
     assert all(case["venue"]["types"] == types for case in packet["cases"])
 
 
+def test_conditional_interior_note_is_preserved_with_default_landmark_judgment(
+    opening_scenario, tmp_path, capsys, monkeypatch
+):
+    from backend.evaluation.opening_judgment_cli import main
+
+    note = "Operating details are unknown; verify if planning interior access."
+
+    def conditional_landmarks(results):
+        landmarks(results)
+        for result in results.values():
+            for activity in result["itinerary"]["days"][0]["activities"]:
+                activity["notes"] = note
+
+    _, _, directory, packet_path, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        payload={"timeZone": {"id": "Etc/UTC"}},
+        change=conditional_landmarks,
+    )
+    sent_cases = json.loads(packet["request"]["input"])["cases"]
+    assert all(case["activity"]["notes"] == note for case in sent_cases)
+    raw = material(packet, intent_basis="public_landmark_default", venue_category="public_landmark")
+    material_path = tmp_path / "conditional-material.json"
+    material_path.write_text(json.dumps(raw), encoding="utf-8")
+    output = tmp_path / "conditional-opening.json"
+    monkeypatch.setattr(
+        socket, "socket", lambda *a, **k: pytest.fail("Offline import used network")
+    )
+    assert (
+        main(
+            [
+                "import",
+                str(packet_path.parent / "manifest.json"),
+                str(tmp_path / "identity.json"),
+                str(directory),
+                "--material",
+                str(material_path),
+                "--output",
+                str(output),
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+    report = json.loads(output.read_bytes())
+    for row in report["results"]:
+        check = row["opening"]["checks"][0]
+        assert check["state"] == "PASS"
+        assert check["access_judgment"]["activity_quote"] == note
+        assert check["access_judgment"]["intent_basis"] == "public_landmark_default"
+
+
 def test_explicit_museum_exterior_does_not_approve_admission(opening_scenario, tmp_path, capsys):
     def outside_only(results):
         for result in results.values():
