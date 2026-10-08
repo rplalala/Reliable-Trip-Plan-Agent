@@ -65,21 +65,86 @@ def test_google_component_aliases_pass_without_changing_original_claim(batch, ve
     assert intake.to_dict() == original
 
 
-def test_conflicting_google_aliases_do_not_excuse_a_different_street(batch):
+@pytest.mark.parametrize("crossed", [False, True])
+def test_conflicting_google_aliases_do_not_excuse_a_different_street(batch, crossed):
     intake = identified_batch(batch)
     ref = next(r for r in identity_references(intake) if r["version"] == "v1")
     observation = details(ref, ref["name"], ref["claimed_place_id"])
     observation["details"]["place"].update(
-        formatted_address="10 Other Street, Example City, Country",
+        formatted_address="10 Other St, Example City, Country"
+        if crossed
+        else "10 Other Street, Example City, Country",
         address_components=[
             {"longText": "Main Street", "shortText": "Main St", "types": ["route"]},
-            {"longText": "Other Street", "shortText": "Main St", "types": ["route"]},
+            {"longText": "Main St", "shortText": "Other St", "types": ["route"]}
+            if crossed
+            else {"longText": "Other Street", "shortText": "Main St", "types": ["route"]},
         ],
     )
     report = resolve_identities(intake, evidence(intake, [observation])).to_dict()
     record = next(r for r in report["records"] if r["reference_id"] == ref["reference_id"])
     assert record["grounding_verdict"] == "FAIL"
     assert record["address_comparison"]["verdict"] == "FAIL"
+
+
+@pytest.mark.parametrize(
+    "other_address",
+    [None, "98 Main St, Example City, Country", "99 Main St, Example City, Country"],
+)
+def test_unbound_subject_keeps_failed_address_comparison(batch, other_address):
+    manifest, _, write, save, root = batch
+    spec = json.loads((root / "requirements.json").read_text())
+    spec["subjects"] = [
+        {
+            "subject_id": "museum",
+            "place_name": "Museum A",
+            "location": "99 Main St, Example City, Country",
+        }
+    ]
+    spec["obligations"] = [
+        {
+            "obligation_id": "visit",
+            "kind": "required_visit",
+            "resolution": "resolved",
+            "subject_ref": "museum",
+            "count": {"mode": "exact", "value": 1},
+            "source_refs": [{"field_path": "additional_preferences", "quote": "architecture"}],
+        }
+    ]
+    manifest["groups"][0]["requirement_spec_ref"] = save(
+        "requirements.json", spec, spec["schema_version"]
+    )
+    intake = identified_batch(batch)
+    ref = next(r for r in identity_references(intake) if r["kind"] == "requirement_subject")
+    observed = search(ref, "Museum A", place_id="venue-a")
+    observed["search"]["candidates"][0]["formatted_address"] = "10 Main St, Example City, Country"
+    if other_address:
+        other = copy.deepcopy(observed["search"]["candidates"][0])
+        other.update(place_id="venue-b", formatted_address=other_address)
+        observed["search"]["candidates"].append(other)
+        observed["search"]["actual_result_count"] = 2
+    out = resolve_versioned_identities(intake, evidence(intake, [observed])).to_dict()
+    row = next(
+        r for r in out["records"] if r["kind"] == "requirement_subject" and r["version"] == "v1"
+    )
+    expected = (
+        "FAIL"
+        if other_address is None
+        else "PASS"
+        if other_address.startswith("99 ")
+        else "UNKNOWN"
+    )
+    assert row["grounding_verdict"] == expected
+    assert row["canonical_place_id"] == ("venue-b" if expected == "PASS" else None)
+    comparisons = row["candidate_address_comparisons"]
+    assert comparisons[0]["place_id"] == "venue-a"
+    assert comparisons[0]["verdict"] == "FAIL"
+    assert comparisons[0]["basis"] == "unexplained_address_difference"
+    if other_address is None:
+        assert row["address_comparison"]["verdict"] == "FAIL"
+    else:
+        assert comparisons[1]["verdict"] == ("PASS" if expected == "PASS" else "FAIL")
+    assert identity_ready(intake.to_dict(), out)
 
 
 @pytest.mark.parametrize("fault", ["source", "retrieved", "requested_id", "returned_id"])

@@ -42,6 +42,7 @@ def compare_address_claim(value, candidate):
     destinations = {}
     for long, short, _ in pairs:
         destinations.setdefault(short, set()).add(long)
+        destinations.setdefault(long, set()).add(short)
     if any(len(values) > 1 for values in destinations.values()):
         return {**result, "basis": "conflicting_component_aliases"}
     pending = deque([(0, 0, [])])
