@@ -14,6 +14,7 @@ from backend.app.versions.v3.repair_acceptance import assess
 from backend.app.versions.v3.repair_models import ActivityPermission, RepairScope, ValidationContext
 from backend.app.versions.v3.repair_routes import bind_transitions
 from backend.app.versions.v3.repair_service import run_repair_stage
+from backend.app.versions.v3.soft_pace import pace_coverage_floor
 from backend.app.versions.v3.state import V3Outcome
 
 
@@ -233,15 +234,10 @@ def operation_scope(draft, report, *, mode=None, context=None, policy=None):
                     parent_id=f.finding_id,
                     date=day,
                     trigger_activity_ids=ids,
-                    minimum_count=min(
+                    minimum_count=pace_coverage_floor(
                         policy.daily_main_min,
                         rows[day].distinct_main_poi_count,
-                        min(
-                            (n for n in f.adopted_evidence.get("zero_counts", ()) if n >= 1),
-                            default=policy.daily_main_min,
-                        )
-                        if f.check == "soft_pace"
-                        else policy.daily_main_min,
+                        f.adopted_evidence.get("zero_counts", ()) if f.check == "soft_pace" else (),
                     ),
                     allow_partial=partial,
                     reason="confirmed_visit_removal"

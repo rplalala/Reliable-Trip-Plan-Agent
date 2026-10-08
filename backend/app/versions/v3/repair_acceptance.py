@@ -12,6 +12,7 @@ from backend.app.versions.v3.repair_obligations import (
     removed_obligation,
     route_chain_value,
 )
+from backend.app.versions.v3.soft_pace import pace_coverage_floor
 from backend.app.versions.v3.validation import validate_draft
 
 
@@ -491,12 +492,10 @@ def compare(
         floor = min(scope.daily_main_min, before.distinct_main_poi_count - allowed_loss)
         for f in initial_report.findings:
             if f.check == "soft_pace" and f.finding_id in scope.target_ids and day in f.dates:
-                floor = min(
+                floor = pace_coverage_floor(
                     floor,
-                    min(
-                        (n for n in f.adopted_evidence.get("zero_counts", ()) if n >= 1),
-                        default=floor,
-                    ),
+                    before.distinct_main_poi_count - allowed_loss,
+                    f.adopted_evidence.get("zero_counts", ()),
                 )
         if current.target_status == "not_assessable" or current.distinct_main_poi_count < floor:
             rejections.append("Coverage regression is not authorized")

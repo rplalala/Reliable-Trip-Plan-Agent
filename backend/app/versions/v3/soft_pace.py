@@ -4,6 +4,11 @@ from backend.app.policies.visit_multiplicity import is_primary_visit
 from backend.pace_policy import daily_penalty, zero_penalty_counts
 
 
+def pace_coverage_floor(minimum, current_count, zero_counts=()):
+    """Allow an assessed pace target to lower coverage without permitting an empty day."""
+    return min(minimum, current_count, min((n for n in zero_counts if n >= 1), default=minimum))
+
+
 def measure_pace(itinerary, contract, diagnostics, assessments=()):
     policies = {p.date: p for p in contract.daily_pace or ()}
     days = {d.date: d for d in itinerary.days}
