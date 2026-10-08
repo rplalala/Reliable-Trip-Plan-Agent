@@ -35,8 +35,9 @@ RULES = {
 
 ACCESS_RULES = {
     **RULES,
-    "version": "rtpeval_opening_rules_3",
-    "missing_hours_fallback": "llm_access_reasonableness_1",
+    "version": "rtpeval_opening_rules_4",
+    "missing_hours_fallback": "llm_access_reasonableness_2",
+    "public_landmark_intent": "ordinary_sightseeing_unless_restricted_activity",
     "model_pass_is_verified_hours": False,
 }
 

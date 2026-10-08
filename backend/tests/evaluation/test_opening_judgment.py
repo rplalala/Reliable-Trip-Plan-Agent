@@ -44,21 +44,24 @@ def material(packet, state="PASS", **changes):
     decisions = []
     for case in packet["cases"]:
         activity = case["activity"]
+        quote_field = changes.get("activity_field", "notes" if activity["notes"] else "title")
         decisions.append(
             {
                 "reference_id": case["reference_id"],
                 "state": state,
                 "access_mode": "public_outdoor" if state == "PASS" else "ambiguous",
+                "intent_basis": "original_activity" if state == "PASS" else "unresolved",
+                "venue_category": "public_area",
                 "visit_window": "reasonable" if state == "PASS" else "unknown",
                 "restrictions": "none_known" if state == "PASS" else "uncertain",
                 "rationale": "The original waterfront walk is reasonable in this daytime interval.",
-                "activity_field": "notes",
-                "activity_quote": activity["notes"],
+                "activity_field": quote_field,
+                "activity_quote": activity[quote_field],
                 **changes,
             }
         )
     return {
-        "schema_version": "rtpeval_opening_judgment_material_1",
+        "schema_version": "rtpeval_opening_judgment_material_2",
         "packet": packet,
         "request": {
             **packet["request"],
@@ -104,6 +107,172 @@ def invalid_clocks(results):
             activity.update(start_time="invalid", end_time="invalid")
 
 
+def landmarks(results):
+    for result in results.values():
+        activities = result["itinerary"]["days"][0]["activities"]
+        for index, name in ((0, "City Harbour Bridge"), (2, "Old Waterfront")):
+            activities[index].update(title=name, place_name=name, notes="Visit the landmark.")
+
+
+def test_inferred_public_landmark_access_passes_equally_for_all_versions(
+    opening_scenario, tmp_path, capsys
+):
+    intake, identity, directory, _, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        payload={"timeZone": {"id": "Etc/UTC"}, "types": ["tourist_attraction"]},
+        change=landmarks,
+    )
+    report = score_opening(
+        intake,
+        identity,
+        directory,
+        opening_judgment=material(
+            packet, intent_basis="public_landmark_default", venue_category="public_landmark"
+        ),
+    ).to_dict()
+    assert report["status"] == "complete", report["diagnostics"]
+    assert {row["version"] for row in report["results"]} == {"v0", "v1", "v2", "v3"}
+    for row in report["results"]:
+        check = row["opening"]["checks"][0]
+        assert check["state"] == "PASS"
+        assert check["access_judgment"]["intent_basis"] == "public_landmark_default"
+        assert check["evidence_status"] == "missing"
+        assert check["unknown_seconds"] == 3600
+
+
+@pytest.mark.parametrize("category", ["museum", "indoor_attraction", "other", "unknown"])
+def test_nonpublic_venue_cannot_receive_default_exterior_pass(
+    opening_scenario, tmp_path, capsys, category
+):
+    intake, identity, directory, _, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        payload={"timeZone": {"id": "Etc/UTC"}},
+    )
+    report = score_opening(
+        intake,
+        identity,
+        directory,
+        opening_judgment=material(
+            packet,
+            intent_basis="public_landmark_default",
+            venue_category=category,
+            access_mode="exterior",
+        ),
+    ).to_dict()
+    assert report["status"] == "needs_material_correction"
+    assert report["results"] == []
+
+
+@pytest.mark.parametrize("types", [None, ["tourist_attraction", "historical_landmark"]])
+def test_public_landmark_packet_retains_only_supplied_provider_types(
+    opening_scenario, tmp_path, capsys, types
+):
+    payload = {"timeZone": {"id": "Etc/UTC"}}
+    if types is not None:
+        payload["types"] = types
+    _, _, _, _, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        payload=payload,
+        change=landmarks,
+    )
+    assert all(case["venue"]["types"] == types for case in packet["cases"])
+
+
+def test_explicit_museum_exterior_does_not_approve_admission(opening_scenario, tmp_path, capsys):
+    def outside_only(results):
+        for result in results.values():
+            for activity in result["itinerary"]["days"][0]["activities"]:
+                activity["notes"] = "View the museum facade only; no indoor entry or ticketed tour."
+
+    intake, identity, directory, _, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        payload={"timeZone": {"id": "Etc/UTC"}},
+        change=outside_only,
+    )
+    report = score_opening(
+        intake,
+        identity,
+        directory,
+        opening_judgment=material(
+            packet,
+            intent_basis="original_activity",
+            venue_category="museum",
+            access_mode="exterior",
+        ),
+    ).to_dict()
+    assert report["status"] == "complete"
+    for row in report["results"]:
+        check = row["opening"]["checks"][0]
+        assert check["state"] == "PASS"
+        assert check["access_judgment"]["venue_category"] == "museum"
+        assert check["unknown_seconds"] == 3600
+
+
+@pytest.mark.parametrize(
+    "intent,mode",
+    [
+        ("Enter the museum galleries.", "indoor"),
+        ("Take the paid bridge climb with a ticket.", "ticketed"),
+    ],
+)
+def test_explicit_restricted_activity_stays_unknown_without_access_evidence(
+    opening_scenario, tmp_path, capsys, intent, mode
+):
+    def restricted(results):
+        for result in results.values():
+            for activity in result["itinerary"]["days"][0]["activities"]:
+                activity["notes"] = intent
+
+    intake, identity, directory, _, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        payload={"timeZone": {"id": "Etc/UTC"}},
+        change=restricted,
+    )
+    raw = material(
+        packet,
+        "UNKNOWN",
+        access_mode=mode,
+        intent_basis="original_activity",
+        venue_category="museum" if mode == "indoor" else "public_landmark",
+    )
+    report = score_opening(intake, identity, directory, opening_judgment=raw).to_dict()
+    assert report["status"] == "complete"
+    assert all(row["opening"]["counts"]["UNKNOWN"] == 2 for row in report["results"])
+
+
+def test_unresolved_intent_cannot_pass_and_previous_material_is_stale(
+    opening_scenario, tmp_path, capsys
+):
+    intake, identity, directory, _, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        payload={"timeZone": {"id": "Etc/UTC"}},
+        change=landmarks,
+    )
+    raw = material(packet, intent_basis="unresolved", venue_category="public_landmark")
+    assert (
+        score_opening(intake, identity, directory, opening_judgment=raw).status
+        == "needs_material_correction"
+    )
+    raw = material(packet)
+    raw["schema_version"] = "rtpeval_opening_judgment_material_1"
+    assert (
+        score_opening(intake, identity, directory, opening_judgment=raw).status
+        == "needs_material_correction"
+    )
+
+
 def test_public_walk_can_pass_without_fabricating_api_hours(opening_scenario, tmp_path, capsys):
     intake, identity, directory, _, packet = prepare(
         opening_scenario,
@@ -123,7 +292,7 @@ def test_public_walk_can_pass_without_fabricating_api_hours(opening_scenario, tm
     assert check["unknown_seconds"] == 3600
     assert opening["llm_decidable_count"] == 2
     assert opening["complete_evidence_count"] == 0
-    assert report["rules"]["version"] == "rtpeval_opening_rules_3"
+    assert report["rules"]["version"] == "rtpeval_opening_rules_4"
 
 
 @pytest.mark.parametrize(

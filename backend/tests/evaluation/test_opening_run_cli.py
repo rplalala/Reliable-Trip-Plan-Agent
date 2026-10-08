@@ -8,14 +8,14 @@ import pytest
 
 from backend.evaluation.evaluation_run_cli import main
 from backend.tests.evaluation.test_evaluation_run import mock_provider, options, run_prices
-from backend.tests.evaluation.test_opening_judgment import material, walks
+from backend.tests.evaluation.test_opening_judgment import landmarks, material, walks
 
 pytest_plugins = ("backend.tests.evaluation.test_intake",)
 
 
-def prepare_base(batch, capsys):
+def prepare_base(batch, capsys, *, public_landmarks=False):
     _, results, write, _, root = batch
-    walks(results)
+    (landmarks if public_landmarks else walks)(results)
     for version in ("v1", "v2", "v3"):
         visits = results[version]["itinerary"]["days"][0]["activities"]
         visits[0]["source_place_id"] = "pid-a"
@@ -44,7 +44,24 @@ def prepare_base(batch, capsys):
     approved = json.loads(capsys.readouterr().out)["preparation_sha256"]
 
     def respond(request):
+        if public_landmarks and request.url.path.endswith("searchText"):
+            query = json.loads(request.content)
+            query["textQuery"] = (
+                query["textQuery"]
+                .replace("City Harbour Bridge", "Museum A")
+                .replace("Old Waterfront", "Museum B")
+            )
+            request = httpx.Request(
+                request.method, request.url, headers=request.headers, json=query
+            )
         response = mock_provider(request)
+        if public_landmarks and request.url.host == "places.googleapis.com":
+            payload = response.json()
+            for venue in payload.get("places", [payload]):
+                venue["displayName"]["text"] = (
+                    "City Harbour Bridge" if venue["id"] == "pid-a" else "Old Waterfront"
+                )
+            response = httpx.Response(200, json=payload)
         if request.url.host == "places.googleapis.com" and not request.url.path.endswith(
             "searchText"
         ):
@@ -83,10 +100,15 @@ def prepare_base(batch, capsys):
     return root, directory, target, result["preparation_sha256"]
 
 
-def test_opening_execution_reuses_api_evidence_and_replays_full_report(batch, capsys, monkeypatch):
+@pytest.mark.parametrize("public_landmarks", [False, True])
+def test_opening_execution_reuses_api_evidence_and_replays_full_report(
+    batch, capsys, monkeypatch, public_landmarks
+):
     monkeypatch.setenv("GOOGLE_MAPS_API_KEY", "synthetic-google")
     monkeypatch.setenv("AZURE_OPENAI_API_KEY", "synthetic-model")
-    root, parent, directory, approved = prepare_base(batch, capsys)
+    root, parent, directory, approved = prepare_base(
+        batch, capsys, public_landmarks=public_landmarks
+    )
     originals = {str(p): p.read_bytes() for p in parent.rglob("*") if p.is_file()}
     calls = []
 
@@ -94,8 +116,15 @@ def test_opening_execution_reuses_api_evidence_and_replays_full_report(batch, ca
         assert request.url.host == "model.example.test"
         calls.append(request)
         packet = json.loads((directory / "preparation.json").read_bytes())["packet"]
-        assert json.loads(request.content) == material(packet)["request"]
-        return httpx.Response(200, json=material(packet)["response"])
+        assessment = (
+            material(
+                packet, intent_basis="public_landmark_default", venue_category="public_landmark"
+            )
+            if public_landmarks
+            else material(packet)
+        )
+        assert json.loads(request.content) == assessment["request"]
+        return httpx.Response(200, json=assessment["response"])
 
     client = httpx.AsyncClient(transport=httpx.MockTransport(respond))
     assert (
@@ -104,6 +133,7 @@ def test_opening_execution_reuses_api_evidence_and_replays_full_report(batch, ca
     )
     report = json.loads(capsys.readouterr().out)
     assert report["processing_status"] == "complete"
+    assert report["quality"]["rules_profile_id"] == "rtpeval_access_quality_4"
     assert report["usage"]["actual_google_sends"] == 0
     assert report["usage"]["actual_model_sends"] == 1
     assert report["usage"]["raw"]["model_calls"][0]["total_tokens"] == 120

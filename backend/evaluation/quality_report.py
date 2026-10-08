@@ -83,7 +83,8 @@ def build_quality_report(
     if opening_judgment is not None:
         profile = {
             **RULES_PROFILE,
-            "profile_id": "rtpeval_access_quality_3",
+            "profile_id": "rtpeval_access_quality_4",
+            "public_landmark_intent": "ordinary_sightseeing_unless_restricted_activity",
             "opening_pass_basis": "api_hours_or_llm_access_reasonableness",
             "factual_hours_coverage": "separate_from_model_assessment",
         }
