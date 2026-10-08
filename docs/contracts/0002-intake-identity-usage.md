@@ -269,7 +269,8 @@ source digests and short-reference
 ownership bind eligibility. Foreign decisions, historical all-version packets and edited policy/version
 markers cannot pass current import. Absence of a V0 result leaves V0 UNKNOWN while V1-V3
 targets still evaluate. Confirmed target FAIL is retained as a component of that
-version's associated requirement checks. No resolver/CLI executes a model or provider.
+version's associated requirement checks. No identity resolver or `identity_cli` command
+executes a model or provider.
 
 Explicit `--historical-association` replays `versioned_api_identity_2`, including
 version-owned targets and the former FAIL/UNKNOWN downstream block. It reconstructs
@@ -436,6 +437,54 @@ source-linked V0 material before applying version-specific dispatch. The histori
 response is not reinterpreted as a new-schema judgment. All identity CLIs support
 `--prepare --model MODEL` and `--model-result FILE` without live execution; add
 `--historical-llm` only for an explicitly selected uniform historical replay.
+
+### Complete V0 case-set binding
+
+`rtpeval_identity_model_result_2` preserves `binding_source` with the exact intake and
+independent evidence used for its original current-policy V0 packet. The applicability
+unit is the complete V0 case set. Original packet, request, response hash and capture
+times are retained. Reconstruct that packet before applying decisions to another batch;
+never rewrite the receipt into a fresh response.
+
+Occurrences bind group/run/output hash/pointer/projection version, original claim,
+complete ordered candidates, captured observation facts and raw evidence hash. Requirement
+targets bind source input, exact subject and all related obligations. Only observation/
+reference wrapper identifiers and raw file location are excluded from the fact fingerprint.
+Batch revision and unrelated V1-V3 content may change when all V0 cases and relevant facts
+remain identical. Changed claims, requirement meaning, candidates, capture provenance,
+raw bytes, policy or case membership reject import. Decode short references against the
+original packet, map to current occurrences, then enforce normal citation/ownership rules.
+
+Result-1 retains exact whole-packet matching. Historical policy/all-version packets cannot
+enter result-2. Historical files retain their original policy/code for exact reproduction.
+Applicability is separate from freshness: admissible old material cannot replace evidence
+for a newly required live run.
+
+### Formal automatic execution
+
+The [formal CLI](../../backend/evaluation/README.md#fresh-automatic-evaluation-cli) wraps
+native acquisition/scoring. Preparation freezes originals, reviewed schedule/occupancy/
+route/density contexts, explicit send/token/time/cost limits, caller-supplied dated USD
+prices and code hashes without sending. Execution verifies the exact digest and sources,
+creates a new one-use directory and acquires both snapshots afresh. V1-V3 use API/program
+rules; one V0-only Responses request is allowed with no fallback or automatic retries.
+
+Search retains original name/destination/location and page size 20. Search/Details masks
+include ID, name, address, typed address components, business status, coordinates and
+timezone; Details includes current/regular opening hours. A next-page token remains
+incomplete evidence rather than triggering unseen requests. Matrix uses one original
+directed coordinate pair, declared mode, native options and departure only for time-dependent
+queries. No mode/date substitution is permitted. Identical requests may share a fresh
+response within a phase; version/occurrence judgments stay separate.
+
+Journals omit credential headers and retain exact wire, attempts, times, HTTP outcomes
+and raw bytes. Result-2 binds the captured response; replay checks HTTP bytes/usage,
+derives coordinates/routes again and recomposes native reports. Failed directories stay
+consumed and retain stopped reports, usage and receipts. Reports distinguish processing,
+acquisition and evidence completion, retaining every in-scope UNKNOWN's check/reason/source
+and a separate acquisition-failure inventory. Excluded optional/human/controlled/official
+tracks are not acquired-but-UNKNOWN units. Costs cover evaluator-only observed sends and
+reported tokens against dated references; unavailable actual billing is null, never zero.
 
 ### Explicit historical replay
 
@@ -605,7 +654,7 @@ prepared coordinates. Ticket 07 owns applicability; Ticket 04 never shifts dates
 
 Requests have canonical-JSON SHA-256 keys over operation and complete parameters. Route keys preserve direction, identities, coordinates/provenance, mode, departure context and routing options. Only necessary one-origin/one-destination matrix requests are emitted; there is no Cartesian union matrix. Requested matrix elements count each actual send, including retries.
 
-`acquire_snapshot(plan, directory, transport, policy)` requires a fresh directory and an explicitly supplied async transport. It provides operation/parameters, not credentials or URLs; no built-in network client or live CLI is enabled. The transport returns status_code and exact response bytes. A transport failure is represented by a typed safe code; exception messages and credential headers are not persisted.
+`acquire_snapshot(plan, directory, transport, policy)` requires a fresh directory and an explicitly supplied async transport. This primitive provides operation/parameters and does not own credentials or URLs. Formal `evaluation_run` execution supplies the network transport under the approved preparation and limits described above. The transport returns status_code and exact response bytes. A transport failure is represented by a typed safe code; exception messages and credential headers are not persisted.
 
 Policy requires an explicit positive max_sends, max_attempts (default 2), timeout_seconds (default 20), retry_delay_seconds (default 1). Sequential acquisition uses deterministic sorted request keys. Only transport failures/timeouts, HTTP 429 and HTTP 5xx are retried within both bounds. All attempts, errors, UTC request/retrieval times and raw response hashes are preserved. Malformed JSON and missing matrix elements are not silently retried or converted to no-route. Budget exhaustion records every remaining request as unavailable. Retry success does not erase earlier attempts.
 
@@ -630,8 +679,9 @@ Replay validates UTC collection/attempt timestamps and their ordering as well as
 
 The identity bridge additionally retains raw typed address components under the current
 association policy. It does not normalize them into manufactured evidence. Query/response
-applicability belongs to [opening/routes](0004-opening-routes.md). A built-in operational Google
-client, credential handling, storage/retention policy and live allowance are not provided.
+applicability belongs to [opening/routes](0004-opening-routes.md). Formal automatic execution
+supplies the Google client and per-run raw capture. Credentials and a new live execution
+allowance remain caller-owned.
 
 <a id="rtpeval-usage-capture-contract"></a>
 <a id="rtpeval-usage-capture-contract--ticket-02-usage-capture-and-resource-reporting-contract"></a>

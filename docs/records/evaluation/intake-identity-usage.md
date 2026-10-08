@@ -3707,3 +3707,127 @@ keys against independently reviewed endpoints, modes and departure semantics; th
 only supported missing evidence and rerun the native scorers. Retain actual FAIL/UNKNOWN,
 the generic-food occupancy and unresolved transport. No final independent quality
 acceptance, freeze or formal version comparison is established by this offline stage.
+
+<a id="formal-four-final-execution-2026-10-09"></a>
+
+## Formal four-final execution implementation — 2026-10-09
+
+Status: implemented, offline validated and independently reviewed; fresh Sydney execution
+and final acceptance remain pending. Issue [#87](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/87)
+owns the task. Starting review point was `2e7f3e6a482a3a4f5ecc6224750e6f02bca3ac0e`.
+Local implementation commits are `affc639` (complete V0 case-set binding), `cdd2fa3`
+(timed unbound V0 occupancy), `276358c` (formal execution/replay) and separate review
+correction `7fe0c52`. Documentation was still uncommitted at this validation checkpoint;
+the unrelated existing `.gitignore` modification was preserved. No push/PR/merge or
+version freeze is included.
+
+### Decisions and observed implementation
+
+The user approved offline development and confirmed public seams `prepare_run`,
+`execute_run`, `replay_run`, actual CLI, `resolve_versioned_identities` and
+`score_requirement_schedule`. The formal evaluator client composes fresh independent
+Google search/Details, one V0 correspondence request, version-owned API/program identity,
+snapshot-derived coordinates, hours/directed routes and native requirement/schedule,
+opening, route, density and quality consumers. The original outputs are not regenerated
+or repaired. Final-only scope identifies optional V3 stages and human/controlled/official
+tracks as outside the run.
+
+The binding unit is the complete current-policy V0 case set, with original source
+occurrences, claims, ordered candidates, capture/raw provenance and related RequirementSpec
+meaning. Batch wrapper changes can remap unchanged cases; relevant changes reject import.
+The original packet/response/times remain preserved, and result-1/historical contracts
+retain exact old matching. This fixes applicability without certifying freshness or
+backfilling this acceptance run from old evidence.
+
+A declared V0 transport activity keeps occupancy from its own clock when its primary
+route endpoints cannot bind, including generic food/free-time endpoints. Invalid clocks
+remain UNKNOWN and established intersections remain FAIL. Route identity and mode
+uncertainty are preserved. Schedule and route rule versions advance to 2; historical
+reports require their original rule/code revision for exact reproduction.
+
+### Failure, correction and validation sequence
+
+Public-boundary red tests first exposed absent execution/binding support and the V0
+occupancy denominator gap. During incremental implementation, native route preparation
+used `evidence_plan`, not the initially assumed `snapshot_plan`; malformed lookup was
+corrected. A model connection error initially escaped without a final receipt; catching
+the native `TransportFailure` fixed stopped-report preservation. A replay test then showed
+that changed HTTP response bytes with recomputed file hashes could detach model material
+from the actual response; replay now verifies request/response/times/usage and regenerates
+the route plan before comparing final reports. Stopped-attempt cost tests added null
+actual billing and unpriced failure accounting instead of discarding already sent requests.
+
+The first complete evaluator regression had 1156 passed, one skipped and two failures.
+One was the old import guard's inability to distinguish the new execution boundary from
+offline scorers; a narrow module/import allowlist retained the planner-free core rule.
+The other expected a null occupancy denominator for a known-time V0 activity with reversed
+endpoints; the approved occupancy change establishes three schedule units while its route
+remains UNKNOWN. Affected tests then passed 202 cases with one skipped. New binding,
+execution and occupancy boundaries passed 22 cases. The full backend gate subsequently
+passed **3098 tests, 10 skipped**, in 291.37 seconds, with external network blocked.
+
+Independent Standards review found two issues: a tokenizer `RuntimeError` after Google
+sends could bypass final receipts, and usage events retained full request wire despite the
+metadata-only contract. Spec review found two more: density UNKNOWNs were omitted from
+the inventory, and identity UNKNOWNs did not link the source-owned HTTP failure cause.
+Review regressions reproduced the missing density/failure linkage and escaped runtime
+error. Correction `7fe0c52` adds offline tokenizer preflight and runtime-error capture,
+allowlisted usage projection, density UNKNOWN units and acquisition links, including shared
+version-owned requirement evidence and directed route prerequisites. Full wire stays in
+the independent HTTP journal. All **23** affected public-boundary tests passed afterward;
+both review axes rechecked their findings as resolved with no material new regression.
+The full backend gate predates this correction; its affected execution/binding/occupancy
+tests were rerun, and Ruff plus whitespace checks pass. No live request was used to test
+these corrections.
+
+Mocked actual CLI preparation/execution/replay and a separate replay subprocess complete
+the native flow. HTTP tests preserve WALK time independence, DRIVE `TRAFFIC_UNAWARE` and
+original TRANSIT departure/direction, with one shared request retaining four source/version
+verdicts. Failed HTTP, connection, runtime dependency, reference-cost exhaustion, source
+drift, whole-run deadline, consumed-directory refusal and detached response bytes are
+covered. Synthetic tokenization tests structure and limits, not real payload measurements.
+
+### Preserved originals and proposed fresh package
+
+The original Sydney input hash remains
+`1b3c50ad9ce9c58a4caf047388f3c4131faa0cddb0ffff2467dd8b2f1593d6ba`;
+reviewed RequirementSpec remains
+`76682ad7b594daf6bef437a755d96194b3ece9f1c103e8fd7bf6013933d13eaf`.
+Its sole hard visit obligation remains Sydney Opera House exactly once; soft pace/food/
+architecture/museum/harbour/walk/transit preferences introduce no daily quotas or tour rule.
+The four selected original output hashes match Issue #87 exactly; V2 uses successful r2.
+The unrelated `.gitignore` bytes retain SHA-256
+`fdc63780f304bde2f8ac48b7e520330bc45254e8799cb4323cfe645c82a3ae02`.
+
+The actual formal CLI prepares the accepted originals and reviewed contexts offline with
+exit 0. New local evidence identifier:
+`artifacts/sydney-fresh-evaluation-preparation-20261009-r1`.
+Preparation digest is
+`2debadce52a9278e7efad68cfe0fda955a7fac8ec9abbe33a6420269232a19fa`.
+This is a proposed unconsumed package, not execution authorization or an evaluation result.
+It freezes code at `7fe0c52`, 21 distinct original Search keys, 12 supplied-ID Details keys
+and 35 acquisition references. Second-phase identity/route keys are derived only from fresh
+evidence, with conservative ceilings of 35 Details and 18 directed matrix elements.
+
+Proposed limits: 86 Google sends across both phases, one `gpt-6-luna` V0 model request,
+18000 input-token sizing allowance, 3000 maximum output tokens, 120-second request timeout,
+900-second total timeout, zero retries and USD 2 reference allowance. The published retail
+scenario is at most USD **1.705750**: 21 Search at 0.032, 47 total Details at 0.020,
+18 matrix elements at 0.005 and conservative model cache-write/output exposure of 0.003750.
+The price basis was checked on 2026-10-09 against the
+[Google global table](https://developers.google.com/maps/billing-and-pricing/pricing) and
+[OpenAI GPT-6 Luna rates](https://developers.openai.com/api/docs/models/gpt-6-luna).
+OpenAI rates proxy inaccessible Foundry billing; tax, account discounts, free tiers and
+credits are excluded. The price book's validity interval is explicit. These figures are
+planning estimates, not observed charges or an invoice cap.
+
+Offline vocabulary validation succeeds. The initial case-sensitive presence check incorrectly
+reported a missing Google key. A user-prompted recheck finds a nonempty `Google_Maps_API_Key`
+in the project `.env`; the actual CLI's `load_dotenv` followed by uppercase `os.environ`
+lookup succeeds on Windows. This was a presence-check error, not a sandbox access failure.
+The Foundry key and deployment are also present. No credential value is recorded and no
+request has verified live credential validity. Explicit approval of this exact prepared
+scope remains the live prerequisite. New evaluator/model/provider sends and expenditure in this implementation
+task are zero. Old acquisitions remain historical evidence. Issue #87 cannot close until
+fresh evidence, saved-evidence replay, original preservation and final report acceptance
+are completed. This record establishes no benchmark, ranking or research conclusion.

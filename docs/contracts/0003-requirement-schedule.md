@@ -309,6 +309,15 @@ Unbound source-selected claims remain visible commitments or uncertain associati
 groups; they are not silently discarded or reassigned. If duplicate-vs-distinct
 association is unresolved, the commitment denominator is not established.
 
+A source-distinct V0 declared transport activity with unbound primary endpoints remains
+one commitment from its own submitted clock, including travel to generic food/free-time
+activities. Its route association remains unresolved. Missing/invalid clock values produce
+a time-UNKNOWN commitment, not a missing occupancy denominator; known intersections still
+produce FAIL. This adds no canonical venue, route or replacement timestamp. Unbound V1-V3
+transfers and conflicting bound journey alternatives retain their existing uncertainty.
+Requirement/schedule and route rules are version 2 for this occupancy correction; old
+reports retain their original rule/code revision for exact reproduction.
+
 Missing/invalid times on an established commitment give a time-UNKNOWN unit. Mode
 uncertainty alone does not invalidate otherwise explicit occupancy times; route mode
 evaluation remains separate. Conflicting same-journey claims are alternatives, not

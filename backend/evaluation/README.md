@@ -37,6 +37,58 @@ Product planning nor the final quality scorer calls them. Smoke is a development
 activity, not a product runtime stage. Core identity, snapshot and scoring modules
 and their CLIs remain at the package root. A CLI is not necessarily a smoke utility.
 
+## Fresh automatic evaluation CLI
+
+`evaluation_run_cli` composes native intake, fresh Google Search/Details, V0-only model
+correspondence, snapshot coordinates, hours and directed routes, requirements/schedule,
+daily density and final quality reporting. It consumes the selected originals without
+generating or repairing itineraries. Its scope is the four final projections; optional
+V3 stages and human, controlled-Repair and official-audit tracks are explicitly excluded.
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli prepare manifest.json --directory artifacts/fresh-evaluation --options options.json --prices prices.json --context context.json
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli execute artifacts/fresh-evaluation --approved-sha256 EXACT_PREPARATION_SHA256 --env-file .env
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli replay artifacts/fresh-evaluation
+```
+
+`prepare` and `replay` use no network or credentials. `execute` sends fresh requests;
+the digest check does not establish user authorization. Repository approval and execution
+child rules still apply. The preparation directory must be new. An execution directory
+is consumed on failure too, with no automatic retry/resume. `--help` lists optional
+source-linked occupancy, route and density review files.
+
+The options object requires exactly these fields:
+
+| Field | Meaning |
+| --- | --- |
+| `model`, `model_endpoint` | Explicit V0 deployment and HTTPS Responses base URL ending in `/openai/v1/` |
+| `max_google_sends` | Shared send ceiling across both fresh snapshot phases |
+| `max_input_tokens`, `max_output_tokens` | Complete packet sizing allowance and server output limit |
+| `timeout_seconds`, `total_timeout_seconds` | Per-request and whole-execution limits |
+| `max_cost_usd` | Conservative reference-price reservation allowance, not an invoice cap |
+
+Supply a dated USD `rtpeval_prices_1` book covering exact Google operations/masks and the
+selected model. Credentials are loaded only for execution from `GOOGLE_MAPS_API_KEY`
+and `AZURE_OPENAI_API_KEY`; they are excluded from preparation and receipt data. Prices
+identify source URLs and validity intervals; inaccessible billing stays unknown. A packet
+exceeding its input allowance stops without trimming or a model send.
+
+Preparation freezes originals, reviewed contexts, limits, prices and implementation hashes.
+Preparation and execution preflight validate the checksum-bound local tokenizer vocabulary
+without downloading it. Runtime dependency errors after an attempt preserve the stopped
+report and observed sends. Regression tests use synthetic tokenization; real packet sizing
+uses the existing offline vocabulary.
+Execution preserves request wires without credential headers, raw HTTP bytes, times,
+native snapshots, V0 material, full check reports and evaluator-only usage/cost estimates.
+`report.json` distinguishes `processing_status`, `acquisition_status` and `evidence_status`,
+retains source-linked UNKNOWN reasons and exclusions, and may complete with FAIL/UNKNOWN.
+The UNKNOWN inventory includes daily density and links identity/downstream uncertainty
+to source-owned acquisition status, failure reason, request keys and attempts. Full HTTP
+wire stays in the evidence journal; `rtpeval_usage_1` contains allowlisted metadata only.
+Failure preserves a stopped report and receipt. Replay verifies originals, artifact hashes,
+model HTTP linkage and recomputed native reports. Exit 0 means preparation or processing
+completed; exit 2 indicates stopped execution or material correction, not an all-PASS gate.
+
 ## Offline workflow and CLI
 
 Run from the repository root with the existing Python environment. Names below represent
@@ -122,8 +174,9 @@ retains the observed validation sequence and limits.
 
 An acquisition caller separately uses `build_identity_plan`, injected async
 `acquire_snapshot`, immutable `load_snapshot`, then `identity_evidence`.
-There is no built-in live Google client or acquisition CLI. The caller owns credentials,
-authorization and explicit send ceilings. Identity uses the
+The formal client above supplies the injected transport; these individual planning and
+identity commands remain offline. The caller owns credentials, authorization and explicit
+send ceilings. Identity uses the
 [version-specific policy](../../docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement).
 V1-V3 final/optional visits and their requirement targets use program rules over independent
 API facts, with literal name/address equality and no model fallback. No model result is needed
