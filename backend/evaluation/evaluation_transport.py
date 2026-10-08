@@ -17,6 +17,37 @@ DETAILS_MASK = PLACE_FIELDS + ",currentOpeningHours,regularOpeningHours"
 ROUTE_MASK = "originIndex,destinationIndex,status,condition,duration,distanceMeters"
 
 
+def check_tokenizer():
+    """Check the checksum-bound local vocabulary without downloading anything."""
+    from backend.app.runtime.token_counting import count_tokens
+
+    try:
+        count_tokens("")
+    except RuntimeError as exc:
+        raise ValueError("Offline tokenizer unavailable") from exc
+
+
+def usage_event(event):
+    """Separate allowlisted billing metadata from the full HTTP evidence journal."""
+    fields = {
+        "event_id",
+        "provider",
+        "operation",
+        "outcome",
+        "send_status",
+        "request_key",
+        "billing_context",
+        "element_count",
+        "requested_at",
+        "retrieved_at",
+        "status_code",
+        "reason",
+        "model_event_id",
+        "model_provider",
+    }
+    return {k: v for k, v in event.items() if k in fields}
+
+
 def model_usage(raw, options):
     if not isinstance(raw, dict) or not isinstance(raw.get("usage", {}), dict):
         raise ValueError("Invalid model response usage")
@@ -262,7 +293,7 @@ class EvaluationTransport:
             "collection_status": "available",
             "coverage": {"adapter_coverage": "default_adapters"},
             "model_calls": self.model_calls,
-            "provider_events": self.events,
+            "provider_events": [usage_event(e) for e in self.events],
             "cache_events": [],
             "repair_summary": {"model_event_ids": [], "provider_event_ids": []},
             "timing": {"started_at": self.started_at, "finished_at": datetime.now(UTC).isoformat()},

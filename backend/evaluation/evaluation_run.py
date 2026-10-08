@@ -91,6 +91,7 @@ def _unknowns(identity, quality):
                 {
                     "stage": "identity",
                     "version": row["version"],
+                    "group_id": row["group_id"],
                     "source": row["source"],
                     "reference_id": row["reference_id"],
                     "reasons": [row["reason"]],
@@ -113,13 +114,18 @@ def _unknowns(identity, quality):
                                     if isinstance(c, dict) and c.get("state") == "UNKNOWN"
                                 ]
                                 if isinstance(check.get("components"), list)
-                                else ["unresolved_evidence"]
+                                else [
+                                    c.get("reason") or "unresolved_evidence"
+                                    for c in check.get("components", {}).values()
+                                    if c.get("state") == "UNKNOWN"
+                                ]
                             )
                         units.append(
                             {
                                 "stage": stage,
                                 "dimension": dimension,
                                 "version": row["version"],
+                                "group_id": row["group_id"],
                                 "source": check.get("source")
                                 or check.get("sources")
                                 or row.get("source_hashes"),
@@ -145,6 +151,82 @@ def _unknowns(identity, quality):
                         }
                     )
     return units
+
+
+def _acquisition_links(unknowns, snapshots, identity):
+    """Explain source-owned upstream requests without changing native verdicts."""
+    refs = {r["reference_id"]: r for r in identity["records"]}
+    evidence = {key: [] for key in refs}
+    legs = {}
+    queries = {}
+    for snapshot in snapshots:
+        records = {r["key"]: r for r in snapshot["records"]}
+        queries.update(
+            {(snapshot["plan"]["phase"], key): record for key, record in records.items()}
+        )
+        for item in snapshot["plan"]["references"]:
+            for operation, key in item["requests"].items():
+                record = records[key]
+                owners = [
+                    key
+                    for key, ref in refs.items()
+                    if ref.get("evidence_reference_id", key) == item["reference_id"]
+                ]
+                for owner in owners:
+                    evidence[owner].append(
+                        {
+                            "phase": snapshot["plan"]["phase"],
+                            "operation": operation,
+                            "request_key": key,
+                            "status": record["summary"]["status"],
+                            "reason": record["summary"].get("reason"),
+                            "attempts": record["attempts"],
+                        }
+                    )
+        for leg in snapshot["plan"].get("legs", []):
+            legs[leg["leg_id"]] = leg
+    for unit in unknowns:
+        if unit["stage"] == "daily_density":
+            continue
+        key = unit.get("reference_id")
+        selected = [key] if key in refs else []
+        if key in legs:
+            leg = legs[key]
+            selected = [leg["origin_reference"], leg["destination_reference"]]
+        if not selected:
+            selected = [
+                key
+                for key, r in refs.items()
+                if r["group_id"] == unit.get("group_id") and r["version"] in (unit["version"], None)
+            ]
+        unit["acquisition"] = [
+            {"reference_id": key, "source": refs[key]["source"], **item}
+            for key in selected
+            for item in evidence[key]
+        ]
+        if key in legs and legs[key]["request_key"] is None:
+            unit["acquisition"].append(
+                {
+                    "phase": "evidence",
+                    "operation": "route_matrix",
+                    "request_key": None,
+                    "status": "not_executed",
+                    "reason": legs[key]["reason"],
+                }
+            )
+        elif key in legs:
+            request_key = legs[key]["request_key"]
+            record = queries[("evidence", request_key)]
+            unit["acquisition"].append(
+                {
+                    "phase": "evidence",
+                    "operation": "route_matrix",
+                    "request_key": request_key,
+                    "status": record["summary"]["status"],
+                    "reason": record["summary"].get("reason"),
+                    "attempts": record["attempts"],
+                }
+            )
 
 
 def _report(preparation, execution, identity, evidence_plan, usage, generated_at):
@@ -201,6 +283,22 @@ def _report(preparation, execution, identity, evidence_plan, usage, generated_at
         ).to_dict(),
     }
     unknowns = _unknowns(identity, {"components": reports})
+    for group in quality["groups"]:
+        for version, result in group["versions"].items():
+            for day in result["daily_density"]["days"]:
+                if day["state"] == "UNKNOWN":
+                    unknowns.append(
+                        {
+                            "stage": "daily_density",
+                            "group_id": group["group_id"],
+                            "version": version,
+                            "source": result["component_source_hashes"]["requirement_schedule"],
+                            "date": day["date"],
+                            "reasons": [day["reason"]],
+                            "check": day,
+                        }
+                    )
+    _acquisition_links(unknowns, snapshots, identity)
     cost = build_cost_report(
         [{"sha256": canonical_digest(usage), "usage": usage}], preparation["prices"]
     )
@@ -241,7 +339,7 @@ async def execute_run(
     preparation, *, approved_sha256, google_api_key, model_api_key, http_client=None
 ):
     """Execute one explicitly approved fresh package; preserve failed attempts without retry."""
-    from .evaluation_transport import EvaluationTransport
+    from .evaluation_transport import EvaluationTransport, check_tokenizer
     from .identity_binding import RESULT_VERSION as BOUND_RESULT_VERSION
     from .identity_llm import prepare_identity_judgment
     from .identity_program import resolve_versioned_identities
@@ -253,6 +351,7 @@ async def execute_run(
         raise ValueError("Exact evaluation preparation approval required")
     if not google_api_key or not model_api_key:
         raise ValueError("Independent Google and V0 model credentials required")
+    check_tokenizer()
     execution = root / "execution"
     execution.mkdir(exist_ok=False)
     _save(execution, "started.json", {"preparation_sha256": approved_sha256, "started_at": _now()})
@@ -326,7 +425,15 @@ async def execute_run(
             _save(execution, "usage.json", usage)
             report = _report(preparation, execution, identity, plan, usage, _now())
             _verify(preparation, implementation=True)
-    except (ValueError, KeyError, TypeError, OSError, TimeoutError, TransportFailure) as exc:
+    except (
+        ValueError,
+        KeyError,
+        TypeError,
+        OSError,
+        TimeoutError,
+        RuntimeError,
+        TransportFailure,
+    ) as exc:
         usage = transport.usage()
         _save(execution, "usage.json", usage)
         report = {
@@ -367,7 +474,7 @@ async def execute_run(
 
 def replay_run(directory):
     """Verify originals and all captured bytes, then independently recompose the final report."""
-    from .evaluation_transport import model_usage
+    from .evaluation_transport import model_usage, usage_event
     from .identity_program import resolve_versioned_identities
     from .routes import prepare_routes
     from .snapshot import _decode, identity_evidence, load_snapshot
@@ -397,7 +504,7 @@ def replay_run(directory):
     journal = [
         _read(p)[0] for p in sorted((execution / "http").glob("*.json"), key=lambda p: int(p.stem))
     ]
-    if journal != usage["provider_events"]:
+    if [usage_event(e) for e in journal] != usage["provider_events"]:
         raise ValueError("HTTP journal and usage differ")
     if saved["processing_status"] == "stopped":
         return saved
@@ -472,6 +579,9 @@ def prepare_run(
 ):
     """Validate original material and freeze an offline, unconsumed execution package."""
     source = Path(manifest).resolve()
+    from .evaluation_transport import check_tokenizer
+
+    check_tokenizer()
     intake = load_batch(source).to_dict()
     if intake["status"] != "accepted":
         raise ValueError("Accepted four-version batch required")

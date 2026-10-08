@@ -168,7 +168,22 @@ def mock_provider(request):
 def test_execute_and_replay_complete_native_flow_without_regenerating(batch):
     from backend.evaluation.evaluation_run import execute_run, prepare_run, replay_run
 
-    _, results, write, _, root = batch
+    manifest, results, write, save, root = batch
+    spec = json.loads((root / "requirements.json").read_bytes())
+    spec["subjects"] = [{"subject_id": "museum", "place_name": "Museum A"}]
+    spec["obligations"] = [
+        {
+            "obligation_id": "once",
+            "kind": "required_visit",
+            "resolution": "resolved",
+            "subject_ref": "museum",
+            "count": {"mode": "exact", "value": 1},
+            "source_refs": [{"field_path": "additional_preferences", "quote": "architecture"}],
+        }
+    ]
+    manifest["groups"][0]["requirement_spec_ref"] = save(
+        "requirements.json", spec, spec["schema_version"]
+    )
     results["v0"]["itinerary"]["days"][0]["activities"][1]["transport"] = {
         "mode": "WALK",
         "from_activity_id": "a",
@@ -196,6 +211,13 @@ def test_execute_and_replay_complete_native_flow_without_regenerating(batch):
     report = asyncio.run(execute())
     assert report["processing_status"] == "complete"
     assert report["acquisition_status"] == "complete"
+    assert {u["version"] for u in report["unknowns"] if u["stage"] == "daily_density"} == {
+        "v0",
+        "v1",
+        "v2",
+        "v3",
+    }
+    assert all("request" not in event for event in report["usage"]["raw"]["provider_events"])
     assert report["usage"]["actual_google_sends"] == 5
     assert report["usage"]["actual_model_sends"] == 1
     assert len(report["quality"]["groups"][0]["versions"]) == 4
@@ -346,7 +368,7 @@ def test_independent_program_versions_keep_directed_original_route_context(batch
 
 
 @pytest.mark.parametrize(
-    "failure", ["google_http", "model_connection", "cost_limit", "source_drift"]
+    "failure", ["google_http", "model_connection", "cost_limit", "source_drift", "runtime_failure"]
 )
 def test_failures_remain_recorded_and_never_retry_or_reuse_attempt(batch, failure):
     from backend.evaluation.evaluation_run import execute_run, prepare_run, replay_run
@@ -366,6 +388,8 @@ def test_failures_remain_recorded_and_never_retry_or_reuse_attempt(batch, failur
             return httpx.Response(500, json={"error": "synthetic"})
         if failure == "model_connection" and request.url.host == "model.example.test":
             raise httpx.ConnectError("synthetic", request=request)
+        if failure == "runtime_failure" and request.url.host == "model.example.test":
+            raise RuntimeError("Synthetic dependency failure")
         return mock_provider(request)
 
     async def execute():
@@ -391,12 +415,17 @@ def test_failures_remain_recorded_and_never_retry_or_reuse_attempt(batch, failur
     if failure == "google_http":
         assert report["processing_status"] == "complete" and report["unknowns"]
         assert len(calls) == 3  # Two distinct searches and exactly one V0 model call.
+        unknown = next(
+            u for u in report["unknowns"] if u["stage"] == "identity" and u["version"] == "v0"
+        )
+        assert any(e["reason"] == "http_error" for e in unknown["acquisition"])
+        assert all(e["request_key"] for e in unknown["acquisition"])
     else:
         assert report["processing_status"] == "stopped"
-        assert len(calls) == (3 if failure == "model_connection" else 0)
+        assert len(calls) == (3 if failure in ("model_connection", "runtime_failure") else 0)
         assert report["usage"]["actual_billing"] is None
         cost = report["usage"]["cost"]["runs"][0]
-        if failure == "model_connection":
+        if failure in ("model_connection", "runtime_failure"):
             assert cost["estimated_total"] is None and cost["unpriced_event_count"] > 0
         else:
             assert cost["estimated_total"] == "0"
