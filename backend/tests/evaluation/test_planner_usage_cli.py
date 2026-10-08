@@ -112,6 +112,8 @@ def test_cli_saves_usage_prices_and_estimate_without_double_charging(tmp_path):
                 "--run-id",
                 "r",
                 "--execute",
+                "--env-file",
+                str(tmp_path / ".env"),
             ],
             runtime=ProviderRuntime(),
             date_provider=REFERENCE,
@@ -160,6 +162,8 @@ def arguments(tmp_path, *, execute=True):
         "offline-fixture",
         "--run-id",
         "fixture-run",
+        "--env-file",
+        str(tmp_path / ".env"),
     ] + (["--execute"] if execute else [])
 
 
@@ -170,6 +174,7 @@ def test_preparation_does_not_construct_or_invoke_provider_runtime(tmp_path, mon
         raise AssertionError("Offline preparation must not construct provider dependencies")
 
     monkeypatch.setattr(planner_usage_cli, "RequestPlannerRuntime", forbidden)
+    monkeypatch.setattr(planner_usage_cli, "load_dotenv", forbidden)
     argv = arguments(tmp_path, execute=False)
     assert planner_usage_cli.main(argv, date_provider=REFERENCE) == 0
     manifest = json.loads((tmp_path / "capture/manifest.json").read_bytes())
@@ -329,3 +334,33 @@ def test_cancelled_execution_still_emits_cost_report_for_observed_attempts(tmp_p
     report = json.loads((output / "cost-report.json").read_bytes())
     assert report["runs"][0]["estimated_observed_subtotal"] == "0.00002"
     assert not (output / "result.json").exists()
+
+
+@pytest.mark.parametrize("existing_key", [None, "fixture-existing-key"])
+def test_cli_loads_declared_base_and_rag_environment_only_for_execution(
+    tmp_path, monkeypatch, existing_key
+):
+    import os
+
+    from backend.evaluation.tools.planner_usage_cli import main
+
+    base = tmp_path / ".env"
+    base.write_text("OPENAI_API_KEY=fixture-base-key\n", encoding="utf-8")
+    rag = tmp_path / "rag.env"
+    rag.write_text("TRIPWORLD_TEST_DB=fixture-db\n", encoding="utf-8")
+    monkeypatch.setattr(os, "environ", dict(os.environ))
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("TRIPWORLD_TEST_DB", raising=False)
+    if existing_key:
+        monkeypatch.setenv("OPENAI_API_KEY", existing_key)
+
+    class EnvironmentRuntime:
+        async def run(self, version, request, **kwargs):
+            assert os.environ["OPENAI_API_KEY"] == (existing_key or "fixture-base-key")
+            assert os.environ["TRIPWORLD_TEST_DB"] == "fixture-db"
+            return result(version, request)
+
+    argv = arguments(tmp_path) + ["--env-file", str(base), "--rag-env-file", str(rag)]
+    assert main(argv, runtime=EnvironmentRuntime(), date_provider=REFERENCE) == 0
+    output = tmp_path / "capture"
+    assert "fixture-base-key" not in "".join(p.read_text() for p in output.iterdir())

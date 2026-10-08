@@ -44,6 +44,7 @@ def main(argv=None, *, runtime=None, date_provider=None):
     parser.add_argument("--version", required=True, choices=["v0", "v1", "v2", "v3"])
     parser.add_argument("--input-json", required=True, type=Path)
     parser.add_argument("--runtime-config", type=Path, default=ROOT / "config/runtime.yaml")
+    parser.add_argument("--env-file", type=Path, default=ROOT / ".env")
     parser.add_argument("--rag-env-file", type=Path)
     parser.add_argument("--output-directory", required=True, type=Path)
     parser.add_argument("--group-id", required=True)
@@ -97,6 +98,7 @@ def main(argv=None, *, runtime=None, date_provider=None):
         return 0
     if args.rag_env_file:
         load_dotenv(args.rag_env_file, override=False)
+    load_dotenv(args.env_file, override=False)
     selected = runtime or RequestPlannerRuntime(config=config)
     captured = []
     failure = None
