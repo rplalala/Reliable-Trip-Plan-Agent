@@ -121,12 +121,27 @@ Fresh execution completed with 64 Google sends and one V0 model send, all HTTP 2
 in 28.14 seconds. Retail reference cost is USD 1.3090408; actual billing is unavailable.
 Network-blocked CLI replay exactly reproduces the saved report, verifies all 205 receipt
 files and preserves the four originals. The automatic flow is accepted under current
-policy with 15 UNKNOWNs: 14 missing-hours checks and one conservative V1 exact-count check.
+policy at that acceptance checkpoint with 15 UNKNOWNs: 14 missing-hours checks and one
+conservative V1 exact-count check.
 Two V1 literal address FAILs reflect API abbreviations, and six daily density FAILs are
 soft pace penalties. Powerhouse's captured temporary closure remains an explicit limitation
 of the opening scorer. No planner repair, formal comparison, human review or freeze occurred.
 See the [implementation record](docs/records/evaluation/intake-identity-usage.md#formal-four-final-execution-2026-10-09)
 and [fresh execution acceptance](docs/records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09).
+
+The subsequent offline correction
+[#88](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/88) advances
+requirement/schedule rules to version 3. Verified physical occurrence associations now
+establish requirement matches/nonmatches without weakening grounding or borrowing another
+version's requirement target. Saved-evidence CLI recalculation changes V1's exact-once
+bounds from 1..3 to 1..1, yielding requirement PASS and score 68 instead of 48. The two
+grounding FAILs, fourteen opening UNKNOWNs and all other dimensions remain unchanged.
+The full backend gate passed 3112 tests with 10 skipped; the targeted file passed 50.
+Standards and Spec reviews each found zero issues. No new provider call occurred;
+the original report and 205 receipt files are unchanged and exactly replay with the
+original rules. Opening access/evidence/closure refinements remain advisory, not implemented.
+See the [correction acceptance](docs/records/evaluation/intake-identity-usage.md#requirement-physical-association-correction-2026-10-09)
+and [opening boundary proposal](docs/records/evaluation/opening.md#opening-access-boundary-proposal-2026-10-09).
 
 The user accepted a version-specific evaluator requirement on 2026-10-06:
 V0 introduces an LLM primarily to correspond generated POI claims with independent

@@ -314,3 +314,48 @@ closeout will identify all three actual local hashes and unpublished availabilit
 No push, branch switch, version freeze, formal evaluation, real provider/model call or
 Ticket 07+ execution is included. Ticket 07 specification closure remains the proposed
 next task and needs separate approval.
+
+<a id="opening-access-boundary-proposal-2026-10-09"></a>
+
+## Opening access boundary proposal — 2026-10-09
+
+Status: advisory, not implemented or an authorization for evidence acquisition. Prepared
+alongside [#88](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/88), at local
+implementation revision `2f9dd6f` with related documentation pending and an excluded
+pre-existing `.gitignore` edit. The implemented requirement correction is recorded in
+[its acceptance owner](intake-identity-usage.md#requirement-physical-association-correction-2026-10-09).
+
+The preserved fresh Sydney evidence has fourteen opening UNKNOWNs and no opening FAIL.
+All fourteen requested both current and regular hours; HTTP 200 omitted both fields.
+The affected venues are Opera House, Harbour Bridge, Darling Harbour, Bondi Beach,
+The Rocks and Powerhouse Museum. Powerhouse additionally has undated
+`CLOSED_TEMPORARILY` status. A minute-level grace cannot resolve missing evidence;
+neither a public-space name nor unspecified visit intent proves unrestricted access.
+
+The official [Places resource reference](https://developers.google.com/maps/documentation/places/web-service/reference/rest/v1/places)
+defines current hours over the request-local seven-day window, regular hours as typical
+weekly hours, an always-open sentinel, and business status separately from current
+opening. Missing fields do not establish closure or unrestricted access. Those API
+semantics motivate the following proposed boundaries, rather than prove Sydney access:
+
+| Proposed boundary | PASS support | FAIL / UNKNOWN boundary |
+| --- | --- | --- |
+| Indoor entry | Applicable entry hours contain the complete submitted visit | Proven closed interval: FAIL; missing/conflicting hours: UNKNOWN |
+| Outdoor/public-area access | Independent evidence covers the actual area, access conditions and visit interval | Do not assume parks, beaches, bridges or districts are always open; unresolved access stays UNKNOWN |
+| Date-specific evidence | Current or official dated hours cover the requested date and interval | Exceptions without applicable hours stay UNKNOWN |
+| Regular weekly evidence | Explicit provisional PASS when relevant regular hours cover the interval and no known exception or closure conflicts | Label projected basis separately from date-verified PASS; do not inflate verified coverage |
+| Closure status | Consider dated closure evidence before positive hours | Applicable dated closure: FAIL; undated temporary closure blocks confident PASS and retains `closure_dates_unresolved` |
+
+Visit/access intent should be recorded from original output or reviewed requirements
+(`indoor_entry`, `outdoor_area`, `unspecified`) before scoring. An unspecified Opera
+House visit must not be silently converted to an exterior walk to obtain PASS. A
+separate official-evidence fallback can normalize applicable periods/closure dates with
+URL, captured content hash, retrieval time, timezone, area and validity dates; evaluator
+LLMs must not invent missing access facts.
+
+Keep full-interval containment as the default entry check. Arrival-only access is a
+different metric; if tolerance is introduced later, expose the configured allowance and
+outside-interval seconds. Distinguish `hours_missing`, `access_scope_unresolved`,
+`exception_hours_missing`, `closure_dates_unresolved` and `evidence_conflict` in reports.
+Keep outcome, evidence basis and verified coverage separate. Exact schema, aggregation
+and acquisition changes require a separately approved implementation scope.

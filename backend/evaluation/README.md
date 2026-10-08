@@ -191,11 +191,14 @@ accepted material or 2 for correction. Identity exits 0 for packet preparation/c
 judgments (including confirmed failures), 3 for UNKNOWN/missing judgment, and 2 for
 material/linkage errors. Incorrect submitted addresses and different venues are grounding
 FAIL, even when the intended venue is recognizable. Their canonical ID stays null.
-A separate verified `place_association` permits independent opening/routes using the API
-venue's hours/coordinates against original time, order, mode and reserved duration. V0
+A separate verified `place_association` permits requirement occurrence matching and
+independent opening/routes using the API venue's identity/hours/coordinates against
+original date, time, order, mode and reserved duration. V0
 requires validated candidate correspondence; V1-V3 require the independently verified
 original submitted ID, without evaluator LLM or searched replacement. Untrusted association
-remains UNKNOWN. Original outputs, grounding failures and requirement counting are retained.
+remains UNKNOWN. Original outputs and grounding failures are retained. Requirement targets
+still use their own version's adopted canonical identity; target FAIL components and
+unresolved dates/roles remain part of requirement judgment.
 Current reports use `versioned_api_identity_3`; V0 packets use
 `v0_identity_correspondence_3`: citation paths are schema enums
 shared with import. Address-presence schema alternatives bind short reference IDs;
@@ -487,6 +490,13 @@ Save prepared route contexts, build the evidence plan and acquire/replay its sna
 through the separately authorized injected caller before scoring. Preparation does not
 invent coordinates or transport restrictions. Missing optional context/review retains
 UNKNOWN or applicability diagnostics. Route preparation exports `route_contexts` and its ready-made `evidence_plan`.
+
+Requirement/schedule rules version 3 uses verified occurrence associations for count,
+date, exclusion and fixed-time matching. `requirement_identity` exposes the physical
+identity and grounding provenance used. Historical identity reports retain canonical-only
+matching. After an authorized rule change, save a new offline recalculation separately
+from the frozen execution report/receipts. Exact replay of an earlier report uses its
+original code revision; current rules do not overwrite or relabel historical results.
 
 When the adopted identity report was resolved from an independent identity snapshot that
 already contains coordinates, replace `--coordinates coordinates.json` with

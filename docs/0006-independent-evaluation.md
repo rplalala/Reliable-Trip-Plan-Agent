@@ -97,10 +97,14 @@ remains a separate assessment: recognizing a venue does not repair the delivered
 or establish opening/route feasibility. Both a recognizable venue with an incorrect submitted
 address and an address identifying another venue produce grounding FAIL and prohibit canonical
 claim adoption. Under `versioned_api_identity_3`, the separately verified physical
-association may permit opening/routes despite claim FAIL: V0 uses existing validated
+association may permit requirement occurrence matching and opening/routes despite claim
+FAIL: V0 uses existing validated
 correspondence, V1-V3 independently verify the original API ID. Untrusted associations
 remain UNKNOWN. Original time, order, transport mode and reserved duration are unchanged;
-physical PASS cannot cancel grounding FAIL or establish requirement fulfillment.
+physical PASS cannot cancel grounding FAIL. Requirement occurrence matching uses the
+verified association against the target's version-owned adopted canonical identity;
+the target's grounding FAIL and all count/date/time components remain independently
+applicable. A physical association alone does not establish full requirement fulfillment.
 Historical policy-2 reports retain canonical-only downstream eligibility through
 explicit `--historical-association` replay. Insufficient evidence stays UNKNOWN.
 Supported V0 destination conflicts also remain FAIL even when the original address is absent.
@@ -113,7 +117,7 @@ Blinded preference review and other human supplements keep their separate respon
 | Submitted group | One request and its source-linked selected version artifacts; inclusion is not proof of quality |
 | Claim | A proposition represented in the submitted output or reviewed obligation |
 | Independent observation | Separately sourced evidence with declared identity/query/time applicability |
-| Physical association | Verified API venue usable for hours/coordinates while preserving original claim grounding and requirement-counting rules |
+| Physical association | Verified API venue usable for occurrence matching, hours and coordinates while preserving original grounding and version-owned requirement targets |
 | Identity judgment | Version-scoped program checks or V0 model correspondence with independent API facts, preserving original claims and uncertainty |
 | Historical adjudication | Human resolution in an explicitly replayed legacy identity report |
 | Compliance | Outcome against an applicable criterion, distinct from evidence availability |

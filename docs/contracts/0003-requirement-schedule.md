@@ -151,14 +151,26 @@ These are structural scheduled-visit counts, not proof of actual attendance.
 ## Count bounds and completeness
 
 For each subject/date scope, compute confirmed matching occurrences `L` and an upper
-bound `U=L+potential_matches`. Adopted canonical identity establishes matches and
-nonmatches; occurrence source identity prevents repeated imports from counting twice.
+bound `U=L+potential_matches`. Under `versioned_api_identity_3`, a verified physical
+`place_association` establishes occurrence matches and nonmatches against the
+requirement target's version-owned adopted canonical identity. Original claim grounding
+remains separate: an occurrence's grounding FAIL does not erase its verified venue,
+and a requirement target FAIL still contributes its failing component. The complete
+identity report must pass source-bound replay before associations are consumed.
+Occurrence source identity prevents repeated imports from counting twice.
 Same-venue visits at different source occurrences remain distinct. An unresolved
 identity can be a potential match; observed search `candidate_ids` are not exhaustive
 and their absence does not prove a nonmatch. Unresolved role records that could be
 primary visits remain potential matches, with their reasons and declared dates.
 Unresolved subject identity prevents confirmed venue equality; do not compare only
 planner supplied IDs or name strings. Missing identity does not erase a known visit.
+
+Historical identity policies without association fields retain canonical-only occurrence
+matching. Unverified or conflicting associations remain unresolved even if a canonical
+field or candidate list suggests a venue. `requirement_identity` exposes each occurrence's
+source, associated/canonical place IDs, grounding verdict and matching basis.
+Requirement/schedule rules version 3 records this change; exact reproduction of an earlier
+report requires its original rule/code revision, rather than relabeling that report.
 
 | Count condition | PASS | FAIL | Otherwise |
 | --- | --- | --- | --- |
@@ -315,8 +327,10 @@ activities. Its route association remains unresolved. Missing/invalid clock valu
 a time-UNKNOWN commitment, not a missing occupancy denominator; known intersections still
 produce FAIL. This adds no canonical venue, route or replacement timestamp. Unbound V1-V3
 transfers and conflicting bound journey alternatives retain their existing uncertainty.
-Requirement/schedule and route rules are version 2 for this occupancy correction; old
-reports retain their original rule/code revision for exact reproduction.
+This occupancy correction introduced requirement/schedule and route rules version 2.
+Requirement/schedule rules are now version 3 for physical-association matching; route
+rules remain version 2. Old reports retain their original rule/code revision for exact
+reproduction.
 
 Missing/invalid times on an established commitment give a time-UNKNOWN unit. Mode
 uncertainty alone does not invalidate otherwise explicit occupancy times; route mode

@@ -3980,3 +3980,77 @@ add no hard daily quota. All FAIL/UNKNOWN sources and reasons remain in the full
 and parent acceptance inventory. The engineering end-to-end objective is fulfilled;
 address equivalence, verified-association count semantics, business-status treatment and
 public-space access remain explicit policy limitations, not silently resolved facts.
+
+<a id="requirement-physical-association-correction-2026-10-09"></a>
+
+## Requirement physical-association correction — 2026-10-09
+
+Status: implemented and offline validated under
+[#88](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/88). Fixed review base:
+`ee0f4947edb32fe2f7a07f5b4fd7c1ee98fd6531`; implementation/test commit: `2f9dd6f`.
+An unrelated pre-existing `.gitignore` edit was excluded. No planner output, identity
+grounding verdict, opening policy, route policy or original execution receipt was edited.
+
+The fresh #87 evidence already verified the two V1 address-FAIL occurrences as Harbour
+Bridge and Maritime Museum. Canonical-only requirement matching nevertheless treated
+them as possible Opera House occurrences. This widened the exact-once bounds to 1..3.
+Requirement/schedule rules version 3 consumes the verified physical occurrence association
+only after complete source-bound identity replay. Targets remain version-owned adopted
+canonical identities; their failing grounding components, occurrence roles, dates and
+time uncertainty are preserved. Historical identity policies retain canonical-only matching.
+The new `requirement_identity` diagnostics expose the physical and grounding provenance.
+
+### Failure, correction and validation
+
+The first attempted red test lacked its local parent test directory; creating that
+directory allowed the actual regression to run. It failed as intended: the public scorer
+returned UNKNOWN instead of PASS for a verified different venue with address FAIL.
+The minimal implementation passed that regression. Expanded tests initially reported
+45 passes and three failures because a fixture selected a requirement subject instead
+of a primary visit with the same name. Restricting fixture selection to `primary_visit`
+corrected the test setup; the suite passed 48, then 50 after duplicate-venue and V0 cases.
+
+Public scorer and actual CLI coverage includes counts, dates, exclusions, fixed times,
+target FAIL preservation, same/different venues, V0 validated correspondence, missing or
+conflicting evidence, forged association/source/version rejection and historical rules.
+The full backend gate passed **3112 tests, 10 skipped**, in 310.40 seconds. Ruff and
+`git diff --check` passed. Independent Standards and Spec reviews of the committed
+implementation each reported zero findings; no review correction commit was needed.
+
+### Separate offline recalculation and original replay
+
+The actual requirement and quality CLI entry points recalculated from the original
+fresh evidence with DNS/socket access blocked: exit codes 0/0, zero network attempts.
+All 205 protected receipt files and four original outputs passed unchanged-file checks.
+V1's exact-once bounds became **1..1**, requirement PASS, with overall score **68.0000**
+instead of 48.0000. Its grounding remains 8 PASS / 2 FAIL. Fourteen opening UNKNOWNs
+remain; all opening, route, non-overlap, grounding and density results are unchanged.
+Other overall scores remain V0 89.2857, V2 75.0000 and V3 81.1111. These values describe
+one engineering correction and do not support a formal version comparison.
+
+Local evidence identifiers, not published dependencies:
+
+- Original execution: `artifacts/sydney-fresh-evaluation-preparation-20261009-r1/run`.
+- Separate corrected output: `artifacts/sydney-requirement-association-recalculation-20261009-r1`;
+  `requirements.json`, `quality.json` and `recalculation-check.json`.
+- Original-rule replay: `original-rules-replay.stdout.json` and
+  `original-rules-replay-check.json` in that separate directory.
+
+| Material | SHA-256 |
+| --- | --- |
+| Original preparation | `2debadce52a9278e7efad68cfe0fda955a7fac8ec9abbe33a6420269232a19fa` |
+| Original report, unchanged | `09272f235cadc20aeb94f4c6a4f5945f35a77faaf89637611beb422695e0b459` |
+| Original receipt, unchanged | `ca5852385f6fcdeb1279afbb25ddfdc8da8d11a64514836b88bf824406bae0e1` |
+| Corrected requirements | `e7011d0697813bc1d564b905a453112121d552135eef16ad887e00eed1377ebc` |
+| Corrected quality | `664479d3fc9a4e8af6b6c09fd03815038f967ea42ce77e503be920f5a10f700a` |
+| Current requirement scorer | `a4b12481969d8a156e26fa7111232e70d37a1d245e09bdef6f8490d656a83d6b` |
+
+In an isolated process, the trusted scorer source from the fixed base was loaded without
+checking out or editing the repository. The formal `evaluation_run_cli replay` then
+reproduced the original rules-2 report exactly: exit 0 and zero network attempts.
+Current rules-3 recalculation remains a separate result; it is not a fresh acquisition
+or a replacement execution receipt. No additional Google/model calls or cost were incurred.
+
+The remaining opening issues need explicit access, evidence-applicability and closure
+semantics. The [opening proposal](opening.md#opening-access-boundary-proposal-2026-10-09)
+records advice only; it does not alter current scoring or authorize collection.
