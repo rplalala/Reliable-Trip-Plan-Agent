@@ -16,7 +16,11 @@ from backend.app.observability.usage import install_http_hooks, observe_sdk
 from backend.app.tripworld.database.policy import POLICY_VERSION
 from backend.app.tripworld.database.search import search_query
 from backend.app.tripworld.database.vectors import SPACE, SPACE_ID
-from backend.app.tripworld.retrieval.diagnostics import capture_vectors, measure
+from backend.app.tripworld.retrieval.diagnostics import (
+    capture_vectors,
+    current_vector_capture_directory,
+    measure,
+)
 from backend.app.tripworld.retrieval.embedding import validate_vectors
 
 ROOT = Path(__file__).resolve().parents[4] / "data/tripworld"
@@ -38,7 +42,11 @@ class RuntimeRetrieval:
         self.conn = self.client = None
         self.usage = {}
         self.embedding_sends = 0
-        self.capture_directory = capture_directory
+        self.capture_directory = (
+            capture_directory
+            if capture_directory is not None
+            else current_vector_capture_directory.get()
+        )
         self.diagnostics = []
         self.http_attempts = []
         self._http_hooks = None

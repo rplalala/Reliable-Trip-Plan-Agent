@@ -422,6 +422,9 @@ def install_http_hooks(client, provider=None, operation=None):
             **model_binding,
         )
         request.extensions["rtpeval_usage_event"] = (ledger, eid)
+        from .raw_capture import observe_request
+
+        observe_request(request, eid)
 
     async def received(response):
         pair = response.request.extensions.pop("rtpeval_usage_event", None)
@@ -433,6 +436,9 @@ def install_http_hooks(client, provider=None, operation=None):
                 outcome="completed" if response.status_code < 400 else "failed",
                 status_code=response.status_code,
             )
+            from .raw_capture import observe_response
+
+            observe_response(response, eid)
 
     client.event_hooks["request"].append(sent)
     client.event_hooks["response"].append(received)

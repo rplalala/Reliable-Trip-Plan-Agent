@@ -21,6 +21,7 @@ _SENSITIVE_KEY_PARTS = (
     "authorization",
     "bearer",
     "credential",
+    "cookie",
     "password",
     "secret",
     "token",
@@ -136,6 +137,9 @@ def _redact_url(value: str) -> str:
 
 def redact_secrets(value: object) -> object:
     """Recursively remove common credential fields and bearer values."""
+    from .raw_capture import redact_known_credentials
+
+    value = redact_known_credentials(value)
 
     if isinstance(value, dict):
         redacted: dict[str, object] = {}
@@ -158,6 +162,11 @@ def redact_secrets(value: object) -> object:
                     "model_input_tokens_per_call",
                     "draft_output_tokens",
                     "cache_read",
+                    "cached_tokens",
+                    "cache_read_input_tokens",
+                    "cache_write_input_tokens",
+                    "cache_write_tokens",
+                    "cache_creation_input_tokens",
                     "reasoning",
                 }
                 and type(item) is int
