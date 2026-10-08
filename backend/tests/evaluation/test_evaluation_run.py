@@ -27,6 +27,96 @@ def options():
     }
 
 
+@pytest.mark.parametrize("effort", [None, "low", "medium"])
+def test_cli_freezes_sends_and_replays_identity_effort(batch, capsys, effort):
+    from backend.evaluation.evaluation_run_cli import main
+
+    _, _, write, _, root = batch
+    configured = options()
+    if effort is not None:
+        configured["reasoning_effort"] = effort
+    (root / "options.json").write_text(json.dumps(configured), encoding="utf-8")
+    (root / "prices.json").write_text(json.dumps(run_prices()), encoding="utf-8")
+    directory = root / "evaluation"
+    assert (
+        main(
+            [
+                "prepare",
+                str(write()),
+                "--directory",
+                str(directory),
+                "--options",
+                str(root / "options.json"),
+                "--prices",
+                str(root / "prices.json"),
+            ]
+        )
+        == 0
+    )
+    preparation = json.loads((directory / "preparation.json").read_bytes())
+    seen = []
+
+    def respond(request):
+        if request.url.host == "model.example.test":
+            seen.append(json.loads(request.content)["reasoning"])
+        return mock_provider(request)
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setenv("GOOGLE_MAPS_API_KEY", "synthetic-google")
+        patch.setenv("AZURE_OPENAI_API_KEY", "synthetic-model")
+        client = httpx.AsyncClient(transport=httpx.MockTransport(respond))
+        try:
+            assert (
+                main(
+                    ["execute", str(directory), "--approved-sha256", preparation["content_sha256"]],
+                    http_client=client,
+                )
+                == 0
+            )
+        finally:
+            asyncio.run(client.aclose())
+    assert seen == [{"effort": effort or "low"}]
+    assert main(["replay", str(directory)]) == 0
+    if effort is None:
+        assert "reasoning_effort" not in preparation["options"]
+    else:
+        assert preparation["options"]["reasoning_effort"] == effort
+    capsys.readouterr()
+    if effort == "medium":
+        execution = directory / "execution"
+        journal_path = next(
+            path
+            for path in (execution / "http").glob("*.json")
+            if json.loads(path.read_bytes())["provider"] == "azure_foundry"
+        )
+        journal = json.loads(journal_path.read_bytes())
+        journal["request"]["json"]["reasoning"] = {"effort": "low"}
+        journal_path.write_text(json.dumps(journal), encoding="utf-8")
+        receipt_path = execution / "receipt.json"
+        receipt = json.loads(receipt_path.read_bytes())
+        receipt["files"][str(journal_path.relative_to(execution))] = hashlib.sha256(
+            journal_path.read_bytes()
+        ).hexdigest()
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+        assert main(["replay", str(directory)]) == 2
+        assert "Model HTTP receipt differs" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("effort", ["", "unexpected", None, 1, {"effort": "medium"}])
+def test_prepare_rejects_invalid_identity_effort_without_execution(batch, effort):
+    from backend.evaluation.evaluation_run import prepare_run
+
+    _, _, write, _, root = batch
+    with pytest.raises(ValueError, match="Identity reasoning effort"):
+        prepare_run(
+            write(),
+            root / "evaluation",
+            options={**options(), "reasoning_effort": effort},
+            prices=run_prices(),
+        )
+    assert not (root / "evaluation").exists()
+
+
 def test_prepare_is_offline_and_binds_original_sources(batch):
     from backend.evaluation.evaluation_run import prepare_run
 

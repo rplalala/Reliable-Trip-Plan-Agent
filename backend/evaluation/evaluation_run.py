@@ -37,10 +37,13 @@ def _options(options, *, allow_no_google=False):
         "max_input_tokens",
         "max_output_tokens",
     }
-    if set(value) != required:
+    optional = set() if allow_no_google else {"reasoning_effort"}
+    if not required <= set(value) or set(value) - required - optional:
         raise ValueError(
             "Explicit execution options required; credentials are not preparation data"
         )
+    if "reasoning_effort" in value and value["reasoning_effort"] not in ("low", "medium"):
+        raise ValueError("Identity reasoning effort must be low or medium")
     for key in ("max_google_sends", "max_input_tokens", "max_output_tokens"):
         minimum = 0 if key == "max_google_sends" and allow_no_google else 1
         if type(value[key]) is not int or value[key] < minimum:
@@ -381,7 +384,9 @@ async def execute_run(
             _save(execution, "identity-evidence.json", evidence)
             packet = prepare_identity_judgment(intake, evidence, model=options["model"]).to_dict()
             _save(execution, "model-packet.json", packet)
-            response, event = await transport.model(packet)
+            response, event = await transport.model(
+                packet, reasoning_effort=options.get("reasoning_effort", "low")
+            )
             material = {
                 "schema_version": BOUND_RESULT_VERSION,
                 "packet": packet,
@@ -532,7 +537,7 @@ def replay_run(directory):
         **material["packet"]["request"],
         "max_output_tokens": preparation["options"]["max_output_tokens"],
         "store": False,
-        "reasoning": {"effort": "low"},
+        "reasoning": {"effort": preparation["options"].get("reasoning_effort", "low")},
     }
     if (
         event["request"]
