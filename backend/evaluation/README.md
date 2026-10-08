@@ -242,7 +242,9 @@ identity commands remain offline. The caller owns credentials, authorization and
 send ceilings. Identity uses the
 [version-specific policy](../../docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement).
 V1-V3 final/optional visits and their requirement targets use program rules over independent
-API facts, with literal name/address equality and no model fallback. No model result is needed
+API facts, with literal name equality and full address equivalence explained by same-observation
+Google component pairs. Unexplained address differences are FAIL; no model fallback is used.
+No model result is needed
 for those references. No human confirmation or sampling is mandatory. `--prepare` prints a
 V0-only frozen packet covering generated visits and user-requested requirement targets;
 it does not execute a model. Target judgments belong to their own version, while

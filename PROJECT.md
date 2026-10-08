@@ -94,6 +94,10 @@ Details: [requirements](docs/0002-requirements-evidence.md),
 - Minimum daily coverage and optional quantity review are distinct. Sparse/overfull
   days do not automatically authorize arbitrary changes; review flags and permissions
   are recorded per run.
+- V3 Repair's optional quantity review optimizes source-linked daily pace toward zero
+  deductions. It accepts legal partial reductions and preserves the best accepted
+  result at stops; zero is not a failure constraint. V0-V2 and V3 initial generation
+  have no zero-penalty requirement.
 
 Details: [shared output](docs/0003-itinerary-transport.md),
 [minimum coverage](docs/0003-itinerary-transport.md),
@@ -117,7 +121,7 @@ records actual requests/usage and produces native automatic reports for V0-V3 fi
 | Quality and density | Five automatic dimensions with separate evidence availability; source-linked pace deductions adjust the final total without adding hard generation quotas | [Quality/density](docs/contracts/0005-quality-human-review.md) |
 | Additional evaluation tracks | Blinded review, V3 paired reports, controlled Repair and mechanism/official-claim audit interfaces are implemented; their execution and research populations require their own scope | [Evaluation design](docs/0006-independent-evaluation.md), [artifacts](docs/contracts/0001-evaluation-artifacts.md) |
 
-Current identity policies are `versioned_api_identity_3` and
+Current identity policies are `versioned_api_identity_4` and
 `v0_identity_correspondence_3`; requirement/schedule rules are version 3. Opening retains
 API-only rules 2 and selects rules 4 with validated policy-2 access judgments. Verified physical
 associations can support occurrence matching,
@@ -130,7 +134,9 @@ fresh independent evidence and a completed native evaluator flow. V2/V3 generati
 includes captured embedding/SQL retrieval; V3 exercised Repair. Zero-network replay
 preserves all originals and the original execution receipt. The authorized incremental
 missing-hours model assessment under current rules 4 has completed with a separately
-authorized policy-2 response. Exact network-free replay reproduces the current report:
+authorized policy-2 response. Exact network-free replay reproduces the retained #91
+report below, whose identity policy remains version 3. The separate version-4 address
+recalculation is not a replacement full quality report:
 
 | Version | Overall score | Opening UNKNOWN | Grounding FAIL |
 | --- | ---: | ---: | ---: |
@@ -141,7 +147,9 @@ authorized policy-2 response. Exact network-free replay reproduces the current r
 
 The hard Opera House exact-once obligation is PASS for all four outputs. Fourteen
 opening checks lack both current and regular hours; successful HTTP acquisition does
-not supply those missing facts. V1's two literal address FAILs reflect API abbreviations.
+not supply those missing facts. The retained #91 report's two V1 literal-address FAILs
+reflect API abbreviations; the current equivalence policy accepts both from retained
+Google component pairs in a separate offline identity recalculation.
 All fourteen missing-hours occurrences were assessed: thirteen PASS with explicit
 `llm_access_reasonableness` basis and one remains UNKNOWN: V0 Powerhouse indoor admission.
 Ordinary Harbour Bridge/Opera House viewing passes under the same rule for all versions.
@@ -172,12 +180,16 @@ Public-landmark revision:
 budgets are distinct. Dated execution allowances do not become runtime defaults.
 [Development guide](docs/guides/development.md) owns runnable commands.
 
-Full backend checkpoint: **3164 passed, 10 skipped** on 2026-10-09 for the public-landmark
-access policy. After a test-only Spec correction, the public scoring/CLI gate passes **41**;
-production code is unchanged from the full-backend checkpoint. Standards/Spec rechecks have
-zero remaining findings. Current rules-4 real-model assessment and exact network-free
-replay are accepted; originals, all 205 parent evidence files and prior rules-3 report/receipt
-remain unchanged. Historical rules-3 replay also passed with its original implementation.
+Full backend checkpoint: **3195 passed, 10 skipped** on 2026-10-09 for address equivalence
+and V3 pace optimization. Subsequent review corrections pass **483** address/V3 tests
+and **1248 evaluator tests / 1 skipped**; independent Standards and Spec rechecks have
+zero remaining findings. Retained-evidence
+address recalculation uses zero network requests and reproduces the historical identity
+report before applying current rules. Four original outputs and the accepted #91 full
+report/receipt remain unchanged. The prior opening-policy live acceptance retains its
+own source and implementation bindings; this offline task does not replace it.
+Acceptance details: [address equivalence](docs/records/evaluation/intake-identity-usage.md#google-address-equivalence-acceptance-2026-10-09)
+and [V3 pace optimization](docs/records/v0-v3/v3-development.md#soft-pace-repair-acceptance-2026-10-09).
 The latest recorded frontend gate is **98 passed**, with TypeScript, build and lint
 passing; this backend task does not rerun or imply new frontend validation.
 Actual failure/correction/retest sequences belong in the linked acceptance records.
@@ -186,8 +198,9 @@ Remaining limitations:
 
 - Missing opening/access facts, unsupported route-provider scopes and unresolved
   identity/time/role evidence remain visible. A complete process can contain UNKNOWN.
-- V0 semantic correspondence is fallible. V1-V3 literal name/address grounding can
-  reject abbreviations even when physical association is verified.
+- V0 semantic correspondence is fallible. V1-V3 retain literal names and binary
+  address equivalence; unexplained address differences fail. Google-supported aliases
+  do not waive identity/provenance requirements.
 - Undated business status does not establish future closure dates. Optional public/exterior
   access assessment is model reasoning, not certified hours. Official web acquisition is
   not implemented; ambiguous or indoor access can remain UNKNOWN after model assessment.
@@ -215,10 +228,15 @@ Its separately authorized one-use package is consumed. The automatic four-output
 produces a source-bound final report, saved accounting and exact network-free replay.
 Processing and binding acceptance do not require every itinerary check to PASS.
 
-The next review boundary is human agreement on the remaining Powerhouse admission UNKNOWN,
-two V1 literal-address FAILs and existing soft pace deductions. Further official acquisition,
-business-status policy, address equivalence, V0 baseline changes and formal research are
-separate follow-ups. Completion grants no new execution, freeze, push, PR, merge or
+Current local implementation and offline acceptance cover
+[address equivalence #92](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/92)
+and [V3 soft pace optimization #93](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/93).
+The four original outputs and their accepted report remain immutable. Fresh V3 generation
+under the Repair objective and a new fully bound final report require separately approved
+execution packages. The remaining Powerhouse admission UNKNOWN needs human disposition
+or applicable access evidence. Further official acquisition, business-status policy,
+V0 baseline changes and formal research are separate follow-ups. Completion grants no
+new execution, freeze, push, PR, merge or
 branch-switch authority.
 GitHub Issues own specifications and live task state; earlier approvals and deliveries
 remain in their dated records rather than a chronological status diary here.

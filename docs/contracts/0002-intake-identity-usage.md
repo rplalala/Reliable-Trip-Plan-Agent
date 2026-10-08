@@ -206,13 +206,21 @@ Implemented under [#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/iss
 with version-owned requirement targets corrected locally under
 [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83).
 `resolve_identities(intake, evidence, *, model_result=None)` produces
-`association_policy_version=versioned_api_identity_3`. Every V1-V3 final/optional
+`association_policy_version=versioned_api_identity_4`. Every V1-V3 final/optional
 primary visit requires its original `source_place_id`, structured `place_name` and
 `location`. Proven missing fields are FAIL even without an API response. Independent
 Details must have an available observation with retrieval provenance, the requested ID
 equal to the original ID and the returned ID equal to that request. Missing/failed,
-malformed or unlinked Details are UNKNOWN. Name and address use literal field equality;
-no normalization, translation, precision, semantic or fuzzy rescue is applied.
+malformed or unlinked Details are UNKNOWN. Names retain literal equality. Address
+comparison is binary PASS/FAIL: exact text, case/Unicode/whitespace formatting, or
+complete equivalence explained by `longText`/`shortText` pairs supplied by the same
+independent Google observation. Remaining words, punctuation and numbers must agree.
+No abbreviation dictionary, similarity threshold or model fallback is used. Conflicting
+alias mappings and unexplained differences are FAIL. Missing acquisition/identity
+provenance is a separate uncertainty; it cannot author an address comparison PASS.
+`address_comparison` retains the original/provider strings, binary verdict, basis and
+used pairs. Policy 3 retains literal address behavior during historical reconstruction;
+policies 1/2 and historical V0 correspondence also keep their original replay paths.
 Only PASS adopts a canonical ID. FAIL/UNKNOWN retain null canonical IDs and original claims.
 
 Accepted on 2026-10-08, primary-visit `place_association` independently records
@@ -254,9 +262,14 @@ The candidate count must equal the declared result count; a full 20-result page 
 retained next-page token remains UNKNOWN because completeness is unverified. A present
 pagination field with an empty or non-string value is malformed and also UNKNOWN. Malformed
 candidates or conflicting facts for one ID also remain UNKNOWN. Filter all candidates
-by literal original name, verified destination and any supplied literal formatted
-address, then require one distinct surviving ID. Zero/multiple matches are UNKNOWN;
-rank never chooses a candidate. Identical repeated observations of one ID are allowed.
+by literal original name, verified destination and any supplied equivalent formatted
+address, then require one distinct surviving ID. A complete search with exactly one
+name/destination-eligible ID and a supplied address mismatch gives FAIL, retaining
+`address_comparison`. `candidate_address_comparisons` preserves each eligible ID's
+binary comparison even when multiple identities leave resolution UNKNOWN. Zero eligible
+identities and multiple surviving matches remain UNKNOWN; rank never chooses a candidate.
+Identical repeated observations of one ID are allowed. Ambiguous mappings include any
+long or short endpoint paired with multiple different endpoints.
 Destination tokens use literal typed long/short component values, with explicit locality
 or administrative region and country evidence; without typed components they require
 exact formatted-address tokens. Hierarchical sublocality levels remain separate and

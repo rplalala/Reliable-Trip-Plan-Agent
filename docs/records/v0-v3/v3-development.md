@@ -2341,3 +2341,67 @@ separate partial runs. Final documentation checks verify new prose is English,
 new local links/anchors resolve through tracked files, and production code/configuration/
 dependencies have no difference from the fixed base. No new runtime instrumentation
 was introduced, and no further broad rerun was necessary after this passing gate.
+
+<a id="soft-pace-repair-acceptance-2026-10-09"></a>
+
+## V3 soft pace Repair objective acceptance (2026-10-09)
+
+Status: implemented and offline-validated under
+[#93](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/93). The user clarified
+that zero deductions is a V3 Repair optimization objective, not an output validity gate
+or cause of Repair failure. Public TDD seams and Issue publication were approved. The
+fixed review base is `35499b65fabebdfe1cb572123d7fb9bdeabfcd15`; implementation is
+`32be42d`, with review correction `0a4a96b`. Concurrent address work is independently
+owned by the [address acceptance](../evaluation/intake-identity-usage.md#google-address-equivalence-acceptance-2026-10-09).
+The unrelated `.gitignore` edit and four existing original outputs were preserved.
+
+### Implementation and observed behavior
+
+The existing interpretation call obtains bounded, source-linked daily pace, exact daily
+counts and requested-date exceptions. Canonicalization validates quotes and dates;
+no validator keyword inference or additional model stage is introduced. Empty preferences
+use ordinary pace locally; historical null/absent metadata remains unassessed. Wire
+`PreferenceDraftV10` and prompt `preference_prompt_19` identify the optional extension.
+Pure numeric curves are shared with RTPEval while interpretation and evidence remain
+independent. V0-V2 and V3 draft acceptance acquire no zero-deduction constraint.
+
+V3 quantity review produces diagnostic soft targets and bounded legal permissions.
+Read-only validation counts primary visit occurrences, including independently assessed
+visits labeled generic. Candidate qualification, mandatory visits/counts/dates, role,
+route/occupancy, coverage, and existing budgets still govern acceptance. A proposed patch
+must reduce its authorized objective without increasing another comparable date's penalty
+or losing its evidence. It cannot relabel visits to evade counting. Before/after summaries
+report reached, residual or unavailable targets, explicitly without a failure constraint.
+
+Mocked public `run_repair_stage` demonstrates relaxed three visits becoming two, reducing
+the daily penalty **40 to 0**; immutable draft and accepted patch are retained. A four-visit
+day becomes three with **70 to 40** after one authorized model call, then stops at the model
+limit as ACCEPTED_PARTIAL, preserving that legal improvement. A protected mandatory visit
+cannot be deleted. An exhausted stage sends no model request and preserves its usable
+draft and residual penalty. Existing disabled/no-op/rejected/budget paths remain covered
+by the full V3 suite. The actual V3 runner consumes the existing interpretation call's
+pace metadata and exposes separate original/final diagnostics. Public evaluator reporting
+and V3 validation agree on the tested literal numeric examples and date override.
+
+### Validation and limitations
+
+Test-first public behavior exposed the absent soft target/progress before implementation.
+Integration required migrating only synthetic provider fixtures and current wire/prompt
+assertions; frozen original artifacts were not edited. The broader failure/correction
+sequence and shared full-backend checkpoint (**3195 passed, 10 skipped**, 464.36 seconds)
+are recorded once in the linked address acceptance. This full checkpoint is at `32be42d`.
+Subsequent address/V3 review-correction tests passed **483** at `0a4a96b`. Standards review
+found one P3 possible duplicate computation: authorization and acceptance independently
+implemented the same pace-permitted coverage floor. `pace_coverage_floor` now owns that
+pure formula; both checks still apply it independently. Standards and Spec rechecks report
+zero remaining findings. Ruff and whitespace checks pass. The subsequent full evaluator
+gate passed **1248 / 1 skipped** in 425.16 seconds at the same revision; its shared
+source-binding/replay scope is detailed in the address acceptance.
+
+Local gate identifiers are `artifacts/address-pace-tests/review-green.log` and
+`full-stable.log`, not published dependencies. No real generation, model/provider request,
+budget increase, version freeze, push or PR occurred. Numeric agreement and controlled
+Repair behavior establish the implementation paths, not a general quality guarantee.
+The retained real V3 output and the existing four-version run's six soft penalty findings
+were not changed retroactively. Fresh V3 generation followed by a newly bound evaluator report
+requires a separate approved execution package; residual penalties remain valid outcomes.

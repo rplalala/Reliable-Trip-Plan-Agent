@@ -24,6 +24,15 @@ ambiguous conditions. Gate validity is input acceptability, not a feasibility gu
 Clarification, dedicated safety outcomes, provider failure and malformed model output
 remain different outcomes. Unsupported hard conditions are not silently softened.
 
+The existing interpretation call also returns optional `daily_pace`: one null-date
+default and unique requested-date overrides, with `ordinary`, `relaxed`, `rich` or
+`unresolved` profile, optional explicitly requested exact daily count and original
+source quotes. Canonicalization verifies quote spans and date scope. Relaxed/rich
+style does not invent an exact count. Empty preferences supply ordinary style locally;
+historical absent/null metadata stays unassessed. `PreferenceDraftV10` and
+`preference_prompt_19` identify the current wire/prompt. Only V3 Repair uses this
+metadata as an optimization target; initial generation gains no zero-penalty constraint.
+
 ## Preference policy
 
 An ordinary count-free positive POI interest has a soft target of one distinct qualifying

@@ -91,13 +91,16 @@ independent API candidates; V1-V3 identity and requirements use API evidence and
 rules without an identity model or fallback. The subsequently approved
 [opening-only exception](contracts/0004-opening-routes.md#missing-hours-access-judgment)
 introduces model access assessments when both schedules are missing. Original API-backed
-name/address differences count as errors, without repair. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
+unexplained name/address differences count as errors, without repairing original outputs.
+Google-supported address aliases use a binary, auditable equivalence comparison.
+[Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
 owns the classified follow-ups. Version dispatch (#75) and the V0 citation/missing-address
 response correction (#76) are implemented locally; fresh-smoke preparation, offline route integration and delivery
 remain separate follow-ups. Historical evidence is not reclassified.
 
 Implemented identity uses the [version-specific contract](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement):
-V1-V3 use ID-linked API Details and literal name/address equality. RequirementSpec
+V1-V3 use ID-linked API Details, literal name equality and same-observation address
+equivalence. RequirementSpec
 meaning and API acquisition evidence are shared, but target identities are version-owned
 under [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83). V1-V3 targets
 use independent Details bindings or complete search evidence with a unique strict matching
@@ -112,8 +115,8 @@ references and sampling no longer require human identity confirmation. Address c
 remains a separate assessment: recognizing a venue does not repair the delivered address
 or establish opening/route feasibility. Both a recognizable venue with an incorrect submitted
 address and an address identifying another venue produce grounding FAIL and prohibit canonical
-claim adoption. Under `versioned_api_identity_3`, the separately verified physical
-association may permit requirement occurrence matching and opening/routes despite claim
+claim adoption. Under `versioned_api_identity_3` and current policy 4, the separately
+verified physical association may permit requirement occurrence matching and opening/routes despite claim
 FAIL: V0 uses existing validated
 correspondence, V1-V3 independently verify the original API ID. Untrusted associations
 remain UNKNOWN. Original time, order, transport mode and reserved duration are unchanged;

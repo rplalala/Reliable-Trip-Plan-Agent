@@ -4054,3 +4054,77 @@ or a replacement execution receipt. No additional Google/model calls or cost wer
 The remaining opening issues need explicit access, evidence-applicability and closure
 semantics. The [opening proposal](opening.md#opening-access-boundary-proposal-2026-10-09)
 records advice only; it does not alter current scoring or authorize collection.
+
+<a id="google-address-equivalence-acceptance-2026-10-09"></a>
+
+## Google-supported address equivalence acceptance (2026-10-09)
+
+Status: implemented and offline-validated under
+[#92](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/92). The user approved
+binary address comparison, public resolver/CLI TDD seams and Issue publication. The
+fixed review base is `35499b65fabebdfe1cb572123d7fb9bdeabfcd15`; implementation is
+`c77fbed`, with review correction `590ac9d`. Shared regression also includes the
+separate [V3 pace scope](../v0-v3/v3-development.md#soft-pace-repair-acceptance-2026-10-09)
+through `0a4a96b`. The unrelated pre-existing `.gitignore` edit was excluded. No live
+request, original-output rewrite, Git publication or formal comparison was authorized.
+
+Policy `versioned_api_identity_4` uses the same independent Google observation's
+long/short address component pairs, after provenance and ID/name checks, to explain
+the complete original address. Exact/format equivalence and supported aliases PASS;
+unexplained differences and conflicting aliases FAIL. Missing independent observations
+remain identity uncertainty, rather than fabricated address judgments. V0 correspondence
+and historical policies 1-3 retain their original replay paths.
+
+### Test and review sequence
+
+Initial public-boundary tests reproduced supported aliases failing under literal rules.
+Implementation then passed alias, number/city, missing/conflicting component, original
+immutability, real CLI and historical-reconstruction checks. Negative provenance tests
+also caught misleading comparison PASS records on unverified observations; comparison
+auditing was restricted to verified attempted comparisons before the implementation commit.
+Two early test assumptions were corrected: whole-batch CLI exit includes unresolved
+other versions, and assertions about a historical address case must target that version.
+
+Independent Spec review found two P2 defects: a cross-linked long/short endpoint could
+excuse another street, and an unbound requirement's unique candidate could lose its
+address FAIL in a search UNKNOWN. Failing public tests reproduced both. The first
+subject test accidentally supplied the search helper with the wrong shape; a corrected
+fixture independently reproduced UNKNOWN instead of FAIL before the fix. The correction
+rejects conflicts on either alias endpoint and retains candidate-level binary comparisons.
+A unique eligible mismatch is FAIL; multiple candidate identities remain independently
+uncertain. Tests cover unique FAIL, multiple FAIL comparisons, a surviving PASS alongside
+FAIL, and source-bound report reconstruction. Standards review's separate P3 V3 duplication
+was corrected in `0a4a96b`; both axes then reported zero remaining findings.
+
+An early broad run failed 22 tests (3161 passed, 10 skipped): the pure numeric helper's
+import allowlist, current policy/wire/prompt assertions, synthetic optional-field fixtures,
+and a tuple/list construction in a new date-override test required correction. A separate
+overlapping wire/preparation run observed a source-binding mismatch while implementation
+files changed. After correcting the tests and freezing production sources, the full backend passed **3195 / 10 skipped** in
+464.36 seconds at `32be42d`. After the review corrections, the address/public-CLI and
+complete V3 gate passed **483** in 30.28 seconds at `0a4a96b`. Ruff and whitespace checks
+passed. Because the correction adds candidate audit fields, the complete evaluator suite
+then passed **1248 / 1 skipped** in 425.16 seconds at the same revision, covering downstream
+scoring, source binding and replay. Local gate identifiers are
+`artifacts/address-pace-tests/full-stable.log`, `review-green.log` and
+`evaluation-review-final.log`; these are evidence identifiers, not published dependencies.
+
+### Retained evidence recalculation
+
+With DNS and sockets prohibited, public `resolve_versioned_identities` first reconstructed
+the accepted policy-3 identity report exactly, then separately applied policy 4. Only two
+grounding/canonical outcomes changed, both V1 FAIL to PASS:
+
+| Original venue | Google-supported pair | Result |
+| --- | --- | --- |
+| Sydney Harbour Bridge | `Sydney Harbour Bridge` / `Sydney Hbr Brg` | PASS |
+| Australian National Maritime Museum | `Darling Harbour` / `Darling Hbr` | PASS |
+
+All other address words/numbers remain matched. The local receipt identifier is
+`artifacts/address-pace-tests/retained-address-check.json`. The accepted #91 full report
+SHA-256 remains `8992422ca3953fd1d90f059674da68e1f18e1730f5816157a876a8b7d7c1c83b`;
+its receipt remains `5ea846bccf2ededed1275bbc3690b36659c46c2a262a32b7fbabb165a42e5c7c`.
+All four original output hashes remain unchanged. Google/model sends and additional cost
+are zero. This is an identity-only engineering recalculation, not a newly bound four-version
+quality report. New implementation bindings and any additional live judgments require
+separate preparation and authorization; the old report/receipt are never relabeled.
