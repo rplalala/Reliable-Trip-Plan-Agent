@@ -6,6 +6,28 @@ from decimal import Decimal
 CHECKED_ON = "2026-10-08"
 GOOGLE_SOURCE = "https://developers.google.com/maps/billing-and-pricing/pricing"
 MODEL_SOURCE = "https://developers.openai.com/api/docs/models/gpt-6-luna"
+LUNA_RATES = {
+    "input_tokens": "0.10",
+    "cached_input_tokens": "0.01",
+    "cache_write_input_tokens": "0.125",
+    "output_tokens": "0.50",
+}
+LONG_CONTEXT_THRESHOLD = 272000
+LONG_INPUT_MULTIPLIER = "2"
+LONG_OUTPUT_MULTIPLIER = "1.5"
+EMBEDDING_RATE = "0.020"
+GOOGLE_RATES = {
+    "text_search_ids_only": "0",
+    "text_search_pro": "0.032",
+    "nearby_pro": "0.032",
+    "details_ids_only": "0",
+    "details_essentials": "0.005",
+    "details_pro": "0.017",
+    "details_enterprise": "0.020",
+    "details_reviews": "0.025",
+}
+MATRIX_RATES = {"essentials": "0.005", "pro": "0.010"}
+WEB_SEARCH_RATE = "0.010"
 DETAILS_IDS = {"id", "name", "attributions"}
 DETAILS_ESSENTIALS = {"addressComponents", "formattedAddress", "location", "types"}
 DETAILS_PRO = {
@@ -34,33 +56,24 @@ def reference_basis():
         "actual_account_prices": False,
         "model": {
             "gpt-6-luna": {
-                "input_per_million": "0.10",
-                "cached_input_per_million": "0.01",
-                "cache_write_per_million": "0.125",
-                "output_per_million": "0.50",
-                "long_context_threshold": 272000,
-                "long_input_multiplier": "2",
-                "long_output_multiplier": "1.5",
+                "input_per_million": LUNA_RATES["input_tokens"],
+                "cached_input_per_million": LUNA_RATES["cached_input_tokens"],
+                "cache_write_per_million": LUNA_RATES["cache_write_input_tokens"],
+                "output_per_million": LUNA_RATES["output_tokens"],
+                "long_context_threshold": LONG_CONTEXT_THRESHOLD,
+                "long_input_multiplier": LONG_INPUT_MULTIPLIER,
+                "long_output_multiplier": LONG_OUTPUT_MULTIPLIER,
                 "source": MODEL_SOURCE,
             }
         },
         "embedding": {
             "model": "text-embedding-3-small",
-            "input_per_million": "0.020",
+            "input_per_million": EMBEDDING_RATE,
             "source": "https://developers.openai.com/api/docs/models/text-embedding-3-small",
         },
-        "google_per_request": {
-            "text_search_ids_only": "0",
-            "text_search_pro": "0.032",
-            "nearby_pro": "0.032",
-            "details_ids_only": "0",
-            "details_essentials": "0.005",
-            "details_pro": "0.017",
-            "details_enterprise": "0.020",
-            "details_reviews": "0.025",
-        },
-        "matrix_per_element": {"essentials": "0.005", "pro": "0.010"},
-        "web_search_per_tool_call": "0.010",
+        "google_per_request": dict(GOOGLE_RATES),
+        "matrix_per_element": dict(MATRIX_RATES),
+        "web_search_per_tool_call": WEB_SEARCH_RATE,
         "google_source": GOOGLE_SOURCE,
         "tool_source": "https://developers.openai.com/api/docs/pricing",
         "assumptions": [
@@ -79,7 +92,7 @@ def _provider_price(event):
     context = event.get("billing_context", {})
     if provider == "azure_foundry" and operation == "web_search_tool":
         return (
-            {"tool_calls": "0.010"},
+            {"tool_calls": WEB_SEARCH_RATE},
             "https://developers.openai.com/api/docs/pricing",
             "Web Search tool",
         )
@@ -102,7 +115,7 @@ def _provider_price(event):
             return None
         pro = preference in ("TRAFFIC_AWARE", "TRAFFIC_AWARE_OPTIMAL")
         return (
-            {"element_count": "0.010" if pro else "0.005"},
+            {"element_count": MATRIX_RATES["pro" if pro else "essentials"]},
             GOOGLE_SOURCE,
             "Matrix Pro" if pro else "Matrix Essentials",
         )
@@ -116,10 +129,18 @@ def _provider_price(event):
         if not fields or not fields <= SEARCH_PRO:
             return None
         if endpoint == "searchText" and fields <= DETAILS_IDS:
-            return {"requests": "0"}, GOOGLE_SOURCE, "Text Search IDs Only"
+            return (
+                {"requests": GOOGLE_RATES["text_search_ids_only"]},
+                GOOGLE_SOURCE,
+                "Text Search IDs Only",
+            )
         # Current planners/identity search request Pro fields; no unseen masks are inferred.
         return (
-            {"requests": "0.032"},
+            {
+                "requests": GOOGLE_RATES[
+                    "text_search_pro" if endpoint == "searchText" else "nearby_pro"
+                ]
+            },
             GOOGLE_SOURCE,
             "Text Search Pro" if endpoint == "searchText" else "Nearby Search Pro",
         )
@@ -131,15 +152,15 @@ def _provider_price(event):
         ):
             return None
         sku, rate = (
-            ("Details Enterprise + Atmosphere", "0.025")
+            ("Details Enterprise + Atmosphere", GOOGLE_RATES["details_reviews"])
             if "reviews" in fields
-            else ("Details Enterprise", "0.020")
+            else ("Details Enterprise", GOOGLE_RATES["details_enterprise"])
             if fields & DETAILS_ENTERPRISE
-            else ("Details Pro", "0.017")
+            else ("Details Pro", GOOGLE_RATES["details_pro"])
             if fields & DETAILS_PRO
-            else ("Details Essentials", "0.005")
+            else ("Details Essentials", GOOGLE_RATES["details_essentials"])
             if fields & DETAILS_ESSENTIALS
-            else ("Details IDs Only", "0")
+            else ("Details IDs Only", GOOGLE_RATES["details_ids_only"])
         )
         return {"requests": rate}, GOOGLE_SOURCE, sku
     return None
@@ -165,25 +186,29 @@ def build_reference_prices(sources):
                         and event["operation"] == "embedding"
                     ):
                         rates, url, sku = (
-                            {"input_tokens": "0.020"},
+                            {"input_tokens": EMBEDDING_RATE},
                             reference_basis()["embedding"]["source"],
                             "Query embedding",
                         )
                     elif event.get("model") == "gpt-6-luna":
                         long = (
                             type(event.get("input_tokens")) is int
-                            and event["input_tokens"] > 272000
+                            and event["input_tokens"] > LONG_CONTEXT_THRESHOLD
                         )
-                        rates = {
-                            "input_tokens": "0.10",
-                            "cached_input_tokens": "0.01",
-                            "cache_write_input_tokens": "0.125",
-                            "output_tokens": "0.50",
-                        }
+                        rates = dict(LUNA_RATES)
                         if long:
+                            input_multiplier = Decimal(LONG_INPUT_MULTIPLIER)
+                            output_multiplier = Decimal(LONG_OUTPUT_MULTIPLIER)
                             rates = {
-                                k: str(Decimal(v) * (Decimal("1.5") if k == "output_tokens" else 2))
-                                for k, v in rates.items()
+                                unit: str(
+                                    Decimal(rate)
+                                    * (
+                                        output_multiplier
+                                        if unit == "output_tokens"
+                                        else input_multiplier
+                                    )
+                                )
+                                for unit, rate in rates.items()
                             }
                         url, sku = (
                             MODEL_SOURCE,
