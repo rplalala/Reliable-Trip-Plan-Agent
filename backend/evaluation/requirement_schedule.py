@@ -22,13 +22,14 @@ from .records import MaterialError, freeze, require, thaw
 from .schedule_time import expand_protection, normalize_interval
 
 REPORT_VERSION = "rtpeval_requirement_schedule_report_1"
-RULES_VERSION = "rtpeval_requirement_schedule_rules_1"
+RULES_VERSION = "rtpeval_requirement_schedule_rules_2"
 RULES = {
     "version": RULES_VERSION,
     "identity_scope": SUBJECT_SCOPE_VERSION,
     "intervals": "half_open",
     "time_tolerance_seconds": 0,
     "transport": "v0_activity_v1_v3_transfer",
+    "unbound_v0_transport": "declared_activity_clock_establishes_occupancy_without_route_identity",
     "count_default": "explicit_reviewed_payload",
     "protection_units": False,
     "timestamp_fraction_digits": 6,

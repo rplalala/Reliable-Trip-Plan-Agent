@@ -443,6 +443,13 @@ def prepare_occupancy(projection, obligations, timezone=None, reviews=()):
         activity = next(
             (a for a in projection["activities"] if a["source"] == claim["source"]), None
         )
+        if (
+            projection["planner_version"] == "v0"
+            and activity is not None
+            and activity["evaluation_role"] == "transport"
+        ):
+            commitments.append(_activity_unit(activity, "transport", timezone))
+            continue
         day = activity["declared_day"] if activity else None
         if day is None and isinstance(claim["start"], str):
             try:

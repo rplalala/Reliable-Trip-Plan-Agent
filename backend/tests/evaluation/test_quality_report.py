@@ -354,8 +354,9 @@ def test_structured_transport_report_preserves_independent_uncertainties(
         assert dimension["counts"] == {"PASS": 3, "FAIL": 0, "UNKNOWN": 0}
         assert version["primary_metrics"]["routes"]["checks"][0]["state"] == "UNKNOWN"
     else:
-        assert dimension["denominator"] is None
-        assert version["auxiliary_total"]["reason"] == "denominator_unresolved"
+        assert dimension["denominator"] == 3
+        assert dimension["counts"] == {"PASS": 3, "FAIL": 0, "UNKNOWN": 0}
+        assert version["primary_metrics"]["routes"]["checks"][0]["state"] == "UNKNOWN"
     assert version["dimensions"]["grounding"]["denominator"] == 2
     assert version["dimensions"]["opening"]["counts"]["UNKNOWN"] == 2
     assert version["daily_density"]["days"][0]["known_primary_count"] == 2
