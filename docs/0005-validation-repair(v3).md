@@ -91,6 +91,13 @@ cancellation; a caller-owned runtime remains caller-owned. Offline deadline regr
 must establish which phase was reached before asserting its resource lifecycle, rather
 than relying on a short wall-clock delay to select that phase.
 
+Accepted draft and final selection use the shared
+[source-fact ownership boundary](0003-itinerary-transport.md#scheduled-activities-and-references).
+Final selection includes original supply and the verified Repair whitelist, so retaining
+or retiming a visit preserves its provider name and complete address just as add/replace
+does. This application normalization requires no extra model/Google call and does not
+make the read-only validator mutate its input or certify independent ground truth.
+
 ## Verification scope
 
 ### Soft pace objective

@@ -79,6 +79,9 @@ Details: [requirements](docs/0002-requirements-evidence.md),
 - The shared output is `itinerary_2`. Primary visits and optional unscheduled Nearby
   references stay separate. References do not satisfy required visits or count as
   scheduled activities or planned costs.
+- V1-V3 acceptance restores the authorized source's name and complete formatted
+  address, including after V3 Repair. Generic activities and V0 retain model text;
+  raw model captures and historical submitted outputs remain immutable.
 - V0 generates explicitly estimated transport activities without Routes calls.
   New output includes structured mode and directed activity endpoints; absent/null
   declarations remain compatible with historical outputs. These are model estimates.
@@ -180,16 +183,15 @@ Public-landmark revision:
 budgets are distinct. Dated execution allowances do not become runtime defaults.
 [Development guide](docs/guides/development.md) owns runnable commands.
 
-Full backend checkpoint: **3195 passed, 10 skipped** on 2026-10-09 for address equivalence
-and V3 pace optimization. Subsequent review corrections pass **483** address/V3 tests
-and **1248 evaluator tests / 1 skipped**; independent Standards and Spec rechecks have
-zero remaining findings. Retained-evidence
-address recalculation uses zero network requests and reproduces the historical identity
-report before applying current rules. Four original outputs and the accepted #91 full
-report/receipt remain unchanged. The prior opening-policy live acceptance retains its
-own source and implementation bindings; this offline task does not replace it.
+Full backend checkpoint: **3222 passed, 10 skipped** on 2026-10-09 after shared
+Google-backed output fact protection. The policy/version gate passes **774 tests**;
+independent Standards and Spec implementation/documentation rechecks have zero
+remaining findings. Offline derived acceptance restores seven shortened addresses
+without changing original outputs or reports; ten protected hashes and 238 native
+evaluator evidence files agree. The prior opening-policy live acceptance retains
+its own source and implementation bindings; this offline task does not replace it.
 Acceptance details: [address equivalence](docs/records/evaluation/intake-identity-usage.md#google-address-equivalence-acceptance-2026-10-09)
-and [V3 pace optimization](docs/records/v0-v3/v3-development.md#soft-pace-repair-acceptance-2026-10-09).
+and [output source facts](docs/records/v0-v3/v3-development.md#google-backed-output-facts-2026-10-09).
 The latest recorded frontend gate is **98 passed**, with TypeScript, build and lint
 passing; this backend task does not rerun or imply new frontend validation.
 Actual failure/correction/retest sequences belong in the linked acceptance records.
@@ -241,6 +243,10 @@ reduces mean pace deduction from 15 to zero. Eight address grounding FAILs and t
 missing-hours UNKNOWNs remain under current rules; a fresh source-bound access-model
 package is prepared and needs separate execution approval. Detailed smoke evidence
 belongs in [V3 development](docs/records/v0-v3/v3-development.md#real-soft-pace-repair-smoke-2026-10-09).
+The shared [planner address protection #94](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/94)
+is implemented and validated offline. It prevents model-shortened addresses in future
+accepted V1-V3 outputs; the retained seven new-V3 address FAILs remain historical
+results. See [acceptance](docs/records/v0-v3/v3-development.md#google-backed-output-facts-2026-10-09).
 The remaining Powerhouse admission UNKNOWN needs human disposition
 or applicable access evidence. Further official acquisition, business-status policy,
 V0 baseline changes and formal research are separate follow-ups. Completion grants no

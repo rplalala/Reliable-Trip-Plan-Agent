@@ -17,6 +17,20 @@ validity. Nearby identities resolve against that acquisition's evidence, which c
 from the primary supply. The application preserves attribution and deduplicates references
 against scheduled identities. An unused supply candidate is not automatically a reference.
 
+At V1-V3 output acceptance, each authorized `source_place_id` owns `place_name` and
+`location`: the application copies the supplied normalized PlaceEvidence's `name` and
+complete `formatted_address`, including null when the provider has no address. Model
+aliases, abbreviated locations and invented addresses do not override those source facts.
+An unavailable or foreign identity fails before backfill. Generic null-ID activities
+retain their model text, and V0 retains its plain-model name/address behavior.
+
+The same boundary runs for accepted generation and V3 final selection using original
+supply plus verified Repair additions. Retained, retimed, added and replaced visits
+therefore share source ownership. It preserves title, notes, roles, dates, times and
+costs; raw model objects and wire captures remain unchanged. This is prospective
+generation behavior, not retroactive correction of saved outputs or independent factual
+verification. The evaluator still judges immutable submitted claims against fresh evidence.
+
 Stable within-day ordering is structural normalization. It does not repair overlap,
 move day groups, invent times or establish feasibility. Diagnostics remain associated
 with the same activity after ordering. Post-primary Nearby does not mutate accepted

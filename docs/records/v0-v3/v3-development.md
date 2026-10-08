@@ -2615,3 +2615,69 @@ prepared but unexecuted pending exact approval. After its receipt, the public qu
 CLI can consume the new opening material and completed route/occupancy reviews;
 all original native receipts remain immutable. Formal ranking, version freeze,
 remote delivery and the partial generation trace remain outside this acceptance.
+
+## Google-backed output facts 2026-10-09
+
+Status: Implemented and validated offline; no fresh generation or version freeze.
+[Issue #94](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/94) owns the
+approved planner fix. Fixed review base is `a1309e0fe27aa9ae85fc7043c4715779a7429d6f`;
+implementation and tests are committed as `202a59d6a2eaaa6573d5e83ef718364db84fa92c`.
+The unrelated pre-existing `.gitignore` change was excluded and its hash preserved.
+
+### Observed failure and correction
+
+Captured Google Details and the complete primary request contained all seven full
+addresses involved in the new-V3 grounding failures above. Primary model response
+`0078` shortened each address. The accepted draft and final output retained those
+seven shortened claims unchanged. The Repair-added visit already had its canonical
+provider address. This source chain isolates an application ownership gap: shared
+acceptance restored the supplied name but left `location` model-authored; retained
+and retimed Repair visits inherited that field. It does not establish bad Google data
+or justify relaxing independent whole-address comparison.
+
+Three first regression cases failed on absent, shortened and incorrect model locations.
+The minimal production correction copies the same authorized PlaceEvidence's
+`formatted_address` alongside its name at `validate_output_sources`. A missing provider
+address becomes null instead of adopting a model guess. The existing V3 final boundary
+already uses original supply plus verified Repair identities, so no duplicated V3
+normalizer, new finding type or extra request was introduced. Titles, times, costs,
+role, notes and private diagnostic attribution remain unchanged; V0 and null-ID
+generic activities keep their original behavior.
+
+### Validation and retained evidence
+
+The user confirmed public `validate_output_sources` and actual `run_v1/run_v2/run_v3`
+test seams. Focused coverage passes 21 cases, including identity rejection, raw object
+immutability, canonical null addresses, V0 preservation, idempotence, real mocked
+version runners and V3 successful/rejected/no-Repair/new-addition paths. The policy
+and complete version regression gate initially returned 771 passes and three failures:
+old preservation fixtures lacked their source's canonical address. Updating only those
+fixtures retained the original equality, time/Repair/Nearby assertions; the gate then
+passed **774 tests in 28.06 seconds**. Full backend validation then passed
+**3222 tests, 10 skipped in 447.45 seconds** on the unchanged implementation.
+Ruff lint on the six changed Python files, formatting of both new test files,
+English additions, tracked documentation targets/anchors and whitespace checks pass.
+The policy file's unrelated existing formatter differences are also present at the
+fixed base and were preserved rather than included in this correction.
+
+Implementation/tests were committed before independent Standards and Spec review.
+Both implementation reviews and final-documentation rechecks report zero findings.
+Final documentation is consolidated after validation; no review correction commit
+was needed.
+
+DNS/TCP-blocked retained reproduction first failed the canonical-address invariant and
+passes after the fix. A separate in-memory derived acceptance applies the real public
+boundary to the retained draft/final. It restores all seven affected final addresses,
+preserves the other activity fields and leaves all originals untouched. Ten protected
+hashes include five old/new outputs, old and fresh reports/receipts and `.gitignore`;
+all agree. The fresh native receipt's **238 closed files** also match their hashes.
+Local historical identifiers are
+`artifacts/sydney-v3-pace-preparation-20261009-r1/google-address-generation-diagnosis.json`
+and `google-address-fix-offline-acceptance.json` in that same directory. They are local
+diagnosis/derived-proof aids, not a new generation, evaluator report or replacement receipt.
+
+Actual external sends and new charges are zero. Historical seven new-V3 grounding
+FAILs, twelve missing-hours UNKNOWNs, pending opening-package authorization and partial
+generation-trace coverage remain unchanged. A future real V3 generation needs its own
+prepared and approved package; current independent evaluator rules remain unchanged.
+No push, PR, merge, branch switch, formal comparison or freeze occurred.
