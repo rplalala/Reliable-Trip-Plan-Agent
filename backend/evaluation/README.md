@@ -137,9 +137,13 @@ API-backed references continue independently. V0 semantic judgments remain falli
 accepted material or 2 for correction. Identity exits 0 for packet preparation/completed
 judgments (including confirmed failures), 3 for UNKNOWN/missing judgment, and 2 for
 material/linkage errors. Incorrect submitted addresses and different venues are grounding
-FAIL, even when the intended venue is recognizable. Their canonical ID stays null: candidate
-facts cannot supply corrected route endpoints. Original outputs and denominators are retained.
-Current reports use `versioned_api_identity_2`; V0 packets use
+FAIL, even when the intended venue is recognizable. Their canonical ID stays null.
+A separate verified `place_association` permits independent opening/routes using the API
+venue's hours/coordinates against original time, order, mode and reserved duration. V0
+requires validated candidate correspondence; V1-V3 require the independently verified
+original submitted ID, without evaluator LLM or searched replacement. Untrusted association
+remains UNKNOWN. Original outputs, grounding failures and requirement counting are retained.
+Current reports use `versioned_api_identity_3`; V0 packets use
 `v0_identity_correspondence_3`: citation paths are schema enums
 shared with import. Address-presence schema alternatives bind short reference IDs;
 every absent/null/blank address requires `not_supplied` and forbids `claim.location` citations.
@@ -151,6 +155,8 @@ the response must cite original name/destination and independent candidate suppo
 Old policy-1 packets and rejected historical output cannot be normalized or relabeled for
 current import. The frozen historical all-version schema remains explicitly replayable.
 
+`--historical-association` explicitly replays `versioned_api_identity_2` reports with
+the former canonical-only downstream eligibility; historical evidence/results are preserved.
 `--historical-program` explicitly replays the former `versioned_api_identity_1`
 shared-target policy and `v0_identity_correspondence_2` packet. Its material cannot
 pass current import. `--historical-llm` remains the older all-version replay.
@@ -344,7 +350,21 @@ quality reporting rejects this V0-only view with `Exactly four versions required
 the smoke does not bypass intake or establish an overall quality score.
 The dated input needs trusted-day revalidation before later use.
 
-Prepare from an exact current `versioned_api_identity_2` report without acquiring evidence:
+The [Museum follow-up preparation](../../docs/records/evaluation/routes.md#sydney-museum-follow-up-preparation-2026-10-08)
+uses current physical association while retaining the original address FAIL. The
+original Museum-to-QVB leg is WALK with a 20-minute reservation. The separately approved
+[execution](../../docs/records/evaluation/routes.md#sydney-museum-follow-up-execution-2026-10-08)
+completed one Museum Details and one WALK Matrix request, both HTTP 200, zero retries.
+Museum opening PASS uses regular hours; the WALK takes 562 seconds over 678 metres.
+Combined opening counts are five PASS/two UNKNOWN and three evaluable routes PASS.
+Eight prior observations retain their original bytes/timestamps; no DRIVE extension
+is included. USD 0.025 is retail reference, with actual billing unknown. The one-use
+directory/allowance is consumed. Saved reports replay exactly and requirement/schedule
+sections remain unchanged; no overall score or final four-version acceptance follows.
+The actual source remains a single-version library view. Existing bundle/CLI
+regressions do not turn it into a qualified four-version intake or adoption bundle.
+
+Prepare from an exact current `versioned_api_identity_3` report without acquiring evidence:
 
 ```powershell
 $env:PYTHONIOENCODING = 'utf-8'

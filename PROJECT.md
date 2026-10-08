@@ -1,6 +1,6 @@
 # Capstone Project Context
 
-Current source of truth. Updated 2026-10-07.
+Current source of truth. Updated 2026-10-08.
 Detailed design, development and acceptance records are indexed in
 [docs/README.md](docs/README.md).
 
@@ -119,7 +119,7 @@ separates user-requested target identity by version: V0 uses model correspondenc
 V1-V3 use independent program checks. RequirementSpec meaning and API evidence remain
 shared; final requirement counting consumes each version's own target. Unbound program
 targets filter complete candidates by literal name, destination and supplied address
-before requiring one distinct ID. The current report/packet policies are
+before requiring one distinct ID. At that checkpoint the report/packet policies were
 `versioned_api_identity_2` and `v0_identity_correspondence_3`; historical #82 results
 retain their original policy. This correction is implemented and independently reviewed
 offline; evaluator tests pass. The subsequently approved
@@ -245,6 +245,56 @@ all 182 frozen files are preserved. The four-version quality consumer correctly 
 this single-source view; no final total or complete version acceptance is established.
 Generation, original itinerary and scoring code are unchanged. See the
 [opening/route assessment](docs/records/evaluation/routes.md#sydney-v0-opening-routes-smoke-2026-10-08).
+The accepted 2026-10-08 offline correction separates primary-claim grounding from
+physical API association under `versioned_api_identity_3`. Original name/address FAIL,
+null canonical claim adoption and requirement-counting rules remain intact. Verified
+V0 correspondence or an independently verified original V1-V3 ID can supply opening/
+route evidence against the original time, mode and reserved duration. The V0 packet
+protocol remains `v0_identity_correspondence_3`; V1-V3 use no evaluator model or searched
+replacement. Explicit policy-2 replay preserves historical reports and blocking rules.
+Sydney saved-evidence replay retains six primary PASS and one FAIL, with seven verified
+physical associations; Australian Museum remains FAIL and gains only evidence-plan
+eligibility. No new Museum Details or route request was sent at that correction
+checkpoint. The correction's
+implementation, review and validation are recorded in the
+[association acceptance](docs/records/evaluation/intake-identity-usage.md#physical-association-with-retained-grounding-fail-2026-10-08).
+Generator behavior and scoring formulas are unchanged. Final genuine V0-V3 intake,
+complete independent evidence and requirement review remain pending; this is not final
+version acceptance, a freeze or a formal comparison. Tracker publication of a new
+follow-up Issue remains unapproved; no push, PR, merge or new live execution is included.
+
+The approved [Museum follow-up preparation](docs/records/evaluation/routes.md#sydney-museum-follow-up-preparation-2026-10-08)
+retains the existing V0 correspondence and address FAIL. Original Museum-to-QVB
+transport is WALK with a 20-minute reservation; no DRIVE extension is needed.
+After exact-plan approval, the configured execution child completed one Museum
+Details and one WALK Matrix request, both HTTP 200 with zero retries. Retail reference
+is USD 0.025; actual billing is unknown. Museum opening PASS uses regular-hours fallback;
+the 562-second/678-metre WALK fits the original interval. Combined opening is five PASS
+and two UNKNOWN; all three evaluable routes PASS, retaining unresolved generic transport.
+Eight prior observations keep their raw bytes/timestamps. Offline reports replay exactly,
+all 240 frozen hashes passed before documentation updates, and requirement/schedule
+sections remain identical to the prior report. The quality consumer still rejects the
+V0-only view, so no overall score or genuine V0-V3 final acceptance follows. The one-use
+directory and allowance are consumed. See the
+[execution assessment](docs/records/evaluation/routes.md#sydney-museum-follow-up-execution-2026-10-08).
+
+The approved Sydney four-version offline inventory found one linked original V0 result
+and no matching V1-V3 result in accessible structured local material. The complete
+RequirementSpec meaning is now user-reviewed; agent pace/activity/occupancy reviews
+retain relaxed pacing without a daily quota and keep the generic food block occupied.
+Changed intake cannot reuse the old identity packet/evidence bindings. No new request,
+qualified four-version batch or total score exists. See the
+[material preparation record](docs/records/evaluation/intake-identity-usage.md#sydney-four-version-material-preparation-2026-10-08).
+
+The subsequent generation/binding plan proposes USD 43 in retail-reference allowances:
+V1 11, V2 12, V3 14 and independent final evidence/V0 identity replay 6. This is a
+development plan with zero authorized paid sends. Existing dispatch lacks complete
+token/cost guards; Foundry account prices and server-side Web Search content cost remain
+unverified. Local TripWorld corpus hashes pass, but query embedding lacks OPENAI_API_KEY;
+database compatibility is untested. Genuine outputs must precede exact evaluator request
+planning and four-version attestation. See the
+[budget and execution preparation](docs/records/evaluation/intake-identity-usage.md#sydney-generation-and-evidence-budget-preparation-2026-10-08).
+
 The user clarified that smoke is a development check, not an actual system stage, and
 requested an evaluation `tools/` boundary. V0 smoke request/budget preparation now lives
 under `backend/evaluation/tools/`; Product planning and independent final scoring do not

@@ -2848,3 +2848,465 @@ V1-V3 behavior and original 2/2/2/1 counts remain unchanged. Both execution allo
 are consumed; no rerun is implied. Opening, routes, final scoring and four-version
 acceptance remain outstanding. No push, PR, merge, tracker mutation, formal comparison
 or version freeze is included.
+
+## Physical association with retained grounding FAIL, 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Fixed review base:
+`837b9b28cdab15108179ccc3828953a046ed27db`, branch `feature/evaluation`.
+Implementation/test commit: `536de17afed6e16b0749bdecfa2c12c112d86a45`.
+The unrelated pre-existing `.gitignore` change is preserved and excluded from task commits.
+Scope is the accepted offline evaluator correction, tests, local commits, independent
+Standards/Spec review and current contracts; no generator, score-formula, paid-call,
+tracker publication, push/PR/merge, branch-switch, DRIVE smoke-adapter or formal experiment.
+The latest decision explicitly supersedes the earlier instruction to skip failed places.
+The user accepted the retained Australian Museum address FAIL; the earlier speculative
+false-positive inspection was not pursued further.
+
+The current report policy is `versioned_api_identity_3`. Primary occurrences record
+`place_association` independently from original grounding/canonical claim adoption.
+Trustworthy V0 correspondence and independent V1-V3 original-ID verification permit
+API hours/coordinates to check the original visit/transport claims despite grounding FAIL.
+Different/unverified venues and conflicting evidence remain unavailable. Missing original
+V1-V3 names/addresses still FAIL while ID verification proceeds independently. No evaluator
+model/fallback is introduced for those versions. Requirement targets/counting and score
+arithmetic remain unchanged. The model correspondence protocol remains version 3, so the
+existing validated V0 material can be reused without a new request. Explicit
+`--historical-association` replays policy 2 exactly; policy 1 and older LLM/human paths remain.
+The [identity contract](../../contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
+owns the complete current rule, with downstream behavior in the
+[opening/routes contract](../../contracts/0004-opening-routes.md#opening).
+
+Validation used synthetic public evaluator seams and source-linked saved Sydney material.
+The initial pytest attempt hit denied default temporary/cache directories before test
+execution; a separate repository-local `.scratch` basetemp with cacheprovider disabled
+resolved that environment limitation. TDD first exposed the absent association field,
+then the old downstream exclusion. End-to-end regressions retain original FAIL while
+opening/routes PASS using trusted evidence, preserve WALK/DRIVE/TRANSIT and original
+times, and verify DRIVE's unchanged 600-second reserve. V1-V3 have separate program-ID
+regressions for each version. Missing/conflicting IDs, unavailable Details, invalid
+provenance, no-match correspondence and forged reports preserve unavailable evidence.
+
+The first entire evaluator gate had 1097 passed, 4 failed and 1 skipped: four existing
+assertions expected the superseded FAIL-coordinate block or policy-2 marker. Updating
+those assertions produced a 156-pass focused gate. An additional historical pagination
+test exposed that the generic legacy material loader discarded policy-2 wire metadata;
+policy-specific derivation corrected it and all 31 route-request tests passed. The final
+association test file passed 19 tests, including V1/V2/V3 hours/DRIVE flows and a report
+marker regression that prevents masquerading physical associations as legacy evidence.
+The full backend gate for implementation `536de17` passed 3041 tests with 10 skipped
+and zero failures (511.58 seconds). This precedes the following review correction;
+it is not reported as a post-correction full backend run.
+
+Independent Standards review found no violations or actionable smells. Spec review
+found two P2 report-consumer omissions: controlled human opening facts and exact opening
+venue selectors still used null canonical claim IDs, losing verified physical associations.
+Public `build_controlled_report` regressions reproduced both before correction. Separate
+commit `b511aa2d9bba7acf3ed59b4269edf126d840aa07` centralized opening-check venue selection,
+using the associated ID when emitted and canonical fallback only for historical checks.
+The correction applies only to opening, preserving grounding/requirement/repetition
+selectors. The two new regressions and all 28 affected controlled tests passed; Ruff
+and changed-file formatting passed. Independent rechecks of both correction and combined
+`837b9b2...b511aa2` scope closed both Spec findings and found no new issues: final
+Standards 0, Spec 0. The final entire evaluator gate at `b511aa2` passed 1108 tests with
+1 skipped and zero failures (292.21 seconds). Unaffected backend coverage is reused
+from the preceding full gate; no post-correction whole-backend rerun is claimed.
+Final Ruff checks passed. Seven changed documents passed English-content and
+289 tracked relative-link/anchor checks, plus diff whitespace checks. The final docs
+commit records these outcomes without new implementation changes.
+
+Offline Sydney replay reconstructed the original saved policy-2 identity report exactly.
+Current replay retained primary grounding 6 PASS / 1 FAIL / 0 UNKNOWN and verified seven
+physical associations. Australian Museum retains null canonical ID, original address and
+grounding FAIL, while the existing independently corresponding API ID
+`ChIJlwsH0RWuEmsR3Cg3WEDw76I` permits a new Details plan entry only. No new opening or
+route observation was acquired. Both prior identity and opening/routes artifact trees
+were hashed before/after; all 98 files were unchanged. This protection scope differs
+from the broader historical frozen-file inventories and does not replace those checks.
+Local-only evidence identifier: `artifacts/identity-association-offline-20261008`, containing
+the separate current report and sanitized assessment. Original historical smoke verdicts
+and consumed allowances remain unchanged; actual network sends and incremental charges
+are zero. No single-version view is reported as final four-version acceptance or a score.
+
+GitHub reads of #85/#86 returned HTTP 401 in this session. Their current remote lifecycle
+was not verified; no tracker mutation occurred and the merely suggested new Issue was
+not created. Final V0-V3 evaluator acceptance still needs genuine four-version intake,
+complete independent evidence and the required requirement review. A Museum live
+follow-up requires fresh bounded preparation; DRIVE smoke wiring remains a separate task.
+
+## Sydney four-version material preparation, 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Starting revision:
+`e67528309a6ef9a137f0f3de537dbfd9b6f0b256`, branch `feature/evaluation`.
+The user approved offline inventory and complete input/activity/occupancy/pace review.
+This scope includes related local documentation and commits, with zero network sends,
+no planner/evaluator implementation changes, no paid allowance, no tracker publication
+or Git delivery, and no formal comparison or version freeze. The unrelated `.gitignore`
+change remains excluded. Current artifact, requirement and density contracts remain
+unchanged; this record describes preparation under those contracts.
+
+### Original material and inventory limits
+
+The four-day natural input remains Sydney, 2026-10-14 through 2026-10-17, two travelers,
+AUD 1600, with its original preference prose intact. Exact input SHA-256:
+`1b3c50ad9ce9c58a4caf047388f3c4131faa0cddb0ffff2467dd8b2f1593d6ba`.
+The linked original V0 result SHA-256 remains
+`d8ca6c8ac44aa2438f2efe65534b57488be81dbed217bc7d66626801f78431c7`.
+Its execution receipt records two successful model sends, no retries and 40.625 seconds;
+the captured source revision is `3ae6a070ae6ab7134906720e4ff1be6cb2c7214b`,
+not the current preparation revision. Preserving that historical revision does not
+claim all versions ran at the same revision. Actual provider billing remains unknown.
+
+The local structured-JSON inventory parsed 5,757 files from artifacts, logs and scratch.
+Only one matching `PlanningResult` candidate was found: the original V0 result.
+The other exact input object is embedded in the existing V0 library view, not another
+run. No genuine matching V1-V3 result was located. The scan excludes test/cache output
+by recorded directory prefixes, encounters 148 directory/file read or parsing errors,
+and leaves four oversized files unread. It examines structured objects rather than
+decoding arbitrary serialized prompt strings or binary payloads. Therefore this is an
+accessible local inventory, not proof that another run cannot exist elsewhere. No
+database or remote artifact lookup occurred. Synthetic four-version tests, copies,
+historical replay and unrelated Sydney inputs cannot supply missing selected runs.
+
+Exact-byte copies of the original input and V0 result are staged locally within the
+proposed material root. Newly derived V0 provenance and partial usage sidecars retain
+receipt/plan hashes and missing configuration metadata. Usage records the two observed
+model/HTTP events and 19,695 observed tokens, while default-adapter coverage, complete
+cache events, whole-invocation timing and invoice remain unverified. No absent quantity
+becomes zero, and these derived sidecars do not attest four-version completion.
+
+### Source-only requirement and activity review
+
+The agent examined every original input field and all four preference sentences.
+The first complete RequirementSpec draft was deliberately rejected by intake because
+it lacked user review. The user subsequently confirmed the complete interpretation in
+this chat, permitting a separate `rtpeval_requirements_1` revision 2 marked reviewed:
+one hard named-place obligation, Sydney Opera House exactly once; three source-linked
+soft clauses for relaxed pacing, interests and preferred transport/spacing. Original
+structured trip facts stay in Input. No daily visit quota, fixed/protected time,
+interior-access requirement, interest quota or factual budget PASS is added. The old
+identity-only specification and all historical reports remain immutable.
+
+Agent-origin pace review selects `relaxed`, with null exact daily count and no dated
+overrides. Independent agent activity review treats the original generic Haymarket
+food exploration as a non-primary activity (`transition` in evaluator terminology),
+because it has no concrete venue name/ID. A separate occupancy review retains its
+original 12:40-14:00 interval as a scheduled commitment. Choosing a venue on the day
+does not release that time for travel. No reservation, concrete restaurant, substitute
+endpoint or extra free-time block is invented. All seven primary occurrences retain
+their declared roles; three primary-to-primary WALK journeys remain bound. The fourth
+transport claim ends at generic food activity and stays unbound in this route contract.
+Nearby references stay unscheduled. The reviews use source hash, original pointer,
+reviewer and aware timestamp; agent reviews are not presented as human reviews.
+
+Standalone structural occupancy assessment has 11 known commitments and one unresolved
+transport candidate. Its complete denominator remains unavailable. The reviewed
+structural primary counts are 2/2/2/1; the native daily-density rule gives deductions
+0/0/0/20 and a mean of 5 points. This is a conditional component diagnostic after agent
+role review, not an overall score, factual itinerary acceptance or generation target.
+
+### Admission failures, checks and remaining work
+
+Initial replay of the unchanged library view reproduces its historical native
+requirement/schedule report exactly. Applying only activity review changes the intake
+digest, and reuse of the old V0 model result correctly raises
+`Identity model packet/source mismatch`. Adding the user-reviewed complete specification
+also changes requirement-subject linkage: the unchanged evidence raises
+`Unlinked identity evidence reference`. A private diagnostic initially expected only
+the earlier packet error; correcting that assertion to the observed earlier evidence
+gate made the offline preparation pass. No consumer integrity check was relaxed.
+The native scorer returns `identity_replay_required` for the changed view rather than
+issuing a certified replacement report. Historical grounding 6 PASS / 1 FAIL, opening
+5 PASS / 2 UNKNOWN, three evaluated route PASS and original requirement uncertainty
+remain the accepted bounded checkpoint. Museum FAIL is preserved; missing Opera House
+and Powerhouse opening periods are not filled with guessed hours.
+
+The final offline preparation checks pass: source quotes and complete clause coverage,
+reviewed RequirementSpec wire/semantic validation, projection/occupancy/density review
+validation, exact historical report replay and unchanged protected hashes for 626 files.
+Network/DNS/socket guards record zero attempts. Product and evaluator code are unchanged,
+so no new backend-suite run is claimed. A separate private sidecar check initially omitted
+the parser's explicit schema argument and failed with `Unsupported declared wire version`;
+passing the declared schema corrected the check. Final native sidecar/review checks,
+Ruff/formatting, 136 tracked link/anchor checks, English-content and whitespace checks pass.
+These helper corrections change no production code or original evidence. Local-only evidence identifier:
+`artifacts/sydney-four-version-preparation-20261008`, containing inventory, exact source
+copies, reviewed/draft specifications, review provenance, partial usage/provenance,
+component diagnostics and checks. Private helpers remain ignored and are not product tools.
+
+The preparation envelope explicitly keeps `completion_attested=false`, with V1-V3
+candidates null; it is not a submitted `rtpeval_batch_1`. Next work must prepare genuine
+same-input V1-V3 generation with budgets, source/configuration and completion attestation,
+then bind all review/evidence/identity material to the selected four-version batch.
+V1-V3 require independent API checks without an evaluator model. The changed V0 intake
+requires fresh compatible evidence linkage and a separately bounded V0 identity packet;
+the existing response cannot certify it by editing provenance. Raw API observations
+may be retained as historical sources only through the supported linkage policy, never
+by forging acquisition times. Exact new requests/costs require a separately approved
+plan; no price verification or executable live manifest was prepared in this scope.
+
+## Sydney generation and evidence budget preparation, 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Fixed source/review base:
+`dde737dde1563f54582bb2030c13d5d29c826515`, branch `feature/evaluation`.
+The user requested a concrete budget and execution plan for genuine V1-V3 generation
+and four-version evidence binding. This preparation permits public official price
+research, offline inspection/checks, related documentation and local commits. Paid
+generation/acquisition/model requests, database connections, implementation changes,
+tracker publication and Git delivery are not authorized. The unrelated `.gitignore`
+change remains excluded. Status: **Proposed; not dispatchable**. This is development
+smoke preparation, with no benchmark, version comparison conclusion or freeze.
+
+### Fixed material and prerequisite assessment
+
+Use the exact input and V0 result hashes in the preceding material-preparation section.
+Generate each missing version independently from the original Sydney input: 2026-10-14
+through 2026-10-17, two travelers, AUD 1600 and unchanged preference prose. The AUD 1600
+traveler budget is separate from the USD API execution budget. The full human-confirmed
+RequirementSpec meaning remains reviewed; mechanical source/batch rebinding does not
+authorize changed requirements. It must not become planner input or a daily visit quota.
+Keep the original V0 generation rather than paying for another V0 output. Its historical
+source revision and partial usage stay explicit; new versions will run at a subsequently
+frozen execution revision, so this does not establish a controlled same-revision comparison.
+
+Native configuration loading and request-date validation pass for 2026-10-08. The actual
+four-day `quality_first_1` capacity is 56 candidates, a 28-place acquisition pool,
+14 final candidates and seven review/profile opportunities. Conservative accounting below
+reserves the larger configured Details/review ceilings, without enlarging effective supply.
+The legacy `matrix_elements: 64` field is not another allowance. Landmark supplementary
+searches consume the existing 12 candidate searches; they do not add four requests.
+
+Local settings validation succeeds with deployment `gpt-6-luna`. This does not validate
+credentials or live capabilities. `.env.tripworld` exists and supplies a DB password,
+but `OPENAI_API_KEY` is absent from it, `.env` and the current process environment. The
+query-only retrieval client uses `text-embedding-3-small` at the OpenAI endpoint, rather
+than the Foundry generation key. No secret values were printed or copied. The retrieval
+manifest and completed embedding-build report exist; the 647,057-entity Parquet file
+matches the manifest SHA-256. Database connection, embedding-space/corpus SQL compatibility,
+Foundry Web Search support and actual account prices remain unverified.
+
+### Price basis and proposed allowances
+
+All amounts are USD, checked on 2026-10-08, before taxes/account adjustments. No free
+quota, volume discount or cache-read discount is assumed. Existing V0 costs are sunk
+historical evidence and excluded from this new allowance. Local DB/CPU and agent session
+usage are outside these provider estimates; no new infrastructure is proposed.
+
+The [Google global rate list](https://developers.google.com/maps/billing-and-pricing/pricing)
+gives first-tier unit rates of 0.032 for Text Search Pro/Nearby Search Pro, 0.020 for
+Details Enterprise and 0.025 for Details Enterprise + Atmosphere. Generation field masks
+include Enterprise hours/rating/price fields; review text triggers Atmosphere. The
+[Details field tiers](https://developers.google.com/maps/documentation/places/web-service/place-details)
+place `priceRange` in Enterprise. Matrix is conservatively priced at Pro, 0.010 per
+requested origin-destination element, covering supported traffic-aware DRIVE as well
+as lower-priced WALK/TRANSIT requests. HTTP requests and billable elements are distinct;
+see [Routes billing](https://developers.google.com/maps/documentation/routes/usage-and-billing).
+
+The [GPT-6 Luna reference rates](https://developers.openai.com/api/docs/models/gpt-6-luna)
+are 0.10 input / 0.50 output per million tokens, with 0.125 cache writes. Bounded ordinary
+calls below use the more expensive cache-write input rate and a conservative 10% regional
+reserve. Short-context requests stay below the documented 272K input threshold; longer
+server-generated search context requires separate reconciliation. These OpenAI reference
+rates are not verified Foundry account rates: the inspected
+[Azure price page](https://azure.microsoft.com/en-us/pricing/details/azure-openai/)
+returns numeric placeholders for this deployment class. The deployment's billing
+region/type, Standard processing and account rates must be established before dispatch.
+
+[Web Search pricing](https://developers.openai.com/api/docs/pricing) is 0.010 per built-in
+tool call plus model-priced search content. Eight search responses, each allowing at most
+two built-in calls, reserve 0.160 in tool charges per generation. An additional **3.00 per
+version** is a planning reserve for search-response model/content usage, not a measured
+estimate or proven maximum. Hidden search content can cross the long-context threshold;
+`max_tool_calls=2` does not bound billed content tokens. Treat unknown account/tool
+metering or an insufficient reservation as a stop condition, not permission to spend more.
+Embedding uses [0.020 per million input tokens](https://developers.openai.com/api/docs/models/text-embedding-3-small).
+Weather uses the noncommercial free endpoint, conditional on the
+[Open-Meteo free-use terms](https://open-meteo.com/en/pricing); no commercial subscription
+or other paid weather service is included.
+
+| Stage | Google allowance calculation | Other reference costs/reserve | Scenario total | Proposed allowance |
+| --- | --- | --- | --- | --- |
+| V1, one original generation | 13 Text Search, 3 Nearby, 60 Details, 8 review Details, 464 Matrix elements = 6.552 | ordinary model 0.30088520; Web tool 0.160; Web model/content reserve 3.00 | 10.01288520 | 11 |
+| V2, one original generation | V1 plus RAG 4 Text Search and 30 Details = 7.280 | V1 model/Web amounts; one 2048-token embedding batch 0.00004096 | 10.74092616 | 12 |
+| V3, one original generation | V2 plus Repair 6 search, 30 Details and 32 Matrix elements = 8.392 | ordinary + Repair model 0.51919120; Web amounts; two embedding sends 0.00008192 | 12.07127312 | 14 |
+| Final evidence and V0 identity replay | at most 68 search, 136 Details and 60 Matrix elements = 5.496 | one V0 identity request 0.00412500 | 5.50012500 | 6 |
+| Total | | | 38.32520948 | **43** |
+
+The scenario is deliberately conservative about Google demand and includes an assumed
+Web reserve. It is not an expected invoice or guaranteed upper bill. Stage allowances
+are separate; savings do not authorize transfers, retries, extra versions or a second
+V0 judgment. Current authorization remains **zero paid sends and zero paid USD**.
+
+### Request, token and time limits for the prospective handoff
+
+Shared generation ceilings are destination search 1, candidate search 12, Details 60,
+review Details 8, Nearby 3, baseline Matrix 7 sends/400 elements and alternative Matrix
+32 sends/64 elements. The 16-send/32-element post-generation reservation is inside the
+alternative total, not additional. RAG's 30 Details/4 fallback searches are separate
+phase counters. V3 Repair adds stage totals of six search sends including its one reserved
+fallback, 30 Details, 24 Matrix sends/32 elements and one embedding send across all rounds.
+Five Repair rounds do not multiply these acquisition totals. Primary preparation and
+Repair share six semantic model calls. Keep YAML Repair quantity review enabled and
+RAG active; do not disable version mechanisms to fit the estimate.
+
+| Model role | Maximum calls per generation | Input tokens/call | Output tokens/call | Bound status |
+| --- | --- | --- | --- | --- |
+| Preference interpretation | 1 | 32000 | 8192 | proposed transport guard; currently no explicit output cap |
+| Landmark nomination | 1 | 8000 | 2000 | current typed policy |
+| Semantic assessment | 6 shared across primary/Repair | 32000 | 8192 | current typed policy |
+| Experience profile | 8 conservatively; four-day effective cap 7 | 32000 | 8192 | proposed input/output guard |
+| Primary generation | 1 | 252000 | 16384 | current typed policy, including framing |
+| Official claim extraction | 24, at most 3 per each of 8 needs | 32000 | 1200 | proposed input guard; current output bound |
+| Web Search response | 8 | 32000 wire input | 8192 | proposed guards; server search-content tokens remain unknown |
+| V3 Repair | 5 stage-wide | 252000 | 16384 | current typed policy |
+
+Ordinary non-search totals are 1,508,000 input and 170,064 output tokens per version,
+giving `(1508000*0.125 + 170064*0.50)/1000000*1.10 = 0.30088520`.
+Five Repair calls add 0.21830600. V2 query embedding batches the missing queries into
+one send with at most 2048 total tokens; V3 reserves that primary send plus one Repair
+send subject to a proposed additional 2048-token input guard. No corpus rebuild is allowed.
+Output bounds include reasoning where the Responses API counts it against output usage.
+
+Maximum generation HTTP sends by category are V1: 123 Google/49 model/0 embedding;
+V2: 157/49/1; V3: 217/54/2. Each also reserves two weather requests and up to 48 safe
+HTML sends: at most three URL hops for each of eight page fetches, with a separate
+robots.txt request for every previously unseen origin. Built-in search
+tool calls are included in the eight search responses, not eight extra application
+HTTP sends. These are conservative admission ceilings, not required call counts.
+Actual failed/cancelled sends consume dispatch allowance; cache hits are recorded
+separately and cannot be reported as provider sends. All provider/SDK retries are zero.
+
+Each generation gets a 600-second whole-request ceiling, with existing 360-second RAG
+and V3 Repair stage bounds nested inside it. Capture entry/setup time, whole wall time
+and cleanup separately; the supervising wrapper must bound dependency setup for every
+version, rather than resetting the clock after initialization. Independent evaluation
+gets 1800 seconds total, 20 seconds per Google request and 60 seconds for the sole V0
+identity request. Sequential generation plus evaluation has at most 3600 active seconds;
+offline preparation/review time is separate. Time expiry may leave incomplete evidence;
+the plan does not promise every conservative request ceiling can be exhausted in time.
+
+The evaluator envelope admits at most 20 final primary occurrences in each new version,
+plus V0's seven and the one shared named target: at most 68 independent request subjects.
+Allow 68 identity-phase Details and another 68 opening/coordinate Details, conservatively
+without assuming cross-phase reuse. Allocate up to 60 one-by-one Matrix elements.
+Native request deduplication or supported historical observation import may reduce sends.
+If actual final primary/subject/route demand exceeds any allowance, retain the original
+output and stop for a revised plan. This is a request-budget boundary, not a generation
+quota, quality criterion or authority to remove a selected run or activity. No extra
+subject, review, generic-food restaurant or route endpoint may be invented to fit it.
+Unresolved identities/context remain UNKNOWN or NOT_EVALUABLE as the native rules require.
+Additional coordinate-only requests must fit the same 136 Details allowance.
+Only final projections are evaluated; paired V3 assessment has no request allowance.
+
+### Execution order and evidence binding
+
+1. Complete the offline prerequisite stage: supply query embedding credentials through
+   the approved local mechanism; verify account/model/tool prices; build and dry-check
+   the bounded capture wrapper. Freeze actual source revision, original hashes, selected
+   YAML and effective policy digest, helper/dependency hashes and trusted current date.
+   Preparing the wrapper is a separate implementation scope, not done in this request.
+   Stop before paid sends if any prerequisite or current date validation fails.
+2. Prepare a one-use handoff with exact wrapper commands/output paths and counters, then
+   obtain explicit live approval. Under the [smoke policy](../../agents/smoke-tests.md),
+   delegate execution only to a current-session `gpt-6.1-sol`, `medium` child with
+   `fork_turns=none`. It executes the frozen handoff, reports blockers and preserves
+   evidence; it cannot alter limits or implementation. No previous V0 allowance carries
+   over. Runtime RAG preparation must check DB compatibility before query embedding;
+   connection/compatibility failure is a whole-run stop, without probing or retrying.
+3. Execute V1, V2 and V3 sequentially, exactly once each. Use their independent research
+   entrypoints with the shared original input, committed YAML and explicit timeout.
+   Do not use Product introductions, input assistance, prior planner results, synthetic
+   outputs or historical reference dates. Preserve stdout result bytes separately from
+   stderr. Record early failure/clarification/timeouts as they happen; do not regenerate
+   for a more convenient score. Stop later stages if one selected version cannot complete.
+4. After every completed generation, validate result version/schema/source linkage and
+   preserve exact JSON, actual owned-client HTTP requests/responses/usage, normalized
+   evidence, cache events, Repair/draft capture if genuinely present, query vectors and
+   runtime diagnostics. Generate source-linked `rtpeval_usage_1` and
+   `rtpeval_provenance_1` sidecars. The metadata-only trace default is insufficient for
+   full acceptance evidence. Use the existing `usage_capture.capture_attempt` and
+   `mechanism_capture.capture_attempt` opt-in contexts with the exact result serializer,
+   plus query vector capture and owned-transport raw evidence capture. Establish adapter
+   coverage before declaring complete usage. Missing/truncated usage stays partial/null; raw capture
+   remains ignored local material with keys/credentials excluded.
+5. Build the four-version batch using the original V0 bytes plus genuine completed new
+   results. Preserve V0's historical source/partial usage; do not restamp it as a new run.
+   Rebind full reviewed requirements and activity/occupancy/density reviews to the selected
+   batch/group/run/hash/pointer tuples, retaining reviewer origin and source meaning.
+   Source-only review of each actual new result must precede intake freezing. Do not
+   treat agent review as human confirmation. Attest workflow completion only when all
+   four required runs have genuine completion evidence; factual FAIL/UNKNOWN does not
+   itself invalidate workflow completion. Validate the complete `rtpeval_batch_1` with
+   native intake; no manually accepted library view substitutes for qualified intake.
+6. Freeze the resulting identity plan and exact price-tagged wire inventory. Use independent
+   Google evidence, not generation caches. Exact identical acquisition keys can share
+   observations where native linkage supports it; each V1-V3 target judgment remains
+   version-owned. Search/Details do not replace a claimed V1-V3 ID with a convenient hit.
+   Historical raw observations can be imported only through supported source linkage,
+   preserving acquisition dates/request context and distinguishing reuse from new sends.
+7. Finalize V0's new identity packet only after the whole batch/reviews are stable. Its
+   changed intake digest forbids reuse of the old model response. Preflight one request
+   at 18,000 input/3,000 output tokens; reject overflow before dispatch. V1-V3 evaluator
+   identity is API/program only, with zero evaluator-model requests. A rejected/truncated
+   V0 response does not authorize another request or provenance edits to bypass replay.
+8. Build the native evidence plan after verified identity. Map final original transport
+   claims to independently reviewed endpoints, dates, modes and timezone-aware departure
+   semantics. Check current AU provider support/time horizon before sending. Unsupported
+   future traffic/transit context gets NOT_EVALUABLE; do not substitute WALK/DRIVE or an
+   earlier date. Freeze the now-known opening/route request keys, masks, bodies, SKU and
+   counters in the remaining allowance. V0 route preparation/preflight uses
+   `prepare_v0_route_requests` and `preflight_v0_route_requests`; it does not confer V1-V3
+   coverage. Those versions use native final identity/evidence plans with their actual
+   Transfer authority. Reuse historical V0 opening/route observations only when admissible.
+9. Run native identity, opening, routes, requirement/schedule, density and quality consumers
+   offline against the selected intake and snapshots; replay reports exactly. Keep original
+   Museum address FAIL, generic-food occupancy and unresolved transport when evidence
+   still warrants them. A valid four-version report may contain FAIL/UNKNOWN and missing
+   usage; do not claim every itinerary passes. Overall output requires the native qualified
+   four-version gate. Report actual requests/tokens/cache coverage/time/reference cost,
+   invoice absence, failures and unused/consumed allowances. No formal comparison follows.
+
+The verified research command shapes are listed below for wrapper implementation. They
+are **not an authorized or fully guarded dispatch script**; result/usage capture and
+admission guards are prerequisites. No `--reference-date` override is proposed:
+
+```text
+.venv/Scripts/python.exe scripts/run_v1.py --input-json artifacts/sydney-four-version-preparation-20261008/sources/input.json --runtime-config config/runtime.yaml --development-timeout-seconds 600
+.venv/Scripts/python.exe scripts/run_v2.py --input-json artifacts/sydney-four-version-preparation-20261008/sources/input.json --runtime-config config/runtime.yaml --development-timeout-seconds 600 --rag-env-file .env.tripworld
+.venv/Scripts/python.exe scripts/run_v3.py --input-json artifacts/sydney-four-version-preparation-20261008/sources/input.json --runtime-config config/runtime.yaml --development-timeout-seconds 600 --rag-env-file .env.tripworld
+```
+
+Prospective one-use evidence root: `artifacts/sydney-four-version-live-<approved-date>-r1`,
+with separate `generation/v1`, `v2`, `v3`, `batch`, `identity` and `evidence` directories.
+Final approval must replace the date placeholder and enumerate exact paths/commands.
+The admission wrapper must intercept actual owned HTTP transports, including the installed
+SDK's transport, reserve request/SKU/token allowances before sends, cap interpretation,
+profile and Web output, retain current structured contracts, and reject unknown requests.
+It must record provider usage and built-in tool counts as returned, then reconcile
+reservations before another request. Post-response accounting cannot prevent an already
+billed hidden-token overrun. If billing remains opaque, the user must separately accept
+that bounded-request reference-budget risk before dispatch; no absolute invoice cap is
+claimed by this plan. Limit breaches must propagate to a supervising whole-run stop,
+even where optional provider services normally catch exceptions and continue. Global
+spend/reservation updates must be atomic for concurrent within-version sends. The wrapper
+must not alter original itineraries, silently truncate inputs or disable planner mechanisms.
+
+### Offline validation and remaining boundary
+
+The local calculation helper initially failed because it directly constructed a date
+window without its two required bounds. Replacing that construction with the project's
+`create_trip_date_window` factory corrected the check. Native config/date loading,
+decimal budget arithmetic, credential-presence-only inspection, corpus file/hash checks
+and preservation of 626 earlier source files plus 27 prepared files pass. Including
+current generation/evaluator modules and configuration, 862 protected file hashes pass.
+The socket/DNS guard records zero network attempts during local checks; separate public
+web research above is not a paid generation/evidence call. No database connection or paid
+provider request occurred. Documentation/link and helper lint checks are recorded locally;
+no backend-suite execution or implemented runtime guard is claimed by this planning task.
+
+Local evidence identifier: `artifacts/sydney-generation-binding-plan-20261008`, containing
+the decimal budget, typed runtime snapshot, readiness assessment, frozen-source hashes and
+offline check. The private scope/calculation helpers stay in `.scratch/`. Tracked links
+resolve to current contracts/policies; local identifiers are not published navigation.
+Remaining work is a bounded capture-wrapper implementation/dry check, credential/account
+readiness and a concrete one-use approval handoff. The current 43 USD proposal grants no
+live authorization and cannot attest a four-version batch or issue its final score.

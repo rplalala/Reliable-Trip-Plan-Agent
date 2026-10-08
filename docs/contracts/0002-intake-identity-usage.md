@@ -204,7 +204,7 @@ Implemented under [#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/iss
 with version-owned requirement targets corrected locally under
 [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83).
 `resolve_identities(intake, evidence, *, model_result=None)` produces
-`association_policy_version=versioned_api_identity_2`. Every V1-V3 final/optional
+`association_policy_version=versioned_api_identity_3`. Every V1-V3 final/optional
 primary visit requires its original `source_place_id`, structured `place_name` and
 `location`. Proven missing fields are FAIL even without an API response. Independent
 Details must have an available observation with retrieval provenance, the requested ID
@@ -212,6 +212,31 @@ equal to the original ID and the returned ID equal to that request. Missing/fail
 malformed or unlinked Details are UNKNOWN. Name and address use literal field equality;
 no normalization, translation, precision, semantic or fuzzy rescue is applied.
 Only PASS adopts a canonical ID. FAIL/UNKNOWN retain null canonical IDs and original claims.
+
+Accepted on 2026-10-08, primary-visit `place_association` independently records
+`state` (`verified` or `UNKNOWN`), `place_id` and `reason`. It does not change
+`grounding_verdict`, `resolution`, `canonical_place_id` or original claims.
+V1-V3 verify the original submitted ID using independent available Details, offset-aware
+retrieval provenance and identical requested/returned IDs. This check still runs when
+the original name/address is missing or incorrect. Missing or unverified IDs have no
+association; search candidates never replace the original ID. No evaluator model is used.
+V0 uses the existing source-bound, validated model correspondence: a selected supplied
+candidate with decision `match`, consistent destination and supported address assessment
+(`equivalent`, `different_precision`, `incorrect_claim` or `not_supplied`). Missing/ambiguous
+correspondence, different-place/unknown address assessment, contradictory destination,
+conflicting candidate observations or unverifiable provenance leave association UNKNOWN.
+Candidate presence/rank alone never establishes eligibility. An `incorrect_claim` address
+remains grounding FAIL while a trustworthy association permits independent physical checks.
+
+Only snapshot, coordinate, opening and route consumers use this physical association.
+Opening checks the associated API venue's hours against the original visit interval;
+routes use its API coordinates with the original order, mode, departure and reserved duration.
+WALK, DRIVE and TRANSIT remain their original modes. No original output is repaired.
+Requirement targets, fulfillment/counting, canonical repetition and venue correspondence retain
+their existing canonical-identity rules; a downstream PASS never cancels grounding FAIL
+or proves requirement fulfillment. The report policy versions this change; the unchanged
+V0 correspondence packet remains `v0_identity_correspondence_3` and existing validated
+material can be consumed offline without another model request.
 
 Reviewed requirement subjects can retain an optional `source_place_id`; it is a claim
 binding, not factual evidence. Identity planning independently requests its Details.
@@ -246,6 +271,11 @@ markers cannot pass current import. Absence of a V0 result leaves V0 UNKNOWN whi
 targets still evaluate. Confirmed target FAIL is retained as a component of that
 version's associated requirement checks. No resolver/CLI executes a model or provider.
 
+Explicit `--historical-association` replays `versioned_api_identity_2`, including
+version-owned targets and the former FAIL/UNKNOWN downstream block. It reconstructs
+the original report without `place_association`; historical consumers use only canonical
+adoption. Relabeling a saved report does not migrate it. Current reports must be rebuilt
+from source-linked evidence; historical snapshots and smoke results remain unchanged.
 Explicit `--historical-program` replays `versioned_api_identity_1`, including shared
 programmatic targets, the original single-result rule and V0 packet policy
 `v0_identity_correspondence_2`. Old packets cannot pass current import; saved reports
@@ -313,10 +343,12 @@ V0 result. Consumers reconstruct the exact report from the original intake befor
 it. Programmatic record/replay markers trigger verification even after policy substitution.
 `programmatic_judgment`, `grounding_verdict`, original claims and observation hashes remain
 visible. Quality and paired reports count grounding FAIL directly. Requirement/schedule
-descriptions retain identity checks; coordinate preparation lists unadopted references;
+descriptions retain identity checks; coordinate preparation's legacy-named
+`unadopted_references` lists physically unavailable references under the current policy;
 opening and route checks retain identity verdicts separately from their own feasibility
-verdicts. An identity failure supplies no corrected coordinates or route context. Opening
-and route facts can remain UNKNOWN when their independent evidence is unavailable.
+verdicts. Grounding FAIL alone supplies no coordinates or context; only the separately
+verified association enables physical evidence. Opening and route facts can remain UNKNOWN
+when their independent evidence is unavailable.
 Score arithmetic, masks, denominators and planner generation behavior are unchanged.
 Status is `complete` when all identity verdicts are decisive (including FAIL), otherwise
 `needs_evidence`; UNKNOWN is never dropped from downstream populations.
@@ -561,7 +593,15 @@ and [dated acceptance](../records/evaluation/routes.md#v0-identity-adoption-acce
 
 `build_identity_plan(intake, paired=False)` selects all final primary visits and relevant requirement subjects, plus available V3 optional projections when paired is requested. It creates independent name-search requests (page size 20, original destination/location retained) and supplied-ID details requests. Search is collected for supplied IDs too; rank never establishes identity. Missing names/malformed IDs remain explicit blocked reference entries. Original occurrences are never deduplicated, only identical request descriptors.
 
-`build_evidence_plan(intake, identity_report, route_contexts, paired=False)` validates report/source linkage and deduplicates details requests for resolved canonical identities. Unresolved references remain explicit. Every candidate leg is inventoried; missing route contexts remain pending rather than disappearing. Explicit contexts identify actual source reference endpoints and include mode, aware departure or explicit time-independent basis, routing options, and independently prepared endpoint coordinates with evidence hashes. Endpoint canonical IDs must match the adopted identities. This records supplied independent context; it does not certify the factual truth of externally prepared coordinates. Ticket 07 owns context selection and applicability; Ticket 04 never optimizes or shifts dates.
+`build_evidence_plan(intake, identity_report, route_contexts, paired=False)` validates
+report/source linkage and deduplicates Details requests for independently associated
+venues (canonical adoption under historical policies). Every source occurrence remains
+explicit, including physically unavailable references. Every candidate leg is inventoried;
+missing route contexts remain pending. Explicit contexts identify source-reference endpoints
+and retain mode, aware departure or explicit time-independent basis, routing options and
+independently prepared coordinates with evidence hashes. API endpoint IDs must match the
+verified physical associations. This records supplied context without certifying externally
+prepared coordinates. Ticket 07 owns applicability; Ticket 04 never shifts dates.
 
 Requests have canonical-JSON SHA-256 keys over operation and complete parameters. Route keys preserve direction, identities, coordinates/provenance, mode, departure context and routing options. Only necessary one-origin/one-destination matrix requests are emitted; there is no Cartesian union matrix. Requested matrix elements count each actual send, including retries.
 

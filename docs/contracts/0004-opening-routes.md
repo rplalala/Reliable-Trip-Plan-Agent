@@ -27,11 +27,27 @@ The evaluator applies its emitted frozen rules rather than reading moving planne
 
 ## Opening scope, evidence and verdicts
 
-An independently resolved primary place visit and independently interpretable interval are
+An independently associated primary place visit and independently interpretable interval are
 the units. Nearby and unresolved role populations retain their separate scope diagnostics.
 RequirementSpec has no entry/exterior distinction: prose cannot create an opening exemption.
 Planner-selected hours or V3 findings are not ground truth. Zero grace applies to full-visit
 containment; touching closing time is allowed and a lunch closure is not bridged.
+
+Under `versioned_api_identity_3`, a verified `place_association` supplies the API venue
+even when the original name/address has grounding FAIL. `canonical_place_id` retains
+claim-adoption semantics; opening checks expose `associated_place_id` separately and
+retain `identity_grounding_verdict`. A missing/untrusted association remains UNKNOWN.
+Details request/response IDs must match the associated venue. The original visit time
+is unchanged; a PASS does not repair the original claim or prove a requirement.
+Historical policies retain their original canonical-only eligibility.
+
+Route preparation/scoring uses the same verified association for physical endpoints
+and independent coordinates. The existing `canonical_endpoints` route field carries
+those physical API IDs under the new source-linked identity policy, while endpoint
+grounding verdicts remain explicit. Original order, time, reserved duration and mode
+remain unchanged: DRIVE requires driving evidence, TRANSIT public transport and WALK
+walking. Existing DRIVE `TRAFFIC_UNAWARE` semantics and 600-second reserve are unchanged.
+The smoke request tool's separate DRIVE adapter remains outside this correction.
 
 `--paired` includes available V3 draft
 and final_primary projections independently, with the same paired snapshot scope.

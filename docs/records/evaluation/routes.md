@@ -1793,3 +1793,194 @@ locally after English, target/anchor and whitespace checks. No push, PR, merge, 
 mutation, version freeze, formal comparison or paid retry is included. This completes the
 bounded acquisition and V0 component replay; incomplete opening/occupancy evidence and
 qualified four-version final acceptance remain outstanding.
+
+## Sydney Museum follow-up preparation, 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Status: **Prepared and offline validated;
+live execution requires exact-plan approval.** Fixed source/review base is
+`cc454bb292cbc099c823b32dc231eb6d6122c1ed`, branch `feature/evaluation`.
+The unrelated existing `.gitignore` modification is preserved and excluded from
+commits. The human approved bounded preparation after the physical-association
+correction, including conditional DRIVE adaptation only if the original leg requires
+it, and separately confirmed the public preparation/preflight/CLI and mock-HTTP
+scoring boundaries. No tracker mutation, Git publication or real provider send is
+included. The final execution freeze is refreshed against the local delivery HEAD;
+its private manifest, rather than this historical base, owns the executable revision.
+
+The preserved original Museum-to-QVB leg is **WALK**, on October 15, with departure
+`2026-10-15T01:15:00+00:00` and a 1,200-second reserved interval. All three evaluable
+Sydney primary-pair legs are WALK. No DRIVE implementation is necessary; the existing
+development acquisition path retains its DRIVE limitation. Original activity order,
+times, durations, preferences, requirement counting and score arithmetic remain intact.
+
+Current `versioned_api_identity_3` replay uses the existing validated V0 correspondence:
+Australian Museum address grounding stays FAIL, canonical claim ID stays null, and
+the verified physical association is `ChIJlwsH0RWuEmsR3Cg3WEDw76I`. QVB's independent ID
+is `ChIJISz8NjyuEmsRFTQ9Iw7Ear8`. Existing independently acquired coordinates support
+the original route without another coordinate query. The earlier speculative address
+inspection is not reopened, and no new Search, model, planner or database work occurs.
+
+The current full evidence plan has seven Details and three directed Matrix requests.
+Eight identical request keys/parameters already have saved observations: six Details
+and two WALK matrices. The new private incremental plan contains only the two missing
+requests. Reuse verifies the original snapshot and copies its exact raw bytes,
+summaries and attempt timestamps into a separately labelled derived union; the original
+snapshot is untouched. The combined observation ledger records ten cumulative sends
+(eight historical plus two incremental), while the fresh acquisition ledger records
+only two. Reuse does not claim eight new requests or fresh observations. The original
+V0-only source remains a library view, not qualified four-version intake or a legacy
+adoption bundle; actual preparation uses existing core libraries without forged runs.
+
+Official [AU coverage](https://developers.google.com/maps/coverage),
+[Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix),
+[Details fields/SKUs](https://developers.google.com/maps/documentation/places/web-service/place-details)
+and [global first-tier prices](https://developers.google.com/maps/billing-and-pricing/pricing)
+were rechecked on the preparation date. AU walking is documented; exact pair success
+is unobserved. Time-independent walking estimates cannot certify future-day conditions.
+
+| Incremental request | Frozen wire scope | Retail reference |
+| --- | --- | --- |
+| Museum Details | `id,businessStatus,timeZone,currentOpeningHours,regularOpeningHours` | Enterprise: USD 0.020 |
+| Museum to QVB WALK Matrix | Directed 1x1 independently sourced coordinates, `travelMode=WALK`; no departure or routing options; indices/status/condition/distance/duration/fallback mask | Essentials: USD 0.005 |
+
+Proposed reference allowance: **USD 0.025**. No free quota, tax treatment, volume tier
+or actual invoice is assumed. Limits are two sends, zero retries/redirects, 20-second
+HTTP timeout and 60-second total deadline. No exact-plan live approval exists yet.
+The one-use execution directory is absent. A future dispatch must bind the final
+manifest hash, source/day/HEAD and protected hashes, use the required current-session
+`gpt-6.1-sol`/medium execution child, and stop on drift, an existing output directory,
+timeout, HTTP/provider error, mismatched returned ID, duplicate/foreign request or
+exhausted count/cost/time. Missing hours and valid NO_ROUTE results remain evidence;
+they do not authorize a retry, alternate mode or favorable verdict.
+
+Validation is offline with outbound sockets and DNS prohibited. Existing public
+`prepare_v0_route_requests`, `preflight_v0_route_requests`, CLI and physical-association
+regressions passed **69 tests** in 29.30 seconds. Those synthetic bundle regressions
+are distinct from real source-view replay. The private adapter checks exact HTTP
+serialization for both incremental wires and four synthetic incremental snapshots:
+
+| Scenario | Museum opening | Museum route |
+| --- | --- | --- |
+| Sufficient regular hours, 900-second WALK | PASS | PASS |
+| Missing hours, 900-second WALK | UNKNOWN | PASS |
+| Sufficient hours, 3,600-second WALK | PASS | FAIL |
+| Sufficient hours, valid NO_ROUTE | PASS | FAIL |
+
+Each synthetic acquisition has two sends and zero retries; the eight synthetic sends
+across four scenarios are not external requests or real evidence. Existing observations
+retain their raw bytes/timestamps in each derived union. All reports replay exactly;
+address FAIL remains visible even when physical checks PASS. Mode substitution,
+departure addition and routing-option changes are rejected. Separate negative guards
+reject duplicate/foreign sends, exhausted count/cost/time, an unapproved manifest and
+file/day/HEAD drift. The first preflight used the old opening report field name and
+stopped with KeyError after the initial simulated reports; correcting the private
+assertion to `identity_grounding_verdict` made the complete rehearsal pass. No product
+or evaluator implementation was changed. Ruff passes for the private adapter.
+
+Independent Standards and Spec review each identified the same P2 timeout-stop gap
+in the initial private adapter: the generic collector catches its own TimeoutError
+and advances to the next request, while HTTPX's timeout applies per network phase.
+An isolated mock-HTTP regression first reproduced two sends and an incorrect
+`completed` receipt after collector timeout. The private correction adds an overall
+20-second HTTP deadline and converts deadline/cancellation into a stopping exception;
+completion also requires two available HTTP-200 records. Separate simulated collector
+and HTTP deadline tests now each produce one mock send, a `stopped` receipt and no
+second request or completed snapshot. These tests use isolated temporary directories,
+mock credentials, shortened test clocks and blocked networking; the actual execution
+directory remains absent. Assessment also binds the incremental snapshot raw hashes
+to the execution receipt before deriving the union. The four scoring scenarios and
+all stopping/source guards pass again after correction, with zero external sends.
+An isolated normal two-request execution through mock HTTP also completes and passes
+the full receipt-to-snapshot-to-native-report assessment path. The separate private
+timeout-check receipt records both stopping regressions and this successful path.
+
+The manifest protects 240 implementation/dependency/source files, including the
+adapter and prior generation/identity/opening-route artifacts; all protected hashes
+pass before/after rehearsal. Current local-only evidence identifiers are
+`artifacts/sydney-v0-museum-followup-20261008` (current/full and incremental plans,
+reuse provenance, frozen manifest and offline receipt) and
+`.scratch/sydney_museum_followup.py` (one-use adapter). Raw payloads and commands
+remain local; this record provides shared scope and results without publishing them.
+No new full backend gate is claimed: unchanged implementation retains its earlier
+full/evaluator validation, and this task adds specific preparation/replay checks.
+
+Actual external sends and incremental charges are **zero**. Real Museum opening and
+route results remain unobserved; Opera House/Powerhouse hours, unresolved generic
+occupancy and qualified V0-V3 final acceptance remain outstanding. This preparation
+is neither a final quality score, version freeze nor formal comparison.
+
+## Sydney Museum follow-up execution, 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Status: **Bounded acquisition complete;
+native component replay validated.** Source HEAD is
+`3f608c7a76be31054cdfd18ab088eec47399c64f`, branch `feature/evaluation`.
+The unrelated pre-existing `.gitignore` change remains unchanged and excluded.
+The human approved the exact two-send/zero-retry/USD 0.025 plan after preparation
+and independent Standards/Spec rechecks closed the timeout-stop P2 finding.
+The frozen manifest canonical SHA-256 is
+`081a118ae8adfec91e0c53c618beceecd3fe9288437261b8be3f23cdcb38001a`.
+The prepared adapter SHA-256 is
+`9e1af279e3ac33d4c6532fb90a52a859253071777371df95431c4c26e688a924`.
+
+The required current-session `gpt-6.1-sol`/medium execution child checked HEAD,
+Sydney day, all 240 protected files, adapter and both check receipts, exact request
+scope/budget and an absent execution directory before running the command once.
+The process exited zero and the receipt is `completed`: one Museum-to-QVB WALK
+Matrix and one Museum Details, both HTTP 200, zero retries and no added requests.
+Receipt timestamps span `2026-10-08T02:38:51.344865+00:00` to
+`2026-10-08T02:38:52.390529+00:00`, about 1.046 seconds. The 20-second whole-HTTP
+and 60-second total limits were respected. Retail reference is **USD 0.025**;
+actual provider billing, account free allowance, tier and tax treatment remain unknown.
+No Search, evaluator model, planner rerun, database request, alternate mode or repair
+was performed. The execution directory and two-request allowance are consumed.
+
+The two received raw-response SHA-256 values are:
+
+- Matrix: `225e6432b6093c91a28531f851b2065c4d8b5202f07cd5125c1ccb7df486f9b1`.
+- Details: `a975a321e4b627e6d566060f5217b8337d0778d49cb5f11c30410a8362620ad5`.
+
+Parent assessment checks receipt/raw linkage and the incremental snapshot, then
+derives a current-plan union with the eight historical observations. Their exact
+raw bytes, attempt timestamps and summaries remain intact; no observation is relabelled
+fresh. The cumulative snapshot ledger is ten sends, versus two fresh sends in this
+execution. The original snapshots and earlier verdicts are preserved.
+
+| Native check | Result | Evidence and boundary |
+| --- | --- | --- |
+| Australian Museum grounding | FAIL | Original address and null canonical claim ID retained; physical association is independently verified |
+| Museum opening | PASS | Regular-hours fallback covers the original October 15, 10:00-12:15 Australia/Sydney visit; no confirmed outside or unknown seconds |
+| Museum to QVB WALK | PASS | 562 seconds, 678 metres; fits the original 1,200-second reservation, with zero raw deficit and no DRIVE reserve |
+| Combined opening | Five PASS, zero FAIL, two UNKNOWN | Opera House and Powerhouse still lack usable opening periods |
+| Combined evaluable routes | Three PASS, zero FAIL/UNKNOWN | The separate day-four transport to an unnamed generic food activity stays unbound |
+
+Regular-hour fallback is weaker than date-specific current-hour evidence, and the
+time-independent WALK does not certify conditions on the future visit date. Component
+PASS does not revise the address FAIL or establish overall itinerary acceptance.
+
+With networking and DNS prohibited, native opening, route and requirement/schedule
+reports replay exactly, including a second fresh library replay against the saved
+union. Requirements, non-overlap, schedule measures, descriptive metrics and occupancy
+sections equal the earlier report exactly. The Opera House exact-once obligation
+remains UNKNOWN, and non-overlap remains UNKNOWN despite ten known checks passing,
+because its complete denominator and generic occupancy remain unresolved. Original
+main counts 2/2/2/1 remain unchanged. The quality consumer correctly rejects this
+V0-only view with `needs_material_correction` / `Exactly four versions required`;
+no artificial companion runs or overall score are produced.
+
+All **240 frozen hashes** pass after acquisition and assessment, before the intentional
+documentation updates. Both new raw hashes and all eight reused raw-byte/record/time
+checks pass; offline assessment makes zero network attempts. Product/evaluator code,
+generation, requirements and score formulas are unchanged. No new full backend suite
+or independent implementation review is claimed: the unchanged code retains its prior
+gates, and this execution adds exact wire/source preservation and real saved-evidence
+consumer replay. Prepared public-boundary tests and timeout-stop rechecks remain valid.
+
+Local-only evidence identifier: `artifacts/sydney-v0-museum-followup-20261008`, containing
+the execution receipt/raw bytes, incremental and derived combined snapshots, native
+reports, quality-scope diagnostic, assessment and preservation check. The frozen
+manifest/check receipts and consumed execution directory remain intact. Current status,
+navigation and this event are grouped in one documentation commit after English,
+tracked-link/anchor and whitespace checks. No push, PR, merge, tracker mutation,
+version freeze or formal comparison is included. Remaining work is usable missing
+opening evidence, genuine requirement/occupancy review and qualified V0-V3 intake;
+this bounded V0 follow-up does not complete final evaluator acceptance.

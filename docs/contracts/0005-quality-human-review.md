@@ -108,10 +108,12 @@ fractions accompany coverage (P+F)/N, U/N, F/N and conditional P/(P+F). UNKNOWN 
 UNKNOWN; conditional compliance does not determine the score. Parent obligations,
 logical commitments, primary visits and combined route legs retain one weight.
 Grounding uses source occurrences/validated identity records rather than caller summary
-counts. Under the current uniform LLM policy, replayed `grounding_verdict` supplies PASS,
+counts. Under the current version-specific policy, replayed `grounding_verdict` supplies PASS,
 FAIL or UNKNOWN: confirmed incorrect addresses and different venues are FAIL without canonical
-adoption or corrected endpoint substitution. Earlier explicitly replayed legacy reports retain
-their original resolved/unresolved classification. This changes claim classification, not
+adoption. A separately verified physical association can support opening/routes while
+grounding FAIL remains counted. It never changes requirement fulfillment or the original
+output, and downstream PASS never cancels a claim error. Earlier explicitly replayed legacy
+reports retain their original resolved/unresolved classification. This changes claim classification, not
 score arithmetic or denominators. Missing evidence remains UNKNOWN. Claimed-ID conflicts and
 unknown role populations remain separate records.
 
@@ -357,6 +359,14 @@ all expected final/optional rows and source hashes, then selects the two V3 stag
 The reviewed-coordinate and saved identity-snapshot paths retain Ticket 07 semantics.
 Foreign/stale supplied sources, preparation/reviews or corrupt snapshots fail atomically;
 they do not silently shrink the cohort or become itinerary FAIL.
+
+Controlled opening facts and exact venue selectors use the check's verified
+`associated_place_id` under the current identity policy, falling back to canonical ID
+only for historical checks without that field. A reviewed timetable can resolve missing
+hours while the original grounding FAIL and execution hash remain intact. This physical
+venue selection applies only to opening; grounding, requirements and repetition selectors
+retain canonical-claim semantics. Human facts still cannot override independently
+confirmed hours or bypass unavailable identity.
 
 The five dimensions retain exact P/(P+F+U) arithmetic and equal weights. The **pair's**
 common mask excludes a dimension only when both stages establish zero denominators.

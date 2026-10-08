@@ -50,7 +50,7 @@ planning does not import this evaluation package. V3's internal validation/repai
 part of planning and is distinct from independent evaluation.
 
 Route preparation can extract coordinates offline from a verified identity-phase snapshot
-whose evidence matches the adopted canonical identities. This reuses saved independent
+whose evidence matches verified physical associations. This reuses saved independent
 observations with separate coordinate provenance; it does not borrow planner coordinates or
 acquire missing points. Missing, invalid or conflicting points retain local uncertainty and
 route candidates. The existing reviewed-coordinate source remains supported; details and
@@ -84,7 +84,13 @@ references and sampling no longer require human identity confirmation. Address c
 remains a separate assessment: recognizing a venue does not repair the delivered address
 or establish opening/route feasibility. Both a recognizable venue with an incorrect submitted
 address and an address identifying another venue produce grounding FAIL and prohibit canonical
-adoption for downstream coordinates/endpoints. Insufficient evidence stays UNKNOWN.
+claim adoption. Under `versioned_api_identity_3`, the separately verified physical
+association may permit opening/routes despite claim FAIL: V0 uses existing validated
+correspondence, V1-V3 independently verify the original API ID. Untrusted associations
+remain UNKNOWN. Original time, order, transport mode and reserved duration are unchanged;
+physical PASS cannot cancel grounding FAIL or establish requirement fulfillment.
+Historical policy-2 reports retain canonical-only downstream eligibility through
+explicit `--historical-association` replay. Insufficient evidence stays UNKNOWN.
 Supported V0 destination conflicts also remain FAIL even when the original address is absent.
 All versions use the same standard; evaluation does not hide baseline errors or presume a version must fail.
 Explicit historical human and uniform LLM identity replay is retained.
@@ -95,6 +101,7 @@ Blinded preference review and other human supplements keep their separate respon
 | Submitted group | One request and its source-linked selected version artifacts; inclusion is not proof of quality |
 | Claim | A proposition represented in the submitted output or reviewed obligation |
 | Independent observation | Separately sourced evidence with declared identity/query/time applicability |
+| Physical association | Verified API venue usable for hours/coordinates while preserving original claim grounding and requirement-counting rules |
 | Identity judgment | Version-scoped program checks or V0 model correspondence with independent API facts, preserving original claims and uncertainty |
 | Historical adjudication | Human resolution in an explicitly replayed legacy identity report |
 | Compliance | Outcome against an applicable criterion, distinct from evidence availability |
