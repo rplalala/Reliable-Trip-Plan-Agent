@@ -845,9 +845,64 @@ missingness. Without this policy or a supported source annotation, missing quant
 remain unpriced. These are estimates; account invoices and cache observations remain
 separate evidence.
 
-Capture covers usage and original result/configuration lineage. Full raw provider,
-query-vector and mechanism evidence, producer completion and qualified four-version
-intake retain their existing separate requirements. This command performs no independent
+Default capture covers usage and original result/configuration lineage. The opt-in
+generation evidence extension below connects raw provider, query-vector and mechanism
+observations. Producer completion and qualified four-version intake retain their existing
+separate requirements. This command performs no independent
 evaluator acquisition or quality scoring. Its preparation/capture output cannot attest
 a completed four-version batch. Runnable instructions belong to the
 [package guide](../../backend/evaluation/README.md#planner-usage-capture-cli).
+
+<a id="planner-generation-evidence"></a>
+
+### Opt-in generation evidence — 2026-10-08
+
+`--capture-evidence` records evidence intent during offline preparation and enables capture
+only with explicit execution. Existing mechanism observations, a RAW local run tracer,
+owned HTTP usage hooks and retrieval query vectors share the selected invocation. These
+observers add no requests, retries or planner decisions. Usage timing stops after invocation
+and cleanup, before final mechanism/raw serialization and inventory writes.
+
+`mechanism.json` uses `rtpeval_mechanism_capture_1`; accepted catalog, prepared/submitted
+model observations and actual V3 rule selection retain their existing semantics and
+missingness. `evidence/trace/` captures local LLM/tool/evidence payloads, retaining
+runner-owned completion and tool usage rather than replacing them with CLI defaults.
+
+`evidence/wire/` contains credential-filtered UTF-8 representations; JSON bodies are
+normalized objects. Safe metadata includes method, filtered URL/allowlisted headers,
+provider status, the original usage HTTP event ID, body form/status and observed-body
+SHA-256. Known credentials from the environment, request metadata and labelled JSON fields
+are filtered, including unlabelled echoes, duplicate sensitive query parameters and
+individual Cookie values. Credential files and Authorization/Cookie headers are excluded.
+
+Streaming follows normal consumption without draining unread bodies. Decoded SDK content
+includes normally consumed gzip responses; direct raw HTML streams retain their normally
+read bytes. Unsupported encoding, non-UTF-8 content, unread/interrupted streams and bodies
+above 10 MB retain explicit missingness without an unsafe preview. The observed digest
+identifies the recorded body form, which may differ from physical encoded wire bytes.
+Stored artifacts have their own exact-byte hashes after filtering. Trace payload capacity
+uses the configured trace limit; truncation remains partial evidence.
+
+`evidence/vectors/` uses existing normalized float32 NPZ capture with space/corpus metadata,
+text digests, vector digest and shape. It adds no embedding or DB request. Existing explicit
+capture directories take precedence; the ambient directory resets after execution. A failed
+vector write preserves planning and reports missing vectors for completed embedding calls.
+The index counts only bundles that load without pickle and pass metadata/space, shape,
+dtype, finiteness, normalization and vector-digest checks. Partial files remain inventoried
+but cannot establish capture coverage.
+
+`rtpeval_generation_evidence_1` in `evidence-index.json` binds original input, exact result,
+policy, source revision and run identity to saved file digests, HTTP events, diagnostics and
+collection status. The index excludes itself, provenance and mutable manifest to avoid
+hash cycles; provenance binds the index and mechanism file hashes. Invocation failures and
+cancellation retain observed evidence without an adopted result. Optional evidence failures
+do not replace planner outcomes; a missing usage file exits as capture failure while retaining
+an available original result and index. Injected coverage stays unverified.
+Trace payloads may be objects, lists or other valid JSON values. Malformed/unreadable
+JSON and unreadable files remain unavailable inventory units rather than interrupting
+successful planner completion; readable malformed files retain their exact hashes.
+
+Available local evidence is distinct from producer completion, independent source review,
+qualified four-version intake, quality PASS and actual billing. Storage limits are capture
+capacity, not a spending guard. Live dispatch still requires the prepared, explicitly
+approved [smoke handoff](../agents/smoke-tests.md), and performs no independent evaluation.

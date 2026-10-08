@@ -295,10 +295,55 @@ account billing uses explicit retail/proxy assumptions; unknown quantities remai
 unavailable. The user removed a complex spend guard from this implementation scope.
 Local TripWorld corpus hashes pass. A presence-only recheck found OPENAI_API_KEY in
 `.env`; the capture CLI now loads that base file only for explicit execution. Credential
-validity and database compatibility remain untested. Genuine outputs and full evidence capture must precede exact
+validity and database compatibility were untested at that preparation stage. The approved follow-up implemented opt-in
+mechanism, RAW trace, credential-filtered owned HTTP and query-vector capture to the CLI,
+with exact original-result/file hashes and explicit partial evidence. The separate DB check
+was waived; normal future RAG initialization is unchanged. The V1-V3 one-use handoff proposes
+generation-only retail allowances of USD 11/12/14 (USD 37 total), retaining the original V0
+and excluding independent evaluation. Existing runtime limits remain in force; these
+reference allowances do not guarantee an invoice cap. Implementation and offline checks
+authorize no live dispatch. Genuine outputs and complete selected evidence must precede exact
 evaluator request planning and four-version attestation. See the
 [budget preparation](docs/records/evaluation/intake-identity-usage.md#sydney-generation-and-evidence-budget-preparation-2026-10-08)
-and [usage implementation](docs/records/evaluation/intake-identity-usage.md#sydney-usage-accounting-implementation-2026-10-08).
+and [generation evidence preparation](docs/records/evaluation/intake-identity-usage.md#sydney-generation-evidence-and-handoff-2026-10-08).
+
+The user subsequently approved that exact one-use generation package. V1 and V2
+each produced an original result with matching usage/mechanism/index/provenance bindings;
+all 149 observed HTTP sends have complete captures and verified file hashes. Their
+combined retail/proxy estimate is USD 4.388204290; actual account billing is unavailable.
+V2 RAG database preparation/connection hit its 10-second suboperation timeout before
+retrieval or embedding, so its result retains degraded RAG and no query vectors.
+The parent applied the package stop before V3. No retry, DB probe, V0 rerun or independent
+evaluator acquisition occurred; original V0 and both new results remain preserved.
+Genuine V2 retrieval, V3 generation and subsequent four-version evidence qualification
+remain pending. See the [execution and stop record](docs/records/v0-v3/development-pilots.md#sydney-v1-v3-generation-execution-2026-10-08).
+Subsequent authorized read-only diagnosis confirmed the current Docker database healthy
+and host `SELECT 1` successful in 0.031 seconds, while the same sandbox check timed out.
+At that point host connectivity was verified; corpus compatibility, genuine retrieval
+and V3 generation remained unverified. The earlier stop and original evidence remain unchanged.
+The subsequent authorized host resumption completed both V2 and V3 after read-only
+runtime/corpus compatibility passed. Each performed one embedding and one SQL retrieval,
+with query vectors matched to original HTTP responses; V3 exercised one Repair round.
+All 181 new HTTP captures and result/evidence hashes passed assessment, and 541 earlier
+original files remained unchanged. A generation-only binding now links retained V0/V1
+and the new V2/V3 originals, preserving the earlier degraded V2 separately. New retail/proxy
+estimate: USD 4.787736595; cumulative V1-V3 workflow including the degraded attempt:
+USD 9.175940885. Actual account billing remains unavailable. Producer/final-source review,
+changed-intake V0 identity and exact independent evidence planning still precede evaluator
+qualification or scoring. See the [host resumption record](docs/records/v0-v3/development-pilots.md#sydney-generation-host-resumption-2026-10-08).
+
+The subsequently authorized offline evaluator intake now accepts the actual selected
+V0/V1/V2/V3 originals as one source-linked development group. Producer completion and
+final-source reviews are agent attestations; the complete RequirementSpec retains its
+existing human review. Native identity, requirement/schedule, opening, routes and quality
+consumers run and replay exactly, with zero new provider/model calls. All 34 final primary
+grounding/opening checks and all 18 candidate route checks remain UNKNOWN; 53 decidable
+non-overlap checks PASS. These are incomplete independent-evidence results, not final
+quality acceptance or a version ranking. V0's unresolved transport population leaves its
+total unavailable. Twelve distinct claimed-ID Details requests need identity fields,
+and V0 needs one new batch-bound correspondence judgment before complete final-evidence
+planning. Paid acquisition remains unapproved. See the
+[four-version offline assessment](docs/records/evaluation/intake-identity-usage.md#sydney-four-version-offline-evaluator-intake-2026-10-08).
 
 The user clarified that smoke is a development check, not an actual system stage, and
 requested an evaluation `tools/` boundary. V0 smoke request/budget preparation now lives

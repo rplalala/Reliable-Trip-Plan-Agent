@@ -3422,3 +3422,288 @@ The capture CLI provides usage/lineage only; full raw provider, query-vector and
 capture, real V1-V3 outputs, source reviews, qualified intake and independent final evidence
 remain incomplete. No original V0 regeneration, model/evaluator acquisition, DB operation,
 tracker publication, push, PR, merge or formal version conclusion was performed.
+
+<a id="sydney-generation-evidence-and-handoff-2026-10-08"></a>
+
+## Sydney generation evidence and execution handoff — 2026-10-08
+
+### Authorization, source and preservation
+
+The human approved connecting generation evidence and preparing the concrete V1-V3
+execution handoff, and explicitly waived a separate TripWorld database check. Existing
+runtime RAG initialization remains unchanged. Paid generation, independent evaluator
+acquisition, V0 regeneration, execution-guard development, formal comparison and Git
+publication remain outside this task. The previously confirmed public capture CLI `main`
+seam was reused with simulated external HTTP/SDK/filesystem dependencies.
+
+Review base is `f6f2fc2b98e290b3116391561fb17cc5d4cd89fd`. Implementation commit
+`28646321374fed0db1c4a86a1b11879779359409` connects capture and directly related tests;
+review correction `0e1e2e81aed997718cd1d83dd926206b31e59d8b` protects the inventory
+against malformed evidence. Both precede this consolidated documentation update. The
+unrelated pre-existing `.gitignore` change remains uncommitted and byte-identical.
+
+The original input digest remains
+`1b3c50ad9ce9c58a4caf047388f3c4131faa0cddb0ffff2467dd8b2f1593d6ba`; original V0
+remains `d8ca6c8ac44aa2438f2efe65534b57488be81dbed217bc7d66626801f78431c7`.
+The 862-file prior manifest was checked without restamping it. Only authorized code
+owners changed: prior `cost_report.py`, and `usage.py`, `run_trace.py`, retrieval
+`diagnostics.py` and `runtime.py`; no original material or unexpected source changed.
+
+### Capture behavior and acceptance boundary
+
+`--capture-evidence` connects existing mechanism capture, RAW local trace, owned HTTP
+observations and query-vector capture. Preparation records intent without constructing
+providers or loading credentials. Execution preserves original result/configuration bytes,
+reuse protection, configured timeouts and cleanup. The existing usage-only default remains.
+Mechanism/raw final writes and the file inventory occur after the common usage clock stops.
+
+HTTP observations reuse original usage event IDs and do not add sends or read unread
+responses. Normally decoded SDK gzip and direct raw HTML streams follow existing
+consumption. Credential-filtered representations retain safe metadata and observed-body
+digests; local saved bytes have separate hashes. Environment/request/labelled JSON secrets,
+duplicate sensitive query values, individual Cookie values and unlabelled echoes are
+filtered. Bodies above 10 MB, unsupported content, unfinished streams and trace truncation
+remain partial. No credential file or private wire payload is published.
+
+Query capture retains normalized float32 vectors, space/corpus metadata and query-text
+digests, resets ambient context and makes no extra embedding or database call. The inventory
+validates NPZ contents and digests before counting coverage. `evidence-index.json` binds
+input/result/policy/source/run identity, observed events and available files. Provenance
+binds its hash and the mechanism hash; index/provenance/manifest cycles are excluded.
+Failures, cancellations and capture-write problems preserve available observations and
+missingness. Injected coverage remains unverified. These outputs establish neither a
+qualified four-version intake nor independent quality acceptance.
+
+Current behavior belongs to the
+[generation evidence contract](../../contracts/0002-intake-identity-usage.md#planner-generation-evidence)
+and [CLI guide](../../../backend/evaluation/README.md#planner-usage-capture-cli).
+
+### Failure, review correction and retest sequence
+
+TDD first exposed the missing evidence flag and trace connection. Further tests exposed
+missing partial inventory behavior, lost numeric cached-token usage and a missing index
+after usage-file write failure. Gzip initially remained consumable but uncaptured;
+observing normal decoded consumption fixed that gap without draining streams. Duplicate
+sensitive query parameters and individual Cookie echoes then exposed incomplete filtering;
+collecting each value corrected both cases. Each behavior was retested through the public
+CLI. An initial pytest basetemp parent error required only directory preparation.
+
+The initial full backend run passed **3071 tests, 10 skipped in 393.47 seconds**. After
+compression/filtering refinements, the committed implementation passed **3072 tests,
+10 skipped in 392.81 seconds**, with **99 related tests** and relevant Ruff checks passing.
+
+Standards review found zero hard policy breaches or separate Fowler smells, but two P2
+engineering issues: unprotected JSON reads and counting partial NPZ files. Spec review
+found the NPZ issue and a P1 normal-list trace issue. Existing graph capture legitimately
+writes `selected_place_evidence` as a list; treating every trace payload as a dictionary
+would interrupt final inventory after successful planning. A broken JSON write similarly
+would replace optional missingness with a CLI exception.
+
+Public CLI regressions reproduced all three error classes. Long Windows test-output paths
+initially prevented trace payload creation and masked two regressions; shorter ignored
+temporary paths reproduced the actual `AttributeError`/JSON decode failures. The correction
+accepts valid non-object JSON payloads, records broken/unreadable evidence as partial, keeps
+readable damaged-file hashes, and validates vector bundles before counting them. A partial
+NPZ created before simulated filesystem failure no longer satisfies query-vector coverage.
+The correction passed **103 related tests in 15.50 seconds**, including the four added
+cases; Ruff and Git diff checks passed. The complete suite result above precedes this
+local inventory correction; it is not represented as a post-correction full-suite run.
+Both axes rechecked the committed correction and reported zero remaining Standards
+or Spec findings; no reviewer changed files or performed live/DB operations.
+
+### One-use preparation and remaining live work
+
+Network/DNS-blocked preparation checked V1, V2 and V3 with zero network attempts, zero
+execution credential loads, zero provider sends and no generated results. A presence-only
+audit finds all required Foundry, Google, embedding and TripWorld variables. Its initial
+case-sensitive dotenv lookup misreported the lowercase Google key; matching existing
+Windows/settings case-insensitive semantics corrected the audit, without changing credentials.
+Live credential validity and database compatibility remain untested.
+
+The one-use handoff records exact commands, unused output directories, original input,
+the existing `sydney-natural` group, preserved V0 provenance, source/dependency hashes,
+capture acceptance and stopping/reporting rules. Its final source revision is recorded in
+the local package after the documentation commit. Prospective execution is serial V1,
+inspection, V2, inspection, V3, inspection, using the required current-session
+`gpt-6.1-sol`/`medium` execution child only after explicit exact-plan live approval.
+
+Generation-only proposed retail allowances are **USD 11/12/14, USD 37 total**. The earlier
+USD 6 independent evaluation proposal is excluded. Official retail references were rechecked
+on 2026-10-08; Foundry uses the declared OpenAI proxy. Prior scenario send counts and
+unenforced preference/profile/extraction token assumptions are labelled planning thresholds,
+not newly implemented request guards or guaranteed account ceilings. Actual sends and
+reported usage determine later estimates; unsupported quantities remain unknown.
+
+Existing runtime deadlines remain 600 seconds per invocation through cleanup, with local
+capture IO afterward, zero operator retries, existing main-generation token admission and
+existing V3 repair/acquisition limits. Stop before another stage on failed/cancelled runs,
+capture/lineage failure, reference threshold exceedance or changed source/date. No automatic
+retry, RAG DB bypass, budget/policy adjustment or extra acquisition is authorized.
+Real V1-V3 outputs, producer completion, final-source reviews, changed-intake V0 independent
+identity and the exact independent final-evidence plan remain pending.
+
+Ignored local evidence identifiers: `artifacts/sydney-generation-evidence-20261008` and
+`artifacts/sydney-generation-evidence-handoff-20261008`; short review test outputs also use
+`.scratch/ge-*`. These identifiers are historical local locations, not published navigation,
+tracker state or shared dependencies. No paid planner/embedding/evaluator call, separate DB
+operation, push, PR, merge, branch switch or version freeze occurred.
+
+Subsequent explicit approval consumed the V1 and V2 invocations of this package.
+V1 completed; V2 produced an original result after its RAG connection suboperation
+timed out before retrieval/embedding. The parent stopped before V3, retaining both
+outputs and all observed evidence. Combined retail/proxy estimate: USD 4.388204290;
+actual account billing remains unavailable. See the complete
+[generation execution and stop record](../v0-v3/development-pilots.md#sydney-v1-v3-generation-execution-2026-10-08).
+This later execution does not alter the historical zero-send preparation snapshot or
+establish qualified four-version intake, independent quality acceptance or a freeze.
+
+The expressly authorized host resumption subsequently completed genuine V2/V3 retrieval
+and generation, retaining V0/V1 and the degraded V2 attempt. Original outputs for all
+four versions are now hash-bound in a local generation-only snapshot. Its new retail/proxy
+subtotal is USD 4.787736595; the workflow subtotal including the earlier attempt is
+USD 9.175940885, with actual account billing unavailable. See the complete
+[host generation resumption record](../v0-v3/development-pilots.md#sydney-generation-host-resumption-2026-10-08).
+Producer/final-source review bindings, changed-intake V0 independent identity and exact
+independent final-evidence planning remain pending; no independent evaluator call occurred.
+
+<a id="sydney-four-version-offline-evaluator-intake-2026-10-08"></a>
+
+## Sydney four-version offline evaluator intake, 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Source/review base:
+`f730108382ab0e38bbcc0fc24ccec8e3d1f82e62`, branch `feature/evaluation`.
+The unrelated pre-existing `.gitignore` edit remains unchanged. Scope is the user-approved
+offline intake, existing independent-observation reuse, native scoring and engineering
+assessment of the four selected originals. No planner/evaluator implementation, original
+output, policy formula or runtime configuration changed. New paid acquisition, formal
+benchmark/comparison, thesis conclusions, freezes and remote Git delivery are excluded.
+The preceding generation event remains owned by the
+[host resumption record](../v0-v3/development-pilots.md#sydney-generation-host-resumption-2026-10-08).
+
+### Actual selected materials and preparation
+
+The selected `sydney-natural` group retains the original input SHA-256
+`1b3c50ad9ce9c58a4caf047388f3c4131faa0cddb0ffff2467dd8b2f1593d6ba`:
+Sydney, 2026-10-14 through 2026-10-17, two travelers, AUD 1600 and relaxed pace.
+The complete human-reviewed RequirementSpec is copied byte-for-byte: Sydney Opera House
+exactly once is the sole named hard obligation; interests, transport preference and spacing
+remain soft. No daily quota, fixed slot or indoor visit requirement is added.
+
+| Version | Selected original run | Result SHA-256 |
+| --- | --- | --- |
+| V0 | `sydney-natural-v0-20261007` | `d8ca6c8ac44aa2438f2efe65534b57488be81dbed217bc7d66626801f78431c7` |
+| V1 | `sydney-v1-20261008-r1` | `e9046d62d719eeca95247a46873ce1cd475d89fa33775281a76ec9d5ab5f63b1` |
+| V2 | `sydney-v2-20261008-r2` | `b261eeba55abafc258e1b87dd0871cf42d8c1abe3aa1caeabdcfb1044da2476d` |
+| V3 | `sydney-v3-20261008-r2` | `a86d1335f197dea1cd23c4de02a4a483921ee1c630dd04ef2825f6000e1e7fe6` |
+
+Original result/provenance/usage bytes are copied inside the new batch root. The retained
+degraded V2 run is not selected. Agent source-only review inventories every final activity
+and original Transfer declaration; native completion receipts attest all four generation
+workflows completed. This is producer completion, not human factual review or independent
+quality acceptance. The earlier generation-only binding remains unchanged.
+
+Native `rtpeval_batch_1` intake accepts revision 2 of
+`sydney-natural-identity-development`; no manually accepted library view substitutes for
+this gate. Retaining the batch ID preserves exact V0 activity/occupancy source IDs.
+The generic Haymarket food block remains a committed non-primary activity, not free time.
+Existing source-linked activity, occupancy, timezone and mode reviews are reused only
+against identical input/run/hash/pointer bindings. A new agent density review of the same
+complete input binds revision 2 and retains relaxed pace without an exact count.
+V3 optional projections are available but excluded from final-only scoring.
+
+### Independent observation reuse and missing identity coverage
+
+Three evaluator-owned historical snapshots pass native manifest, raw-byte hash, request,
+attempt-time, derived-payload and historical-ledger validation. They contain eight identity
+searches, the earlier eight opening/route captures, and two Museum follow-up captures.
+No planner wire, internal validator, RAG result, generation cache or Repair decision is
+admitted as independent quality evidence.
+
+The current native identity plan contains 33 distinct keys: 21 Search and 12 Details.
+Eleven exact keys reuse historical observations, preserving raw bytes, request context and
+actual acquisition times. Twenty-two keys have no matching saved capture. Three reused
+Details captures have opening-only masks, so absent names/addresses are not manufactured.
+Consequently all 12 unique claimed-ID Details keys need identity-field acquisition or
+refresh. Thirteen missing Search keys remain in the full native plan; V1-V3 deterministic
+claimed-ID checks do not require those searches as substitutes for Details.
+
+Independent Opera House search resolves the three version-owned V1-V3 requirement targets
+with PASS. Their primary visits remain UNKNOWN because original claimed-ID Details lack
+identity fields. V0 has seven primary occurrences plus one requirement target awaiting a
+new correspondence judgment. Its new `v0_identity_correspondence_3` packet is frozen for
+`gpt-6-luna`, but no model is invoked. The changed intake/evidence digests prohibit reuse
+or relabeling of the old model response. The historical Museum address FAIL and its
+separate saved assessment remain intact; missing current judgment is UNKNOWN.
+
+### Native scoring and assessment
+
+All final scorers execute over the accepted four-version intake. The current evidence plan
+contains one Details key for the independently identified Opera House requirement target;
+unresolved primary identities leave their opening/route acquisition references pending.
+A derived replay view imports that exact historical Details record, with explicit source
+manifest/plan/record hashes and preserved capture times. Its native ledger counts one
+historical capture; this offline execution sends zero requests. No unrequested snapshot
+record or artificial budget exhaustion is invented to force scoring.
+
+| Version | Primary grounding UNKNOWN | Opening UNKNOWN | Routes UNKNOWN | Decidable non-overlap PASS |
+| --- | ---: | ---: | ---: | ---: |
+| V0 | 7 | 7 | 3 | 11 |
+| V1 | 10 | 10 | 6 | 16 |
+| V2 | 8 | 8 | 4 | 12 |
+| V3 | 9 | 9 | 5 | 14 |
+
+All four exact-once requirement checks remain UNKNOWN because their primary occurrence
+identities are unresolved. Known commitment intersections total zero seconds. V0 retains
+one ambiguous final-day transport association and an unresolved occupied-time population;
+its non-overlap applicability denominator and total therefore remain unavailable despite
+11 decidable checks passing. A complete processing status does not assert complete
+evidence or every itinerary passing.
+
+Source-distinct daily counts are V0 `2/2/2/1`, V1 `3/2/3/2`, V2 `3/2/2/1` and
+V3 `3/2/2/2`. The existing relaxed-pace formula yields mean daily deductions of 5, 20,
+15 and 10 points respectively. These are operational formula checks, not invented hard
+requirements or comparative research findings. Native V1-V3 auxiliary values are 20,
+driven solely by verified non-overlap with UNKNOWN contributing zero in the other four
+dimensions; resulting totals are retained locally. They must not be interpreted as
+complete factual quality measurements or version rankings.
+
+### Verification, preservation and next acquisition boundary
+
+The first local helper reached valid intake and identity replay, then failed while writing
+an `IdentityJudgmentPacket` directly as JSON. The local correction uses its public
+`to_dict()` conversion and a fresh revision-2 directory; failed revision-1 materials remain
+preserved. No original artifact or provider request was affected.
+The compact-summary aid also initially assumed every metric exposed `state`; selecting
+only fields present in the native metric schema corrects that local `KeyError`. Subsequent
+summary, preservation and document checks pass without changing any scorer output.
+
+The corrected preparation passes native intake, current identity-report replay, occupancy
+source matching, requirement/schedule and route preparation. Six public CLI consumers
+(intake, identity, requirement/schedule, opening, routes, quality) each reproduce identical
+JSON and return codes in a second offline invocation. Identity returns 3 for expected
+missing evidence; the other five return 0. Network/DNS/socket guards record zero attempts.
+All 56 directly referenced original files and the earlier 541-file preservation inventory
+remain unchanged. The 286 frozen generation/source/configuration files also remain
+unchanged. This task changes only tracked engineering documentation; full product tests
+are not rerun for local artifact preparation.
+
+Usage intake retains V0's partial capture and V1-V3's native coverage rather than promoting
+unknown account billing or coverage to zero. New evaluator provider sends, model sends
+and acquisition expenditure are all zero. Historical snapshot ledger entries are not
+added to this execution's costs.
+
+Ignored local evidence identifier: `artifacts/sydney-four-version-evaluator-20261008-r2`.
+It contains the native manifest/intake, source-only and completion attestations, exact
+original copies, independent reuse provenance, pending V0 packet, identity/schedule/
+density/opening/routes/quality reports, CLI replay receipts and preservation assessment.
+Revision 1 identifies the preserved local serialization failure. These paths are historical
+local identifiers, not shared documentation dependencies or additional task authorities.
+
+The next concrete identity acquisition inventory is 12 distinct Details field refreshes
+and one new V0 correspondence request. It is not an executable authorization: field masks,
+wire bodies, measured token preflight, exact cost allowance and live execution child still
+require a prepared, approved package. After identity replay, freeze actual opening/route
+keys against independently reviewed endpoints, modes and departure semantics; then acquire
+only supported missing evidence and rerun the native scorers. Retain actual FAIL/UNKNOWN,
+the generic-food occupancy and unresolved transport. No final independent quality
+acceptance, freeze or formal version comparison is established by this offline stage.

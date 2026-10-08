@@ -796,6 +796,33 @@ shared runs.
 Synthetic CLI tests check three sends, two Web Search tool calls, one cache reuse, six
 Matrix elements and reported model read/write partitions: the retail example totals
 USD 0.0821715. This is fixture arithmetic. Complete cost remains unavailable for
-unverified injected adapters. Full raw/query-vector/mechanism evidence and qualified
-four-version attestation require their separate producer flow; this usage command
-performs neither those steps nor independent evaluator requests.
+unverified injected adapters. Qualified four-version attestation retains its separate
+producer flow; this command performs no independent evaluator requests.
+
+Add `--capture-evidence` to prepare or capture selected-version generation evidence:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.tools.planner_usage_cli --version v2 --input-json original-input.json --runtime-config config/runtime.yaml --rag-env-file .env.tripworld --output-directory artifacts/generation-v2-preparation --group-id original-request --run-id v2-preparation --capture-evidence
+```
+
+This command remains offline. After exact live approval, use a different, unused output
+directory and the approved run ID, then add `--execute`. The existing selected planner runs
+once, with mechanism capture, RAW local trace, credential-filtered owned HTTP request/response
+representations and query-vector capture. SDK stream bodies are observed during normal
+consumption, including decoded gzip; raw HTML retains existing read limits. Nothing drains
+an unread response or adds a provider call. Bodies above 10 MB, unsupported content,
+interrupted streams, trace truncation and capture-write failures remain explicit missingness.
+
+Inspect `mechanism.json`, `evidence-index.json`, `evidence/wire/`, `evidence/trace/` and any
+`evidence/vectors/` NPZ files alongside result, usage, provenance and cost artifacts. The index
+binds exact file hashes and original usage event IDs; provenance binds the index and mechanism.
+Its artifact inventory excludes manifest, provenance and itself to avoid hash cycles.
+Observed-body hashes describe the declared raw/decoded form; saved JSON is credential-filtered
+and may be normalized rather than byte-identical to private provider content. Numeric cache
+usage remains available. Query-vector metadata retains text hashes, not raw query text.
+
+Exit 0 indicates invocation completion, even when optional evidence is partial. A missing
+usage file exits 1 while retaining any original result and evidence index. Check collection
+status and missing fields separately before the next stage. Failure/cancellation retains
+observations without an adopted result. Ordinary planner budgets, prompts and V0-V3 behavior
+are unchanged. See the [evidence contract](../../docs/contracts/0002-intake-identity-usage.md#planner-generation-evidence).

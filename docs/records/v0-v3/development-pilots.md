@@ -567,3 +567,257 @@ need preparation against this actual original output. The earlier eight-venue/fo
 scenario is not a source of replacement output or permission to drop difficult claims.
 No independent API sends, V1-V3 live execution, formal comparison, version freeze,
 tracker mutation, push, PR or merge occurred.
+
+<a id="sydney-v1-v3-generation-execution-2026-10-08"></a>
+
+## Sydney V1-V3 generation execution stop - 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Status: V1 and V2 original generation completed;
+execution stopped after a V2 RAG connection timeout, before V3. Source revision:
+`12a56de7b9f7d0bd4c24951f7273016ac62aa845`. The unrelated unstaged `.gitignore`
+change was preserved. No production code, configuration, prompts or limits changed.
+
+### Approved execution and admission
+
+The human explicitly approved the prepared one-use generation package. Its original
+preparation snapshot remains unchanged and records its earlier unauthorised state;
+the separate current-session authorization receipt binds that exact package hash.
+The approved scope was one invocation each of V1, V2 and V3, serially with parent
+assessment between versions, subject to the package stops. Retail-reference allowances
+were USD 11/12/14, USD 37 total, with zero operator retries. Independent evaluator
+acquisition, V0 regeneration, separate DB probing and policy/budget changes were excluded.
+Normal V2 RAG database preparation remained part of the selected runtime.
+
+Admission verified all 285 frozen source/input files, six dependency versions, exact
+source revision, current Sydney date, credential presence and unused output directories,
+without a provider request or DB probe. The required current-session execution child
+used `gpt-6.1-sol` with `medium` reasoning effort and executed each dispatched argv once.
+V1 completion and fresh source/date/dependency checks admitted V2; V3 was never dispatched.
+
+Both generations used the exact original natural input: Sydney, October 14-17, two
+travelers, AUD 1600 and Sydney Opera House once, without an added daily visit quota.
+Input SHA256 remained
+`1b3c50ad9ce9c58a4caf047388f3c4131faa0cddb0ffff2467dd8b2f1593d6ba`.
+The original V0 result and provenance were preserved; V0 result SHA256 remained
+`d8ca6c8ac44aa2438f2efe65534b57488be81dbed217bc7d66626801f78431c7`.
+
+### Observed generation and usage
+
+| Observation | V1 | V2 |
+| --- | ---: | ---: |
+| CLI exit code / planner outcome | 0 / completed | 0 / completed |
+| Runtime through cleanup, seconds | 107.219 | 130.656 |
+| Process wall time, seconds | 115.838 | 136.967 |
+| Model calls / model HTTP sends | 4 / 4 | 5 / 5 |
+| Google HTTP sends | 62 | 76 |
+| Weather HTTP sends | 1 | 1 |
+| Total observed HTTP sends | 67 | 82 |
+| Embedding / safe HTML / Repair model sends | 0 / 0 / 0 | 0 / 0 / 0 |
+| Reported input tokens | 50,344 | 52,902 |
+| Reported output tokens | 9,216 | 12,478 |
+| Included cached input tokens | 0 | 4,669 |
+| Application cache hits / trace lookups | 0 / 60 | 0 / 74 |
+| Estimated retail/proxy USD | 2.078895275 | 2.309309015 |
+| Unpriced events | 0 | 0 |
+
+Google observations were V1 search/details/matrix 14/28/20 and V2 11/44/21. Model
+cache tokens are distinct from application cache hits. Token totals were 59,560 and
+65,380 respectively; reasoning, where reported, is already included in output.
+Both stages stayed below their request thresholds, reference allowances and 600-second
+whole-run deadline. The estimates use the frozen October 8 retail basis and declared
+Foundry/OpenAI proxy assumption. The combined estimate is **USD 4.388204290**, not an
+observed invoice. Actual account charges, discounts, free quotas and taxes are unavailable.
+V3 incurred no dispatched generation request; the unspent allowance is not a charge.
+
+Original result SHA256 values:
+
+- V1, `sydney-v1-20261008-r1`:
+  `e9046d62d719eeca95247a46873ce1cd475d89fa33775281a76ec9d5ab5f63b1`.
+- V2, `sydney-v2-20261008-r1`:
+  `197520b9de70a7c0e6b4bd4c317282489779f89c9eaf855ec6f6b88f9111b209`.
+
+### Evidence assessment and RAG stop
+
+Each exact result digest agrees across manifest, usage, mechanism, evidence index,
+provenance and cost report. Original input and the five structured trip facts match.
+Parent checks verified 216 V1 and 260 V2 indexed file hashes, plus three provenance
+references per run. All 149 original HTTP IDs are unique within their runs and agree
+between usage and index; every observed response was HTTP 200 and both captured bodies
+were complete. Usage, mechanism and index report available capture. Trace has 165/178
+rows respectively and terminal `run_completed` events. Capture availability describes
+preserved observations; it does not attest successful execution of every mechanism.
+
+V2 RAG discovery reports `deadline_limited` with `TimeoutError`. Its configured
+10-second connection suboperation failed before SQL retrieval or embedding. Prepare
+and connection diagnostics describe the same failure at nested stages, not two extra
+operator attempts. RAG elapsed time was 10.097 seconds; its phase deadline did not
+expire, and the whole planner remained within 600 seconds. Retrieval queries, returned
+positions/entities, embedding sends and RAG fallback sends were all zero. No NPZ was
+produced, so vector digest validation is inapplicable; no successful retrieval or
+vector evidence is attested. The captured exception type does not establish the
+underlying connectivity cause.
+
+The existing runtime continued to produce a selected V2 result with degraded RAG.
+That CLI success does not satisfy the intended genuine retrieval evidence. The parent
+applied the package's timeout stop before V3 and retained this original V2 output.
+No retry, extra embedding, replacement result, connection probe or timeout increase
+was performed. The V3 output directory remains absent. Restoring RAG prerequisites,
+refreshing the execution package and any new paid attempt require a separate approved
+scope; the consumed V2 invocation cannot be silently reused.
+
+Local assessment initially encountered null trace payload and empty catalog assumptions;
+the checks were corrected offline. The parent's initial policy check also conflated a
+canonical configuration digest with the serialized snapshot file digest. Checking the
+canonical configuration and its separate provenance file hash resolved that false alarm.
+Original evidence and the failed assessment receipt were preserved; none of these local
+inspection corrections sent provider requests or changed implementation. Final offline
+source/dependency/date checks passed; the parent V2 assessment records the RAG stop.
+No backend suite was rerun for this execution-only task; prior implementation validation
+remains scoped to its recorded revision, rather than being represented as a new live gate.
+
+Private historical evidence identifiers, not published dependencies:
+`artifacts/sydney-four-version-live-20261008-r1/{v1,v2}` and
+`artifacts/sydney-generation-evidence-handoff-20261008`, containing the immutable
+authorization receipt, original consoles/process receipts, child assessments, parent
+assessments and `parent-live-summary.json`. Each version retains original result,
+usage, RAW trace, credential-filtered HTTP, mechanism, cost report, index and provenance.
+
+This is bounded generation development evidence. V2 genuine retrieval and V3 generation
+remain unfulfilled; producer completion, final-source review bindings, changed-intake
+V0 independent identity and exact independent final-evidence planning remain pending.
+No independent evaluator request, total score, qualified four-version intake, formal
+comparison, version freeze, tracker mutation, push, PR or merge occurred.
+
+### Subsequent host connectivity diagnosis
+
+The human requested a connection recheck and supplied a Docker Desktop screenshot
+showing the PostgreSQL container running with `55432:5432`. At documentation revision
+`a70317f`, a single sandboxed connection check still timed out after 10.016 seconds,
+before its read-only `SELECT 1`. A sandbox listener inventory had returned no matching
+port; the parent's inference that the host database was unavailable was too strong.
+
+A host-environment Docker inspection then confirmed the container healthy, with
+`127.0.0.1:55432` published. Its current start timestamp was 12:08:07 UTC (23:08:07
+Sydney), after the earlier V2 generation. The same connection script, dotenv paths and
+10-second bound passed outside the sandbox in 0.031 seconds; `SELECT 1` returned one.
+The current host connection is usable, while the sandbox check did not establish host
+service absence. These later observations do not identify the historical V2 connection
+failure's sole cause or retroactively supply RAG retrieval evidence.
+
+Both checks made one connection attempt each, zero retries and zero model/embedding
+calls. No corpus compatibility query, service/configuration change or V2/V3 rerun was
+performed. Private historical receipts are
+`.scratch/tripworld-connection-recheck-20261008-r1.json` and
+`.scratch/tripworld-connection-recheck-20261008-r2-host.json`. Any refreshed live package
+must account for the execution environment's ability to reach the host database.
+
+<a id="sydney-generation-host-resumption-2026-10-08"></a>
+
+### Authorized host generation resumption
+
+Date: 2026-10-08, Australia/Sydney. Source revision:
+`043cae393344d41f8e0dfe3e420b238c95682497`. The human explicitly instructed continuation
+after the host connectivity diagnosis. The refreshed one-use package authorized one
+new V2 invocation, assessment, then one V3 invocation on the host. V0, completed V1
+and the earlier degraded V2 remained unchanged; the new V2 was explicitly authorized
+after the stop, rather than an automatic retry. Production code, configuration,
+prompts and limits were unchanged; the unrelated `.gitignore` modification was preserved.
+
+The package froze 286 files, checked six dependency versions and the actual Sydney
+date, and recorded hashes for 541 prior original files. Offline V2/V3 CLI preparation
+made zero network attempts, execution credential loads or provider sends. A separately
+prepared read-only `RuntimeRetrieval.prepare` check then passed on the host in 0.047
+seconds: connection, vector-space configuration, corpus manifest/count and policy
+compatibility matched. It made no embedding or planner call and changed no DB data.
+The existing required `gpt-6.1-sol` / `medium` child executed the exact V2 and V3 argv
+once each with host access; parent assessment admitted V3 only after V2 passed.
+
+V2/V3 retained their USD 12/14 reference allowances, 600-second invocation deadlines,
+existing token/request/Repair limits and zero automatic operator retries. The earlier
+USD 4.388204290 estimate remained included in the USD 37 workflow reference allowance;
+the refresh did not expand that total. No independent evaluator call was authorized.
+
+| Observed item | V2 host resumption | V3 host generation |
+| --- | ---: | ---: |
+| Exit code / planner outcome | 0 / completed | 0 / completed |
+| Runtime through cleanup, seconds | 134.234 | 143.156 |
+| Process wall time, seconds | 140.649 | 150.976 |
+| Chat calls / embedding calls | 5 / 1 | 6 / 1 |
+| Google HTTP sends | 76 | 90 |
+| Weather HTTP sends | 1 | 1 |
+| Total observed HTTP sends | 83 | 98 |
+| Reported input token subtotal, including embedding | 53,809 | 83,297 |
+| Reported chat output tokens | 12,152 | 13,303 |
+| Included chat cached input tokens | 4,669 | 13,732 |
+| Cache ledger hits / framework metric | 13 / 0 | 10 / 0 |
+| RAG retrieval queries / returned positions | 1 / 20 | 1 / 20 |
+| Captured query-vector bundles | 1 | 1 |
+| Repair rounds / Repair chat calls | 0 / 0 | 1 / 1 |
+| Estimated retail/proxy USD | 2.37225918 | 2.415477415 |
+| Unpriced events | 0 | 0 |
+
+Both embedding batches reported two input tokens; embedding output/cache fields were
+not reported and were not relabelled as observed zero. Chat token totals and embedding
+input are distinct observations. Cache-ledger hits and the framework metric also remain
+separate instrumentation scopes. V2's initial read-only aggregation assumed an embedding
+cache field existed; correcting that local inspection preserved absent fields and made
+no extra request or original-evidence change.
+
+RAG runtime connection, compatibility, embedding, capture and SQL stages all completed.
+Both discovery reports were `partial` because bounded candidate identity resolution
+retained omissions, rather than because retrieval failed. V2 recorded 13 resolved,
+six existing Google observations and one `fallback_not_unique`. V3 recorded 11 resolved,
+four Google observations, two `fallback_not_unique` and three `fallback_budget` omissions.
+These unresolved candidates were preserved in diagnostics; no extra lookup was added
+to eliminate them. No RAG runtime timeout or failed SQL/embedding stage was observed.
+
+V3 exercised one normal Repair round, with one chat call and 16 route HTTP sends.
+Its reported input/output were 30,539/1,142 tokens, 31,681 total; the stage took 15.922
+seconds, including 10.219 seconds for the model. Its internal decision was
+`ACCEPTED_COMPLETE`; that is a planner decision, not an independent evaluator verdict.
+The Repair retail subset was USD 0.0843883, already included in the V3 subtotal.
+There were no safe HTML requests or additional operator retries in either invocation.
+
+The two new retail estimates total **USD 4.787736595**. The V1-V3 workflow estimate,
+including completed V1 and the earlier degraded V2, is **USD 9.175940885**, below its
+USD 37 reference allowance. The frozen October 8 price basis and declared Foundry proxy
+remain assumptions; actual account billing, discounts, quotas and taxes are unavailable.
+
+Parent assessment checked all 263/306 indexed file hashes plus three provenance
+references per run. All 181 original HTTP IDs agree with usage, are unique within each
+run, and have HTTP 200 with complete request/response capture. Result digests agree
+across six envelopes; original input and the five structured trip facts match. Usage,
+mechanism and index capture are available; trace contains 179/194 rows and completion
+markers. Each NPZ contains finite, normalized `float32 [1,1536]` vectors with valid
+metadata/digests and the approved corpus artifact hash. The parent also reconstructed
+normalized vectors from the captured embedding HTTP responses and matched their exact
+values and request-text hashes to the NPZ. Fresh date/source/dependency checks and all
+541 original-file preservation checks passed before final documentation changes.
+
+The generation-only binding now references these exact original outputs:
+
+| Version | Run ID | Result SHA256 |
+| --- | --- | --- |
+| V0, retained | `sydney-natural-v0-20261007` | `d8ca6c8ac44aa2438f2efe65534b57488be81dbed217bc7d66626801f78431c7` |
+| V1, retained | `sydney-v1-20261008-r1` | `e9046d62d719eeca95247a46873ce1cd475d89fa33775281a76ec9d5ab5f63b1` |
+| V2, new host run | `sydney-v2-20261008-r2` | `b261eeba55abafc258e1b87dd0871cf42d8c1abe3aa1caeabdcfb1044da2476d` |
+| V3, new host run | `sydney-v3-20261008-r2` | `a86d1335f197dea1cd23c4de02a4a483921ee1c630dd04ef2825f6000e1e7fe6` |
+
+The earlier degraded V2 remains a separate preserved attempt, not a rewritten output
+or a removed cost. Selection follows the explicitly authorized mechanism restoration;
+no independent score was used to choose a replacement. Legacy V0 provenance/usage are
+retained as legacy observations, without fabricating a new native generation index.
+
+Private historical evidence identifiers: `artifacts/sydney-four-version-live-20261008-r2`
+and `artifacts/sydney-generation-evidence-handoff-20261008-r2`, including read-only
+compatibility, immutable authorization, preserved-original inventory, child/parent
+assessments, `four-version-generation-binding.json` and `parent-live-summary.json`.
+Raw provider/model data and credentials remain untracked. No production code changed,
+so no new backend suite is claimed; checks covered runtime compatibility, actual
+execution, evidence lineage, vector/wire consistency and documentation.
+
+All four versions now have linked original generation material. This binding does not
+qualify a four-version evaluator intake, attest producer/final-source review completion,
+supply changed-intake V0 independent identity or establish a final score. Exact independent
+final-evidence planning remains pending. No formal comparison, version freeze, tracker
+mutation, push, PR or merge occurred.
