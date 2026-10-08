@@ -2681,3 +2681,94 @@ FAILs, twelve missing-hours UNKNOWNs, pending opening-package authorization and 
 generation-trace coverage remain unchanged. A future real V3 generation needs its own
 prepared and approved package; current independent evaluator rules remain unchanged.
 No push, PR, merge, branch switch, formal comparison or freeze occurred.
+
+## Fresh opening assessment and final composition 2026-10-09
+
+Status: Authorized execution complete; native opening CLI and frozen-intake public
+quality API replay validated. Quality CLI composition has a diagnosed serialization
+gap and is not accepted as a complete final-report CLI path. No new generation occurred.
+Execution source is `51033fbf226838ba3f554d1ebc8857889115cab7` after the authorized
+three-doc squash; product code is unchanged from the tested address-protection state.
+The unrelated `.gitignore` edit remains excluded and hash-preserved.
+
+### One approved request and fresh findings
+
+The user explicitly approved opening preparation
+`c47f42c0b55f3e40c137b08e41362a08fb0c6b4b55f07ca8875155104efda968`.
+The parent rechecked all 73 implementation files, parent receipt, original sources,
+unconsumed execution directory, current UTC pricing, credentials and token bound
+without network, refreshing only the execution handoff's source revision. A current-session
+`gpt-6.1-sol` / medium child executed the prepared CLI once. Actual model wire was
+`gpt-6-luna` / medium, HTTP 200; Google sends zero, model sends one, retries zero.
+Reported input/output/total tokens were **13,821 / 2,891 / 16,712**; reasoning tokens
+were 1,022 and cache-write input was 13,818. Request timestamps were
+`2026-10-08T23:20:43.225123Z` through `23:20:59.269848Z`, approximately 16.04 seconds.
+Reference incremental cost is **USD 0.00317305**; account billing is unavailable.
+Combined independent evaluator reference cost is **USD 1.60211985**, excluding generation.
+
+Eleven missing-hours decisions PASS under unchanged public-landmark access policy.
+API hours were not invented or promoted to factual coverage. The remaining decision
+is V0 Powerhouse Museum on October 17, 10:00-12:15 local time. Its original title
+implies museum admission, which cannot use ordinary outdoor-landmark inference.
+The model assesses the daytime window as reasonable but finds admission unsupported
+and supplied temporary-closure status leaves future access uncertain. That undated
+status does not prove October 17 closure; the result stays UNKNOWN with
+`hours_missing` and `llm_access_reasonableness_unknown`.
+
+### Replay, composition and diagnosed CLI gap
+
+With credentials cleared and DNS/TCP prohibited, actual `replay-opening` CLI output
+exactly equals the saved native report. Its immutable parent context still contains
+the historical 17 route-review UNKNOWNs and unresolved V3 occupancy denominator;
+the native report therefore retains 19 UNKNOWNs rather than rewriting its preparation.
+
+The final quality CLI, supplied with already completed route/occupancy reviews and
+the fresh model material, initially failed with `artifact_integrity_error`:
+`Stale or foreign opening packet`. Read-only reconstruction isolated request-input
+serialization: `load_batch.to_dict()` and frozen intake have equal source content but
+different source-key insertion order. All cases, decoded input, remaining request fields
+and remaining packet fields agree; the bound raw `request.input` strings and packet
+digests differ. Frozen packet digest is
+`659728e9420c0ba0707b6b5105bf05a7d31c96b77acce5c277ae3abd89d2617d`;
+CLI reconstruction gives `6610e24a28a12c3c553bd91c8b3f4ca6da07ae1021bb283659230e2e9473bf5f`.
+No raw model response, packet or importer rule was normalized to evade this rejection.
+
+Public `build_quality_report` over the exact frozen intake accepts the same fresh
+material and completed reviews, retaining binding validation. Exact repeated API
+construction agrees, and independently recomputed opening/route/requirement components
+complete. The separate derived report closes its own review/artifact hashes and links
+both native receipts. It is not a replacement native receipt or a passed quality CLI run.
+The local composition helper initially treated identity report status as a metric's
+`complete` status; that helper-only assertion was corrected to check the three metric
+reports separately. No product code, paid request or source evidence changed.
+
+| Version | Final score | Grounding FAIL | Opening UNKNOWN | Mean soft pace deduction |
+| --- | ---: | ---: | ---: | ---: |
+| V0 | 89.2857 | 1 | 1 | 5 |
+| V1 | 80.0000 | 0 | 0 | 20 |
+| V2 | 85.0000 | 0 | 0 | 15 |
+| New V3 | 82.5000 | 7 | 0 | 0 |
+
+All four exact-once Opera House checks PASS; no non-overlap, opening or route FAIL
+remains. The eight grounding failures retain the original claims described above.
+Five source-linked daily pace deductions remain outside new V3. These are bounded
+engineering-case results, not a formal research ranking. Address protection is
+prospective and does not modify this already saved V3 result.
+
+Native opening report SHA256 is
+`bc6f629426013983b4785b6000a524fec278f6c0242372112e05f9e7fc52ea58`;
+receipt SHA256 is `2bc095a94502dc79a32bda5463b6430ef35ccab3ecb9ef44481ea2d42956e7d8`.
+Local historical identifiers under
+`artifacts/sydney-v3-pace-preparation-20261009-r1/evaluator-reviewed` are
+`opening-medium-utc/execution`, `final-reviewed-opening/final-report.json`, its
+`recalculation-receipt.json`, `quality-cli-failure.json` and
+`opening-quality-cli-key-order-diagnosis.json`. Native reports/receipts, ten protected
+source hashes and 238 parent closed files remain unchanged. The whole model output,
+actual usage and original HTTP response are retained locally; published records contain
+no secrets or raw payload dumps.
+
+Next work is an offline correction of the CLI serialization boundary with historical
+packet replay preserved. Museum admission needs applicable access evidence or explicit
+disposition. The one-use opening allowance is consumed. A new V3 generation or other
+paid request needs a new approved execution package. Partial generation-trace coverage,
+formal research, remote Git delivery and version freeze remain outside this acceptance.

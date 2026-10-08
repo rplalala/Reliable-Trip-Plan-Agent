@@ -212,6 +212,10 @@ Remaining limitations:
 - Provider invoices and some billed quantities are unavailable; explicit retail/proxy
   estimates are not actual bills. RAG coverage and retrieval performance remain bounded
   by corpus/runtime evidence, not a general availability guarantee.
+- Quality CLI reconstruction can change JSON source-key order inside a bound opening
+  request and reject an otherwise identical packet. Native opening CLI replay and the
+  public report API over frozen intake succeed; this serialization boundary still
+  needs an offline correction before complete CLI-flow acceptance.
 - Blinded, controlled-Repair and official-audit interfaces exist, but the latest Sydney
   automatic run did not execute those separate tracks or a formal benchmark.
 
@@ -239,9 +243,13 @@ pace checks. Fresh independent acquisition and exact offline native replay compl
 for original V0-V2 plus new V3. Missing route/occupancy review material was completed
 from original sources in a separate zero-network CLI recalculation, preserving the
 original execution receipt. Independent paired scoring confirms the new V3 Repair
-reduces mean pace deduction from 15 to zero. Eight address grounding FAILs and twelve
-missing-hours UNKNOWNs remain under current rules; a fresh source-bound access-model
-package is prepared and needs separate execution approval. Detailed smoke evidence
+reduces mean pace deduction from 15 to zero. Separately authorized fresh opening
+assessment resolves eleven of twelve missing-hours cases, leaving V0 museum admission
+UNKNOWN and eight address grounding FAILs. Completed source reviews and this fresh
+assessment produce final scores V0 89.2857, V1 80, V2 85 and new V3 82.5 through the
+public report API, with exact network-free replay. Native opening execution/replay
+also succeeds; quality CLI serialization remains the next offline correction.
+Detailed smoke evidence
 belongs in [V3 development](docs/records/v0-v3/v3-development.md#real-soft-pace-repair-smoke-2026-10-09).
 The shared [planner address protection #94](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/94)
 is implemented and validated offline. It prevents model-shortened addresses in future
