@@ -128,22 +128,23 @@ code and source bindings; a rule change produces a separate recalculation.
 The latest Sydney engineering case has four original outputs, reviewed requirements,
 fresh independent evidence and a completed native evaluator flow. V2/V3 generation
 includes captured embedding/SQL retrieval; V3 exercised Repair. Zero-network replay
-preserves all originals and the original execution receipt. Under current recalculated
-API-only rules, results are:
+preserves all originals and the original execution receipt. The authorized incremental
+missing-hours model assessment has completed. Current automatic results are:
 
 | Version | Overall score | Opening UNKNOWN | Grounding FAIL |
 | --- | ---: | ---: | ---: |
-| V0 | 89.2857 | 2 | 0 |
-| V1 | 68.0000 | 4 | 2 |
-| V2 | 75.0000 | 4 | 0 |
-| V3 | 81.1111 | 4 | 0 |
+| V0 | 92.1429 | 1 | 0 |
+| V1 | 72.0000 | 2 | 2 |
+| V2 | 82.5000 | 1 | 0 |
+| V3 | 85.5556 | 2 | 0 |
 
 The hard Opera House exact-once obligation is PASS for all four outputs. Fourteen
 opening checks lack both current and regular hours; successful HTTP acquisition does
 not supply those missing facts. V1's two literal address FAILs reflect API abbreviations.
-All fourteen missing-hours occurrences are eligible for a separately prepared access
-assessment (V0: 2; V1-V3: 4 each). No real opening model response has been acquired, so
-the table remains the accepted API-only result; eligibility does not establish PASS.
+All fourteen missing-hours occurrences were assessed: eight PASS with explicit
+`llm_access_reasonableness` basis and six remain UNKNOWN. The unresolved cohort is
+V0 Powerhouse indoor admission, V1-V3 Opera House access intent and V1/V3 Harbour
+Bridge access intent. Factual hours coverage and API duration quantities remain unchanged.
 Six density FAILs are auxiliary soft pace penalties. Powerhouse's undated temporary
 closure is retained without proving access on the planned date. This one engineering
 case establishes runnable integration, not a formal ranking or version freeze.
@@ -153,7 +154,8 @@ Evidence: [generation and host resumption](docs/records/v0-v3/development-pilots
 [requirement correction](docs/records/evaluation/intake-identity-usage.md#requirement-physical-association-correction-2026-10-09),
 and [opening fallback acceptance](docs/records/evaluation/opening.md#regular-opening-fallback-acceptance-2026-10-09).
 Commands and input preparation: [evaluation package guide](backend/evaluation/README.md).
-Missing-hours readiness: [access acceptance](docs/records/evaluation/opening.md#missing-hours-access-acceptance-2026-10-09).
+Missing-hours implementation and live acceptance:
+[access acceptance](docs/records/evaluation/opening.md#missing-hours-access-acceptance-2026-10-09).
 
 ## 5. Configuration, evidence and limitations
 
@@ -198,19 +200,17 @@ or guaranteed fresh-clone assets.
 
 ## 6. Next work and authorization boundary
 
-The approved offline [missing-hours access scope #90](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/90)
-adds source-bound model assessment, scorer/import integration and one-use incremental
-execution/replay. Validation, review and local documentation/commits establish engineering
-readiness. The four-original access packet is prepared without a model response.
-Its proposed limits are zero Google requests, one model request, zero retries and USD 0.05
-reference allowance; the retained price snapshot estimates USD 0.008 at maximum tokens.
-No new provider calls are authorized.
-Earlier one-use generation/evaluator allowances are consumed.
+The implemented [missing-hours access scope #90](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/90)
+has completed its separately authorized live assessment and exact zero-network replay.
+The one-use package consumed zero Google requests, one medium-effort model request and
+zero retries. Actual tokens were 15530 input and 2709 output; retained-price incremental
+estimate is USD 0.003295675 within the USD 0.05 allowance. Actual account billing is unavailable.
+Original Google/V0 identity costs remain in the parent report. All one-use allowances are consumed.
 
-The next execution requires separate approval for the exact prepared opening digest,
-one model call, token/time/reference-cost limits and zero retries. Original Google and
-V0 identity acquisition must not repeat. Business-status policy, official acquisition,
-address equivalence and formal research are distinct follow-ups. Completion grants
+The automatic four-output flow now produces a source-bound final report, including explicit
+residual UNKNOWN and FAIL reasons. User review of those residual judgments is separate
+from processing completion. Clarifying generation access intent, business-status policy,
+official acquisition, address equivalence and formal research are distinct follow-ups. Completion grants
 no new execution, freeze, push, PR, merge or branch-switch authority.
 GitHub Issues own specifications and live task state; earlier approvals and deliveries
 remain in their dated records rather than a chronological status diary here.

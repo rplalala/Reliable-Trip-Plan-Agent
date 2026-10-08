@@ -571,3 +571,96 @@ receipt SHA-256: `ca5852385f6fcdeb1279afbb25ddfdc8da8d11a64514836b88bf824406bae0
 Real model assessment and its final recalculated report remain a separate execution
 approval. This record claims offline engineering readiness, not resolution of every
 missing fact, a formal version comparison, publication, freeze or new live allowance.
+
+### Authorized live assessment and final report acceptance
+
+After the offline checkpoint, the user explicitly authorized the prepared package on
+2026-10-09 (Australia/Sydney). Execution used source revision `eee95c6`, with only the
+pre-existing unrelated `.gitignore` modification; its bytes remained unchanged. Under
+the smoke policy, a current-session GPT-6.1 Sol child at medium effort executed the frozen
+CLI once. The evaluator deployment itself was `gpt-6-luna`, also at medium effort.
+Neither agent changed implementation, original itineraries or retained Google evidence.
+
+Approved digest: `d2db8c5b37d99042e958210b99546edb3a4db92718772159ac357d87351f604c`.
+Limits were zero Google sends, at most one model send, zero retries, 32000 input tokens,
+8000 output tokens, 120 seconds per request, 900 seconds overall and USD 0.05 reference
+allowance. The saved price window was valid through 2026-10-10. The actual invocation
+returned HTTP 200 and CLI exit 0, with processing/acquisition complete and evidence unresolved.
+Request time was 2026-10-09 04:59:24.421839 to 04:59:42.998055 Sydney time (18.576 seconds).
+Actual sends: **0 Google, 1 model, 0 retries**. Actual response usage: **15530 input,
+2709 output, 18239 total tokens**, with zero cached reads and 15527 reported cache-write
+input tokens. Saved-price incremental estimate: **USD 0.003295675**; account billing
+remains unavailable. Parent acquisition costs stay in the original report and are not repeated.
+
+All fourteen eligible occurrences received complete source-bound judgments. Eight PASS
+with model basis; six remain UNKNOWN. Dates and times below are original Sydney intervals.
+
+| Reference | Version | Original activity | Date/time | Verdict | Assessment reason |
+| --- | --- | --- | --- | --- | --- |
+| visit001 | V0 | Sydney Opera House | Oct 14, 10:00-12:00 | PASS | Original notes explicitly exclude tours/interior access and describe building/harbour appreciation. |
+| visit002 | V0 | Powerhouse Museum | Oct 17, 10:00-12:15 | UNKNOWN | Exploring the museum implies indoor admission. No hours establish entry; undated temporary closure does not prove future closure or availability. |
+| visit003 | V1 | Sydney Opera House | Oct 14, 10:00-11:30 | UNKNOWN | Building name and missing-hours note do not establish exterior rather than indoor access. |
+| visit004 | V1 | Sydney Harbour Bridge | Oct 14, 12:15-13:15 | UNKNOWN | Generic bridge name does not distinguish viewing, crossing or a paid climb. |
+| visit005 | V1 | Darling Harbour | Oct 15, 13:30-14:30 | PASS | Public waterfront visit with a reasonable daytime interval; no specific indoor/paid activity is stated. |
+| visit006 | V1 | Bondi Beach | Oct 17, 10:00-11:00 | PASS | Outdoor beach visit without a swimming commitment; drizzle affects comfort rather than establishing access closure. |
+| visit007 | V2 | Sydney Opera House | Oct 14, 10:00-11:30 | UNKNOWN | Generic visit and conditional interior-access note leave the access mode unresolved. |
+| visit008 | V2 | Sydney Harbour Bridge | Oct 14, 12:30-13:30 | PASS | Original notes specify a landmark and harbour-view stop, supporting exterior viewing. |
+| visit009 | V2 | The Rocks | Oct 14, 14:30-15:45 | PASS | Exploring the named urban district supports an outdoor neighborhood visit. |
+| visit010 | V2 | Darling Harbour | Oct 16, 14:00-15:30 | PASS | Spending time in the public waterfront area has a reasonable interval. |
+| visit011 | V3 | Sydney Opera House | Oct 14, 10:00-11:30 | UNKNOWN | Generic building visit does not establish exterior rather than indoor access. |
+| visit012 | V3 | Sydney Harbour Bridge | Oct 14, 12:30-13:30 | UNKNOWN | Generic visit and unconfirmed access details leave viewing/crossing/climb intent unresolved. |
+| visit013 | V3 | The Rocks | Oct 14, 14:15-15:45 | PASS | Exploring the named district supports an outdoor neighborhood visit. |
+| visit014 | V3 | Bondi Beach | Oct 17, 10:30-12:30 | PASS | Outdoor beach visit without a swimming commitment; the daytime duration is reasonable. |
+
+These are model reasonableness judgments, not independently certified opening schedules.
+All six UNKNOWNs have plausible durations; the unresolved issue is access mode or indoor
+availability. Generated weather notes were not adopted as independent weather facts.
+The remaining automatic UNKNOWN inventory contains exactly these six opening checks.
+
+The parent independently ran the actual `replay-opening` CLI with socket creation and DNS
+resolution prohibited. Exit 0 and exact JSON equality reproduced the complete report;
+network attempts were zero. Original source hashes and all **205** parent receipt-covered
+files passed verification. The new closed execution receipt also passed verification.
+A separate offline API-only baseline under the current implementation confirmed identical
+identity, requirement/schedule and route reports. All opening evidence statuses, API basis
+segments and known-open/outside/unknown seconds remained identical; unassessed opening
+checks were unchanged. This isolates the access-judgment effect without rewriting history.
+
+| Version | Final overall score | Opening PASS / UNKNOWN | Grounding FAIL |
+| --- | ---: | ---: | ---: |
+| V0 | 92.1429 | 6 / 1 | 0 |
+| V1 | 72.0000 | 8 / 2 | 2 |
+| V2 | 82.5000 | 7 / 1 | 0 |
+| V3 | 85.5556 | 7 / 2 | 0 |
+
+Hard Opera House exact-once obligations, non-overlap and applicable route checks remain
+PASS in every version. Two V1 grounding FAILs remain `api_address_mismatch`: Harbour
+Bridge (Oct 14) and Australian National Maritime Museum (Oct 15). Six existing auxiliary
+pace FAILs also remain: V0 Oct 17 (one primary visit); V1 Oct 14/16 (three each);
+V2 Oct 14 (three) and Oct 17 (one); V3 Oct 14 (three). These reflect the existing relaxed
+pace heuristic and soft penalties, not newly inferred hard quotas or opening failures.
+No additional hard-check FAIL or non-opening UNKNOWN appeared. Agent inspection is not
+genuine human review; acceptance here verifies execution, binding, accounting and policy
+application, while final human agreement on residual judgments remains separate.
+
+Local evidence identifier: `artifacts/sydney-opening-access-preparation-20261009-r2`.
+`execute-opening.stdout.json`, `execute-opening.stderr.txt` (empty) and
+`execute-opening.exit.json` retain dispatch results outside the closed receipt.
+`run/execution/` retains the raw HTTP, model material, usage, final report and receipt.
+`replay-opening.stdout.json`, `current-api-only-report.json` and `acceptance-audit.json`
+retain independent offline acceptance. These identifiers are ignored local evidence,
+not published-document dependencies. An initial audit helper failed to resolve the
+repository import path, then its inspection failed on the Windows default text codec;
+using the repository root and explicit UTF-8 corrected both local inspection issues.
+No provider request was repeated.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Final report | `71a60426d3296c97fc10d6e8cdb7376a68c8351f20d5462653580ee4ccfe2ebc` |
+| Incremental receipt | `0f3b77f03e011b5a2f50bc678a15f048da013a8a9b460f972636ce30c40dbe6c` |
+
+The authorized one-use package is consumed. This engineering smoke demonstrates the
+four-original automatic evaluation path through real assessment and offline replay,
+including explicit FAIL/UNKNOWN results. It does not authorize another live attempt,
+itinerary repair, official evidence acquisition, formal benchmark, version ranking,
+freeze, push, PR, merge or branch switch.
