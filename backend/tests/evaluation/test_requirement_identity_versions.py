@@ -12,6 +12,7 @@ from backend.evaluation.identity_llm import prepare_identity_judgment
 from backend.evaluation.identity_program import resolve_versioned_identities
 from backend.evaluation.preparation import identity_ready
 from backend.evaluation.requirement_schedule import score_requirement_schedule
+from backend.evaluation.requirement_schedule_cli import main as requirement_main
 from backend.evaluation.snapshot import (
     AcquisitionPolicy,
     Response,
@@ -119,6 +120,168 @@ def test_each_version_owns_target_and_only_v0_target_enters_model_packet(batch):
     assert sum(c["kind"] == "requirement_subject" for c in cases) == 1
     target = next(c for c in cases if c["kind"] == "requirement_subject")
     assert target["claim"]["claimed_place_id"] is not None
+
+
+def association_case(batch, *, venue="Museum B", kind="required_visit", fault=None, previous=False):
+    intake = requirement_batch(batch, identified=True, kind=kind)
+    if fault == "second_match":
+        second = batch[1]["v1"]["itinerary"]["days"][0]["activities"][2]
+        second["source_place_id"] = "venue-a"
+        intake = prepared(batch, lambda *_args: "v1")
+    observations = []
+    for ref in identity_references(intake):
+        if ref["kind"] == "requirement_subject":
+            observation = details({**ref, "claimed_place_id": "venue-a"}, "Museum A", "venue-a")
+        elif ref["version"] == "v0":
+            observation = search(ref, ref["name"], place_id="venue-" + ref["name"])
+        else:
+            observation = details(ref, ref["name"], ref["claimed_place_id"])
+            if ref["version"] == "v1" and ref["name"] == venue:
+                observation["details"]["place"]["formatted_address"] = (
+                    "10 Main St., Example City, Country"
+                )
+                if fault == "conflicting_id":
+                    observation["details"]["place"]["place_id"] = "another-venue"
+                elif fault == "missing_time":
+                    del observation["details"]["retrieved_at"]
+                elif fault == "search_only":
+                    observation = search(ref, ref["name"], place_id=ref["claimed_place_id"])
+                elif fault == "second_match":
+                    observation["details"]["place"]["display_name"] = "Museum A"
+        observations.append(observation)
+    identity = resolve_versioned_identities(
+        intake, evidence(intake, observations), previous=previous
+    ).to_dict()
+    failed = next(
+        row for row in identity["records"]
+        if row["version"] == "v1" and row["kind"] == "primary_visit"
+        and row["original_claim"]["place_name"] == venue
+    )
+    return intake, identity, failed
+
+
+def test_verified_different_venue_with_address_fail_does_not_inflate_exact_count(batch, capsys):
+    intake, identity, failed = association_case(batch)
+    assert failed["grounding_verdict"] == "FAIL"
+    assert failed["place_association"]["place_id"] == "venue-b"
+    original_identity = copy.deepcopy(identity)
+    result = score_requirement_schedule(intake, identity, context(intake)).to_dict()
+    requirement = next(row for row in result["results"] if row["version"] == "v1")["requirements"]
+    assert requirement["state"] == "PASS"
+    assert requirement["checks"][0]["components"][0]["bounds"] == {"lower": 1, "upper": 1}
+    result_row = next(row for row in result["results"] if row["version"] == "v1")
+    provenance = next(row for row in result_row["requirement_identity"]
+                      if row["source"] == failed["source"])
+    assert provenance["associated_place_id"] == "venue-b"
+    assert provenance["canonical_place_id"] is None
+    assert provenance["grounding_verdict"] == "FAIL"
+    assert provenance["basis"] == "verified_place_association"
+    assert identity == original_identity
+
+    batch[3]("association-identity.json", identity)
+    batch[3]("association-context.json", context(intake))
+    root = batch[4]
+    assert requirement_main([
+        str(root / "manifest.json"), str(root / "association-identity.json"),
+        "--context", str(root / "association-context.json"),
+    ]) == 0
+    cli = json.loads(capsys.readouterr().out)
+    assert cli["results"] == result["results"]
+
+
+@pytest.mark.parametrize("kind,expected", [
+    ("required_visit", "PASS"), ("excluded_visit", "FAIL"), ("fixed_visit_time", "PASS"),
+])
+def test_verified_required_venue_counts_despite_its_own_address_fail(batch, kind, expected):
+    intake, identity, failed = association_case(batch, venue="Museum A", kind=kind)
+    assert failed["grounding_verdict"] == "FAIL"
+    assert failed["place_association"]["place_id"] == "venue-a"
+    result = score_requirement_schedule(intake, identity, context(intake)).to_dict()
+    requirement = next(row for row in result["results"] if row["version"] == "v1")["requirements"]
+    assert requirement["state"] == expected
+    assert failed["grounding_verdict"] == "FAIL"
+
+
+@pytest.mark.parametrize("fault", ["conflicting_id", "missing_time", "search_only"])
+def test_unverified_nonmatch_keeps_exact_count_uncertain(batch, fault):
+    intake, identity, failed = association_case(batch, fault=fault)
+    assert failed["place_association"]["state"] == "UNKNOWN"
+    result = score_requirement_schedule(intake, identity, context(intake)).to_dict()
+    requirement = next(row for row in result["results"] if row["version"] == "v1")["requirements"]
+    assert requirement["state"] == "UNKNOWN"
+    assert requirement["checks"][0]["components"][0]["bounds"] == {"lower": 1, "upper": 2}
+
+
+@pytest.mark.parametrize("fault", ["association", "source", "version"])
+def test_forged_matching_provenance_requires_identity_replay(batch, fault):
+    intake, identity, failed = association_case(batch, fault="conflicting_id")
+    if fault == "association":
+        failed["place_association"].update(state="verified", place_id="venue-b")
+    elif fault == "source":
+        failed["source"]["artifact_sha256"] = "f" * 64
+    else:
+        failed["version"] = "v2"
+    result = score_requirement_schedule(intake, identity, context(intake)).to_dict()
+    assert result["status"] == "identity_replay_required"
+    assert result["results"] == []
+
+
+def test_previous_identity_policy_retains_unadopted_possible_match(batch):
+    intake, identity, failed = association_case(batch, previous=True)
+    assert identity["association_policy_version"] == "versioned_api_identity_2"
+    assert "place_association" not in failed
+    result = score_requirement_schedule(intake, identity, context(intake)).to_dict()
+    requirement = next(row for row in result["results"] if row["version"] == "v1")["requirements"]
+    assert requirement["state"] == "UNKNOWN"
+    assert requirement["checks"][0]["components"][0]["bounds"] == {"lower": 1, "upper": 2}
+
+
+def test_second_verified_target_visit_still_violates_exact_once(batch):
+    intake, identity, failed = association_case(batch, fault="second_match")
+    assert failed["grounding_verdict"] == "FAIL"
+    assert failed["place_association"]["place_id"] == "venue-a"
+    result = score_requirement_schedule(intake, identity, context(intake)).to_dict()
+    requirement = next(row for row in result["results"] if row["version"] == "v1")["requirements"]
+    assert requirement["state"] == "FAIL"
+    assert requirement["checks"][0]["components"][0]["bounds"] == {"lower": 2, "upper": 2}
+
+
+def test_v0_verified_correspondence_counts_while_incorrect_address_stays_fail(batch):
+    requirement_batch(batch, identified=True)
+    batch[1]["v0"]["itinerary"]["days"][0]["activities"][0]["location"] = (
+        "99 Wrong St, Example City, Country"
+    )
+    intake = prepared(batch, lambda *_args: "v0")
+    observed = evidence(intake, [
+        details({**ref, "claimed_place_id": "venue-a"}, "Museum A", "venue-a")
+        if ref["kind"] == "requirement_subject"
+        else search(
+            ref, ref["name"], place_id="venue-a" if ref["name"] == "Museum A" else "venue-b"
+        )
+        if ref["version"] == "v0"
+        else details(ref, ref["name"], ref["claimed_place_id"])
+        for ref in identity_references(intake)
+    ])
+
+    def incorrect_address(row, case):
+        if case["kind"] == "primary_visit" and case["claim"]["place_name"] == "Museum A":
+            row["address_assessment"] = "incorrect_claim"
+            row["evidence_fields"].append("claim.location")
+
+    identity = resolve_versioned_identities(
+        intake, observed,
+        model_result=model_material(
+            intake, observed, decisions=incorrect_address, historical=False
+        ),
+    ).to_dict()
+    failed = next(row for row in identity["records"]
+                  if row["version"] == "v0" and row["kind"] == "primary_visit"
+                  and row["original_claim"]["place_name"] == "Museum A")
+    assert failed["grounding_verdict"] == "FAIL"
+    assert failed["place_association"]["place_id"] == "venue-a"
+    result = score_requirement_schedule(intake, identity, context(intake)).to_dict()
+    requirement = next(row for row in result["results"] if row["version"] == "v0")["requirements"]
+    assert requirement["state"] == "PASS"
 
 
 def test_old_packet_requires_explicit_historical_program_replay(batch, capsys):
