@@ -868,15 +868,23 @@ def test_no_planner_import_or_network_on_intake(batch, monkeypatch):
         "controlled_replay",
         "controlled_report",
     }
+    # #87 isolates credential/HTTP access in the formal execution boundary.
+    # Token counting is a pure offline helper, not a planner or evidence client.
+    execution_imports = {
+        "evaluation_run": {"httpx"},
+        "evaluation_transport": {"httpx", "urllib", "backend.app.runtime.token_counting"},
+        "evaluation_run_cli": {"os", "dotenv"},
+    }
     for path in Path("backend/evaluation").glob("*.py"):
         if path.stem in controlled:
             continue
         tree = ast.parse(path.read_text(encoding="utf-8"))
+        permitted = allowed | execution_imports.get(path.stem, set())
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                assert all(n.name.split(".")[0] in allowed for n in node.names)
+                assert all(n.name.split(".")[0] in permitted for n in node.names)
             if isinstance(node, ast.ImportFrom) and node.level == 0:
-                assert node.module.split(".")[0] in allowed
+                assert node.module in permitted or node.module.split(".")[0] in permitted
 
 
 @pytest.mark.parametrize(

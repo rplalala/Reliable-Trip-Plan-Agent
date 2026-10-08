@@ -1,0 +1,469 @@
+"""Formal evaluation entry points use immutable synthetic inputs and mocked HTTP."""
+
+import asyncio
+import hashlib
+import json
+import subprocess
+import sys
+
+import httpx
+import pytest
+
+from backend.tests.evaluation.test_cost_report import prices
+
+pytest_plugins = ("backend.tests.evaluation.test_intake",)
+
+
+def options():
+    return {
+        "max_google_sends": 50,
+        "max_cost_usd": "10",
+        "timeout_seconds": 5,
+        "total_timeout_seconds": 60,
+        "model": "fixture-model",
+        "model_endpoint": "https://model.example.test/openai/v1/",
+        "max_input_tokens": 18000,
+        "max_output_tokens": 3000,
+    }
+
+
+def test_prepare_is_offline_and_binds_original_sources(batch):
+    from backend.evaluation.evaluation_run import prepare_run
+
+    _, _, write, _, root = batch
+    prepared = prepare_run(write(), root / "evaluation", options=options(), prices=prices())
+    assert prepared["status"] == "prepared"
+    assert prepared["intake"]["status"] == "accepted"
+    assert prepared["identity_plan"]["phase"] == "identity"
+    assert not (root / "evaluation" / "execution").exists()
+    saved = json.loads((root / "evaluation" / "preparation.json").read_bytes())
+    assert saved == prepared
+
+
+def run_prices():
+    book = prices()
+    book["rows"] = [
+        {
+            "price_id": operation,
+            "source": "https://example.test/official",
+            "as_of": "2026-10-08",
+            "valid_from": "2020-01-01",
+            "valid_until": "2030-01-01",
+            "match": {"kind": "provider", "provider": "google", "operation": operation},
+            "rates": {"requests": "0.03"},
+            "per": "1",
+        }
+        for operation in ("places_search", "place_details", "route_matrix")
+    ]
+    book["rows"].append(
+        {
+            "price_id": "model",
+            "source": "https://example.test/official",
+            "as_of": "2026-10-08",
+            "valid_from": "2020-01-01",
+            "valid_until": "2030-01-01",
+            "match": {
+                "kind": "model",
+                "provider": "azure_foundry",
+                "operation": "identity",
+                "model": "fixture-model",
+            },
+            "rates": {
+                "input_tokens": "1",
+                "cached_input_tokens": "1",
+                "cache_write_input_tokens": "1",
+                "output_tokens": "1",
+            },
+            "per": "1000000",
+        }
+    )
+    return book
+
+
+def mock_provider(request):
+    def place(name):
+        return {
+            "id": "pid-" + name[-1].lower(),
+            "displayName": {"text": name},
+            "formattedAddress": "10 Main St, Example City, Country",
+            "businessStatus": "OPERATIONAL",
+            "location": {"latitude": 10, "longitude": 20 if name.endswith("A") else 21},
+            "timeZone": {"id": "Etc/UTC"},
+            "regularOpeningHours": {"periods": [{"open": {"day": 0, "hour": 0, "minute": 0}}]},
+        }
+
+    if request.url.host == "model.example.test":
+        wire = json.loads(request.content)
+        cases = json.loads(wire["input"])["cases"]
+        assert {c["version"] for c in cases} == {"v0"}
+        rows = [
+            {
+                "reference_id": c["reference_id"],
+                "decision": "match" if c["candidates"] else "unknown",
+                "candidate_id": c["candidates"][0]["place_id"] if c["candidates"] else None,
+                "rationale": "Supplied independent name and address identify the venue.",
+                "evidence_fields": [
+                    "claim.place_name",
+                    "claim.destination",
+                    "candidate.display_name",
+                    "candidate.formatted_address",
+                ]
+                if c["candidates"]
+                else [],
+                "address_assessment": "not_supplied",
+                "destination_assessment": "consistent",
+            }
+            for c in cases
+        ]
+        return httpx.Response(
+            200,
+            json={
+                "id": "model-response",
+                "model": "fixture-model",
+                "status": "completed",
+                "output": [
+                    {
+                        "type": "message",
+                        "role": "assistant",
+                        "content": [
+                            {"type": "output_text", "text": json.dumps({"decisions": rows})}
+                        ],
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 100,
+                    "output_tokens": 20,
+                    "total_tokens": 120,
+                    "input_tokens_details": {"cached_tokens": 0, "cache_write_tokens": 0},
+                },
+            },
+        )
+    if request.url.path.endswith("searchText"):
+        name = "Museum A" if "Museum A" in json.loads(request.content)["textQuery"] else "Museum B"
+        return httpx.Response(200, json={"places": [place(name)]})
+    if request.url.host == "places.googleapis.com":
+        mask = request.headers["X-Goog-FieldMask"]
+        assert "displayName" in mask and "timeZone" in mask and "regularOpeningHours" in mask
+        return httpx.Response(
+            200, json=place("Museum A" if request.url.path.endswith("pid-a") else "Museum B")
+        )
+    assert request.url.host == "routes.googleapis.com"
+    wire = json.loads(request.content)
+    assert wire["travelMode"] == "WALK" and "departureTime" not in wire
+    return httpx.Response(
+        200,
+        json=[
+            {
+                "originIndex": 0,
+                "destinationIndex": 0,
+                "status": {},
+                "condition": "ROUTE_EXISTS",
+                "duration": "600s",
+                "distanceMeters": 600,
+            }
+        ],
+    )
+
+
+def test_execute_and_replay_complete_native_flow_without_regenerating(batch):
+    from backend.evaluation.evaluation_run import execute_run, prepare_run, replay_run
+
+    _, results, write, _, root = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][1]["transport"] = {
+        "mode": "WALK",
+        "from_activity_id": "a",
+        "to_activity_id": "b",
+    }
+    write("v0")
+    preparation = prepare_run(write(), root / "evaluation", options=options(), prices=run_prices())
+    originals = {p: p.read_bytes() for p in root.glob("v*.json")}
+    calls = []
+
+    def respond(request):
+        calls.append(request)
+        return mock_provider(request)
+
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            return await execute_run(
+                preparation,
+                approved_sha256=preparation["content_sha256"],
+                google_api_key="synthetic-google",
+                model_api_key="synthetic-model",
+                http_client=client,
+            )
+
+    report = asyncio.run(execute())
+    assert report["processing_status"] == "complete"
+    assert report["acquisition_status"] == "complete"
+    assert report["usage"]["actual_google_sends"] == 5
+    assert report["usage"]["actual_model_sends"] == 1
+    assert len(report["quality"]["groups"][0]["versions"]) == 4
+    assert report[
+        "unknowns"
+    ]  # Missing declared API IDs are FAIL; unavailable routes remain UNKNOWN.
+    assert replay_run(root / "evaluation") == report
+    assert len(calls) == 6
+    assert all(p.read_bytes() == raw for p, raw in originals.items())
+    cli = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "backend.evaluation.evaluation_run_cli",
+            "replay",
+            str(root / "evaluation"),
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=30,
+    )
+    assert cli.returncode == 0, cli.stderr
+    assert json.loads(cli.stdout) == report
+
+
+def test_actual_cli_prepares_executes_and_replays(batch, capsys, monkeypatch):
+    from backend.evaluation.evaluation_run_cli import main
+
+    _, _, write, _, root = batch
+    (root / "options.json").write_text(json.dumps(options()), encoding="utf-8")
+    (root / "prices.json").write_text(json.dumps(run_prices()), encoding="utf-8")
+    directory = root / "evaluation"
+    assert (
+        main(
+            [
+                "prepare",
+                str(write()),
+                "--directory",
+                str(directory),
+                "--options",
+                str(root / "options.json"),
+                "--prices",
+                str(root / "prices.json"),
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+    preparation = json.loads((directory / "preparation.json").read_bytes())
+    monkeypatch.setenv("GOOGLE_MAPS_API_KEY", "synthetic-google")
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "synthetic-model")
+    client = httpx.AsyncClient(transport=httpx.MockTransport(mock_provider))
+    assert (
+        main(
+            ["execute", str(directory), "--approved-sha256", preparation["content_sha256"]],
+            http_client=client,
+        )
+        == 0
+    )
+    capsys.readouterr()
+    assert main(["replay", str(directory)]) == 0
+    assert json.loads(capsys.readouterr().out)["processing_status"] == "complete"
+    asyncio.run(client.aclose())
+
+
+@pytest.mark.parametrize("mode", ["WALK", "DRIVE", "TRANSIT"])
+def test_independent_program_versions_keep_directed_original_route_context(batch, mode):
+    from backend.evaluation.evaluation_run import execute_run, prepare_run, replay_run
+
+    _, results, write, _, root = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][1]["transport"] = {
+        "mode": mode,
+        "from_activity_id": "a",
+        "to_activity_id": "b",
+    }
+    write("v0")
+    for version in ("v1", "v2", "v3"):
+        itinerary = results[version]["itinerary"]
+        activities = itinerary["days"][0]["activities"]
+        itinerary["days"][0]["activities"] = [activities[0], activities[2]]
+        activities[0]["source_place_id"] = "pid-a"
+        activities[2]["source_place_id"] = "pid-b"
+        activities[0]["location"] = "10 Main St, Example City, Country"
+        activities[2]["location"] = "10 Main St, Example City, Country"
+        itinerary["transfers"] = [
+            {
+                "from_activity_id": "a",
+                "to_activity_id": "b",
+                "mode": mode,
+                "departure_time": "2020-01-01T10:00:00Z",
+                "arrival_time": "2020-01-01T10:20:00Z",
+            }
+        ]
+        write(version)
+    preparation = prepare_run(write(), root / "evaluation", options=options(), prices=run_prices())
+    routes = []
+
+    def respond(request):
+        if request.url.host != "routes.googleapis.com":
+            return mock_provider(request)
+        body = json.loads(request.content)
+        routes.append(body)
+        assert body["travelMode"] == mode
+        assert body["origins"][0]["waypoint"]["location"]["latLng"]["longitude"] == 20
+        assert body["destinations"][0]["waypoint"]["location"]["latLng"]["longitude"] == 21
+        if mode == "TRANSIT":
+            assert body["departureTime"] == "2020-01-01T10:00:00+00:00"
+        else:
+            assert "departureTime" not in body
+        if mode == "DRIVE":
+            assert body["routingPreference"] == "TRAFFIC_UNAWARE"
+        return httpx.Response(
+            200,
+            json=[
+                {
+                    "originIndex": 0,
+                    "destinationIndex": 0,
+                    "status": {},
+                    "condition": "ROUTE_EXISTS",
+                    "duration": "600s",
+                    "distanceMeters": 600,
+                }
+            ],
+        )
+
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            return await execute_run(
+                preparation,
+                approved_sha256=preparation["content_sha256"],
+                google_api_key="synthetic-google",
+                model_api_key="synthetic-model",
+                http_client=client,
+            )
+
+    report = asyncio.run(execute())
+    assert report["processing_status"] == "complete"
+    assert len(routes) == 1  # One request, four independently retained directed verdicts.
+    assert report["usage"]["actual_google_sends"] == 9
+    assert all(
+        row["grounding_verdict"] == "PASS"
+        for row in report["reports"]["identity"]["records"]
+        if row["projection"] == "final"
+    )
+    assert len(report["reports"]["routes"]["results"]) == 4
+    assert replay_run(root / "evaluation") == report
+
+
+@pytest.mark.parametrize(
+    "failure", ["google_http", "model_connection", "cost_limit", "source_drift"]
+)
+def test_failures_remain_recorded_and_never_retry_or_reuse_attempt(batch, failure):
+    from backend.evaluation.evaluation_run import execute_run, prepare_run, replay_run
+
+    _, _, write, _, root = batch
+    configured = options()
+    if failure == "cost_limit":
+        configured["max_cost_usd"] = "0.0001"
+    preparation = prepare_run(write(), root / "evaluation", options=configured, prices=run_prices())
+    calls = []
+    if failure == "source_drift":
+        (root / "v0.json").write_text("{}", encoding="utf-8")
+
+    def respond(request):
+        calls.append(request)
+        if failure == "google_http" and request.url.host == "places.googleapis.com":
+            return httpx.Response(500, json={"error": "synthetic"})
+        if failure == "model_connection" and request.url.host == "model.example.test":
+            raise httpx.ConnectError("synthetic", request=request)
+        return mock_provider(request)
+
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            return await execute_run(
+                preparation,
+                approved_sha256=preparation["content_sha256"],
+                google_api_key="synthetic-google",
+                model_api_key="synthetic-model",
+                http_client=client,
+            )
+
+    if failure == "source_drift":
+        with pytest.raises(ValueError, match="sources changed"):
+            asyncio.run(execute())
+        assert not calls and not (root / "evaluation" / "execution").exists()
+        return
+    report = asyncio.run(execute())
+    assert report["acquisition_status"] == "partial"
+    assert replay_run(root / "evaluation") == report
+    with pytest.raises(FileExistsError):
+        asyncio.run(execute())
+    if failure == "google_http":
+        assert report["processing_status"] == "complete" and report["unknowns"]
+        assert len(calls) == 3  # Two distinct searches and exactly one V0 model call.
+    else:
+        assert report["processing_status"] == "stopped"
+        assert len(calls) == (3 if failure == "model_connection" else 0)
+        assert report["usage"]["actual_billing"] is None
+        cost = report["usage"]["cost"]["runs"][0]
+        if failure == "model_connection":
+            assert cost["estimated_total"] is None and cost["unpriced_event_count"] > 0
+        else:
+            assert cost["estimated_total"] == "0"
+
+
+def test_total_deadline_preserves_started_attempt_with_zero_retry(batch):
+    from backend.evaluation.evaluation_run import execute_run, prepare_run, replay_run
+
+    _, _, write, _, root = batch
+    configured = options()
+    configured["total_timeout_seconds"] = 0.02
+    preparation = prepare_run(write(), root / "evaluation", options=configured, prices=run_prices())
+    calls = []
+
+    async def respond(request):
+        calls.append(request)
+        await asyncio.sleep(1)
+        return mock_provider(request)
+
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            return await execute_run(
+                preparation,
+                approved_sha256=preparation["content_sha256"],
+                google_api_key="synthetic-google",
+                model_api_key="synthetic-model",
+                http_client=client,
+            )
+
+    report = asyncio.run(execute())
+    assert report["processing_status"] == "stopped"
+    assert report["error_type"] == "TimeoutError"
+    assert len(calls) == 1
+    assert report["usage"]["actual_google_sends"] == 1
+    assert report["usage"]["actual_model_sends"] == 0
+    assert replay_run(root / "evaluation") == report
+
+
+def test_replay_rejects_model_material_detached_from_captured_http_bytes(batch):
+    from backend.evaluation.evaluation_run import execute_run, prepare_run, replay_run
+
+    _, _, write, _, root = batch
+    preparation = prepare_run(write(), root / "evaluation", options=options(), prices=run_prices())
+
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(mock_provider)) as client:
+            return await execute_run(
+                preparation,
+                approved_sha256=preparation["content_sha256"],
+                google_api_key="synthetic-google",
+                model_api_key="synthetic-model",
+                http_client=client,
+            )
+
+    assert asyncio.run(execute())["processing_status"] == "complete"
+    execution = root / "evaluation" / "execution"
+    receipt = json.loads((execution / "receipt.json").read_bytes())
+    event = next(
+        json.loads(p.read_bytes())
+        for p in (execution / "http").glob("*.json")
+        if json.loads(p.read_bytes())["provider"] == "azure_foundry"
+    )
+    raw_path = execution / "http" / (event["event_id"] + ".bin")
+    raw_path.write_bytes(b'{"status":"failed","output":[]}')
+    receipt["files"][str(raw_path.relative_to(execution))] = hashlib.sha256(
+        raw_path.read_bytes()
+    ).hexdigest()
+    (execution / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    with pytest.raises(ValueError, match="Model HTTP receipt"):
+        replay_run(root / "evaluation")
