@@ -105,7 +105,7 @@ Details: [shared output](docs/0003-itinerary-transport.md),
 Evaluation is independently run over a curated, source-linked batch. Planner
 validation, caches and internal decisions are not independent factual ground truth.
 
-The approved offline implementation of
+The completed engineering implementation of
 [#87](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/87) adds a formal
 `evaluation_run_cli prepare / execute / replay` flow over four original final outputs.
 It captures fresh independent Search/Details, V0-only correspondence, coordinates,
@@ -115,14 +115,18 @@ unrelated batch changes do not invalidate unchanged facts. Known-time V0 transpo
 occupancy no longer requires primary route endpoints. Planner generation is unchanged.
 Independent Standards/Spec findings were corrected and rechecked. The initial full
 backend gate passed 3098 tests with 10 skipped; the later review corrections passed
-23 public-boundary tests. The preserved Sydney originals pass offline CLI preparation,
-not fresh evaluation acceptance. A new proposed package allows at most 86 Google sends,
-one V0 model send, zero retries and USD 2 reference exposure; actual billing is unknown.
-The local `.env` contains `Google_Maps_API_Key`; a presence-only check using the actual
-CLI loader confirms the uppercase execution lookup works on Windows. Fresh paid execution
-requires explicit package approval; credential validity has not been tested through a request.
-No new evaluator request, final acceptance, formal comparison or freeze has occurred.
-See the [implementation record](docs/records/evaluation/intake-identity-usage.md#formal-four-final-execution-2026-10-09).
+23 public-boundary tests. The user subsequently approved the frozen Sydney execution
+package: 86 Google sends, one V0 model send, zero retries and USD 2 reference allowance.
+Fresh execution completed with 64 Google sends and one V0 model send, all HTTP 200,
+in 28.14 seconds. Retail reference cost is USD 1.3090408; actual billing is unavailable.
+Network-blocked CLI replay exactly reproduces the saved report, verifies all 205 receipt
+files and preserves the four originals. The automatic flow is accepted under current
+policy with 15 UNKNOWNs: 14 missing-hours checks and one conservative V1 exact-count check.
+Two V1 literal address FAILs reflect API abbreviations, and six daily density FAILs are
+soft pace penalties. Powerhouse's captured temporary closure remains an explicit limitation
+of the opening scorer. No planner repair, formal comparison, human review or freeze occurred.
+See the [implementation record](docs/records/evaluation/intake-identity-usage.md#formal-four-final-execution-2026-10-09)
+and [fresh execution acceptance](docs/records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09).
 
 The user accepted a version-specific evaluator requirement on 2026-10-06:
 V0 introduces an LLM primarily to correspond generated POI claims with independent

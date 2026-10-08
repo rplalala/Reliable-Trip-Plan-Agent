@@ -3831,3 +3831,152 @@ scope remains the live prerequisite. New evaluator/model/provider sends and expe
 task are zero. Old acquisitions remain historical evidence. Issue #87 cannot close until
 fresh evidence, saved-evidence replay, original preservation and final report acceptance
 are completed. This record establishes no benchmark, ranking or research conclusion.
+
+
+<a id="sydney-four-final-fresh-acceptance-2026-10-09"></a>
+
+## Sydney four-original fresh evaluation acceptance — 2026-10-09
+
+Status: the full final-only automatic workflow is accepted under the current evaluator
+policy, with explicit unresolved facts and semantic limits. This is bounded engineering
+acceptance for Issue [#87](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/87),
+not a formal benchmark, version ranking, human review or freeze. All four original
+outputs and the reviewed Input/RequirementSpec remain unchanged.
+
+### Authorization, revision and actual execution
+
+The user explicitly approved the exact prepared package and requested fresh independent
+acquisition, full evaluator execution, saved-evidence zero-network replay, source
+preservation and item-by-item FAIL/UNKNOWN assessment. Approved ceilings were 86 Google
+sends, one V0 `gpt-6-luna` model send, zero retries, USD 2 reference allowance, 18000 input
+sizing tokens, 3000 output tokens, 120-second request and 900-second total timeouts.
+The preparation digest remains
+`2debadce52a9278e7efad68cfe0fda955a7fac8ec9abbe33a6420269232a19fa`.
+Source HEAD was `925bd0a19899ed7b16a6669db6a925e91b9b045a`; operational code was frozen
+at `7fe0c52`. The only unrelated working-tree change was the existing `.gitignore`,
+whose previously recorded SHA-256 was preserved before and after execution.
+
+A current-session execution child used `gpt-6.1-sol` with `medium` reasoning and ran the
+formal `evaluation_run_cli execute` command once, loading `.env` without exposing values.
+No connectivity probe, retry, bespoke acquisition runner, planner regeneration, Repair,
+mode substitution, date shift or V1-V3 evaluator model call occurred. Historical API/model
+evidence was not substituted. Original reviewed authoring contexts remained source-bound.
+
+Execution ran 02:03:06.080827 through 02:03:34.221506 Australia/Sydney, lasting
+28.140679 seconds. Exit code was 0 and stderr empty. Actual sends were **64 Google**:
+21 Search, 28 Details and 15 one-cell directed matrices, plus **one V0 model request**.
+All 65 HTTP receipts were 200/completed. The initial identity phase used 33 Google sends;
+the freshly derived second phase used 16 Details and 15 matrices. Shared requests retained
+separate source/version judgments. Retry count was zero; the maximum observed request
+was 6.936869 seconds. All approved bounds were respected.
+
+The model reported 12411 input tokens, 979 output, 13390 total, zero cached input and
+12408 cache-write input. Observed sends and reported usage produce a retail reference
+estimate of **USD 1.3090408**: Search 0.672, Details 0.560, matrices 0.075 and model
+0.0020408. Actual account billing is unavailable/null; these estimates are not invoice
+charges and exclude credits, free tiers, discounts and taxes. The dated price book and
+its previously checked official sources remain bound to the report.
+
+Local evidence identifiers (not published dependencies):
+`artifacts/sydney-fresh-evaluation-preparation-20261009-r1/run/execution` contains
+`report.json`, `receipt.json`, `usage.json`, raw HTTP journal, both new snapshots,
+V0 material and native component reports. The parent directory retains command stdout/
+stderr, authorization, replay checks and `acceptance.json`/`acceptance.md`. Final report
+SHA-256 is `09272f235cadc20aeb94f4c6a4f5945f35a77faaf89637611beb422695e0b459`.
+
+### Saved-evidence verification and native outcomes
+
+A separate process invoked the actual `replay` CLI with DNS/socket connection entry points
+blocked. Exit code was 0; network attempt count was **0**, and the reconstructed final
+report matched the saved report exactly. Replay checked all **205 receipt-covered files**,
+raw response hashes, V0 HTTP/model/timing/usage linkage, identity decisions and newly derived
+route preparation before recomposing native quality. The post-run native source/code check
+and direct original-output hash checks passed. Original Input and RequirementSpec hashes
+remain those in the preceding preparation record. No execution artifact was edited to
+obtain a match. No implementation change required another backend test run.
+
+Processing and acquisition are `complete`, with no acquisition failures. Evidence is
+`unresolved`; a completed process does not certify every fact. Identity's aggregate
+`needs_evidence` status is retained, including the two unadopted address-FAIL cases;
+it is not a missing-command or absent-snapshot status. Native quality totals are available
+for all four finals. Counts below are **PASS / FAIL / UNKNOWN**; density is an auxiliary
+soft-profile adjustment, not an added hard requirement.
+
+| Version | Requirements | Grounding | Non-overlap | Opening | Routes | Mean density penalty | Overall score |
+| --- | --- | --- | --- | --- | --- | ---: | ---: |
+| V0 | 1 / 0 / 0 | 7 / 0 / 0 | 12 / 0 / 0 | 5 / 0 / 2 | 3 / 0 / 0 | 5 | 89.2857 |
+| V1 | 0 / 0 / 1 | 8 / 2 / 0 | 16 / 0 / 0 | 6 / 0 / 4 | 6 / 0 / 0 | 20 | 48.0000 |
+| V2 | 1 / 0 / 0 | 8 / 0 / 0 | 12 / 0 / 0 | 4 / 0 / 4 | 4 / 0 / 0 | 15 | 75.0000 |
+| V3 | 1 / 0 / 0 | 9 / 0 / 0 | 14 / 0 / 0 | 5 / 0 / 4 | 5 / 0 / 0 | 10 | 81.1111 |
+
+These are current-policy outputs for one engineering case; they support no version-level
+ranking or research conclusion. The optional V3 `draft`/`final_primary` projections and
+human, controlled-Repair and official-audit tracks are explicitly outside this run.
+
+### Every retained UNKNOWN
+
+All fourteen opening UNKNOWNs were individually checked against the newly captured raw
+Details bytes. Each requested both current and regular hours; HTTP 200 omitted both fields.
+None resulted from a failed request, old snapshot, model binding rejection or unexecuted
+stage. Public-space access and exterior-only intent were not inferred from names.
+
+| Item | Version | Date/scope | Original venue or obligation | Retained cause |
+| --- | --- | --- | --- | --- |
+| 1 | V1 | Whole trip | Sydney Opera House exactly once | `count`: bounds 1..3; one confirmed and two unadopted potential visits |
+| 2 | V0 | 2026-10-14 | Sydney Opera House | `hours_missing` |
+| 3 | V0 | 2026-10-17 | Powerhouse Museum | `hours_missing`; API also reports `CLOSED_TEMPORARILY` |
+| 4 | V1 | 2026-10-14 | Sydney Opera House | `hours_missing` |
+| 5 | V1 | 2026-10-14 | Sydney Harbour Bridge | `hours_missing` |
+| 6 | V1 | 2026-10-15 | Darling Harbour | `hours_missing` |
+| 7 | V1 | 2026-10-17 | Bondi Beach | `hours_missing` |
+| 8 | V2 | 2026-10-14 | Sydney Opera House | `hours_missing` |
+| 9 | V2 | 2026-10-14 | Sydney Harbour Bridge | `hours_missing` |
+| 10 | V2 | 2026-10-14 | The Rocks | `hours_missing` |
+| 11 | V2 | 2026-10-16 | Darling Harbour | `hours_missing` |
+| 12 | V3 | 2026-10-14 | Sydney Opera House | `hours_missing` |
+| 13 | V3 | 2026-10-14 | Sydney Harbour Bridge | `hours_missing` |
+| 14 | V3 | 2026-10-14 | The Rocks | `hours_missing` |
+| 15 | V3 | 2026-10-17 | Bondi Beach | `hours_missing` |
+
+Item 1 follows the existing conservative count contract: the two V1 address-FAIL visits
+have verified API associations with Harbour Bridge and Maritime Museum, but no adopted
+canonical identity. The requirement counter therefore leaves both as potential Opera House
+matches despite those distinct associations. The bounds are policy-induced uncertainty,
+not independent evidence of three Opera House visits. This semantic limitation is retained
+explicitly rather than turned into PASS or hidden as an API failure.
+
+Powerhouse's raw `businessStatus=CLOSED_TEMPORARILY` is preserved. The hours scorer does
+not convert that current, undated status into closure for the planned 2026-10-17 visit.
+Its UNKNOWN is not proof of feasibility. Considering business status or external/exterior
+access would require an explicit policy change; no such reinterpretation occurred here.
+
+### Every retained FAIL and interpretation limits
+
+Two grounding FAILs are the current literal `api_address_mismatch` rule:
+
+| Version / original venue | Submitted address | New API formatted address |
+| --- | --- | --- |
+| V1 / Sydney Harbour Bridge | Sydney Harbour Bridge, Sydney NSW, Australia | Sydney Hbr Brg, Sydney NSW, Australia |
+| V1 / Australian National Maritime Museum | 2 Murray St, Darling Harbour, Sydney NSW 2000, Australia | 2 Murray St, Darling Hbr, Sydney NSW 2000, Australia |
+
+The differences are abbreviations, not independent proof of different physical locations.
+Both original claims and native FAILs remain unchanged. No normalization, model fallback
+or post-hoc correction was applied to improve the result.
+
+Six daily-density FAILs retain the configured relaxed-profile soft penalties:
+
+| Version | Date | Primary visit count | Daily penalty |
+| --- | --- | ---: | ---: |
+| V0 | 2026-10-17 | 1 | 20 |
+| V1 | 2026-10-14 | 3 | 40 |
+| V1 | 2026-10-16 | 3 | 40 |
+| V2 | 2026-10-14 | 3 | 40 |
+| V2 | 2026-10-17 | 1 | 20 |
+| V3 | 2026-10-14 | 3 | 40 |
+
+There are no native requirements, non-overlap, opening or route FAILs in this run.
+The sole hard user obligation remains Opera House exactly once; these density outcomes
+add no hard daily quota. All FAIL/UNKNOWN sources and reasons remain in the full report
+and parent acceptance inventory. The engineering end-to-end objective is fulfilled;
+address equivalence, verified-association count semantics, business-status treatment and
+public-space access remain explicit policy limitations, not silently resolved facts.

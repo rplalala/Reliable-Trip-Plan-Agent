@@ -45,6 +45,13 @@ persists evidence/failures; replay sends nothing. Final-only scope explicitly ex
 optional V3 and human/controlled/official tracks. Processing, acquisition and unresolved
 evidence are separate fields. Fresh execution requires a prepared, approved allowance.
 
+The Sydney four-original automatic flow completed fresh execution and network-blocked
+CLI replay on 2026-10-09. All originals and receipt-covered evidence verify; current-policy
+FAIL/UNKNOWN outcomes and conservative semantic limits remain visible in the
+[acceptance record](records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09).
+This establishes an engineering execution path, not a formal version comparison or
+all-facts-verified result.
+
 Development smoke helpers are separate from ordinary evaluator consumers. The
 [V0 route request preparer](../backend/evaluation/tools/route_requests.py) and its CLI
 live under `backend/evaluation/tools/`; they prepare acquisition inventories and budgets
