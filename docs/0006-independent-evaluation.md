@@ -57,8 +57,10 @@ take precedence; valid regular hours determine unresolved time, including curren
 defects and special-date markers without a usable schedule. Regular hours produce ordinary
 PASS/FAIL with explicit basis and fallback provenance. Query-time `openNow=false` does not
 establish closure at a later visit. Missing both schedules permits an explicitly imported
-independent LLM access assessment: clearly supported public outdoor/exterior visits in
-a reasonable window can PASS; unsupported/ambiguous access remains UNKNOWN. Factual
+independent LLM access assessment: ordinary public-landmark sightseeing can be inferred
+from original text and venue category. Reasonable outdoor/exterior visits can PASS;
+explicit restricted activity, museum admission and genuinely unresolved access need their
+own applicable evidence. Unsupported access remains UNKNOWN. Factual
 hours coverage and durations stay missing, with model judgment coverage separately shown.
 The incremental execution CLI reuses completed evidence without another Google or V0
 identity call; live execution requires its own prepared allowance.

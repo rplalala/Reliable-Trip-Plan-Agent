@@ -664,3 +664,190 @@ four-original automatic evaluation path through real assessment and offline repl
 including explicit FAIL/UNKNOWN results. It does not authorize another live attempt,
 itinerary repair, official evidence acquisition, formal benchmark, version ranking,
 freeze, push, PR, merge or branch switch.
+
+<a id="public-landmark-default-acceptance-2026-10-09"></a>
+
+## Public-landmark ordinary sightseeing policy — 2026-10-09
+
+[Issue #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91) owns the
+user-approved rule revision and evaluation acceptance. Fixed review base:
+`ad1b72b26ac145acfe6bf197f912f9f854c3a979`. Implementation/tests:
+`34506a6`. The pre-existing unrelated `.gitignore` modification is excluded from the task.
+No V0 prompt, itinerary generation, route window, identity/grounding or pace formula changes.
+
+### Changed judgment boundary
+
+Policy `llm_access_reasonableness_2`, packet/material schemas 2, opening rules 4 and
+quality profile `rtpeval_access_quality_4` distinguish explicitly described activity
+from ordinary public-landmark sightseeing inferred using original text and venue category.
+Generic public-landmark visits do not need exterior wording or become uncertain merely
+because a paid tour/climb might exist. Explicit restricted activities retain priority;
+negated and conditional entry mentions are interpreted in context. Museums/indoor
+attractions cannot use the default; an explicit facade-only visit does not approve admission.
+
+Decisions add `intent_basis` and `venue_category`. Invalid museum/indoor/other/unknown
+default PASS and unresolved-intent PASS are rejected, alongside the existing public-mode,
+reasonable-window and no-known-restriction gates. Categories remain fallible model
+interpretations. Only supplied raw provider types are included; missing types stay null.
+API decisions/known restrictions, eligible missing-hours cohort, immutable original
+quotes and source/implementation/request bindings retain their existing authority.
+Factual hours and API known-open/outside/unknown seconds are never inferred from a model PASS.
+
+### Offline validation and historical protection
+
+The first public-score slice failed on the absent intent/category decision schema, then
+passed equally for V0-V3 after adding the versioned contract. An initial rejection test
+used a fixture with null notes and passed for the wrong reason (invalid quote); selecting
+an existing original title corrected the fixture. It then reproduced four invalid-default
+PASSs before the category gate rejected them. Coverage also checks missing/supplied raw
+types, explicit museum exterior intent with negated entry/tickets, indoor admission and
+paid-climb UNKNOWN, unresolved-intent PASS rejection and stale material schema rejection.
+Existing invalid identity/time, API closure priority, immutable quotes, model provenance
+and factual-duration checks continue to pass. Mocked decisions test validation and report
+behavior, not the correctness of real-model semantic interpretation.
+
+Opening judgment plus initial CLI integration: **39 passed** in 24.55 seconds. The
+expanded actual CLI gate additionally exercises inferred-default judgments, real mock
+HTTP dispatch, complete reporting, actual token accounting, no repeated acquisition and
+zero-network replay across all versions: **7 passed** in 18.85 seconds. Full backend
+regression: **3164 passed, 10 skipped** in 311.14 seconds. Scoped Ruff/formatting and
+Git diff checks passed. No configured typechecker is claimed.
+
+Standards found zero actionable findings. Spec found one P2 coverage gap for conditional
+entry wording. Independent test correction `9f80a20` checks the exact original conditional
+notes in the actual model request, public offline import, per-version PASS and preserved
+quote/intent basis with sockets prohibited. Final public scoring/CLI retest: **41 passed**
+in 32.33 seconds. Both independent medium-effort rechecks have zero remaining findings.
+The full-backend gate above precedes this test-only addition; production code did not change.
+Neither mock acceptance nor agent inspection establishes real-model accuracy or human review.
+
+The old policy-1 material is rejected by current code, as required; it was not edited
+to obtain a current-policy PASS. A historical replay mirrors all 70 top-level evaluator
+sources from trusted revision `ad1b72b` in ignored scratch, restoring source bytes only
+when they match the frozen SHA-256 values. The first mirror used Git-normalized newlines
+and failed packet verification; uniform CRLF was still insufficient for two pre-existing
+mixed-newline modules. Normalized Git content plus exact frozen hashes identified their
+unchanged bytes. No repository source/checkout/preparation was altered to bypass binding.
+The historical actual CLI then replayed the #90 report exactly: exit 0, zero sockets/DNS
+attempts, report hash `71a60426d3296c97fc10d6e8cdb7376a68c8351f20d5462653580ee4ccfe2ebc`
+and receipt hash `0f3b77f03e011b5a2f50bc678a15f048da013a8a9b460f972636ce30c40dbe6c` unchanged.
+Local evidence identifier: `artifacts/issue91-historical-protection`.
+
+### Current-policy execution preparation
+
+Actual offline `prepare-opening` CLI prepares the same four originals and independently
+retained parent evidence without sockets or credentials. There are still **14 eligible
+occurrences** (V0: 2; V1-V3: 4 each); all lack provider `types` in the retained response.
+The model may infer their category from independently verified names/addresses and
+original activity context. No new Google request is needed just to fill this optional field.
+
+Local preparation identifier: `artifacts/sydney-public-landmark-preparation-20261009-r1`.
+Digest: `c0c7804dbdcdf9cd90c34fa9c1f68a1de6c4a41351c2f9f7b40eb556394b93ee`.
+Full request estimate including 1024-token margin: **17687 tokens**. Proposed ceilings
+remain 32000 input, 8000 output, zero Google sends, one `gpt-6-luna` model send at medium
+effort, zero retries, 120 seconds/request, 900 seconds overall and USD 0.05 reference
+allowance. The retained price snapshot reserves USD 0.008 and is valid through 2026-10-10;
+actual account billing is unavailable. Original source and all 205 parent receipt-file
+bindings verify. At this offline preparation checkpoint, new provider/model sends were
+zero and policy-2 judgments were pending separate authorization. Preparation itself did
+not renew the consumed prior allowance. The subsequent explicit authorization and actual
+execution are recorded below.
+
+
+### Authorized current-policy execution and acceptance
+
+The human explicitly authorized the exact digest above on 2026-10-09. A current-session
+`gpt-6.1-sol` child at medium effort dispatched the actual `execute-opening` CLI once,
+using implementation revision `9f80a20`. Related final documentation was uncommitted;
+production sources were unchanged from the reviewed implementation. The unrelated
+`.gitignore` modification remained excluded. The child was limited to execution and
+bounded inspection; the parent performed independent offline acceptance.
+
+Exit 0, HTTP 200 and completed response/report: zero Google sends, one `gpt-6-luna`
+Responses send at medium effort, zero retries. Request time was approximately 14.680 seconds;
+outer dispatch took 21.266 seconds. Actual usage: **15928 input + 2417 output = 18345 tokens**,
+zero cached input and 15925 cache-write input tokens. Response reasoning reports 711 tokens.
+The retained-price reference cost is **USD 0.003199425**, below the USD 0.05 allowance
+and USD 0.008 preparation ceiling. `actual_billing=null`; no account invoice is available.
+A Windows GBK inspection error was corrected with explicit UTF-8; no request was repeated.
+
+All fourteen decisions bind unchanged original activities and independently retained venues.
+Thirteen PASS, one UNKNOWN. Twelve decisions use `public_landmark_default` (six
+public-landmark and six public-area classifications); V0 Opera House uses explicit original
+activity intent and V0 Powerhouse retains original museum admission intent. Every PASS
+keeps the `llm_access_reasonableness` basis. Missing provider types remain null; model
+categories are not Google facts or independently certified access schedules.
+
+| Reference | Version | Original place | State | Intent basis | Venue category |
+| --- | --- | --- | --- | --- | --- |
+| visit001 | V0 | Sydney Opera House | PASS | `original_activity` | `public_landmark` |
+| visit002 | V0 | Powerhouse Museum | UNKNOWN | `original_activity` | `museum` |
+| visit003 | V1 | Sydney Opera House | PASS | `public_landmark_default` | `public_landmark` |
+| visit004 | V1 | Sydney Harbour Bridge | PASS | `public_landmark_default` | `public_landmark` |
+| visit005 | V1 | Darling Harbour | PASS | `public_landmark_default` | `public_area` |
+| visit006 | V1 | Bondi Beach | PASS | `public_landmark_default` | `public_area` |
+| visit007 | V2 | Sydney Opera House | PASS | `public_landmark_default` | `public_landmark` |
+| visit008 | V2 | Sydney Harbour Bridge | PASS | `public_landmark_default` | `public_landmark` |
+| visit009 | V2 | The Rocks | PASS | `public_landmark_default` | `public_area` |
+| visit010 | V2 | Darling Harbour | PASS | `public_landmark_default` | `public_area` |
+| visit011 | V3 | Sydney Opera House | PASS | `public_landmark_default` | `public_landmark` |
+| visit012 | V3 | Sydney Harbour Bridge | PASS | `public_landmark_default` | `public_landmark` |
+| visit013 | V3 | The Rocks | PASS | `public_landmark_default` | `public_area` |
+| visit014 | V3 | Bondi Beach | PASS | `public_landmark_default` | `public_area` |
+
+The five previous generic/conditional landmark UNKNOWNs now PASS: V1/V2/V3 Opera House
+and V1/V3 Harbour Bridge. V2's conditional interior-verification note does not commit to
+entry. V2 Harbour Bridge retains ordinary harbour-view interpretation even though the model
+now labels its basis as the public-landmark default. Public-area visits remain outdoor
+sightseeing; no swimming, paid activity or indoor entry is invented. Generated weather
+notes remain source context, not independently verified weather evidence.
+
+The only remaining automatic UNKNOWN is **V0 Powerhouse Museum, 2026-10-17 10:00-12:15
+Australia/Sydney**. The original activity says “Explore the Powerhouse Museum”, normally
+implying admission. Both API hours fields and admission/date-specific access evidence are
+missing. The model considers the daytime interval reasonable but access uncertain. The
+retained undated `CLOSED_TEMPORARILY` does not prove closure or availability on that future
+date. This is the museum-evidence boundary, not unresolved ordinary public sightseeing.
+
+The parent ran the actual `replay-opening` CLI with socket creation and DNS resolution
+prohibited: exit 0, exact JSON equality, **zero network attempts**. Current implementation,
+source and execution receipt verification passed. All four original output hashes and all
+**205** parent receipt-covered files remain unchanged. The prior #90 report and receipt
+retain their exact hashes. A current API-only baseline confirms identical identity,
+requirement/schedule and route reports. All factual opening evidence statuses, basis
+segments and known-open/outside/unknown seconds remain identical; unassessed checks are
+unchanged. A model PASS did not fill missing factual hours.
+
+| Version | Current overall score | Opening PASS / UNKNOWN | Grounding FAIL |
+| --- | ---: | ---: | ---: |
+| V0 | 92.1429 | 6 / 1 | 0 |
+| V1 | 76.0000 | 10 / 0 | 2 |
+| V2 | 85.0000 | 8 / 0 | 0 |
+| V3 | 90.0000 | 9 / 0 | 0 |
+
+All hard Opera House exact-once obligations, non-overlap and applicable routes remain
+PASS. V1 Harbour Bridge and Australian National Maritime Museum retain their two
+`api_address_mismatch` grounding FAILs. The six existing soft pace FAILs remain: V0 Oct 17
+(one visit), V1 Oct 14/16 (three each), V2 Oct 14 (three)/Oct 17 (one), V3 Oct 14 (three).
+No new hard-check FAIL or non-opening UNKNOWN appeared. Totals retain the existing
+arithmetic, populations and pace deductions; no V0 prompt or score manipulation is involved.
+
+The four-original automatic evaluation flow is accepted through real assessment, evidence
+binding, report/accounting persistence and exact offline replay. This bounded case does not
+establish general model accuracy, a formal version ranking or genuine human sign-off.
+Residual museum, literal-address and soft-pace judgments remain visible for human review.
+
+Local evidence identifier: `artifacts/sydney-public-landmark-preparation-20261009-r1`.
+The closed `run/execution` receipt contains model/HTTP evidence, usage and final report.
+Dispatch stdout/stderr/exit, replay stdout, the current API-only baseline and acceptance
+audit remain outside that receipt. These are ignored local identifiers, not published
+file dependencies. An audit inspection initially used an incorrect `display_name` key;
+reading the retained provider `displayName` corrected the inspection without changing evidence.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Current report | `8992422ca3953fd1d90f059674da68e1f18e1730f5816157a876a8b7d7c1c83b` |
+| Current receipt | `5ea846bccf2ededed1275bbc3690b36659c46c2a262a32b7fbabb165a42e5c7c` |
+
+The authorized one-use package is consumed. No additional live call, official acquisition,
+itinerary repair, formal benchmark, freeze or Git publication is authorized by this result.

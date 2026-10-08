@@ -96,7 +96,9 @@ completed; exit 2 indicates stopped execution or material correction, not an all
 The [access policy](../../docs/contracts/0004-opening-routes.md#missing-hours-access-judgment)
 adds an opening-only model fallback equally for V0-V3. API schedule decisions retain
 priority. Clearly supported outdoor/exterior access can PASS with an explicit model basis;
-indoor/ticketed/ambiguous intent stays UNKNOWN. Model judgment does not invent hours or
+ordinary sightseeing at confidently classified public landmarks can be inferred without
+explicit exterior wording. Explicit restricted activities and museum admission still
+require applicable evidence; genuinely unresolved intent stays UNKNOWN. Model judgment does not invent hours or
 remove missing factual evidence and original grounding errors.
 
 Reuse a completed four-final execution; no new Google or V0 identity request is made:
@@ -125,12 +127,18 @@ For independently captured material, prepare/import without an execution client:
 .venv/Scripts/python.exe -m backend.evaluation.opening_judgment_cli import manifest.json identity-report.json evidence-snapshot --context context.json --material model-material.json --output opening.json
 ```
 
-Material schema `rtpeval_opening_judgment_material_1` contains the complete unchanged
+Material schema `rtpeval_opening_judgment_material_2` contains the complete unchanged
 `packet`, actual Responses `request`/`response`, `provider=azure_foundry` and offset-aware
 `requested_at`/`retrieved_at`. The request retains packet fields plus `store=false`,
 `reasoning={"effort":"medium"}` and positive `max_output_tokens`; raw response contains
 one structured assistant decisions object and actual input/output/total token counts.
 Packet schema specifies decision fields/enums and one short ID per eligible occurrence.
+Current packet schema is `rtpeval_opening_judgment_packet_2`, policy
+`llm_access_reasonableness_2`. Decisions additionally record `intent_basis` and
+`venue_category`; only public landmark/area categories can receive an inferred-default
+PASS. Venue category is model interpretation; optional provider types retain raw absence.
+Explicit museum exterior viewing is distinct from museum admission. Prior policy-1 material
+requires its historical implementation for replay and cannot be relabeled as current material.
 The packet also freezes evaluator implementation hashes; importing with changed source
 code requires new preparation rather than accepting an old judgment under new code.
 All decisions and original activity quotations are validated; partial/foreign material
@@ -140,8 +148,8 @@ unverified identity and invalid time cannot qualify.
 
 Both `opening_cli` and `quality_report_cli` accept `--opening-judgment model-material.json`.
 Library callers use `opening_judgment=`. Without that material the existing API-only
-behavior remains available. With it the report selects opening rules 3 and quality profile
-`rtpeval_access_quality_3`, preserving API seconds/coverage and separate LLM counts.
+behavior remains available. With it the report selects opening rules 4 and quality profile
+`rtpeval_access_quality_4`, preserving API seconds/coverage and separate LLM counts.
 Supplied import provenance is distinct from dispatch independently captured by execution.
 
 ### Ordinary saved-evidence workflow

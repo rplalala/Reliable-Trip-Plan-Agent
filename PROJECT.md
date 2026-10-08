@@ -112,14 +112,14 @@ records actual requests/usage and produces native automatic reports for V0-V3 fi
 | Intake and identity | Original claims, source hashes and version-owned targets; V0 model correspondence, V1-V3 independent API/program checks without evaluator-model fallback | [Intake/identity/usage](docs/contracts/0002-intake-identity-usage.md) |
 | Evidence and accounting | Frozen Search/Details/Matrix snapshots, failure receipts, source-linked coordinates, actual usage and explicit retail estimates when billing is unavailable | [Artifacts](docs/contracts/0001-evaluation-artifacts.md), [usage](docs/contracts/0002-intake-identity-usage.md#offline-cost-accounting) |
 | Requirements and schedule | Explicit counts/dates/exclusions/fixed times; verified occurrence associations with separate grounding; V0 declared transport occupancy and V1-V3 transfers | [Requirements/schedule](docs/contracts/0003-requirement-schedule.md) |
-| Opening | Current/regular API schedules take priority; optional source-bound LLM assessment can PASS reasonable public/exterior visits when both schedules are absent, with factual coverage retained separately | [Opening/routes](docs/contracts/0004-opening-routes.md#opening) |
+| Opening | Current/regular API schedules take priority; missing-hours LLM assessment can infer ordinary public-landmark viewing, while explicit restricted activities and museum admission need access evidence; factual coverage stays separate | [Opening/routes](docs/contracts/0004-opening-routes.md#opening) |
 | Routes | Independent coordinates and mode/time-applicable route evidence against original reserved duration; unsupported provider scope remains unresolved | [Opening/routes](docs/contracts/0004-opening-routes.md#route-wire) |
 | Quality and density | Five automatic dimensions with separate evidence availability; source-linked pace deductions adjust the final total without adding hard generation quotas | [Quality/density](docs/contracts/0005-quality-human-review.md) |
 | Additional evaluation tracks | Blinded review, V3 paired reports, controlled Repair and mechanism/official-claim audit interfaces are implemented; their execution and research populations require their own scope | [Evaluation design](docs/0006-independent-evaluation.md), [artifacts](docs/contracts/0001-evaluation-artifacts.md) |
 
 Current identity policies are `versioned_api_identity_3` and
 `v0_identity_correspondence_3`; requirement/schedule rules are version 3. Opening retains
-API-only rules 2 and selects rules 3 with validated access judgments. Verified physical
+API-only rules 2 and selects rules 4 with validated policy-2 access judgments. Verified physical
 associations can support occurrence matching,
 opening and route checks while original grounding FAILs remain visible. Requirement
 targets belong to their own version. Historical reports retain their original policies,
@@ -129,25 +129,31 @@ The latest Sydney engineering case has four original outputs, reviewed requireme
 fresh independent evidence and a completed native evaluator flow. V2/V3 generation
 includes captured embedding/SQL retrieval; V3 exercised Repair. Zero-network replay
 preserves all originals and the original execution receipt. The authorized incremental
-missing-hours model assessment has completed. Current automatic results are:
+missing-hours model assessment under current rules 4 has completed with a separately
+authorized policy-2 response. Exact network-free replay reproduces the current report:
 
 | Version | Overall score | Opening UNKNOWN | Grounding FAIL |
 | --- | ---: | ---: | ---: |
 | V0 | 92.1429 | 1 | 0 |
-| V1 | 72.0000 | 2 | 2 |
-| V2 | 82.5000 | 1 | 0 |
-| V3 | 85.5556 | 2 | 0 |
+| V1 | 76.0000 | 0 | 2 |
+| V2 | 85.0000 | 0 | 0 |
+| V3 | 90.0000 | 0 | 0 |
 
 The hard Opera House exact-once obligation is PASS for all four outputs. Fourteen
 opening checks lack both current and regular hours; successful HTTP acquisition does
 not supply those missing facts. V1's two literal address FAILs reflect API abbreviations.
-All fourteen missing-hours occurrences were assessed: eight PASS with explicit
-`llm_access_reasonableness` basis and six remain UNKNOWN. The unresolved cohort is
-V0 Powerhouse indoor admission, V1-V3 Opera House access intent and V1/V3 Harbour
-Bridge access intent. Factual hours coverage and API duration quantities remain unchanged.
+All fourteen missing-hours occurrences were assessed: thirteen PASS with explicit
+`llm_access_reasonableness` basis and one remains UNKNOWN: V0 Powerhouse indoor admission.
+Ordinary Harbour Bridge/Opera House viewing passes under the same rule for all versions.
+Factual hours coverage and API duration quantities remain unchanged.
 Six density FAILs are auxiliary soft pace penalties. Powerhouse's undated temporary
 closure is retained without proving access on the planned date. This one engineering
 case establishes runnable integration, not a formal ranking or version freeze.
+The implemented public-landmark default permits ordinary viewing inferred from original
+text and venue category, without interpreting a generic visit as a paid activity. Museum
+admission and explicit restricted activities retain their access-evidence requirements.
+The complete source-bound report and exact replay are accepted as engineering flow evidence;
+residual judgments remain visible for human review.
 
 Evidence: [generation and host resumption](docs/records/v0-v3/development-pilots.md#sydney-generation-host-resumption-2026-10-08),
 [fresh evaluator acceptance](docs/records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09),
@@ -156,6 +162,8 @@ and [opening fallback acceptance](docs/records/evaluation/opening.md#regular-ope
 Commands and input preparation: [evaluation package guide](backend/evaluation/README.md).
 Missing-hours implementation and live acceptance:
 [access acceptance](docs/records/evaluation/opening.md#missing-hours-access-acceptance-2026-10-09).
+Public-landmark revision:
+[policy acceptance](docs/records/evaluation/opening.md#public-landmark-default-acceptance-2026-10-09).
 
 ## 5. Configuration, evidence and limitations
 
@@ -164,11 +172,12 @@ Missing-hours implementation and live acceptance:
 budgets are distinct. Dated execution allowances do not become runtime defaults.
 [Development guide](docs/guides/development.md) owns runnable commands.
 
-Full backend checkpoint: **3151 passed, 10 skipped** on 2026-10-09 for missing-hours
-access implementation. After the source-binding review correction, the complete evaluator
-gate passes **1216**, with **1 skipped**; the public opening/formal-flow gate passes **136**.
-Standards and Spec rechecks each have zero remaining issues. These gates have distinct
-scopes; the post-review evaluator run is not presented as another full-backend run.
+Full backend checkpoint: **3164 passed, 10 skipped** on 2026-10-09 for the public-landmark
+access policy. After a test-only Spec correction, the public scoring/CLI gate passes **41**;
+production code is unchanged from the full-backend checkpoint. Standards/Spec rechecks have
+zero remaining findings. Current rules-4 real-model assessment and exact network-free
+replay are accepted; originals, all 205 parent evidence files and prior rules-3 report/receipt
+remain unchanged. Historical rules-3 replay also passed with its original implementation.
 The latest recorded frontend gate is **98 passed**, with TypeScript, build and lint
 passing; this backend task does not rerun or imply new frontend validation.
 Actual failure/correction/retest sequences belong in the linked acceptance records.
@@ -200,18 +209,17 @@ or guaranteed fresh-clone assets.
 
 ## 6. Next work and authorization boundary
 
-The implemented [missing-hours access scope #90](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/90)
-has completed its separately authorized live assessment and exact zero-network replay.
-The one-use package consumed zero Google requests, one medium-effort model request and
-zero retries. Actual tokens were 15530 input and 2709 output; retained-price incremental
-estimate is USD 0.003295675 within the USD 0.05 allowance. Actual account billing is unavailable.
-Original Google/V0 identity costs remain in the parent report. All one-use allowances are consumed.
+The completed [public-landmark access scope #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91)
+revises inference while preserving original outputs, prior reports and API factual coverage.
+Its separately authorized one-use package is consumed. The automatic four-output flow
+produces a source-bound final report, saved accounting and exact network-free replay.
+Processing and binding acceptance do not require every itinerary check to PASS.
 
-The automatic four-output flow now produces a source-bound final report, including explicit
-residual UNKNOWN and FAIL reasons. User review of those residual judgments is separate
-from processing completion. Clarifying generation access intent, business-status policy,
-official acquisition, address equivalence and formal research are distinct follow-ups. Completion grants
-no new execution, freeze, push, PR, merge or branch-switch authority.
+The next review boundary is human agreement on the remaining Powerhouse admission UNKNOWN,
+two V1 literal-address FAILs and existing soft pace deductions. Further official acquisition,
+business-status policy, address equivalence, V0 baseline changes and formal research are
+separate follow-ups. Completion grants no new execution, freeze, push, PR, merge or
+branch-switch authority.
 GitHub Issues own specifications and live task state; earlier approvals and deliveries
 remain in their dated records rather than a chronological status diary here.
 

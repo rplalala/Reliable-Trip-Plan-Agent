@@ -56,7 +56,7 @@ No Repair delta or route verdict is calculated. Library entry:
 `score_opening(intake, identity_report, snapshot_directory, schedule_context=None,
 *, paired=False, expected_plan=None, opening_judgment=None)` returns immutable `OpeningResult`.
 Schema: `rtpeval_opening_report_1`. API-only replay retains `rtpeval_opening_rules_2`;
-validated access material selects `rtpeval_opening_rules_3`.
+validated access material selects `rtpeval_opening_rules_4`.
 
 Exit 0 means complete processing, including visit FAIL/UNKNOWN; exit 2 means material
 correction or identity replay. JSON is printed to stdout. Preparation file hashes,
@@ -126,8 +126,9 @@ or unavailable; the opt-in access judgment below supplies a distinct verdict bas
 
 ### Source-bound missing-hours access assessment
 
-[Issue #90](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/90) adds
-`llm_access_reasonableness_1` equally for V0-V3. Identity resolution and requirement
+[Issue #90](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/90) added the
+source-bound fallback; [Issue #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91)
+revises it to `llm_access_reasonableness_2` equally for V0-V3. Identity resolution and requirement
 target matching retain their existing version-specific policies. The narrow V1-V3
 model exception applies only to access assessment when neither API schedule is supplied.
 
@@ -145,6 +146,25 @@ The model classifies public outdoor/exterior versus indoor/ticketed/ambiguous ac
 the entire window's reasonableness and applicable restrictions. It cannot reinterpret an
 indoor visit as exterior viewing to obtain PASS or assume every public area is always open.
 
+For confidently classified public landmarks/public areas, ordinary sightseeing may be
+inferred from the original title, name and notes without explicit exterior wording.
+Generic Harbour Bridge/Opera House visits may mean ordinary viewing; the mere possibility
+of a paid climb, tour or interior visit is not a reason to force UNKNOWN. Explicit restricted
+activities take precedence. Interpret negation and conditional mentions in context:
+"no interior access" excludes entry; "verify if planning interior access" alone does not
+commit to entry. Museum/indoor-attraction visits never use this default, even in famous
+buildings. Museum admission remains unverified without applicable access evidence;
+explicitly exterior-only museum viewing can be assessed without approving admission.
+
+Structured decisions record `intent_basis` (`original_activity`, `public_landmark_default`,
+`unresolved`) and `venue_category` (`public_landmark`, `public_area`, `museum`,
+`indoor_attraction`, `other`, `unknown`). Category inference uses independent venue identity,
+name/address, supplied provider `types` when present and original intent. It is a model
+assessment, not an invented Google fact. Missing types alone does not prohibit inference;
+`tourist_attraction` alone does not establish public access. Default PASS requires a public
+category; museum/indoor/other/unknown default PASS and unresolved-intent PASS are rejected.
+Quotes and rationale retain the unchanged original activity and identify the inference.
+
 Ordinary PASS requires public outdoor/exterior access, a reasonable full interval and
 `none_known` restrictions, with specific rationale and an exact original activity quote.
 Otherwise the saved decision is UNKNOWN. A model does not manufacture a factual FAIL.
@@ -155,7 +175,7 @@ It does not supply hours, eliminate original grounding FAILs or fulfill requirem
 API `evidence_status`, segments, known-open/outside/unknown seconds and complete-evidence
 coverage remain unchanged. `llm_assessed_count` and `llm_decidable_count` distinguish model
 coverage; `verdict_decidable_coverage` can increase while factual coverage stays missing.
-The new quality profile `rtpeval_access_quality_3` states this broader opening-PASS basis;
+The new quality profile `rtpeval_access_quality_4` states this broader opening-PASS basis;
 arithmetic and denominators are unchanged. Historical API-only profiles remain available.
 
 Import reconstructs the complete packet from current sources and rejects foreign, stale,
@@ -166,6 +186,11 @@ auditable. Every packet carries evaluator implementation hashes, rebuilt on dire
 as well as incremental execution/replay. Direct import is supplied model material;
 execution additionally binds
 that material to captured HTTP bytes and the closed receipt inventory. Replay sends nothing.
+Current packet/material schemas are `rtpeval_opening_judgment_packet_2` and
+`rtpeval_opening_judgment_material_2`. Prior policy-1 material is rejected under the current
+policy; preserve old reports and replay them with their retained implementation. Changing
+the policy requires a newly bound packet and genuinely acquired response, not edited old
+model decisions. No new Google acquisition is required merely to add absent provider types.
 
 `evaluation_run_cli prepare-opening / execute-opening / replay-opening` consumes a completed
 four-final run, verifies its immutable sources/receipt and independently replays identity.
