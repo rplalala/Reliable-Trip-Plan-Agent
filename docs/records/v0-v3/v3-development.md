@@ -2405,3 +2405,213 @@ Repair behavior establish the implementation paths, not a general quality guaran
 The retained real V3 output and the existing four-version run's six soft penalty findings
 were not changed retroactively. Fresh V3 generation followed by a newly bound evaluator report
 requires a separate approved execution package; residual penalties remain valid outcomes.
+
+<a id="real-soft-pace-repair-smoke-2026-10-09"></a>
+
+### Real Repair smoke and evaluator effort preflight (2026-10-09)
+
+Status: one authorized real generation completed; source-bound density reduction was
+checked offline. The corrected medium evaluator stopped before provider dispatch;
+new independent factual evaluation remains incomplete.
+Generation source revision is `7db7a562da20c24827dfe845d5057b16150bc0b3`. The unrelated
+`.gitignore` edit was present and preserved, SHA-256
+`fdc63780f304bde2f8ac48b7e520330bc45254e8799cb4323cfe645c82a3ae02`.
+The approved one-use generation handoff digest is
+`8cb9744db64896b9d3d4a2f4435d1184457b4355ed906e4870c70ef3571e44ab`.
+The native runner was launched through a frozen local main-model configuration
+adaptation: `gpt-6-luna`, medium, 16,384 default output tokens, retaining explicit
+nomination/semantics/primary/Repair limits. All nine actual model request bodies were
+checked for medium. No application generation source was changed by this adaptation.
+
+The same original Sydney Input and reviewed requirements were used. Original V0-V3
+outputs and their accepted report/receipt stayed unchanged. One new V3 was captured
+under a 600-second whole-request limit, 360-second Repair limit, at most five Repair
+calls, zero retries and USD 14 retail reference allowance. A sandbox read-only RAG
+check timed out; the elevated read-only compatibility check passed in 0.047 seconds
+with no embedding sends or database mutations. The execution child was selected as
+`gpt-6.1-sol`, medium, in the current session.
+
+The generation exited successfully in 188.297 seconds. Actual HTTP sends were
+75 Google (15 Search, 40 Details, 20 Matrix; 212 elements), nine model, one embedding
+and one weather request. Web search/page sends were zero. All 86 HTTP request and
+response bodies were complete. Reported total tokens were 290,600, including the
+embedding call; four Repair calls accounted for 223,505 tokens. The captured retail
+estimate was USD 2.384446085, not a provider invoice.
+
+Repair retained four rounds: REJECTED, REJECTED, ACCEPTED_PARTIAL and
+ACCEPTED_COMPLETE. The adopted primary counts changed from `[2,3,2,1]` to
+`[2,2,2,2]`. October 15 removed Observatory Hill Park; October 17 added
+Mrs Macquarie's Chair. Native mean soft pace deduction changed from 15 to zero.
+Independent evaluator density rules gave the same source-only result after a new
+agent-origin activity review: the generic, unnamed flexible food stop has no concrete
+venue and uses the same non-primary transition classification as the retained V0
+food activity. Final, draft and adopted-primary source pointers were reviewed separately;
+no human review was invented. Before that review, count uncertainty was preserved.
+This numeric assessment does not certify identities, opening, routes or hard facts.
+
+The original new-result hash is
+`de49df697b71df2e9a6e21b389965a2870bb8e2dc5e63b3af1d6b9cc0de4e66a`;
+usage is `237765411e6f6e310c7e5f501892062a1af17eeb86f0060321aee16192bb40b9`.
+Local evidence identifiers are `artifacts/sydney-v3-pace-live-20261009-r1/v3` and
+`artifacts/sydney-v3-pace-preparation-20261009-r1`; these ignored paths are historical
+identifiers, not published dependencies. Result JSON retains complete draft, round,
+patch and adopted history. Mechanism evidence is available with no missing fields.
+The generation evidence index remains partial: the 10,033,415-byte final trace summary
+was stored as a truncated preview wrapper, so `finished_trace` is unavailable.
+Original evidence was neither repaired nor relabeled complete.
+
+Fresh four-final preparation binds original V0-V2 plus the new V3, independent Input/
+RequirementSpec and source-linked reviews. The actual source population permits a
+96-Google-send ceiling and USD 3.20 reference allowance, reduced from the provisional
+160 / USD 5.50 scenario. The first approved evaluator package,
+`c17ca14def6ebc7eb8bfc4908fac811e0fc23e95eb3f18c470ac49f92486b600`, was blocked before
+any send: the handoff required medium, but native identity execution and replay
+implicitly used low. Execution preflight verified sources/code and then stopped;
+Google/model sends and cost were zero. This package remains unexecuted.
+
+Commit `0f324cd` adds an optional frozen identity effort field, preserving old low
+preparations and leaving opening's separate fixed-medium contract unchanged. The
+public CLI regression first failed because the new option was rejected, then passed
+after preparation, sending and replay consumed the same option. Final evaluator and
+opening CLI regressions passed **28 tests** in 39.18 seconds, including historical
+defaults, low/medium wire capture, invalid-option rejection and rejection of a
+resealed HTTP journal with the wrong effort. Ruff passed; independent Standards and
+Spec review of `0f324cd` against `7db7a56` reported zero findings on each axis. A new code-bound medium
+preparation and exact authorization are required before live evaluation. Missing-hours
+assessment remains a separately prepared/approved stage; no additional generation,
+retry, formal benchmark, version freeze or remote publication occurred.
+
+The explicitly approved corrected-medium preparation digest
+`76ad5f5e16e079cc0c0eb1c5c22a64bc22cf19ab67a3c5ab744c1803351a03ee`
+was invoked once at source `ac15fffc28b62a59c7f8b97678aa2d7494d4ac90`. It stopped with
+`Execution price unavailable: missing_price_or_billing_context` before dispatch:
+zero Google/model sends, zero tokens and USD 0 reference cost. The usage timestamp
+was `2026-10-08T22:04:17.219420+00:00`, already October 9 in Sydney. All six price rows
+started on October 9, but native reservation uses the UTC usage date. Exact field
+masks and fee rates matched; the effective-date window did not. This was a preparation
+configuration error, not provider unavailability or an observed billing charge.
+
+Native replay with DNS/TCP disabled reproduced the stopped report and verified the
+closed receipt. Processing was stopped, acquisition partial and evidence not completed.
+No quality report exists for this invocation; FAIL/UNKNOWN counts cannot be inferred
+as zero. Retained report/receipt hashes are
+`f5b809f9da141a5da261182ead9e284690af37f85b396e4dfe87d53e2754465b` and
+`95828bb401fd337f963c84ddf07811bb1f8605f80632f335f035d79b9a8379b5`.
+The consumed execution is preserved at the local historical identifier
+`artifacts/sydney-v3-pace-preparation-20261009-r1/evaluator-reviewed/run-medium/execution`.
+
+A separate local preparation corrects only UTC price coverage to October 8 through
+the exclusive October 10 boundary; selectors, rates, source outputs, context, code
+and execution limits are unchanged. Offline native transport probes passed 94
+reservations across both UTC dates: all 42 actual identity requests, fresh Details,
+three configured Matrix modes and a maximum-token medium identity reservation on
+each date. All six old price contexts reproduced the observed date failure; twelve
+outside-window checks still rejected pricing. DNS/TCP were blocked and HTTP sends
+were zero. The initial offline probe's asyncio setup touched Windows' loopback wakeup
+socket and was rejected by the network block; the corrected probe executes its
+immediate, non-I/O coroutines without creating an event loop.
+
+The 96-send worst-case retail reservation is USD 3.07575, including the one maximum-token
+identity request, below the unchanged USD 3.20 reference allowance. This is a conservative
+configuration calculation, not actual billing. Source/intake, review/context, options,
+identity plan and all 73 implementation hashes match the consumed preparation. New
+preparation digest is
+`1d925719b74a1a89211f0d819465bdc8f2ffcfe8776252c3544fde203127ab30`;
+local preflight identifier is
+`artifacts/sydney-v3-pace-preparation-20261009-r1/evaluator-utc-price-preflight.json`.
+The one-use, zero-retry instruction prevents reinvoking the consumed directory. The
+new preparation requires its own exact authorization; no opening model or generation
+was run, and the existing partial generation-trace limitation remains visible.
+
+The UTC-corrected digest was subsequently explicitly approved and executed once at
+`eb370b57e38ed3f048a8772a36df217747c080b0`. Native execution and credential-free,
+DNS/TCP-blocked replay both exited zero. Parsed execution output, saved report and
+replay output were identical; the receipt remained unchanged. Processing and acquisition
+were complete, with unresolved judgments retained. All 76 HTTP events completed:
+28 Google Search, 31 Details, 16 Matrix and one identity model call. Actual identity
+wire used `gpt-6-luna` / medium; reported input/output/total tokens were
+14,247 / 2,332 / 16,579. Zero retries were used. Reference cost was USD 1.5989468;
+account billing remains unavailable. Generation plus evaluator reference estimates
+sum to USD 3.983392885, excluding any later opening call. Native usage timing spans
+36.874161 seconds. Report hash is
+`16751da4944137c1683f214a1c5482f54ddb04a449f15629b1ac556797abf7d7`;
+receipt hash is `dd1e13d7a02bcf13529cdecaa5a9318906c74ef398a99b572d834e07ebab30ed`
+and closes 238 files. All original outputs, Input, old accepted report/receipt and
+the unrelated `.gitignore` edit remained unchanged.
+
+### Post-acquisition review completion and current findings
+
+The original live preparation omitted the route-mode review and did not contain a
+new V3 food-activity occupancy review. The native report therefore has 30 UNKNOWN
+entries: 17 route policy checks, one unresolved V3 occupancy denominator and 12
+missing-hours checks. V3's native total is unavailable. These preparation omissions
+are preserved in the immutable original report, rather than erased or attributed to
+provider acquisition.
+
+The parent completed independent source reviews after acquisition. The complete
+original Input states a soft walking/public-transport preference, without an exclusive
+mode restriction, so the reviewed request-mode policy is unrestricted. The new
+13:30-14:30 flexible food activity is committed occupancy: choosing a venue flexibly
+does not release its original timed block for travel. It remains non-primary for POI
+density. Final, draft and adopted-primary pointers were reviewed separately using
+the same occupancy interpretation as V0. Review provenance explicitly identifies the
+agent; no human judgment, concrete food venue, protected-time obligation or transport
+endpoint was invented.
+
+The public `quality_report_cli` recalculated quality from this run's fresh snapshots,
+unchanged identity report and completed reviews, with DNS/TCP blocked. Exact repeated
+CLI output agreed and the parent execution receipt remained unchanged. All 17 route
+policy checks now PASS, and V3 has 13 decided non-overlap commitments with no unresolved
+denominator. The resulting report is an explicitly separate offline recalculation,
+not a rewritten native execution. Local historical identifiers are
+`artifacts/sydney-v3-pace-preparation-20261009-r1/evaluator-reviewed/post-acquisition-reviews`
+and its `recalculation-receipt.json`. New external sends were zero.
+
+Current API-only results, before a new missing-hours model judgment:
+
+| Version | Overall score | Grounding FAIL | Opening UNKNOWN | Mean soft pace deduction |
+| --- | ---: | ---: | ---: | ---: |
+| V0 | 86.4286 | 1 | 2 | 5 |
+| V1 | 72.0000 | 0 | 4 | 20 |
+| V2 | 75.0000 | 0 | 4 | 15 |
+| New V3 | 77.5000 | 7 | 2 | 0 |
+
+All four exact-once Opera House obligations PASS. No non-overlap or route FAIL remains.
+The eight grounding FAILs are retained under current rules: the V0 identity model
+assesses Australian Museum's College Street claim as incorrect relative to Google's
+1 William Street address; this is a model judgment, not a separate official entrance
+audit. Seven new V3 addresses fail whole-address equivalence: Opera House, Art Gallery
+of New South Wales, Harbour Bridge, Queen Victoria Building, Sydney Tower Eye,
+Darling Harbour Woodward Water Feature and Royal Botanic Garden. Claims omit parts
+of the Google address such as state/postal/country qualifiers; Tower also omits the
+floor, and Harbour Bridge gives a broad harbour location. The approved component-alias
+rule explains abbreviations but does not waive omitted or changed address content.
+The current binary verdicts are retained; no address-policy expansion occurred.
+
+Five final density deductions remain outside new V3: V0 October 17 (one visit, 20);
+V1 October 14/16 (three visits each, 40 each); V2 October 14 (three, 40) and October 17
+(one, 20). Independent paired density assessment using the new identity report confirms
+new V3 draft/adopted-final mean deduction **15 to 0**, counts `[2,3,2,1]` to `[2,2,2,2]`,
+over four retained Repair rounds. This verifies the targeted pace improvement without
+making zero a validity gate or asserting factual correctness of every address.
+
+All twelve remaining UNKNOWN entries lack current and regular hours in fresh evidence:
+V0 Opera House (October 14) and Powerhouse (October 17); V1 Opera House/Harbour Bridge
+(October 14), Darling Harbour (October 15), Bondi Beach (October 17); V2 Opera House/
+Harbour Bridge/The Rocks (October 14), Darling Harbour (October 16); new V3 Opera House
+(October 14) and Harbour Bridge (October 15). Current public-landmark rules require a
+separate source-bound access model judgment before applying their inference branch.
+No old opening response was reused, and API factual hours were not manufactured.
+
+A fresh incremental opening preparation binds those twelve cases to this completed
+parent receipt and current code. Digest is
+`c47f42c0b55f3e40c137b08e41362a08fb0c6b4b55f07ca8875155104efda968`.
+It permits zero Google sends, at most one `gpt-6-luna` / medium model call, 32,000
+input / 8,000 output tokens, 120-second request / 900-second overall limits, zero
+retries and USD 0.05 reference allowance. Full request input plus tokenizer margin
+is 15,514 tokens; worst-case model reservation is USD 0.008. Both UTC price dates
+and fresh parent/source/code bindings pass offline checks. This stage remains
+prepared but unexecuted pending exact approval. After its receipt, the public quality
+CLI can consume the new opening material and completed route/occupancy reviews;
+all original native receipts remain immutable. Formal ranking, version freeze,
+remote delivery and the partial generation trace remain outside this acceptance.

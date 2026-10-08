@@ -57,7 +57,7 @@ child rules still apply. The preparation directory must be new. An execution dir
 is consumed on failure too, with no automatic retry/resume. `--help` lists optional
 source-linked occupancy, route and density review files.
 
-The options object requires exactly these fields:
+The options object requires these fields:
 
 | Field | Meaning |
 | --- | --- |
@@ -66,6 +66,13 @@ The options object requires exactly these fields:
 | `max_input_tokens`, `max_output_tokens` | Complete packet sizing allowance and server output limit |
 | `timeout_seconds`, `total_timeout_seconds` | Per-request and whole-execution limits |
 | `max_cost_usd` | Conservative reference-price reservation allowance, not an invoice cap |
+
+Identity execution also accepts optional `reasoning_effort` (`low` or `medium`).
+An omitted field preserves historical `low` execution without adding a new field to
+old preparations. The supplied value is frozen in the preparation digest, sent in
+the Responses request and checked against the captured HTTP journal during replay.
+Invalid values fail during offline preparation. The separately fixed-medium opening
+workflow does not admit this identity-only option.
 
 Supply a dated USD `rtpeval_prices_1` book covering exact Google operations/masks and the
 selected model. Credentials are loaded only for execution from `GOOGLE_MAPS_API_KEY`

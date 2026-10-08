@@ -484,6 +484,12 @@ prices and code hashes without sending. Execution verifies the exact digest and 
 creates a new one-use directory and acquires both snapshots afresh. V1-V3 use API/program
 rules; one V0-only Responses request is allowed with no fallback or automatic retries.
 
+Identity execution options may specify `reasoning_effort=low|medium`; absence preserves
+the historical low request without altering saved option data. The explicit value is
+part of the preparation digest and must match both the sent Responses body and the
+HTTP body verified by offline replay. Unsupported values fail before execution.
+This option does not apply to the separately fixed-medium opening-access workflow.
+
 Search retains original name/destination/location and page size 20. Search/Details masks
 include ID, name, address, typed address components, business status, coordinates and
 timezone; Details includes current/regular opening hours. A next-page token remains

@@ -231,9 +231,17 @@ Processing and binding acceptance do not require every itinerary check to PASS.
 Current local implementation and offline acceptance cover
 [address equivalence #92](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/92)
 and [V3 soft pace optimization #93](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/93).
-The four original outputs and their accepted report remain immutable. Fresh V3 generation
-under the Repair objective and a new fully bound final report require separately approved
-execution packages. The remaining Powerhouse admission UNKNOWN needs human disposition
+The four original outputs and their accepted report remain immutable. A separately
+approved fresh V3 generation reached the Repair objective in source-bound draft/final
+pace checks. Fresh independent acquisition and exact offline native replay completed
+for original V0-V2 plus new V3. Missing route/occupancy review material was completed
+from original sources in a separate zero-network CLI recalculation, preserving the
+original execution receipt. Independent paired scoring confirms the new V3 Repair
+reduces mean pace deduction from 15 to zero. Eight address grounding FAILs and twelve
+missing-hours UNKNOWNs remain under current rules; a fresh source-bound access-model
+package is prepared and needs separate execution approval. Detailed smoke evidence
+belongs in [V3 development](docs/records/v0-v3/v3-development.md#real-soft-pace-repair-smoke-2026-10-09).
+The remaining Powerhouse admission UNKNOWN needs human disposition
 or applicable access evidence. Further official acquisition, business-status policy,
 V0 baseline changes and formal research are separate follow-ups. Completion grants no
 new execution, freeze, push, PR, merge or
