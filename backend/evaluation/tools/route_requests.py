@@ -9,7 +9,9 @@ from pathlib import Path
 from ..identity import resolve_identities
 from ..identity_adoption import load_v0_material
 from ..identity_program import POLICY_VERSION as IDENTITY_POLICY_VERSION
+from ..identity_program import VERSIONED_TARGET_POLICIES
 from ..intake import _read
+from ..place_association import associated_place_id
 from ..preparation import identity_ready
 from ..records import MaterialError, canonical_digest, freeze, require, thaw
 from ..routes import prepare_routes
@@ -280,14 +282,23 @@ def prepare_v0_route_requests(
         require(
             now.utcoffset() is not None, "prepared_at", "Offset-aware preparation time required"
         )
-        material = load_v0_material(None, bundle_path, historical=legacy)
+        supplied_identity = (
+            identity_report.to_dict()
+            if hasattr(identity_report, "to_dict")
+            else thaw(identity_report)
+            if identity_report is not None
+            else None
+        )
+        historical_wire = legacy and (
+            supplied_identity is None
+            or supplied_identity.get("association_policy_version") not in VERSIONED_TARGET_POLICIES
+        )
+        material = load_v0_material(None, bundle_path, historical=historical_wire)
         intake = thaw(material.intake)
         identity = (
             resolve_identities(intake, thaw(material.evidence)).to_dict()
-            if identity_report is None
-            else identity_report.to_dict()
-            if hasattr(identity_report, "to_dict")
-            else thaw(identity_report)
+            if supplied_identity is None
+            else supplied_identity
         )
         require(
             legacy or identity.get("association_policy_version") == IDENTITY_POLICY_VERSION,
@@ -336,7 +347,7 @@ def prepare_v0_route_requests(
                     "grounding_verdict": references[rid].get("grounding_verdict"),
                 }
                 for rid in ends
-                if references[rid]["resolution"] != "resolved"
+                if associated_place_id(references[rid]) is None
             ]
             base["legs"].append(
                 {
@@ -354,6 +365,7 @@ def prepare_v0_route_requests(
                                 "grounding_verdict",
                                 "original_claim",
                                 "candidate_correspondence",
+                                "place_association",
                             )
                             if key in references[rid]
                         }
@@ -377,7 +389,7 @@ def prepare_v0_route_requests(
                         for s in selected["legs"]
                         for k in ("from_source", "to_source")
                     }
-                    and r["canonical_place_id"] == pid
+                    and associated_place_id(r) == pid
                 }
             )
             for pid in used

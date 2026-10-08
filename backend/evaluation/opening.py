@@ -11,6 +11,7 @@ from zoneinfo import TZPATH, ZoneInfo, ZoneInfoNotFoundError
 from ._opening_hours import availability, seconds, subtract
 from .identity import SUBJECT_SCOPE_VERSION
 from .intake import _read
+from .place_association import associated_place_id
 from .preparation import identity_ready, schedule_timezones
 from .records import MaterialError, canonical_digest, freeze, require, text, thaw
 from .schedule_time import normalize_interval
@@ -137,11 +138,12 @@ def _check(activity, identity, reference, records, context_zone):
         allow_cross_date=True,
     )
     reasons = list(dict.fromkeys([*interval.reasons, *zone_reasons]))
-    if identity["resolution"] != "resolved":
+    pid = associated_place_id(identity)
+    if pid is None:
         reasons.append("identity_unresolved")
     elif not record or record["summary"]["status"] != "available":
         reasons.append("details_unavailable")
-    elif payload.get("id") != identity["canonical_place_id"]:
+    elif payload.get("id") != pid:
         reasons.append("canonical_id_mismatch")
     opened, closed, segments = [], [], []
     if not reasons:
@@ -176,10 +178,11 @@ def _check(activity, identity, reference, records, context_zone):
         "activity_id": raw.get("activity_id"),
         "reference_id": reference["reference_id"],
         "canonical_place_id": identity["canonical_place_id"],
+        **({"associated_place_id": pid} if "place_association" in identity else {}),
         "state": state,
         "interval": interval.to_dict(),
         "structurally_evaluable": interval.span is not None,
-        "identity_available": identity["resolution"] == "resolved",
+        "identity_available": pid is not None,
         "timezone": zone_provenance,
         "evidence_reference": {
             "request_key": key,

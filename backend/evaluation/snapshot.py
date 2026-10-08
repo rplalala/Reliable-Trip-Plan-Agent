@@ -478,8 +478,9 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
     from .identity import ASSOCIATION_POLICY_VERSION, IDENTITY_VERSION
     from .identity_adoption import needs_v0_replay
     from .identity_llm import needs_llm_replay
-    from .identity_program import POLICY_VERSION, needs_versioned_replay
+    from .identity_program import VERSIONED_TARGET_POLICIES, needs_versioned_replay
     from .identity_targets import versioned_references
+    from .place_association import associated_place_id
     from .preparation import identity_ready
 
     prepared = _prepared(intake)
@@ -500,7 +501,7 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
         raise ValueError("Identity report batch/source mismatch")
     references = (
         versioned_references(prepared)
-        if report.get("association_policy_version") == POLICY_VERSION
+        if report.get("association_policy_version") in VERSIONED_TARGET_POLICIES
         else identity_references(prepared)
     )
     expected = {r["reference_id"]: r for r in references}
@@ -520,17 +521,17 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
         if not paired and ref["projection"] not in (None, "final"):
             continue
         record = identities[ref["reference_id"]]
+        pid = associated_place_id(record)
         item = {
             "reference_id": ref["reference_id"],
             "source": ref["source"],
             "requests": {},
             "canonical_place_id": record["canonical_place_id"],
             "reason": record["reason"],
+            **({"associated_place_id": pid} if "place_association" in record else {}),
         }
-        if record["resolution"] == "resolved":
-            item["requests"]["details"] = _request(
-                requests, "places_details", {"place_id": record["canonical_place_id"]}
-            )
+        if pid is not None:
+            item["requests"]["details"] = _request(requests, "places_details", {"place_id": pid})
         plan["references"].append(item)
     for group in prepared["inventory"]:
         for version, run in group["runs"].items():
@@ -575,7 +576,7 @@ def build_evidence_plan(intake, identity_report, route_contexts, paired=False):
             ("origin", "origin_reference"),
             ("destination", "destination_reference"),
         ):
-            adopted = identities[leg[reference]]["canonical_place_id"]
+            adopted = associated_place_id(identities[leg[reference]])
             if adopted is None or parameters[side]["place_id"] != adopted:
                 raise ValueError("Route endpoint identity mismatch or unresolved")
         leg["request_key"] = _request(requests, "route_matrix", parameters)

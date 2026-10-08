@@ -230,7 +230,6 @@ def test_mixed_cli_to_quality_and_pairs_preserves_failure_and_unknown(batch, cap
     coordinates = prepare_snapshot_coordinates(intake, report, directory).to_dict()
     assert coordinates["status"] == "complete"
     assert {r["grounding_verdict"] for r in coordinates["unadopted_references"]} == {
-        "FAIL",
         "UNKNOWN",
     }
     routes = prepare_routes(
@@ -240,7 +239,7 @@ def test_mixed_cli_to_quality_and_pairs_preserves_failure_and_unknown(batch, cap
     failed_leg = next(
         r for r in routes["results"] if r["version"] == "v3" and r["projection"] == "draft"
     )["legs"][0]
-    assert failed_leg["canonical_endpoints"][0] is None
+    assert failed_leg["canonical_endpoints"][0] == "venue-a"
     assert failed_leg["identity_grounding_verdicts"] == ["FAIL", "PASS"]
     assert failed_leg["expected_context"] is None
     schedule = score_requirement_schedule(intake, report, context(intake), paired=True).to_dict()

@@ -13,11 +13,14 @@ from .identity import (
     _summaries,
     identity_references,
 )
+from .place_association import program_association, v0_association
 from .records import canonical_digest as digest
 from .records import freeze, text
 
 LEGACY_POLICY_VERSION = "versioned_api_identity_1"
-POLICY_VERSION = "versioned_api_identity_2"
+PREVIOUS_POLICY_VERSION = "versioned_api_identity_2"
+POLICY_VERSION = "versioned_api_identity_3"
+VERSIONED_TARGET_POLICIES = (PREVIOUS_POLICY_VERSION, POLICY_VERSION)
 
 
 def subject_bindings(intake):
@@ -119,9 +122,13 @@ def _check(ref, observation, binding=None, *, historical=False):
     return "PASS", "independent_api_exact_match", candidate["place_id"]
 
 
-def resolve_versioned_identities(intake, evidence, *, model_result=None, historical=False):
+def resolve_versioned_identities(
+    intake, evidence, *, model_result=None, historical=False, previous=False
+):
     """V0 model results never decide targets or visits of another version."""
     prepared = _intake_dict(intake)
+    if historical and previous:
+        raise ValueError("Choose one historical identity policy")
     refs = identity_references(prepared)
     observed = _observation_index(evidence, refs, prepared) if historical else {}
     if not historical:
@@ -146,7 +153,10 @@ def resolve_versioned_identities(intake, evidence, *, model_result=None, histori
     for ref in refs:
         rid = ref["reference_id"]
         if rid in model_records:
-            records.append(model_records[rid])
+            record = model_records[rid]
+            if not historical and not previous and ref["kind"] == "primary_visit":
+                record["place_association"] = v0_association(record, observed.get(rid))
+            records.append(record)
             continue
         observation = observed.get(rid)
         binding = bindings.get((ref["group_id"], ref["source"].get("subject_id")))
@@ -191,6 +201,11 @@ def resolve_versioned_identities(intake, evidence, *, model_result=None, histori
                     "location": ref["location"],
                 },
                 "programmatic_judgment": {"verdict": verdict, "reason": reason},
+                **(
+                    {"place_association": program_association(ref, observation)}
+                    if not historical and not previous and ref["kind"] == "primary_visit"
+                    else {}
+                ),
             }
         )
     queue = [
@@ -206,6 +221,8 @@ def resolve_versioned_identities(intake, evidence, *, model_result=None, histori
                 "subject_scope_version": SUBJECT_SCOPE_VERSION,
                 "association_policy_version": LEGACY_POLICY_VERSION
                 if historical
+                else PREVIOUS_POLICY_VERSION
+                if previous
                 else POLICY_VERSION,
                 "reference_set_digest": digest(refs),
                 "batch_id": prepared["batch_id"],
@@ -232,9 +249,13 @@ def needs_versioned_replay(report):
     records = report.get("records")
     records = records if isinstance(records, list) else []
     return (
-        report.get("association_policy_version") in (POLICY_VERSION, LEGACY_POLICY_VERSION)
+        report.get("association_policy_version")
+        in (*VERSIONED_TARGET_POLICIES, LEGACY_POLICY_VERSION)
         or "identity_versioned_replay" in report
-        or any(isinstance(r, dict) and "programmatic_judgment" in r for r in records)
+        or any(
+            isinstance(r, dict) and ("programmatic_judgment" in r or "place_association" in r)
+            for r in records
+        )
     )
 
 
@@ -243,12 +264,13 @@ def verify_versioned_report(intake, report):
     try:
         replay = report["identity_versioned_replay"]
         policy = report.get("association_policy_version")
-        return policy in (POLICY_VERSION, LEGACY_POLICY_VERSION) and (
+        return policy in (*VERSIONED_TARGET_POLICIES, LEGACY_POLICY_VERSION) and (
             resolve_versioned_identities(
                 intake,
                 replay["evidence"],
                 model_result=replay["model_result"],
                 historical=policy == LEGACY_POLICY_VERSION,
+                previous=policy == PREVIOUS_POLICY_VERSION,
             ).to_dict()
             == report
         )

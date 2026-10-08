@@ -427,7 +427,7 @@ def test_v0_material_cli_coordinates_and_routes_use_model_policy(
 
 @pytest.mark.parametrize("adoption_case", [{"claimed_location": "Wrong address"}], indirect=True)
 @pytest.mark.parametrize("assessment", ["incorrect_claim", "different_place", "unknown"])
-def test_v0_address_errors_cannot_borrow_candidate_coordinates(
+def test_v0_address_failure_and_trusted_physical_association_remain_separate(
     adoption_case, assessment, monkeypatch
 ):
     intake, observed, bundle, _, _, _, _, _ = adoption_case
@@ -454,10 +454,10 @@ def test_v0_address_errors_cannot_borrow_candidate_coordinates(
         intake, report, bundle.parent / "identity-snapshot"
     ).to_dict()
     assert coordinates["status"] == "complete", coordinates["diagnostics"]
-    # The correct-address references in other versions can retain the shared coordinates.
-    assert {r["place_id"] for r in coordinates["records"]} == {
-        "canonical-Museum B",
-    }
+    associated = assessment == "incorrect_claim"
+    assert {r["place_id"] for r in coordinates["records"]} == (
+        {"canonical-Museum A", "canonical-Museum B"} if associated else {"canonical-Museum B"}
+    )
     routes = prepare_routes(
         intake,
         report,
@@ -466,13 +466,16 @@ def test_v0_address_errors_cannot_borrow_candidate_coordinates(
     ).to_dict()
     assert routes["status"] == "complete", routes["diagnostics"]
     v0 = next(r for r in routes["results"] if r["version"] == "v0")
-    assert v0["legs"][0]["canonical_endpoints"] == [None, "canonical-Museum B"]
-    assert v0["legs"][0]["expected_context"] is None
+    assert v0["legs"][0]["canonical_endpoints"] == [
+        "canonical-Museum A" if associated else None,
+        "canonical-Museum B",
+    ]
+    assert (v0["legs"][0]["expected_context"] is not None) == associated
     package = prepare_v0_route_requests(
         bundle, report, prepared_at="2026-10-06T10:00:00Z", schedule_context=context(intake)
     ).to_dict()
     assert package["status"] == "complete", package["diagnostics"]
-    assert package["counts"]["identity_eligible_legs"] == 0
+    assert package["counts"]["identity_eligible_legs"] == int(associated)
     assert package["counts"]["actual_sends"] == 0
     assert intake.to_dict() == original
 

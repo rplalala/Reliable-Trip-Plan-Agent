@@ -2,6 +2,7 @@
 
 from ._route_rules import HARD_BOUNDARY_TOLERANCE_SECONDS, NANOSECOND, NEXT_VISIT_TOLERANCE_SECONDS
 from .occupancy import read_span, union
+from .place_association import associated_place_id
 from .records import canonical_digest, thaw
 from .schedule_time import Span, normalize_interval
 
@@ -36,7 +37,7 @@ def prepare_leg(leg, occupancy, zone, identities):
         }
     )
     canonical = [
-        identities[s["record_id"]]["canonical_place_id"]
+        associated_place_id(identities[s["record_id"]])
         for s in (leg["from_source"], leg["to_source"])
     ]
     claims = leg["claims"]

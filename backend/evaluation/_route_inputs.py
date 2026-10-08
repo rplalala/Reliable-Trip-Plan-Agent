@@ -5,6 +5,7 @@ import re
 
 from ._route_rules import DEFAULT_OPTIONS
 from ._schedule_preparation import _days, _sources
+from .place_association import associated_place_id
 from .preparation import _review_provenance
 from .records import require, text
 
@@ -171,7 +172,7 @@ def coordinates(intake, identity, envelope):
         "coordinates",
         "Invalid coordinate envelope",
     )
-    ids = {r["canonical_place_id"] for r in identity["records"] if r["canonical_place_id"]}
+    ids = {pid for r in identity["records"] if (pid := associated_place_id(r)) is not None}
     points = {}
     for point in envelope["records"]:
         require(
