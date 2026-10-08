@@ -11,6 +11,7 @@ from backend.evaluation.controlled_cli import main as controlled_main
 from backend.evaluation.identity import identity_references, resolve_identities
 from backend.evaluation.identity_cli import main as identity_main
 from backend.evaluation.identity_llm import prepare_identity_judgment
+from backend.evaluation.identity_program import resolve_versioned_identities
 from backend.evaluation.preparation import identity_ready
 from backend.evaluation.quality_report import build_quality_report
 from backend.evaluation.requirement_schedule import score_requirement_schedule
@@ -32,15 +33,126 @@ from backend.tests.evaluation.test_requirement_schedule import context
 pytest_plugins = ("backend.tests.evaluation.test_intake",)
 
 
-def identified_batch(batch):
+def identified_batch(batch, version="v1"):
     def change(_manifest, results, _save, _root):
-        for activity in results["v1"]["itinerary"]["days"][0]["activities"]:
+        for activity in results[version]["itinerary"]["days"][0]["activities"]:
             if activity["activity_kind"] == "main_poi":
                 activity["source_place_id"] = "venue-" + activity["activity_id"]
                 activity["location"] = "10 Main St, Example City, Country"
-        return "v1"
+        return version
 
     return prepared(batch, change)
+
+
+@pytest.mark.parametrize("version", ["v1", "v2", "v3"])
+def test_google_component_aliases_pass_without_changing_original_claim(batch, version):
+    intake = identified_batch(batch, version)
+    refs = [r for r in identity_references(intake) if r["version"] == version]
+    observed = evidence(intake, [details(r, r["name"], r["claimed_place_id"]) for r in refs])
+    for observation in observed["records"]:
+        place = observation["details"]["place"]
+        place["formatted_address"] = "10 Main Street, Example City, Country"
+        place["address_components"] = [
+            {"longText": "Main Street", "shortText": "Main St", "types": ["route"]}
+        ]
+    original = intake.to_dict()
+    report = resolve_identities(intake, observed).to_dict()
+    records = [r for r in report["records"] if r["version"] == version]
+    assert [r["grounding_verdict"] for r in records] == ["PASS", "PASS"]
+    assert all(r["reason"] == "independent_api_address_equivalent" for r in records)
+    assert all(r["address_comparison"]["basis"] == "google_component_aliases" for r in records)
+    assert records[0]["original_claim"]["location"] == "10 Main St, Example City, Country"
+    assert intake.to_dict() == original
+
+
+def test_conflicting_google_aliases_do_not_excuse_a_different_street(batch):
+    intake = identified_batch(batch)
+    ref = next(r for r in identity_references(intake) if r["version"] == "v1")
+    observation = details(ref, ref["name"], ref["claimed_place_id"])
+    observation["details"]["place"].update(
+        formatted_address="10 Other Street, Example City, Country",
+        address_components=[
+            {"longText": "Main Street", "shortText": "Main St", "types": ["route"]},
+            {"longText": "Other Street", "shortText": "Main St", "types": ["route"]},
+        ],
+    )
+    report = resolve_identities(intake, evidence(intake, [observation])).to_dict()
+    record = next(r for r in report["records"] if r["reference_id"] == ref["reference_id"])
+    assert record["grounding_verdict"] == "FAIL"
+    assert record["address_comparison"]["verdict"] == "FAIL"
+
+
+@pytest.mark.parametrize("fault", ["source", "retrieved", "requested_id", "returned_id"])
+def test_aliases_never_adopt_an_unverified_observation(batch, fault):
+    intake = identified_batch(batch)
+    ref = next(r for r in identity_references(intake) if r["version"] == "v1")
+    observed = details(ref, ref["name"], ref["claimed_place_id"])
+    observed["details"]["place"].update(
+        formatted_address="10 Main Street, Example City, Country",
+        address_components=[{"longText": "Main Street", "shortText": "Main St"}],
+    )
+    if fault == "source":
+        observed.pop("source_kind")
+    elif fault == "retrieved":
+        observed["details"]["retrieved_at"] = None
+    elif fault == "requested_id":
+        observed["details"]["requested_place_id"] = "foreign"
+    else:
+        observed["details"]["place"]["place_id"] = "foreign"
+    out = resolve_versioned_identities(intake, evidence(intake, [observed])).to_dict()
+    row = next(r for r in out["records"] if r["reference_id"] == ref["reference_id"])
+    assert row["grounding_verdict"] == "UNKNOWN"
+    assert "address_comparison" not in row
+
+
+@pytest.mark.parametrize(
+    "fault", ["missing_alias", "wrong_number", "wrong_city", "null_components"]
+)
+def test_unexplained_address_difference_is_fail_not_unknown(batch, fault):
+    intake = identified_batch(batch)
+    ref = next(r for r in identity_references(intake) if r["version"] == "v1")
+    observation = details(ref, ref["name"], ref["claimed_place_id"])
+    place = observation["details"]["place"]
+    place["formatted_address"] = "10 Main Street, Example City, Country"
+    place["address_components"] = [
+        {"longText": "Main Street", "shortText": "Main St", "types": ["route"]}
+    ]
+    if fault == "missing_alias":
+        place["address_components"] = []
+    elif fault == "wrong_number":
+        place["formatted_address"] = "99 Main Street, Example City, Country"
+    elif fault == "wrong_city":
+        place["formatted_address"] = "10 Main Street, Other City, Country"
+    else:
+        place["address_components"] = None
+    report = resolve_identities(intake, evidence(intake, [observation])).to_dict()
+    record = next(r for r in report["records"] if r["reference_id"] == ref["reference_id"])
+    assert record["grounding_verdict"] == "FAIL"
+    assert record["address_comparison"]["basis"] == "unexplained_address_difference"
+
+
+def test_address_alias_cli_and_historical_policy_keep_their_own_results(batch, capsys):
+    intake = identified_batch(batch)
+    refs = [r for r in identity_references(intake) if r["version"] == "v1"]
+    observed = evidence(intake, [details(r, r["name"], r["claimed_place_id"]) for r in refs])
+    for observation in observed["records"]:
+        observation["details"]["place"].update(
+            formatted_address="10 Main Street, Example City, Country",
+            address_components=[{"longText": "Main Street", "shortText": "Main St"}],
+        )
+    historical = resolve_versioned_identities(intake, observed, exact_addresses=True).to_dict()
+    assert historical["association_policy_version"] == "versioned_api_identity_3"
+    assert all(
+        r["grounding_verdict"] == "FAIL" for r in historical["records"] if r["version"] == "v1"
+    )
+    _, _, write, save, root = batch
+    save("observed-aliases.json", observed)
+    assert identity_main([str(write()), str(root / "observed-aliases.json")]) == 3
+    current = json.loads(capsys.readouterr().out)
+    assert current["association_policy_version"] == "versioned_api_identity_4"
+    assert all(r["grounding_verdict"] == "PASS" for r in current["records"] if r["version"] == "v1")
+    assert identity_ready(intake.to_dict(), historical)
+    assert identity_ready(intake.to_dict(), current)
 
 
 def test_api_exact_match_without_model_and_wrong_address_is_fail(batch):

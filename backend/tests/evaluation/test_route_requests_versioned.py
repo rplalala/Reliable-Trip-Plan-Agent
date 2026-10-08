@@ -218,7 +218,7 @@ def test_current_matches_need_no_human_identity_gate_and_reuse_independent_point
     ).to_dict()
     assert report["status"] == "complete"
     assert report["identity_policy"] == {
-        "association_policy_version": "versioned_api_identity_3",
+        "association_policy_version": "versioned_api_identity_4",
         "legacy": False,
         "current_v0_model_result_present": True,
         "report_origin": "supplied",

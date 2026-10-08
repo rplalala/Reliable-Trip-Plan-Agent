@@ -1,6 +1,6 @@
 """Version-scoped evaluation from original claims and independent API observations."""
 
-from ._addresses import destination_matches, strict_destination_matches
+from ._addresses import compare_address_claim, destination_matches, strict_destination_matches
 from .identity import (
     IDENTITY_VERSION,
     SUBJECT_SCOPE_VERSION,
@@ -19,8 +19,9 @@ from .records import freeze, text
 
 LEGACY_POLICY_VERSION = "versioned_api_identity_1"
 PREVIOUS_POLICY_VERSION = "versioned_api_identity_2"
-POLICY_VERSION = "versioned_api_identity_3"
-VERSIONED_TARGET_POLICIES = (PREVIOUS_POLICY_VERSION, POLICY_VERSION)
+EXACT_POLICY_VERSION = "versioned_api_identity_3"
+POLICY_VERSION = "versioned_api_identity_4"
+VERSIONED_TARGET_POLICIES = (PREVIOUS_POLICY_VERSION, EXACT_POLICY_VERSION, POLICY_VERSION)
 
 
 def subject_bindings(intake):
@@ -32,7 +33,7 @@ def subject_bindings(intake):
     }
 
 
-def _subject_search(ref, search):
+def _subject_search(ref, search, *, equivalent_addresses=False):
     if "next_page_token" in search and not text(search["next_page_token"]):
         return "UNKNOWN", "subject_pagination_malformed", None
     if search["actual_result_count"] != len(search["candidates"]) or (
@@ -60,7 +61,14 @@ def _subject_search(ref, search):
         if (
             ref["name"] == candidate["display_name"]
             and destination_verified
-            and (not text(ref["location"]) or ref["location"] == candidate["formatted_address"])
+            and (
+                not text(ref["location"])
+                or (
+                    compare_address_claim(ref["location"], candidate)["verdict"] == "PASS"
+                    if equivalent_addresses
+                    else ref["location"] == candidate["formatted_address"]
+                )
+            )
         ):
             matches[candidate["place_id"]] = candidate
     if len(matches) != 1:
@@ -68,7 +76,7 @@ def _subject_search(ref, search):
     return "PASS", "independent_api_exact_match", next(iter(matches))
 
 
-def _check(ref, observation, binding=None, *, historical=False):
+def _check(ref, observation, binding=None, *, historical=False, equivalent_addresses=False):
     claimed = ref["claimed_place_id"] if ref["kind"] == "primary_visit" else binding
     candidate = None
     if ref["kind"] == "primary_visit" and not text(claimed):
@@ -103,7 +111,7 @@ def _check(ref, observation, binding=None, *, historical=False):
         if search.get("query") != ref["name"] or search.get("requested_page_size") != 20:
             return "UNKNOWN", "subject_search_scope_unverified", None
         if not historical:
-            return _subject_search(ref, search)
+            return _subject_search(ref, search, equivalent_addresses=equivalent_addresses)
         if search["actual_result_count"] != 1 or len(search["candidates"]) != 1:
             return "UNKNOWN", "subject_search_ambiguous", None
         candidate = _candidate(search["candidates"][0])
@@ -117,17 +125,24 @@ def _check(ref, observation, binding=None, *, historical=False):
             return "UNKNOWN", "subject_destination_unverified", None
     if ref["name"] != candidate["display_name"]:
         return "FAIL", "api_name_mismatch", None
-    if text(ref["location"]) and ref["location"] != candidate["formatted_address"]:
-        return "FAIL", "api_address_mismatch", None
+    if text(ref["location"]):
+        if equivalent_addresses:
+            comparison = compare_address_claim(ref["location"], candidate)
+            if comparison["verdict"] == "FAIL":
+                return "FAIL", "api_address_mismatch", None
+            if comparison["basis"] != "exact":
+                return "PASS", "independent_api_address_equivalent", candidate["place_id"]
+        elif ref["location"] != candidate["formatted_address"]:
+            return "FAIL", "api_address_mismatch", None
     return "PASS", "independent_api_exact_match", candidate["place_id"]
 
 
 def resolve_versioned_identities(
-    intake, evidence, *, model_result=None, historical=False, previous=False
+    intake, evidence, *, model_result=None, historical=False, previous=False, exact_addresses=False
 ):
     """V0 model results never decide targets or visits of another version."""
     prepared = _intake_dict(intake)
-    if historical and previous:
+    if sum((historical, previous, exact_addresses)) > 1:
         raise ValueError("Choose one historical identity policy")
     refs = identity_references(prepared)
     observed = _observation_index(evidence, refs, prepared) if historical else {}
@@ -160,8 +175,29 @@ def resolve_versioned_identities(
             continue
         observation = observed.get(rid)
         binding = bindings.get((ref["group_id"], ref["source"].get("subject_id")))
-        verdict, reason, canonical = _check(ref, observation, binding, historical=historical)
+        verdict, reason, canonical = _check(
+            ref,
+            observation,
+            binding,
+            historical=historical,
+            equivalent_addresses=not (historical or previous or exact_addresses),
+        )
         detail, search = _evidence_candidates(observation)
+        compared = detail or next((c for c in search if c["place_id"] == canonical), None)
+        comparison = (
+            compare_address_claim(ref["location"], compared)
+            if not (historical or previous or exact_addresses)
+            and compared
+            and reason
+            in {
+                "api_address_mismatch",
+                "independent_api_exact_match",
+                "independent_api_address_equivalent",
+            }
+            and text(ref["location"])
+            and ref["name"] == compared["display_name"]
+            else None
+        )
         records.append(
             {
                 **(
@@ -185,7 +221,13 @@ def resolve_versioned_identities(
                 "reason": reason,
                 "canonical_place_id": canonical,
                 "grounding_verdict": verdict,
-                "decision_route": "independent_api_exact" if canonical else None,
+                "decision_route": (
+                    "independent_api_address_equivalent"
+                    if canonical and comparison and comparison["basis"] != "exact"
+                    else "independent_api_exact"
+                    if canonical
+                    else None
+                ),
                 "claimed_id_association": _claimed_id_status(ref, observation, canonical),
                 "high_impact": ref["high_impact"],
                 "audit_selected": False,
@@ -201,6 +243,7 @@ def resolve_versioned_identities(
                     "location": ref["location"],
                 },
                 "programmatic_judgment": {"verdict": verdict, "reason": reason},
+                **({"address_comparison": comparison} if comparison else {}),
                 **(
                     {"place_association": program_association(ref, observation)}
                     if not historical and not previous and ref["kind"] == "primary_visit"
@@ -223,6 +266,8 @@ def resolve_versioned_identities(
                 if historical
                 else PREVIOUS_POLICY_VERSION
                 if previous
+                else EXACT_POLICY_VERSION
+                if exact_addresses
                 else POLICY_VERSION,
                 "reference_set_digest": digest(refs),
                 "batch_id": prepared["batch_id"],
@@ -271,6 +316,7 @@ def verify_versioned_report(intake, report):
                 model_result=replay["model_result"],
                 historical=policy == LEGACY_POLICY_VERSION,
                 previous=policy == PREVIOUS_POLICY_VERSION,
+                exact_addresses=policy == EXACT_POLICY_VERSION,
             ).to_dict()
             == report
         )
