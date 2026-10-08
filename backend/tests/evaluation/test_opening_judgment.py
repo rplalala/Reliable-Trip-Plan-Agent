@@ -197,6 +197,25 @@ def test_query_instant_status_without_either_schedule_still_allows_access_review
     assert opening_tests.first(report)["checks"][0]["state"] == "PASS"
 
 
+def test_direct_import_rejects_material_from_another_implementation(
+    opening_scenario,
+    tmp_path,
+    capsys,
+):
+    intake, identity, directory, _, packet = prepare(
+        opening_scenario,
+        tmp_path,
+        capsys,
+        change=walks,
+        payload={"timeZone": {"id": "Etc/UTC"}},
+    )
+    assert "opening.py" in packet["implementation_hashes"]
+    packet["implementation_hashes"]["opening.py"] = "0" * 64
+    report = score_opening(intake, identity, directory, opening_judgment=material(packet)).to_dict()
+    assert report["status"] == "needs_material_correction"
+    assert report["results"] == []
+
+
 @pytest.mark.parametrize(
     "fault",
     ["source", "quote", "request_model", "partial", "foreign", "failed", "usage", "timestamp"],

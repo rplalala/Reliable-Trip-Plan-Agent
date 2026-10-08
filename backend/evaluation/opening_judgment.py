@@ -1,7 +1,9 @@
 """Source-bound missing-hours access assessments; preparation and import are offline."""
 
+import hashlib
 import json
 from datetime import datetime
+from pathlib import Path
 
 from .records import canonical_digest, require, text, thaw
 from .snapshot import load_snapshot
@@ -134,6 +136,10 @@ def prepare_packet(
         "policy": POLICY,
         "model": model,
         "source_hashes": report["source_hashes"],
+        "implementation_hashes": {
+            path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(Path(__file__).parent.glob("*.py"))
+        },
         "paired": paired,
         "cases": cases,
         "prompt_sha256": canonical_digest(INSTRUCTIONS),
