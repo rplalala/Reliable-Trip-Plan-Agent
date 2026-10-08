@@ -29,7 +29,8 @@ The evaluator applies its emitted frozen rules rather than reading moving planne
 
 An independently associated primary place visit and independently interpretable interval are
 the units. Nearby and unresolved role populations retain their separate scope diagnostics.
-RequirementSpec has no entry/exterior distinction: prose cannot create an opening exemption.
+RequirementSpec has no entry/exterior distinction. Original activity prose can inform the
+explicit missing-hours access policy below; it never creates an automatic opening exemption.
 Planner-selected hours or V3 findings are not ground truth. Zero grace applies to full-visit
 containment; touching closing time is allowed and a lunch closure is not bridged.
 
@@ -53,8 +54,9 @@ The smoke request tool's separate DRIVE adapter remains outside this correction.
 and final_primary projections independently, with the same paired snapshot scope.
 No Repair delta or route verdict is calculated. Library entry:
 `score_opening(intake, identity_report, snapshot_directory, schedule_context=None,
-*, paired=False, expected_plan=None)` returns immutable `OpeningResult`.
-Schema: `rtpeval_opening_report_1`; rules: `rtpeval_opening_rules_2`.
+*, paired=False, expected_plan=None, opening_judgment=None)` returns immutable `OpeningResult`.
+Schema: `rtpeval_opening_report_1`. API-only replay retains `rtpeval_opening_rules_2`;
+validated access material selects `rtpeval_opening_rules_3`.
 
 Exit 0 means complete processing, including visit FAIL/UNKNOWN; exit 2 means material
 correction or identity replay. JSON is printed to stdout. Preparation file hashes,
@@ -117,7 +119,62 @@ for mixed/unavailable evidence. `regular_fallback` is null when unneeded, otherw
 records unresolved scope, applied regular open/closed intervals and regular diagnostics;
 `regular_fallback_used` marks an actual contribution. Current parsing reasons remain
 visible even if regular evidence determines PASS or FAIL. Missing both usable schedules
-retains UNKNOWN. A visit's factual basis is current, regular, mixed or unavailable.
+retains UNKNOWN in API-only scoring. A visit's factual basis is current, regular, mixed
+or unavailable; the opt-in access judgment below supplies a distinct verdict basis.
+
+<a id="missing-hours-access-judgment"></a>
+
+### Source-bound missing-hours access assessment
+
+[Issue #90](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/90) adds
+`llm_access_reasonableness_1` equally for V0-V3. Identity resolution and requirement
+target matching retain their existing version-specific policies. The narrow V1-V3
+model exception applies only to access assessment when neither API schedule is supplied.
+
+Eligible occurrences require verified independent identity/Details, a known original
+interval and a valid nonconflicting timezone. Both hours fields or their `periods` must
+be absent/null. Query-instant `openNow` without periods is not a schedule or a closure.
+Empty periods are explicit closure; supplied malformed or incomplete periods remain
+API diagnostics and are not replaced by model knowledge. API-decided visits never enter
+the model packet. No failed acquisition, invalid identity or invalid time is rescued.
+
+Preparation binds original title/place/notes/kind/time, version/projection, source record,
+independent venue facts, raw hours observations, normalized interval/timezone and retained
+Details attempt hashes. Notes are original claims/intent, not factual opening evidence.
+The model classifies public outdoor/exterior versus indoor/ticketed/ambiguous access,
+the entire window's reasonableness and applicable restrictions. It cannot reinterpret an
+indoor visit as exterior viewing to obtain PASS or assume every public area is always open.
+
+Ordinary PASS requires public outdoor/exterior access, a reasonable full interval and
+`none_known` restrictions, with specific rationale and an exact original activity quote.
+Otherwise the saved decision is UNKNOWN. A model does not manufacture a factual FAIL.
+Model knowledge is fallible; rationale/schema acceptance cannot prove the semantic claim.
+PASS uses `basis=llm_access_reasonableness` and participates in ordinary verdict scoring.
+It does not supply hours, eliminate original grounding FAILs or fulfill requirements.
+
+API `evidence_status`, segments, known-open/outside/unknown seconds and complete-evidence
+coverage remain unchanged. `llm_assessed_count` and `llm_decidable_count` distinguish model
+coverage; `verdict_decidable_coverage` can increase while factual coverage stays missing.
+The new quality profile `rtpeval_access_quality_3` states this broader opening-PASS basis;
+arithmetic and denominators are unchanged. Historical API-only profiles remain available.
+
+Import reconstructs the complete packet from current sources and rejects foreign, stale,
+duplicate, partial or contradictory decisions, unsupported original quotes, request/model
+settings mismatches, invalid timestamps and missing/inconsistent actual token counts.
+Raw request/response, prompt/policy/model identifiers and material/source hashes remain
+auditable. Every packet carries evaluator implementation hashes, rebuilt on direct import
+as well as incremental execution/replay. Direct import is supplied model material;
+execution additionally binds
+that material to captured HTTP bytes and the closed receipt inventory. Replay sends nothing.
+
+`evaluation_run_cli prepare-opening / execute-opening / replay-opening` consumes a completed
+four-final run, verifies its immutable sources/receipt and independently replays identity.
+It reuses retained Google evidence and never reruns Google acquisition or V0 identity calls.
+A separately approved digest allows at most one Responses call at medium effort, zero
+retries and an explicit token/time/USD reference allowance. Failed/partial attempts retain
+raw receipts and usage. A separate full report includes the incremental opening cost;
+original acquisition/identity costs remain in the parent report. No live approval is implied
+by Issue completion or CLI preparation. Exact replay requires the recorded code policy.
 
 Rules version 2 replaces the former current-defect/special-marker veto. Exact reproduction
 of rules-1 reports uses their original code revision; save new policy recalculations

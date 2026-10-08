@@ -91,6 +91,61 @@ completed; exit 2 indicates stopped execution or material correction, not an all
 
 ## Offline workflow and CLI
 
+### Incremental missing-hours access assessment
+
+The [access policy](../../docs/contracts/0004-opening-routes.md#missing-hours-access-judgment)
+adds an opening-only model fallback equally for V0-V3. API schedule decisions retain
+priority. Clearly supported outdoor/exterior access can PASS with an explicit model basis;
+indoor/ticketed/ambiguous intent stays UNKNOWN. Model judgment does not invent hours or
+remove missing factual evidence and original grounding errors.
+
+Reuse a completed four-final execution; no new Google or V0 identity request is made:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli prepare-opening artifacts/fresh-evaluation --directory artifacts/opening-access --options opening-options.json --prices opening-prices.json
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli execute-opening artifacts/opening-access --approved-sha256 EXACT_OPENING_PREPARATION_SHA256 --env-file .env
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli replay-opening artifacts/opening-access
+```
+
+Options use the existing eight-field schema, with `max_google_sends=0` mandatory and
+the explicitly selected opening deployment/HTTPS endpoint, token/time limits and USD
+reference allowance. The price book must cover `kind=model`, `provider=azure_foundry`,
+`operation=opening_access` and the selected model. This is one medium-effort Responses
+call and zero retries; preparation itself is offline and grants no paid authorization.
+Execution loads only `AZURE_OPENAI_API_KEY`, verifies code/source/parent receipts and
+consumes its new execution directory even on failure. It stores raw HTTP/material,
+actual usage, incremental cost and a separate complete automatic report. Parent costs
+remain in the original report. Replay validates both receipts and performs no model call.
+Missing/incomplete/failed model material is preserved without silently resending.
+
+For independently captured material, prepare/import without an execution client:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.opening_judgment_cli prepare manifest.json identity-report.json evidence-snapshot --model YOUR_MODEL --context context.json --output packet.json
+.venv/Scripts/python.exe -m backend.evaluation.opening_judgment_cli import manifest.json identity-report.json evidence-snapshot --context context.json --material model-material.json --output opening.json
+```
+
+Material schema `rtpeval_opening_judgment_material_1` contains the complete unchanged
+`packet`, actual Responses `request`/`response`, `provider=azure_foundry` and offset-aware
+`requested_at`/`retrieved_at`. The request retains packet fields plus `store=false`,
+`reasoning={"effort":"medium"}` and positive `max_output_tokens`; raw response contains
+one structured assistant decisions object and actual input/output/total token counts.
+Packet schema specifies decision fields/enums and one short ID per eligible occurrence.
+The packet also freezes evaluator implementation hashes; importing with changed source
+code requires new preparation rather than accepting an old judgment under new code.
+All decisions and original activity quotations are validated; partial/foreign material
+fails the whole import. Empty explicit schedules are never model cases. `openNow` alone
+does not establish a schedule; absent/null periods can qualify. Supplied malformed periods,
+unverified identity and invalid time cannot qualify.
+
+Both `opening_cli` and `quality_report_cli` accept `--opening-judgment model-material.json`.
+Library callers use `opening_judgment=`. Without that material the existing API-only
+behavior remains available. With it the report selects opening rules 3 and quality profile
+`rtpeval_access_quality_3`, preserving API seconds/coverage and separate LLM counts.
+Supplied import provenance is distinct from dispatch independently captured by execution.
+
+### Ordinary saved-evidence workflow
+
 Run from the repository root with the existing Python environment. Names below represent
 researcher-prepared files; commands do not generate missing independent evidence. For each
 CLI, `--help` gives executable arguments. Default reports go to stdout; save them outside

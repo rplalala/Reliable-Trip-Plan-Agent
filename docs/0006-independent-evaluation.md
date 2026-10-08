@@ -56,7 +56,12 @@ Opening rules evaluate the planned visit interval. Applicable current open/close
 take precedence; valid regular hours determine unresolved time, including current-field
 defects and special-date markers without a usable schedule. Regular hours produce ordinary
 PASS/FAIL with explicit basis and fallback provenance. Query-time `openNow=false` does not
-establish closure at a later visit; missing both usable schedules remains UNKNOWN.
+establish closure at a later visit. Missing both schedules permits an explicitly imported
+independent LLM access assessment: clearly supported public outdoor/exterior visits in
+a reasonable window can PASS; unsupported/ambiguous access remains UNKNOWN. Factual
+hours coverage and durations stay missing, with model judgment coverage separately shown.
+The incremental execution CLI reuses completed evidence without another Google or V0
+identity call; live execution requires its own prepared allowance.
 The [opening contract](contracts/0004-opening-routes.md#opening) owns these current rules.
 
 Development smoke helpers are separate from ordinary evaluator consumers. The
@@ -80,8 +85,10 @@ and [dated bridge record](records/evaluation/routes.md#snapshot-coordinate-bridg
 
 The user accepted a [version-specific evaluator requirement](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
 on 2026-10-06: V0 introduces an LLM primarily for generated-POI correspondence with
-independent API candidates; V1-V3 evaluation uses API evidence and program rules without
-an evaluator model or fallback, including user-named requirements. Original API-backed
+independent API candidates; V1-V3 identity and requirements use API evidence and program
+rules without an identity model or fallback. The subsequently approved
+[opening-only exception](contracts/0004-opening-routes.md#missing-hours-access-judgment)
+introduces model access assessments when both schedules are missing. Original API-backed
 name/address differences count as errors, without repair. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
 owns the classified follow-ups. Version dispatch (#75) and the V0 citation/missing-address
 response correction (#76) are implemented locally; fresh-smoke preparation, offline route integration and delivery
@@ -128,6 +135,7 @@ Blinded preference review and other human supplements keep their separate respon
 | Identity judgment | Version-scoped program checks or V0 model correspondence with independent API facts, preserving original claims and uncertainty |
 | Historical adjudication | Human resolution in an explicitly replayed legacy identity report |
 | Compliance | Outcome against an applicable criterion, distinct from evidence availability |
+| Access reasonableness | Fallible independent model assessment of the original activity and complete visit window when both API schedules are absent; PASS does not establish factual hours |
 | Common mask | The explicitly shared comparison set; missing evidence must remain visible |
 | UNKNOWN | An unresolved applicable fact/outcome, not a passing check or a zero-valued measurement |
 | Blinded review | Human preference judgment without exposing version attribution or automatic scores |

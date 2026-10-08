@@ -189,8 +189,10 @@ with supplied independent API candidates, when available. Correspondence is dist
 from original-claim correctness: recognizing a venue cannot repair a wrong submitted
 address or certify opening/route feasibility. Insufficient support remains UNKNOWN.
 
-V1-V3 evaluation uses independent API evidence and deterministic program rules
-throughout, without an evaluator model call, model-result dependency or model fallback.
+V1-V3 identity and requirement evaluation uses independent API evidence and deterministic
+program rules, without an identity model call, model-result dependency or model fallback.
+The subsequently approved [missing-hours access assessment](0004-opening-routes.md#missing-hours-access-judgment)
+is a narrow opening-only model exception shared by V0-V3; it does not change identity rules.
 Original API-backed names/addresses are compared with corresponding API facts;
 differences count as errors without model-based precision, translation or semantic
 equivalence. User-named requirements and optional V3 projections follow this same

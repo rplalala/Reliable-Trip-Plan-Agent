@@ -456,3 +456,118 @@ appended to the concise current-state file.
 
 This correction includes no new access-intent schema, official evidence collector, planner
 change, formal comparison, provider send, push, PR, merge, branch switch or version freeze.
+
+<a id="missing-hours-access-acceptance-2026-10-09"></a>
+
+## Missing-hours access assessment — 2026-10-09
+
+[Issue #90](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/90) owns the
+approved offline implementation. Review fixed point:
+`8c687f162db4fd762239e4ffce054c76f0610564`. The user approved public `score_opening`
+and actual preparation/import/execution/replay CLI seams, and requested medium reasoning.
+Implementation/tests are committed as `40fe066`, with review correction `017c548`;
+no paid execution or Git publication
+is included. The existing unrelated `.gitignore` bytes retain SHA-256
+`fdc63780f304bde2f8ac48b7e520330bc45254e8799cb4323cfe645c82a3ae02`.
+
+### Behavior and evidence meaning
+
+Validated `llm_access_reasonableness_1` material selects opening rules 3 and quality
+profile `rtpeval_access_quality_3`; API-only scoring retains rules 2 and its original
+profile. All four versions use the same public/exterior access standard. Existing
+V1-V3 identity/requirement policies remain deterministic. No planner behavior changes.
+
+The model only assesses verified original occurrences with known time/timezone and
+neither API schedule supplied. Missing/null hours or periods can qualify, including
+query-time `openNow=false` alone. Explicit empty or supplied malformed/incomplete periods
+are not replaced. The packet contains source-bound activity intent, independent venue
+facts, interval/timezone and retained Details provenance; activity notes are claims,
+not factual evidence. Complete structured decisions cite original text and classify
+access mode, full-window reasonableness and applicable restrictions. Supported public
+outdoor/exterior access can PASS; indoor/ticketed/ambiguous or unsupported access stays
+UNKNOWN. The model cannot repair an original activity, manufacture hours or override
+an API-decided visit. Semantic model judgments remain fallible.
+
+Model PASS contributes to ordinary verdict scoring with an explicit model basis.
+Factual hours coverage, known-open/outside/unknown seconds and grounding FAILs remain
+unchanged. Separate model-assessed/decidable counts identify the broader judgment basis.
+Raw request/response, model/prompt/policy/source hashes, ordered timestamps and actual
+token counts are retained. Import rebuilds the packet and rejects partial, foreign,
+stale, unsupported-quote and inconsistent model material.
+
+Incremental execution verifies the completed parent receipt/originals and replays identity,
+then reuses saved Google evidence. Its separately approved digest permits one model
+request, medium effort and zero retries under explicit token/time/reference-price limits.
+Both completed and stopped attempts save captured HTTP/material, usage and receipts.
+Full report replay validates those bytes and sends nothing. Incremental costs are distinct
+from parent Google/V0 identity costs; actual billing remains unavailable.
+
+### Validation sequence
+
+The first public slice failed because the preparation CLI was absent. Initial eligibility
+used an incorrect interval-status name, then a synthetic description field outside the
+actual projection; these were corrected to the existing `known` interval and original
+`notes` schema. The public walk then passed while API known-open seconds stayed zero
+and its 3600 unknown seconds remained unchanged.
+
+CLI integration first failed on the missing command. Its fixture initially omitted the
+V1-V3 submitted IDs; supplied `pid-a`/`pid-b` restored the existing identity contract.
+Blocking every socket before an asyncio execution also blocked Windows' local event-loop
+pipe; the dispatch-reuse check was moved before the socket prohibition, while import
+and synchronous replay still prohibit socket construction. No outbound network was used.
+
+The query-instant regression reproduced an empty eligible cohort with `openNow=false`
+and absent periods. Eligibility now inspects actual schedule absence rather than rejecting
+the mere hours-object presence. Missing/malformed material, indoor/ticketed/unreasonable
+PASS attempts, invalid identity/time, API closure priority, original quotes, complete
+coverage, failed HTTP, missing usage, one-use approval and immutable receipts are covered.
+
+Initial full backend gate: **3150 passed, 1 failed, 10 skipped** in 316.34 seconds. The
+architecture import allowlist had not registered the approved isolated `opening_run`
+HTTP entry; the scorer/import modules remained offline. The allowlist was extended for
+that execution module only. Binding/intake/quality retest: **225 passed, 1 skipped**.
+Implementation full backend gate: **3151 passed, 10 skipped** in 332.00 seconds. Public opening
+and formal-flow integration gate: **136 passed**; final new fallback suite: **27 passed**.
+Ruff, formatting of all thirteen changed code/test files and diff checks pass.
+The broader format scan also reported existing mixed-line-ending files outside this task;
+those unrelated files were left unchanged. No typechecker gate is configured.
+
+Standards initially found zero actionable issues; Spec found one P2: standalone
+preparation/import omitted implementation hashes although incremental execution retained
+them. The public scorer regression first failed on absent `implementation_hashes`.
+Correction `017c548` adds all evaluator source SHA-256 values to every packet; import
+rebuilds and compares them. Current complete evaluator gate after that correction:
+**1216 passed, 1 skipped** in 228.81 seconds. This is distinct from the pre-correction
+full-backend checkpoint above, not another full-backend run. Both independent rechecks
+found zero remaining issues. No shared planner/generation code changed.
+
+### Real-source preparation and historical protection
+
+The same four original Sydney outputs produce **14 eligible occurrences**: V0 2,
+V1-V3 4 each. No real model decisions are imported or fabricated; accepted scores and
+fourteen UNKNOWNs remain the API-only checkpoint until separately approved execution.
+For example, V0 Opera House notes explicitly assume no tour/interior access, whereas
+its Powerhouse activity describes exploring the museum. Eligibility alone is not PASS.
+
+Final local preparation identifier: `artifacts/sydney-opening-access-preparation-20261009-r2`;
+its `run/preparation.json` digest is
+`d2db8c5b37d99042e958210b99546edb3a4db92718772159ac357d87351f604c`.
+It supersedes the initial r1 draft after the implementation-binding correction.
+Complete wire estimate plus 1024-token margin is 17254 tokens. Proposed ceilings:
+32000 input tokens, 8000 output tokens, zero Google sends, one model send and zero
+retries. The retained 2026-10-09 price snapshot yields USD 0.008 at those maximum token
+allowances; proposed USD reference allowance is 0.05. These are reference/proxy amounts,
+not actual billing or live authorization; the retained price validity ends 2026-10-10.
+Actual incremental provider/model sends and incurred charges are zero. Original parent
+execution costs are not erased or counted again. Raw artifacts remain ignored local aids.
+
+An isolated historical CLI replay loads trusted parser/opening/requirement/quality/run
+modules from `ee0f4947edb32fe2f7a07f5b4fd7c1ee98fd6531`. It reproduces the original
+complete report exactly with zero network attempts and no checkout mutation. All 205
+receipt-covered files and original source bindings remain unchanged. Original report
+SHA-256: `09272f235cadc20aeb94f4c6a4f5945f35a77faaf89637611beb422695e0b459`;
+receipt SHA-256: `ca5852385f6fcdeb1279afbb25ddfdc8da8d11a64514836b88bf824406bae0e1`.
+
+Real model assessment and its final recalculated report remain a separate execution
+approval. This record claims offline engineering readiness, not resolution of every
+missing fact, a formal version comparison, publication, freeze or new live allowance.
