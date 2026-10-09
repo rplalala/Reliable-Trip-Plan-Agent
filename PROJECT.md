@@ -238,9 +238,12 @@ or guaranteed fresh-clone assets.
 The locally implemented [CLI entry/validation #96](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/96)
 and [one-step evaluation #97](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/97)
 are the first two slices of [unified CLI parent #95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95).
-Local implementation, tests, review and documentation are authorized; this task excludes
-paid execution, push, PR creation and tracker publication. Remote #96/#97 lifecycle remains
-unchanged. Material collection (#98), finalization (#99),
+Local implementation, tests, review and documentation are complete. On 2026-10-09,
+the human also authorized branch rename, push, PR creation, merge after verification,
+and evidence-backed Acceptance criteria updates and closure for #96/#97. Delivery reuses
+the completed Standards/Spec reviews at the human's explicit request; PR code-review is
+not repeated. Paid execution remains excluded. Live Issues and the delivery PR own publication
+and lifecycle outcomes. Material collection (#98), finalization (#99),
 generation registration (#100), other command groups (#101) and integrated acceptance
 (#102) remain separate pending work. Each new implementation scope needs approval.
 Local validation and review evidence is retained in

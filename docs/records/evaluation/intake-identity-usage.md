@@ -4485,3 +4485,28 @@ dependencies. Documentation records runnable modes, reviewed contexts, credentia
 native budgets and separate status/exit meanings. No frontend or standalone distribution
 validation is claimed. Material collection/finalization, generation registration, remaining
 command groups and integrated acceptance (#98-#102) remain separate pending scopes.
+
+### Delivery authorization and evidence reuse (2026-10-09)
+
+After implementation acceptance, the human authorized delivery of #96 and #97 together:
+rename the current branch to `rtpeval/xxx-96-97`, push, create a PR, merge after successful
+verification, check evidence-backed Acceptance criteria and close fully resolved Issues.
+The branch rename is complete; no branch switch or history rewrite occurred. The original
+`.gitignore` change remains excluded with its recorded SHA256 unchanged. This delivery
+authorization supersedes the earlier publication exclusion for these two tickets only.
+
+The human explicitly requested no repeated PR code-review. Delivery reuses #96's corrected
+Standards/Spec acceptance and #97's zero-finding implementation and final documentation
+reviews. Source head before this documentation update is `88ab39e`; remote `main` is
+`e757a3a457469818f395088e103d2f2a0e3764c6`. The latter's complete tree equals original
+review base `70e367de0e970225488b0cbeb4b8e2b6842c727f`, so the combined published diff
+contains only the two approved CLI slices and their documentation. Existing five task
+commits are preserved, including #96's separate help correction. No implementation or
+dependency changes invalidate the final 3,293-pass backend checkpoint.
+
+All seven #96 and nine #97 Acceptance criteria are supported by the public-interface
+tests and acceptance events above. Delivery checks the actual PR base/head/diff, remote
+check status and published review conclusion before merging. Checkbox updates preserve
+the original Issue wording; final merge and closure outcomes are recorded on the delivery
+PR and Issues, which remain the lifecycle authority. No new live/paid run, formal benchmark,
+version freeze or implementation of #98-#102 is authorized by this delivery.
