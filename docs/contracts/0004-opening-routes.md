@@ -1,6 +1,6 @@
 # Independent opening and route compliance
 
-Current implemented Tickets 06-07 contract, reconciled 2026-10-03. These are offline
+Current implemented Tickets 06-07 contract, reconciled 2026-10-09. These are offline
 preparation/parsing/scoring rules, not a live collection client or formal experiment.
 Shared [artifact/time](0001-evaluation-artifacts.md), [identity/snapshot](0002-intake-identity-usage.md)
 and [occupancy](0003-requirement-schedule.md#occupancy) contracts retain their ownership.
@@ -27,18 +27,36 @@ The evaluator applies its emitted frozen rules rather than reading moving planne
 
 ## Opening scope, evidence and verdicts
 
-An independently resolved primary place visit and independently interpretable interval are
+An independently associated primary place visit and independently interpretable interval are
 the units. Nearby and unresolved role populations retain their separate scope diagnostics.
-RequirementSpec has no entry/exterior distinction: prose cannot create an opening exemption.
+RequirementSpec has no entry/exterior distinction. Original activity prose can inform the
+explicit missing-hours access policy below; it never creates an automatic opening exemption.
 Planner-selected hours or V3 findings are not ground truth. Zero grace applies to full-visit
 containment; touching closing time is allowed and a lunch closure is not bridged.
+
+Under `versioned_api_identity_3`, a verified `place_association` supplies the API venue
+even when the original name/address has grounding FAIL. `canonical_place_id` retains
+claim-adoption semantics; opening checks expose `associated_place_id` separately and
+retain `identity_grounding_verdict`. A missing/untrusted association remains UNKNOWN.
+Details request/response IDs must match the associated venue. The original visit time
+is unchanged; a PASS does not repair the original claim or prove a requirement.
+Historical policies retain their original canonical-only eligibility.
+
+Route preparation/scoring uses the same verified association for physical endpoints
+and independent coordinates. The existing `canonical_endpoints` route field carries
+those physical API IDs under the new source-linked identity policy, while endpoint
+grounding verdicts remain explicit. Original order, time, reserved duration and mode
+remain unchanged: DRIVE requires driving evidence, TRANSIT public transport and WALK
+walking. Existing DRIVE `TRAFFIC_UNAWARE` semantics and 600-second reserve are unchanged.
+The smoke request tool's separate DRIVE adapter remains outside this correction.
 
 `--paired` includes available V3 draft
 and final_primary projections independently, with the same paired snapshot scope.
 No Repair delta or route verdict is calculated. Library entry:
 `score_opening(intake, identity_report, snapshot_directory, schedule_context=None,
-*, paired=False, expected_plan=None)` returns immutable `OpeningResult`.
-Schema: `rtpeval_opening_report_1`; rules: `rtpeval_opening_rules_1`.
+*, paired=False, expected_plan=None, opening_judgment=None)` returns immutable `OpeningResult`.
+Schema: `rtpeval_opening_report_1`. API-only replay retains `rtpeval_opening_rules_2`;
+validated access material selects `rtpeval_opening_rules_4`.
 
 Exit 0 means complete processing, including visit FAIL/UNKNOWN; exit 2 means material
 correction or identity replay. JSON is printed to stdout. Preparation file hashes,
@@ -79,14 +97,120 @@ missing-close periods do not imply continuous access. Split periods retain lunch
 overnight and previous-day contributions and weekly rollover are supported.
 
 Current applicability uses the selected attempt's place-local request date plus six
-calendar dates. Post-trip current hours cannot become historical evidence. Applicable
-current defects block regular substitution; eligible outside dates use weaker regular
-fallback. Known special dates lacking usable applicable current evidence remain UNKNOWN
-with the exceptional-hours explanation. Collection crossing local midnight retains
-uncertainty, while consistent literal dated spans may still prove opening. A truncated
-23:59 close does not invent closure or opening in the final minute. Each date segment
-records `selected_basis` and factual `basis`; unusable evidence has basis unavailable.
-A visit's factual basis is current, regular, mixed or unavailable.
+calendar dates. Post-trip current hours cannot become historical evidence. Usable
+applicable current facts take precedence over regular hours for their established open
+and closed intervals. Missing, null, malformed or incomplete current hours permit regular
+fallback only over the remaining unresolved time; known current closure is never erased.
+Dates outside the current window use regular hours directly. A valid regular schedule
+establishes ordinary PASS or FAIL; no separate provisional verdict is introduced.
+
+A special-date marker without an applicable schedule is diagnostic, not proof of closure
+and not a veto of regular hours. Marker presence and parsing defects remain visible as
+`special_date_marker` and `special_dates_invalid`. Collection crossing local midnight
+retains current-evidence uncertainty; consistent literal dated spans may still prove
+opening, and regular hours can resolve the remaining uncertainty. A truncated 23:59 close
+does not itself establish the final minute; applicable regular fallback can cover it.
+`openNow` describes the query instant and cannot establish closure at the planned visit.
+Undated `businessStatus` is not converted to a future dated closure by this scorer.
+
+Each date segment records preferred `selected_basis`, factual `basis` and the actual
+`hours_fields` contributing open/closed spans. `hours_field` is that single field, or null
+for mixed/unavailable evidence. `regular_fallback` is null when unneeded, otherwise it
+records unresolved scope, applied regular open/closed intervals and regular diagnostics;
+`regular_fallback_used` marks an actual contribution. Current parsing reasons remain
+visible even if regular evidence determines PASS or FAIL. Missing both usable schedules
+retains UNKNOWN in API-only scoring. A visit's factual basis is current, regular, mixed
+or unavailable; the opt-in access judgment below supplies a distinct verdict basis.
+
+<a id="missing-hours-access-judgment"></a>
+
+### Source-bound missing-hours access assessment
+
+[Issue #90](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/90) added the
+source-bound fallback; [Issue #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91)
+revises it to `llm_access_reasonableness_2` equally for V0-V3. Identity resolution and requirement
+target matching retain their existing version-specific policies. The narrow V1-V3
+model exception applies only to access assessment when neither API schedule is supplied.
+
+Eligible occurrences require verified independent identity/Details, a known original
+interval and a valid nonconflicting timezone. Both hours fields or their `periods` must
+be absent/null. Query-instant `openNow` without periods is not a schedule or a closure.
+Empty periods are explicit closure; supplied malformed or incomplete periods remain
+API diagnostics and are not replaced by model knowledge. API-decided visits never enter
+the model packet. No failed acquisition, invalid identity or invalid time is rescued.
+
+Preparation binds original title/place/notes/kind/time, version/projection, source record,
+independent venue facts, raw hours observations, normalized interval/timezone and retained
+Details attempt hashes. Notes are original claims/intent, not factual opening evidence.
+The model classifies public outdoor/exterior versus indoor/ticketed/ambiguous access,
+the entire window's reasonableness and applicable restrictions. It cannot reinterpret an
+indoor visit as exterior viewing to obtain PASS or assume every public area is always open.
+
+For confidently classified public landmarks/public areas, ordinary sightseeing may be
+inferred from the original title, name and notes without explicit exterior wording.
+Generic Harbour Bridge/Opera House visits may mean ordinary viewing; the mere possibility
+of a paid climb, tour or interior visit is not a reason to force UNKNOWN. Explicit restricted
+activities take precedence. Interpret negation and conditional mentions in context:
+"no interior access" excludes entry; "verify if planning interior access" alone does not
+commit to entry. Museum/indoor-attraction visits never use this default, even in famous
+buildings. Museum admission remains unverified without applicable access evidence;
+explicitly exterior-only museum viewing can be assessed without approving admission.
+
+Structured decisions record `intent_basis` (`original_activity`, `public_landmark_default`,
+`unresolved`) and `venue_category` (`public_landmark`, `public_area`, `museum`,
+`indoor_attraction`, `other`, `unknown`). Category inference uses independent venue identity,
+name/address, supplied provider `types` when present and original intent. It is a model
+assessment, not an invented Google fact. Missing types alone does not prohibit inference;
+`tourist_attraction` alone does not establish public access. Default PASS requires a public
+category; museum/indoor/other/unknown default PASS and unresolved-intent PASS are rejected.
+Quotes and rationale retain the unchanged original activity and identify the inference.
+
+Ordinary PASS requires public outdoor/exterior access, a reasonable full interval and
+`none_known` restrictions, with specific rationale and an exact original activity quote.
+Otherwise the saved decision is UNKNOWN. A model does not manufacture a factual FAIL.
+Model knowledge is fallible; rationale/schema acceptance cannot prove the semantic claim.
+PASS uses `basis=llm_access_reasonableness` and participates in ordinary verdict scoring.
+It does not supply hours, eliminate original grounding FAILs or fulfill requirements.
+
+API `evidence_status`, segments, known-open/outside/unknown seconds and complete-evidence
+coverage remain unchanged. `llm_assessed_count` and `llm_decidable_count` distinguish model
+coverage; `verdict_decidable_coverage` can increase while factual coverage stays missing.
+The new quality profile `rtpeval_access_quality_4` states this broader opening-PASS basis;
+arithmetic and denominators are unchanged. Historical API-only profiles remain available.
+
+Import reconstructs the complete packet from current sources and rejects foreign, stale,
+duplicate, partial or contradictory decisions, unsupported original quotes, request/model
+settings mismatches, invalid timestamps and missing/inconsistent actual token counts.
+Raw request/response, prompt/policy/model identifiers and material/source hashes remain
+auditable. Every packet carries evaluator implementation hashes, rebuilt on direct import
+as well as incremental execution/replay. Direct import is supplied model material;
+execution additionally binds
+that material to captured HTTP bytes and the closed receipt inventory. Replay sends nothing.
+New preparation serializes JSON object keys in `request.input` in sorted order, so equal
+source mappings reconstructed from an original manifest or frozen intake produce the
+same bound request. Array order and source values remain significant. Import still
+requires the unchanged recorded request, complete packet and implementation binding;
+it does not normalize an already sent request or rebind a historical response. Material
+prepared before the serialization correction retains its original implementation for
+replay; new execution uses fresh preparation and a genuinely acquired response.
+Current packet/material schemas are `rtpeval_opening_judgment_packet_2` and
+`rtpeval_opening_judgment_material_2`. Prior policy-1 material is rejected under the current
+policy; preserve old reports and replay them with their retained implementation. Changing
+the policy requires a newly bound packet and genuinely acquired response, not edited old
+model decisions. No new Google acquisition is required merely to add absent provider types.
+
+`evaluation_run_cli prepare-opening / execute-opening / replay-opening` consumes a completed
+four-final run, verifies its immutable sources/receipt and independently replays identity.
+It reuses retained Google evidence and never reruns Google acquisition or V0 identity calls.
+A separately approved digest allows at most one Responses call at medium effort, zero
+retries and an explicit token/time/USD reference allowance. Failed/partial attempts retain
+raw receipts and usage. A separate full report includes the incremental opening cost;
+original acquisition/identity costs remain in the parent report. No live approval is implied
+by Issue completion or CLI preparation. Exact replay requires the recorded code policy.
+
+Rules version 2 replaces the former current-defect/special-marker veto. Exact reproduction
+of rules-1 reports uses their original code revision; save new policy recalculations
+separately from original source artifacts and frozen execution receipts.
 
 Half-open containment has zero grace: ending at close can PASS; any positive known
 closure overlap yields FAIL even with other unknown time. Partial valid spans may prove
@@ -214,9 +338,16 @@ Unsupported valid-wire context stays UNKNOWN without shifting dates or modes.
 
 ## Offline V0 independent request package
 
+This development smoke utility lives in
+[`backend.evaluation.tools.route_requests`](../../backend/evaluation/tools/route_requests.py).
+It is not an actual product planning stage or a prerequisite for final evaluator scoring.
+The core `routes.py` preparation/scorer remains separate and is consumed by quality reports.
+The CLI entry is `python -m backend.evaluation.tools.route_requests_cli`; the former
+root-level tool paths are historical identifiers, not current entry points.
+
 `prepare_v0_route_requests(bundle_path, identity_report, *, prepared_at,
 schedule_context=None, occupancy_reviews=None, route_reviews=None,
-details_snapshot_directory=None, legacy=False)` returns immutable `RouteRequestPackage`, schema
+details_snapshot_directory=None, legacy=False, region_code="KR")` returns immutable `RouteRequestPackage`, schema
 `rtpeval_v0_route_requests_2`. It replays the original V0/#66 material and the exact
 current `versioned_api_identity_2` report before using the existing occupancy/window preparation. It keeps
 every selected V0 leg, source endpoints/dates/mode/estimate and continuous window,
@@ -240,8 +371,8 @@ occurrences; `eligible_endpoint_venues` counts their unique IDs. Neither implies
 are identity-eligible, coordinate-ready or provider-supported. Unknown identity cannot be
 replaced by historical adoptions to enlarge the request inventory.
 
-This preparation currently uses the explicitly selected KR provider profile checked
-2026-10-05; it does not infer geographic support from names. The
+The default preparation retains the KR provider profile checked 2026-10-05; it does
+not infer geographic support from names. The
 [official coverage table](https://developers.google.com/maps/coverage) marks KR walking
 and driving unavailable or low quality and omits transit coverage. Those facts retain
 blocked WALK and conditional TRANSIT inventories, rather than a provider NO_ROUTE
@@ -249,6 +380,27 @@ or factual FAIL. The [matrix reference](https://developers.google.com/maps/docum
 supports explicit TRANSIT departures including past timestamps, but supplies no guaranteed
 schedule horizon. Do not copy Compute Routes' 7/100-day horizon into this method.
 WALK stays time independent and cannot certify historical/future conditions.
+
+`region_code="AU"` (CLI `--region AU`) explicitly selects the Australian profile,
+checked 2026-10-07. The original input destination must explicitly declare Australia
+(for example, `Sydney, Australia`); unresolved or foreign declarations reject the
+whole package. This is a source-bound declaration check, not a geographic lookup or
+independent proof that coordinates lie in Australia. The official coverage table marks
+Australian WALK available with good coverage/quality. WALK can be `ready_for_approval`
+only after current identity replay, independent coordinates, a resolved continuous
+window and all other leg checks pass. Missing coordinates/windows remain conditional;
+failed/unresolved identity stays blocked. Readiness leaves factual feasibility UNKNOWN.
+AU TRANSIT retains the unverified-coverage and original-departure conditions. DRIVE
+remains unsupported by this WALK/TRANSIT acquisition path despite national driving
+coverage; there is no mode fallback. Unsupported region values are rejected.
+
+AU selection is frozen in `replay_inputs` and the inventory digest; profile changes
+fail exact preflight replay. Omitted region and explicit KR produce the unchanged
+historical structure without an added replay field, so saved KR packages remain exact.
+Budget and send counters count unique directed matrix requests, retaining every leg
+occurrence. Duplicate links cannot promote a blocked/conditional query to ready. Neither
+AU selection nor preflight creates live authority or actual route evidence. See the
+[Sydney offline acceptance](../records/evaluation/routes.md#sydney-offline-route-preparation-2026-10-07).
 
 Only adopted endpoint canonical IDs enter the venue inventory. Exact IDs deduplicate
 Details while preserving every reference link. Replayed saved independent coordinates
@@ -304,6 +456,10 @@ records the zero-ready real package and synthetic revised-policy demonstration. 
 [historical preparation acceptance](../records/evaluation/routes.md#v0-route-request-preparation-2026-10-05)
 retains the older four-leg inventory and limitations; the [package guide](../../backend/evaluation/README.md#v0-route-requests)
 owns CLI invocation and exit codes.
+The subsequent [accepted-identity offline refresh](../records/evaluation/routes.md#accepted-v0-identity-route-refresh-2026-10-07)
+records four identity-eligible, coordinate-ready legs from #85 while preserving the
+same provider limitations and UNKNOWN feasibility. It adds no acquisition authority
+or new provider/price verification to this contract.
 
 <a id="rtpeval-route-contract--route-evaluator-contract--draft"></a>
 <a id="rtpeval-route-contract--purpose-and-inputs"></a>

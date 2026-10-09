@@ -1147,3 +1147,840 @@ then the current-session `gpt-6.1-sol` / `medium` execution child. Only genuinel
 new current identity evidence can remove actual endpoint blockers. Any future Places or
 Routes acquisition also needs a demonstrably supported exact inventory and separate budget
 approval. Original artifacts, planner V0-V3 behavior and score arithmetic are unchanged.
+
+<a id="accepted-v0-identity-route-refresh-2026-10-07"></a>
+
+## Offline route refresh from accepted #85 identity (#86, 2026-10-07)
+
+Status: prepared and verified offline. The user approved Issue creation and route-package
+refresh with zero paid calls on 2026-10-07 in Australia/Sydney. Fixed source revision:
+`d26be76b111ed275e0cde70658a0bbecebf018a4`. No production implementation, test fixture,
+generation, V1-V3 identity behavior, score formula or dependency changes are required.
+The only pre-existing tracked change is the unrelated `.gitignore` edit; it remains
+excluded and byte-identical. The Issue owns lifecycle and the approved preparation scope;
+no live, Git publication, research comparison or version-freeze authorization is added.
+
+The previous #78 real package used a current pending report and had zero eligible
+endpoints. This fresh package uses #85's accepted `versioned_api_identity_2` report and
+its `v0_identity_correspondence_3` saved response: eight V0 primary visits and one
+V0-owned requirement target PASS. The response, model envelope and report replay exactly
+through the public resolver against the original bundle and API evidence. The historical
+#70/#78 packages and #82/#85 consumed executions are preserved, not overwritten or
+relabeled. The V0 target's original missing address stays null; target identity is not
+substituted for endpoint occurrences or turned into another journey leg.
+
+The parent blocks DNS, connection APIs and live SDK construction while preparing.
+Preparation timestamp is `2026-10-06T13:05:17.093816+00:00`, or 00:05:17 AEDT on
+2026-10-07. Both `prepare_v0_route_requests` and the actual module CLI use this exact
+time and the original bundle, accepted #85 report, schedule context and route reviews.
+The absent optional occupancy review is omitted from the CLI rather than written as
+a JSON-null review envelope. No new human review is fabricated.
+
+All four original directed legs retain source reference IDs, modes, dates/times,
+estimates, occupancy/blocker fields, gap and selected continuous interval. Eight
+endpoint occurrences have eight distinct canonical venues, and all four legs are
+identity-eligible with no identity blockers. Eight source-linked independent snapshot
+coordinates pass replay, exact-ID, strict numeric and timestamp checks. All four legs
+are coordinate-ready, with zero missing-coordinate venues and zero proposed Details
+requests. No model/planner coordinate is accepted and no additional Details is fetched.
+
+| Original day | Mode | Original gap (minutes) | Identity / coordinates | Request state | Feasibility |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-07 | WALK | 30 | Eligible / ready | blocked | UNKNOWN |
+| 2026-10-08 | WALK | 35 | Eligible / ready | blocked | UNKNOWN |
+| 2026-10-09 | TRANSIT | 45 | Eligible / ready | conditional | UNKNOWN |
+| 2026-10-10 | WALK | 30 | Eligible / ready | blocked | UNKNOWN |
+
+All four directed Routes requests have materialized coordinate-backed bodies and exact
+keys, without execution. The existing KR preparation profile remains explicitly dated
+2026-10-05: WALK carries `regional_walk_unavailable_or_low_quality`, TRANSIT carries
+`regional_transit_coverage_unverified`. These are frozen contract assumptions, not a
+fresh coverage check on the event date or an API NO_ROUTE observation. Provider-supported
+legs and `ready_for_approval` Routes are both zero. No mode substitution, DRIVE fallback,
+date shift, planner rerun, removal of blocked legs or favorable route score is introduced.
+
+The package's existing price profile is also dated 2026-10-05, global first paid tier
+USD 5/1,000 Details requests or matrix elements, without credits/discounts. **Proposed
+ready-send budget is USD 0** (zero Details and zero ready Routes). The **four unready
+requests have hypothetical inventory cost USD 0.020000**; this field includes all three
+blocked WALK requests and the one conditional TRANSIT, not just the TRANSIT request.
+The **historical eight-Details/four-Routes planning bound is USD 0.060000**, not this
+package's proposed budget, an approved allowance or actual billing. No live pricing or
+coverage fetch occurs; account tier, free usage, taxes and invoice remain unavailable.
+
+The zero-send ledger remains empty. Prepared limits allow zero Details, zero Routes,
+zero search/model/retry sends and USD 0, with the unchanged 20-second per-call timeout
+and 300-second deadline. Preflight recomputes the exact frozen package for each of its
+four request keys, stops each as not ready with the zero-send limit exhausted, and
+always returns `live_authorized=false`. No live acquisition executor or execution child
+is created. Actual provider/model/planner sends and incremental charges are **zero**.
+
+The actual module CLI runs in a separate process with DNS and connections prohibited.
+Its UTF-8 output exactly matches the library package and its stderr is empty. Exit
+**3** means a complete inventory containing blocked/conditional applicable legs, not
+invalid material or completed route acquisition. No production correction is needed.
+The unchanged-code full backend gate remains **2998 passed / 10 skipped / zero failures**
+from the approved clock correction; it is reused and not rerun for this preparation.
+The focused identity adoption, current V0 contract, historical/current route preparation
+and smoke-tool gate passed **182 tests / zero failures in 39.58s** under the repository's
+external-network guard and mock transports. Two sandbox launches returned no pytest
+output before interruption; no test result is claimed for them. Running the same offline
+gate with an approved sandbox override produced the successful result. These launcher
+attempts did not send provider requests or alter the package; no code correction was
+needed. Local check evidence is `focused-tests-01.txt` (empty interrupted launch) and
+`focused-tests-03.txt` (command, successful terminal result and explicit capture limits)
+under the private package directory.
+
+The fresh private evidence identifier is `artifacts/v0-route-requests-86-20261007`.
+It contains the request package, exact present context/review envelopes, source binding,
+protected/output hashes, empty ledger, four preflight results, actual CLI output/stderr,
+offline acceptance, focused check log and a non-executable handoff. The handoff explicitly
+forbids sending and states remaining support/budget/approval prerequisites; private raw
+payloads, credentials and endpoints stay untracked. **120 protected original/source/
+preparation/execution files** and **69 implementation/dependency hashes** verify unchanged,
+including all #85 raw/model/report/receipt outputs and consumed-directory evidence.
+Ten new prepared output files are frozen separately, without overwriting old receipts.
+
+Inventory SHA-256:
+`3d138539bb3fafdb218f53313028450913bc86839f838b95c0669758ef1617b1`.
+Request-package file SHA-256:
+`ff16aa3bd539a08938df691e43d9b5645914282e3d6b78c3a34061884c10a3f5`.
+Accepted #85 identity-report file SHA-256:
+`068631d1a1a484f9be25074401f560d08861f0435007060b62280a6f4f254da9`.
+This is a new offline identity/coordinate-readiness observation, not independent journey
+validation. All four original route UNKNOWN results remain. Any future acquisition must
+first establish exact provider/method support and original departure applicability,
+regenerate the supported inventory and obtain separate budget/execution approval under
+the smoke policy. No all-PASS route requirement or paid retry is implied by preparation.
+
+
+Independent Standards and Spec reviews of fixed base
+`d26be76b111ed275e0cde70658a0bbecebf018a4` through preparation-document commit
+`a4dfc2e5cec282d218ab832f7ca24fc3647fa688` each report **zero findings**. Both independently
+verify the 120 protected files, 69 implementation/dependency hashes and 10 prepared
+outputs; Spec also checks preserved leg fields, coordinate provenance and input binding.
+No correction is required. Final tracked-document checks validate **183 local targets/
+anchors**, English additions and excluded private endpoint. The review acceptance is
+recorded separately after the reviewed commit; it changes no implementation or frozen
+preparation. #86's six offline acceptance criteria are satisfied, with its reconciled
+lifecycle owned by GitHub. The zero-ready inventory and route UNKNOWN outcomes remain
+explicit limitations, not unfinished work inside this preparation-only scope.
+
+<a id="kr-route-support-budget-2026-10-07"></a>
+
+## Free Korean route-source verification and budget preparation (2026-10-07)
+
+Status: public-documentation assessment complete; budget proposed, no provider
+integration or execution. The user approved free support verification, independent
+source selection and budget preparation. Fixed source revision is
+`49a6fef135945e3612722a10b4394e6afe49d846`; the unrelated pre-existing `.gitignore` edit
+is excluded and unchanged. The client date is 2026-10-07 in Australia/Sydney. Only
+public official documentation was browsed. No account/credential probe, provider API,
+model, planner, paid request, provider contact or tracker/Git publication occurred.
+This engineering assessment is not a formal benchmark or a comparison of V0-V3.
+
+Inputs remain #86's four original directed Seoul legs and accepted #85 identity report:
+WALK at noon KST on October 7, 8 and 10, with gaps of 30, 35 and 30 minutes; TRANSIT at
+noon KST on October 9, with a 45-minute gap. Eight independent coordinates are already
+bound to exact endpoint identities. No Details lookup is needed. The assessment does
+not repair original names, IDs, dates, modes, estimates, occupancy, windows or gaps.
+Public documentation supports technical candidates; it does not establish successful
+responses for these exact pairs, account entitlement or independently measured travel.
+
+### Sources and applicability
+
+Google's current [coverage table](https://developers.google.com/maps/coverage) still
+marks KR Walking Directions with a dash: unavailable or low quality/availability.
+It explicitly excludes public transit coverage and consumer Google Maps availability.
+Thus three Google WALK requests remain blocked, without a NO_ROUTE observation.
+The [Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
+accepts TRANSIT and RFC3339 departure time, including past departures, but the reviewed
+documentation does not confirm this KR transit pair or its timetable availability.
+The separate [Compute Routes transit guide](https://developers.google.com/maps/documentation/routes/transit-route)
+documents a seven-day past/100-day future window; that window is not transferred to
+Matrix. No method switch or API support probe occurred.
+
+The current [Kakao Map REST reference](https://developers.kakao.com/docs/en/kakaomap/rest-api)
+documents `GET /v2/routing/walk` and `/v2/routing/publictraffic`, with coordinate endpoints
+and WGS84. WALK success returns one route with distance in meters and time in seconds.
+The proposed WALK option is fixed `BROAD_FIRST`, with WGS84 input/output, before any
+response; alternative route modes are not tried after failure. Neither endpoint exposes
+a departure date/time parameter. WALK is therefore a candidate for the existing
+time-independent route-estimate contract, with the original itinerary time retained in
+the evidence envelope, not a claim of future conditions. General TRANSIT output cannot
+prove service at the original October 9 noon departure. These public V2 endpoints must
+not be confused with Kakao Mobility's separately contracted affiliate walking API.
+
+[TMAP pedestrian routing](https://tmap-skopenapi.readme.io/reference/%EB%B3%B4%ED%96%89%EC%9E%90-%EA%B2%BD%EB%A1%9C%EC%95%88%EB%82%B4)
+is a WALK alternative: it requires an app key, endpoint coordinates and encoded endpoint
+names, and supports WGS84GEO. Its [response specification](https://tmap-skopenapi.readme.io/reference/%EA%B2%BD%EB%A1%9C%EC%95%88%EB%82%B4-%EC%83%98%ED%94%8C%EC%98%88%EC%A0%9C)
+provides meters/seconds and route geometry. Its request has no departure date/time;
+the automobile time-machine API is not a WALK substitute. Reviewed
+[Naver Directions 5](https://api.ncloud-docs.com/docs/en/ai-naver-mapsdirections-driving)
+is driving routing, so it cannot preserve these WALK/TRANSIT modes. This is a conclusion
+about the reviewed public APIs, not all possible private products.
+
+ODsay's [reference](https://lab.odsay.com/guide/releaseReference) supports Seoul transit,
+general WALK and `maasRP` mode selection. The ordinary transit endpoint has no date/time
+input. `maasRP` accepts `SearchTime=yyyyMMddHHmm`, but the
+[operator clarification dated 2026-07-21](https://lab.odsay.com/community/boardView?seq=718)
+explicitly says this only constructs displayed departure/arrival fields by applying
+segment durations; it does not perform timetable-based routing. Consequently the
+presence of that parameter is not evidence of applicability to the original TRANSIT
+departure. Its total time is minutes, unlike Kakao/TMAP seconds; straight-line
+`pointDistance` is not a journey measurement. Subway timetable-only searches also do
+not establish a complete POI-to-POI leg with access/egress and the original date.
+
+| Source / method | Current engineering use | Remaining limitation |
+| --- | --- | --- |
+| Kakao Map V2 WALK | Primary technical candidate for the three WALK estimates | Exact pairs untested; account, retention and adapter unresolved |
+| TMAP pedestrian | Alternative WALK source, not automatic fallback | Exact pairs untested; account, retention and adapter unresolved |
+| Google Matrix WALK | Keep existing blocked profile | KR coverage marked unavailable or low quality |
+| Google Matrix TRANSIT | Conditional time-aware candidate only | Exact KR coverage and schedule applicability unconfirmed |
+| Kakao TRANSIT / ODsay general or MaaS TRANSIT | General route references only | Do not bind the original explicit departure |
+| Naver reviewed Directions API | No compatible inventory | DRIVE mode does not preserve submitted mode |
+
+Source independence also requires future acquisition directly from the selected
+provider for the preserved directed coordinates, with acquisition time, exact options,
+raw byte hash and source-linked normalization. The planner's own estimates, a map page,
+model inference or straight-line distance cannot substitute. Raw response formats must
+not be labeled as Google Matrix output. An alternative adapter is not implemented by
+this assessment. Error/status semantics require source-specific offline regressions;
+authentication, search-limit, snapping and malformed-response errors must not all be
+mapped to factual NO_ROUTE FAIL. The current route/scoring contract is unchanged.
+
+### Access, evidence retention and cost
+
+[Kakao usage policy](https://developers.kakao.com/docs/en/kakaomap/common) grants the
+free allowance only to the first activated app per developer account; other apps or
+excess use need the applicable paid configuration. The policy changed on July 21, 2026.
+The [quota/price page](https://developers.kakao.com/docs/en/getting-started/quota) lists
+1,000 daily calls each for WALK/TRANSIT and 10 KRW per additional call. No account was
+inspected, so eligibility and unused allowance remain unknown; free usage is not assumed.
+The reviewed price page does not establish tax treatment for this budget.
+
+[Kakao Operating Policy](https://developers.kakao.com/terms/en/site-policies) Article
+5(20) restricts caching purposes/currentness, and Article 5(30) restricts copying/use of
+obtained information without the applicable prior approval. Public documentation does
+not establish that this evaluator may keep immutable raw responses for long-lived
+replay. Applicability and an admissible retention strategy remain unresolved, rather
+than a finding that all evaluator use is prohibited. TMAP's
+[public terms entry](https://openapi.sk.com/stplat/usage/indexView) did not expose
+substantive retention clauses to the browsing tool; permission is likewise unconfirmed.
+No inquiry was sent or permanent archival right assumed.
+
+[ODsay prices and use-purpose conditions](https://lab.odsay.com/contact/contact) list
+Basic 30 calls/day free for specified users and Flex 25 KRW/call, VAT excluded. The
+same page requires prior consultation for analysis/research or other uses outside
+building its route-search service. That advertised unit price is not a quote or
+license for this evaluator purpose; its free allowance cannot be assumed applicable.
+No provider consultation, payment-card registration or account setup occurred.
+
+| Mutually exclusive planning scenario | Units | Published retail reference | Selected proposal |
+| --- | --- | --- | --- |
+| Kakao V2 WALK | Three calls at 10 KRW | **30 KRW**, tax treatment unconfirmed | Yes, pending prerequisites |
+| TMAP pedestrian Premium | Three calls at 11 KRW | 33 KRW, tax treatment unconfirmed | Alternative only |
+| ODsay Flex general TRANSIT | One call at 25 KRW | 25 KRW plus VAT; purpose quote unresolved | No; not date-applicable evidence |
+| Google Matrix conditional TRANSIT | One Essentials element | USD 0.005, account/taxes unknown | No; support unresolved |
+
+TMAP's [published pricing](https://openapi.sk.com/products/calc?menuSeq=5&svcSeq=4) places
+pedestrian routing in the route-guidance group with Free 1,000/day and Premium 11 KRW
+per call. Group sharing, remaining quota and applicable tax treatment are unverified.
+Google's [current pricing](https://developers.google.com/maps/billing-and-pricing/pricing)
+lists Matrix Essentials at USD 5/1,000 elements with 10,000 monthly free units; the
+[SKU conditions](https://developers.google.com/maps/billing-and-pricing/sku-details)
+distinguish higher-feature pricing. The unchanged simple TRANSIT matrix options have
+no higher-feature trigger identified. Neither published allowance is assumed available.
+These figures are separate currency scenarios, not summed or converted, provider quotes,
+guaranteed invoice ceilings or approved execution budgets. The original #86 USD 0.02
+unready inventory and USD 0.06 historical bound remain historical figures, not replaced
+with a false all-supported four-route budget.
+
+### Prepared draft and validation boundary
+
+The new private identifier is `artifacts/kr-route-support-budget-20261007`. Its
+`kr_route_support_budget_draft_1` contains three WALK draft parameter sets linked to
+the original source coordinates, an exact copy of all four original legs, source binding,
+protected/output hashes, empty ledger and non-executable handoff. It is not an
+`rtpeval_v0_route_requests_2` acquisition manifest or authenticated HTTP request.
+The proposed future inventory is at most **three Kakao WALK sends**, zero TRANSIT,
+alternative-provider, Details, geocoding, model, planner, health/probe or retry sends.
+Suggested limits retain 20 seconds per call and a 300-second total deadline, with
+one attempt reserved before each send and no automatic source switching. The 30 KRW
+reference needs confirmed account/tax/use conditions before an enforceable ceiling.
+No new source is `ready_for_execution`; current authorized sends and incremental
+spend are **zero**, including calls that might qualify for a free quota.
+
+Before execution, separately approved work must resolve admissible raw retention/use
+and account costs, implement/test the source-specific offline adapter, then freeze
+exact sources, parameters, units, time basis, implementation and budget for approval.
+Any later live task follows the current-session smoke execution policy. The TRANSIT
+leg needs a confirmed independent source preserving its original explicit departure;
+general route duration is not promoted into that evidence. No formal comparison,
+new Issue, provider contact, push, PR, merge or branch switch is included here.
+
+The original #86 request package and all 16 files in that completed preparation remain
+byte-identical. Together with the prior 120 protected files, **136 protected files** and
+**69 implementation/dependency hashes** pass preservation checks; the unrelated
+`.gitignore` hash also matches. Six new preparation outputs are frozen separately.
+The budget arithmetic and original-leg/coordinate bindings pass offline checks.
+All **168 tracked local Markdown targets/anchors** in the three changed documents,
+English additions and whitespace checks pass before commit;
+private endpoints/raw payloads remain excluded. This is a documentation-only assessment:
+no pytest gate is rerun and no new runtime validation is claimed. Prior focused
+182-pass and full 2998-pass/10-skipped gates describe the unchanged implementation.
+All four original route feasibility results remain **UNKNOWN**; generation, identity
+behavior for independently runnable V0-V3 and score formulas are unchanged.
+
+<a id="sydney-offline-route-preparation-2026-10-07"></a>
+
+## Sydney AU preparation and preserved KR replay (2026-10-07)
+
+Status: implemented and prepared offline; live execution is not authorized. The user
+approved a new Sydney V0 scenario, explicit AU preparation/CLI selection, evidence and
+budget preparation, regressions, local commits and independent Standards/Spec review,
+with unchanged generation/scoring and zero paid calls. They first requested squashing
+the five latest consecutive docs commits. Those were `eac3b621`, `d26be76`, `a4dfc2e`,
+`49a6fef` and `bc4de3e`, all unpublished locally. They are replaced by `c49e9819f69ce2465d43cdc5bd6d2176a35f5028`
+(`docs: consolidate V0 smoke acceptance and route readiness`), whose parent is the
+unchanged `f4499f2` test commit. Its tree equals the former `bc4de3e` tree exactly.
+Original objects remain under local recovery ref
+`refs/codex-backups/docs-before-squash-20261007`; historical evidence hashes are not
+rewritten. The source/review fixed point for this implementation is `c49e981`.
+The unrelated `.gitignore` edit remains excluded and byte-identical. No remote history,
+branch switch, push, PR, merge, tracker operation or provider contact is included.
+
+### Explicit country profile and preserved behavior
+
+[Google's current coverage table](https://developers.google.com/maps/coverage) marks AU
+WALK/DRIVE available with good quality/availability, while excluding TRANSIT coverage.
+The [Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
+supports explicit TRANSIT departure, but national or pair-level transit support is not
+assumed from the consumer map or that coverage row. No API probe occurred.
+
+The public `prepare_v0_route_requests(..., region_code="AU")` and CLI `--region AU`
+select the new dated Australian profile. The original input must explicitly declare
+Australia, such as `Sydney, Australia`; other/unknown declarations and unsupported
+region values reject all inventory. This binds a declared country, not geographic
+inference, geocoding or proof of coordinate-country membership. Default/explicit KR
+retains its dated 2026-10-05 metadata and exact serialization, including omission of
+a new region replay field. AU selection is replay-bound and participates in the
+inventory digest; changing it stops preflight.
+
+AU WALK needs replayed current identity, independent coordinates, a continuous free
+span and no original leg blocker before becoming ready for approval. Missing points
+can propose exact Details and keep the route conditional; failed/unknown identity
+remains blocked without model/planner coordinate repair. A same-canonical N/A leg
+gets no route allowance. TRANSIT stays conditional with original explicit departure
+and additional historical-availability checks when applicable. DRIVE remains unsupported
+by this existing WALK/TRANSIT acquisition path, without a new route implementation.
+There is no regional, mode, time or model fallback. All factual route components remain
+UNKNOWN without acquired independent route observations, and original FAIL/UNKNOWN
+identity outcomes continue downstream unchanged.
+
+Matrix budgets/counters count deduplicated sends, not repeated leg occurrences. Three
+synthetic legs containing two unique WALK queries therefore reserve two sends and
+USD 0.010000, retaining all three occurrences and their source links. A duplicate link
+cannot promote a blocked/conditional query into a ready query. Request options, masks,
+WALK time-independence, TRANSIT time binding, scoring formulas, V0-only LLM identity
+and deterministic V1-V3 identity remain unchanged. No generation/runtime or shared
+score implementation was modified.
+
+### New scene and output-dependent budget
+
+The tracked [Sydney request](../../../tools/validation/packets/sydney-v0-route-smoke/request.json)
+uses October 14-17, 2026, two travelers, AUD 1600, exactly two primary sightseeing
+visits per day and a required Sydney Opera House visit, with architecture, museums,
+harbour views, food and walking/public transport preferences. Its schema and trip-date
+window pass offline validation against the trusted planning reference October 7 in
+Australia/Sydney. Later execution must validate the actual trusted day; frozen dates
+must not be silently shifted after expiry. The request is scenario input, not a
+guarantee of what the unchanged generator will produce.
+
+A historical five-day Sydney V0 `itinerary_2` result exists from September 25, but no
+current reusable identity bundle/snapshot/report accompanies it. It is protected and
+not truncated into the current eight-Details/four-leg ceiling, regenerated, repaired or
+presented as a new result. There is currently no new Sydney V0 output, independently
+reviewed RequirementSpec, identity API snapshot, current V0 correspondence response,
+canonical venue list or actual route package. Synthetic test output cannot fill those
+gaps. Original Seoul packages and all four original UNKNOWN route results remain intact.
+
+The fresh private identifier `artifacts/sydney-offline-20261007` contains source binding,
+protected/output hashes, a staged price draft, empty ledger, exact default-KR replay,
+foreign-AU rejection and non-executable handoff. It is not a live acquisition manifest.
+The source input and request inventory are separate: the latter must be frozen from
+actual future raw output and eligible independent evidence. Exceeding the existing
+eight endpoint venues/four original legs stops preparation; it never selects a favorable
+subset or increases limits automatically.
+
+| Future stage / hypothetical inventory | Public-price reference | Present readiness |
+| --- | --- | --- |
+| V0 two-node generation | Unknown; no exact wire/token/output ceilings frozen | No generation allowance |
+| Nine initial identity Text Searches (8 visits + 1 named subject) | USD 0.288 | Queries/output-dependent; not acquired |
+| V0-only identity correspondence, one send | USD 0.0042 reference allowance | Exact packet absent |
+| Up to eight missing-coordinate Details | USD 0.040 | May be zero with valid future search coordinates |
+| Up to four unique matrix elements | USD 0.020 | Hypothetical; TRANSIT not counted as ready |
+| Non-generation scenario subtotal | **USD 0.3522** | Not executable or an invoice ceiling |
+
+The [Google price list](https://developers.google.com/maps/billing-and-pricing/pricing)
+gives global first paid-tier Text Search Pro at USD 32/1,000 and Details/Matrix
+Essentials at USD 5/1,000. The proposed identity
+[Text Search mask](https://developers.google.com/maps/documentation/places/web-service/text-search)
+contains ID, display name, formatted address/components, business status, coordinates
+and next-page token, without opening/review fields that elevate the SKU. No remaining
+free allowance, tax, discount or invoice is assumed. No pagination or retry sends are
+reserved; incomplete evidence is retained as unresolved, not repaired by another send.
+Actual distinct reference/query counts may differ, so this is a bounded planning
+scenario for later exact preparation, not a claim that nine queries are already ready.
+
+[OpenAI's current GPT-6 Luna page](https://developers.openai.com/api/docs/models/gpt-6-luna)
+lists per-million token references USD 0.10 input, 0.01 cached input, 0.125 cache write
+and 0.50 output. Keeping the existing identity proposal at 18,000 input/3,000 output
+with low reasoning gives USD 0.003750 worst retail reference when all input is cache
+write, or USD 0.004125 under the regional +10% scenario, within the unchanged USD
+0.0042 reference allowance. Reasoning is included in output, not added twice. That
+identity-only limit does not cap generation. The current V0 two-node default generation
+calls have no explicit per-call output ceiling or frozen payload in this preparation;
+their actual model configuration/usage and Foundry billing remain unverified. A bounded
+generation handoff must precede any paid approval, without changing generation flow.
+No total execution ceiling is claimed by summing an unknown generation cost with the
+non-generation subtotal. Existing #85's consumed allowance is not reused.
+
+All current provider/model/probe/retry send limits and incremental spend are **zero**;
+no SDK client, live executor or execution child is constructed by preparation. Future
+approved stages require exact inputs, usable evidence, implementation/request hashes,
+masks/SKUs, supported departure/mode and separate budgets under the smoke policy.
+Changing to Sydney does not waive uncertainty, certify every route or authorize another
+request. This development preparation introduces no formal benchmark or version freeze.
+
+### Validation sequence
+
+Public-interface TDD first failed for the missing `region_code` keyword, then passed
+after explicit AU preparation was implemented (31 tests including current KR checks).
+The CLI slice failed for missing `--region AU`, then its two public-interface checks
+passed. The duplicate-query slice failed because three leg occurrences reserved three
+sends rather than two; deduplicated budgeting made all three slices pass. Negative
+regressions cover invalid/foreign region, unchanged default KR, missing current model
+evidence/coordinates, TRANSIT original time, unsupported DRIVE, N/A and tampered profile.
+The focused route/identity-adoption gate passes **121 tests / zero failures** in 28.46s.
+A Ruff ambiguous test variable was corrected before final global lint and four-file
+format checks passed. No configured mypy/pyright gate is present.
+
+The first local preparation launch lacked the repository import path and stopped before
+writing outputs. Correcting its local launcher path allowed network-prohibited preparation
+to pass. The saved #86 package replays exactly under default KR, and attempting AU on
+the original Seoul input rejects it without partial inventory. **146 protected original
+and preparation files** remain byte-identical; of the prior 69 implementation/dependency
+hashes, **67 are unchanged** and only the two authorized route-preparation/CLI files
+changed. Seven new preparation outputs are frozen separately; `.gitignore` is unchanged.
+The fresh full backend offline gate passes **3017 tests, 10 skipped, zero failures**
+in 341.21s. The repository external-network guard remains active; provider/model tests
+use synthetic or mocked evidence. The log is preserved separately from the seven frozen
+preparation outputs. The implementation, direct regressions and tracked Sydney source
+request were committed together as `6fc9a2a091f19e757c8f3ed0dcbd6345f18f3635`
+(`feat(evaluation): prepare Sydney routes with explicit AU profile`) before review.
+
+Independent read-only Standards and Spec agents reviewed all five committed files
+from fixed point `c49e9819f69ce2465d43cdc5bd6d2176a35f5028` through that implementation
+commit. Standards reports **zero documented-standard violations and zero actionable
+code smells**; Spec reports **zero missing/incorrect requirements or scope expansions**.
+Both checked explicit AU selection, conservative readiness and unique-request budgets,
+profile replay and default-KR preservation against the approved offline scope. Neither
+review ran tests or contacted providers; the reported test gate is the preserved parent
+run. Uncommitted final docs and the unrelated `.gitignore` were outside their review
+scope. No implementation correction commit is needed.
+
+The final four-document check validates **190 actual tracked local targets/anchors**,
+English additions, retained existing anchors and whitespace. Protected source files,
+all seven frozen preparation outputs and `.gitignore` pass SHA-256 preservation again.
+Final acceptance documentation is committed separately after implementation review.
+Remaining execution prerequisites are a bounded generation plan, actual new Sydney V0
+output, reviewed independent requirements, API identity evidence and an exact separately
+approved route inventory/budget; this acceptance does not certify live AU routes.
+
+<a id="evaluation-development-tool-boundary-2026-10-07"></a>
+
+## Development tool boundary within evaluation (2026-10-07)
+
+The user clarified that V0 smoke is a development verification activity, not an actual
+system execution stage, and requested `tools/` inside `backend/evaluation` to separate
+responsibilities. The approved local migration starts from
+`0e52c28691ebd1775b254c646f13c38a4f01a500`. The pre-existing `.gitignore` edit remains
+outside scope. No paid/live call, push, PR, merge, branch switch or tracker update is
+authorized or performed. This is a directory boundary, not a new country-inference
+feature, execution plan or formal benchmark.
+
+The V0 `route_requests.py` and `route_requests_cli.py` development utilities now live
+under `backend/evaluation/tools/`, with a package marker. They prepare smoke request
+inventories, budgets and preflight checks using existing evaluator materials. Neither
+Product planning nor final quality scoring imports them. Core identity/snapshots,
+schedule/opening/route scorers, quality consumers and their legitimate CLI entries stay
+at the evaluation root. V3's internal validation/repair stays in `backend/app` as part
+of planning. Repository-level data/validation/diagnostic tools are not moved.
+
+Current callers use `backend.evaluation.tools.route_requests`; the development command
+uses `python -m backend.evaluation.tools.route_requests_cli`. The former root-level tool
+modules are retired. Current guide/contracts/README navigation give the new paths;
+historical commands, raw artifacts and frozen manifests retain the identifiers/hashes
+of their original revisions. They are not rewritten to pretend the migration existed
+when their evidence was acquired. Preparation behavior, AU/KR rules, wire schema,
+source integrity, limits, uncertainty and scoring formulas are unchanged.
+
+The existing public regression import was first pointed at the new package and failed
+collection because it did not yet exist. Moving the two modules, fixing relative core
+imports and updating the four existing test consumers resolved that missing-package
+failure. An initial focused run then had **109 fixture setup errors** because its new
+basetemp parent directory had not been created; no behavior assertion ran. Creating
+the dedicated parent and using a fresh basetemp yielded **109 passed / zero failures**
+in 23.92s. Initial lint found three import-order issues; Ruff fixed them and normalized
+the changed files. Global Ruff, the seven-file format check and the new module's actual
+`--help` entry all pass. No new behavior or mirror tests were added for this relocation.
+
+Static AST comparison against the fixed base confirms the two tool bodies and four
+existing regression bodies differ only in import paths and test import ordering. Its
+first comparison treated Ruff's sorted imports as a body mismatch; normalizing import
+order in that local checker resolves the diagnostic without a source behavior change.
+**146 protected original/preparation files** and **seven frozen Sydney preparation
+outputs** remain byte-identical, as does the excluded `.gitignore`. Private evidence is
+kept under the new identifier `artifacts/evaluation-tools-move-20261007`, separate from
+earlier frozen evidence. Implementation-path hashes from old manifests continue to
+describe their old revisions; they are not relabeled as current bindings.
+
+With DNS/socket connections prohibited, the moved public library replays the original
+saved #86 KR request package exactly, including its inventory digest and all four
+UNKNOWN route verdicts. This is a replay of existing independent material, not new
+route acquisition or authority to execute a frozen manifest at a changed code revision.
+
+The fresh full backend offline gate passes **3017 tests, 10 skipped, zero failures**
+in 435.91s, with the external-network test guard active. Its new log is retained separately
+from old frozen outputs. The pure module migration and four existing regression import
+updates were committed before review as
+`2a2b1e1a04a052b84ff51911871486a41af307d7`
+(`refactor(evaluation): isolate development route tools`). No planner or evaluator
+scoring implementation changed.
+
+Independent read-only Standards and Spec agents reviewed the complete committed diff
+from the fixed base through `2a2b1e1`. Standards reports **zero documented-standard
+violations and zero actionable code smells**. Spec reports **zero missing/incorrect
+requirements or scope expansions**. Both excluded unstaged final documentation and
+the unrelated `.gitignore`, and neither independently executed tests or network calls.
+No correction commit is needed. Final acceptance documentation follows separately.
+
+The six-document check passes **242 actual tracked local targets/anchors**, English
+additions, retained historical anchors and whitespace. The migration-only AST and
+original/frozen file checks pass again after the implementation commit. Existing source
+claims, FAIL/UNKNOWN outcomes and Sydney's pending live prerequisites are unchanged.
+This completes the requested development-tool directory boundary, without making smoke
+a product stage, changing evaluation formulas or authorizing another execution.
+
+<a id="sydney-v0-opening-routes-smoke-2026-10-08"></a>
+
+## Sydney V0 opening and route smoke (2026-10-08)
+
+Status: executed and assessed as bounded development evidence. Source revision:
+`8b70852431631f32a87c2c49bd0838c2570f38b4`. The unrelated `.gitignore` change retains
+its original bytes and is excluded. No tracked system/evaluator implementation changed.
+The approved scope acquires independent opening and route evidence over the saved natural
+Sydney V0 result. Identity-FAIL venues and their dependent routes are excluded from live
+acquisition; original failures, unavailable checks and denominators remain in reports.
+No address diagnosis, candidate-address repair or replacement itinerary is included.
+
+The source is the [natural generation](../v0-v3/development-pilots.md#sydney-v0-natural-generation-smoke-2026-10-07)
+and [identity assessment](intake-identity-usage.md#sydney-v0-identity-smoke-2026-10-07).
+Current `versioned_api_identity_2` replay matches before preparation. The single-source
+library view remains an explicit diagnostic scope, not qualified four-version intake.
+RequirementSpec review remains identity-focused and agent-supplied, not full human
+acceptance. Independently reviewed [IANA Sydney timezone](https://data.iana.org/time-zones/tzdb/zone1970.tab)
+supports offset interpretation. Source review finds no hard transport-mode restriction:
+walking/public transport is a soft preference, and actual WALK modes come from the raw
+output. No default mode or daily visit quota is injected.
+
+The existing snapshot-coordinate bridge provides six adopted venue coordinates without
+new coordinate requests. Native route preparation retains three primary-pair legs;
+Australian Museum to QVB has a null failed endpoint and no query. Opera House to MCA
+and Art Gallery to Mrs Macquarie's Chair produce two time-independent WALK queries.
+The fourth raw transport activity points at an unnamed generic food activity and remains
+unbound; it is not converted into an invented fourth route or named Haymarket venue.
+Six unique accepted venue IDs generate Details requests, with Opera House visit/target
+deduplicated. Australian Museum has no Details request.
+
+Details uses `id,businessStatus,timeZone,currentOpeningHours,regularOpeningHours`, not
+wildcard fields. Hours trigger [Place Details Enterprise](https://developers.google.com/maps/documentation/places/web-service/place-details).
+Each independent Matrix is 1x1 with `originIndex,destinationIndex,status,condition,distanceMeters,duration`.
+WALK bodies use independently acquired coordinates, no departure or regional override.
+[AU coverage](https://developers.google.com/maps/coverage) and
+[Matrix wire](https://developers.google.com/maps/documentation/routes/compute_route_matrix)
+were rechecked on the execution date. Time-independent walking estimates cannot certify
+conditions on the future itinerary date. No Search, model, planner, database or embedding
+request is included.
+
+Prepared limits: eight sends, zero retries/redirects, 20-second HTTP and 200-second total
+timeout. [Published global first-tier pricing](https://developers.google.com/maps/billing-and-pricing/pricing)
+gives six Enterprise Details at USD 0.020 each plus two Matrix Essentials elements at
+USD 0.005 each: USD 0.130 reference allowance. Free quotas are not assumed. Actual
+account allowance, invoice, taxes and volume tier are unavailable.
+
+The first offline preflight read opening checks at the wrong private report path and
+stopped with KeyError after mock evidence collection; no live send occurred. A fresh r2
+adapter/preparation corrected the nested report path and retained the original preparation
+and mock evidence. Two fixture snapshots make sixteen synthetic sends, separated from live
+evidence: complete regular hours yield six PASS plus the failed-identity UNKNOWN; missing
+hours yield seven UNKNOWN. Exact HTTP serialization/masks were intercepted for all eight
+wires with DNS/outbound sockets prohibited. Source/endpoint/mode/count guards pass without
+repairing missing evidence. No production implementation or frozen original source was patched.
+
+Executable preparation canonical SHA-256:
+`e29f7d9fa5bfb1ed9edb1e63c6a53879432e7b6c2c38ec5357b3ba438112d036`.
+Adapter SHA-256:
+`e9546af3c32189a277e85ee79a852ade56760e77dd9ee938957f454f2e0c06d4`.
+The required current-session execution child used `gpt-6.1-sol` / `medium`; no model was
+called by this smoke. It verified HEAD, trusted Sydney date, unused output directory,
+manifest and 182 bound file hashes before one execution. The process exits zero,
+receipt completed, with six Details and two Matrix requests, all HTTP 200 and zero retries.
+UTC execution spans `2026-10-08T00:44:27.270733+00:00` to
+`2026-10-08T00:44:29.821421+00:00`. Retail reference is USD 0.130, not an observed invoice.
+Raw response bytes precede interpretation; all eight raw hashes and 182 source hashes
+remain unchanged afterward. The consumed execution directory/allowance is not reusable.
+
+Native offline results:
+
+| Check | Result | Evidence or limitation |
+| --- | --- | --- |
+| MCA visit opening | PASS | Applicable current hours cover the full October 14 visit |
+| QVB, Art Gallery, Mrs Macquarie's Chair opening | PASS each | Weaker regular-hours fallback for dates outside the acquisition current window |
+| Opera House opening | UNKNOWN | Both hours fields absent; operational business status does not establish hours |
+| Powerhouse opening | UNKNOWN | `CLOSED_TEMPORARILY`, both hours fields absent; no fabricated empty-period closure |
+| Australian Museum opening | UNKNOWN, not queried | Retained identity FAIL prevents independent opening validation |
+| Opera House to MCA WALK | PASS | 893 seconds / 1,108 metres against the original 20-minute interval |
+| Art Gallery to Mrs Macquarie's Chair WALK | PASS | 1,083 seconds / 1,384 metres against the original 20-minute interval |
+| Australian Museum to QVB route | UNKNOWN, not queried | Failed canonical endpoint remains null |
+
+Opening totals are four PASS, zero FAIL, three UNKNOWN; routes retain two PASS, zero FAIL,
+one UNKNOWN among three primary-pair checks. The separate fourth unbound transport and
+unresolved generic role remain visible. Source PASS only denotes each contract's evidence
+and rule scope, not booking certainty or overall itinerary acceptance.
+
+The native requirement report retains exact-once Opera House as UNKNOWN: one confirmed
+occurrence, upper bound three due to the failed-identity museum occurrence and unresolved
+generic food occurrence. Target identity PASS is distinct from a complete exact-count proof.
+Non-overlap has ten known commitment checks passing, two unresolved candidate units and a
+null complete denominator; its full verdict remains UNKNOWN. Density retains original main
+counts 2/2/2/1 and the unresolved generic possibility on day four. No record is removed or
+reclassified to obtain a score.
+
+Free [Powerhouse official-source inspection](https://powerhouse.com.au/visit/ultimo) confirms
+current closure for revitalisation. It supplies no reopening date or literal opening period
+for October 17. This observation is retained separately; the native scorer consumes saved
+Google hours and does not import website prose or turn missing periods into a synthetic FAIL.
+The original identity FAIL remains accepted for this smoke, without a new address review.
+
+Parent assessment runs the unchanged opening, routes and requirement/schedule libraries
+twice with networking prohibited and obtains identical reports. Saved raw bytes, canonical
+snapshot linkage, original outputs, FAIL/null endpoints, earlier generation/identity artifacts
+and all 182 bound sources pass preservation. The quality consumer is exercised separately
+and correctly rejects the V0-only material: `needs_material_correction`,
+`Exactly four versions required`. No overall score, forged companion versions or modified
+score formula is produced. The unchanged code retains its prior 3017-pass/10-skip offline
+backend gate; this task adds preflight, exact replay and documentation checks, not another
+full code test run or independent implementation review.
+
+Local evidence identifiers are `artifacts/sydney-v0-opening-routes-smoke-20261008`
+(initial offline preflight) and `artifacts/sydney-v0-opening-routes-smoke-20261008-r2`
+(executable preparation, receipt/raw bytes/snapshot, three native reports, quality-scope
+diagnostic, parent assessment and supplemental closure observation). Private adapters and
+runtime payloads stay ignored. Tracked status/navigation and this record are committed
+locally after English, target/anchor and whitespace checks. No push, PR, merge, tracker
+mutation, version freeze, formal comparison or paid retry is included. This completes the
+bounded acquisition and V0 component replay; incomplete opening/occupancy evidence and
+qualified four-version final acceptance remain outstanding.
+
+## Sydney Museum follow-up preparation, 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Status: **Prepared and offline validated;
+live execution requires exact-plan approval.** Fixed source/review base is
+`cc454bb292cbc099c823b32dc231eb6d6122c1ed`, branch `feature/evaluation`.
+The unrelated existing `.gitignore` modification is preserved and excluded from
+commits. The human approved bounded preparation after the physical-association
+correction, including conditional DRIVE adaptation only if the original leg requires
+it, and separately confirmed the public preparation/preflight/CLI and mock-HTTP
+scoring boundaries. No tracker mutation, Git publication or real provider send is
+included. The final execution freeze is refreshed against the local delivery HEAD;
+its private manifest, rather than this historical base, owns the executable revision.
+
+The preserved original Museum-to-QVB leg is **WALK**, on October 15, with departure
+`2026-10-15T01:15:00+00:00` and a 1,200-second reserved interval. All three evaluable
+Sydney primary-pair legs are WALK. No DRIVE implementation is necessary; the existing
+development acquisition path retains its DRIVE limitation. Original activity order,
+times, durations, preferences, requirement counting and score arithmetic remain intact.
+
+Current `versioned_api_identity_3` replay uses the existing validated V0 correspondence:
+Australian Museum address grounding stays FAIL, canonical claim ID stays null, and
+the verified physical association is `ChIJlwsH0RWuEmsR3Cg3WEDw76I`. QVB's independent ID
+is `ChIJISz8NjyuEmsRFTQ9Iw7Ear8`. Existing independently acquired coordinates support
+the original route without another coordinate query. The earlier speculative address
+inspection is not reopened, and no new Search, model, planner or database work occurs.
+
+The current full evidence plan has seven Details and three directed Matrix requests.
+Eight identical request keys/parameters already have saved observations: six Details
+and two WALK matrices. The new private incremental plan contains only the two missing
+requests. Reuse verifies the original snapshot and copies its exact raw bytes,
+summaries and attempt timestamps into a separately labelled derived union; the original
+snapshot is untouched. The combined observation ledger records ten cumulative sends
+(eight historical plus two incremental), while the fresh acquisition ledger records
+only two. Reuse does not claim eight new requests or fresh observations. The original
+V0-only source remains a library view, not qualified four-version intake or a legacy
+adoption bundle; actual preparation uses existing core libraries without forged runs.
+
+Official [AU coverage](https://developers.google.com/maps/coverage),
+[Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix),
+[Details fields/SKUs](https://developers.google.com/maps/documentation/places/web-service/place-details)
+and [global first-tier prices](https://developers.google.com/maps/billing-and-pricing/pricing)
+were rechecked on the preparation date. AU walking is documented; exact pair success
+is unobserved. Time-independent walking estimates cannot certify future-day conditions.
+
+| Incremental request | Frozen wire scope | Retail reference |
+| --- | --- | --- |
+| Museum Details | `id,businessStatus,timeZone,currentOpeningHours,regularOpeningHours` | Enterprise: USD 0.020 |
+| Museum to QVB WALK Matrix | Directed 1x1 independently sourced coordinates, `travelMode=WALK`; no departure or routing options; indices/status/condition/distance/duration/fallback mask | Essentials: USD 0.005 |
+
+Proposed reference allowance: **USD 0.025**. No free quota, tax treatment, volume tier
+or actual invoice is assumed. Limits are two sends, zero retries/redirects, 20-second
+HTTP timeout and 60-second total deadline. No exact-plan live approval exists yet.
+The one-use execution directory is absent. A future dispatch must bind the final
+manifest hash, source/day/HEAD and protected hashes, use the required current-session
+`gpt-6.1-sol`/medium execution child, and stop on drift, an existing output directory,
+timeout, HTTP/provider error, mismatched returned ID, duplicate/foreign request or
+exhausted count/cost/time. Missing hours and valid NO_ROUTE results remain evidence;
+they do not authorize a retry, alternate mode or favorable verdict.
+
+Validation is offline with outbound sockets and DNS prohibited. Existing public
+`prepare_v0_route_requests`, `preflight_v0_route_requests`, CLI and physical-association
+regressions passed **69 tests** in 29.30 seconds. Those synthetic bundle regressions
+are distinct from real source-view replay. The private adapter checks exact HTTP
+serialization for both incremental wires and four synthetic incremental snapshots:
+
+| Scenario | Museum opening | Museum route |
+| --- | --- | --- |
+| Sufficient regular hours, 900-second WALK | PASS | PASS |
+| Missing hours, 900-second WALK | UNKNOWN | PASS |
+| Sufficient hours, 3,600-second WALK | PASS | FAIL |
+| Sufficient hours, valid NO_ROUTE | PASS | FAIL |
+
+Each synthetic acquisition has two sends and zero retries; the eight synthetic sends
+across four scenarios are not external requests or real evidence. Existing observations
+retain their raw bytes/timestamps in each derived union. All reports replay exactly;
+address FAIL remains visible even when physical checks PASS. Mode substitution,
+departure addition and routing-option changes are rejected. Separate negative guards
+reject duplicate/foreign sends, exhausted count/cost/time, an unapproved manifest and
+file/day/HEAD drift. The first preflight used the old opening report field name and
+stopped with KeyError after the initial simulated reports; correcting the private
+assertion to `identity_grounding_verdict` made the complete rehearsal pass. No product
+or evaluator implementation was changed. Ruff passes for the private adapter.
+
+Independent Standards and Spec review each identified the same P2 timeout-stop gap
+in the initial private adapter: the generic collector catches its own TimeoutError
+and advances to the next request, while HTTPX's timeout applies per network phase.
+An isolated mock-HTTP regression first reproduced two sends and an incorrect
+`completed` receipt after collector timeout. The private correction adds an overall
+20-second HTTP deadline and converts deadline/cancellation into a stopping exception;
+completion also requires two available HTTP-200 records. Separate simulated collector
+and HTTP deadline tests now each produce one mock send, a `stopped` receipt and no
+second request or completed snapshot. These tests use isolated temporary directories,
+mock credentials, shortened test clocks and blocked networking; the actual execution
+directory remains absent. Assessment also binds the incremental snapshot raw hashes
+to the execution receipt before deriving the union. The four scoring scenarios and
+all stopping/source guards pass again after correction, with zero external sends.
+An isolated normal two-request execution through mock HTTP also completes and passes
+the full receipt-to-snapshot-to-native-report assessment path. The separate private
+timeout-check receipt records both stopping regressions and this successful path.
+
+The manifest protects 240 implementation/dependency/source files, including the
+adapter and prior generation/identity/opening-route artifacts; all protected hashes
+pass before/after rehearsal. Current local-only evidence identifiers are
+`artifacts/sydney-v0-museum-followup-20261008` (current/full and incremental plans,
+reuse provenance, frozen manifest and offline receipt) and
+`.scratch/sydney_museum_followup.py` (one-use adapter). Raw payloads and commands
+remain local; this record provides shared scope and results without publishing them.
+No new full backend gate is claimed: unchanged implementation retains its earlier
+full/evaluator validation, and this task adds specific preparation/replay checks.
+
+Actual external sends and incremental charges are **zero**. Real Museum opening and
+route results remain unobserved; Opera House/Powerhouse hours, unresolved generic
+occupancy and qualified V0-V3 final acceptance remain outstanding. This preparation
+is neither a final quality score, version freeze nor formal comparison.
+
+## Sydney Museum follow-up execution, 2026-10-08
+
+Date: 2026-10-08, Australia/Sydney. Status: **Bounded acquisition complete;
+native component replay validated.** Source HEAD is
+`3f608c7a76be31054cdfd18ab088eec47399c64f`, branch `feature/evaluation`.
+The unrelated pre-existing `.gitignore` change remains unchanged and excluded.
+The human approved the exact two-send/zero-retry/USD 0.025 plan after preparation
+and independent Standards/Spec rechecks closed the timeout-stop P2 finding.
+The frozen manifest canonical SHA-256 is
+`081a118ae8adfec91e0c53c618beceecd3fe9288437261b8be3f23cdcb38001a`.
+The prepared adapter SHA-256 is
+`9e1af279e3ac33d4c6532fb90a52a859253071777371df95431c4c26e688a924`.
+
+The required current-session `gpt-6.1-sol`/medium execution child checked HEAD,
+Sydney day, all 240 protected files, adapter and both check receipts, exact request
+scope/budget and an absent execution directory before running the command once.
+The process exited zero and the receipt is `completed`: one Museum-to-QVB WALK
+Matrix and one Museum Details, both HTTP 200, zero retries and no added requests.
+Receipt timestamps span `2026-10-08T02:38:51.344865+00:00` to
+`2026-10-08T02:38:52.390529+00:00`, about 1.046 seconds. The 20-second whole-HTTP
+and 60-second total limits were respected. Retail reference is **USD 0.025**;
+actual provider billing, account free allowance, tier and tax treatment remain unknown.
+No Search, evaluator model, planner rerun, database request, alternate mode or repair
+was performed. The execution directory and two-request allowance are consumed.
+
+The two received raw-response SHA-256 values are:
+
+- Matrix: `225e6432b6093c91a28531f851b2065c4d8b5202f07cd5125c1ccb7df486f9b1`.
+- Details: `a975a321e4b627e6d566060f5217b8337d0778d49cb5f11c30410a8362620ad5`.
+
+Parent assessment checks receipt/raw linkage and the incremental snapshot, then
+derives a current-plan union with the eight historical observations. Their exact
+raw bytes, attempt timestamps and summaries remain intact; no observation is relabelled
+fresh. The cumulative snapshot ledger is ten sends, versus two fresh sends in this
+execution. The original snapshots and earlier verdicts are preserved.
+
+| Native check | Result | Evidence and boundary |
+| --- | --- | --- |
+| Australian Museum grounding | FAIL | Original address and null canonical claim ID retained; physical association is independently verified |
+| Museum opening | PASS | Regular-hours fallback covers the original October 15, 10:00-12:15 Australia/Sydney visit; no confirmed outside or unknown seconds |
+| Museum to QVB WALK | PASS | 562 seconds, 678 metres; fits the original 1,200-second reservation, with zero raw deficit and no DRIVE reserve |
+| Combined opening | Five PASS, zero FAIL, two UNKNOWN | Opera House and Powerhouse still lack usable opening periods |
+| Combined evaluable routes | Three PASS, zero FAIL/UNKNOWN | The separate day-four transport to an unnamed generic food activity stays unbound |
+
+Regular-hour fallback is weaker than date-specific current-hour evidence, and the
+time-independent WALK does not certify conditions on the future visit date. Component
+PASS does not revise the address FAIL or establish overall itinerary acceptance.
+
+With networking and DNS prohibited, native opening, route and requirement/schedule
+reports replay exactly, including a second fresh library replay against the saved
+union. Requirements, non-overlap, schedule measures, descriptive metrics and occupancy
+sections equal the earlier report exactly. The Opera House exact-once obligation
+remains UNKNOWN, and non-overlap remains UNKNOWN despite ten known checks passing,
+because its complete denominator and generic occupancy remain unresolved. Original
+main counts 2/2/2/1 remain unchanged. The quality consumer correctly rejects this
+V0-only view with `needs_material_correction` / `Exactly four versions required`;
+no artificial companion runs or overall score are produced.
+
+All **240 frozen hashes** pass after acquisition and assessment, before the intentional
+documentation updates. Both new raw hashes and all eight reused raw-byte/record/time
+checks pass; offline assessment makes zero network attempts. Product/evaluator code,
+generation, requirements and score formulas are unchanged. No new full backend suite
+or independent implementation review is claimed: the unchanged code retains its prior
+gates, and this execution adds exact wire/source preservation and real saved-evidence
+consumer replay. Prepared public-boundary tests and timeout-stop rechecks remain valid.
+
+Local-only evidence identifier: `artifacts/sydney-v0-museum-followup-20261008`, containing
+the execution receipt/raw bytes, incremental and derived combined snapshots, native
+reports, quality-scope diagnostic, assessment and preservation check. The frozen
+manifest/check receipts and consumed execution directory remain intact. Current status,
+navigation and this event are grouped in one documentation commit after English,
+tracked-link/anchor and whitespace checks. No push, PR, merge, tracker mutation,
+version freeze or formal comparison is included. Remaining work is usable missing
+opening evidence, genuine requirement/occupancy review and qualified V0-V3 intake;
+this bounded V0 follow-up does not complete final evaluator acceptance.

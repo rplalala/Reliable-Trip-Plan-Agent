@@ -11,6 +11,7 @@ from zoneinfo import TZPATH, ZoneInfo, ZoneInfoNotFoundError
 from ._opening_hours import availability, seconds, subtract
 from .identity import SUBJECT_SCOPE_VERSION
 from .intake import _read
+from .place_association import associated_place_id
 from .preparation import identity_ready, schedule_timezones
 from .records import MaterialError, canonical_digest, freeze, require, text, thaw
 from .schedule_time import normalize_interval
@@ -18,7 +19,7 @@ from .snapshot import build_evidence_plan, load_snapshot
 
 REPORT_VERSION = "rtpeval_opening_report_1"
 RULES = {
-    "version": "rtpeval_opening_rules_1",
+    "version": "rtpeval_opening_rules_2",
     "intervals": "half_open",
     "grace_seconds": 0,
     "compliance_denominator": "PASS+FAIL",
@@ -26,8 +27,18 @@ RULES = {
     "current_window_days": 7,
     "timestamp_fraction_digits": 6,
     "unknown_time_is_closed": False,
-    "basis_order": ["applicable_current", "eligible_regular"],
+    "basis_order": ["applicable_current", "regular_for_unresolved_intervals"],
+    "special_date_without_schedule": "diagnostic_only",
+    "open_now": "query_instant_not_planned_visit",
     "timezone": "independent_place_or_reviewed_context",
+}
+
+ACCESS_RULES = {
+    **RULES,
+    "version": "rtpeval_opening_rules_4",
+    "missing_hours_fallback": "llm_access_reasonableness_2",
+    "public_landmark_intent": "ordinary_sightseeing_unless_restricted_activity",
+    "model_pass_is_verified_hours": False,
 }
 
 
@@ -137,11 +148,12 @@ def _check(activity, identity, reference, records, context_zone):
         allow_cross_date=True,
     )
     reasons = list(dict.fromkeys([*interval.reasons, *zone_reasons]))
-    if identity["resolution"] != "resolved":
+    pid = associated_place_id(identity)
+    if pid is None:
         reasons.append("identity_unresolved")
     elif not record or record["summary"]["status"] != "available":
         reasons.append("details_unavailable")
-    elif payload.get("id") != identity["canonical_place_id"]:
+    elif payload.get("id") != pid:
         reasons.append("canonical_id_mismatch")
     opened, closed, segments = [], [], []
     if not reasons:
@@ -156,10 +168,7 @@ def _check(activity, identity, reference, records, context_zone):
     bases = {s["basis"] for s in segments if s["basis"] != "unavailable"}
     basis = "mixed" if len(bases) > 1 else next(iter(bases), "unavailable")
     explanation = (
-        "The evidence indicates exceptional hours for this visit date, but lacks a "
-        "usable applicable schedule; regular weekly hours cannot establish compliance."
-        if "special_date_unresolved" in reasons
-        else "The full visit is covered by adopted opening evidence."
+        "The full visit is covered by adopted opening evidence."
         if state == "PASS"
         else "A positive-duration portion of the visit is confirmed closed."
         if state == "FAIL"
@@ -176,10 +185,11 @@ def _check(activity, identity, reference, records, context_zone):
         "activity_id": raw.get("activity_id"),
         "reference_id": reference["reference_id"],
         "canonical_place_id": identity["canonical_place_id"],
+        **({"associated_place_id": pid} if "place_association" in identity else {}),
         "state": state,
         "interval": interval.to_dict(),
         "structurally_evaluable": interval.span is not None,
-        "identity_available": identity["resolution"] == "resolved",
+        "identity_available": pid is not None,
         "timezone": zone_provenance,
         "evidence_reference": {
             "request_key": key,
@@ -243,7 +253,7 @@ def _summary(checks, nonapplicable):
     unresolved = sum(c["role"] == "unresolved" for c in nonapplicable)
     complete = sum(c["evidence_status"] == "complete" for c in checks)
     structure = sum(c["structurally_evaluable"] for c in checks)
-    return {
+    summary = {
         "state": "FAIL"
         if counts["FAIL"]
         else "UNKNOWN"
@@ -287,6 +297,13 @@ def _summary(checks, nonapplicable):
             )
         },
     }
+    if any("access_judgment" in c for c in checks):
+        summary["llm_decidable_count"] = sum(
+            c["basis"] == "llm_access_reasonableness" for c in checks
+        )
+        summary["llm_assessed_count"] = sum("access_judgment" in c for c in checks)
+        summary["basis_counts"]["llm_access_reasonableness"] = summary["llm_decidable_count"]
+    return summary
 
 
 def score_opening(
@@ -297,6 +314,7 @@ def score_opening(
     *,
     paired=False,
     expected_plan=None,
+    opening_judgment=None,
 ):
     """Replay a whole batch; invalid preparation never reduces the scored cohort."""
     prepared, identity = _value(intake), _value(identity_report)
@@ -336,6 +354,32 @@ def score_opening(
             else None,
             "schedule_context": canonical_digest(context) if context else None,
         }
+        judgments = {}
+        if opening_judgment is not None:
+            from .opening_judgment import prepare_packet, validate_material
+
+            material = _value(opening_judgment)
+            packet = prepare_packet(
+                prepared,
+                identity,
+                snapshot_directory,
+                context,
+                model=material["packet"]["model"],
+                paired=paired,
+                expected_plan=expected_plan,
+            )
+            judgments = validate_material(material, packet)
+            base.update(rules=ACCESS_RULES, rules_hash=canonical_digest(ACCESS_RULES))
+            base["source_hashes"]["opening_judgment"] = canonical_digest(material)
+            base["model_provenance"] = {
+                "packet_sha256": packet["content_sha256"],
+                "requested_model": packet["model"],
+                "reported_model": material["response"]["model"],
+                "prompt_sha256": packet["prompt_sha256"],
+                "requested_at": material["requested_at"],
+                "retrieved_at": material["retrieved_at"],
+                "usage": material["response"]["usage"],
+            }
         identities = {i["reference_id"]: i for i in identity["records"]}
         refs = {r["reference_id"]: r for r in snapshot["plan"]["references"]}
         records = {r["key"]: r for r in snapshot["records"]}
@@ -350,15 +394,23 @@ def score_opening(
                     for activity in projection["activities"]:
                         if activity["evaluation_role"] == "primary_visit":
                             rid = activity["source"]["record_id"]
-                            checks.append(
-                                _check(
-                                    activity,
-                                    identities[rid],
-                                    refs[rid],
-                                    records,
-                                    zones.get(group["group_id"]),
-                                )
+                            check = _check(
+                                activity,
+                                identities[rid],
+                                refs[rid],
+                                records,
+                                zones.get(group["group_id"]),
                             )
+                            if rid in judgments:
+                                decision = judgments[rid]
+                                check["access_judgment"] = decision
+                                check["explanation"] = decision["rationale"]
+                                if decision["state"] == "PASS":
+                                    check.update(state="PASS", basis="llm_access_reasonableness")
+                                    check["reasons"].append("llm_access_reasonableness_pass")
+                                else:
+                                    check["reasons"].append("llm_access_reasonableness_unknown")
+                            checks.append(check)
                     nonapplicable = [
                         {
                             "source": a["source"],

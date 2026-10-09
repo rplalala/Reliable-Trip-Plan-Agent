@@ -232,8 +232,14 @@ def build_repair_input(
                 if f.status == "CONFIRMED"
                 else "review",
                 "current_magnitude": f.magnitude,
+                "soft_pace_objective": f.adopted_evidence if f.check == "soft_pace" else None,
                 "completion": (
-                    "A minimum_daily_coverage_missing target completes "
+                    "Reduce the source-linked daily penalty toward zero. Partial reduction is "
+                    "acceptable; zero is not a validity or failure constraint. Preserve required "
+                    "visits, roles, coverage and verified routes; never relabel a visit "
+                    "to evade counting."
+                    if f.check == "soft_pace"
+                    else "A minimum_daily_coverage_missing target completes "
                     "at one countable main visit. "
                     "Revalidated business condition improves; "
                     "model claims do not decide completion."

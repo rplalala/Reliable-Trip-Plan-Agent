@@ -30,7 +30,148 @@ acceptance records and Issue comments preserve historical decisions, not alterna
 | Anonymous packages, revisions and human reports | [Human](../../docs/contracts/0005-quality-human-review.md#human) | [human_tasks](human_tasks.py), [human_answers](human_answers.py), [human_report](human_report.py) |
 | Frozen V3 execution and controlled outcomes | [Controlled Repair](../../docs/contracts/0001-evaluation-artifacts.md#controlled-repair) | [controlled CLI](controlled_cli.py), [replay](controlled_replay.py), [report](controlled_report.py) |
 
+Development verification utilities live in `tools/` within this package. The V0
+[route request tool](tools/route_requests.py) and its
+[CLI](tools/route_requests_cli.py) prepare smoke inventories and budgets; neither
+Product planning nor the final quality scorer calls them. Smoke is a development
+activity, not a product runtime stage. Core identity, snapshot and scoring modules
+and their CLIs remain at the package root. A CLI is not necessarily a smoke utility.
+
+## Fresh automatic evaluation CLI
+
+`evaluation_run_cli` composes native intake, fresh Google Search/Details, V0-only model
+correspondence, snapshot coordinates, hours and directed routes, requirements/schedule,
+daily density and final quality reporting. It consumes the selected originals without
+generating or repairing itineraries. Its scope is the four final projections; optional
+V3 stages and human, controlled-Repair and official-audit tracks are explicitly excluded.
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli prepare manifest.json --directory artifacts/fresh-evaluation --options options.json --prices prices.json --context context.json
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli execute artifacts/fresh-evaluation --approved-sha256 EXACT_PREPARATION_SHA256 --env-file .env
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli replay artifacts/fresh-evaluation
+```
+
+`prepare` and `replay` use no network or credentials. `execute` sends fresh requests;
+the digest check does not establish user authorization. Repository approval and execution
+child rules still apply. The preparation directory must be new. An execution directory
+is consumed on failure too, with no automatic retry/resume. `--help` lists optional
+source-linked occupancy, route and density review files.
+
+The options object requires these fields:
+
+| Field | Meaning |
+| --- | --- |
+| `model`, `model_endpoint` | Explicit V0 deployment and HTTPS Responses base URL ending in `/openai/v1/` |
+| `max_google_sends` | Shared send ceiling across both fresh snapshot phases |
+| `max_input_tokens`, `max_output_tokens` | Complete packet sizing allowance and server output limit |
+| `timeout_seconds`, `total_timeout_seconds` | Per-request and whole-execution limits |
+| `max_cost_usd` | Conservative reference-price reservation allowance, not an invoice cap |
+
+Identity execution also accepts optional `reasoning_effort` (`low` or `medium`).
+An omitted field preserves historical `low` execution without adding a new field to
+old preparations. The supplied value is frozen in the preparation digest, sent in
+the Responses request and checked against the captured HTTP journal during replay.
+Invalid values fail during offline preparation. The separately fixed-medium opening
+workflow does not admit this identity-only option.
+
+New current V0 identity requests require a `decisions` object with one required key per
+prepared short reference, covering visits and requirement subjects. Each judgment's
+`reference_id` must equal its key; an explicit UNKNOWN is valid when evidence is
+insufficient, while an omitted judgment is not. Incomplete, duplicate or foreign IDs
+stop execution without retry and preserve the original HTTP response. Historical
+uniform/legacy arrays retain their original paths; earlier current packets require
+their retained producer implementation rather than conversion to the new request.
+
+Supply a dated USD `rtpeval_prices_1` book covering exact Google operations/masks and the
+selected model. Credentials are loaded only for execution from `GOOGLE_MAPS_API_KEY`
+and `AZURE_OPENAI_API_KEY`; they are excluded from preparation and receipt data. Prices
+identify source URLs and validity intervals; inaccessible billing stays unknown. A packet
+exceeding its input allowance stops without trimming or a model send.
+
+Preparation freezes originals, reviewed contexts, limits, prices and implementation hashes.
+Preparation and execution preflight validate the checksum-bound local tokenizer vocabulary
+without downloading it. Runtime dependency errors after an attempt preserve the stopped
+report and observed sends. Regression tests use synthetic tokenization; real packet sizing
+uses the existing offline vocabulary.
+Execution preserves request wires without credential headers, raw HTTP bytes, times,
+native snapshots, V0 material, full check reports and evaluator-only usage/cost estimates.
+`report.json` distinguishes `processing_status`, `acquisition_status` and `evidence_status`,
+retains source-linked UNKNOWN reasons and exclusions, and may complete with FAIL/UNKNOWN.
+The UNKNOWN inventory includes daily density and links identity/downstream uncertainty
+to source-owned acquisition status, failure reason, request keys and attempts. Full HTTP
+wire stays in the evidence journal; `rtpeval_usage_1` contains allowlisted metadata only.
+Failure preserves a stopped report and receipt. Replay verifies originals, artifact hashes,
+model HTTP linkage and recomputed native reports. Exit 0 means preparation or processing
+completed; exit 2 indicates stopped execution or material correction, not an all-PASS gate.
+
 ## Offline workflow and CLI
+
+### Incremental missing-hours access assessment
+
+The [access policy](../../docs/contracts/0004-opening-routes.md#missing-hours-access-judgment)
+adds an opening-only model fallback equally for V0-V3. API schedule decisions retain
+priority. Clearly supported outdoor/exterior access can PASS with an explicit model basis;
+ordinary sightseeing at confidently classified public landmarks can be inferred without
+explicit exterior wording. Explicit restricted activities and museum admission still
+require applicable evidence; genuinely unresolved intent stays UNKNOWN. Model judgment does not invent hours or
+remove missing factual evidence and original grounding errors.
+
+Reuse a completed four-final execution; no new Google or V0 identity request is made:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli prepare-opening artifacts/fresh-evaluation --directory artifacts/opening-access --options opening-options.json --prices opening-prices.json
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli execute-opening artifacts/opening-access --approved-sha256 EXACT_OPENING_PREPARATION_SHA256 --env-file .env
+.venv/Scripts/python.exe -m backend.evaluation.evaluation_run_cli replay-opening artifacts/opening-access
+```
+
+Options use the existing eight-field schema, with `max_google_sends=0` mandatory and
+the explicitly selected opening deployment/HTTPS endpoint, token/time limits and USD
+reference allowance. The price book must cover `kind=model`, `provider=azure_foundry`,
+`operation=opening_access` and the selected model. This is one medium-effort Responses
+call and zero retries; preparation itself is offline and grants no paid authorization.
+Execution loads only `AZURE_OPENAI_API_KEY`, verifies code/source/parent receipts and
+consumes its new execution directory even on failure. It stores raw HTTP/material,
+actual usage, incremental cost and a separate complete automatic report. Parent costs
+remain in the original report. Replay validates both receipts and performs no model call.
+Missing/incomplete/failed model material is preserved without silently resending.
+
+For independently captured material, prepare/import without an execution client:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.opening_judgment_cli prepare manifest.json identity-report.json evidence-snapshot --model YOUR_MODEL --context context.json --output packet.json
+.venv/Scripts/python.exe -m backend.evaluation.opening_judgment_cli import manifest.json identity-report.json evidence-snapshot --context context.json --material model-material.json --output opening.json
+```
+
+Material schema `rtpeval_opening_judgment_material_2` contains the complete unchanged
+`packet`, actual Responses `request`/`response`, `provider=azure_foundry` and offset-aware
+`requested_at`/`retrieved_at`. The request retains packet fields plus `store=false`,
+`reasoning={"effort":"medium"}` and positive `max_output_tokens`; raw response contains
+one structured assistant decisions object and actual input/output/total token counts.
+Packet schema specifies decision fields/enums and one short ID per eligible occurrence.
+Current packet schema is `rtpeval_opening_judgment_packet_2`, policy
+`llm_access_reasonableness_2`. Decisions additionally record `intent_basis` and
+`venue_category`; only public landmark/area categories can receive an inferred-default
+PASS. Venue category is model interpretation; optional provider types retain raw absence.
+Explicit museum exterior viewing is distinct from museum admission. Prior policy-1 material
+requires its historical implementation for replay and cannot be relabeled as current material.
+The packet also freezes evaluator implementation hashes; importing with changed source
+code requires new preparation rather than accepting an old judgment under new code.
+New packets sort object keys inside the bound request input. Native opening execution,
+manifest-based quality composition and frozen-intake replay therefore agree despite
+dictionary insertion order. Recorded request strings remain exact evidence; replay
+pre-correction packets with their retained implementation instead of rewriting them.
+All decisions and original activity quotations are validated; partial/foreign material
+fails the whole import. Empty explicit schedules are never model cases. `openNow` alone
+does not establish a schedule; absent/null periods can qualify. Supplied malformed periods,
+unverified identity and invalid time cannot qualify.
+
+Both `opening_cli` and `quality_report_cli` accept `--opening-judgment model-material.json`.
+Library callers use `opening_judgment=`. Without that material the existing API-only
+behavior remains available. With it the report selects opening rules 4 and quality profile
+`rtpeval_access_quality_4`, preserving API seconds/coverage and separate LLM counts.
+Supplied import provenance is distinct from dispatch independently captured by execution.
+
+### Ordinary saved-evidence workflow
 
 Run from the repository root with the existing Python environment. Names below represent
 researcher-prepared files; commands do not generate missing independent evidence. For each
@@ -115,11 +256,14 @@ retains the observed validation sequence and limits.
 
 An acquisition caller separately uses `build_identity_plan`, injected async
 `acquire_snapshot`, immutable `load_snapshot`, then `identity_evidence`.
-There is no built-in live Google client or acquisition CLI. The caller owns credentials,
-authorization and explicit send ceilings. Identity uses the
+The formal client above supplies the injected transport; these individual planning and
+identity commands remain offline. The caller owns credentials, authorization and explicit
+send ceilings. Identity uses the
 [version-specific policy](../../docs/contracts/0002-intake-identity-usage.md#version-specific-identity-requirement).
 V1-V3 final/optional visits and their requirement targets use program rules over independent
-API facts, with literal name/address equality and no model fallback. No model result is needed
+API facts, with literal name equality and full address equivalence explained by same-observation
+Google component pairs. Unexplained address differences are FAIL; no model fallback is used.
+No model result is needed
 for those references. No human confirmation or sampling is mandatory. `--prepare` prints a
 V0-only frozen packet covering generated visits and user-requested requirement targets;
 it does not execute a model. Target judgments belong to their own version, while
@@ -130,9 +274,16 @@ API-backed references continue independently. V0 semantic judgments remain falli
 accepted material or 2 for correction. Identity exits 0 for packet preparation/completed
 judgments (including confirmed failures), 3 for UNKNOWN/missing judgment, and 2 for
 material/linkage errors. Incorrect submitted addresses and different venues are grounding
-FAIL, even when the intended venue is recognizable. Their canonical ID stays null: candidate
-facts cannot supply corrected route endpoints. Original outputs and denominators are retained.
-Current reports use `versioned_api_identity_2`; V0 packets use
+FAIL, even when the intended venue is recognizable. Their canonical ID stays null.
+A separate verified `place_association` permits requirement occurrence matching and
+independent opening/routes using the API venue's identity/hours/coordinates against
+original date, time, order, mode and reserved duration. V0
+requires validated candidate correspondence; V1-V3 require the independently verified
+original submitted ID, without evaluator LLM or searched replacement. Untrusted association
+remains UNKNOWN. Original outputs and grounding failures are retained. Requirement targets
+still use their own version's adopted canonical identity; target FAIL components and
+unresolved dates/roles remain part of requirement judgment.
+Current reports use `versioned_api_identity_4`; V0 packets use
 `v0_identity_correspondence_3`: citation paths are schema enums
 shared with import. Address-presence schema alternatives bind short reference IDs;
 every absent/null/blank address requires `not_supplied` and forbids `claim.location` citations.
@@ -144,6 +295,8 @@ the response must cite original name/destination and independent candidate suppo
 Old policy-1 packets and rejected historical output cannot be normalized or relabeled for
 current import. The frozen historical all-version schema remains explicitly replayable.
 
+`--historical-association` explicitly replays `versioned_api_identity_2` reports with
+the former canonical-only downstream eligibility; historical evidence/results are preserved.
 `--historical-program` explicitly replays the former `versioned_api_identity_1`
 shared-target policy and `v0_identity_correspondence_2` packet. Its material cannot
 pass current import. `--historical-llm` remains the older all-version replay.
@@ -192,6 +345,24 @@ authority. Its subsequently approved [one-call execution](../../docs/records/eva
 imported eight V0 primary PASS while preserving a requirement-subject UNKNOWN. That
 execution directory is now consumed; do not reuse it or infer route validation from identity.
 
+The subsequent [#85 offline refresh](../../docs/records/evaluation/intake-identity-usage.md#v0-target-smoke-refresh-2026-10-06)
+binds merged #83 source and all nine V0 visit/target references (fourteen candidate
+appearances). Real cached-tokenizer sizing is 16,111 input tokens, or 17,135 with reserve,
+exceeding the original 16,000 preparation ceiling. The guard rejected that preparation;
+the preserved blocked draft is not an executable manifest and grants no live authority.
+The user subsequently approved only the offline smoke-limit correction and re-preparation:
+the tool now uses an 18,000 input ceiling / USD 0.0042 reference allowance. A compatible
+new manifest required separate exact-plan live approval; historical approval was not reused.
+Do not substitute the historical eight-visit request or trim candidate evidence to fit.
+
+The subsequent [approved #85 execution](../../docs/records/evaluation/intake-identity-usage.md#v0-target-identity-smoke-execution-2026-10-06)
+completed exactly one request with zero retries: eight visits and one V0-owned requirement
+target are PASS, with zero FAIL/UNKNOWN. Offline import replay is exact; the target's
+missing original address remains null with `not_supplied`. Original claims, V1-V3 records,
+all protected evidence and implementation hashes are unchanged. The fresh execution
+directory is now consumed. This identity-only result does not establish route feasibility,
+score results or another request's authority.
+
 `tools.validation.identity_judgment_smoke` is a separate development executor for a verified
 V0 material bundle. Preparation is offline; execution requires explicit user approval of
 the exact manifest digest and the [smoke execution handoff](../../docs/agents/smoke-tests.md).
@@ -223,14 +394,14 @@ POST/request and rechecks sources before its sole attempt. Changed source materi
 the response prevents import. No planner or Google calls are included.
 
 The fixed development limits are one request, low reasoning, no tools, `store=false`,
-16,000 estimated input tokens including 1,024 reserve, 3,000 output tokens and a 60-second
+18,000 estimated input tokens including 1,024 reserve, 3,000 output tokens and a 60-second
 HTTP deadline. The locally cached tokenizer is a surrogate preflight estimate. Excessive
 reported usage stops import after receipt; these checks cannot guarantee the provider's
-tokenizer or invoice ceiling. The fresh proposed reference allowance is USD 0.004; it
+tokenizer or invoice ceiling. The fresh proposed live reference allowance is USD 0.0042; it
 requires new exact-plan approval and does not inherit #73's consumed allowance. Official
 OpenAI reference rates checked 2026-10-06 are USD 0.10 ordinary input, 0.01 cached input,
 0.125 cache writes and 0.50 output per million tokens. At these caps the maximum standard
-reference is USD 0.0035; a regional +10% scenario is USD 0.00385. Output already includes
+reference is USD 0.00375; a regional +10% scenario is USD 0.004125. Output already includes
 reasoning. Receipts retain original usage, partition reported input categories, and label
 missing categories as a conservative reference upper bound rather than observed zero.
 Malformed or excessive category counts stop import. These standard/regional scenarios do
@@ -255,17 +426,95 @@ New-Item -ItemType Directory -Path artifacts/evaluation-adoption -Force | Out-Nu
 
 <a id="v0-route-requests"></a>
 
-### Offline V0 route requests and budget
+### Development-only V0 smoke route requests and budget
 
-Prepare from an exact current `versioned_api_identity_2` report without acquiring evidence:
+This tool is in `backend.evaluation.tools`, separate from ordinary evaluator scoring.
+It consumes core evaluator preparations without becoming a required scoring step.
+Use the new module path below; the former root-level tool modules are retired.
+Historical records and frozen manifests retain the paths of their own revisions.
+
+The [#86 offline refresh](../../docs/records/evaluation/routes.md#accepted-v0-identity-route-refresh-2026-10-07)
+uses #85's accepted current report: all four original legs are identity-eligible and reuse
+eight independent coordinates, requiring no Details. The dated KR profile retains three
+blocked WALK requests and one conditional TRANSIT, zero ready Routes and four UNKNOWN
+feasibility verdicts. Actual CLI replay returns 3 and matches the library; the request
+package is complete preparation without live authority. No provider/price refresh or
+acquisition occurred; hypothetical inventory estimates are not a paid allowance.
+
+The later [free KR support and budget assessment](../../docs/records/evaluation/routes.md#kr-route-support-budget-2026-10-07)
+identifies Kakao Map V2 WALK as a documentation candidate for three calls (30 KRW
+published reference), with TMAP pedestrian as an alternative. This is an offline draft,
+not a supported provider in these commands. Retention/use conditions, account costs and
+an offline adapter remain unresolved. Kakao/ODsay general TRANSIT cannot establish the
+original explicit departure; Google KR TRANSIT coverage remains unconfirmed. The saved
+#86 package, zero-send preflight and all four UNKNOWN verdicts are preserved.
+
+The [Sydney offline preparation](../../docs/records/evaluation/routes.md#sydney-offline-route-preparation-2026-10-07)
+adds explicit `--region AU` / `region_code="AU"`. Australian WALK can become ready for
+approval with complete independent identity/coordinates/window checks; it stays UNKNOWN
+without route evidence. TRANSIT remains conditional and DRIVE is unsupported by this
+acquisition path. The input must explicitly declare Australia. Default KR output/replay
+is unchanged; region is never inferred or a live authorization. Unique requests determine
+budgets, while repeated leg occurrences remain visible.
+
+The current [Sydney source request](../../tools/validation/packets/sydney-v0-route-smoke/request-natural.json)
+is four days (October 14-17), two travelers and AUD 1600, with relaxed pace, natural
+interests and required Sydney Opera House. It specifies no daily attraction count;
+independent density scoring does not supply generation quotas. It is a generation
+input, not a generated output, reviewed RequirementSpec or API snapshot. The earlier
+[counted request](../../tools/validation/packets/sydney-v0-route-smoke/request.json)
+is preserved as historical evidence. Its non-generation USD 0.3522 price scenario
+includes unready routes and does not authorize their execution. That counted-input
+generation smoke stopped after one requirements response because exact daily
+cardinality is an unsupported hard semantic condition. It produced no itinerary or
+evaluator bundle; the consumed plan cannot be reused. Original input and raw output
+remain preserved, and actual billing is unknown. See the
+[generation stop record](../../docs/records/v0-v3/development-pilots.md#sydney-v0-generation-smoke-2026-10-07).
+The separately approved natural-input V0 smoke completed with two model sends,
+zero retries and a valid original result; saved-response runner replay matches
+exactly. Its declared main counts are 2/2/2/1, retained without quantity repair.
+No independent identity, opening, route or score acceptance follows from generation.
+See the [natural execution record](../../docs/records/v0-v3/development-pilots.md#sydney-v0-natural-generation-smoke-2026-10-07).
+The subsequent [Sydney identity smoke](../../docs/records/evaluation/intake-identity-usage.md#sydney-v0-identity-smoke-2026-10-07)
+acquired eight independent searches and made one V0-only model request: six primary
+PASS, one retained primary FAIL and one requirement-target PASS. Official-source
+inspection flags a possible address false positive; it does not rewrite the report.
+This single-source library view is not a qualified four-version intake or a legacy
+adoption bundle. Opening, route and final score evidence remains outstanding.
+The subsequent [opening/route execution](../../docs/records/evaluation/routes.md#sydney-v0-opening-routes-smoke-2026-10-08)
+made six Details and two WALK Matrix requests, with no model calls or retries. Identity
+FAIL blocked acquisition for the affected venue/leg. Native opening reports four PASS
+and three UNKNOWN; routes report two PASS and one UNKNOWN, retaining the unbound day-four
+transport separately. Requirement/schedule reports retain unresolved evidence. Final
+quality reporting rejects this V0-only view with `Exactly four versions required`;
+the smoke does not bypass intake or establish an overall quality score.
+The dated input needs trusted-day revalidation before later use.
+
+The [Museum follow-up preparation](../../docs/records/evaluation/routes.md#sydney-museum-follow-up-preparation-2026-10-08)
+uses current physical association while retaining the original address FAIL. The
+original Museum-to-QVB leg is WALK with a 20-minute reservation. The separately approved
+[execution](../../docs/records/evaluation/routes.md#sydney-museum-follow-up-execution-2026-10-08)
+completed one Museum Details and one WALK Matrix request, both HTTP 200, zero retries.
+Museum opening PASS uses regular hours; the WALK takes 562 seconds over 678 metres.
+Combined opening counts are five PASS/two UNKNOWN and three evaluable routes PASS.
+Eight prior observations retain their original bytes/timestamps; no DRIVE extension
+is included. USD 0.025 is retail reference, with actual billing unknown. The one-use
+directory/allowance is consumed. Saved reports replay exactly and requirement/schedule
+sections remain unchanged; no overall score or final four-version acceptance follows.
+The actual source remains a single-version library view. Existing bundle/CLI
+regressions do not turn it into a qualified four-version intake or adoption bundle.
+
+Prepare from an exact current `versioned_api_identity_4` report without acquiring evidence:
 
 ```powershell
 $env:PYTHONIOENCODING = 'utf-8'
-.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json identity-report.json --context schedule-context.json --route-reviews route-reviews.json --prepared-at 2026-10-05T10:23:02Z | Set-Content -Encoding utf8NoBOM request-package.json
+.venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli v0-identity-material.json identity-report.json --context schedule-context.json --route-reviews route-reviews.json --prepared-at 2026-10-05T10:23:02Z | Set-Content -Encoding utf8NoBOM request-package.json
 # Missing current report: derive a current pending report without any model result or send.
-.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
+.venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli v0-identity-material.json --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
 # Historical identity reports require explicit replay; they never replace current evidence.
-.venv/Scripts/python.exe -m backend.evaluation.route_requests_cli v0-identity-material.json historical-identity.json --legacy --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
+.venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli v0-identity-material.json historical-identity.json --legacy --context schedule-context.json --prepared-at 2026-10-05T10:23:02Z
+# Illustrative qualified Australian material; the single-source smoke view is not this CLI bundle.
+.venv/Scripts/python.exe -m backend.evaluation.tools.route_requests_cli sydney-identity-material.json identity-report.json --region AU --context schedule-context.json --prepared-at 2026-10-07T00:00:00Z
 ```
 
 Schema `rtpeval_v0_route_requests_2` binds the selected identity policy and exact replay
@@ -274,9 +523,12 @@ original legs visible with UNKNOWN endpoints. Rejected/stale reports or corrupt 
 return material diagnostics with no partial request inventory. A historical report supplied
 without `--legacy` is rejected; historical saved packages are not rewritten or relabeled.
 Each leg exposes original endpoint claims, candidate correspondence, grounding verdicts and
-identity blockers separately from its route verdict. FAIL/UNKNOWN endpoints cannot acquire
-canonical coordinates or substitute venues. Endpoint occurrence/unique-venue counts remain
-distinct from deduplicated Details/Routes request counts.
+identity blockers separately from its route verdict. A verified `place_association` permits
+independent coordinates and routes for the associated API venue while the original grounding
+FAIL remains visible. Unresolved association blocks acquisition; no substitute venue or
+repaired original claim is introduced. Historical policy-3 reports require `--legacy`.
+Endpoint occurrence/unique-venue counts remain distinct from deduplicated Details/Routes
+request counts.
 
 Optional `--occupancy-reviews` retains reviewed occupancy; `--details-snapshot` consumes already supplied
 independent Details with the package's exact `details_plan`. It sends nothing and never retries bad evidence.
@@ -293,7 +545,7 @@ inventory, and 2 means invalid material. Save UTF-8 without BOM. Completion is n
 approval. Masks, dated prices, source hashes, actual versus hypothetical budgets and stops are in the
 [request contract](../../docs/contracts/0004-opening-routes.md#v0-route-request-package).
 
-Library seams: `prepare_v0_route_requests` and `preflight_v0_route_requests` in [route_requests](route_requests.py).
+Library seams: `prepare_v0_route_requests` and `preflight_v0_route_requests` in [route_requests](tools/route_requests.py).
 Preflight recomputes the frozen package before checking ledger/request limits and always returns
 `live_authorized=false`. No provider or model client is present. Execution requires separate inventory/budget
 approval and a current-session execution child configured `gpt-6.1-sol` / `medium`.
@@ -326,6 +578,13 @@ through the separately authorized injected caller before scoring. Preparation do
 invent coordinates or transport restrictions. Missing optional context/review retains
 UNKNOWN or applicability diagnostics. Route preparation exports `route_contexts` and its ready-made `evidence_plan`.
 
+Requirement/schedule rules version 3 uses verified occurrence associations for count,
+date, exclusion and fixed-time matching. `requirement_identity` exposes the physical
+identity and grounding provenance used. Historical identity reports retain canonical-only
+matching. After an authorized rule change, save a new offline recalculation separately
+from the frozen execution report/receipts. Exact replay of an earlier report uses its
+original code revision; current rules do not overwrite or relabel historical results.
+
 When the adopted identity report was resolved from an independent identity snapshot that
 already contains coordinates, replace `--coordinates coordinates.json` with
 `--identity-snapshot identity-snapshot` on route prepare/score or quality-report commands.
@@ -342,7 +601,17 @@ Use that plan directly, or put the context array under `{"contexts": [...]}` in
 that CLI input. `--expected-plan` optionally enforces trusted full-plan equality.
 
 Library seams: `score_requirement_schedule`, `prepare_routes`, `score_opening`, and
-`score_routes`. These and identity/snapshot plan commands support `--paired` where
+`score_routes`. Opening rules version 2 uses valid regular hours for unresolved intervals
+after applicable current evidence; already established current closure/opening stays
+authoritative. Special-date markers alone do not veto regular hours, and `openNow=false`
+at query time does not close a planned visit. Regular evidence gives ordinary PASS/FAIL,
+with its basis recorded. `basis_segments.hours_fields` names contributing fields;
+`regular_fallback` exposes the scope, applied intervals and retained diagnostics.
+Missing both usable schedules remains UNKNOWN. Save rule-change recalculations outside
+the original frozen execution receipts; exact older reports require their original code.
+See the [opening contract](../../docs/contracts/0004-opening-routes.md#opening).
+
+These and identity/snapshot plan commands support `--paired` where
 declared, selecting available V3 draft/final-primary projections; paired scope must
 remain consistent across inputs. Ticket 10 combines these paired outputs below.
 Scorers exit 0 for complete processing, including FAIL/UNKNOWN,
@@ -498,7 +767,9 @@ A minimal illustrative price file (synthetic rates, not a current provider quota
 For 1,000 input tokens including 400 cached, and 200 output tokens, this yields
 `0.0022` USD. Reasoning tokens are part of output, not another charge. Missing cache
 counts do not imply zero; a deliberate no-discount assumption needs a source-linked
-annotation, or the estimate stays unavailable. Each official price row must retain its
+annotation or explicit `unreported_cache_policy`, or the estimate stays unavailable.
+Cache writes use their separate rate and partition input with reads. Reported nonzero
+writes without a write rate keep costs unavailable. Each official price row must retain its
 source/date/currency, billing unit and applicable context. Explicit proxy prices and SKU
 scenarios must retain an `assumption`, rather than pretending unknown context is observed.
 
@@ -630,3 +901,88 @@ JSON artifact envelope (`path`, byte `sha256`, schema, media type and availabili
 entry declares `case_id`, `role` and `expected_goal_ids`. Missing or invalid reports remain
 unavailable inventory units. Counts describe submitted cases; no formal 32-case corpus,
 live usage/cost measurement, version ranking or causal conclusion is produced.
+
+<a id="planner-usage-capture-cli"></a>
+
+### Selected-version usage capture CLI
+
+Prepare without invoking providers (input must pass current-date admission):
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.tools.planner_usage_cli --version v1 --input-json original-input.json --runtime-config config/runtime.yaml --output-directory artifacts/usage-v1-preparation --group-id original-request --run-id v1-preparation
+```
+
+The directory must be new. Preparation saves exact input/configuration bytes,
+`runtime-policy.json`, `price-basis.json` and `manifest.json`; it constructs no provider
+runtime, requires no provider credentials and creates no result/usage file. Supply a new
+output path for execution; a preparation directory cannot be reused.
+
+Only after separate live approval, add `--execute` for one selected version and use its
+actual selected run ID. Execution loads the repository `.env` by default; `--env-file`
+selects another base file. V2/V3 can additionally load the approved local RAG environment
+with `--rag-env-file .env.tripworld`. Existing process values take precedence over the
+RAG file, which takes precedence over the base file; preparation loads neither file.
+Query embedding requires `OPENAI_API_KEY` and the
+existing compatible TripWorld database. The command uses existing runtime budgets,
+version-specific runners and dependency cleanup. `--execute` records operator intent;
+policy authorization and account invoice limits remain separate.
+
+Successful execution saves `result.json`, `usage.json`, `provenance.json`,
+`usage-summary.json`, `prices.json` and `cost-report.json`. Failures/cancellations retain
+observed usage, partial costs and `failure.json` with error type only. Exit 0 means
+preparation or this selected invocation completed; exit 1 means capture/execution failed.
+Invalid input, configuration or output conflicts raise an error before provider dispatch.
+Windows result writes use exact UTF-8 bytes to keep hashes consistent with capture.
+
+The frozen price basis was checked on 2026-10-08 using
+[OpenAI GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna),
+[query embedding](https://developers.openai.com/api/docs/models/text-embedding-3-small),
+[Web Search](https://developers.openai.com/api/docs/pricing) and
+[Google global pricing](https://developers.google.com/maps/billing-and-pricing/pricing).
+Foundry model/tool prices use the declared OpenAI proxy; Standard processing and no
+account discounts/free quota/tax are assumptions. Generated rows bind observed event IDs,
+model names, request masks/modes, billing units and acquisition day, retaining the
+reference check date. Refresh official references before relying on an older price basis.
+Unknown model identities, unsupported masks/modes, missing quantities and uncertain sends
+remain unpriced. Account invoices can later be imported through the offline cost command.
+
+Missing cached reads assume no discount only under the explicit conservative policy;
+missing writes price all non-read input at the write rate. Those assumptions appear in
+the pricing result, preserving usage missingness. Actual cache-hit events do not create
+another API charge, Matrix uses requested elements, model transport stays a backing
+observation and Repair stays a subset. Independent oracle snapshots/costs remain separate
+shared runs.
+
+Synthetic CLI tests check three sends, two Web Search tool calls, one cache reuse, six
+Matrix elements and reported model read/write partitions: the retail example totals
+USD 0.0821715. This is fixture arithmetic. Complete cost remains unavailable for
+unverified injected adapters. Qualified four-version attestation retains its separate
+producer flow; this command performs no independent evaluator requests.
+
+Add `--capture-evidence` to prepare or capture selected-version generation evidence:
+
+```powershell
+.venv/Scripts/python.exe -m backend.evaluation.tools.planner_usage_cli --version v2 --input-json original-input.json --runtime-config config/runtime.yaml --rag-env-file .env.tripworld --output-directory artifacts/generation-v2-preparation --group-id original-request --run-id v2-preparation --capture-evidence
+```
+
+This command remains offline. After exact live approval, use a different, unused output
+directory and the approved run ID, then add `--execute`. The existing selected planner runs
+once, with mechanism capture, RAW local trace, credential-filtered owned HTTP request/response
+representations and query-vector capture. SDK stream bodies are observed during normal
+consumption, including decoded gzip; raw HTML retains existing read limits. Nothing drains
+an unread response or adds a provider call. Bodies above 10 MB, unsupported content,
+interrupted streams, trace truncation and capture-write failures remain explicit missingness.
+
+Inspect `mechanism.json`, `evidence-index.json`, `evidence/wire/`, `evidence/trace/` and any
+`evidence/vectors/` NPZ files alongside result, usage, provenance and cost artifacts. The index
+binds exact file hashes and original usage event IDs; provenance binds the index and mechanism.
+Its artifact inventory excludes manifest, provenance and itself to avoid hash cycles.
+Observed-body hashes describe the declared raw/decoded form; saved JSON is credential-filtered
+and may be normalized rather than byte-identical to private provider content. Numeric cache
+usage remains available. Query-vector metadata retains text hashes, not raw query text.
+
+Exit 0 indicates invocation completion, even when optional evidence is partial. A missing
+usage file exits 1 while retaining any original result and evidence index. Check collection
+status and missing fields separately before the next stage. Failure/cancellation retains
+observations without an adopted result. Ordinary planner budgets, prompts and V0-V3 behavior
+are unchanged. See the [evidence contract](../../docs/contracts/0002-intake-identity-usage.md#planner-generation-evidence).

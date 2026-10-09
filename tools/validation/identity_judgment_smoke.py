@@ -23,11 +23,11 @@ MODEL = "gpt-6-luna"
 LIMITS = {
     "max_sends": 1,
     "max_retries": 0,
-    "max_input_tokens": 16000,
+    "max_input_tokens": 18000,
     "input_token_reserve": 1024,
     "max_output_tokens": 3000,
     "http_timeout_seconds": 60,
-    "retail_reference_allowance_usd": 0.004,
+    "retail_reference_allowance_usd": 0.0042,
 }
 PRICING = {
     "checked_on": "2026-10-06",

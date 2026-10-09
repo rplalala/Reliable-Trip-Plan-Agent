@@ -4,6 +4,7 @@ import asyncio
 import copy
 import hashlib
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -33,10 +34,47 @@ pytest_plugins = ("backend.tests.evaluation.test_intake",)
 
 
 @pytest.fixture
-def adoption_case(batch, tmp_path, request):
+def snapshot_clock(monkeypatch):
+    """Keep synthetic acquisitions independent of the machine's wall clock."""
+    from backend.evaluation import snapshot
+
+    class SnapshotClock(datetime):
+        instant = datetime(2026, 10, 6, 9, tzinfo=UTC)
+
+        @classmethod
+        def now(cls, tz=None):
+            return (
+                cls.instant.astimezone(tz) if tz is not None else cls.instant.replace(tzinfo=None)
+            )
+
+    monkeypatch.setattr(snapshot, "datetime", SnapshotClock)
+    return SnapshotClock
+
+
+@pytest.fixture
+def adoption_case(batch, tmp_path, request, snapshot_clock):
     """Persist independently supplied synthetic facts and original model wire material."""
     options = getattr(request, "param", {})
     manifest, results, write, batch_save, root = batch
+    if options.get("destination"):
+        original = json.loads((root / "input.json").read_text())
+        original["destination"] = options["destination"]
+        ref = batch_save("input.json", original)
+        manifest["groups"][0]["input_ref"] = ref
+        spec = json.loads((root / "requirements.json").read_text())
+        spec["input_sha256"] = ref["sha256"]
+        manifest["groups"][0]["requirement_spec_ref"] = batch_save(
+            "requirements.json", spec, spec["schema_version"]
+        )
+        for version in results:
+            results[version]["itinerary"]["destination"] = options["destination"]
+            name = version + "-provenance.json"
+            provenance = json.loads((root / name).read_text())
+            provenance["input_sha256"] = ref["sha256"]
+            manifest["groups"][0]["selected_runs"][version]["provenance_ref"] = batch_save(
+                name, provenance, "rtpeval_provenance_1"
+            )
+            write(version)
     if options.get("repeat_visits"):
         from backend.tests.evaluation.test_intake import activity
 
@@ -93,9 +131,14 @@ def adoption_case(batch, tmp_path, request):
             "displayName": {
                 "text": name if options.get("strict") else name.replace("Museum", "Gallery")
             },
-            "formattedAddress": "Example City, Country",
+            "formattedAddress": options.get("destination", "Example City, Country"),
             "businessStatus": "OPERATIONAL",
-            "location": {"latitude": 10 if name == "Museum A" else 11, "longitude": 20},
+            "location": {
+                "latitude": -33.86 if name == "Museum A" else -33.87,
+                "longitude": 151.21,
+            }
+            if options.get("destination") == "Sydney, Australia"
+            else {"latitude": 10 if name == "Museum A" else 11, "longitude": 20},
         }
         if options.get("coordinates_missing"):
             candidate.pop("location")

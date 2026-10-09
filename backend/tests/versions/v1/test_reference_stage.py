@@ -52,6 +52,7 @@ def main_output():
     data = make_itinerary().model_dump()
     data["output_version"] = "itinerary_2"
     data["days"][0]["activities"][0]["source_place_id"] = "poi-0-0"
+    data["days"][0]["activities"][0]["location"] = "0 Sydney NSW, Australia"
     return V1Itinerary.model_validate(data)
 
 

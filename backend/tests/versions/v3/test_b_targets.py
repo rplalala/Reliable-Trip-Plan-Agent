@@ -393,7 +393,7 @@ def test_unauthorized_repeat_repairs_automatically_without_optional_review():
     model = Model(original)
     result, model, places, runtime = asyncio.run(execute(model, runtime_config=config))
     assert result.v3.repair.status == "ACCEPTED_COMPLETE", result.v3.repair.reason
-    assert result.v3.review_policy == {"quantity": False, "overfull": False}
+    assert result.v3.review_policy == {"quantity": False, "overfull": False, "soft_pace": False}
     assert model.repair_calls == 1 and places.nearby and runtime.closes == 1
     assert result.generation_diagnostics == result.v3.final_report.diagnostics
 

@@ -12,7 +12,7 @@ from backend.evaluation.identity_llm import prepare_identity_judgment
 from backend.evaluation.preparation import identity_ready
 from backend.evaluation.quality_report import build_quality_report
 from backend.evaluation.records import canonical_digest
-from backend.evaluation.routes import prepare_routes
+from backend.evaluation.routes import prepare_routes, score_routes
 from backend.evaluation.snapshot import (
     AcquisitionPolicy,
     Response,
@@ -25,6 +25,7 @@ from backend.evaluation.snapshot_coordinates import prepare_snapshot_coordinates
 from backend.tests.evaluation.test_identity import evidence, prepared, search
 from backend.tests.evaluation.test_identity_llm import model_material
 from backend.tests.evaluation.test_requirement_schedule import context
+from backend.tests.evaluation.test_routes import reviews
 
 pytest_plugins = ("backend.tests.evaluation.test_intake",)
 
@@ -37,9 +38,9 @@ def test_current_packet_enumerates_supported_citations_and_preserves_historical_
     intake = prepared(batch, supplied)
     observed = evidence(intake, [])
     packet = prepare_identity_judgment(intake, observed, model="fixture-model").to_dict()
-    variants = packet["request"]["text"]["format"]["schema"]["properties"]["decisions"]["items"][
-        "anyOf"
-    ]
+    schema = packet["request"]["text"]["format"]["schema"]
+    decisions = schema["properties"]["decisions"]
+    variants = list(schema["$defs"].values())
     properties = next(
         v["properties"]
         for v in variants
@@ -66,8 +67,9 @@ def test_current_packet_enumerates_supported_citations_and_preserves_historical_
         if v["properties"]["address_assessment"]["enum"] == ["not_supplied"]
     )
     assert "claim.location" not in absent["evidence_fields"]["items"]["enum"]
+    assert decisions["required"] == [c["reference_id"] for c in cases]
     assert absent["reference_id"]["enum"] == [
-        c["reference_id"] for c in cases if c["claim"]["location"] is None
+        c["reference_id"] for c in cases if not c["claim"]["location"]
     ]
     assert properties["reference_id"]["enum"] == [
         c["reference_id"] for c in cases if c["claim"]["location"]
@@ -99,22 +101,59 @@ def test_missing_address_requires_not_supplied_even_without_match(batch, decisio
 
 
 @pytest.mark.parametrize("assessment", ["incorrect_claim", "different_place"])
-def test_recognized_wrong_address_keeps_correspondence_and_failure_downstream(batch, assessment):
+@pytest.mark.parametrize("mode", ["WALK", "DRIVE", "TRANSIT"])
+def test_recognized_wrong_address_keeps_correspondence_and_failure_downstream(
+    batch, assessment, mode, monkeypatch
+):
     def wrong(_manifest, results, _save, _root):
         results["v0"]["itinerary"]["days"][0]["activities"][0]["location"] = "Wrong address"
+        results["v0"]["itinerary"]["days"][0]["activities"][1]["title"] = {
+            "WALK": "Walking",
+            "DRIVE": "Driving",
+            "TRANSIT": "Public transit",
+        }[mode]
         return "v0"
 
     intake = prepared(batch, wrong)
     original = intake.to_dict()
     root = batch[4]
+    monkeypatch.setattr("backend.evaluation.snapshot._now", lambda: "2020-01-01T00:00:00Z")
+    associated = assessment == "incorrect_claim"
 
     async def transport(request):
-        name = request["parameters"].get("query") or "Museum A"
+        if request["operation"] == "route_matrix":
+            return Response(
+                200,
+                json.dumps(
+                    [
+                        {
+                            "originIndex": 0,
+                            "destinationIndex": 0,
+                            "status": {"code": 0},
+                            "condition": "ROUTE_EXISTS",
+                            "duration": "300s",
+                            "distanceMeters": 500,
+                        }
+                    ]
+                ).encode(),
+            )
+        name = request["parameters"].get("query") or (
+            "Museum B" if request["parameters"].get("place_id") == "venue-b" else "Museum A"
+        )
         place = {
             "id": "venue-a" if name == "Museum A" else "venue-b",
             "displayName": {"text": name},
             "formattedAddress": "10 Main St, Example City, Country",
             "location": {"latitude": 1, "longitude": 2},
+            "timeZone": {"id": "Etc/UTC"},
+            "regularOpeningHours": {
+                "periods": [
+                    {
+                        "open": {"day": 3, "hour": 9, "minute": 0},
+                        "close": {"day": 3, "hour": 17, "minute": 0},
+                    }
+                ]
+            },
         }
         return Response(
             200,
@@ -145,20 +184,26 @@ def test_recognized_wrong_address_keeps_correspondence_and_failure_downstream(ba
     assert failed["candidate_correspondence"] == {"decision": "match", "candidate_id": "venue-a"}
     assert failed["grounding_verdict"] == "FAIL"
     assert failed["canonical_place_id"] is None
+    assert failed["place_association"]["place_id"] == ("venue-a" if associated else None)
     assert visits[1]["grounding_verdict"] == "PASS"
     assert identity_ready(original, report)
     coordinates = prepare_snapshot_coordinates(intake, report, directory).to_dict()
     assert coordinates["status"] == "complete", coordinates
     assert any(
         r["reference_id"] == failed["reference_id"] for r in coordinates["unadopted_references"]
-    )
+    ) == (not associated)
     routes = prepare_routes(
         intake, report, context(intake), identity_snapshot_directory=directory
     ).to_dict()
     leg = next(r for r in routes["results"] if r["version"] == "v0")["legs"][0]
-    assert leg["canonical_endpoints"] == [None, "venue-b"]
+    assert leg["canonical_endpoints"] == ["venue-a" if associated else None, "venue-b"]
     assert leg["identity_grounding_verdicts"] == ["FAIL", "PASS"]
-    assert leg["expected_context"] is None
+    assert leg["mode"] == mode
+    assert (leg["expected_context"] is not None) == associated
+    assert leg["claims"][0]["start"] == "2020-01-01T10:00:00+00:00"
+    assert leg["claims"][0]["end"] == "2020-01-01T10:20:00+00:00"
+    if associated:
+        assert leg["expected_context"]["mode"] == mode
     downstream = root / "downstream"
     asyncio.run(
         acquire_snapshot(
@@ -181,6 +226,38 @@ def test_recognized_wrong_address_keeps_correspondence_and_failure_downstream(ba
         == failed["candidate_correspondence"]
     )
     assert metrics["opening"]["checks"][0]["identity_grounding_verdict"] == "FAIL"
+    assert metrics["opening"]["checks"][0]["state"] == ("PASS" if associated else "UNKNOWN")
+    assert metrics["opening"]["checks"][0]["canonical_place_id"] is None
+    if associated:
+        reviewed = prepare_routes(
+            intake,
+            report,
+            context(intake),
+            route_reviews=reviews(intake),
+            identity_snapshot_directory=directory,
+        ).to_dict()
+        route_directory = root / "route-evidence"
+        asyncio.run(
+            acquire_snapshot(
+                reviewed["evidence_plan"],
+                route_directory,
+                transport,
+                AcquisitionPolicy(max_sends=20, max_attempts=1),
+            )
+        )
+        scored = score_routes(
+            intake,
+            report,
+            route_directory,
+            context(intake),
+            route_reviews=reviews(intake),
+            identity_snapshot_directory=directory,
+        ).to_dict()
+        check = next(r for r in scored["results"] if r["version"] == "v0")["routes"]["checks"][0]
+        assert check["state"] == "PASS"
+        assert check["identity_grounding_verdicts"] == ["FAIL", "PASS"]
+        assert check["evidence_reference"]["query"]["mode"] == mode
+        assert check["reserve_seconds"] == (600 if mode == "DRIVE" else 0)
     assert intake.to_dict() == original
     assert material == saved
 
@@ -349,14 +426,15 @@ def test_current_import_requires_complete_owned_decisions_and_exact_provenance(b
     response = material["response"]
     content = response["output"][0]["content"][0]
     wire = json.loads(content["text"])
+    rows = list(wire["decisions"].values())
     if fault == "partial":
-        wire["decisions"].pop()
+        wire["decisions"].pop(rows[-1]["reference_id"])
     elif fault == "duplicate":
-        wire["decisions"][1] = copy.deepcopy(wire["decisions"][0])
+        wire["decisions"][rows[1]["reference_id"]] = copy.deepcopy(rows[0])
     elif fault == "foreign_reference":
-        wire["decisions"][0]["reference_id"] = "r999"
+        rows[0]["reference_id"] = "r999"
     elif fault == "foreign_candidate":
-        wire["decisions"][0]["candidate_id"] = wire["decisions"][1]["candidate_id"]
+        rows[0]["candidate_id"] = rows[1]["candidate_id"]
     elif fault == "old_policy":
         material["packet"]["association_policy_version"] = "v0_identity_correspondence_1"
     elif fault == "request":

@@ -252,7 +252,15 @@ class FoundryPreferenceInputAssessmentDTO(FoundryTransportDTO):
     issues: list[FoundryStructuredInputIssueDTO | FoundryOtherInputIssueDTO]
 
 
+class FoundryDailyPaceDTO(FoundryTransportDTO):
+    date: str | None
+    profile: Literal["ordinary", "relaxed", "rich", "unresolved"]
+    exact_count: int | None
+    source_refs: list[FoundrySourceQuoteDTO]
+
+
 class FoundryInterpretationDTO(FoundryTransportDTO):
+    daily_pace: list[FoundryDailyPaceDTO] | None
     preference_input_assessment: FoundryPreferenceInputAssessmentDTO
     visit_requirements: list[FoundryVisitRequirementDTO] | None
     time_protections: list[FoundryTimeProtectionDTO] | None

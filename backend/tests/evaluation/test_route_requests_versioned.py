@@ -3,15 +3,20 @@
 import asyncio
 import json
 import socket
+from datetime import UTC, datetime
 
 import pytest
 
 from backend.evaluation.identity import resolve_identities
 from backend.evaluation.identity_adoption import load_v0_material
+from backend.evaluation.identity_program import resolve_versioned_identities
 from backend.evaluation.records import thaw
-from backend.evaluation.route_requests import preflight_v0_route_requests, prepare_v0_route_requests
-from backend.evaluation.route_requests_cli import main
 from backend.evaluation.snapshot import AcquisitionPolicy, Response, acquire_snapshot
+from backend.evaluation.tools.route_requests import (
+    preflight_v0_route_requests,
+    prepare_v0_route_requests,
+)
+from backend.evaluation.tools.route_requests_cli import main
 from backend.tests.evaluation.test_identity_llm import model_material
 from backend.tests.evaluation.test_requirement_schedule import context
 from backend.tests.evaluation.test_route_requests import reviewed_identity
@@ -26,6 +31,97 @@ def current_identity(case, decisions=None):
     intake, observed = case[:2]
     result = model_material(intake, observed, historical=False, decisions=decisions)
     return resolve_identities(intake, observed, model_result=result).to_dict()
+
+
+@pytest.mark.parametrize("legacy", [False, True])
+@pytest.mark.parametrize(
+    "prepared_at, complete",
+    [
+        ("2026-10-06T08:59:59Z", False),
+        ("2026-10-06T09:00:00Z", True),
+        ("2026-10-06T09:00:01Z", True),
+    ],
+)
+def test_snapshot_time_boundary_is_stable_for_current_and_legacy_routes(
+    adoption_case, prepared_at, complete, legacy
+):
+    intake, _, bundle, _, _, _, _, _ = adoption_case
+    identity = reviewed_identity(adoption_case) if legacy else current_identity(adoption_case)
+    report = prepare_v0_route_requests(
+        bundle, identity, prepared_at=prepared_at, schedule_context=context(intake), legacy=legacy
+    ).to_dict()
+    if complete:
+        assert report["status"] == "complete", report["diagnostics"]
+        assert report["counts"]["actual_sends"] == 0
+    else:
+        assert report["status"] == "needs_material_correction"
+        assert report["requests"] == report["legs"] == []
+        assert report["diagnostics"] == [
+            {
+                "reason": "artifact_integrity_error",
+                "pointer": "snapshot/time",
+                "explanation": "Identity evidence is later than preparation",
+            }
+        ]
+
+
+@pytest.mark.parametrize("adoption_case", [{"coordinates_missing": True}], indirect=True)
+@pytest.mark.parametrize("legacy", [False, True])
+@pytest.mark.parametrize("second, complete", [(0, True), (1, False)])
+def test_supplied_details_after_preparation_are_rejected_with_a_controlled_clock(
+    adoption_case, snapshot_clock, tmp_path, legacy, second, complete
+):
+    intake, _, bundle, _, _, _, _, _ = adoption_case
+    identity = reviewed_identity(adoption_case) if legacy else current_identity(adoption_case)
+    before = prepare_v0_route_requests(
+        bundle,
+        identity,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
+        legacy=legacy,
+    ).to_dict()
+    assert before["counts"]["details_requests"] == 2
+    snapshot_clock.instant = datetime(2026, 10, 6, 10, 0, second, tzinfo=UTC)
+
+    async def respond(request):
+        return Response(
+            200,
+            json.dumps(
+                {
+                    "id": request["parameters"]["place_id"],
+                    "location": {"latitude": 10, "longitude": 20},
+                }
+            ).encode(),
+        )
+
+    directory = tmp_path / "timed-details"
+    asyncio.run(
+        acquire_snapshot(
+            before["details_plan"], directory, respond, AcquisitionPolicy(2, max_attempts=1)
+        )
+    )
+    report = prepare_v0_route_requests(
+        bundle,
+        identity,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
+        legacy=legacy,
+        details_snapshot_directory=directory,
+    ).to_dict()
+    if complete:
+        assert report["status"] == "complete", report["diagnostics"]
+        assert report["counts"]["actual_sends"] == 0
+        assert report["counts"]["supplied_details_observed_sends"] == 2
+    else:
+        assert report["status"] == "needs_material_correction"
+        assert report["requests"] == report["legs"] == []
+        assert report["diagnostics"] == [
+            {
+                "reason": "artifact_integrity_error",
+                "pointer": "details/time",
+                "explanation": "Details evidence is later than preparation",
+            }
+        ]
 
 
 def test_missing_current_model_evidence_retains_original_blocked_leg(adoption_case, monkeypatch):
@@ -93,6 +189,25 @@ def test_historical_paginated_v0_bundle_replays_without_changing_current_evidenc
     assert replay["counts"]["reused_coordinates"] == 2
 
 
+@pytest.mark.parametrize("adoption_case", [{"pagination": True}], indirect=True)
+def test_policy_two_route_replay_retains_its_current_pagination_wire(adoption_case):
+    intake, _, bundle, _, _, _, _, _ = adoption_case
+    observed = thaw(load_v0_material(intake, bundle).evidence)
+    material = model_material(intake, observed, historical=False)
+    identity = resolve_versioned_identities(
+        intake, observed, model_result=material, previous=True
+    ).to_dict()
+    report = prepare_v0_route_requests(
+        bundle,
+        identity,
+        prepared_at="2026-10-06T10:00:00Z",
+        schedule_context=context(intake),
+        legacy=True,
+    ).to_dict()
+    assert report["status"] == "complete", report["diagnostics"]
+    assert report["counts"]["reused_coordinates"] == 2
+
+
 @pytest.mark.parametrize("adoption_case", [{"high_impact": True}], indirect=True)
 def test_current_matches_need_no_human_identity_gate_and_reuse_independent_points(adoption_case):
     intake, _, bundle, _, _, _, _, _ = adoption_case
@@ -103,7 +218,7 @@ def test_current_matches_need_no_human_identity_gate_and_reuse_independent_point
     ).to_dict()
     assert report["status"] == "complete"
     assert report["identity_policy"] == {
-        "association_policy_version": "versioned_api_identity_2",
+        "association_policy_version": "versioned_api_identity_4",
         "legacy": False,
         "current_v0_model_result_present": True,
         "report_origin": "supplied",
@@ -122,9 +237,7 @@ def test_current_matches_need_no_human_identity_gate_and_reuse_independent_point
     "adoption_case", [{"claimed_location": "Wrong original address"}], indirect=True
 )
 @pytest.mark.parametrize("verdict", ["FAIL", "UNKNOWN"])
-def test_failed_or_unknown_endpoint_cannot_be_repaired_by_candidate_coordinates(
-    adoption_case, verdict
-):
+def test_trusted_failed_claim_can_use_physical_evidence_but_unknown_cannot(adoption_case, verdict):
     intake, _, bundle, _, _, _, _, _ = adoption_case
 
     def choose(row, case):
@@ -147,15 +260,31 @@ def test_failed_or_unknown_endpoint_cannot_be_repaired_by_candidate_coordinates(
     ).to_dict()
     assert report["status"] == "complete"
     leg = report["legs"][0]
-    assert leg["canonical_endpoints"] == [None, "canonical-Museum B"]
+    associated = verdict == "FAIL"
+    assert leg["canonical_endpoints"] == [
+        "canonical-Museum A" if associated else None,
+        "canonical-Museum B",
+    ]
     assert leg["identity_grounding_verdicts"] == [verdict, "PASS"]
-    assert leg["identity_blockers"][0]["grounding_verdict"] == verdict
+    assert leg["identity_blockers"] == (
+        []
+        if associated
+        else [
+            {
+                "reference_id": identity["records"][0]["reference_id"],
+                "reason": identity["records"][0]["reason"],
+                "grounding_verdict": verdict,
+            }
+        ]
+    )
     assert leg["identity_endpoints"][0]["original_claim"]["location"] == "Wrong original address"
-    assert leg["verdict"] == "UNKNOWN" and leg["request"] is None
-    assert report["counts"]["eligible_endpoint_occurrences"] == 1
-    assert report["counts"]["reused_coordinates"] == 1
-    assert {p["place_id"] for p in report["coordinates"]} == {"canonical-Museum B"}
-    assert report["requests"] == []
+    assert leg["verdict"] == "UNKNOWN"
+    assert (leg["request"] is not None) == associated
+    assert report["counts"]["eligible_endpoint_occurrences"] == (2 if associated else 1)
+    assert report["counts"]["reused_coordinates"] == (2 if associated else 1)
+    assert {p["place_id"] for p in report["coordinates"]} == (
+        {"canonical-Museum A", "canonical-Museum B"} if associated else {"canonical-Museum B"}
+    )
 
 
 def test_cli_without_current_report_retains_blockers_and_rejects_implicit_legacy(

@@ -222,7 +222,7 @@ def _special_dates(payload):
 
 
 def availability(payload, visit, zone, requested_at, retrieved_at):
-    """Select a basis per local date, keeping weaker fallback and missingness explicit."""
+    """Prefer applicable current facts and fill unresolved time from regular hours."""
     timezone = ZoneInfo(zone)
     window_start = datetime.fromisoformat(requested_at).astimezone(timezone).date()
     retrieval_day = datetime.fromisoformat(retrieved_at).astimezone(timezone).date()
@@ -242,6 +242,7 @@ def availability(payload, visit, zone, requested_at, retrieved_at):
                 and window_start <= day <= window_start + timedelta(days=6)
             )
             basis = "current" if use_current else "regular"
+            fallback = None
             if use_current:
                 a, b, issues = current(
                     payload["currentOpeningHours"],
@@ -250,23 +251,50 @@ def availability(payload, visit, zone, requested_at, retrieved_at):
                     window_start,
                     retrieval_day != window_start,
                 )
-                if (day in special_dates or special_invalid) and not a and not b:
-                    issues.append("special_date_unresolved")
-            elif day in special_dates or special_invalid:
-                a, b, issues = [], [], ["special_date_unresolved"]
-                basis = "unavailable"
+                unresolved = subtract([scope], a + b)
+                if unresolved:
+                    regular_open, regular_closed, regular_issues = regular(
+                        payload.get("regularOpeningHours"), scope, zone
+                    )
+                    fallback_open = intersections(unresolved, regular_open)
+                    fallback_closed = intersections(unresolved, regular_closed)
+                    fallback = {
+                        "scope": [s.to_dict() for s in unresolved],
+                        "known_open": [s.to_dict() for s in fallback_open],
+                        "known_closed": [s.to_dict() for s in fallback_closed],
+                        "reasons": regular_issues,
+                    }
+                    if fallback_open or fallback_closed:
+                        basis = "mixed" if a or b else "regular"
+                        issues.append("regular_fallback_used")
+                    a = union(a + fallback_open)
+                    b = union(b + fallback_closed)
+                    issues.extend(regular_issues)
             else:
                 a, b, issues = regular(payload.get("regularOpeningHours"), scope, zone)
+            if day in special_dates:
+                issues.append("special_date_marker")
+            if special_invalid:
+                issues.append("special_dates_invalid")
             opened.extend(a)
             closed.extend(b)
             reasons.extend(issues)
+            fields = (
+                ["currentOpeningHours", "regularOpeningHours"]
+                if basis == "mixed"
+                else ["currentOpeningHours" if basis == "current" else "regularOpeningHours"]
+                if a or b
+                else []
+            )
             segments.append(
                 {
                     "date": day.isoformat(),
                     "interval": scope.to_dict(),
                     "basis": basis if a or b else "unavailable",
                     "selected_basis": "current" if use_current else "regular",
-                    "hours_field": "currentOpeningHours" if use_current else "regularOpeningHours",
+                    "hours_field": fields[0] if len(fields) == 1 else None,
+                    "hours_fields": fields,
+                    "regular_fallback": fallback,
                     "current_window_start": window_start.isoformat(),
                     "current_window_end": (window_start + timedelta(days=6)).isoformat(),
                     "known_open": [s.to_dict() for s in a],

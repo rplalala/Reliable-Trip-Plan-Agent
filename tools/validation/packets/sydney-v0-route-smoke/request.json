@@ -1,0 +1,12 @@
+{
+  "input_version": "planning_request_2",
+  "destination": "Sydney, Australia",
+  "start_date": "2026-10-14",
+  "end_date": "2026-10-17",
+  "traveler_count": 2,
+  "budget": {
+    "amount": "1600",
+    "currency": "AUD"
+  },
+  "additional_preferences": "Plan a relaxed four-day trip with exactly two primary sightseeing visits per day. Include Sydney Opera House once. We enjoy architecture, museums, harbour views and local food. Prefer walking and public transport, with enough time between visits."
+}

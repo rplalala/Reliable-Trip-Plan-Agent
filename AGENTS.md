@@ -23,6 +23,10 @@
 - Local commits are authorized within approved work unless deferred/prohibited.
   Push, PR creation, merge and branch switching require explicit authorization.
   Preserve unrelated work; honor task-specific exclusions and live budgets.
+- Consolidate related documentation updates into one coherent commit per task or
+  completed stage. Fold minor additions and wording corrections into that group
+  instead of making consecutive small docs-only commits. Separate commits remain
+  appropriate for distinct scopes, required review corrections or explicit user requests.
 - Keep V0-V3 independently runnable with their intended behavior. A milestone/test
   pass is not a freeze. Freeze and next-version progression require explicit approval.
 

@@ -26,6 +26,9 @@ def main(argv=None):
         "--identity-snapshot", help="Linked identity snapshot for automatic coordinates"
     )
     parser.add_argument("--expected-plan", help="Optional trusted full snapshot plan JSON")
+    parser.add_argument(
+        "--opening-judgment", help="Source-bound missing-hours access model material"
+    )
     parser.add_argument("--generated-at", help="Explicit offset-aware report creation timestamp")
     args = parser.parse_args(argv)
     generated_at = (
@@ -42,6 +45,7 @@ def main(argv=None):
             ("coordinate_evidence", "coordinates"),
             ("expected_plan", "expected_plan"),
             ("density_reviews", "density_reviews"),
+            ("opening_judgment", "opening_judgment"),
         ):
             path = getattr(args, attribute)
             files[name], hashes[attribute] = _read(Path(path)) if path else (None, None)

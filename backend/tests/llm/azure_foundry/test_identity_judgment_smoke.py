@@ -83,7 +83,7 @@ def output(plan, *, failure=False, match=False):
                 "candidate.formatted_address",
             ],
         )
-    return {"decisions": rows}
+    return {"decisions": {row["reference_id"]: row for row in rows}}
 
 
 def test_preparation_and_unapproved_execution_send_nothing(adoption_case, tmp_path):
@@ -185,13 +185,69 @@ def test_changed_preparation_is_rejected_before_send(adoption_case, tmp_path, ch
 
 def test_new_allowance_covers_supported_price_categories(adoption_case, tmp_path):
     plan = prepared(adoption_case, tmp_path)
-    assert plan["limits"]["max_input_tokens"] == 16000
+    assert plan["limits"]["max_input_tokens"] == 18000
     assert plan["limits"]["max_output_tokens"] == 3000
-    assert plan["limits"]["retail_reference_allowance_usd"] == 0.004
+    assert plan["limits"]["retail_reference_allowance_usd"] == 0.0042
     assert plan["pricing"]["cached_input_per_million_usd"] == 0.01
     assert plan["pricing"]["cache_write_per_million_usd"] == 0.125
-    assert plan["maximum_standard_retail_reference_usd"] == pytest.approx(0.0035)
-    assert plan["maximum_regional_retail_reference_usd"] == pytest.approx(0.00385)
+    assert plan["maximum_standard_retail_reference_usd"] == pytest.approx(0.00375)
+    assert plan["maximum_regional_retail_reference_usd"] == pytest.approx(0.004125)
+
+
+@pytest.mark.parametrize(
+    "adoption_case, accepted",
+    [({"claimed_location": "x" * 56000}, True), ({"claimed_location": "x" * 64000}, False)],
+    indirect=["adoption_case"],
+)
+def test_preparation_keeps_full_claim_within_new_input_cap_and_rejects_overflow(
+    adoption_case, tmp_path, monkeypatch, accepted
+):
+    from openai import AsyncOpenAI
+
+    monkeypatch.setattr(
+        AsyncOpenAI, "__init__", lambda *a, **kw: pytest.fail("Preparation created a live client")
+    )
+    if not accepted:
+        with pytest.raises(ValueError, match="Estimated input exceeds smoke allowance"):
+            prepared(adoption_case, tmp_path)
+        assert not (tmp_path / "prepared").exists()
+        return
+    plan = prepared(adoption_case, tmp_path)
+    assert 16000 < plan["estimated_input_tokens_with_reserve"] <= 18000
+    cases = json.loads(plan["wire_request"]["input"])["cases"]
+    assert cases[0]["claim"]["location"] == "x" * 56000
+    assert plan["preparation"]["actual_sends"] == 0
+    assert not (tmp_path / "prepared/execution").exists()
+
+
+@pytest.mark.parametrize(
+    "input_tokens, output_tokens, completed",
+    [(18000, 3000, True), (18001, 3000, False), (18000, 3001, False)],
+)
+def test_reported_usage_at_new_caps_prices_full_cache_writes_and_stops_overflow(
+    adoption_case, tmp_path, input_tokens, output_tokens, completed
+):
+    plan = prepared(adoption_case, tmp_path)
+    response = sdk_response(output(plan), input_tokens=input_tokens, output_tokens=output_tokens)
+    response["usage"]["input_tokens_details"] = {
+        "cached_tokens": 0,
+        "cache_write_tokens": input_tokens,
+    }
+    receipt = run(plan, lambda _: httpx.Response(200, json=response))
+    assert receipt["model_sends"] == 1
+    directory = tmp_path / "prepared/execution"
+    assert (directory / "response.bin").is_file()
+    if completed:
+        assert receipt["status"] == "completed"
+        assert receipt["retail_reference_usd"] == pytest.approx(0.00375)
+        assert receipt["regional_retail_reference_usd"] == pytest.approx(0.004125)
+        assert receipt["retail_reference_basis"] == "reported_categories"
+        assert (directory / "identity-report.json").is_file()
+    else:
+        assert receipt["status"] == "stopped"
+        assert not (directory / "identity-report.json").exists()
+    with pytest.raises(FileExistsError):
+        run(plan, lambda _: pytest.fail("Consumed usage-boundary attempt repeated"))
 
 
 def test_relative_material_root_and_critical_implementation_are_frozen(adoption_case, tmp_path):
@@ -324,14 +380,15 @@ def test_terminal_errors_keep_one_attempt_without_import(adoption_case, tmp_path
         if problem == "json":
             return httpx.Response(200, content=b"invalid JSON")
         value = output(plan)
+        rows = list(value["decisions"].values())
         if problem == "decision":
-            value["decisions"][0]["reference_id"] = "foreign-reference"
+            rows[0]["reference_id"] = "foreign-reference"
         if problem == "partial":
-            value["decisions"].pop()
+            value["decisions"].pop(rows[-1]["reference_id"])
         if problem == "unsupported_citation":
-            value["decisions"][0]["evidence_fields"] = ["candidate.website"]
+            rows[0]["evidence_fields"] = ["candidate.website"]
         if problem == "null_address_contract":
-            value["decisions"][0]["address_assessment"] = "equivalent"
+            rows[0]["address_assessment"] = "equivalent"
         response = sdk_response(value, input_tokens=20001 if problem == "usage" else 120)
         if problem == "missing_usage":
             response.pop("usage")

@@ -58,7 +58,7 @@ def output_role_summary(itinerary, supply):
 
 
 def validate_output_sources(itinerary, *, places=None, supplied_ids=()):
-    """Validate V0 output or V1 primary output through the generation failure boundary.
+    """Validate V0 output or restore supplied V1-V3 source facts at acceptance.
 
     Missing scheduled REQUIRED visits are observable in OutputRoleSummary, not repaired.
     Historical domain results keep defaults; real model outputs require itinerary_2.
@@ -98,7 +98,10 @@ def validate_output_sources(itinerary, *, places=None, supplied_ids=()):
             update={
                 "activities": [
                     activity.model_copy(
-                        update={"place_name": ledger[activity.source_place_id].name}
+                        update={
+                            "place_name": ledger[activity.source_place_id].name,
+                            "location": ledger[activity.source_place_id].formatted_address,
+                        }
                     )
                     if activity.source_place_id
                     else activity

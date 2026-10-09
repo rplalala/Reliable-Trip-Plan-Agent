@@ -4,8 +4,9 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
-from .identity_program import POLICY_VERSION
+from .identity_program import VERSIONED_TARGET_POLICIES
 from .intake import _read
+from .place_association import associated_place_id
 from .preparation import identity_ready
 from .records import MaterialError, canonical_digest, freeze, require, thaw
 from .snapshot import build_identity_plan, identity_evidence, load_snapshot
@@ -25,7 +26,7 @@ class SnapshotCoordinates:
 
 
 def prepare_snapshot_coordinates(intake, identity_report, snapshot_directory):
-    """Revalidate original evidence and extract only adopted canonical coordinates."""
+    """Revalidate original evidence and extract only verified physical coordinates."""
     prepared = intake.to_dict() if hasattr(intake, "to_dict") else thaw(intake)
     identity = (
         identity_report.to_dict() if hasattr(identity_report, "to_dict") else thaw(identity_report)
@@ -44,7 +45,7 @@ def prepare_snapshot_coordinates(intake, identity_report, snapshot_directory):
             base["unadopted_references"] = [
                 {key: r[key] for key in ("reference_id", "source", "reason", "grounding_verdict")}
                 for r in identity["records"]
-                if r["canonical_place_id"] is None
+                if associated_place_id(r) is None
             ]
         snapshot = load_snapshot(snapshot_directory)
         plan = snapshot["plan"]
@@ -56,7 +57,8 @@ def prepare_snapshot_coordinates(intake, identity_report, snapshot_directory):
             "Identity snapshot intake/plan mismatch",
         )
         evidence = identity_evidence(
-            snapshot, historical=identity.get("association_policy_version") != POLICY_VERSION
+            snapshot,
+            historical=identity.get("association_policy_version") not in VERSIONED_TARGET_POLICIES,
         )
         require(
             identity["evidence_hash"] == canonical_digest(evidence),
@@ -80,7 +82,7 @@ def prepare_snapshot_coordinates(intake, identity_report, snapshot_directory):
         refs = {r["reference_id"]: r for r in plan["references"]}
         selected = {}
         for adopted in identity["records"]:
-            pid = adopted["canonical_place_id"]
+            pid = associated_place_id(adopted)
             if pid is None:
                 continue
             rid = adopted.get("evidence_reference_id", adopted["reference_id"])

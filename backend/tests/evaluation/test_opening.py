@@ -217,16 +217,16 @@ def test_partial_closure_stays_fail_in_conditional_denominator(opening_scenario)
 
 
 @pytest.mark.parametrize(
-    ("hours", "state", "reason"),
+    ("hours", "reason"),
     [
-        ({}, "UNKNOWN", "periods_missing"),
-        ({"periods": None}, "UNKNOWN", "periods_invalid"),
-        ({"periods": [{"open": point(3, 0)}]}, "UNKNOWN", "close_missing"),
+        (None, "hours_missing"),
+        ([], "hours_invalid"),
+        ({}, "periods_missing"),
+        ({"periods": None}, "periods_invalid"),
+        ({"periods": [{"open": point(3, 0)}]}, "close_missing"),
     ],
 )
-def test_applicable_invalid_current_cannot_be_erased_by_regular(
-    opening_scenario, hours, state, reason
-):
+def test_invalid_current_falls_back_to_regular_with_diagnostics(opening_scenario, hours, reason):
     intake, identity, directory, _, _ = opening_scenario(
         {
             "timeZone": {"id": "Etc/UTC"},
@@ -235,7 +235,8 @@ def test_applicable_invalid_current_cannot_be_erased_by_regular(
         }
     )
     check = first(score_opening(intake, identity, directory).to_dict())["checks"][0]
-    assert check["state"] == state
+    assert check["state"] == "PASS"
+    assert check["basis"] == "regular"
     assert reason in check["reasons"]
 
 
@@ -250,7 +251,7 @@ def test_post_trip_current_does_not_become_historical(opening_scenario, current)
     assert check["basis"] == "regular"
 
 
-def test_special_date_without_usable_applicable_hours_stays_unknown(opening_scenario):
+def test_special_date_marker_without_schedule_uses_regular(opening_scenario):
     intake, identity, directory, _, _ = opening_scenario(
         {
             "timeZone": {"id": "Etc/UTC"},
@@ -262,9 +263,110 @@ def test_special_date_without_usable_applicable_hours_stays_unknown(opening_scen
         requested="2020-01-02T00:00Z",
     )
     check = first(score_opening(intake, identity, directory).to_dict())["checks"][0]
+    assert check["state"] == "PASS"
+    assert check["basis"] == "regular"
+    assert "special_date_marker" in check["reasons"]
+    assert "full visit" in check["explanation"]
+
+
+def test_partial_current_fallback_preserves_interval_provenance(opening_scenario):
+    intake, identity, directory, _, _ = opening_scenario(
+        {
+            "timeZone": {"id": "Etc/UTC"},
+            "currentOpeningHours": {"periods": [period(9, 10), {"open": point(3, 11)}]},
+            "regularOpeningHours": {"periods": [period(9, 12)]},
+        },
+        change=clocks("2020-01-01T09:00Z", "2020-01-01T11:00Z"),
+    )
+    report = score_opening(intake, identity, directory).to_dict()
+    check = first(report)["checks"][0]
+    assert check["state"] == "PASS"
+    assert check["basis"] == "mixed"
+    segment = check["basis_segments"][0]
+    assert segment["hours_fields"] == ["currentOpeningHours", "regularOpeningHours"]
+    assert segment["hours_field"] is None
+    assert segment["regular_fallback"]["known_open"] == [
+        {
+            "start": "2020-01-01T10:00:00+00:00",
+            "end": "2020-01-01T11:00:00+00:00",
+            "seconds": 3600.0,
+        }
+    ]
+    assert segment["regular_fallback"]["known_closed"] == []
+    assert "close_missing" in segment["reasons"]
+    assert report["rules"]["version"] == "rtpeval_opening_rules_2"
+
+
+@pytest.mark.parametrize("special", [None, {}, [{"date": {"year": 2020}}]])
+def test_invalid_special_markers_are_diagnostics_not_regular_vetoes(opening_scenario, special):
+    intake, identity, directory, _, _ = opening_scenario(
+        {
+            "timeZone": {"id": "Etc/UTC"},
+            "currentOpeningHours": {"specialDays": special},
+            "regularOpeningHours": {"periods": [period()]},
+        }
+    )
+    check = first(score_opening(intake, identity, directory).to_dict())["checks"][0]
+    assert check["state"] == "PASS"
+    assert "special_dates_invalid" in check["reasons"]
+    assert "periods_missing" in check["reasons"]
+
+
+def test_regular_fallback_can_prove_visit_outside_hours(opening_scenario):
+    intake, identity, directory, _, _ = opening_scenario(
+        {
+            "timeZone": {"id": "Etc/UTC"},
+            "currentOpeningHours": None,
+            "regularOpeningHours": {"periods": [period()]},
+        },
+        change=clocks("2020-01-01T08:30Z", "2020-01-01T09:30Z"),
+    )
+    check = first(score_opening(intake, identity, directory).to_dict())["checks"][0]
+    assert check["state"] == "FAIL"
+    assert check["basis"] == "regular"
+    assert check["outside_seconds"] == 1800
+    assert check["basis_segments"][0]["regular_fallback"]["known_closed"][0]["seconds"] == 1800
+
+
+def test_known_current_closure_survives_regular_cross_date_fallback(opening_scenario):
+    intake, identity, directory, _, _ = opening_scenario(
+        {
+            "timeZone": {"id": "Etc/UTC"},
+            "currentOpeningHours": {
+                "periods": [
+                    {
+                        "open": dated_point("2020-01-01", 22),
+                        "close": dated_point("2020-01-01", 23, 59, truncated=True),
+                    }
+                ]
+            },
+            "regularOpeningHours": {"periods": [{"open": point(3, 21), "close": point(4, 2)}]},
+        },
+        requested="2019-12-26T12:00Z",
+        change=clocks("2020-01-01T21:00Z", "2020-01-02T01:00Z"),
+    )
+    check = first(score_opening(intake, identity, directory).to_dict())["checks"][0]
+    assert check["state"] == "FAIL"
+    assert check["basis"] == "mixed"
+    assert check["unknown_seconds"] == 0
+    assert check["outside_seconds"] == 3600
+    assert check["basis_segments"][0]["regular_fallback"]["known_closed"] == []
+
+
+def test_partial_current_without_regular_retains_unknown_interval(opening_scenario):
+    intake, identity, directory, _, _ = opening_scenario(
+        {
+            "timeZone": {"id": "Etc/UTC"},
+            "currentOpeningHours": {"periods": [period(9, 10), {"open": point(3, 11)}]},
+        },
+        change=clocks("2020-01-01T09:00Z", "2020-01-01T11:00Z"),
+    )
+    check = first(score_opening(intake, identity, directory).to_dict())["checks"][0]
     assert check["state"] == "UNKNOWN"
-    assert "special_date_unresolved" in check["reasons"]
-    assert "exceptional hours" in check["explanation"]
+    assert check["basis"] == "current"
+    assert check["known_open_seconds"] == 3600
+    assert check["unknown_seconds"] == 3600
+    assert check["basis_segments"][0]["regular_fallback"]["known_open"] == []
 
 
 @pytest.mark.parametrize(
@@ -377,7 +479,7 @@ def test_explicit_cross_date_and_previous_day_periods(
     assert check["basis"] == basis
 
 
-def test_cross_date_current_and_regular_preserve_basis_segments(opening_scenario):
+def test_cross_date_truncation_falls_back_without_losing_basis_segments(opening_scenario):
     intake, identity, directory, _, _ = opening_scenario(
         {
             "timeZone": {"id": "Etc/UTC"},
@@ -395,16 +497,17 @@ def test_cross_date_current_and_regular_preserve_basis_segments(opening_scenario
         change=clocks("2020-01-01T23:00Z", "2020-01-02T01:00Z"),
     )
     check = first(score_opening(intake, identity, directory).to_dict())["checks"][0]
-    assert check["state"] == "UNKNOWN"
+    assert check["state"] == "PASS"
     assert check["basis"] == "mixed"
-    assert check["unknown_seconds"] == 60
+    assert check["unknown_seconds"] == 0
     assert check["confirmed_outside_lower_bound_seconds"] == 0
-    assert [s["basis"] for s in check["basis_segments"]] == ["current", "regular"]
+    assert [s["basis"] for s in check["basis_segments"]] == ["mixed", "regular"]
+    assert check["basis_segments"][0]["regular_fallback"]["known_open"][0]["seconds"] == 60
 
 
-@pytest.mark.parametrize(("dated", "state"), [(False, "UNKNOWN"), (True, "PASS")])
-def test_collection_crossing_midnight_needs_literal_dates_for_open_proof(
-    opening_scenario, dated, state
+@pytest.mark.parametrize(("dated", "basis"), [(False, "regular"), (True, "current")])
+def test_collection_crossing_midnight_uses_regular_when_current_dates_are_uncertain(
+    opening_scenario, dated, basis
 ):
     p = {"open": dated_point("2020-01-01", 9), "close": dated_point("2020-01-01", 17)}
     if not dated:
@@ -419,7 +522,8 @@ def test_collection_crossing_midnight_needs_literal_dates_for_open_proof(
         retrieved="2020-01-02T00:01Z",
     )
     check = first(score_opening(intake, identity, directory).to_dict())["checks"][0]
-    assert check["state"] == state
+    assert check["state"] == "PASS"
+    assert check["basis"] == basis
     assert "current_collection_date_uncertain" in check["reasons"]
 
 

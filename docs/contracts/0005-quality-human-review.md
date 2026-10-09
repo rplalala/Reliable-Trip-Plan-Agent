@@ -81,6 +81,15 @@ optional trusted `expected_plan` and required offset-aware `generated_at`. It re
 immutable `QualityReportResult`; `to_dict()` exports `rtpeval_quality_report_2`.
 No provider client, planner graph or extra dependency is constructed.
 
+Optional source-bound `opening_judgment` selects `rtpeval_access_quality_4`: opening PASS
+can use API schedules or the [missing-hours access assessment](0004-opening-routes.md#missing-hours-access-judgment).
+Arithmetic, populations and denominators remain unchanged. Model-supported PASS is a
+policy judgment, not verified hours. Ordinary viewing at public landmarks may be inferred;
+restricted activities and museum admission retain separate access-evidence requirements.
+Opening primary metrics retain factual coverage,
+unknown durations and separate model-assessed/decidable counts. API-only reports retain
+their original profile. Scoring/import never invokes a model.
+
 Executable commands are in the [package guide](../../backend/evaluation/README.md).
 
 All options are optional for CLI replay; missing independent evidence retains the
@@ -108,10 +117,12 @@ fractions accompany coverage (P+F)/N, U/N, F/N and conditional P/(P+F). UNKNOWN 
 UNKNOWN; conditional compliance does not determine the score. Parent obligations,
 logical commitments, primary visits and combined route legs retain one weight.
 Grounding uses source occurrences/validated identity records rather than caller summary
-counts. Under the current uniform LLM policy, replayed `grounding_verdict` supplies PASS,
+counts. Under the current version-specific policy, replayed `grounding_verdict` supplies PASS,
 FAIL or UNKNOWN: confirmed incorrect addresses and different venues are FAIL without canonical
-adoption or corrected endpoint substitution. Earlier explicitly replayed legacy reports retain
-their original resolved/unresolved classification. This changes claim classification, not
+adoption. A separately verified physical association can support opening/routes while
+grounding FAIL remains counted. It never changes requirement fulfillment or the original
+output, and downstream PASS never cancels a claim error. Earlier explicitly replayed legacy
+reports retain their original resolved/unresolved classification. This changes claim classification, not
 score arithmetic or denominators. Missing evidence remains UNKNOWN. Claimed-ID conflicts and
 unknown role populations remain separate records.
 
@@ -357,6 +368,14 @@ all expected final/optional rows and source hashes, then selects the two V3 stag
 The reviewed-coordinate and saved identity-snapshot paths retain Ticket 07 semantics.
 Foreign/stale supplied sources, preparation/reviews or corrupt snapshots fail atomically;
 they do not silently shrink the cohort or become itinerary FAIL.
+
+Controlled opening facts and exact venue selectors use the check's verified
+`associated_place_id` under the current identity policy, falling back to canonical ID
+only for historical checks without that field. A reviewed timetable can resolve missing
+hours while the original grounding FAIL and execution hash remain intact. This physical
+venue selection applies only to opening; grounding, requirements and repetition selectors
+retain canonical-claim semantics. Human facts still cannot override independently
+confirmed hours or bypass unavailable identity.
 
 The five dimensions retain exact P/(P+F+U) arithmetic and equal weights. The **pair's**
 common mask excludes a dimension only when both stages establish zero denominators.

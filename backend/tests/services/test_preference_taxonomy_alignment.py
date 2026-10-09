@@ -26,6 +26,7 @@ def test_historical_mismatch_is_valid_and_never_automatically_reclassified(name,
     saved = json.loads((FIXTURES / f"historical_{name}_taxonomy.json").read_text())
     payload = json.loads(saved["raw_model_response"][0]["text"])
     assert payload == saved["strict_parsed_dto"]
+    payload["daily_pace"] = None  # Synthetic migration; retain historical evidence.
     # Synthetic wire migration only; historical raw artifacts are not changed.
     for row in payload.get("semantic_requirements") or ():
         row["experience_goal"] = None
@@ -130,7 +131,7 @@ def test_synthetic_valid_contrasts_are_not_reclassified_by_application(text):
 
 def test_prompt_has_decision_order_without_changing_wire_ownership():
     prompt = PREFERENCE_INTERPRETATION_SYSTEM_PROMPT
-    assert "preference_prompt_18" in prompt
+    assert "preference_prompt_19" in prompt
     assert (
         "Not knowing which clear requirement the user will give up is NOT semantic ambiguity"
         in prompt
@@ -140,6 +141,6 @@ def test_prompt_has_decision_order_without_changing_wire_ownership():
     assert "unsupported_request_scope or semantic_ambiguity" not in prompt
     assert "Conflicting unresolved modes require an extraction issue" not in prompt
     schema = requirement_wire_format()
-    assert schema["json_schema"]["name"] == "PreferenceDraftV9"
+    assert schema["json_schema"]["name"] == "PreferenceDraftV10"
     props = schema["json_schema"]["schema"]["$defs"]["FoundryOtherInputIssueDTO"]["properties"]
     assert props["operational_conflict_index"]["type"] == "null"

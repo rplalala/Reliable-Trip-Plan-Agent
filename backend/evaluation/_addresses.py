@@ -1,9 +1,71 @@
 """Typed independent address comparisons with strict legacy fallback."""
 
 import re
+from collections import deque
 
 from ._claims import normalized
 from .records import text
+
+
+def compare_address_claim(value, candidate):
+    """Binary whole-address equivalence using only this observation's alias pairs."""
+    provider = candidate["formatted_address"]
+    result = {
+        "schema_version": "rtpeval_address_comparison_1",
+        "original": value,
+        "provider_address": provider,
+        "verdict": "FAIL",
+        "basis": "unexplained_address_difference",
+        "aliases": [],
+    }
+    if value == provider:
+        return {**result, "verdict": "PASS", "basis": "exact"}
+    if normalized(value) == normalized(provider):
+        return {**result, "verdict": "PASS", "basis": "normalized_format"}
+
+    def tokens(s):
+        return tuple(re.findall(r"\w+|[^\w\s]", normalized(s) or ""))
+
+    left, right = tokens(value), tokens(provider)
+    pairs = []
+    raw = candidate.get("address_components")
+    for component in raw if isinstance(raw, list) else []:
+        if not isinstance(component, dict):
+            continue
+        long, short = component.get("longText"), component.get("shortText")
+        if not text(long) or not text(short) or normalized(long) == normalized(short):
+            continue
+        # An alias cannot excuse changed house/unit/postal numbers.
+        if re.findall(r"\d+", long) != re.findall(r"\d+", short):
+            continue
+        pairs.append((tokens(long), tokens(short), {"longText": long, "shortText": short}))
+    destinations = {}
+    for long, short, _ in pairs:
+        destinations.setdefault(short, set()).add(long)
+        destinations.setdefault(long, set()).add(short)
+    if any(len(values) > 1 for values in destinations.values()):
+        return {**result, "basis": "conflicting_component_aliases"}
+    pending = deque([(0, 0, [])])
+    visited = set()
+    while pending:
+        i, j, used = pending.popleft()
+        if (i, j) in visited:
+            continue
+        visited.add((i, j))
+        if i == len(left) and j == len(right):
+            return {
+                **result,
+                "verdict": "PASS",
+                "basis": "google_component_aliases" if used else "normalized_format",
+                "aliases": used,
+            }
+        if i < len(left) and j < len(right) and left[i] == right[j]:
+            pending.append((i + 1, j + 1, used))
+        for a, b, proof in pairs:
+            for first, second in ((a, b), (b, a)):
+                if left[i : i + len(first)] == first and right[j : j + len(second)] == second:
+                    pending.append((i + len(first), j + len(second), [*used, proof]))
+    return result
 
 
 def components(candidate, *, literal=False, hierarchical=False):

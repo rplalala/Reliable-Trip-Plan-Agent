@@ -56,6 +56,7 @@ def primary(overlap=True):
     draft = make_itinerary()
     a = draft.days[0].activities[0]
     a.activity_kind, a.source_place_id = "main_poi", "poi-0-0"
+    a.location = "0 Sydney NSW, Australia"
     if overlap:
         draft.days[0].activities.append(
             a.model_copy(
@@ -63,6 +64,7 @@ def primary(overlap=True):
                     "activity_id": "two",
                     "source_place_id": "poi-0-1",
                     "place_name": "Place poi-0-1",
+                    "location": "1 Sydney NSW, Australia",
                     "start_time": a.end_time - timedelta(minutes=30),
                     "end_time": a.end_time + timedelta(minutes=30),
                 }
@@ -76,6 +78,7 @@ def primary(overlap=True):
                 "activity_id": "second-day-visit",
                 "source_place_id": "poi-0-2",
                 "place_name": "Place poi-0-2",
+                "location": "2 Sydney NSW, Australia",
                 "start_time": a.start_time + timedelta(days=1),
                 "end_time": a.end_time + timedelta(days=1),
             }

@@ -102,6 +102,30 @@ def test_worked_cached_tokens_matrix_and_repair_subset_are_not_double_charged():
     assert run["events"][0]["pricing"]["price_id"] == "model"
 
 
+def test_reported_cache_writes_are_separate_from_ordinary_and_cached_input():
+    item, catalog = source(), prices()
+    item["usage"]["model_calls"][0]["cache_write_input_tokens"] = 300
+    catalog["rows"][0]["rates"]["cache_write_input_tokens"] = "3"
+    run = build_cost_report([item], catalog)["runs"][0]
+    # 300 ordinary * 2 + 400 read * .5 + 300 write * 3 + 200 output * 4, per million.
+    assert run["categories"]["models"]["estimated_total"] == "0.0025"
+    assert run["estimated_total"] == "0.0325"
+    assert run["events"][1]["status"] == "transport_only"
+
+
+def test_missing_cache_writes_use_only_an_explicit_conservative_price_assumption():
+    item, catalog = source(), prices()
+    catalog["rows"][0]["rates"]["cache_write_input_tokens"] = "3"
+    assert build_cost_report([item], catalog)["runs"][0]["estimated_total"] is None
+    catalog["rows"][0]["unreported_cache_policy"] = "uncached_write_rate"
+    run = build_cost_report([item], catalog)["runs"][0]
+    assert run["estimated_total"] == "0.0328"  # 600 unknown non-read inputs priced at 3.
+    assert run["events"][0]["pricing"]["assumptions"] == [
+        "Unreported cache writes: all non-read input priced at the cache-write rate."
+    ]
+    assert "cache_write_input_tokens" not in item["usage"]["model_calls"][0]
+
+
 def bill(scope="event", **extra):
     return {
         "bill_id": "line1",
@@ -310,3 +334,21 @@ def test_uncertain_backing_sends_remain_unknown(fault):
     assert run["best_available_observed_subtotal"] == "0.0322"
     assert run["events"][1]["status"] == "unpriced"
     assert run["events"][1]["missing_reason"]
+
+
+def test_observed_cache_writes_cannot_be_silently_priced_as_ordinary_input():
+    item = source()
+    item["usage"]["model_calls"][0]["cache_write_input_tokens"] = 300
+    run = build_cost_report([item], prices())["runs"][0]
+    assert run["estimated_total"] is None
+    assert run["events"][0]["missing_reason"] == "missing_cache_write_price"
+
+
+def test_cache_read_and_write_partitions_cannot_exceed_reported_input():
+    item = source()
+    item["usage"]["model_calls"][0]["cache_write_input_tokens"] = 700
+    catalog = prices()
+    catalog["rows"][0]["rates"]["cache_write_input_tokens"] = "3"
+    run = build_cost_report([item], catalog)["runs"][0]
+    assert run["estimated_total"] is None
+    assert run["events"][0]["missing_reason"] == "invalid_cache_partition"

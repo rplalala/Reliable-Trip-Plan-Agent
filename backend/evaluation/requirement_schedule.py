@@ -16,19 +16,23 @@ from ._schedule_preparation import (
 )
 from .identity import SUBJECT_SCOPE_VERSION
 from .occupancy import assess_occupancy, intersections, prepare_occupancy, read_span, stable_id
+from .place_association import associated_place_id
 from .preparation import identity_ready as _identity_ready
 from .preparation import schedule_timezones as _context
 from .records import MaterialError, freeze, require, thaw
 from .schedule_time import expand_protection, normalize_interval
 
 REPORT_VERSION = "rtpeval_requirement_schedule_report_1"
-RULES_VERSION = "rtpeval_requirement_schedule_rules_1"
+RULES_VERSION = "rtpeval_requirement_schedule_rules_3"
 RULES = {
     "version": RULES_VERSION,
     "identity_scope": SUBJECT_SCOPE_VERSION,
+    "occurrence_identity": "verified_place_association_else_historical_canonical",
+    "target_identity": "version_owned_adopted_canonical",
     "intervals": "half_open",
     "time_tolerance_seconds": 0,
     "transport": "v0_activity_v1_v3_transfer",
+    "unbound_v0_transport": "declared_activity_clock_establishes_occupancy_without_route_identity",
     "count_default": "explicit_reviewed_payload",
     "protection_units": False,
     "timestamp_fraction_digits": 6,
@@ -96,6 +100,7 @@ def _occurrences(projection, identity_index, timezone):
                 "interval": interval,
                 "primary": activity["evaluation_role"] == "primary_visit",
                 "identity": record,
+                "associated_id": associated_place_id(record) if record else None,
                 "canonical_id": record.get("canonical_place_id")
                 if record.get("resolution") == "resolved"
                 else None,
@@ -111,10 +116,10 @@ def _matches(occurrences, canonical, days):
         consistent = item["interval"].date_consistent
         if consistent and activity["declared_day"] not in days:
             continue
-        adopted = item["canonical_id"]
-        if item["primary"] and canonical and adopted and canonical != adopted:
+        associated = item["associated_id"]
+        if item["primary"] and canonical and associated and canonical != associated:
             continue
-        if item["primary"] and canonical and adopted == canonical and consistent:
+        if item["primary"] and canonical and associated == canonical and consistent:
             confirmed.append(item)
         else:
             potential.append(item)
@@ -566,6 +571,21 @@ def score_requirement_schedule(
                                     if item["kind"] not in OBLIGATION_FIELDS
                                 ],
                             },
+                            "requirement_identity": [
+                                {
+                                    "source": item["activity"]["source"],
+                                    "associated_place_id": item["associated_id"],
+                                    "canonical_place_id": item["canonical_id"],
+                                    "grounding_verdict": item["identity"].get("grounding_verdict"),
+                                    "basis": "verified_place_association"
+                                    if item["associated_id"]
+                                    and "place_association" in item["identity"]
+                                    else "adopted_canonical_identity"
+                                    if item["associated_id"]
+                                    else "unresolved",
+                                }
+                                for item in occurrences
+                            ],
                             "non_overlap": {
                                 **_dimension(
                                     non_overlap,

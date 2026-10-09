@@ -135,6 +135,31 @@ def test_final_report_deducts_daily_penalty_without_replacing_verified_metrics(r
     assert missing["overall_total"]["reason"] == "density_penalty_unresolved"
 
 
+@pytest.mark.parametrize("exact_count,expected", [(None, 0), (3, 100)])
+def test_independent_quality_and_repair_measure_the_same_two_visit_penalty(
+    route_case, exact_count, expected
+):
+    from backend.app.versions.v3.validation import validate_draft
+    from backend.tests.versions.v3.test_soft_pace import pace_contract
+    from backend.tests.versions.v3.test_validation import WINDOW, activity, draft, place
+
+    case = route_case()
+    quality = report(
+        case, density_reviews=density_reviews(case[0].to_dict(), "relaxed", exact_count=exact_count)
+    )
+    assert quality["status"] == "complete", quality["diagnostics"]
+    density = quality["groups"][0]["versions"]["v3"]["daily_density"]
+    assert density["mean_penalty_0_100"] == expected
+    measured = validate_draft(
+        draft([activity(), activity("two", "b", "13:00", "14:00")]),
+        pace_contract(exact_count=exact_count),
+        window=WINDOW,
+        supplied_ids=("a", "b"),
+        places=(place(), place("b")),
+    )
+    assert next(f for f in measured.findings if f.check == "soft_pace").magnitude == expected
+
+
 def test_known_unknown_identity_has_no_fabrication_penalty(route_case):
     group = report(route_case(unresolved_names=["Museum A", "Museum B"]))["groups"][0]
     for version in group["versions"].values():
@@ -354,8 +379,9 @@ def test_structured_transport_report_preserves_independent_uncertainties(
         assert dimension["counts"] == {"PASS": 3, "FAIL": 0, "UNKNOWN": 0}
         assert version["primary_metrics"]["routes"]["checks"][0]["state"] == "UNKNOWN"
     else:
-        assert dimension["denominator"] is None
-        assert version["auxiliary_total"]["reason"] == "denominator_unresolved"
+        assert dimension["denominator"] == 3
+        assert dimension["counts"] == {"PASS": 3, "FAIL": 0, "UNKNOWN": 0}
+        assert version["primary_metrics"]["routes"]["checks"][0]["state"] == "UNKNOWN"
     assert version["dimensions"]["grounding"]["denominator"] == 2
     assert version["dimensions"]["opening"]["counts"]["UNKNOWN"] == 2
     assert version["daily_density"]["days"][0]["known_primary_count"] == 2

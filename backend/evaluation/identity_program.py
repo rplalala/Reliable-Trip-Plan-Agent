@@ -1,6 +1,6 @@
 """Version-scoped evaluation from original claims and independent API observations."""
 
-from ._addresses import destination_matches, strict_destination_matches
+from ._addresses import compare_address_claim, destination_matches, strict_destination_matches
 from .identity import (
     IDENTITY_VERSION,
     SUBJECT_SCOPE_VERSION,
@@ -13,11 +13,15 @@ from .identity import (
     _summaries,
     identity_references,
 )
+from .place_association import program_association, v0_association
 from .records import canonical_digest as digest
 from .records import freeze, text
 
 LEGACY_POLICY_VERSION = "versioned_api_identity_1"
-POLICY_VERSION = "versioned_api_identity_2"
+PREVIOUS_POLICY_VERSION = "versioned_api_identity_2"
+EXACT_POLICY_VERSION = "versioned_api_identity_3"
+POLICY_VERSION = "versioned_api_identity_4"
+VERSIONED_TARGET_POLICIES = (PREVIOUS_POLICY_VERSION, EXACT_POLICY_VERSION, POLICY_VERSION)
 
 
 def subject_bindings(intake):
@@ -29,7 +33,7 @@ def subject_bindings(intake):
     }
 
 
-def _subject_search(ref, search):
+def _subject_search(ref, search, *, equivalent_addresses=False, address_comparisons=None):
     if "next_page_token" in search and not text(search["next_page_token"]):
         return "UNKNOWN", "subject_pagination_malformed", None
     if search["actual_result_count"] != len(search["candidates"]) or (
@@ -37,7 +41,7 @@ def _subject_search(ref, search):
         or search.get("next_page_token")
     ):
         return "UNKNOWN", "subject_search_incomplete", None
-    matches, facts = {}, {}
+    matches, facts, comparisons = {}, {}, {}
     for raw in search["candidates"]:
         candidate = _candidate(raw)
         if candidate is None:
@@ -54,18 +58,37 @@ def _subject_search(ref, search):
             destination_verified = strict_destination_matches(ref["destination"], candidate)
         except ValueError:
             return "UNKNOWN", "subject_destination_evidence_malformed", None
-        if (
-            ref["name"] == candidate["display_name"]
-            and destination_verified
-            and (not text(ref["location"]) or ref["location"] == candidate["formatted_address"])
-        ):
-            matches[candidate["place_id"]] = candidate
+        if ref["name"] != candidate["display_name"] or not destination_verified:
+            continue
+        if text(ref["location"]):
+            if equivalent_addresses:
+                comparisons[pid] = {
+                    "place_id": pid,
+                    **compare_address_claim(ref["location"], candidate),
+                }
+                if comparisons[pid]["verdict"] == "FAIL":
+                    continue
+            elif ref["location"] != candidate["formatted_address"]:
+                continue
+        matches[pid] = candidate
+    if address_comparisons is not None:
+        address_comparisons.extend(comparisons[pid] for pid in sorted(comparisons))
+    if equivalent_addresses and not matches and len(comparisons) == 1:
+        return "FAIL", "api_address_mismatch", None
     if len(matches) != 1:
         return "UNKNOWN", "subject_search_ambiguous" if matches else "subject_search_no_match", None
     return "PASS", "independent_api_exact_match", next(iter(matches))
 
 
-def _check(ref, observation, binding=None, *, historical=False):
+def _check(
+    ref,
+    observation,
+    binding=None,
+    *,
+    historical=False,
+    equivalent_addresses=False,
+    address_comparisons=None,
+):
     claimed = ref["claimed_place_id"] if ref["kind"] == "primary_visit" else binding
     candidate = None
     if ref["kind"] == "primary_visit" and not text(claimed):
@@ -100,7 +123,12 @@ def _check(ref, observation, binding=None, *, historical=False):
         if search.get("query") != ref["name"] or search.get("requested_page_size") != 20:
             return "UNKNOWN", "subject_search_scope_unverified", None
         if not historical:
-            return _subject_search(ref, search)
+            return _subject_search(
+                ref,
+                search,
+                equivalent_addresses=equivalent_addresses,
+                address_comparisons=address_comparisons,
+            )
         if search["actual_result_count"] != 1 or len(search["candidates"]) != 1:
             return "UNKNOWN", "subject_search_ambiguous", None
         candidate = _candidate(search["candidates"][0])
@@ -114,14 +142,25 @@ def _check(ref, observation, binding=None, *, historical=False):
             return "UNKNOWN", "subject_destination_unverified", None
     if ref["name"] != candidate["display_name"]:
         return "FAIL", "api_name_mismatch", None
-    if text(ref["location"]) and ref["location"] != candidate["formatted_address"]:
-        return "FAIL", "api_address_mismatch", None
+    if text(ref["location"]):
+        if equivalent_addresses:
+            comparison = compare_address_claim(ref["location"], candidate)
+            if comparison["verdict"] == "FAIL":
+                return "FAIL", "api_address_mismatch", None
+            if comparison["basis"] != "exact":
+                return "PASS", "independent_api_address_equivalent", candidate["place_id"]
+        elif ref["location"] != candidate["formatted_address"]:
+            return "FAIL", "api_address_mismatch", None
     return "PASS", "independent_api_exact_match", candidate["place_id"]
 
 
-def resolve_versioned_identities(intake, evidence, *, model_result=None, historical=False):
+def resolve_versioned_identities(
+    intake, evidence, *, model_result=None, historical=False, previous=False, exact_addresses=False
+):
     """V0 model results never decide targets or visits of another version."""
     prepared = _intake_dict(intake)
+    if sum((historical, previous, exact_addresses)) > 1:
+        raise ValueError("Choose one historical identity policy")
     refs = identity_references(prepared)
     observed = _observation_index(evidence, refs, prepared) if historical else {}
     if not historical:
@@ -146,12 +185,40 @@ def resolve_versioned_identities(intake, evidence, *, model_result=None, histori
     for ref in refs:
         rid = ref["reference_id"]
         if rid in model_records:
-            records.append(model_records[rid])
+            record = model_records[rid]
+            if not historical and not previous and ref["kind"] == "primary_visit":
+                record["place_association"] = v0_association(record, observed.get(rid))
+            records.append(record)
             continue
         observation = observed.get(rid)
         binding = bindings.get((ref["group_id"], ref["source"].get("subject_id")))
-        verdict, reason, canonical = _check(ref, observation, binding, historical=historical)
+        candidate_comparisons = []
+        verdict, reason, canonical = _check(
+            ref,
+            observation,
+            binding,
+            historical=historical,
+            equivalent_addresses=not (historical or previous or exact_addresses),
+            address_comparisons=candidate_comparisons,
+        )
         detail, search = _evidence_candidates(observation)
+        compared = detail or next((c for c in search if c["place_id"] == canonical), None)
+        comparison = (
+            compare_address_claim(ref["location"], compared)
+            if not (historical or previous or exact_addresses)
+            and compared
+            and reason
+            in {
+                "api_address_mismatch",
+                "independent_api_exact_match",
+                "independent_api_address_equivalent",
+            }
+            and text(ref["location"])
+            and ref["name"] == compared["display_name"]
+            else None
+        )
+        if comparison is None and len(candidate_comparisons) == 1:
+            comparison = {k: v for k, v in candidate_comparisons[0].items() if k != "place_id"}
         records.append(
             {
                 **(
@@ -175,7 +242,13 @@ def resolve_versioned_identities(intake, evidence, *, model_result=None, histori
                 "reason": reason,
                 "canonical_place_id": canonical,
                 "grounding_verdict": verdict,
-                "decision_route": "independent_api_exact" if canonical else None,
+                "decision_route": (
+                    "independent_api_address_equivalent"
+                    if canonical and comparison and comparison["basis"] != "exact"
+                    else "independent_api_exact"
+                    if canonical
+                    else None
+                ),
                 "claimed_id_association": _claimed_id_status(ref, observation, canonical),
                 "high_impact": ref["high_impact"],
                 "audit_selected": False,
@@ -191,6 +264,17 @@ def resolve_versioned_identities(intake, evidence, *, model_result=None, histori
                     "location": ref["location"],
                 },
                 "programmatic_judgment": {"verdict": verdict, "reason": reason},
+                **({"address_comparison": comparison} if comparison else {}),
+                **(
+                    {"candidate_address_comparisons": candidate_comparisons}
+                    if candidate_comparisons
+                    else {}
+                ),
+                **(
+                    {"place_association": program_association(ref, observation)}
+                    if not historical and not previous and ref["kind"] == "primary_visit"
+                    else {}
+                ),
             }
         )
     queue = [
@@ -206,6 +290,10 @@ def resolve_versioned_identities(intake, evidence, *, model_result=None, histori
                 "subject_scope_version": SUBJECT_SCOPE_VERSION,
                 "association_policy_version": LEGACY_POLICY_VERSION
                 if historical
+                else PREVIOUS_POLICY_VERSION
+                if previous
+                else EXACT_POLICY_VERSION
+                if exact_addresses
                 else POLICY_VERSION,
                 "reference_set_digest": digest(refs),
                 "batch_id": prepared["batch_id"],
@@ -232,9 +320,13 @@ def needs_versioned_replay(report):
     records = report.get("records")
     records = records if isinstance(records, list) else []
     return (
-        report.get("association_policy_version") in (POLICY_VERSION, LEGACY_POLICY_VERSION)
+        report.get("association_policy_version")
+        in (*VERSIONED_TARGET_POLICIES, LEGACY_POLICY_VERSION)
         or "identity_versioned_replay" in report
-        or any(isinstance(r, dict) and "programmatic_judgment" in r for r in records)
+        or any(
+            isinstance(r, dict) and ("programmatic_judgment" in r or "place_association" in r)
+            for r in records
+        )
     )
 
 
@@ -243,12 +335,14 @@ def verify_versioned_report(intake, report):
     try:
         replay = report["identity_versioned_replay"]
         policy = report.get("association_policy_version")
-        return policy in (POLICY_VERSION, LEGACY_POLICY_VERSION) and (
+        return policy in (*VERSIONED_TARGET_POLICIES, LEGACY_POLICY_VERSION) and (
             resolve_versioned_identities(
                 intake,
                 replay["evidence"],
                 model_result=replay["model_result"],
                 historical=policy == LEGACY_POLICY_VERSION,
+                previous=policy == PREVIOUS_POLICY_VERSION,
+                exact_addresses=policy == EXACT_POLICY_VERSION,
             ).to_dict()
             == report
         )

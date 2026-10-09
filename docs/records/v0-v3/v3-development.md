@@ -2341,3 +2341,544 @@ separate partial runs. Final documentation checks verify new prose is English,
 new local links/anchors resolve through tracked files, and production code/configuration/
 dependencies have no difference from the fixed base. No new runtime instrumentation
 was introduced, and no further broad rerun was necessary after this passing gate.
+
+<a id="soft-pace-repair-acceptance-2026-10-09"></a>
+
+## V3 soft pace Repair objective acceptance (2026-10-09)
+
+Status: implemented and offline-validated under
+[#93](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/93). The user clarified
+that zero deductions is a V3 Repair optimization objective, not an output validity gate
+or cause of Repair failure. Public TDD seams and Issue publication were approved. The
+fixed review base is `35499b65fabebdfe1cb572123d7fb9bdeabfcd15`; implementation is
+`32be42d`, with review correction `0a4a96b`. Concurrent address work is independently
+owned by the [address acceptance](../evaluation/intake-identity-usage.md#google-address-equivalence-acceptance-2026-10-09).
+The unrelated `.gitignore` edit and four existing original outputs were preserved.
+
+### Implementation and observed behavior
+
+The existing interpretation call obtains bounded, source-linked daily pace, exact daily
+counts and requested-date exceptions. Canonicalization validates quotes and dates;
+no validator keyword inference or additional model stage is introduced. Empty preferences
+use ordinary pace locally; historical null/absent metadata remains unassessed. Wire
+`PreferenceDraftV10` and prompt `preference_prompt_19` identify the optional extension.
+Pure numeric curves are shared with RTPEval while interpretation and evidence remain
+independent. V0-V2 and V3 draft acceptance acquire no zero-deduction constraint.
+
+V3 quantity review produces diagnostic soft targets and bounded legal permissions.
+Read-only validation counts primary visit occurrences, including independently assessed
+visits labeled generic. Candidate qualification, mandatory visits/counts/dates, role,
+route/occupancy, coverage, and existing budgets still govern acceptance. A proposed patch
+must reduce its authorized objective without increasing another comparable date's penalty
+or losing its evidence. It cannot relabel visits to evade counting. Before/after summaries
+report reached, residual or unavailable targets, explicitly without a failure constraint.
+
+Mocked public `run_repair_stage` demonstrates relaxed three visits becoming two, reducing
+the daily penalty **40 to 0**; immutable draft and accepted patch are retained. A four-visit
+day becomes three with **70 to 40** after one authorized model call, then stops at the model
+limit as ACCEPTED_PARTIAL, preserving that legal improvement. A protected mandatory visit
+cannot be deleted. An exhausted stage sends no model request and preserves its usable
+draft and residual penalty. Existing disabled/no-op/rejected/budget paths remain covered
+by the full V3 suite. The actual V3 runner consumes the existing interpretation call's
+pace metadata and exposes separate original/final diagnostics. Public evaluator reporting
+and V3 validation agree on the tested literal numeric examples and date override.
+
+### Validation and limitations
+
+Test-first public behavior exposed the absent soft target/progress before implementation.
+Integration required migrating only synthetic provider fixtures and current wire/prompt
+assertions; frozen original artifacts were not edited. The broader failure/correction
+sequence and shared full-backend checkpoint (**3195 passed, 10 skipped**, 464.36 seconds)
+are recorded once in the linked address acceptance. This full checkpoint is at `32be42d`.
+Subsequent address/V3 review-correction tests passed **483** at `0a4a96b`. Standards review
+found one P3 possible duplicate computation: authorization and acceptance independently
+implemented the same pace-permitted coverage floor. `pace_coverage_floor` now owns that
+pure formula; both checks still apply it independently. Standards and Spec rechecks report
+zero remaining findings. Ruff and whitespace checks pass. The subsequent full evaluator
+gate passed **1248 / 1 skipped** in 425.16 seconds at the same revision; its shared
+source-binding/replay scope is detailed in the address acceptance.
+
+Local gate identifiers are `artifacts/address-pace-tests/review-green.log` and
+`full-stable.log`, not published dependencies. No real generation, model/provider request,
+budget increase, version freeze, push or PR occurred. Numeric agreement and controlled
+Repair behavior establish the implementation paths, not a general quality guarantee.
+The retained real V3 output and the existing four-version run's six soft penalty findings
+were not changed retroactively. Fresh V3 generation followed by a newly bound evaluator report
+requires a separate approved execution package; residual penalties remain valid outcomes.
+
+<a id="real-soft-pace-repair-smoke-2026-10-09"></a>
+
+### Real Repair smoke and evaluator effort preflight (2026-10-09)
+
+Status: one authorized real generation completed; source-bound density reduction was
+checked offline. The corrected medium evaluator stopped before provider dispatch;
+new independent factual evaluation remains incomplete.
+Generation source revision is `7db7a562da20c24827dfe845d5057b16150bc0b3`. The unrelated
+`.gitignore` edit was present and preserved, SHA-256
+`fdc63780f304bde2f8ac48b7e520330bc45254e8799cb4323cfe645c82a3ae02`.
+The approved one-use generation handoff digest is
+`8cb9744db64896b9d3d4a2f4435d1184457b4355ed906e4870c70ef3571e44ab`.
+The native runner was launched through a frozen local main-model configuration
+adaptation: `gpt-6-luna`, medium, 16,384 default output tokens, retaining explicit
+nomination/semantics/primary/Repair limits. All nine actual model request bodies were
+checked for medium. No application generation source was changed by this adaptation.
+
+The same original Sydney Input and reviewed requirements were used. Original V0-V3
+outputs and their accepted report/receipt stayed unchanged. One new V3 was captured
+under a 600-second whole-request limit, 360-second Repair limit, at most five Repair
+calls, zero retries and USD 14 retail reference allowance. A sandbox read-only RAG
+check timed out; the elevated read-only compatibility check passed in 0.047 seconds
+with no embedding sends or database mutations. The execution child was selected as
+`gpt-6.1-sol`, medium, in the current session.
+
+The generation exited successfully in 188.297 seconds. Actual HTTP sends were
+75 Google (15 Search, 40 Details, 20 Matrix; 212 elements), nine model, one embedding
+and one weather request. Web search/page sends were zero. All 86 HTTP request and
+response bodies were complete. Reported total tokens were 290,600, including the
+embedding call; four Repair calls accounted for 223,505 tokens. The captured retail
+estimate was USD 2.384446085, not a provider invoice.
+
+Repair retained four rounds: REJECTED, REJECTED, ACCEPTED_PARTIAL and
+ACCEPTED_COMPLETE. The adopted primary counts changed from `[2,3,2,1]` to
+`[2,2,2,2]`. October 15 removed Observatory Hill Park; October 17 added
+Mrs Macquarie's Chair. Native mean soft pace deduction changed from 15 to zero.
+Independent evaluator density rules gave the same source-only result after a new
+agent-origin activity review: the generic, unnamed flexible food stop has no concrete
+venue and uses the same non-primary transition classification as the retained V0
+food activity. Final, draft and adopted-primary source pointers were reviewed separately;
+no human review was invented. Before that review, count uncertainty was preserved.
+This numeric assessment does not certify identities, opening, routes or hard facts.
+
+The original new-result hash is
+`de49df697b71df2e9a6e21b389965a2870bb8e2dc5e63b3af1d6b9cc0de4e66a`;
+usage is `237765411e6f6e310c7e5f501892062a1af17eeb86f0060321aee16192bb40b9`.
+Local evidence identifiers are `artifacts/sydney-v3-pace-live-20261009-r1/v3` and
+`artifacts/sydney-v3-pace-preparation-20261009-r1`; these ignored paths are historical
+identifiers, not published dependencies. Result JSON retains complete draft, round,
+patch and adopted history. Mechanism evidence is available with no missing fields.
+The generation evidence index remains partial: the 10,033,415-byte final trace summary
+was stored as a truncated preview wrapper, so `finished_trace` is unavailable.
+Original evidence was neither repaired nor relabeled complete.
+
+Fresh four-final preparation binds original V0-V2 plus the new V3, independent Input/
+RequirementSpec and source-linked reviews. The actual source population permits a
+96-Google-send ceiling and USD 3.20 reference allowance, reduced from the provisional
+160 / USD 5.50 scenario. The first approved evaluator package,
+`c17ca14def6ebc7eb8bfc4908fac811e0fc23e95eb3f18c470ac49f92486b600`, was blocked before
+any send: the handoff required medium, but native identity execution and replay
+implicitly used low. Execution preflight verified sources/code and then stopped;
+Google/model sends and cost were zero. This package remains unexecuted.
+
+Commit `0f324cd` adds an optional frozen identity effort field, preserving old low
+preparations and leaving opening's separate fixed-medium contract unchanged. The
+public CLI regression first failed because the new option was rejected, then passed
+after preparation, sending and replay consumed the same option. Final evaluator and
+opening CLI regressions passed **28 tests** in 39.18 seconds, including historical
+defaults, low/medium wire capture, invalid-option rejection and rejection of a
+resealed HTTP journal with the wrong effort. Ruff passed; independent Standards and
+Spec review of `0f324cd` against `7db7a56` reported zero findings on each axis. A new code-bound medium
+preparation and exact authorization are required before live evaluation. Missing-hours
+assessment remains a separately prepared/approved stage; no additional generation,
+retry, formal benchmark, version freeze or remote publication occurred.
+
+The explicitly approved corrected-medium preparation digest
+`76ad5f5e16e079cc0c0eb1c5c22a64bc22cf19ab67a3c5ab744c1803351a03ee`
+was invoked once at source `ac15fffc28b62a59c7f8b97678aa2d7494d4ac90`. It stopped with
+`Execution price unavailable: missing_price_or_billing_context` before dispatch:
+zero Google/model sends, zero tokens and USD 0 reference cost. The usage timestamp
+was `2026-10-08T22:04:17.219420+00:00`, already October 9 in Sydney. All six price rows
+started on October 9, but native reservation uses the UTC usage date. Exact field
+masks and fee rates matched; the effective-date window did not. This was a preparation
+configuration error, not provider unavailability or an observed billing charge.
+
+Native replay with DNS/TCP disabled reproduced the stopped report and verified the
+closed receipt. Processing was stopped, acquisition partial and evidence not completed.
+No quality report exists for this invocation; FAIL/UNKNOWN counts cannot be inferred
+as zero. Retained report/receipt hashes are
+`f5b809f9da141a5da261182ead9e284690af37f85b396e4dfe87d53e2754465b` and
+`95828bb401fd337f963c84ddf07811bb1f8605f80632f335f035d79b9a8379b5`.
+The consumed execution is preserved at the local historical identifier
+`artifacts/sydney-v3-pace-preparation-20261009-r1/evaluator-reviewed/run-medium/execution`.
+
+A separate local preparation corrects only UTC price coverage to October 8 through
+the exclusive October 10 boundary; selectors, rates, source outputs, context, code
+and execution limits are unchanged. Offline native transport probes passed 94
+reservations across both UTC dates: all 42 actual identity requests, fresh Details,
+three configured Matrix modes and a maximum-token medium identity reservation on
+each date. All six old price contexts reproduced the observed date failure; twelve
+outside-window checks still rejected pricing. DNS/TCP were blocked and HTTP sends
+were zero. The initial offline probe's asyncio setup touched Windows' loopback wakeup
+socket and was rejected by the network block; the corrected probe executes its
+immediate, non-I/O coroutines without creating an event loop.
+
+The 96-send worst-case retail reservation is USD 3.07575, including the one maximum-token
+identity request, below the unchanged USD 3.20 reference allowance. This is a conservative
+configuration calculation, not actual billing. Source/intake, review/context, options,
+identity plan and all 73 implementation hashes match the consumed preparation. New
+preparation digest is
+`1d925719b74a1a89211f0d819465bdc8f2ffcfe8776252c3544fde203127ab30`;
+local preflight identifier is
+`artifacts/sydney-v3-pace-preparation-20261009-r1/evaluator-utc-price-preflight.json`.
+The one-use, zero-retry instruction prevents reinvoking the consumed directory. The
+new preparation requires its own exact authorization; no opening model or generation
+was run, and the existing partial generation-trace limitation remains visible.
+
+The UTC-corrected digest was subsequently explicitly approved and executed once at
+`eb370b57e38ed3f048a8772a36df217747c080b0`. Native execution and credential-free,
+DNS/TCP-blocked replay both exited zero. Parsed execution output, saved report and
+replay output were identical; the receipt remained unchanged. Processing and acquisition
+were complete, with unresolved judgments retained. All 76 HTTP events completed:
+28 Google Search, 31 Details, 16 Matrix and one identity model call. Actual identity
+wire used `gpt-6-luna` / medium; reported input/output/total tokens were
+14,247 / 2,332 / 16,579. Zero retries were used. Reference cost was USD 1.5989468;
+account billing remains unavailable. Generation plus evaluator reference estimates
+sum to USD 3.983392885, excluding any later opening call. Native usage timing spans
+36.874161 seconds. Report hash is
+`16751da4944137c1683f214a1c5482f54ddb04a449f15629b1ac556797abf7d7`;
+receipt hash is `dd1e13d7a02bcf13529cdecaa5a9318906c74ef398a99b572d834e07ebab30ed`
+and closes 238 files. All original outputs, Input, old accepted report/receipt and
+the unrelated `.gitignore` edit remained unchanged.
+
+### Post-acquisition review completion and current findings
+
+The original live preparation omitted the route-mode review and did not contain a
+new V3 food-activity occupancy review. The native report therefore has 30 UNKNOWN
+entries: 17 route policy checks, one unresolved V3 occupancy denominator and 12
+missing-hours checks. V3's native total is unavailable. These preparation omissions
+are preserved in the immutable original report, rather than erased or attributed to
+provider acquisition.
+
+The parent completed independent source reviews after acquisition. The complete
+original Input states a soft walking/public-transport preference, without an exclusive
+mode restriction, so the reviewed request-mode policy is unrestricted. The new
+13:30-14:30 flexible food activity is committed occupancy: choosing a venue flexibly
+does not release its original timed block for travel. It remains non-primary for POI
+density. Final, draft and adopted-primary pointers were reviewed separately using
+the same occupancy interpretation as V0. Review provenance explicitly identifies the
+agent; no human judgment, concrete food venue, protected-time obligation or transport
+endpoint was invented.
+
+The public `quality_report_cli` recalculated quality from this run's fresh snapshots,
+unchanged identity report and completed reviews, with DNS/TCP blocked. Exact repeated
+CLI output agreed and the parent execution receipt remained unchanged. All 17 route
+policy checks now PASS, and V3 has 13 decided non-overlap commitments with no unresolved
+denominator. The resulting report is an explicitly separate offline recalculation,
+not a rewritten native execution. Local historical identifiers are
+`artifacts/sydney-v3-pace-preparation-20261009-r1/evaluator-reviewed/post-acquisition-reviews`
+and its `recalculation-receipt.json`. New external sends were zero.
+
+Current API-only results, before a new missing-hours model judgment:
+
+| Version | Overall score | Grounding FAIL | Opening UNKNOWN | Mean soft pace deduction |
+| --- | ---: | ---: | ---: | ---: |
+| V0 | 86.4286 | 1 | 2 | 5 |
+| V1 | 72.0000 | 0 | 4 | 20 |
+| V2 | 75.0000 | 0 | 4 | 15 |
+| New V3 | 77.5000 | 7 | 2 | 0 |
+
+All four exact-once Opera House obligations PASS. No non-overlap or route FAIL remains.
+The eight grounding FAILs are retained under current rules: the V0 identity model
+assesses Australian Museum's College Street claim as incorrect relative to Google's
+1 William Street address; this is a model judgment, not a separate official entrance
+audit. Seven new V3 addresses fail whole-address equivalence: Opera House, Art Gallery
+of New South Wales, Harbour Bridge, Queen Victoria Building, Sydney Tower Eye,
+Darling Harbour Woodward Water Feature and Royal Botanic Garden. Claims omit parts
+of the Google address such as state/postal/country qualifiers; Tower also omits the
+floor, and Harbour Bridge gives a broad harbour location. The approved component-alias
+rule explains abbreviations but does not waive omitted or changed address content.
+The current binary verdicts are retained; no address-policy expansion occurred.
+
+Five final density deductions remain outside new V3: V0 October 17 (one visit, 20);
+V1 October 14/16 (three visits each, 40 each); V2 October 14 (three, 40) and October 17
+(one, 20). Independent paired density assessment using the new identity report confirms
+new V3 draft/adopted-final mean deduction **15 to 0**, counts `[2,3,2,1]` to `[2,2,2,2]`,
+over four retained Repair rounds. This verifies the targeted pace improvement without
+making zero a validity gate or asserting factual correctness of every address.
+
+All twelve remaining UNKNOWN entries lack current and regular hours in fresh evidence:
+V0 Opera House (October 14) and Powerhouse (October 17); V1 Opera House/Harbour Bridge
+(October 14), Darling Harbour (October 15), Bondi Beach (October 17); V2 Opera House/
+Harbour Bridge/The Rocks (October 14), Darling Harbour (October 16); new V3 Opera House
+(October 14) and Harbour Bridge (October 15). Current public-landmark rules require a
+separate source-bound access model judgment before applying their inference branch.
+No old opening response was reused, and API factual hours were not manufactured.
+
+A fresh incremental opening preparation binds those twelve cases to this completed
+parent receipt and current code. Digest is
+`c47f42c0b55f3e40c137b08e41362a08fb0c6b4b55f07ca8875155104efda968`.
+It permits zero Google sends, at most one `gpt-6-luna` / medium model call, 32,000
+input / 8,000 output tokens, 120-second request / 900-second overall limits, zero
+retries and USD 0.05 reference allowance. Full request input plus tokenizer margin
+is 15,514 tokens; worst-case model reservation is USD 0.008. Both UTC price dates
+and fresh parent/source/code bindings pass offline checks. This stage remains
+prepared but unexecuted pending exact approval. After its receipt, the public quality
+CLI can consume the new opening material and completed route/occupancy reviews;
+all original native receipts remain immutable. Formal ranking, version freeze,
+remote delivery and the partial generation trace remain outside this acceptance.
+
+## Google-backed output facts 2026-10-09
+
+Status: Implemented and validated offline; no fresh generation or version freeze.
+[Issue #94](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/94) owns the
+approved planner fix. Fixed review base is `a1309e0fe27aa9ae85fc7043c4715779a7429d6f`;
+implementation and tests are committed as `202a59d6a2eaaa6573d5e83ef718364db84fa92c`.
+The unrelated pre-existing `.gitignore` change was excluded and its hash preserved.
+
+### Observed failure and correction
+
+Captured Google Details and the complete primary request contained all seven full
+addresses involved in the new-V3 grounding failures above. Primary model response
+`0078` shortened each address. The accepted draft and final output retained those
+seven shortened claims unchanged. The Repair-added visit already had its canonical
+provider address. This source chain isolates an application ownership gap: shared
+acceptance restored the supplied name but left `location` model-authored; retained
+and retimed Repair visits inherited that field. It does not establish bad Google data
+or justify relaxing independent whole-address comparison.
+
+Three first regression cases failed on absent, shortened and incorrect model locations.
+The minimal production correction copies the same authorized PlaceEvidence's
+`formatted_address` alongside its name at `validate_output_sources`. A missing provider
+address becomes null instead of adopting a model guess. The existing V3 final boundary
+already uses original supply plus verified Repair identities, so no duplicated V3
+normalizer, new finding type or extra request was introduced. Titles, times, costs,
+role, notes and private diagnostic attribution remain unchanged; V0 and null-ID
+generic activities keep their original behavior.
+
+### Validation and retained evidence
+
+The user confirmed public `validate_output_sources` and actual `run_v1/run_v2/run_v3`
+test seams. Focused coverage passes 21 cases, including identity rejection, raw object
+immutability, canonical null addresses, V0 preservation, idempotence, real mocked
+version runners and V3 successful/rejected/no-Repair/new-addition paths. The policy
+and complete version regression gate initially returned 771 passes and three failures:
+old preservation fixtures lacked their source's canonical address. Updating only those
+fixtures retained the original equality, time/Repair/Nearby assertions; the gate then
+passed **774 tests in 28.06 seconds**. Full backend validation then passed
+**3222 tests, 10 skipped in 447.45 seconds** on the unchanged implementation.
+Ruff lint on the six changed Python files, formatting of both new test files,
+English additions, tracked documentation targets/anchors and whitespace checks pass.
+The policy file's unrelated existing formatter differences are also present at the
+fixed base and were preserved rather than included in this correction.
+
+Implementation/tests were committed before independent Standards and Spec review.
+Both implementation reviews and final-documentation rechecks report zero findings.
+Final documentation is consolidated after validation; no review correction commit
+was needed.
+
+DNS/TCP-blocked retained reproduction first failed the canonical-address invariant and
+passes after the fix. A separate in-memory derived acceptance applies the real public
+boundary to the retained draft/final. It restores all seven affected final addresses,
+preserves the other activity fields and leaves all originals untouched. Ten protected
+hashes include five old/new outputs, old and fresh reports/receipts and `.gitignore`;
+all agree. The fresh native receipt's **238 closed files** also match their hashes.
+Local historical identifiers are
+`artifacts/sydney-v3-pace-preparation-20261009-r1/google-address-generation-diagnosis.json`
+and `google-address-fix-offline-acceptance.json` in that same directory. They are local
+diagnosis/derived-proof aids, not a new generation, evaluator report or replacement receipt.
+
+Actual external sends and new charges are zero. Historical seven new-V3 grounding
+FAILs, twelve missing-hours UNKNOWNs, pending opening-package authorization and partial
+generation-trace coverage remain unchanged. A future real V3 generation needs its own
+prepared and approved package; current independent evaluator rules remain unchanged.
+No push, PR, merge, branch switch, formal comparison or freeze occurred.
+
+## Fresh opening assessment and final composition 2026-10-09
+
+Status: Authorized execution complete; native opening CLI and frozen-intake public
+quality API replay validated. Quality CLI composition has a diagnosed serialization
+gap and is not accepted as a complete final-report CLI path. No new generation occurred.
+Execution source is `51033fbf226838ba3f554d1ebc8857889115cab7` after the authorized
+three-doc squash; product code is unchanged from the tested address-protection state.
+The unrelated `.gitignore` edit remains excluded and hash-preserved.
+
+### One approved request and fresh findings
+
+The user explicitly approved opening preparation
+`c47f42c0b55f3e40c137b08e41362a08fb0c6b4b55f07ca8875155104efda968`.
+The parent rechecked all 73 implementation files, parent receipt, original sources,
+unconsumed execution directory, current UTC pricing, credentials and token bound
+without network, refreshing only the execution handoff's source revision. A current-session
+`gpt-6.1-sol` / medium child executed the prepared CLI once. Actual model wire was
+`gpt-6-luna` / medium, HTTP 200; Google sends zero, model sends one, retries zero.
+Reported input/output/total tokens were **13,821 / 2,891 / 16,712**; reasoning tokens
+were 1,022 and cache-write input was 13,818. Request timestamps were
+`2026-10-08T23:20:43.225123Z` through `23:20:59.269848Z`, approximately 16.04 seconds.
+Reference incremental cost is **USD 0.00317305**; account billing is unavailable.
+Combined independent evaluator reference cost is **USD 1.60211985**, excluding generation.
+
+Eleven missing-hours decisions PASS under unchanged public-landmark access policy.
+API hours were not invented or promoted to factual coverage. The remaining decision
+is V0 Powerhouse Museum on October 17, 10:00-12:15 local time. Its original title
+implies museum admission, which cannot use ordinary outdoor-landmark inference.
+The model assesses the daytime window as reasonable but finds admission unsupported
+and supplied temporary-closure status leaves future access uncertain. That undated
+status does not prove October 17 closure; the result stays UNKNOWN with
+`hours_missing` and `llm_access_reasonableness_unknown`.
+
+### Replay, composition and diagnosed CLI gap
+
+With credentials cleared and DNS/TCP prohibited, actual `replay-opening` CLI output
+exactly equals the saved native report. Its immutable parent context still contains
+the historical 17 route-review UNKNOWNs and unresolved V3 occupancy denominator;
+the native report therefore retains 19 UNKNOWNs rather than rewriting its preparation.
+
+The final quality CLI, supplied with already completed route/occupancy reviews and
+the fresh model material, initially failed with `artifact_integrity_error`:
+`Stale or foreign opening packet`. Read-only reconstruction isolated request-input
+serialization: `load_batch.to_dict()` and frozen intake have equal source content but
+different source-key insertion order. All cases, decoded input, remaining request fields
+and remaining packet fields agree; the bound raw `request.input` strings and packet
+digests differ. Frozen packet digest is
+`659728e9420c0ba0707b6b5105bf05a7d31c96b77acce5c277ae3abd89d2617d`;
+CLI reconstruction gives `6610e24a28a12c3c553bd91c8b3f4ca6da07ae1021bb283659230e2e9473bf5f`.
+No raw model response, packet or importer rule was normalized to evade this rejection.
+
+Public `build_quality_report` over the exact frozen intake accepts the same fresh
+material and completed reviews, retaining binding validation. Exact repeated API
+construction agrees, and independently recomputed opening/route/requirement components
+complete. The separate derived report closes its own review/artifact hashes and links
+both native receipts. It is not a replacement native receipt or a passed quality CLI run.
+The local composition helper initially treated identity report status as a metric's
+`complete` status; that helper-only assertion was corrected to check the three metric
+reports separately. No product code, paid request or source evidence changed.
+
+| Version | Final score | Grounding FAIL | Opening UNKNOWN | Mean soft pace deduction |
+| --- | ---: | ---: | ---: | ---: |
+| V0 | 89.2857 | 1 | 1 | 5 |
+| V1 | 80.0000 | 0 | 0 | 20 |
+| V2 | 85.0000 | 0 | 0 | 15 |
+| New V3 | 82.5000 | 7 | 0 | 0 |
+
+All four exact-once Opera House checks PASS; no non-overlap, opening or route FAIL
+remains. The eight grounding failures retain the original claims described above.
+Five source-linked daily pace deductions remain outside new V3. These are bounded
+engineering-case results, not a formal research ranking. Address protection is
+prospective and does not modify this already saved V3 result.
+
+Native opening report SHA256 is
+`bc6f629426013983b4785b6000a524fec278f6c0242372112e05f9e7fc52ea58`;
+receipt SHA256 is `2bc095a94502dc79a32bda5463b6430ef35ccab3ecb9ef44481ea2d42956e7d8`.
+Local historical identifiers under
+`artifacts/sydney-v3-pace-preparation-20261009-r1/evaluator-reviewed` are
+`opening-medium-utc/execution`, `final-reviewed-opening/final-report.json`, its
+`recalculation-receipt.json`, `quality-cli-failure.json` and
+`opening-quality-cli-key-order-diagnosis.json`. Native reports/receipts, ten protected
+source hashes and 238 parent closed files remain unchanged. The whole model output,
+actual usage and original HTTP response are retained locally; published records contain
+no secrets or raw payload dumps.
+
+Next work is an offline correction of the CLI serialization boundary with historical
+packet replay preserved. Museum admission needs applicable access evidence or explicit
+disposition. The one-use opening allowance is consumed. A new V3 generation or other
+paid request needs a new approved execution package. Partial generation-trace coverage,
+formal research, remote Git delivery and version freeze remain outside this acceptance.
+
+<a id="source-protected-v3-cli-execution-2026-10-09"></a>
+## Source-protected V3 and CLI execution 2026-10-09
+
+Recorded checkpoint: Serialization correction implemented and validated offline; fresh V3 generation
+complete. Complete live evaluator acceptance is blocked by incomplete V0 model coverage.
+No final scores were available at this checkpoint; older scores were not substituted.
+The subsequent coverage correction and accepted full CLI run over the same outputs
+are recorded in [identity coverage acceptance](../evaluation/intake-identity-usage.md#complete-v0-identity-coverage-acceptance-2026-10-09).
+
+Review base was `6ad619c23ed159e67487f7e805ac0041a4929a50`; implementation is
+`db92930c9848aee1a80d1f87301fb6c68b50221e`. The unrelated pre-existing `.gitignore`
+change remained untouched. The human approved the correction, public test seams and
+fresh-generation/evaluator flow, then explicitly defaulted execution approvals while away.
+The parent retained the USD 14 generation, USD 5.50 evaluator and USD 0.05 optional
+opening reference envelopes. These are retail/proxy allowances, not account invoices.
+
+### Serialization correction and offline validation
+
+Both native-to-quality CLI regression cases first failed with stale opening packet
+diagnostics. Sorting object keys only when constructing `request.input` fixed both;
+array order, source facts, scoring and exact import/request/response/implementation
+checks remain unchanged. Intake mapping order no longer changes a newly prepared
+request. Rewriting the recorded request, original quotes or evidence still fails import.
+Affected tests passed **57 in 32.58 seconds**; full backend passed **3224, 10 skipped
+in 442.77 seconds**. Independent Standards and Spec implementation reviews found zero
+issues. No frontend gate was rerun.
+
+Historical opening CLI and derived quality API replay with the retained implementation
+reproduced their saved results, without rebinding old responses to new code. Original
+file-line-ending bytes were checked against frozen implementation hashes. The prior
+quality CLI failure remains a historical failed execution; it was not rewritten as PASS.
+
+### Fresh generation
+
+Generation handoff SHA256 was
+`68d35cef9cf39659a10a51c555ea8d709f635ca40fca86b3cbca281a5b21f0b7`.
+The current-session `gpt-6.1-sol` / medium execution child invoked the frozen V3 command
+once with `gpt-6-luna` / medium. Read-only TripWorld compatibility and offline wire
+checks passed. A case-sensitive credential inspection initially missed the existing
+`Google_Maps_API_Key`; native Windows dotenv loading corrected that inspection before
+any generation request, without changing credentials or configuration.
+
+Only the request-local trace limit changed from 10 MB to 20 MB: the preceding final
+trace had measured 10,033,415 bytes. Planner/tool/Repair policies and budgets were
+unchanged. Generation exited zero in 118.223 seconds; usage reports 110.594 seconds.
+Actual sends were **75 Google** (12 text search, 3 nearby, 40 Details, 20 matrix with
+212 elements), **5 model**, **1 embedding** and **1 weather**; no Web/HTML requests
+or retries. Model usage was 53,476 input and 12,281 output tokens, total 65,757;
+4,937 reasoning tokens are included, not added again. Reference cost was **USD 2.352683635**.
+All 259 indexed artifacts matched, with no missing capture fields or diagnostics.
+The runtime-policy canonical configuration digest and enclosing file-byte hash are
+intentionally distinct; both bindings were independently verified.
+
+The new result SHA256 is
+`ecd6d368b4467fc3a49995dc925d983475fa14cf08beb9cdd4870e7d69ea7e6f`.
+All eight final sourced names/addresses match the captured generation ledger exactly.
+Each day contains two primary visits and the draft/final pace deduction is zero.
+Draft equals final; Repair made **zero rounds**, reason `no_authorized_targets`.
+This run demonstrates an already satisfied objective, not a new nonzero-to-zero Repair
+improvement or independent evaluator address PASS. Earlier Repair evidence remains separate.
+
+### Independent evaluator stops and replay
+
+Original V0-V2 and this new V3 were frozen as batch revision 4. Original-source route,
+density, activity-role and occupancy reviews were included before preparation, with
+agent provenance preserved. Fresh acquisition never reused an old identity report.
+The initial package bound at most 86 Google requests, one identity model and USD 2.76;
+preparation SHA256 was `f5c55aba14029659515ebc7554f7ab4e4b9c3872224c2361c1cd0ca4cd7cf0d0`.
+
+That invocation stopped before the model: the complete request plus framing measured
+**18,082 tokens**, exceeding its 18,000 allowance. It retained 35 successful Google
+requests, zero model calls and **USD 0.964** reference usage. Its receipt is
+`8f309d371e5618300f0a4cca481ddfb8f41f014a7824c4cf02dde72a7e029670`.
+The parent prepared a separate correction under the current default approval:
+input allowance **24,000**, unchanged medium/output/time settings, fresh independent
+Google acquisition and no automatic retries. The corrected preparation is
+`883ff5e705da277e08ba51c274e4445ddeb48690b82c7c14b6bc11a50c669c07`.
+Including the first stop, its planning bound was 121 Google and USD 3.724, within the
+existing stage envelope. The consumed first package was never rerun or overwritten.
+
+The corrected invocation stopped with `Missing or duplicate identity proposal`.
+The provider marked its response completed, but emitted only the Opera House requirement
+subject (`r08`); all seven original V0 visit references were omitted. Required coverage
+is eight decisions, returned coverage is one. The request schema has no array-count
+bound; that observation does not establish why the model omitted the cases. Import
+correctly rejected the incomplete material instead of fabricating UNKNOWNs or accepting
+an incomplete scoring population. No new identity/route/quality report was produced.
+Actual usage was 35 Google and one model, 13,144 input / 221 output tokens, zero retries,
+reference **USD 0.965753425**. Receipt SHA256 is
+`1497b24a088aef343f66955e0392a69d8470bd50f05687aa5d563df15c860b6c`.
+No third invocation or opening assessment was sent after that stop.
+
+With credentials cleared and DNS/TCP prohibited, both actual native `replay` commands
+returned the expected exit 2 and reproduced their stopped reports exactly. Raw model
+HTTP response and material agree; all **491** generation/preparation/execution files
+remain unchanged. Original Input, V0-V2, prior V3 and unrelated `.gitignore` hashes agree.
+Evaluator reference usage totals **USD 1.929753425**; whole-flow reference usage is
+**USD 4.282437060**, with actual account billing unavailable.
+
+Local historical identifiers are
+`artifacts/sydney-v3-source-cli-live-20261009-r1/v3` and
+`artifacts/sydney-v3-source-cli-preparation-20261009-r1` (`evaluator/run`,
+`evaluator/run-input24k`, `partial-acceptance/acceptance.json`, and
+`generation-offline-assessment.json`). They are ignored evidence, not published assets.
+Next work is to constrain complete decision/reference coverage at identity request
+creation and validate that separate correction before another bounded live package.
+Strict source binding and rejection remain required. Complete live CLI acceptance,
+new final scores and the latest batch's FAIL/UNKNOWN inventory remain unavailable;
+formal comparison, remote Git delivery and version freeze remain outside this record.

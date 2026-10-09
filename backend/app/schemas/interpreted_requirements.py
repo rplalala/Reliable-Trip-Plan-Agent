@@ -351,6 +351,19 @@ class PreferenceInputAssessment(ContractModel):
     issues: tuple[PreferenceInputIssue, ...] = Field(max_length=8)
 
 
+class DailyPaceDraft(ContractModel):
+    """Interpreter-owned style/count assessment; null date is the default."""
+
+    date: date | None
+    profile: Literal["ordinary", "relaxed", "rich", "unresolved"]
+    exact_count: int | None = Field(ge=0, le=100)
+    source_refs: tuple[SourceQuote, ...] = Field(max_length=8)
+
+
+class DailyPace(DailyPaceDraft):
+    source_refs: tuple[SourceReference, ...] = Field(max_length=8)
+
+
 class InterpretationDraft(ContractModel):
     """One interpreter result. Local links are replaced with application IDs."""
 
@@ -358,6 +371,7 @@ class InterpretationDraft(ContractModel):
 
     # None is historical/unassessed. Current model entry requires an explicit assessment.
     preference_input_assessment: PreferenceInputAssessment | None = None
+    daily_pace: tuple[DailyPaceDraft, ...] | None = Field(default=None, max_length=32)
 
     visit_requirements: tuple[VisitRequirementDraft, ...] | None = Field(
         default=None, max_length=24
@@ -430,6 +444,7 @@ class InterpretedTripRequirements(ContractModel):
         CONTRACT_VERSION
     )
     request_sha256: str
+    daily_pace: tuple[DailyPace, ...] | None = Field(default=None, max_length=32)
     input_version: Literal["planning_request_2"] = "planning_request_2"
     structured_input_sha256: str
     structured_field_paths: tuple[str, ...] = (

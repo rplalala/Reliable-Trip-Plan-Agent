@@ -21,6 +21,11 @@ def add_identity_options(parser):
         "--historical-llm", action="store_true", help="Explicit historical all-version LLM replay"
     )
     parser.add_argument(
+        "--historical-association",
+        action="store_true",
+        help="Explicit versioned_api_identity_2 replay without physical associations",
+    )
+    parser.add_argument(
         "--historical-program",
         action="store_true",
         help="Explicit versioned_api_identity_1 replay with shared programmatic targets",
@@ -36,6 +41,7 @@ def identity_command(intake, evidence, args, read, *, audit=None, legacy=None):
             or args.model_result
             or args.historical_llm
             or args.historical_program
+            or args.historical_association
         ):
             raise ValueError("Legacy replay cannot use model options")
         if legacy is not None:
@@ -43,7 +49,7 @@ def identity_command(intake, evidence, args, read, *, audit=None, legacy=None):
         return resolve_legacy_identities(intake, evidence, read(args.reviews), audit).to_dict()
     if args.reviews or audit is not None:
         raise ValueError("Human/audit inputs require --legacy")
-    if args.historical_program and args.historical_llm:
+    if sum((args.historical_program, args.historical_llm, args.historical_association)) > 1:
         raise ValueError("Choose only one historical identity policy")
     if args.prepare:
         if args.model_result:
@@ -57,9 +63,13 @@ def identity_command(intake, evidence, args, read, *, audit=None, legacy=None):
         ).to_dict()
     if args.model:
         raise ValueError("--model requires --prepare; saved result binds its model")
-    if args.historical_program:
+    if args.historical_program or args.historical_association:
         return resolve_versioned_identities(
-            intake, evidence, model_result=read(args.model_result), historical=True
+            intake,
+            evidence,
+            model_result=read(args.model_result),
+            historical=args.historical_program,
+            previous=args.historical_association,
         ).to_dict()
     resolver = resolve_llm_identities if args.historical_llm else resolve_identities
     return resolver(intake, evidence, model_result=read(args.model_result)).to_dict()

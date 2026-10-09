@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import Field, model_validator
 
 from .controlled_models import FrozenModel
+from .place_association import opening_place_id
 from .records import require
 
 
@@ -121,7 +122,12 @@ def matches(check, condition, stage):
         )
         and (
             condition.canonical_place_id is None
-            or check.get("canonical_place_id") == condition.canonical_place_id
+            or (
+                opening_place_id(check)
+                if condition.dimension == "opening"
+                else check.get("canonical_place_id")
+            )
+            == condition.canonical_place_id
         )
         and (condition.date is None or check.get("declared_day") == str(condition.date))
     )

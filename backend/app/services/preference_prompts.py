@@ -263,7 +263,7 @@ unresolved with a reason rather than inventing an executable scope.
 
 PREFERENCE_INTERPRETATION_SYSTEM_PROMPT += """
 
-Preference Input Gate (preference_prompt_18 / preference_draft_12 / preference_input_2):
+Preference Input Gate (preference_prompt_19 / preference_draft_12 / preference_input_2):
 In this SAME response, return preference_input_assessment with input_disposition
 VALID, CLARIFICATION_REQUIRED, or REWRITE_REQUIRED, safety_disposition CLEAR or
 SAFETY_BLOCK, and at most eight typed issues. Do not add a judge call.
@@ -389,4 +389,15 @@ objective geographic impossibility. Free text cannot silently overwrite the dest
 Soft trade-offs, different travelers' preferences, 'Surprise me', 'Keep it flexible', and
 relaxed pacing are not contradictions or material ambiguities by themselves. Preserve normal
 interpretation and existing hard-requirement checks; do not soften hard requirements to pass.
+
+daily_pace records the user's soft itinerary pace for later V3 Repair diagnostics, not
+a zero-penalty constraint on initial generation. Return one default record with date=null
+and at most one override for each requested date. Use relaxed for a leisurely/light pace,
+rich for a busy/dense pace, ordinary when no pace preference is expressed, and unresolved
+when the pace cannot be interpreted. Cite exact original quotes for expressed pace,
+dated exceptions and explicit daily counts; ordinary without an expressed pace may use [].
+exact_count is null unless the user explicitly specifies an exact number of primary visits
+per day. Never translate relaxed/rich into an exact count. Keep the original count even
+when it differs from a default style. Do not invent date exceptions or interpret meal,
+transport, nearby recommendations or generic activities as primary visits.
 """

@@ -91,7 +91,41 @@ cancellation; a caller-owned runtime remains caller-owned. Offline deadline regr
 must establish which phase was reached before asserting its resource lifecycle, rather
 than relying on a short wall-clock delay to select that phase.
 
+Accepted draft and final selection use the shared
+[source-fact ownership boundary](0003-itinerary-transport.md#scheduled-activities-and-references).
+Final selection includes original supply and the verified Repair whitelist, so retaining
+or retiming a visit preserves its provider name and complete address just as add/replace
+does. This application normalization requires no extra model/Google call and does not
+make the read-only validator mutate its input or certify independent ground truth.
+
 ## Verification scope
+
+### Soft pace objective
+
+V3 Repair aims for zero soft pace deductions under the existing daily-density table.
+Zero is an optimization objective, not output validity or a failure gate. The
+`quantity_review_enabled` flag enables this optional quantity optimization; opting out
+preserves hard Repair. A resolved pace policy supersedes the generic 2-5 quantity
+target on that date. Minimum daily coverage and hard visit protections remain separate.
+
+Read-only validation counts primary visit occurrences, including assessed visits that
+the model labels as generic; Nearby, transport and unlinked filler do not count.
+`soft_pace` findings retain source-linked policy, count, penalty and zero-penalty counts.
+Positive known penalties are review targets, never CONFIRMED violations; unavailable
+policy/roles/counts remain diagnostic uncertainty without guessed edit authority.
+The numeric curves live in `backend/pace_policy.py`; independent evaluation retains
+its own reviewed input policies and evidence rather than consuming planner interpretation.
+
+The application permits bounded additions or removal/movement of dispensable visits,
+then reuses existing mandatory count/date/time, role, coverage, route/occupancy and
+budget checks. A strict reduction can be accepted without reaching zero. A pace patch
+cannot increase another comparable date's penalty or replace it with uncertainty.
+No role relabeling is an edit operation. At a budget/opportunity stop, keep the latest
+accepted legal itinerary or untouched draft; retained penalties do not fail V3 generation.
+`soft_pace` summaries in V3 outcome and stage result expose before/after days and mean,
+`reached`/`residual`/`unavailable` state and `is_failure_constraint=false`. Existing
+round patches, stop reasons and actual usage remain authoritative. V0-V2 and V3 draft
+acceptance gain no zero-penalty condition; independent evaluation still scores all normally.
 
 Offline tests exercise authorization, regressions, component interactions, rejection and
 fallback with controlled evidence. Bounded historical live repairs demonstrate only their

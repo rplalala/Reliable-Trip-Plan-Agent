@@ -36,12 +36,47 @@ contracts state current rules continuously, including ordinary-output compatibil
 proposals and approvals remain in linked records/Issues. Broad proposals do not imply that
 unimplemented follow-up modules are available.
 
-Snapshot acquisition currently accepts injected transport; it is not a built-in operational
-Google collection client. Formal external acquisition, retention checks, case construction,
-budgets and execution need separately approved plans.
+Snapshot acquisition accepts injected transport. The evaluator-owned
+`evaluation_run.prepare_run / execute_run / replay_run` and
+[formal CLI](../backend/evaluation/README.md#fresh-automatic-evaluation-cli) now compose
+fresh Google acquisition, V0-only correspondence and all native automatic final-quality
+consumers. Preparation freezes originals, contexts, limits, prices and code; execution
+persists evidence/failures; replay sends nothing. Final-only scope explicitly excludes
+optional V3 and human/controlled/official tracks. Processing, acquisition and unresolved
+evidence are separate fields. Fresh execution requires a prepared, approved allowance.
+
+The Sydney four-original automatic flow completed fresh execution and network-blocked
+CLI replay on 2026-10-09. All originals and receipt-covered evidence verify; current-policy
+FAIL/UNKNOWN outcomes and conservative semantic limits remain visible in the
+[acceptance record](records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09).
+This establishes an engineering execution path, not a formal version comparison or
+all-facts-verified result.
+
+Opening rules evaluate the planned visit interval. Applicable current open/closed facts
+take precedence; valid regular hours determine unresolved time, including current-field
+defects and special-date markers without a usable schedule. Regular hours produce ordinary
+PASS/FAIL with explicit basis and fallback provenance. Query-time `openNow=false` does not
+establish closure at a later visit. Missing both schedules permits an explicitly imported
+independent LLM access assessment: ordinary public-landmark sightseeing can be inferred
+from original text and venue category. Reasonable outdoor/exterior visits can PASS;
+explicit restricted activity, museum admission and genuinely unresolved access need their
+own applicable evidence. Unsupported access remains UNKNOWN. Factual
+hours coverage and durations stay missing, with model judgment coverage separately shown.
+The incremental execution CLI reuses completed evidence without another Google or V0
+identity call; live execution requires its own prepared allowance.
+The [opening contract](contracts/0004-opening-routes.md#opening) owns these current rules.
+
+Development smoke helpers are separate from ordinary evaluator consumers. The
+[V0 route request preparer](../backend/evaluation/tools/route_requests.py) and its CLI
+live under `backend/evaluation/tools/`; they prepare acquisition inventories and budgets
+for explicitly approved development checks. They are not product runtime stages or
+dependencies of final quality scoring. Core intake, independent identity, snapshot,
+schedule/opening/route scorers and report CLIs stay in `backend/evaluation/`. Product
+planning does not import this evaluation package. V3's internal validation/repair remains
+part of planning and is distinct from independent evaluation.
 
 Route preparation can extract coordinates offline from a verified identity-phase snapshot
-whose evidence matches the adopted canonical identities. This reuses saved independent
+whose evidence matches verified physical associations. This reuses saved independent
 observations with separate coordinate provenance; it does not borrow planner coordinates or
 acquire missing points. Missing, invalid or conflicting points retain local uncertainty and
 route candidates. The existing reviewed-coordinate source remains supported; details and
@@ -52,15 +87,20 @@ and [dated bridge record](records/evaluation/routes.md#snapshot-coordinate-bridg
 
 The user accepted a [version-specific evaluator requirement](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
 on 2026-10-06: V0 introduces an LLM primarily for generated-POI correspondence with
-independent API candidates; V1-V3 evaluation uses API evidence and program rules without
-an evaluator model or fallback, including user-named requirements. Original API-backed
-name/address differences count as errors, without repair. [Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
+independent API candidates; V1-V3 identity and requirements use API evidence and program
+rules without an identity model or fallback. The subsequently approved
+[opening-only exception](contracts/0004-opening-routes.md#missing-hours-access-judgment)
+introduces model access assessments when both schedules are missing. Original API-backed
+unexplained name/address differences count as errors, without repairing original outputs.
+Google-supported address aliases use a binary, auditable equivalence comparison.
+[Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
 owns the classified follow-ups. Version dispatch (#75) and the V0 citation/missing-address
 response correction (#76) are implemented locally; fresh-smoke preparation, offline route integration and delivery
 remain separate follow-ups. Historical evidence is not reclassified.
 
 Implemented identity uses the [version-specific contract](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement):
-V1-V3 use ID-linked API Details and literal name/address equality. RequirementSpec
+V1-V3 use ID-linked API Details, literal name equality and same-observation address
+equivalence. RequirementSpec
 meaning and API acquisition evidence are shared, but target identities are version-owned
 under [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83). V1-V3 targets
 use independent Details bindings or complete search evidence with a unique strict matching
@@ -75,7 +115,17 @@ references and sampling no longer require human identity confirmation. Address c
 remains a separate assessment: recognizing a venue does not repair the delivered address
 or establish opening/route feasibility. Both a recognizable venue with an incorrect submitted
 address and an address identifying another venue produce grounding FAIL and prohibit canonical
-adoption for downstream coordinates/endpoints. Insufficient evidence stays UNKNOWN.
+claim adoption. Under `versioned_api_identity_3` and current policy 4, the separately
+verified physical association may permit requirement occurrence matching and opening/routes despite claim
+FAIL: V0 uses existing validated
+correspondence, V1-V3 independently verify the original API ID. Untrusted associations
+remain UNKNOWN. Original time, order, transport mode and reserved duration are unchanged;
+physical PASS cannot cancel grounding FAIL. Requirement occurrence matching uses the
+verified association against the target's version-owned adopted canonical identity;
+the target's grounding FAIL and all count/date/time components remain independently
+applicable. A physical association alone does not establish full requirement fulfillment.
+Historical policy-2 reports retain canonical-only downstream eligibility through
+explicit `--historical-association` replay. Insufficient evidence stays UNKNOWN.
 Supported V0 destination conflicts also remain FAIL even when the original address is absent.
 All versions use the same standard; evaluation does not hide baseline errors or presume a version must fail.
 Explicit historical human and uniform LLM identity replay is retained.
@@ -86,9 +136,11 @@ Blinded preference review and other human supplements keep their separate respon
 | Submitted group | One request and its source-linked selected version artifacts; inclusion is not proof of quality |
 | Claim | A proposition represented in the submitted output or reviewed obligation |
 | Independent observation | Separately sourced evidence with declared identity/query/time applicability |
+| Physical association | Verified API venue usable for occurrence matching, hours and coordinates while preserving original grounding and version-owned requirement targets |
 | Identity judgment | Version-scoped program checks or V0 model correspondence with independent API facts, preserving original claims and uncertainty |
 | Historical adjudication | Human resolution in an explicitly replayed legacy identity report |
 | Compliance | Outcome against an applicable criterion, distinct from evidence availability |
+| Access reasonableness | Fallible independent model assessment of the original activity and complete visit window when both API schedules are absent; PASS does not establish factual hours |
 | Common mask | The explicitly shared comparison set; missing evidence must remain visible |
 | UNKNOWN | An unresolved applicable fact/outcome, not a passing check or a zero-valued measurement |
 | Blinded review | Human preference judgment without exposing version attribution or automatic scores |

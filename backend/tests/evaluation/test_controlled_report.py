@@ -1,10 +1,127 @@
 """Independent controlled outcomes, not internal acceptance labels."""
 
+import asyncio
+import json
+
+import pytest
+
 from backend.evaluation.records import canonical_digest
 from backend.tests.evaluation.controlled_fixtures import expectations, material
 from backend.tests.evaluation.test_controlled_replay import case, replay, scripted
 from backend.tests.versions.v3.test_b_targets import edit, visit
 from backend.tests.versions.v3.test_validation import DAY
+
+
+@pytest.mark.parametrize("reviewed", [False, True])
+def test_opening_venue_selector_and_human_facts_use_verified_association(tmp_path, reviewed):
+    from backend.evaluation.controlled_preparation import prepare_controlled_case
+    from backend.evaluation.controlled_report import build_controlled_report
+    from backend.evaluation.identity import identity_references, resolve_identities
+    from backend.evaluation.routes import prepare_routes
+    from backend.evaluation.snapshot import AcquisitionPolicy, Response, acquire_snapshot
+    from backend.tests.evaluation.test_identity import details
+
+    value = case()
+    value["role"] = "target"
+    execution = replay(value)
+    original_hash = canonical_digest(execution)
+    package = material(value, execution, tmp_path / "legacy")
+    prepared = prepare_controlled_case(value, execution, package["requirement_spec"]).to_dict()
+    observed = {
+        "schema_version": "rtpeval_identity_evidence_1",
+        "batch_id": prepared["batch_id"],
+        "batch_revision": prepared["revision"],
+        "records": [
+            details(r, r["name"], r["claimed_place_id"], address="Fixture")
+            for r in identity_references(prepared)
+        ],
+    }
+    identity = resolve_identities(prepared, observed).to_dict()
+    assert all(
+        r["grounding_verdict"] == "FAIL"
+        and r["canonical_place_id"] is None
+        and r["place_association"]["place_id"] == "a"
+        for r in identity["records"]
+    )
+    routes = prepare_routes(
+        prepared,
+        identity,
+        package["schedule_context"],
+        route_reviews=package["route_reviews"],
+        coordinate_evidence=package["coordinate_evidence"],
+        paired=True,
+    ).to_dict()
+    assert routes["status"] == "complete", routes["diagnostics"]
+    package.update(
+        identity_report=identity,
+        expected_plan=routes["evidence_plan"],
+        snapshot_directory=tmp_path / "current",
+    )
+
+    async def transport(request):
+        return Response(
+            200,
+            json.dumps(
+                {
+                    "id": request["parameters"]["place_id"],
+                    "timeZone": {"id": "UTC"},
+                    "regularOpeningHours": {}
+                    if reviewed
+                    else {
+                        "periods": [
+                            {
+                                "open": {"day": DAY.isoweekday() % 7, "hour": 8, "minute": 0},
+                                "close": {"day": DAY.isoweekday() % 7, "hour": 18, "minute": 0},
+                            }
+                        ]
+                    },
+                }
+            ).encode(),
+        )
+
+    asyncio.run(
+        acquire_snapshot(
+            routes["evidence_plan"],
+            package["snapshot_directory"],
+            transport,
+            AcquisitionPolicy(100),
+        )
+    )
+    goals = expectations(
+        value,
+        execution,
+        guards=[
+            {
+                "goal_id": "opening-place",
+                "basis": "product_policy",
+                "condition": {
+                    "kind": "check",
+                    "dimension": "opening",
+                    "activity_ids": ["a"],
+                    "canonical_place_id": "a",
+                },
+            }
+        ],
+    )
+    report = build_controlled_report(
+        value,
+        execution,
+        goals,
+        **package,
+        factual_reviews=opening_review(value, execution) if reviewed else None,
+        generated_at="2026-10-04T00:00:00Z",
+    )
+    assert report["status"] == "complete", report["diagnostics"]
+    assert report["pair"]["stages"]["draft"]["primary_metrics"]["opening"]["checks"][0][
+        "state"
+    ] == ("UNKNOWN" if reviewed else "PASS")
+    assert report["guards"][0]["before"]["state"] == "PASS"
+    assert report["guards"][0]["after"]["state"] == "PASS"
+    checks = report["reviewed_checks"]["stages"]["draft"]["primary_metrics"]
+    assert checks["grounding"]["checks"][0]["state"] == "FAIL"
+    assert checks["opening"]["checks"][0]["canonical_place_id"] is None
+    assert checks["opening"]["checks"][0]["associated_place_id"] == "a"
+    assert canonical_digest(execution) == original_hash
 
 
 def opening_review(value, execution):

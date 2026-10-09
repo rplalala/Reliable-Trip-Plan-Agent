@@ -12,7 +12,7 @@ def affected_activity_ids(itinerary, finding):
         a.activity_id
         for d in itinerary.days
         for a in d.activities
-        if (finding.check == "overfull" and d.date in finding.dates)
+        if (finding.check in {"overfull", "soft_pace"} and d.date in finding.dates)
         or (
             finding.reason == "excluded_identity_scheduled"
             and a.source_place_id in finding.place_ids
@@ -82,7 +82,7 @@ def localize_scope(
     )
     direct = set()
     for f in findings:
-        if f.check == "coverage":
+        if f.check in {"coverage", "soft_pace"}:
             direct.update(f.dates)
         elif f.reason in {
             "required_identity_omitted",

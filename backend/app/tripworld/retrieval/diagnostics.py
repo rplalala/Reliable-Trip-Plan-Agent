@@ -4,6 +4,7 @@ import asyncio
 import hashlib
 import json
 from contextlib import contextmanager
+from contextvars import ContextVar
 from pathlib import Path
 from time import perf_counter
 from uuid import uuid4
@@ -11,6 +12,8 @@ from uuid import uuid4
 import numpy as np
 
 from backend.app.tripworld.database.vectors import SPACE, SPACE_ID
+
+current_vector_capture_directory = ContextVar("current_vector_capture_directory", default=None)
 
 
 @contextmanager

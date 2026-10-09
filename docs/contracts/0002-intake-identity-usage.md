@@ -189,8 +189,10 @@ with supplied independent API candidates, when available. Correspondence is dist
 from original-claim correctness: recognizing a venue cannot repair a wrong submitted
 address or certify opening/route feasibility. Insufficient support remains UNKNOWN.
 
-V1-V3 evaluation uses independent API evidence and deterministic program rules
-throughout, without an evaluator model call, model-result dependency or model fallback.
+V1-V3 identity and requirement evaluation uses independent API evidence and deterministic
+program rules, without an identity model call, model-result dependency or model fallback.
+The subsequently approved [missing-hours access assessment](0004-opening-routes.md#missing-hours-access-judgment)
+is a narrow opening-only model exception shared by V0-V3; it does not change identity rules.
 Original API-backed names/addresses are compared with corresponding API facts;
 differences count as errors without model-based precision, translation or semantic
 equivalence. User-named requirements and optional V3 projections follow this same
@@ -204,14 +206,47 @@ Implemented under [#75](https://github.com/rplalala/Reliable-Trip-Plan-Agent/iss
 with version-owned requirement targets corrected locally under
 [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83).
 `resolve_identities(intake, evidence, *, model_result=None)` produces
-`association_policy_version=versioned_api_identity_2`. Every V1-V3 final/optional
+`association_policy_version=versioned_api_identity_4`. Every V1-V3 final/optional
 primary visit requires its original `source_place_id`, structured `place_name` and
 `location`. Proven missing fields are FAIL even without an API response. Independent
 Details must have an available observation with retrieval provenance, the requested ID
 equal to the original ID and the returned ID equal to that request. Missing/failed,
-malformed or unlinked Details are UNKNOWN. Name and address use literal field equality;
-no normalization, translation, precision, semantic or fuzzy rescue is applied.
+malformed or unlinked Details are UNKNOWN. Names retain literal equality. Address
+comparison is binary PASS/FAIL: exact text, case/Unicode/whitespace formatting, or
+complete equivalence explained by `longText`/`shortText` pairs supplied by the same
+independent Google observation. Remaining words, punctuation and numbers must agree.
+No abbreviation dictionary, similarity threshold or model fallback is used. Conflicting
+alias mappings and unexplained differences are FAIL. Missing acquisition/identity
+provenance is a separate uncertainty; it cannot author an address comparison PASS.
+`address_comparison` retains the original/provider strings, binary verdict, basis and
+used pairs. Policy 3 retains literal address behavior during historical reconstruction;
+policies 1/2 and historical V0 correspondence also keep their original replay paths.
 Only PASS adopts a canonical ID. FAIL/UNKNOWN retain null canonical IDs and original claims.
+
+Accepted on 2026-10-08, primary-visit `place_association` independently records
+`state` (`verified` or `UNKNOWN`), `place_id` and `reason`. It does not change
+`grounding_verdict`, `resolution`, `canonical_place_id` or original claims.
+V1-V3 verify the original submitted ID using independent available Details, offset-aware
+retrieval provenance and identical requested/returned IDs. This check still runs when
+the original name/address is missing or incorrect. Missing or unverified IDs have no
+association; search candidates never replace the original ID. No evaluator model is used.
+V0 uses the existing source-bound, validated model correspondence: a selected supplied
+candidate with decision `match`, consistent destination and supported address assessment
+(`equivalent`, `different_precision`, `incorrect_claim` or `not_supplied`). Missing/ambiguous
+correspondence, different-place/unknown address assessment, contradictory destination,
+conflicting candidate observations or unverifiable provenance leave association UNKNOWN.
+Candidate presence/rank alone never establishes eligibility. An `incorrect_claim` address
+remains grounding FAIL while a trustworthy association permits independent physical checks.
+
+Only snapshot, coordinate, opening and route consumers use this physical association.
+Opening checks the associated API venue's hours against the original visit interval;
+routes use its API coordinates with the original order, mode, departure and reserved duration.
+WALK, DRIVE and TRANSIT remain their original modes. No original output is repaired.
+Requirement targets, fulfillment/counting, canonical repetition and venue correspondence retain
+their existing canonical-identity rules; a downstream PASS never cancels grounding FAIL
+or proves requirement fulfillment. The report policy versions this change; the unchanged
+V0 correspondence packet remains `v0_identity_correspondence_3` and existing validated
+material can be consumed offline without another model request.
 
 Reviewed requirement subjects can retain an optional `source_place_id`; it is a claim
 binding, not factual evidence. Identity planning independently requests its Details.
@@ -227,9 +262,14 @@ The candidate count must equal the declared result count; a full 20-result page 
 retained next-page token remains UNKNOWN because completeness is unverified. A present
 pagination field with an empty or non-string value is malformed and also UNKNOWN. Malformed
 candidates or conflicting facts for one ID also remain UNKNOWN. Filter all candidates
-by literal original name, verified destination and any supplied literal formatted
-address, then require one distinct surviving ID. Zero/multiple matches are UNKNOWN;
-rank never chooses a candidate. Identical repeated observations of one ID are allowed.
+by literal original name, verified destination and any supplied equivalent formatted
+address, then require one distinct surviving ID. A complete search with exactly one
+name/destination-eligible ID and a supplied address mismatch gives FAIL, retaining
+`address_comparison`. `candidate_address_comparisons` preserves each eligible ID's
+binary comparison even when multiple identities leave resolution UNKNOWN. Zero eligible
+identities and multiple surviving matches remain UNKNOWN; rank never chooses a candidate.
+Identical repeated observations of one ID are allowed. Ambiguous mappings include any
+long or short endpoint paired with multiple different endpoints.
 Destination tokens use literal typed long/short component values, with explicit locality
 or administrative region and country evidence; without typed components they require
 exact formatted-address tokens. Hierarchical sublocality levels remain separate and
@@ -244,8 +284,14 @@ source digests and short-reference
 ownership bind eligibility. Foreign decisions, historical all-version packets and edited policy/version
 markers cannot pass current import. Absence of a V0 result leaves V0 UNKNOWN while V1-V3
 targets still evaluate. Confirmed target FAIL is retained as a component of that
-version's associated requirement checks. No resolver/CLI executes a model or provider.
+version's associated requirement checks. No identity resolver or `identity_cli` command
+executes a model or provider.
 
+Explicit `--historical-association` replays `versioned_api_identity_2`, including
+version-owned targets and the former FAIL/UNKNOWN downstream block. It reconstructs
+the original report without `place_association`; historical consumers use only canonical
+adoption. Relabeling a saved report does not migrate it. Current reports must be rebuilt
+from source-linked evidence; historical snapshots and smoke results remain unchanged.
 Explicit `--historical-program` replays `versioned_api_identity_1`, including shared
 programmatic targets, the original single-result rule and V0 packet policy
 `v0_identity_correspondence_2`. Old packets cannot pass current import; saved reports
@@ -274,6 +320,20 @@ decision for an absent/null/blank original location requires `not_supplied` and 
 enum excludes `claim.location`; decisions with a supplied address cannot use `not_supplied`.
 Instructions and import enforce the same rule. Absence alone does not prove an address error.
 Complete unique reference coverage and candidate ownership remain mandatory.
+Current requests encode `decisions` as an object keyed by every prepared short reference:
+all keys are required and extra keys are forbidden. Shared address-present/absent `$defs`
+retain the citation and assessment alternatives. Instructions enumerate the exact count
+and IDs, including every visit and requirement subject; insufficient facts require an
+explicit UNKNOWN decision rather than an omitted case.
+Import requires the exact owned key set and each value's `reference_id` equal to its key.
+Duplicate raw JSON keys, duplicate/foreign references, incomplete objects and arrays
+are rejected before converting valid judgments to the existing internal rows. Saved
+request strings, raw responses and receipts are never rewritten by that conversion.
+Historical uniform and legacy V0 request arrays remain unchanged. Earlier current-policy
+packets retain their original producer implementation for replay; the new request schema
+does not rebind or relabel their consumed responses. Correspondence and scoring policies
+remain unchanged. Azure's supported structured-output subset supplies required objects
+and references; array cardinality/uniqueness keywords are not used as a coverage guarantee.
 Validated V0 records expose `candidate_correspondence` (restored candidate ID and decision)
 separately from `grounding_verdict` and original claims. Supported `incorrect_claim` or
 `different_place` assessments remain FAIL even for a recognized candidate; they require
@@ -313,10 +373,12 @@ V0 result. Consumers reconstruct the exact report from the original intake befor
 it. Programmatic record/replay markers trigger verification even after policy substitution.
 `programmatic_judgment`, `grounding_verdict`, original claims and observation hashes remain
 visible. Quality and paired reports count grounding FAIL directly. Requirement/schedule
-descriptions retain identity checks; coordinate preparation lists unadopted references;
+descriptions retain identity checks; coordinate preparation's legacy-named
+`unadopted_references` lists physically unavailable references under the current policy;
 opening and route checks retain identity verdicts separately from their own feasibility
-verdicts. An identity failure supplies no corrected coordinates or route context. Opening
-and route facts can remain UNKNOWN when their independent evidence is unavailable.
+verdicts. Grounding FAIL alone supplies no coordinates or context; only the separately
+verified association enables physical evidence. Opening and route facts can remain UNKNOWN
+when their independent evidence is unavailable.
 Score arithmetic, masks, denominators and planner generation behavior are unchanged.
 Status is `complete` when all identity verdicts are decisive (including FAIL), otherwise
 `needs_evidence`; UNKNOWN is never dropped from downstream populations.
@@ -404,6 +466,60 @@ source-linked V0 material before applying version-specific dispatch. The histori
 response is not reinterpreted as a new-schema judgment. All identity CLIs support
 `--prepare --model MODEL` and `--model-result FILE` without live execution; add
 `--historical-llm` only for an explicitly selected uniform historical replay.
+
+### Complete V0 case-set binding
+
+`rtpeval_identity_model_result_2` preserves `binding_source` with the exact intake and
+independent evidence used for its original current-policy V0 packet. The applicability
+unit is the complete V0 case set. Original packet, request, response hash and capture
+times are retained. Reconstruct that packet before applying decisions to another batch;
+never rewrite the receipt into a fresh response.
+
+Occurrences bind group/run/output hash/pointer/projection version, original claim,
+complete ordered candidates, captured observation facts and raw evidence hash. Requirement
+targets bind source input, exact subject and all related obligations. Only observation/
+reference wrapper identifiers and raw file location are excluded from the fact fingerprint.
+Batch revision and unrelated V1-V3 content may change when all V0 cases and relevant facts
+remain identical. Changed claims, requirement meaning, candidates, capture provenance,
+raw bytes, policy or case membership reject import. Decode short references against the
+original packet, map to current occurrences, then enforce normal citation/ownership rules.
+
+Result-1 retains exact whole-packet matching. Historical policy/all-version packets cannot
+enter result-2. Historical files retain their original policy/code for exact reproduction.
+Applicability is separate from freshness: admissible old material cannot replace evidence
+for a newly required live run.
+
+### Formal automatic execution
+
+The [formal CLI](../../backend/evaluation/README.md#fresh-automatic-evaluation-cli) wraps
+native acquisition/scoring. Preparation freezes originals, reviewed schedule/occupancy/
+route/density contexts, explicit send/token/time/cost limits, caller-supplied dated USD
+prices and code hashes without sending. Execution verifies the exact digest and sources,
+creates a new one-use directory and acquires both snapshots afresh. V1-V3 use API/program
+rules; one V0-only Responses request is allowed with no fallback or automatic retries.
+
+Identity execution options may specify `reasoning_effort=low|medium`; absence preserves
+the historical low request without altering saved option data. The explicit value is
+part of the preparation digest and must match both the sent Responses body and the
+HTTP body verified by offline replay. Unsupported values fail before execution.
+This option does not apply to the separately fixed-medium opening-access workflow.
+
+Search retains original name/destination/location and page size 20. Search/Details masks
+include ID, name, address, typed address components, business status, coordinates and
+timezone; Details includes current/regular opening hours. A next-page token remains
+incomplete evidence rather than triggering unseen requests. Matrix uses one original
+directed coordinate pair, declared mode, native options and departure only for time-dependent
+queries. No mode/date substitution is permitted. Identical requests may share a fresh
+response within a phase; version/occurrence judgments stay separate.
+
+Journals omit credential headers and retain exact wire, attempts, times, HTTP outcomes
+and raw bytes. Result-2 binds the captured response; replay checks HTTP bytes/usage,
+derives coordinates/routes again and recomposes native reports. Failed directories stay
+consumed and retain stopped reports, usage and receipts. Reports distinguish processing,
+acquisition and evidence completion, retaining every in-scope UNKNOWN's check/reason/source
+and a separate acquisition-failure inventory. Excluded optional/human/controlled/official
+tracks are not acquired-but-UNKNOWN units. Costs cover evaluator-only observed sends and
+reported tokens against dated references; unavailable actual billing is null, never zero.
 
 ### Explicit historical replay
 
@@ -561,11 +677,19 @@ and [dated acceptance](../records/evaluation/routes.md#v0-identity-adoption-acce
 
 `build_identity_plan(intake, paired=False)` selects all final primary visits and relevant requirement subjects, plus available V3 optional projections when paired is requested. It creates independent name-search requests (page size 20, original destination/location retained) and supplied-ID details requests. Search is collected for supplied IDs too; rank never establishes identity. Missing names/malformed IDs remain explicit blocked reference entries. Original occurrences are never deduplicated, only identical request descriptors.
 
-`build_evidence_plan(intake, identity_report, route_contexts, paired=False)` validates report/source linkage and deduplicates details requests for resolved canonical identities. Unresolved references remain explicit. Every candidate leg is inventoried; missing route contexts remain pending rather than disappearing. Explicit contexts identify actual source reference endpoints and include mode, aware departure or explicit time-independent basis, routing options, and independently prepared endpoint coordinates with evidence hashes. Endpoint canonical IDs must match the adopted identities. This records supplied independent context; it does not certify the factual truth of externally prepared coordinates. Ticket 07 owns context selection and applicability; Ticket 04 never optimizes or shifts dates.
+`build_evidence_plan(intake, identity_report, route_contexts, paired=False)` validates
+report/source linkage and deduplicates Details requests for independently associated
+venues (canonical adoption under historical policies). Every source occurrence remains
+explicit, including physically unavailable references. Every candidate leg is inventoried;
+missing route contexts remain pending. Explicit contexts identify source-reference endpoints
+and retain mode, aware departure or explicit time-independent basis, routing options and
+independently prepared coordinates with evidence hashes. API endpoint IDs must match the
+verified physical associations. This records supplied context without certifying externally
+prepared coordinates. Ticket 07 owns applicability; Ticket 04 never shifts dates.
 
 Requests have canonical-JSON SHA-256 keys over operation and complete parameters. Route keys preserve direction, identities, coordinates/provenance, mode, departure context and routing options. Only necessary one-origin/one-destination matrix requests are emitted; there is no Cartesian union matrix. Requested matrix elements count each actual send, including retries.
 
-`acquire_snapshot(plan, directory, transport, policy)` requires a fresh directory and an explicitly supplied async transport. It provides operation/parameters, not credentials or URLs; no built-in network client or live CLI is enabled. The transport returns status_code and exact response bytes. A transport failure is represented by a typed safe code; exception messages and credential headers are not persisted.
+`acquire_snapshot(plan, directory, transport, policy)` requires a fresh directory and an explicitly supplied async transport. This primitive provides operation/parameters and does not own credentials or URLs. Formal `evaluation_run` execution supplies the network transport under the approved preparation and limits described above. The transport returns status_code and exact response bytes. A transport failure is represented by a typed safe code; exception messages and credential headers are not persisted.
 
 Policy requires an explicit positive max_sends, max_attempts (default 2), timeout_seconds (default 20), retry_delay_seconds (default 1). Sequential acquisition uses deterministic sorted request keys. Only transport failures/timeouts, HTTP 429 and HTTP 5xx are retried within both bounds. All attempts, errors, UTC request/retrieval times and raw response hashes are preserved. Malformed JSON and missing matrix elements are not silently retried or converted to no-route. Budget exhaustion records every remaining request as unavailable. Retry success does not erase earlier attempts.
 
@@ -590,8 +714,9 @@ Replay validates UTC collection/attempt timestamps and their ordering as well as
 
 The identity bridge additionally retains raw typed address components under the current
 association policy. It does not normalize them into manufactured evidence. Query/response
-applicability belongs to [opening/routes](0004-opening-routes.md). A built-in operational Google
-client, credential handling, storage/retention policy and live allowance are not provided.
+applicability belongs to [opening/routes](0004-opening-routes.md). Formal automatic execution
+supplies the Google client and per-run raw capture. Credentials and a new live execution
+allowance remain caller-owned.
 
 <a id="rtpeval-usage-capture-contract"></a>
 <a id="rtpeval-usage-capture-contract--ticket-02-usage-capture-and-resource-reporting-contract"></a>
@@ -703,7 +828,8 @@ native oracle snapshots. They do not require a four-version comparison, invoke p
 fetch bills/prices or contact providers. Capture remains opt-in; planning behavior and
 quality scores are unchanged.
 
-Optional numeric capture retains SDK/LangChain cached-input and reasoning token details.
+Optional numeric capture retains SDK/LangChain cached-input, cache-write and reasoning
+token details, with allowlisted numeric originals in `usage_details`.
 Reasoning is already included in output tokens; it is not added to the total again.
 Google HTTP observations retain only bounded Places endpoint/field mask and route
 mode/routing preference, alongside requested matrix elements. Unique active model
@@ -718,9 +844,11 @@ No prompts, query text, coordinates, URLs, keys or raw responses are added to th
 `as_of`, inclusive `valid_from`, exclusive `valid_until`, exact event `match`, positive
 decimal-string `per` and decimal-string `rates`. Match includes kind, provider, operation
 and model identity for model rows; optional exact billing context selects an explicitly
-supplied SKU. Supported units are input, cached input, output tokens, requests, matrix
-elements and observed tool calls. Cached input is partitioned out of total input before
-applying its rate. Embeddings can have input-only prices. Unsupported or overlapping
+supplied SKU. Supported units are input, cached input, cache-write input, output tokens,
+requests, matrix elements and observed tool calls. Cached reads and writes are partitioned out of
+total input before applying their rates; their sum cannot exceed reported input.
+Observed nonzero writes without a write price leave the estimate unavailable. Embeddings
+can have input-only prices. Unsupported or overlapping
 prices, missing counts, incomplete outcomes and out-of-scope context leave costs unpriced.
 The calculator does not interpret free text to infer a SKU.
 
@@ -761,3 +889,105 @@ not a claim about Azure charges. Current-source prices used retrospectively and 
 cache/service-tier details must be stated. The [package guide](../../backend/evaluation/README.md#offline-cost-report)
 contains runnable import examples; dated acceptance belongs to the existing
 [usage record](../records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05).
+
+<a id="planner-usage-development-cli"></a>
+
+### Selected-version usage preparation and capture — 2026-10-08
+
+`backend.evaluation.tools.planner_usage_cli` prepares a one-use output directory with
+original input/configuration bytes, the effective runtime policy/digest, source revision,
+trusted current date, run identity and dated price basis. Preparation constructs no
+provider runtime and sends no request. `--execute` selects the existing
+`RequestPlannerRuntime` for one V0, V1, V2 or V3 invocation; live authorization remains
+owned by the current-session smoke policy. The runtime retains configured timeouts,
+version behavior and dependency cleanup. Execution loads the repository `.env` (or
+`--env-file`) after the optional RAG environment; process values take precedence, then
+RAG values, then base values. Preparation reads neither credential file, and values are
+not serialized. This interface adds no spend reservation guard.
+
+Completed execution saves exact serialized result bytes, `rtpeval_usage_1`,
+`rtpeval_provenance_1`, usage summary, `rtpeval_prices_1` and cost report. Result version
+and original structured trip facts must match before a result hash can be adopted.
+Failed/cancelled execution keeps observed usage and a cost report, with error type only
+and no adopted result. Output reuse is rejected. Injected clients retain unverified
+coverage; the checked default adapters are explicitly declared in the envelope.
+
+`reference_prices` binds dated official unit rates to saved event identity and observed
+billing context. GPT-6 Luna and `text-embedding-3-small` use exact known model identities;
+unknown deployments remain unpriced. GPT-6 Luna input above 272,000 tokens applies the
+published long-context multipliers. Known Places masks select the highest requested
+supported SKU; unknown fields or wildcard masks remain unpriced. Matrix prices use
+observed mode/routing preference and actual requested element counts. Retail references
+exclude account discounts, free quota, tax and credits. Foundry estimates explicitly use
+OpenAI prices as a proxy. Public HTML/noncommercial Open-Meteo use a declared free-use
+scenario. Search-content token cost is covered only insofar as provider usage reports it.
+
+A model price row may set `unreported_cache_policy="uncached_write_rate"` with input,
+read and write rates; the write rate must be at least the ordinary rate. Missing cache
+reads then assume no discount, and missing writes price all non-read input at the write
+rate. Pricing records assumed billable units and explanations, while usage retains
+missingness. Without this policy or a supported source annotation, missing quantities
+remain unpriced. These are estimates; account invoices and cache observations remain
+separate evidence.
+
+Default capture covers usage and original result/configuration lineage. The opt-in
+generation evidence extension below connects raw provider, query-vector and mechanism
+observations. Producer completion and qualified four-version intake retain their existing
+separate requirements. This command performs no independent
+evaluator acquisition or quality scoring. Its preparation/capture output cannot attest
+a completed four-version batch. Runnable instructions belong to the
+[package guide](../../backend/evaluation/README.md#planner-usage-capture-cli).
+
+<a id="planner-generation-evidence"></a>
+
+### Opt-in generation evidence — 2026-10-08
+
+`--capture-evidence` records evidence intent during offline preparation and enables capture
+only with explicit execution. Existing mechanism observations, a RAW local run tracer,
+owned HTTP usage hooks and retrieval query vectors share the selected invocation. These
+observers add no requests, retries or planner decisions. Usage timing stops after invocation
+and cleanup, before final mechanism/raw serialization and inventory writes.
+
+`mechanism.json` uses `rtpeval_mechanism_capture_1`; accepted catalog, prepared/submitted
+model observations and actual V3 rule selection retain their existing semantics and
+missingness. `evidence/trace/` captures local LLM/tool/evidence payloads, retaining
+runner-owned completion and tool usage rather than replacing them with CLI defaults.
+
+`evidence/wire/` contains credential-filtered UTF-8 representations; JSON bodies are
+normalized objects. Safe metadata includes method, filtered URL/allowlisted headers,
+provider status, the original usage HTTP event ID, body form/status and observed-body
+SHA-256. Known credentials from the environment, request metadata and labelled JSON fields
+are filtered, including unlabelled echoes, duplicate sensitive query parameters and
+individual Cookie values. Credential files and Authorization/Cookie headers are excluded.
+
+Streaming follows normal consumption without draining unread bodies. Decoded SDK content
+includes normally consumed gzip responses; direct raw HTML streams retain their normally
+read bytes. Unsupported encoding, non-UTF-8 content, unread/interrupted streams and bodies
+above 10 MB retain explicit missingness without an unsafe preview. The observed digest
+identifies the recorded body form, which may differ from physical encoded wire bytes.
+Stored artifacts have their own exact-byte hashes after filtering. Trace payload capacity
+uses the configured trace limit; truncation remains partial evidence.
+
+`evidence/vectors/` uses existing normalized float32 NPZ capture with space/corpus metadata,
+text digests, vector digest and shape. It adds no embedding or DB request. Existing explicit
+capture directories take precedence; the ambient directory resets after execution. A failed
+vector write preserves planning and reports missing vectors for completed embedding calls.
+The index counts only bundles that load without pickle and pass metadata/space, shape,
+dtype, finiteness, normalization and vector-digest checks. Partial files remain inventoried
+but cannot establish capture coverage.
+
+`rtpeval_generation_evidence_1` in `evidence-index.json` binds original input, exact result,
+policy, source revision and run identity to saved file digests, HTTP events, diagnostics and
+collection status. The index excludes itself, provenance and mutable manifest to avoid
+hash cycles; provenance binds the index and mechanism file hashes. Invocation failures and
+cancellation retain observed evidence without an adopted result. Optional evidence failures
+do not replace planner outcomes; a missing usage file exits as capture failure while retaining
+an available original result and index. Injected coverage stays unverified.
+Trace payloads may be objects, lists or other valid JSON values. Malformed/unreadable
+JSON and unreadable files remain unavailable inventory units rather than interrupting
+successful planner completion; readable malformed files retain their exact hashes.
+
+Available local evidence is distinct from producer completion, independent source review,
+qualified four-version intake, quality PASS and actual billing. Storage limits are capture
+capacity, not a spending guard. Live dispatch still requires the prepared, explicitly
+approved [smoke handoff](../agents/smoke-tests.md), and performs no independent evaluation.

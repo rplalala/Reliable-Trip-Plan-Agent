@@ -136,6 +136,7 @@ read-only clean-clone check. Do not rebuild vectors or destroy a volume to follo
 | [Version runners](../0001-system-architecture.md#concrete-code-map) | Independent execution and shared graph seams |
 | [API boundary](../0007-application-operations.md#http-contract-map) | Product/Developer request, result and stream contracts |
 | [Evaluation package](../../backend/evaluation/README.md) | Offline intake, independent review, scoring and human package commands |
+| [Evaluation development tools](../../backend/evaluation/tools/route_requests_cli.py) | V0 smoke request/budget preparation; not Product runtime or final quality scoring |
 | [Data tools](../../tools/data/tripworld_database.py) | Explicit ingestion, embedding, integrity and query operations |
 | [Source preparation](../../tools/data/prepare_tripworld.py) | Source projection/profiling and corpus preparation |
 | [Retrieval tools](../../tools/data/tripworld_retrieval.py) | Entity construction and exact retrieval reference tools |
@@ -153,6 +154,12 @@ compatibility lives in `backend/app/tripworld`; persistence/build/schema tooling
 under `tools/data/tripworld`. Requirement fingerprints have one runtime definition in
 [fingerprints.py](../../backend/app/runtime/fingerprints.py); development captures use
 the optional port from [requirement_capture.py](../../tools/validation/requirement_capture.py).
+
+Evaluation's development-only V0 route tool uses
+`python -m backend.evaluation.tools.route_requests_cli`. This is separate from the
+repository-level `tools/validation` helpers. Ordinary evaluator CLIs remain in
+`backend.evaluation`; they are command entries into actual evaluator functionality.
+Neither location makes smoke a required product execution step.
 
 <a id="preference-smoke-provider-diagnostics"></a>
 
