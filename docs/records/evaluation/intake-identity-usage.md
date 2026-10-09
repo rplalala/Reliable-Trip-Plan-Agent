@@ -4516,10 +4516,13 @@ version freeze or implementation of #98-#102 is authorized by this delivery.
 
 ### Scope and revisions
 
-Status: implemented and validated at child/public synthetic seams; final combined review,
-full backend gate and PR acceptance remain pending. The human approved #98–#102
+Status: implemented and validated at child/public synthetic seams and the final full
+backend gate. Initial independent implementation reviews found zero findings on both
+axes; the final documentation P3 correction passed focused recheck with zero remaining
+findings. The human approved #98–#102
 implementation, tests, local commits, review/corrections, coherent documentation and
-full Git delivery under parent #95. PR #105 is draft at this checkpoint. Paid/live
+full Git delivery under parent #95. [PR #105](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/105)
+owns publication and merge; GitHub Issues own acceptance checkboxes and closure. Paid/live
 execution, actual external RequirementSpec sessions, formal research and freezes are
 excluded. V0–V3 retain independent runners and native behavior.
 
@@ -4527,8 +4530,10 @@ The combined review fixed base is `93ab3ba24049dd5321fea1c755e354f054c0625e`.
 Collection `ef51e39`, tool adapters `52dddb2`, reviewed finalization `57ce384` and
 selected registration `2aadf2d` retain their original implementation commits, integration
 history and separate corrections. #102 starts at integrated `4919591`; public acceptance
-tests are committed as `c268859`. Its operational documentation was the only task-local
-uncommitted context when these results were summarized. The unrelated primary `.gitignore`
+tests are committed as `c268859`, followed by coherent operational documentation in
+`c1280a1`. That documentation was the only task-local uncommitted context at the earlier
+child-summary checkpoint. Final review and complete tests cover committed `c1280a1`;
+the final acceptance update changes only this record and `PROJECT.md`. The unrelated primary `.gitignore`
 change remains excluded, with SHA256
 `FDC63780F304BDE2F8AC48B7E520330BC45254E8799CB4323CFE645C82A3AE02` unchanged.
 No evaluator hash-bound implementation or original version runner changes in #102.
@@ -4619,7 +4624,61 @@ They are ignored diagnostics, not published dependencies. Exhaustive child red/g
 commands and durations remain local handoff aids; the event summary above is the public
 engineering account. No full backend or frontend gate was run by #102.
 
-Final combined Standards/Spec review against the fixed base, any separate corrections,
-full stable-source backend gate and PR merge/Issue acceptance remain required before
-parent closure. Earlier #97 full-suite evidence is retained above with its original scope;
-it is not substituted for this pending final gate.
+### Combined review and final backend acceptance
+
+The merger retained every implementation, child integration and separate correction
+commit. Primary integration checks passed **98 in 105.74s** for collection/core/evaluation,
+**133 in 183.49s** for tools/collection/evaluation, **87 in 71.13s** for collection/finalization,
+**81 in 28.19s** for generation/native usage/evidence/core CLI, and **3 in 24.38s** for the
+final public workflow. These overlapping scopes are not added together. Initial primary
+collection setup needed an existing basetemp parent; Windows sandbox `uv` console-launcher
+canonicalization failures were resolved by host execution, without source changes.
+
+Two independent read-only agents reviewed the complete 19-file fixed-base diff and all
+eleven outgoing commits from `93ab3ba24049dd5321fea1c755e354f054c0625e` through
+`c1280a1d3bde034809d2cb813975c5a571d2354d`. **Initial implementation review: Standards
+zero findings; Spec zero findings.** No implementation correction was required.
+Final documentation recheck subsequently found one Standards P3 issue: `PROJECT.md`
+section 5 still presented the earlier #97 gate as current while section 6 carried the
+new #98–#102 result, contrary to the file's single-current-checkpoint rule. A separate
+documentation-only correction replaces section 5 with the dated, scoped unchanged-source
+`c1280a1` gate and references it from section 6. Earlier #97 results remain in their
+existing acceptance section. Separate correction `e7fa98e` passed focused documentation
+recheck: **Standards zero remaining findings; Spec zero findings**. No new source change
+or test/full-suite run was required. The combined implementation
+conclusion is reused for PR delivery;
+no second PR-wide code review is performed. All thirteen changed Python files passed
+Ruff lint and format checks; fixed-base whitespace checks passed. Mypy and pyright are
+not configured. No frontend gate is claimed because the frontend and application API
+are unchanged. The final documentation check also verifies each new local link with
+the Git index: sixteen tracked destinations, eight JSON templates and retained anchors.
+
+The first complete backend invocation incorrectly used `D:/Workspace/Capstone` as its
+working directory. It finished **52 failed, 3418 passed, 11 skipped, 2 warnings in 662.22s**.
+JUnit and tracebacks identify 46 missing relative `config/runtime.yaml` paths, four
+relative version-runner paths, one relative PowerShell script and one `Path.cwd()`-relative
+implementation inventory. The wrong-script output also caused two GBK reader warnings.
+This invocation error is retained as a failed gate, not reported as a source defect or
+as successful validation. The additional skip was an absent parent-relative historical
+artifact; its existing offline test runs from the proper repository root.
+
+Without changing source, tests or dependencies, the corrected complete command ran from
+`D:/Workspace/Capstone/Reliable-Trip-Plan-Agent` using the primary editable environment:
+
+```powershell
+.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider --basetemp D:/Workspace/Capstone/artifacts/rtpeval-95/final-root --junitxml D:/Workspace/Capstone/artifacts/rtpeval-95/final-root.xml
+```
+
+Final result on unchanged `c1280a1`: **3471 passed, 10 skipped in 673.89s**, with no failures
+or warnings reported. The skips are nine opt-in isolated PostgreSQL cases and the existing
+host symlink-creation privilege case. Local JUnit identifiers are
+`D:/Workspace/Capstone/artifacts/rtpeval-95/final-95.xml` and `final-root.xml`; they are
+ignored diagnostic evidence, not published navigation dependencies. The complete rerun
+was required to replace the invalid-cwd gate. Earlier #97 full-suite evidence keeps its
+original scope and is not substituted for this final result.
+
+Only final acceptance documentation follows this tested code state. Git delivery uses
+the existing PR, publishes the combined review/check conclusion, and checks existing
+child Acceptance criteria against these results before closure. No actual external
+author/reviewer session, paid/live provider request, formal benchmark or version freeze
+is established by this synthetic/offline acceptance.
