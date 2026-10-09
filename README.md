@@ -5,6 +5,24 @@ uses plain model generation, V1 adds external travel information, V2 adds TripWo
 and V3 adds validation, targeted repair and re-validation. [PROJECT.md](PROJECT.md) records
 the current engineering state and evidence boundaries.
 
+## Command line
+
+Run `uv sync` from the repository root to install the project editable, then use
+`uv run rtpeval --help` or activate `.venv` and run `rtpeval --help` directly.
+The installed interface currently provides offline batch validation:
+
+```powershell
+uv run rtpeval validate --help
+uv run rtpeval validate path/to/manifest.json
+```
+
+`validate` reads an existing source-bound `rtpeval_batch_1` manifest and emits native
+intake JSON to stdout without credentials, network requests or source changes. Exit 0
+means intake accepted the material; exit 2 means material correction or invalid arguments.
+Validation does not score quality or establish a formal benchmark. The legacy
+`python -m backend.evaluation` interface remains available. Other evaluation operations
+retain their existing [module commands](backend/evaluation/README.md).
+
 ## Current application
 
 The Product page at `/plan` runs V3. The Developer page at `/dev` offers independent V0–V3

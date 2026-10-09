@@ -12,6 +12,30 @@ defines separate mechanism/audit readers and explicit opt-in capture, disabled b
 The [approved scope](../../docs/contracts/0001-evaluation-artifacts.md#ticket12-implementation-scope)
 defines the local wrapper, reader/audit CLI and offline acceptance boundaries.
 
+## Installed batch validation
+
+From the repository root, `uv sync` installs the editable project and its `rtpeval`
+console command. Use `uv run rtpeval` or activate the existing `.venv` first:
+
+```powershell
+uv run rtpeval --help
+uv run rtpeval validate --help
+uv run rtpeval validate path/to/manifest.json
+```
+
+Validation delegates to the existing `python -m backend.evaluation MANIFEST` intake
+command, preserving its JSON, material/projection diagnostics and exit codes. It reads
+the manifest and referenced originals without modifying them, loading credentials,
+constructing Planner/provider runtimes or sending requests. Exit 0 indicates accepted
+material; exit 2 indicates material correction or argument errors. Acceptance does
+not score quality or certify the producer's benchmark selection.
+
+Only `validate` is exposed through the installed interface in this slice. Generation,
+collection/finalization and one-step evaluation remain separate pending tasks under
+[#95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95). Existing module
+commands below retain their behavior. The thin dispatcher lives in `backend/cli/`,
+outside the evaluator implementation files bound by prepared execution hashes.
+
 ## Contract and module navigation
 
 Current rules have one topic owner. Read the relevant contract before preparing inputs;

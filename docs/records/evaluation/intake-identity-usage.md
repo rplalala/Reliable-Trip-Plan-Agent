@@ -4317,3 +4317,87 @@ The PR owns the final head, correction recheck, published pre-merge review and m
 state. Related Issues receive pinned published acceptance links, preserving their
 earlier local-only descriptions as historical checkpoints. Further evidence acquisition,
 formal research and version freezes remain outside this delivery.
+
+<a id="installed-rtpeval-validation-acceptance-2026-10-09"></a>
+
+## Installed RTPEval validation acceptance (#96, 2026-10-09)
+
+The human authorized implementation of
+[#96](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/96), including TDD,
+offline checks, local commits, Standards/Spec review, corrections and documentation.
+One initial branch creation/switch was explicitly confirmed; the branch was subsequently
+renamed at the human's request to `rtpeval/cli-96`. Fixed review base is
+`70e367de0e970225488b0cbeb4b8e2b6842c727f`. Implementation commit is `e418d94`;
+the separate review correction is `b8291fe`. The unrelated pre-existing `.gitignore`
+change is excluded and its SHA256 remains
+`fdc63780f304bde2f8ac48b7e520330bc45254e8799cb4323cfe645c82a3ae02`.
+No paid execution, push, PR, tracker publication, formal comparison or version freeze
+is authorized or performed by this task.
+
+### Implementation and test sequence
+
+The repository now uses the bundled compatible `uv_build` backend for editable
+installation and exposes the `rtpeval` console script. The lockfile changes only this
+project's source from virtual to editable; dependency versions are unchanged.
+The lazy dispatcher lives in `backend/cli/`, outside the evaluator's preparation-bound
+Python file set. It delegates validation to the existing native command without
+duplicating intake, scoring or acquisition logic. No evaluator/planner Python file,
+schema or V0-V3 behavior changes.
+
+The first installed-entry test failed because the command did not exist. After adding
+packaging and the top-level entry, native accepted-inventory parity failed because the
+initial dispatcher emitted no report. Delegating to the native intake command made
+both public-interface slices pass. Expanded characterization initially used the wrong
+diagnostic key (`diagnostics` instead of `material_diagnostics`) and an incorrect
+expectation for argparse's missing-command priority; correcting these test expectations
+preserved the native behavior. The resulting initial CLI gate passed 15 tests.
+
+Default sandbox cache writes and a new empty offline cache could not complete setup.
+Using the existing uv cache outside the restricted sandbox resolved and installed
+the local editable project offline. Windows' installed uv trampoline could not resolve
+its script path inside the sandbox; the normal host invocation succeeded. Default
+pytest temporary-directory ACLs also blocked setup. Tests use fresh destinations under
+the ignored workspace `artifacts/rtpeval-96/` directory instead. These were environment
+failures, not provider sends or changes to production behavior. Editable metadata,
+offline lock checking and actual `uv run --offline --locked --no-sync rtpeval` help
+commands were verified.
+
+The affected gate passed **188 tests, 1 skipped in 177.51 seconds**, covering installed
+CLI behavior, native intake, legacy subprocess workflows and native evaluation
+preparation/execution/replay with synthetic transport. The new tests compare exact
+accepted/correction stdout and exit codes and preserve source bytes. Guarded child
+processes reject and record DNS/socket operations, credential-file/environment reads
+and online-runtime imports. Top-level help additionally forbids evaluator imports.
+Five deliberate negative controls verify that caught DNS/TCP, credential or runtime
+attempts still fail the harness; none sends a request or reads a credential value.
+
+### Review correction
+
+Independent Standards review of `70e367d...e418d94` found zero issues. Spec review
+found one P2: the native leaf help and argument errors advertised
+`rtpeval [-h] manifest`, omitting the required `validate` subcommand. A new public
+help assertion reproduced that failure. Correction `b8291fe` temporarily supplies
+`rtpeval validate` as the native parser's program name and restores it in `finally`,
+including help/error exits. It does not edit the native parser or prepared hashes.
+The final CLI gate passes **20 tests in 12.66 seconds**, including corrected help/error
+usage, unchanged native JSON and old-module behavior. Ruff lint and format checks pass.
+Both independent correction rechecks report **zero remaining Standards and Spec
+findings**; the operation documents were also checked against this bounded slice.
+
+The full backend gate passed **3,251 tests, 10 skipped in 538.75 seconds**. Collection
+started at implementation `e418d94`, before the help-only correction; installed-command
+subprocesses ran against the editable source. The separate final 20-test gate verifies
+the strengthened help/error assertions at `b8291fe`. The correction changes only
+displayed usage and leaves the rest of the full gate's behavior unchanged. No second
+full run was needed. Compile checks, lock validation and whitespace checks pass;
+the project has no configured mypy/pyright gate.
+
+The operational guide now states editable installation, current commands, offline
+behavior, JSON output and exit meanings. Only `validate` is exposed through the new
+interface. Intake acceptance is not quality PASS or formal benchmark qualification.
+Standalone distribution is untested and not required. No frontend gate or real
+Planner/provider/model execution was run. Local evidence identifiers are
+`artifacts/rtpeval-96/affected-r1`, `help-red`, `help-green.xml` and `full-r1.xml`;
+they are ignored test artifacts, not published dependencies. Remote #96 remains open
+because tracker publication is excluded. Subsequent #97-#102 implementation needs
+its own approved scope.

@@ -24,6 +24,12 @@ npm --prefix frontend ci
 .\.venv\Scripts\python.exe scripts/run_api.py --host 127.0.0.1 --port 8000
 ```
 
+`uv sync` also installs this repository editable, exposing `rtpeval` in `.venv`.
+From the repository root, `uv run rtpeval --help` discovers the current offline
+validation command; `uv run rtpeval validate MANIFEST` emits native intake JSON.
+See [installed batch validation](../../backend/evaluation/README.md#installed-batch-validation)
+for material requirements, exit meanings and the retained legacy commands.
+
 Start the frontend in another terminal with `npm --prefix frontend run dev`.
 Vite proxies `/api` and `/health` to `http://127.0.0.1:8000`.
 The [API launcher](../../scripts/run_api.py) selects the Windows event loop needed by

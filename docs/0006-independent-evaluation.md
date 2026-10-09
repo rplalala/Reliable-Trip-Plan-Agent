@@ -194,6 +194,10 @@ Task authority: [parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agen
 [Ticket 12 #24](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24).
 Commands and exact implemented outputs belong to the
 [evaluation package guide](../backend/evaluation/README.md).
+The editable repository installation exposes `rtpeval validate` for offline native
+batch intake. Its dispatcher is outside the preparation-bound evaluator file set;
+existing module commands and scoring semantics remain unchanged. See
+[installed batch validation](../backend/evaluation/README.md#installed-batch-validation).
 See [ADR: evaluation independence](adr/0004-independent-evaluation.md).
 
 
