@@ -1,6 +1,6 @@
 # Development guide
 
-Current entry points, reconciled 2026-10-03. [PROJECT.md](../../PROJECT.md) owns status
+Current entry points, reconciled 2026-10-09. [PROJECT.md](../../PROJECT.md) owns status
 and authorization; [architecture](../0001-system-architecture.md) and
 [application contracts](../0007-application-operations.md) explain the code and APIs.
 Commands below are references, not evidence of execution or approval for a live run.
@@ -25,17 +25,19 @@ npm --prefix frontend ci
 ```
 
 `uv sync` also installs this repository editable, exposing `rtpeval` in `.venv`.
-From the repository root, `uv run rtpeval --help` discovers validation and evaluation.
-`uv run rtpeval validate MANIFEST` emits native intake JSON.
-`uv run rtpeval evaluate execute MANIFEST --directory FRESH --options OPTIONS --prices PRICES`
-prepares and executes the automatic
-report; provider calls require their own execution authorization. Preparation and saved
-evidence replay stay offline. See
-[installed automatic evaluation](../../backend/evaluation/README.md#installed-automatic-evaluation)
-for credentials, reviewed contexts, native budgets, one-use directories and the retained
-prepared-directory/exact-digest route.
-See [installed batch validation](../../backend/evaluation/README.md#installed-batch-validation)
-for material requirements, exit meanings and the retained legacy commands.
+From the repository root, `uv run rtpeval --help` discovers the task groups.
+The [root command guide](../../README.md#command-line) gives selected generation,
+existing-material collection, external requirements handoff, finalization and the
+shortest accepted-manifest-to-report route. The
+[operational evaluation guide](../../backend/evaluation/README.md#installed-generation-and-material-handoff)
+owns producer schema templates, exact parameters, pending/blocked states and source
+preservation. `validate` is offline native intake; `evaluate execute` prepares and emits
+the automatic report in one invocation, while preparation/replay stay offline.
+Provider execution requires its own authorization and fresh one-use directory. See
+[automatic evaluation](../../backend/evaluation/README.md#installed-automatic-evaluation)
+for budgets, credentials, reviewed contexts and the retained prepared/digest route.
+Normal material operations do not launch external author/reviewer agents. Development
+smoke and historical session-specific reproduction remain separate below.
 
 Start the frontend in another terminal with `npm --prefix frontend run dev`.
 Vite proxies `/api` and `/health` to `http://127.0.0.1:8000`.

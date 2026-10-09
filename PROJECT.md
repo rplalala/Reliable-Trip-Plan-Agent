@@ -124,7 +124,11 @@ lives outside preparation-bound evaluator files. Budgets, credentials, source/re
 integrity, one-use rules, version-specific identity/reasoning policies and separate statuses
 remain native. No retries or implicit opening supplement are added. See
 [installed evaluation](backend/evaluation/README.md#installed-automatic-evaluation).
-Remaining material-handoff and command-group capabilities are pending.
+The integrated implementation also exposes explicit offline collection, external reviewed
+requirements attachment/native finalization, selected generation registration and task-oriented
+adapters to the existing tools. Collection stays unqualified until reviewed four-version
+finalization; external agents are separately operated. See
+[material handoff](backend/evaluation/README.md#installed-generation-and-material-handoff).
 
 | Capability | Current behavior | Detailed owner |
 | --- | --- | --- |
@@ -235,20 +239,22 @@ or guaranteed fresh-clone assets.
 
 ## 6. Next work and authorization boundary
 
-The locally implemented [CLI entry/validation #96](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/96)
+[CLI entry/validation #96](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/96)
 and [one-step evaluation #97](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/97)
-are the first two slices of [unified CLI parent #95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95).
-Local implementation, tests, review and documentation are complete. On 2026-10-09,
-the human also authorized branch rename, push, PR creation, merge after verification,
-and evidence-backed Acceptance criteria updates and closure for #96/#97. Delivery reuses
-the completed Standards/Spec reviews at the human's explicit request; PR code-review is
-not repeated. Paid execution remains excluded. Live Issues and the delivery PR own publication
-and lifecycle outcomes. Material collection (#98), finalization (#99),
-generation registration (#100), other command groups (#101) and integrated acceptance
-(#102) remain separate pending work. Each new implementation scope needs approval.
-Local validation and review evidence is retained in
-[validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09)
-and [one-step acceptance](docs/records/evaluation/intake-identity-usage.md#one-step-rtpeval-evaluation-acceptance-2026-10-09).
+were delivered as the first slices of
+[unified CLI parent #95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95).
+On 2026-10-09 the human approved the remaining #98–#102 implementation, tests, local
+commits, combined Standards/Spec review, corrections, documentation and full Git delivery.
+Collection, finalization, generation registration and task-oriented tools are integrated;
+#102 adds complete public synthetic workflow acceptance and operational guidance.
+[PR #105](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/105) remains draft,
+pending final full backend gate, combined review and authorized merge/acceptance updates.
+Child gates and the earlier full #97 checkpoint are scoped evidence; they do not establish
+a final #98–#102 gate. Paid/live execution, actual external author/reviewer sessions,
+formal research and version freeze remain excluded. Live Issues and the PR own delivery
+and lifecycle state. Retained earlier evidence:
+[validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09),
+[one-step acceptance](docs/records/evaluation/intake-identity-usage.md#one-step-rtpeval-evaluation-acceptance-2026-10-09).
 
 Current local implementation and acceptance cover
 [public-landmark access #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91),

@@ -30,10 +30,10 @@ constructing Planner/provider runtimes or sending requests. Exit 0 indicates acc
 material; exit 2 indicates material correction or argument errors. Acceptance does
 not score quality or certify the producer's benchmark selection.
 
-The installed interface also exposes [automatic evaluation](#installed-automatic-evaluation).
-Generation, collection/finalization and remaining command groups are pending tasks under
-[#95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95). Existing module
-commands below retain their behavior. The thin dispatcher lives in `backend/cli/`,
+The installed interface also exposes [automatic evaluation](#installed-automatic-evaluation),
+[selected generation and material handoff](#installed-generation-and-material-handoff), and
+[task-oriented tools](#installed-task-oriented-tools). Existing module commands below retain
+their behavior. The thin dispatcher lives in `backend/cli/`,
 outside the evaluator implementation files bound by prepared execution hashes.
 
 ## Installed automatic evaluation
@@ -77,6 +77,201 @@ an operator may explicitly select the legacy route after correcting credentials.
 does not automatically recover it or repeat an attempt. No retry, resume, extra probe or
 implicit opening supplement is added. Repository authorization and live execution rules
 still apply. Existing module commands retain their behavior.
+
+## Installed generation and material handoff
+
+`rtpeval generate` forwards the native [selected-version usage capture](#planner-usage-capture-cli)
+arguments. Without `--execute` it prepares offline; with `--execute` it invokes exactly
+one selected Planner. It retains the native runtime, date admission, usage/evidence options
+and failure artifacts. Registration is optional and requires both `--register-batch CONFIG`
+and `--registration-directory FRESH`, together with `--execute`.
+
+The original complete request, configuration and selected captures must remain under the
+configuration's reference root. Every referenced path is relative to that JSON file; path
+escape is refused. The following `selection.json` template declares explicit pending slots;
+replace the input hash with the exact SHA-256 of saved bytes before using it:
+
+```json
+{
+  "schema_version": "rtpeval_collection_1",
+  "batch_id": "case-1-batch",
+  "revision": "1",
+  "created_at": "2026-10-09T00:00:00Z",
+  "qualification_policy_ref": "selected_workflow_1",
+  "groups": [{
+    "group_id": "case-1",
+    "input_ref": {
+      "path": "input.json", "sha256": "EXACT_INPUT_SHA256",
+      "media_type": "application/json", "availability": "available"
+    },
+    "selected_runs": {
+      "v0": {"run_id": "case-1-v0", "capture_directory": "captures/v0"},
+      "v1": {"run_id": "case-1-v1", "capture_directory": "captures/v1"},
+      "v2": {"run_id": "case-1-v2", "capture_directory": "captures/v2"},
+      "v3": {"run_id": "case-1-v3", "capture_directory": "captures/v3"}
+    }
+  }]
+}
+```
+
+`created_at` and run identities above are template values, not evidence of an execution.
+A pending slot has no result/usage/provenance/completion declaration. The selected
+version, group, run and output directory must match its slot. Do not edit the selected
+configuration between invocations: each recorded capture binds its original bytes.
+
+```powershell
+uv run rtpeval generate --version v0 --input-json material/input.json --output-directory material/captures/v0 --group-id case-1 --run-id case-1-v0 --execute --register-batch material/selection.json --registration-directory artifacts/staging-v0
+uv run rtpeval generate --version v1 --input-json material/input.json --runtime-config config/runtime.yaml --output-directory material/captures/v1 --group-id case-1 --run-id case-1-v1 --execute --register-batch material/selection.json --registration-directory artifacts/staging-v1
+uv run rtpeval generate --version v2 --input-json material/input.json --runtime-config config/runtime.yaml --rag-env-file .env.tripworld --output-directory material/captures/v2 --group-id case-1 --run-id case-1-v2 --execute --register-batch material/selection.json --registration-directory artifacts/staging-v2
+uv run rtpeval generate --version v3 --input-json material/input.json --runtime-config config/runtime.yaml --rag-env-file .env.tripworld --output-directory material/captures/v3 --group-id case-1 --run-id case-1-v3 --execute --register-batch material/selection.json --registration-directory artifacts/staging-v3
+```
+
+These are four individually selected invocations, each needing its own applicable live
+scope. There is no automatic four-version runner. Earlier captures are retained in later
+registration; unstarted slots stay blocked. The CLI saves immutable
+`generation-selection-UUID.json` and `generation-collection-UUID.json` beside CONFIG,
+plus `operator-selection.json`, `producer-completion.json` and
+`generation-registration.json` in the capture. Registration copies exact source bytes
+and binds actual observations under `selected_workflow_1`. Keep all original files and
+selection snapshots available until finalization. `--capture-evidence` remains explicit;
+Planner evidence is not independent evaluator evidence.
+
+The final stdout object and registration artifact separate `planner.status/exit_code`
+from `registration.status/directory/blocking_reasons`. Planner failure retains exit 1;
+successful Planner with registration failure exits 2 and preserves its result. Successful
+collection may exit 0 with `incomplete`, `blocked` or `pending_review`. None is an accepted
+manifest. Generation and registration require no RequirementSpec.
+
+### Explicit existing-material collection
+
+For preserved runs, use the same `rtpeval_collection_1` batch/group/input fields and
+explicitly select all four run IDs. Replace each pending slot with a source-bound entry
+as below; repeat for the selected V1, V2 and V3 artifacts with their actual IDs, hashes
+and completion declarations. This is a run-entry template, not a complete batch:
+
+```json
+{
+  "run_id": "case-1-v0",
+  "result_ref": {
+    "path": "existing/v0/result.json", "sha256": "EXACT_RESULT_SHA256",
+    "media_type": "application/json", "availability": "available"
+  },
+  "usage_ref": {
+    "path": "existing/v0/usage.json", "sha256": "EXACT_USAGE_SHA256",
+    "schema_version": "rtpeval_usage_1",
+    "media_type": "application/json", "availability": "available"
+  },
+  "provenance_ref": {
+    "path": "existing/v0/provenance.json", "sha256": "EXACT_PROVENANCE_SHA256",
+    "schema_version": "rtpeval_provenance_1",
+    "media_type": "application/json", "availability": "available"
+  },
+  "completion": {
+    "declared_by": "ACTUAL_PRODUCER", "declared_at": "ACTUAL_OFFSET_AWARE_TIME",
+    "policy_ref": "ACTUAL_PRODUCER_POLICY", "workflow_status": "completed",
+    "required_mechanisms": {"generation": "completed"}
+  }
+}
+```
+
+The batch's `qualification_policy_ref` must match the actual completion policy; existing
+material does not acquire `selected_workflow_1` merely by copying that string. V2/V3 also
+require completed retrieval, and V3 completed validation and completed/not-applicable
+Repair. The producer declares these from retained workflow evidence. File existence,
+exit 0, internal PASS, `policy_completion` or Repair `ACCEPTED_COMPLETE` alone is insufficient.
+Missing provenance requires an explicit source-bound `producer_declaration` with actual
+`declared_by`, `declared_at` and rationale, instead of `provenance_ref`; it is never guessed
+from names. Explicit `rtpeval_usage_1` unavailable usage is supported and remains missing,
+not zero. Failed new usage capture remains failure. See the
+[producer contract](../../docs/contracts/0002-intake-identity-usage.md#producer-material-handoff).
+
+```powershell
+uv run rtpeval batch collect material/collection.json --directory artifacts/staging
+```
+
+Missing versions/material produce `incomplete` or blockers. All four qualified runs
+produce `pending_review`; collection always sets `qualified_four_version_batch=false`
+and `pending_requirement_review=true`. It does not scan, select another run, regenerate,
+author requirements or construct a provider runtime.
+
+### External requirements review and finalization
+
+Operate the author and reviewer separately using **Codex `gpt-6.1-sol`, reasoning effort
+`high`**. The author uses the complete original request, distinguishes hard obligations,
+soft preferences and unresolved meaning, and produces native `rtpeval_requirements_1`.
+A distinct reviewer reads that exact draft against the same request and produces the
+final reviewed spec. Do not provide Planner interpretation, generated results, scores or
+mechanisms as requirements-review context. This configuration does not change Planner or
+evaluator reasoning options. Agent review is not human review.
+
+Retain the actual author draft, reviewer final, execution records, transcript exports
+and any referenced sidecars. A handoff template uses standard exact-byte JSON references
+for every `*_ref` below; they resolve relative to `handoff.json`:
+
+```json
+{
+  "schema_version": "rtpeval_requirement_handoff_1",
+  "batch_id": "case-1-batch",
+  "groups": [{
+    "group_id": "case-1",
+    "input_ref": {"path": "input.json", "sha256": "EXACT_INPUT_SHA256", "media_type": "application/json", "availability": "available"},
+    "authored_requirement_spec_ref": {"path": "author-draft.json", "sha256": "EXACT_DRAFT_SHA256", "schema_version": "rtpeval_requirements_1", "media_type": "application/json", "availability": "available"},
+    "requirement_spec_ref": {"path": "reviewed-final.json", "sha256": "EXACT_FINAL_SHA256", "schema_version": "rtpeval_requirements_1", "media_type": "application/json", "availability": "available"},
+    "authoring_ref": {"path": "author-execution.json", "sha256": "EXACT_AUTHOR_EXECUTION_SHA256", "schema_version": "rtpeval_requirement_agent_execution_1", "media_type": "application/json", "availability": "available"},
+    "review_ref": {"path": "review-execution.json", "sha256": "EXACT_REVIEW_EXECUTION_SHA256", "schema_version": "rtpeval_requirement_agent_execution_1", "media_type": "application/json", "availability": "available"}
+  }]
+}
+```
+
+Execution and transcript requirements, reviewer input/output links and timestamp rules
+belong to the [external handoff contract](../../docs/contracts/0002-intake-identity-usage.md#external-requirements-handoff).
+Capture actual identities/configuration/times and transcript messages; do not invent an
+execution record to satisfy validation. A label `reviewed` establishes no review by itself.
+The CLI validates recorded source/hash lineage and compatible configuration, but cannot
+authenticate an external session or establish semantic completeness/independent review
+quality. These remain operator responsibilities. The CLI performs no agent launch,
+message, authoring, review or model request.
+
+For existing collection use `artifacts/staging/staging.json`; for the generation example
+use `artifacts/staging-v3/staging.json` after all four required workflows qualified:
+
+```powershell
+uv run rtpeval batch attach-requirements artifacts/staging/staging.json material/handoff.json --directory artifacts/attached
+uv run rtpeval batch finalize artifacts/attached/attachment.json --directory artifacts/finalized
+uv run rtpeval validate artifacts/finalized/manifest.json
+uv run rtpeval evaluate execute artifacts/finalized/manifest.json --directory artifacts/fresh-evaluation --options options.json --prices prices.json --env-file .env
+uv run rtpeval evaluate replay artifacts/fresh-evaluation
+```
+
+Attachment emits `attached_pending_finalization`, not intake acceptance. Finalization
+requires all four selected versions, completion declarations, required envelopes and
+reviewed requirements. It verifies original/copy drift, copies all source and handoff
+artifacts with unchanged bytes/layout, then publishes `manifest.json` only if native
+intake accepts. Keep original input/config/capture/handoff files accessible and unchanged
+until that gate; a changed request needs fresh authoring/review, not edited hashes. All
+staging, attachment, finalization and evaluation destinations must be fresh. A failed
+final destination is retained for diagnosis and is not accepted or reusable for recovery.
+
+## Installed task-oriented tools
+
+Use `uv run rtpeval GROUP --help` and leaf help for exact native parameters. `quality`
+reads an existing independent evidence packet; it is not a necessary follow-up to
+`evaluate execute`. `usage` and `cost` retain descriptive missingness and dated explicit
+prices/bills. `pair`, `controlled`, `review`, `mechanism` and `audit` keep their separate
+schemas and research-track meanings. Audit queue/report does not browse or review facts;
+blinded participant collection is a separate operation. Controlled replay executes the
+real frozen V3 chain offline, distinct from saved automatic-evaluation replay.
+
+`advanced` exposes individual identity, snapshot, schedule, opening and route operations.
+Explicit `advanced opening-run prepare / execute / replay` retains the incremental
+opening route; execute is online and requires its own prepared one-use package/digest.
+The primary evaluation does not add that supplement. `dev` exposes development tools;
+its smoke execution can be online and needs its own approved plan. See
+[incremental opening](#incremental-missing-hours-access-assessment),
+[development-only smoke](#development-only-v0-smoke-route-requests-and-budget), and
+[development guidance](../../docs/guides/development.md#verification-and-evidence).
+Historical module commands and switches below remain reproduction references for their
+original packet/policy; none grants a fresh live execution allowance.
 
 ## Contract and module navigation
 

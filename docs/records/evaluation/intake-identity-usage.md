@@ -4510,3 +4510,116 @@ check status and published review conclusion before merging. Checkbox updates pr
 the original Issue wording; final merge and closure outcomes are recorded on the delivery
 PR and Issues, which remain the lifecycle authority. No new live/paid run, formal benchmark,
 version freeze or implementation of #98-#102 is authorized by this delivery.
+
+
+## Unified RTPEval material workflow acceptance (2026-10-09)
+
+### Scope and revisions
+
+Status: implemented and validated at child/public synthetic seams; final combined review,
+full backend gate and PR acceptance remain pending. The human approved #98–#102
+implementation, tests, local commits, review/corrections, coherent documentation and
+full Git delivery under parent #95. PR #105 is draft at this checkpoint. Paid/live
+execution, actual external RequirementSpec sessions, formal research and freezes are
+excluded. V0–V3 retain independent runners and native behavior.
+
+The combined review fixed base is `93ab3ba24049dd5321fea1c755e354f054c0625e`.
+Collection `ef51e39`, tool adapters `52dddb2`, reviewed finalization `57ce384` and
+selected registration `2aadf2d` retain their original implementation commits, integration
+history and separate corrections. #102 starts at integrated `4919591`; public acceptance
+tests are committed as `c268859`. Its operational documentation was the only task-local
+uncommitted context when these results were summarized. The unrelated primary `.gitignore`
+change remains excluded, with SHA256
+`FDC63780F304BDE2F8AC48B7E520330BC45254E8799CB4323CFE645C82A3AE02` unchanged.
+No evaluator hash-bound implementation or original version runner changes in #102.
+
+### Substantive failure, correction and retest sequence
+
+Collection's first public tracer failed because `batch` was unknown. Subsequent red
+slices exposed missing selection/hash/path associations, completion qualification,
+recursive bound evidence copying and staging reconstruction. The implementation now
+retains explicit missing/blocked attempts and checks original and copied sources.
+The final child collection/intake gate passed **187 tests, 1 skipped in 38.68s**;
+its post-integration focused collector gate passed **36 in 17.90s**.
+
+Finalization initially lacked the public attachment operation. Later red slices showed
+that exact configuration equality discarded actual additional options, author and
+reviewer outputs incorrectly shared a final hash, and generic transcripts could be
+reused after envelope edits. The corrected flow preserves an authored pending draft,
+reviewer input and final reviewed output with exact execution/transcript bindings.
+A separate `74a8d23` correction retains transcript subdirectory layout while interpreting
+its embedded snapshot refs against the verified execution artifact. Stable child
+finalization/core CLI validation passed **71 tests in 88.32s**. Synthetic transcripts
+prove recorded lineage behavior; they do not authenticate a real external session or
+semantic review quality.
+
+Selected generation's red slices exposed missing public delegation/registration,
+invalid V3 final-primary linkage, rebased selection refs and policy ambiguity. Actual
+returned Planner observations now qualify required workflow completion under fixed
+`selected_workflow_1`, while the operator's policy remains unchanged. Source selection
+snapshots stay at their original root; native captured input/configuration refs are
+explicit. Normal V3 partial/rejected/skipped outcomes can qualify; interrupted execution,
+failed required retrieval and failed new usage capture remain blocked. A separate
+`4919591` correction reports malformed selection maps as registration failure without
+losing successful Planner status. The broader merged child gate passed **167 tests in
+99.97s** before that localized correction; its final generation gate passed **33 in
+15.46s**. These are distinct source checkpoints, not one combined final result.
+
+Tool-adapter parity tests initially used incorrect native wire names and an unfixed
+quality-report clock. Corrections use native output names and a fixed generated time,
+without normalizing source/status/hash differences. The explicit tools-offline guard
+preserves SDK class types while rejecting runtime construction and credential access;
+it permits only Windows asyncio's local socketpair connection. External DNS/socket
+attempts remain recorded even when caught, and strict default guard behavior is retained.
+The post-integration tool/core/collector gate passed **111 tests in 124.34s**; prior
+representative new/legacy parity, group/leaf help and explicit mocked incremental opening
+acceptance remain evidence for those unchanged paths.
+
+#102's documentation tracer first failed because the root guide omitted generation and
+material handoff. Appending `--help` to a registration execution example then hit the
+intentional registration/help boundary; the checker now reads leaf help and verifies
+actual documented options. The integrated tracer initially asserted a run ID in the
+native inventory, which exposes projected material rather than that field; it now reads
+selected IDs from the accepted manifest and verifies the native four-version inventory.
+These were acceptance-harness corrections, not production defects. The corrected public
+suite passed **3 tests in 26.12s**. The integrated/native intake/evaluation-run/planner-usage
+gate then passed **176 tests, 1 skipped in 60.17s**. Adding direct exact-byte assertions for
+author draft, reviewed final, execution and transcript files was followed by the final
+public suite: **3 passed in 25.64s** on the source committed as `c268859`.
+
+### Public integration observations and documentation
+
+Installed public commands collect explicit existing sources into `pending_review`, attach
+synthetic external reviewed material, finalize through native intake and validate the
+accepted four-version manifest. MockTransport one-step evaluation emits the native report,
+with **five Google sends, one V0 model send and zero retries**. No implicit supplemental
+opening request occurs. Processing and acquisition complete while evidence remains
+unresolved, FAIL/UNKNOWN and unavailable totals remain visible, and explicit unavailable
+producer usage stays unavailable. Preparation/report/receipt digests agree. Guarded offline
+installed replay returns the complete saved report and preserves all execution files.
+Original source/config/handoff bytes and copied author/draft/review/transcript lineage are
+unchanged. The selected V3 injected generation case preserves normal partial Repair,
+qualifies its required workflow, registers without RequirementSpec, and re-collects the
+exact capture through the installed public command while missing versions remain visible.
+
+The root README now gives a concise command/network/output table, shortest accepted
+manifest execute/replay route, selected generation and existing-material handoff examples.
+Detailed operational schemas and parameters remain in `backend/evaluation/README.md`;
+durable producer/review lineage rules belong to the current intake contract. Development
+smoke and historical module commands retain their owners, anchors and original meaning.
+No CLI dispatch of external author/reviewer is implied. Completion, quality/PASS, staging,
+registration, invocation, unavailable usage and processing exit codes remain distinct.
+
+Ruff lint/format and whitespace checks pass for the new test. Documentation verification
+checked six current owners, **15 new local links**, **eight parseable JSON templates**,
+and preservation of every baseline heading/explicit anchor; public help checks cover the
+actual root/material workflow flags. Local historical evidence identifiers are
+`artifacts/rtpeval-95/102-native-gate.xml`, `102-stable-public.xml` and `doccheck-102.py`.
+They are ignored diagnostics, not published dependencies. Exhaustive child red/green
+commands and durations remain local handoff aids; the event summary above is the public
+engineering account. No full backend or frontend gate was run by #102.
+
+Final combined Standards/Spec review against the fixed base, any separate corrections,
+full stable-source backend gate and PR merge/Issue acceptance remain required before
+parent closure. Earlier #97 full-suite evidence is retained above with its original scope;
+it is not substituted for this pending final gate.
