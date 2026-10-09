@@ -4517,7 +4517,8 @@ version freeze or implementation of #98-#102 is authorized by this delivery.
 ### Scope and revisions
 
 Status: implemented and validated at child/public synthetic seams and the final full
-backend gate, with zero findings on both independent review axes. The human approved #98–#102
+backend gate. Initial independent implementation reviews found zero findings on both
+axes; a final documentation P3 correction awaits focused recheck. The human approved #98–#102
 implementation, tests, local commits, review/corrections, coherent documentation and
 full Git delivery under parent #95. [PR #105](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/105)
 owns publication and merge; GitHub Issues own acceptance checkboxes and closure. Paid/live
@@ -4634,8 +4635,16 @@ canonicalization failures were resolved by host execution, without source change
 
 Two independent read-only agents reviewed the complete 19-file fixed-base diff and all
 eleven outgoing commits from `93ab3ba24049dd5321fea1c755e354f054c0625e` through
-`c1280a1d3bde034809d2cb813975c5a571d2354d`. **Standards: zero findings. Spec: zero findings.**
-No review correction was required. The combined conclusion is reused for PR delivery;
+`c1280a1d3bde034809d2cb813975c5a571d2354d`. **Initial implementation review: Standards
+zero findings; Spec zero findings.** No implementation correction was required.
+Final documentation recheck subsequently found one Standards P3 issue: `PROJECT.md`
+section 5 still presented the earlier #97 gate as current while section 6 carried the
+new #98–#102 result, contrary to the file's single-current-checkpoint rule. A separate
+documentation-only correction replaces section 5 with the dated, scoped unchanged-source
+`c1280a1` gate and references it from section 6. Earlier #97 results remain in their
+existing acceptance section. The focused review of this correction remains pending;
+no new source change or test/full-suite run is required. The combined implementation
+conclusion is reused for PR delivery;
 no second PR-wide code review is performed. All thirteen changed Python files passed
 Ruff lint and format checks; fixed-base whitespace checks passed. Mypy and pyright are
 not configured. No frontend gate is claimed because the frontend and application API

@@ -187,15 +187,20 @@ latest result. Commands and preparation: [evaluation package guide](backend/eval
 budgets are distinct. Dated execution allowances do not become runtime defaults.
 [Development guide](docs/guides/development.md) owns runnable commands.
 
-Full backend checkpoint: **3293 passed, 10 skipped** on 2026-10-09 for one-step
-evaluation #97. Its affected CLI/native evaluation gate passes **1327 tests, 1 skipped**,
-including **42 new public evaluation CLI tests**. The full gate covers the final
-implementation/test source committed as `4044dab`. Independent Standards and Spec
-implementation reviews have zero findings; a documentation command-prefix correction
-is included in the final documentation group. No evaluator/planner Python file or
-dependency version changed. See
+Current full backend checkpoint: **3471 passed, 10 skipped in 673.89s** on
+2026-10-09 for integrated #98–#102, run from the repository root on unchanged
+`c1280a1`. The gate covers the complete backend suite, including **178 new public CLI
+cases** for collection, finalization, generation registration, task-oriented tools and
+integrated workflows. Nine opt-in isolated PostgreSQL cases and the existing host
+symlink-creation privilege case are skipped. Ruff lint/format and documentation checks
+passed; no new frontend validation is claimed. Initial independent combined implementation
+reviews found zero Standards and zero Spec findings. Final documentation recheck found
+a stale current checkpoint; the separate documentation correction awaits focused review.
+See [unified acceptance](docs/records/evaluation/intake-identity-usage.md#unified-rtpeval-material-workflow-acceptance-2026-10-09)
+for the invalid-working-directory invocation, unchanged-source full rerun and review
+history. Earlier #97 checks retain their original scope in
 [one-step acceptance](docs/records/evaluation/intake-identity-usage.md#one-step-rtpeval-evaluation-acceptance-2026-10-09)
-and retained [validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09).
+and [validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09).
 Earlier fresh native evaluator/opening and manifest-based quality CLI agreement and
 exact zero-network replay remain retained evidence; #97 made no new live run.
 Historical packets retain their original implementation for exact replay.
@@ -248,13 +253,12 @@ commits, combined Standards/Spec review, corrections, documentation and full Git
 Collection, finalization, generation registration and task-oriented tools are integrated;
 #102 adds complete public synthetic workflow acceptance and operational guidance.
 [PR #105](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/105) contains the
-completed implementation and offline acceptance. Independent combined review against
-`93ab3ba...c1280a1` found zero Standards and zero Spec findings. The final full backend
-gate from the repository root passed **3471 tests, 10 skipped in 673.89s** on unchanged
-`c1280a1`; Ruff, formatting and document checks passed. The first full invocation used
-the parent working directory and failed relative-path tests; the corrected complete
-rerun required no source change. See
-[unified acceptance](docs/records/evaluation/intake-identity-usage.md#unified-rtpeval-material-workflow-acceptance-2026-10-09).
+completed implementation and offline acceptance. Initial independent combined review
+against `93ab3ba...c1280a1` found zero Standards and zero Spec findings. The
+current validation checkpoint in section 5 records the
+final unchanged-source full backend gate. Final documentation recheck identified one
+P3 stale-checkpoint finding; its documentation-only correction awaits focused review.
+See [unified acceptance](docs/records/evaluation/intake-identity-usage.md#unified-rtpeval-material-workflow-acceptance-2026-10-09).
 Paid/live execution, actual external author/reviewer sessions, formal research and
 version freeze remain excluded. Live Issues and the PR own delivery and lifecycle
 state. Retained earlier evidence:
