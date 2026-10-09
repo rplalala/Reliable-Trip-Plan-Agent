@@ -4284,3 +4284,36 @@ Actual account billing remains unavailable. Evidence identifiers are the package
 `unknowns.json`, `soft-pace-deductions.json` and closed receipts. They are local artifacts,
 not published assets. Documentation publication, further official evidence acquisition
 and formal comparisons remain separate scopes.
+
+### Authorized Git delivery and operational-documentation correction
+
+The human subsequently requested delivery of the accepted work. The published
+[delivery PR #103](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/103) targets
+`main` at `5dee3b97df79d0267a8c6d0bb2205d68106a2bdf`; its initial reviewed head is
+`18233eaa3cf2f39e7392100dfaccbf4813f8751b`. The complete three-dot scope contains
+53 commits and 117 changed files, including the previously accepted #85-#94 work.
+Those ten Issues were already closed. The separate open unified-CLI/material-handoff
+Issues #95-#102 are excluded; native evaluator acceptance does not implement that
+additional task interface. No raw runtime artifacts or unrelated `.gitignore` change
+is published.
+
+Delivery reuses the final 3,231-pass/10-skip backend gate because production code
+is unchanged. Lint across all 97 changed Python files found one 101-character test
+assertion; test-only commit `18233ea` wraps it without semantic change. Its actual
+opening CLI gate passes seven tests in 49.29 seconds, formatting passes and all
+97 files pass lint. No mypy/pyright project configuration or GitHub Actions workflow
+exists; no new frontend validation, live request or paid execution occurred.
+
+Full PR Spec review reports zero findings. Initial Standards review finds one P2
+operational-documentation inconsistency: the evaluation README calls identity policy
+3 current and says grounding FAIL prevents coordinates, contrary to current policy 4
+and verified physical association. The correction updates both current-policy references
+and explains that verified association permits independent route facts while original
+grounding FAIL remains visible; unresolved association still blocks acquisition.
+Historical policy-3 material retains explicit legacy replay. This is a documentation
+correction, with no change to scoring, eligibility or retained reports.
+
+The PR owns the final head, correction recheck, published pre-merge review and merge
+state. Related Issues receive pinned published acceptance links, preserving their
+earlier local-only descriptions as historical checkpoints. Further evidence acquisition,
+formal research and version freezes remain outside this delivery.

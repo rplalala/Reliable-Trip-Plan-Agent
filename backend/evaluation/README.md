@@ -283,7 +283,7 @@ original submitted ID, without evaluator LLM or searched replacement. Untrusted 
 remains UNKNOWN. Original outputs and grounding failures are retained. Requirement targets
 still use their own version's adopted canonical identity; target FAIL components and
 unresolved dates/roles remain part of requirement judgment.
-Current reports use `versioned_api_identity_3`; V0 packets use
+Current reports use `versioned_api_identity_4`; V0 packets use
 `v0_identity_correspondence_3`: citation paths are schema enums
 shared with import. Address-presence schema alternatives bind short reference IDs;
 every absent/null/blank address requires `not_supplied` and forbids `claim.location` citations.
@@ -504,7 +504,7 @@ sections remain unchanged; no overall score or final four-version acceptance fol
 The actual source remains a single-version library view. Existing bundle/CLI
 regressions do not turn it into a qualified four-version intake or adoption bundle.
 
-Prepare from an exact current `versioned_api_identity_3` report without acquiring evidence:
+Prepare from an exact current `versioned_api_identity_4` report without acquiring evidence:
 
 ```powershell
 $env:PYTHONIOENCODING = 'utf-8'
@@ -523,9 +523,12 @@ original legs visible with UNKNOWN endpoints. Rejected/stale reports or corrupt 
 return material diagnostics with no partial request inventory. A historical report supplied
 without `--legacy` is rejected; historical saved packages are not rewritten or relabeled.
 Each leg exposes original endpoint claims, candidate correspondence, grounding verdicts and
-identity blockers separately from its route verdict. FAIL/UNKNOWN endpoints cannot acquire
-canonical coordinates or substitute venues. Endpoint occurrence/unique-venue counts remain
-distinct from deduplicated Details/Routes request counts.
+identity blockers separately from its route verdict. A verified `place_association` permits
+independent coordinates and routes for the associated API venue while the original grounding
+FAIL remains visible. Unresolved association blocks acquisition; no substitute venue or
+repaired original claim is introduced. Historical policy-3 reports require `--legacy`.
+Endpoint occurrence/unique-venue counts remain distinct from deduplicated Details/Routes
+request counts.
 
 Optional `--occupancy-reviews` retains reviewed occupancy; `--details-snapshot` consumes already supplied
 independent Details with the package's exact `details_plan`. It sends nothing and never retries bad evidence.
