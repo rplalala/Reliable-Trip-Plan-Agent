@@ -183,15 +183,13 @@ Public-landmark revision:
 budgets are distinct. Dated execution allowances do not become runtime defaults.
 [Development guide](docs/guides/development.md) owns runnable commands.
 
-Full backend checkpoint: **3222 passed, 10 skipped** on 2026-10-09 after shared
-Google-backed output fact protection. The policy/version gate passes **774 tests**;
-independent Standards and Spec implementation/documentation rechecks have zero
-remaining findings. Offline derived acceptance restores seven shortened addresses
-without changing original outputs or reports; ten protected hashes and 238 native
-evaluator evidence files agree. The prior opening-policy live acceptance retains
-its own source and implementation bindings; this offline task does not replace it.
-Acceptance details: [address equivalence](docs/records/evaluation/intake-identity-usage.md#google-address-equivalence-acceptance-2026-10-09)
-and [output source facts](docs/records/v0-v3/v3-development.md#google-backed-output-facts-2026-10-09).
+Full backend checkpoint: **3224 passed, 10 skipped** on 2026-10-09 after the opening
+request serialization correction. The **57-test** affected gate and independent
+Standards/Spec implementation reviews pass. Native opening execution/replay and
+manifest-based quality CLI composition agree offline without weakening evidence binding.
+Historical packets retain their original implementation for exact replay.
+Acceptance details: [source facts](docs/records/v0-v3/v3-development.md#google-backed-output-facts-2026-10-09)
+and [serialization and fresh execution](docs/records/v0-v3/v3-development.md#source-protected-v3-cli-execution-2026-10-09).
 The latest recorded frontend gate is **98 passed**, with TypeScript, build and lint
 passing; this backend task does not rerun or imply new frontend validation.
 Actual failure/correction/retest sequences belong in the linked acceptance records.
@@ -212,10 +210,10 @@ Remaining limitations:
 - Provider invoices and some billed quantities are unavailable; explicit retail/proxy
   estimates are not actual bills. RAG coverage and retrieval performance remain bounded
   by corpus/runtime evidence, not a general availability guarantee.
-- Quality CLI reconstruction can change JSON source-key order inside a bound opening
-  request and reject an otherwise identical packet. Native opening CLI replay and the
-  public report API over frozen intake succeed; this serialization boundary still
-  needs an offline correction before complete CLI-flow acceptance.
+- Opening request serialization is corrected for newly prepared material. Latest fresh
+  live evaluator acceptance remains blocked: the V0 identity response contains one of
+  eight required decisions. Import correctly rejects incomplete coverage; no current
+  final scores or FAIL/UNKNOWN inventory exist for the latest V3.
 - Blinded, controlled-Repair and official-audit interfaces exist, but the latest Sydney
   automatic run did not execute those separate tracks or a formal benchmark.
 
@@ -236,30 +234,22 @@ Processing and binding acceptance do not require every itinerary check to PASS.
 
 Current local implementation and offline acceptance cover
 [address equivalence #92](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/92)
-and [V3 soft pace optimization #93](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/93).
-The four original outputs and their accepted report remain immutable. A separately
-approved fresh V3 generation reached the Repair objective in source-bound draft/final
-pace checks. Fresh independent acquisition and exact offline native replay completed
-for original V0-V2 plus new V3. Missing route/occupancy review material was completed
-from original sources in a separate zero-network CLI recalculation, preserving the
-original execution receipt. Independent paired scoring confirms the new V3 Repair
-reduces mean pace deduction from 15 to zero. Separately authorized fresh opening
-assessment resolves eleven of twelve missing-hours cases, leaving V0 museum admission
-UNKNOWN and eight address grounding FAILs. Completed source reviews and this fresh
-assessment produce final scores V0 89.2857, V1 80, V2 85 and new V3 82.5 through the
-public report API, with exact network-free replay. Native opening execution/replay
-also succeeds; quality CLI serialization remains the next offline correction.
-Detailed smoke evidence
-belongs in [V3 development](docs/records/v0-v3/v3-development.md#real-soft-pace-repair-smoke-2026-10-09).
-The shared [planner address protection #94](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/94)
-is implemented and validated offline. It prevents model-shortened addresses in future
-accepted V1-V3 outputs; the retained seven new-V3 address FAILs remain historical
-results. See [acceptance](docs/records/v0-v3/v3-development.md#google-backed-output-facts-2026-10-09).
-The remaining Powerhouse admission UNKNOWN needs human disposition
-or applicable access evidence. Further official acquisition, business-status policy,
-V0 baseline changes and formal research are separate follow-ups. Completion grants no
-new execution, freeze, push, PR, merge or
-branch-switch authority.
+and [V3 soft pace optimization #93](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/93),
+plus shared [planner source protection #94](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/94).
+The latest source-protected V3 has eight visits with exact captured Google names/addresses
+and zero draft/final pace deduction; Repair did not run because the draft already met
+the objective. Generation evidence capture is complete. The previous live Repair
+reduction and older final scores remain historical evidence, not this output's evaluation.
+
+Next work is to bind complete V0 identity-decision coverage into the model request,
+then prepare another bounded evaluator package. Current importer rejection, both stopped
+receipts, original V0-V2 and the new V3 remain immutable. No opening assessment was
+executed for this latest batch. Details belong in
+[the execution record](docs/records/v0-v3/v3-development.md#source-protected-v3-cli-execution-2026-10-09).
+The historical Powerhouse admission UNKNOWN still needs applicable access evidence or
+human disposition. Further official acquisition, business-status policy, V0 baseline
+changes and formal research are separate follow-ups. Current bounded execution allowances
+do not authorize automatic retries, a version freeze or remote Git delivery.
 GitHub Issues own specifications and live task state; earlier approvals and deliveries
 remain in their dated records rather than a chronological status diary here.
 

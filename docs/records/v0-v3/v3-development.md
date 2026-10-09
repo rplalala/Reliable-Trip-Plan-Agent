@@ -2772,3 +2772,111 @@ packet replay preserved. Museum admission needs applicable access evidence or ex
 disposition. The one-use opening allowance is consumed. A new V3 generation or other
 paid request needs a new approved execution package. Partial generation-trace coverage,
 formal research, remote Git delivery and version freeze remain outside this acceptance.
+
+<a id="source-protected-v3-cli-execution-2026-10-09"></a>
+## Source-protected V3 and CLI execution 2026-10-09
+
+Status: Serialization correction implemented and validated offline; fresh V3 generation
+complete. Complete live evaluator acceptance is blocked by incomplete V0 model coverage.
+No final scores are available for this latest batch; older scores were not substituted.
+
+Review base was `6ad619c23ed159e67487f7e805ac0041a4929a50`; implementation is
+`db92930c9848aee1a80d1f87301fb6c68b50221e`. The unrelated pre-existing `.gitignore`
+change remained untouched. The human approved the correction, public test seams and
+fresh-generation/evaluator flow, then explicitly defaulted execution approvals while away.
+The parent retained the USD 14 generation, USD 5.50 evaluator and USD 0.05 optional
+opening reference envelopes. These are retail/proxy allowances, not account invoices.
+
+### Serialization correction and offline validation
+
+Both native-to-quality CLI regression cases first failed with stale opening packet
+diagnostics. Sorting object keys only when constructing `request.input` fixed both;
+array order, source facts, scoring and exact import/request/response/implementation
+checks remain unchanged. Intake mapping order no longer changes a newly prepared
+request. Rewriting the recorded request, original quotes or evidence still fails import.
+Affected tests passed **57 in 32.58 seconds**; full backend passed **3224, 10 skipped
+in 442.77 seconds**. Independent Standards and Spec implementation reviews found zero
+issues. No frontend gate was rerun.
+
+Historical opening CLI and derived quality API replay with the retained implementation
+reproduced their saved results, without rebinding old responses to new code. Original
+file-line-ending bytes were checked against frozen implementation hashes. The prior
+quality CLI failure remains a historical failed execution; it was not rewritten as PASS.
+
+### Fresh generation
+
+Generation handoff SHA256 was
+`68d35cef9cf39659a10a51c555ea8d709f635ca40fca86b3cbca281a5b21f0b7`.
+The current-session `gpt-6.1-sol` / medium execution child invoked the frozen V3 command
+once with `gpt-6-luna` / medium. Read-only TripWorld compatibility and offline wire
+checks passed. A case-sensitive credential inspection initially missed the existing
+`Google_Maps_API_Key`; native Windows dotenv loading corrected that inspection before
+any generation request, without changing credentials or configuration.
+
+Only the request-local trace limit changed from 10 MB to 20 MB: the preceding final
+trace had measured 10,033,415 bytes. Planner/tool/Repair policies and budgets were
+unchanged. Generation exited zero in 118.223 seconds; usage reports 110.594 seconds.
+Actual sends were **75 Google** (12 text search, 3 nearby, 40 Details, 20 matrix with
+212 elements), **5 model**, **1 embedding** and **1 weather**; no Web/HTML requests
+or retries. Model usage was 53,476 input and 12,281 output tokens, total 65,757;
+4,937 reasoning tokens are included, not added again. Reference cost was **USD 2.352683635**.
+All 259 indexed artifacts matched, with no missing capture fields or diagnostics.
+The runtime-policy canonical configuration digest and enclosing file-byte hash are
+intentionally distinct; both bindings were independently verified.
+
+The new result SHA256 is
+`ecd6d368b4467fc3a49995dc925d983475fa14cf08beb9cdd4870e7d69ea7e6f`.
+All eight final sourced names/addresses match the captured generation ledger exactly.
+Each day contains two primary visits and the draft/final pace deduction is zero.
+Draft equals final; Repair made **zero rounds**, reason `no_authorized_targets`.
+This run demonstrates an already satisfied objective, not a new nonzero-to-zero Repair
+improvement or independent evaluator address PASS. Earlier Repair evidence remains separate.
+
+### Independent evaluator stops and replay
+
+Original V0-V2 and this new V3 were frozen as batch revision 4. Original-source route,
+density, activity-role and occupancy reviews were included before preparation, with
+agent provenance preserved. Fresh acquisition never reused an old identity report.
+The initial package bound at most 86 Google requests, one identity model and USD 2.76;
+preparation SHA256 was `f5c55aba14029659515ebc7554f7ab4e4b9c3872224c2361c1cd0ca4cd7cf0d0`.
+
+That invocation stopped before the model: the complete request plus framing measured
+**18,082 tokens**, exceeding its 18,000 allowance. It retained 35 successful Google
+requests, zero model calls and **USD 0.964** reference usage. Its receipt is
+`8f309d371e5618300f0a4cca481ddfb8f41f014a7824c4cf02dde72a7e029670`.
+The parent prepared a separate correction under the current default approval:
+input allowance **24,000**, unchanged medium/output/time settings, fresh independent
+Google acquisition and no automatic retries. The corrected preparation is
+`883ff5e705da277e08ba51c274e4445ddeb48690b82c7c14b6bc11a50c669c07`.
+Including the first stop, its planning bound was 121 Google and USD 3.724, within the
+existing stage envelope. The consumed first package was never rerun or overwritten.
+
+The corrected invocation stopped with `Missing or duplicate identity proposal`.
+The provider marked its response completed, but emitted only the Opera House requirement
+subject (`r08`); all seven original V0 visit references were omitted. Required coverage
+is eight decisions, returned coverage is one. The request schema has no array-count
+bound; that observation does not establish why the model omitted the cases. Import
+correctly rejected the incomplete material instead of fabricating UNKNOWNs or accepting
+an incomplete scoring population. No new identity/route/quality report was produced.
+Actual usage was 35 Google and one model, 13,144 input / 221 output tokens, zero retries,
+reference **USD 0.965753425**. Receipt SHA256 is
+`1497b24a088aef343f66955e0392a69d8470bd50f05687aa5d563df15c860b6c`.
+No third invocation or opening assessment was sent after that stop.
+
+With credentials cleared and DNS/TCP prohibited, both actual native `replay` commands
+returned the expected exit 2 and reproduced their stopped reports exactly. Raw model
+HTTP response and material agree; all **491** generation/preparation/execution files
+remain unchanged. Original Input, V0-V2, prior V3 and unrelated `.gitignore` hashes agree.
+Evaluator reference usage totals **USD 1.929753425**; whole-flow reference usage is
+**USD 4.282437060**, with actual account billing unavailable.
+
+Local historical identifiers are
+`artifacts/sydney-v3-source-cli-live-20261009-r1/v3` and
+`artifacts/sydney-v3-source-cli-preparation-20261009-r1` (`evaluator/run`,
+`evaluator/run-input24k`, `partial-acceptance/acceptance.json`, and
+`generation-offline-assessment.json`). They are ignored evidence, not published assets.
+Next work is to constrain complete decision/reference coverage at identity request
+creation and validate that separate correction before another bounded live package.
+Strict source binding and rejection remain required. Complete live CLI acceptance,
+new final scores and the latest batch's FAIL/UNKNOWN inventory remain unavailable;
+formal comparison, remote Git delivery and version freeze remain outside this record.

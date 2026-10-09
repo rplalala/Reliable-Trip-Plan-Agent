@@ -148,6 +148,10 @@ Explicit museum exterior viewing is distinct from museum admission. Prior policy
 requires its historical implementation for replay and cannot be relabeled as current material.
 The packet also freezes evaluator implementation hashes; importing with changed source
 code requires new preparation rather than accepting an old judgment under new code.
+New packets sort object keys inside the bound request input. Native opening execution,
+manifest-based quality composition and frozen-intake replay therefore agree despite
+dictionary insertion order. Recorded request strings remain exact evidence; replay
+pre-correction packets with their retained implementation instead of rewriting them.
 All decisions and original activity quotations are validated; partial/foreign material
 fails the whole import. Empty explicit schedules are never model cases. `openNow` alone
 does not establish a schedule; absent/null periods can qualify. Supplied malformed periods,

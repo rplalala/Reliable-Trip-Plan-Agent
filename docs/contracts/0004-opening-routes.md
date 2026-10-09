@@ -186,6 +186,13 @@ auditable. Every packet carries evaluator implementation hashes, rebuilt on dire
 as well as incremental execution/replay. Direct import is supplied model material;
 execution additionally binds
 that material to captured HTTP bytes and the closed receipt inventory. Replay sends nothing.
+New preparation serializes JSON object keys in `request.input` in sorted order, so equal
+source mappings reconstructed from an original manifest or frozen intake produce the
+same bound request. Array order and source values remain significant. Import still
+requires the unchanged recorded request, complete packet and implementation binding;
+it does not normalize an already sent request or rebind a historical response. Material
+prepared before the serialization correction retains its original implementation for
+replay; new execution uses fresh preparation and a genuinely acquired response.
 Current packet/material schemas are `rtpeval_opening_judgment_packet_2` and
 `rtpeval_opening_judgment_material_2`. Prior policy-1 material is rejected under the current
 policy; preserve old reports and replay them with their retained implementation. Changing
