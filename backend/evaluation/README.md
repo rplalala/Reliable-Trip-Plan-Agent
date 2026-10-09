@@ -30,11 +30,53 @@ constructing Planner/provider runtimes or sending requests. Exit 0 indicates acc
 material; exit 2 indicates material correction or argument errors. Acceptance does
 not score quality or certify the producer's benchmark selection.
 
-Only `validate` is exposed through the installed interface in this slice. Generation,
-collection/finalization and one-step evaluation remain separate pending tasks under
+The installed interface also exposes [automatic evaluation](#installed-automatic-evaluation).
+Generation, collection/finalization and remaining command groups are pending tasks under
 [#95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95). Existing module
 commands below retain their behavior. The thin dispatcher lives in `backend/cli/`,
 outside the evaluator implementation files bound by prepared execution hashes.
+
+## Installed automatic evaluation
+
+The primary route accepts an existing qualified four-final manifest and prepares and
+executes its native evaluation in one invocation:
+
+```powershell
+uv run rtpeval evaluate execute manifest.json --directory artifacts/fresh-evaluation --options options.json --prices prices.json --env-file .env
+uv run rtpeval evaluate replay artifacts/fresh-evaluation
+```
+
+Optional `--context`, `--occupancy-reviews`, `--route-reviews` and `--density-reviews`
+forward applicable reviewed material unchanged. Local input, dependency, policy and
+price validation completes before provider dispatch. Credentials are loaded only for
+explicit execution; `--env-file` is optional when the required keys are already set.
+The options, prices and credential names are documented under
+[fresh automatic evaluation](#fresh-automatic-evaluation-cli).
+
+Stdout contains the native final report, including automatic quality, with no separate
+`quality` command needed. Preparation, source/implementation hashes, journals and receipts
+remain native. The internal preparation digest proves integrity and does not establish
+independent authorization. Exit 0 means processing completed and may coexist with quality
+FAIL, UNKNOWN or unavailable values; exit 2 means invalid arguments, material correction
+or a stopped attempt. Processing, acquisition and evidence statuses remain separate.
+
+Optional offline preparation and explicit legacy execution remain available:
+
+```powershell
+uv run rtpeval evaluate prepare manifest.json --directory artifacts/fresh-evaluation --options options.json --prices prices.json
+uv run rtpeval evaluate execute artifacts/fresh-evaluation --approved-sha256 EXACT_PREPARATION_SHA256 --env-file .env
+uv run rtpeval evaluate replay artifacts/fresh-evaluation
+```
+
+`--directory` selects the one-step manifest route and requires `--options` and `--prices`.
+`--approved-sha256` selects the prepared-directory route and rejects preparation flags;
+the two selectors cannot be combined. Both routes preserve native budgets and one-use
+rules. Preparation needs a fresh directory; a started execution consumes its package
+even when stopped. A credential refusal before starting preserves the prepared package;
+an operator may explicitly select the legacy route after correcting credentials. The CLI
+does not automatically recover it or repeat an attempt. No retry, resume, extra probe or
+implicit opening supplement is added. Repository authorization and live execution rules
+still apply. Existing module commands retain their behavior.
 
 ## Contract and module navigation
 

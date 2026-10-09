@@ -4401,3 +4401,87 @@ Planner/provider/model execution was run. Local evidence identifiers are
 they are ignored test artifacts, not published dependencies. Remote #96 remains open
 because tracker publication is excluded. Subsequent #97-#102 implementation needs
 its own approved scope.
+
+<a id="one-step-rtpeval-evaluation-acceptance-2026-10-09"></a>
+
+## One-step RTPEval evaluation acceptance (#97, 2026-10-09)
+
+The human authorized advancement of
+[#97](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/97) after local #96
+acceptance, with implementation, TDD, local commits, Standards/Spec review, corrections
+and related documentation. Fixed review base is
+`05bda8658c5ab5980d3ac64ba4849d5451e4c290`; implementation commit is `4044dab`.
+Work remains on `rtpeval/cli-96`, without another branch switch. The pre-existing
+`.gitignore` change is excluded and retains its SHA256 recorded in the preceding #96
+event. No paid/live run, push, PR, tracker write, formal comparison or version freeze
+is performed. Remote #97 remains open; this record is local engineering acceptance.
+
+### Implementation and test sequence
+
+`backend/cli/evaluate.py` adds the installed evaluate group. Manifest execution accepts
+explicit options, prices, optional reviewed contexts and a fresh directory. It invokes
+native preparation, transfers the integrity digest internally and invokes native execution;
+stdout contains the native report without a separate quality command. Offline prepare and
+replay and the exact-digest prepared-directory execution route remain available. Mode
+selectors are mutually exclusive; legacy execution rejects preparation options.
+
+No native evaluator/planner Python file, dependency version or scoring rule changes.
+The adapter stays outside the native preparation-bound file set, preserving implementation
+and source hashes, version-specific identity/reasoning policies, usage and failure receipts.
+The internal digest does not establish independent authorization. A started package remains
+consumed on failure; no retry, resume, recovery, extra probe or opening supplement is added.
+
+The first evaluate-help tracer failed with an invalid top-level command choice. Adding the
+lazy group made it pass alongside the existing validation tests. The next one-step tracer
+failed because the root public entry did not accept the native injected HTTP client. Passing
+that existing test seam through the dispatcher and composing preparation/execution produced
+the automatic native report and exact replay. An empty-directory regression then exposed
+truthiness-based mode selection; the adapter now rejects an empty selector before loading
+the evaluator. Offline guard setup initially rejected legitimate transitive configuration
+type imports through the tokenizer. The harness now distinguishes module import from
+initialization and directly blocks HTTP clients, runtime settings and dotenv loading, while
+retaining credential-file/environment and DNS/socket guards. These were test-harness errors,
+not credential reads or provider sends by the command.
+
+The expanded public tests exercise one-step and legacy execution with native fixtures and
+MockTransport: complete acquisition, partial Google acquisition, model connection failure,
+cost reservation refusal and total deadline stops. Native reports, hashes and receipts are
+preserved; comparisons do not replace meaningful hash/status/receipt differences. Both
+routes replay through guarded installed and legacy commands with exactly equal reports and
+exit codes. Tests also cover all reviewed-context flags, missing tokenizer, malformed local
+material, incomplete versions, explicit credential-file ordering, missing credentials,
+source drift before/during/after execution, preparation/report tampering and consumed-directory
+refusal. Reviewed density reaches native scoring. Successful processing retains observed
+FAIL, UNKNOWN, unresolved evidence and unavailable totals. The six-send representative case
+has five Google requests and one V0 model request with explicit medium reasoning, zero retries
+and no supplemental opening assessment.
+
+The affected gate passes **1,327 tests, 1 skipped in 658.34 seconds**, covering the installed
+validation/evaluation entry and the native evaluation suite, including 42 new evaluation CLI
+tests. Earlier one-step/outcome slices passed 2 and then 34 tests; the affected gate includes
+the final expanded assertions. Three
+negative controls demonstrate that caught HTTP-client, runtime-settings and dotenv initialization
+attempts still fail the offline harness. Synthetic tokenization validates structure and limits,
+not real payload sizes. Ruff lint/format, compile and whitespace checks pass; the project has
+no configured mypy/pyright gate. Actual `uv run --offline --locked --no-sync rtpeval evaluate`
+group and execute help were verified on the installed console entry.
+
+### Final gates and review
+
+The full backend gate passes **3,293 tests, 10 skipped in 820.87 seconds**. It collected
+the final 42 evaluation CLI tests and final implementation/test source, committed unchanged
+as `4044dab` while the gate ran. No implementation change followed collection or review;
+final documentation remains a separate group. Standards and Spec implementation reviews
+against `05bda865...4044dab` each report zero findings, so no implementation correction
+commit is needed. Documentation Standards review found one low-priority omission: the
+development guide abbreviated the execute example without the runnable `uv run rtpeval`
+prefix. The final documentation group supplies the complete command. Documentation Spec
+review found zero issues. Both final document rechecks report zero remaining findings,
+verifying completed gate numbers, the command correction, current state and remaining
+authorization boundaries.
+Local evidence identifiers are `artifacts/rtpeval-97/affected.xml`, `full.xml`, `offline-red`,
+`offline-green2` and `outcomes`; these are ignored diagnostic artifacts, not published
+dependencies. Documentation records runnable modes, reviewed contexts, credentials,
+native budgets and separate status/exit meanings. No frontend or standalone distribution
+validation is claimed. Material collection/finalization, generation registration, remaining
+command groups and integrated acceptance (#98-#102) remain separate pending scopes.
