@@ -194,6 +194,15 @@ Task authority: [parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agen
 [Ticket 12 #24](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24).
 Commands and exact implemented outputs belong to the
 [evaluation package guide](../backend/evaluation/README.md).
+The editable repository installation exposes `rtpeval validate` for offline native
+batch intake and `rtpeval evaluate execute` for one-step native automatic evaluation.
+The latter accepts qualified material and explicit options/prices/reviewed contexts,
+reuses preparation and execution, and emits the existing quality report. Optional offline
+prepare/replay and prepared-directory/exact-digest execution remain available. Its internal
+digest proves integrity, not independent authorization; existing budgets, one-use rules,
+statuses and scoring semantics remain unchanged. Dispatch is outside the preparation-bound
+evaluator file set. No implicit supplemental assessment or retry is added. See
+[installed evaluation](../backend/evaluation/README.md#installed-automatic-evaluation).
 See [ADR: evaluation independence](adr/0004-independent-evaluation.md).
 
 

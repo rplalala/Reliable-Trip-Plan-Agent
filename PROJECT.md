@@ -114,6 +114,18 @@ internal findings and caches are not independent factual ground truth. The opera
 `evaluation_run_cli prepare / execute / replay` flow captures independent evidence,
 records actual requests/usage and produces native automatic reports for V0-V3 finals.
 
+The editable repository installation exposes offline `rtpeval validate` and one-step
+`rtpeval evaluate execute`. The latter accepts a qualified manifest, a fresh directory
+and explicit options/prices/reviewed contexts; native preparation and execution emit the
+existing automatic report without manual digest transfer or a subsequent quality command.
+Optional offline prepare/replay and prepared-directory/exact-digest execution remain
+available. Top-level and evaluate-group help load no evaluator implementation. Dispatch
+lives outside preparation-bound evaluator files. Budgets, credentials, source/receipt
+integrity, one-use rules, version-specific identity/reasoning policies and separate statuses
+remain native. No retries or implicit opening supplement are added. See
+[installed evaluation](backend/evaluation/README.md#installed-automatic-evaluation).
+Remaining material-handoff and command-group capabilities are pending.
+
 | Capability | Current behavior | Detailed owner |
 | --- | --- | --- |
 | Intake and identity | Original claims, source hashes and version-owned targets; V0 model correspondence, V1-V3 independent API/program checks without evaluator-model fallback | [Intake/identity/usage](docs/contracts/0002-intake-identity-usage.md) |
@@ -171,11 +183,18 @@ latest result. Commands and preparation: [evaluation package guide](backend/eval
 budgets are distinct. Dated execution allowances do not become runtime defaults.
 [Development guide](docs/guides/development.md) owns runnable commands.
 
-Full backend checkpoint: **3231 passed, 10 skipped** on 2026-10-09 after complete V0
-identity-request coverage. The **204-test** affected gate and independent Standards/Spec
-implementation reviews pass. Fresh native evaluator/opening and manifest-based quality
-CLI agree; their exact zero-network replay preserves evidence binding. Historical
-packets retain their original implementation for exact replay.
+Full backend checkpoint: **3293 passed, 10 skipped** on 2026-10-09 for one-step
+evaluation #97. Its affected CLI/native evaluation gate passes **1327 tests, 1 skipped**,
+including **42 new public evaluation CLI tests**. The full gate covers the final
+implementation/test source committed as `4044dab`. Independent Standards and Spec
+implementation reviews have zero findings; a documentation command-prefix correction
+is included in the final documentation group. No evaluator/planner Python file or
+dependency version changed. See
+[one-step acceptance](docs/records/evaluation/intake-identity-usage.md#one-step-rtpeval-evaluation-acceptance-2026-10-09)
+and retained [validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09).
+Earlier fresh native evaluator/opening and manifest-based quality CLI agreement and
+exact zero-network replay remain retained evidence; #97 made no new live run.
+Historical packets retain their original implementation for exact replay.
 Acceptance details: [complete CLI flow](docs/records/evaluation/intake-identity-usage.md#complete-v0-identity-coverage-acceptance-2026-10-09),
 [source facts](docs/records/v0-v3/v3-development.md#google-backed-output-facts-2026-10-09)
 and [serialization and fresh execution](docs/records/v0-v3/v3-development.md#source-protected-v3-cli-execution-2026-10-09).
@@ -215,6 +234,21 @@ Ignored logs, artifacts and thesis notes are local evidence, not project authori
 or guaranteed fresh-clone assets.
 
 ## 6. Next work and authorization boundary
+
+The locally implemented [CLI entry/validation #96](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/96)
+and [one-step evaluation #97](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/97)
+are the first two slices of [unified CLI parent #95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95).
+Local implementation, tests, review and documentation are complete. On 2026-10-09,
+the human also authorized branch rename, push, PR creation, merge after verification,
+and evidence-backed Acceptance criteria updates and closure for #96/#97. Delivery reuses
+the completed Standards/Spec reviews at the human's explicit request; PR code-review is
+not repeated. Paid execution remains excluded. Live Issues and the delivery PR own publication
+and lifecycle outcomes. Material collection (#98), finalization (#99),
+generation registration (#100), other command groups (#101) and integrated acceptance
+(#102) remain separate pending work. Each new implementation scope needs approval.
+Local validation and review evidence is retained in
+[validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09)
+and [one-step acceptance](docs/records/evaluation/intake-identity-usage.md#one-step-rtpeval-evaluation-acceptance-2026-10-09).
 
 Current local implementation and acceptance cover
 [public-landmark access #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91),

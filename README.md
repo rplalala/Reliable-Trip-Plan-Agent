@@ -5,6 +5,35 @@ uses plain model generation, V1 adds external travel information, V2 adds TripWo
 and V3 adds validation, targeted repair and re-validation. [PROJECT.md](PROJECT.md) records
 the current engineering state and evidence boundaries.
 
+## Command line
+
+Run `uv sync` from the repository root to install the project editable, then use
+`uv run rtpeval --help` or activate `.venv` and run `rtpeval --help` directly.
+The installed interface provides offline validation and automatic evaluation:
+
+```powershell
+uv run rtpeval validate --help
+uv run rtpeval validate path/to/manifest.json
+uv run rtpeval evaluate --help
+uv run rtpeval evaluate execute path/to/manifest.json --directory artifacts/fresh-evaluation --options options.json --prices prices.json --env-file .env
+uv run rtpeval evaluate replay artifacts/fresh-evaluation
+```
+
+`validate` reads an existing source-bound `rtpeval_batch_1` manifest and emits native
+intake JSON to stdout without credentials, network requests or source changes. Exit 0
+means intake accepted the material; exit 2 means material correction or invalid arguments.
+Validation does not score quality or establish a formal benchmark. The legacy
+`python -m backend.evaluation` interface remains available.
+
+`evaluate execute` prepares qualified material and emits the native automatic report
+in one invocation. It sends fresh provider/model requests and requires explicit execution
+limits, a dated price book, credentials and a fresh directory. Reviewed contexts can be
+supplied explicitly. `evaluate prepare` and `evaluate replay` stay offline; the prepared
+directory/exact-digest execution route remains available. Exit 0 means processing completed,
+including reports with FAIL, UNKNOWN or unavailable scores. Commands are operational
+references and do not authorize a live run. See the
+[evaluation guide](backend/evaluation/README.md#installed-automatic-evaluation).
+
 ## Current application
 
 The Product page at `/plan` runs V3. The Developer page at `/dev` offers independent V0–V3
