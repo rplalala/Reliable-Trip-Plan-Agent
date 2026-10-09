@@ -195,7 +195,8 @@ integrated workflows. Nine opt-in isolated PostgreSQL cases and the existing hos
 symlink-creation privilege case are skipped. Ruff lint/format and documentation checks
 passed; no new frontend validation is claimed. Initial independent combined implementation
 reviews found zero Standards and zero Spec findings. Final documentation recheck found
-a stale current checkpoint; the separate documentation correction awaits focused review.
+a stale current checkpoint; the separate documentation correction passed focused review
+with zero remaining findings on both axes.
 See [unified acceptance](docs/records/evaluation/intake-identity-usage.md#unified-rtpeval-material-workflow-acceptance-2026-10-09)
 for the invalid-working-directory invocation, unchanged-source full rerun and review
 history. Earlier #97 checks retain their original scope in
@@ -257,7 +258,8 @@ completed implementation and offline acceptance. Initial independent combined re
 against `93ab3ba...c1280a1` found zero Standards and zero Spec findings. The
 current validation checkpoint in section 5 records the
 final unchanged-source full backend gate. Final documentation recheck identified one
-P3 stale-checkpoint finding; its documentation-only correction awaits focused review.
+P3 stale-checkpoint finding; its documentation-only correction passed focused review
+with zero remaining findings.
 See [unified acceptance](docs/records/evaluation/intake-identity-usage.md#unified-rtpeval-material-workflow-acceptance-2026-10-09).
 Paid/live execution, actual external author/reviewer sessions, formal research and
 version freeze remain excluded. Live Issues and the PR own delivery and lifecycle

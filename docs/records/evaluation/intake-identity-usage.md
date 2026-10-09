@@ -4518,7 +4518,8 @@ version freeze or implementation of #98-#102 is authorized by this delivery.
 
 Status: implemented and validated at child/public synthetic seams and the final full
 backend gate. Initial independent implementation reviews found zero findings on both
-axes; a final documentation P3 correction awaits focused recheck. The human approved #98–#102
+axes; the final documentation P3 correction passed focused recheck with zero remaining
+findings. The human approved #98–#102
 implementation, tests, local commits, review/corrections, coherent documentation and
 full Git delivery under parent #95. [PR #105](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/105)
 owns publication and merge; GitHub Issues own acceptance checkboxes and closure. Paid/live
@@ -4642,8 +4643,9 @@ section 5 still presented the earlier #97 gate as current while section 6 carrie
 new #98–#102 result, contrary to the file's single-current-checkpoint rule. A separate
 documentation-only correction replaces section 5 with the dated, scoped unchanged-source
 `c1280a1` gate and references it from section 6. Earlier #97 results remain in their
-existing acceptance section. The focused review of this correction remains pending;
-no new source change or test/full-suite run is required. The combined implementation
+existing acceptance section. Separate correction `e7fa98e` passed focused documentation
+recheck: **Standards zero remaining findings; Spec zero findings**. No new source change
+or test/full-suite run was required. The combined implementation
 conclusion is reused for PR delivery;
 no second PR-wide code review is performed. All thirteen changed Python files passed
 Ruff lint and format checks; fixed-base whitespace checks passed. Mypy and pyright are
