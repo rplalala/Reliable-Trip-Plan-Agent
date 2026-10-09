@@ -11,12 +11,16 @@ def main(argv: Sequence[str] | None = None, *, http_client=None) -> int:
         description="RTPEval: offline validation, preparation/replay and online evaluation.",
         epilog="validate MANIFEST: read a source-bound batch and emit intake JSON to stdout.",
     )
-    parser.add_argument("command", choices=("validate", "evaluate"), help="Evaluation task group")
+    parser.add_argument(
+        "command", choices=("validate", "evaluate", "batch"), help="Evaluation task group"
+    )
     parser.add_argument("arguments", nargs=argparse.REMAINDER, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
 
     if args.command == "validate":
         from backend.evaluation.__main__ import main as command
+    elif args.command == "batch":
+        from backend.cli.batch import main as command
     else:
         from backend.cli.evaluate import main as command
 
