@@ -116,7 +116,13 @@ def model_material(intake, observed, *, decisions=None, historical=True, legacy_
                 "content": [
                     {
                         "type": "output_text",
-                        "text": json.dumps({"decisions": rows}),
+                        "text": json.dumps(
+                            {
+                                "decisions": rows
+                                if historical or legacy_v0
+                                else {row["reference_id"]: row for row in rows}
+                            }
+                        ),
                     }
                 ],
             }

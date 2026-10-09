@@ -216,7 +216,12 @@ def mock_provider(request):
                         "type": "message",
                         "role": "assistant",
                         "content": [
-                            {"type": "output_text", "text": json.dumps({"decisions": rows})}
+                            {
+                                "type": "output_text",
+                                "text": json.dumps(
+                                    {"decisions": {row["reference_id"]: row for row in rows}}
+                                ),
+                            }
                         ],
                     }
                 ],
@@ -372,6 +377,172 @@ def test_actual_cli_prepares_executes_and_replays(batch, capsys, monkeypatch):
     assert main(["replay", str(directory)]) == 0
     assert json.loads(capsys.readouterr().out)["processing_status"] == "complete"
     asyncio.run(client.aclose())
+
+
+def test_cli_requests_each_owned_identity_once_and_replays_exact_material(
+    batch, capsys, monkeypatch
+):
+    from backend.evaluation.evaluation_run_cli import main
+
+    _, results, write, _, root = batch
+    results["v0"]["itinerary"]["days"][0]["activities"][0]["location"] = (
+        "10 Main St, Example City, Country"
+    )
+    write("v0")
+    (root / "options.json").write_text(json.dumps(options()), encoding="utf-8")
+    (root / "prices.json").write_text(json.dumps(run_prices()), encoding="utf-8")
+    directory = root / "evaluation"
+    assert (
+        main(
+            [
+                "prepare",
+                str(write()),
+                "--directory",
+                str(directory),
+                "--options",
+                str(root / "options.json"),
+                "--prices",
+                str(root / "prices.json"),
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+    preparation = json.loads((directory / "preparation.json").read_bytes())
+    sent = []
+
+    def respond(request):
+        response = mock_provider(request)
+        if request.url.host != "model.example.test":
+            return response
+        wire = json.loads(request.content)
+        sent.append(wire)
+        schema = wire["text"]["format"]["schema"]
+        coverage = schema["properties"]["decisions"]
+        assert coverage["type"] == "object"
+        assert coverage["required"] == ["r01", "r02"]
+        assert set(coverage["properties"]) == {"r01", "r02"}
+        assert coverage["additionalProperties"] is False
+        assert schema["$defs"]["WithAddress"]["properties"]["reference_id"]["enum"] == ["r01"]
+        assert schema["$defs"]["WithoutAddress"]["properties"]["address_assessment"]["enum"] == [
+            "not_supplied"
+        ]
+        raw = response.json()
+        rows = list(json.loads(raw["output"][0]["content"][0]["text"])["decisions"].values())
+        rows[0]["address_assessment"] = "equivalent"
+        rows[0]["evidence_fields"].append("claim.location")
+        raw["output"][0]["content"][0]["text"] = json.dumps(
+            {"decisions": {row["reference_id"]: row for row in rows}}
+        )
+        return httpx.Response(200, json=raw)
+
+    monkeypatch.setenv("GOOGLE_MAPS_API_KEY", "synthetic-google")
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "synthetic-model")
+    client = httpx.AsyncClient(transport=httpx.MockTransport(respond))
+    try:
+        assert (
+            main(
+                ["execute", str(directory), "--approved-sha256", preparation["content_sha256"]],
+                http_client=client,
+            )
+            == 0
+        )
+    finally:
+        asyncio.run(client.aclose())
+    report = json.loads(capsys.readouterr().out)
+    assert report["processing_status"] == "complete"
+    assert len(sent) == 1
+    saved = {p: p.read_bytes() for p in directory.rglob("*") if p.is_file()}
+    monkeypatch.setattr(
+        "socket.create_connection", lambda *a, **k: pytest.fail("Network in replay")
+    )
+    monkeypatch.setattr("socket.getaddrinfo", lambda *a, **k: pytest.fail("DNS in replay"))
+    assert main(["replay", str(directory)]) == 0
+    assert json.loads(capsys.readouterr().out) == report
+    assert all(p.read_bytes() == raw for p, raw in saved.items())
+
+
+@pytest.mark.parametrize(
+    "fault",
+    ["missing", "duplicate_reference", "foreign_key", "duplicate_key", "array", "candidate"],
+)
+def test_cli_stops_invalid_identity_coverage_without_retry_and_replays_raw_response(
+    batch, fault, capsys, monkeypatch
+):
+    from backend.evaluation.evaluation_run import prepare_run
+    from backend.evaluation.evaluation_run_cli import main
+
+    _, _, write, _, root = batch
+    directory = root / "evaluation"
+    preparation = prepare_run(write(), directory, options=options(), prices=run_prices())
+    sent, received = [], []
+
+    def respond(request):
+        response = mock_provider(request)
+        if request.url.host != "model.example.test":
+            return response
+        sent.append(json.loads(request.content))
+        raw = response.json()
+        content = raw["output"][0]["content"][0]
+        wire = json.loads(content["text"])
+        rows = wire["decisions"]
+        if fault == "missing":
+            rows.pop("r02")
+        elif fault == "duplicate_reference":
+            rows["r02"]["reference_id"] = "r01"
+        elif fault == "foreign_key":
+            rows["r99"] = rows.pop("r02")
+            rows["r99"]["reference_id"] = "r99"
+        elif fault == "array":
+            wire["decisions"] = list(rows.values())
+        elif fault == "candidate":
+            rows["r01"]["candidate_id"] = rows["r02"]["candidate_id"]
+        content["text"] = json.dumps(wire)
+        if fault == "duplicate_key":
+            content["text"] = (
+                '{"decisions":{"r01":'
+                + json.dumps(rows["r01"])
+                + (',"r01":' + json.dumps(rows["r02"]) + "}}")
+            )
+        response = httpx.Response(200, json=raw)
+        received.append(response.content)
+        return response
+
+    monkeypatch.setenv("GOOGLE_MAPS_API_KEY", "synthetic-google")
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "synthetic-model")
+    client = httpx.AsyncClient(transport=httpx.MockTransport(respond))
+    try:
+        assert (
+            main(
+                ["execute", str(directory), "--approved-sha256", preparation["content_sha256"]],
+                http_client=client,
+            )
+            == 2
+        )
+    finally:
+        asyncio.run(client.aclose())
+    report = json.loads(capsys.readouterr().out)
+    assert report["processing_status"] == "stopped"
+    assert report["usage"]["actual_model_sends"] == len(sent) == 1
+    assert report["usage"]["retries"] == 0
+    execution = directory / "execution"
+    assert not (execution / "identity-report.json").exists()
+    journal_path = next(
+        p
+        for p in (execution / "http").glob("*.json")
+        if json.loads(p.read_bytes())["provider"] == "azure_foundry"
+    )
+    journal = json.loads(journal_path.read_bytes())
+    assert journal["request"]["json"] == sent[0]
+    assert journal_path.with_suffix(".bin").read_bytes() == received[0]
+    saved = {p: p.read_bytes() for p in directory.rglob("*") if p.is_file()}
+    monkeypatch.setattr("socket.getaddrinfo", lambda *a, **k: pytest.fail("DNS in replay"))
+    monkeypatch.setattr(
+        "socket.create_connection", lambda *a, **k: pytest.fail("Network in replay")
+    )
+    assert main(["replay", str(directory)]) == 2
+    assert json.loads(capsys.readouterr().out) == report
+    assert all(p.read_bytes() == raw for p, raw in saved.items())
 
 
 @pytest.mark.parametrize("mode", ["WALK", "DRIVE", "TRANSIT"])

@@ -38,9 +38,9 @@ def test_current_packet_enumerates_supported_citations_and_preserves_historical_
     intake = prepared(batch, supplied)
     observed = evidence(intake, [])
     packet = prepare_identity_judgment(intake, observed, model="fixture-model").to_dict()
-    variants = packet["request"]["text"]["format"]["schema"]["properties"]["decisions"]["items"][
-        "anyOf"
-    ]
+    schema = packet["request"]["text"]["format"]["schema"]
+    decisions = schema["properties"]["decisions"]
+    variants = list(schema["$defs"].values())
     properties = next(
         v["properties"]
         for v in variants
@@ -67,8 +67,9 @@ def test_current_packet_enumerates_supported_citations_and_preserves_historical_
         if v["properties"]["address_assessment"]["enum"] == ["not_supplied"]
     )
     assert "claim.location" not in absent["evidence_fields"]["items"]["enum"]
+    assert decisions["required"] == [c["reference_id"] for c in cases]
     assert absent["reference_id"]["enum"] == [
-        c["reference_id"] for c in cases if c["claim"]["location"] is None
+        c["reference_id"] for c in cases if not c["claim"]["location"]
     ]
     assert properties["reference_id"]["enum"] == [
         c["reference_id"] for c in cases if c["claim"]["location"]
@@ -425,14 +426,15 @@ def test_current_import_requires_complete_owned_decisions_and_exact_provenance(b
     response = material["response"]
     content = response["output"][0]["content"][0]
     wire = json.loads(content["text"])
+    rows = list(wire["decisions"].values())
     if fault == "partial":
-        wire["decisions"].pop()
+        wire["decisions"].pop(rows[-1]["reference_id"])
     elif fault == "duplicate":
-        wire["decisions"][1] = copy.deepcopy(wire["decisions"][0])
+        wire["decisions"][rows[1]["reference_id"]] = copy.deepcopy(rows[0])
     elif fault == "foreign_reference":
-        wire["decisions"][0]["reference_id"] = "r999"
+        rows[0]["reference_id"] = "r999"
     elif fault == "foreign_candidate":
-        wire["decisions"][0]["candidate_id"] = wire["decisions"][1]["candidate_id"]
+        rows[0]["candidate_id"] = rows[1]["candidate_id"]
     elif fault == "old_policy":
         material["packet"]["association_policy_version"] = "v0_identity_correspondence_1"
     elif fault == "request":

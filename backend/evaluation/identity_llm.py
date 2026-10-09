@@ -192,11 +192,12 @@ def _cases(prepared, evidence, *, v0_only=False, legacy_v0=False):
     return refs, observed, cases
 
 
-def _correspondence_schema(packet):
-    """Bind address-state alternatives to the owned short references before sending."""
+def _correspondence_schema(packet, *, complete_coverage=True):
+    """Require one owned decision per case using portable required object fields."""
     schema = packet.constrain_schema(judgment_schema(historical=False))
-    decisions = schema["properties"]["decisions"]
-    variants = []
+    item = schema["properties"]["decisions"]["items"]
+    decisions = {}
+    definitions = {}
     for supplied in (False, True):
         references = [
             case["reference_id"]
@@ -205,7 +206,7 @@ def _correspondence_schema(packet):
         ]
         if not references:
             continue
-        variant = json.loads(json.dumps(decisions["items"]))
+        variant = json.loads(json.dumps(item))
         properties = variant["properties"]
         properties["reference_id"]["enum"] = references
         properties["address_assessment"]["enum"] = (
@@ -215,8 +216,21 @@ def _correspondence_schema(packet):
         )
         if not supplied:
             properties["evidence_fields"]["items"]["enum"].remove("claim.location")
-        variants.append(variant)
-    decisions["items"] = {"anyOf": variants}
+        name = "WithAddress" if supplied else "WithoutAddress"
+        definitions[name] = variant
+        for reference in references:
+            decisions[reference] = {"$ref": "#/$defs/" + name}
+    references = [case["reference_id"] for case in packet.payload["cases"]]
+    if not complete_coverage:
+        schema["properties"]["decisions"]["items"] = {"anyOf": list(definitions.values())}
+        return schema
+    schema["$defs"] = definitions
+    schema["properties"]["decisions"] = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": references,
+        "properties": {reference: decisions[reference] for reference in references},
+    }
     return schema
 
 
@@ -248,7 +262,7 @@ def prepare_identity_judgment(intake, evidence, *, model, historical=False, lega
                 "strict": True,
                 "schema": packet.constrain_schema(judgment_schema())
                 if historical
-                else _correspondence_schema(packet),
+                else _correspondence_schema(packet, complete_coverage=not legacy_v0),
             }
         },
     }
@@ -257,6 +271,16 @@ def prepare_identity_judgment(intake, evidence, *, model, historical=False, lega
             "\nV0 requirement_subject cases represent the original user-requested venue, "
             "not a planner visit. Resolve them only against their own independent candidates. "
             "Their judgments belong to V0 only. Do not borrow another case's decision."
+        )
+    if not historical and not legacy_v0:
+        references = [case["reference_id"] for case in packet.payload["cases"]]
+        request["instructions"] += (
+            f"\nReturn exactly {len(references)} decisions in the decisions object, keyed by "
+            + ", ".join(references)
+            + ". Every supplied reference must appear exactly once, including visits and "
+            "requirement subjects. Each value's reference_id must equal its key. "
+            "If facts are insufficient, return an explicit unknown decision for that case; "
+            "never omit it or substitute another case. Do not return a decisions array."
         )
     policy = LEGACY_V0_POLICY_VERSION if legacy_v0 else V0_POLICY_VERSION
     scope = {} if historical else {"association_policy_version": policy}
@@ -349,6 +373,20 @@ def _decisions(intake, evidence, cases, material, *, historical=True, legacy_v0=
     wire = json.loads(
         texts[0], object_pairs_hook=_pairs, parse_constant=_constant, parse_float=_float
     )
+    if not historical and not legacy_v0:
+        references = [case["reference_id"] for case in _packet(response_cases).payload["cases"]]
+        if (
+            not isinstance(wire, dict)
+            or set(wire) != {"decisions"}
+            or not isinstance(wire["decisions"], dict)
+            or set(wire["decisions"]) != set(references)
+            or any(
+                not isinstance(row, dict) or row.get("reference_id") != key
+                for key, row in wire["decisions"].items()
+            )
+        ):
+            raise ValueError("Identity decisions must cover every owned reference exactly once")
+        wire = {"decisions": [wire["decisions"][reference] for reference in references]}
     if (
         not isinstance(wire, dict)
         or set(wire) != {"decisions"}

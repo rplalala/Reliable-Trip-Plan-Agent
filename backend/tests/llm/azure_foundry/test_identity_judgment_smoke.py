@@ -83,7 +83,7 @@ def output(plan, *, failure=False, match=False):
                 "candidate.formatted_address",
             ],
         )
-    return {"decisions": rows}
+    return {"decisions": {row["reference_id"]: row for row in rows}}
 
 
 def test_preparation_and_unapproved_execution_send_nothing(adoption_case, tmp_path):
@@ -380,14 +380,15 @@ def test_terminal_errors_keep_one_attempt_without_import(adoption_case, tmp_path
         if problem == "json":
             return httpx.Response(200, content=b"invalid JSON")
         value = output(plan)
+        rows = list(value["decisions"].values())
         if problem == "decision":
-            value["decisions"][0]["reference_id"] = "foreign-reference"
+            rows[0]["reference_id"] = "foreign-reference"
         if problem == "partial":
-            value["decisions"].pop()
+            value["decisions"].pop(rows[-1]["reference_id"])
         if problem == "unsupported_citation":
-            value["decisions"][0]["evidence_fields"] = ["candidate.website"]
+            rows[0]["evidence_fields"] = ["candidate.website"]
         if problem == "null_address_contract":
-            value["decisions"][0]["address_assessment"] = "equivalent"
+            rows[0]["address_assessment"] = "equivalent"
         response = sdk_response(value, input_tokens=20001 if problem == "usage" else 120)
         if problem == "missing_usage":
             response.pop("usage")
