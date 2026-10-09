@@ -178,7 +178,9 @@ def test_opening_execution_reuses_api_evidence_and_replays_full_report(
     assert quality_cli(quality_args) == 0
     assert json.loads(capsys.readouterr().out) == quality
     assert {str(p): p.read_bytes() for p in parent.rglob("*") if p.is_file()} == originals
-    assert {str(p): p.read_bytes() for p in directory.rglob("*") if p.is_file()} == opening_originals
+    assert {
+        str(p): p.read_bytes() for p in directory.rglob("*") if p.is_file()
+    } == opening_originals
 
 
 @pytest.mark.parametrize("fault", ["http_error", "partial_decisions", "missing_usage", "unknown"])
