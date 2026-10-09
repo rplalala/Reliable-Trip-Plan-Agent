@@ -22,6 +22,7 @@ from pathlib import Path
 
 events = Path(os.environ["RTPEVAL_TEST_EVENTS"])
 block_intake = os.environ.get("RTPEVAL_TEST_BLOCK_INTAKE") == "1"
+evaluation_offline = os.environ.get("RTPEVAL_TEST_EVALUATION_OFFLINE") == "1"
 events.write_text("", encoding="utf-8")
 
 def deny(kind, detail):
@@ -39,6 +40,9 @@ for name in ("connect", "connect_ex", "sendto"):
 
 forbidden = ("backend.app", "dotenv", "httpx", "openai", "pydantic_settings",
              "backend.evaluation.evaluation_run")
+if evaluation_offline:
+    forbidden = ("backend.app.versions", "backend.app.llm",
+                 "backend.app.services", "openai", "backend.evaluation.opening_run")
 if block_intake:
     forbidden += ("backend.evaluation",)
 
@@ -62,6 +66,26 @@ def audit(event, args):
             deny("credential_file", args[0])
 sys.addaudithook(audit)
 
+if evaluation_offline:
+    import dotenv
+    import httpx
+    from backend.app.runtime import RuntimeSettings, token_counting
+
+    def online_runtime(*args, **kwargs):
+        deny("runtime_init", "HTTP client or runtime settings")
+    httpx.Client = httpx.AsyncClient = online_runtime
+    RuntimeSettings.__init__ = online_runtime
+    dotenv.load_dotenv = dotenv.dotenv_values = online_runtime
+
+    class FixtureEncoding:
+        def encode_ordinary(self, text):
+            return range((len(text.encode("utf-8")) + 3) // 4)
+    def fixture_tokenizer():
+        if os.environ.get("RTPEVAL_TEST_MISSING_TOKENIZER") == "1":
+            raise RuntimeError("Synthetic missing tokenizer vocabulary")
+        return FixtureEncoding()
+    token_counting.tokenizer = fixture_tokenizer
+
 def finished():
     for name in sys.modules:
         if any(name == prefix or name.startswith(prefix + ".") for prefix in forbidden):
@@ -83,15 +107,25 @@ def installed_cli(tmp_path):
     (guard / "sitecustomize.py").write_text(GUARD, encoding="utf-8")
     events = guard / "events.jsonl"
 
-    def run(*args, legacy=False, block_intake=False, probe=False):
+    def run(
+        *args,
+        legacy=False,
+        block_intake=False,
+        probe=False,
+        evaluation_offline=False,
+        missing_tokenizer=False,
+        legacy_module="backend.evaluation",
+    ):
         env = {
             **os.environ,
             "PYTHONPATH": str(guard),
             "PYTHONUTF8": "1",
             "RTPEVAL_TEST_EVENTS": str(events),
             "RTPEVAL_TEST_BLOCK_INTAKE": "1" if block_intake else "0",
+            "RTPEVAL_TEST_EVALUATION_OFFLINE": "1" if evaluation_offline else "0",
+            "RTPEVAL_TEST_MISSING_TOKENIZER": "1" if missing_tokenizer else "0",
         }
-        command = [sys.executable, "-m", "backend.evaluation"] if legacy else [str(executable)]
+        command = [sys.executable, "-m", legacy_module] if legacy else [str(executable)]
         if probe:
             command = [sys.executable, "-c"]
         result = subprocess.run(
@@ -174,7 +208,7 @@ def test_validation_help_describes_the_native_offline_interface(installed_cli):
     [
         ((), "required"),
         (("--unknown", "validate"), "unrecognized arguments"),
-        (("evaluate",), "invalid choice"),
+        (("unknown",), "invalid choice"),
         (("validate",), "required"),
         (("validate", "manifest.json", "--unknown"), "unrecognized arguments"),
         (("validate", "manifest.json", "extra.json"), "unrecognized arguments"),
