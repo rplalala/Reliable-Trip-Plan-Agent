@@ -394,7 +394,9 @@ def test_new_usage_capture_failure_cannot_become_successful_generation(tmp_path)
     assert (tmp_path / "capture/result.json").is_file()
 
 
-@pytest.mark.parametrize("fault", ["wrong_run", "escape", "source_drift", "replaced_slot"])
+@pytest.mark.parametrize(
+    "fault", ["wrong_run", "escape", "source_drift", "replaced_slot", "invalid_slots"]
+)
 def test_registration_refuses_unbound_or_replaced_selection_after_preserving_capture(
     tmp_path, fault
 ):
@@ -409,6 +411,8 @@ def test_registration_refuses_unbound_or_replaced_selection_after_preserving_cap
         slot["run_id"] = "other"
     elif fault == "escape":
         slot["capture_directory"] = "../escape"
+    elif fault == "invalid_slots":
+        config["groups"][0]["selected_runs"] = []
     elif fault == "replaced_slot":
         slot["completion"] = {"workflow_status": "completed"}
     path.write_text(json.dumps(config), encoding="utf-8")

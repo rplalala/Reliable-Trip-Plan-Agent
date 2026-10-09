@@ -180,6 +180,18 @@ def _register(selection_path, selection_raw, args, value, destination):
     config = _json(selection_raw)
     if config.get("schema_version") != "rtpeval_collection_1":
         raise CollectionError("Expected rtpeval_collection_1 registration selection")
+    groups = config.get("groups")
+    if (
+        not isinstance(groups, list)
+        or not groups
+        or any(
+            not isinstance(group, dict)
+            or not isinstance(group.get("selected_runs"), dict)
+            or any(not isinstance(run, dict) for run in group["selected_runs"].values())
+            for group in groups
+        )
+    ):
+        raise CollectionError("Expected explicit groups and selected_runs maps")
     output = args.output_directory.resolve()
     now = datetime.now(UTC).isoformat()
     selected = [
