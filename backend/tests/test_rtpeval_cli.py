@@ -163,6 +163,7 @@ def test_validation_help_describes_the_native_offline_interface(installed_cli):
     current = installed_cli("validate", "--help")
     legacy = installed_cli("--help", legacy=True)
     assert current.returncode == legacy.returncode == 0
+    assert "usage: rtpeval validate [-h] manifest" in current.stdout
     for phrase in ("manifest", "offline", "emits preparation records", "never scores"):
         assert phrase in current.stdout.lower()
         assert phrase in legacy.stdout.lower()
@@ -184,6 +185,8 @@ def test_argument_errors_do_not_start_online_work(installed_cli, args, diagnosti
     assert result.returncode == 2
     assert diagnostic in result.stderr
     assert result.stdout == ""
+    if args and args[0] == "validate":
+        assert "usage: rtpeval validate [-h] manifest" in result.stderr
 
 
 def test_missing_manifest_preserves_native_file_diagnostics(installed_cli, tmp_path):

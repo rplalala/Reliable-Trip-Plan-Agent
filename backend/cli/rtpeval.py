@@ -1,6 +1,7 @@
 """Discover repository evaluation commands without initializing online runtimes."""
 
 import argparse
+import sys
 from collections.abc import Sequence
 
 
@@ -16,4 +17,10 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     from backend.evaluation.__main__ import main as validate
 
-    return validate(args.arguments)
+    # The native parser derives usage from argv[0]; retain the installed subcommand.
+    program = sys.argv[0]
+    try:
+        sys.argv[0] = f"{parser.prog} {args.command}"
+        return validate(args.arguments)
+    finally:
+        sys.argv[0] = program
