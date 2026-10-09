@@ -4510,3 +4510,175 @@ check status and published review conclusion before merging. Checkbox updates pr
 the original Issue wording; final merge and closure outcomes are recorded on the delivery
 PR and Issues, which remain the lifecycle authority. No new live/paid run, formal benchmark,
 version freeze or implementation of #98-#102 is authorized by this delivery.
+
+
+## Unified RTPEval material workflow acceptance (2026-10-09)
+
+### Scope and revisions
+
+Status: implemented and validated at child/public synthetic seams and the final full
+backend gate. Initial independent implementation reviews found zero findings on both
+axes; the final documentation P3 correction passed focused recheck with zero remaining
+findings. The human approved #98–#102
+implementation, tests, local commits, review/corrections, coherent documentation and
+full Git delivery under parent #95. [PR #105](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/105)
+owns publication and merge; GitHub Issues own acceptance checkboxes and closure. Paid/live
+execution, actual external RequirementSpec sessions, formal research and freezes are
+excluded. V0–V3 retain independent runners and native behavior.
+
+The combined review fixed base is `93ab3ba24049dd5321fea1c755e354f054c0625e`.
+Collection `ef51e39`, tool adapters `52dddb2`, reviewed finalization `57ce384` and
+selected registration `2aadf2d` retain their original implementation commits, integration
+history and separate corrections. #102 starts at integrated `4919591`; public acceptance
+tests are committed as `c268859`, followed by coherent operational documentation in
+`c1280a1`. That documentation was the only task-local uncommitted context at the earlier
+child-summary checkpoint. Final review and complete tests cover committed `c1280a1`;
+the final acceptance update changes only this record and `PROJECT.md`. The unrelated primary `.gitignore`
+change remains excluded, with SHA256
+`FDC63780F304BDE2F8AC48B7E520330BC45254E8799CB4323CFE645C82A3AE02` unchanged.
+No evaluator hash-bound implementation or original version runner changes in #102.
+
+### Substantive failure, correction and retest sequence
+
+Collection's first public tracer failed because `batch` was unknown. Subsequent red
+slices exposed missing selection/hash/path associations, completion qualification,
+recursive bound evidence copying and staging reconstruction. The implementation now
+retains explicit missing/blocked attempts and checks original and copied sources.
+The final child collection/intake gate passed **187 tests, 1 skipped in 38.68s**;
+its post-integration focused collector gate passed **36 in 17.90s**.
+
+Finalization initially lacked the public attachment operation. Later red slices showed
+that exact configuration equality discarded actual additional options, author and
+reviewer outputs incorrectly shared a final hash, and generic transcripts could be
+reused after envelope edits. The corrected flow preserves an authored pending draft,
+reviewer input and final reviewed output with exact execution/transcript bindings.
+A separate `74a8d23` correction retains transcript subdirectory layout while interpreting
+its embedded snapshot refs against the verified execution artifact. Stable child
+finalization/core CLI validation passed **71 tests in 88.32s**. Synthetic transcripts
+prove recorded lineage behavior; they do not authenticate a real external session or
+semantic review quality.
+
+Selected generation's red slices exposed missing public delegation/registration,
+invalid V3 final-primary linkage, rebased selection refs and policy ambiguity. Actual
+returned Planner observations now qualify required workflow completion under fixed
+`selected_workflow_1`, while the operator's policy remains unchanged. Source selection
+snapshots stay at their original root; native captured input/configuration refs are
+explicit. Normal V3 partial/rejected/skipped outcomes can qualify; interrupted execution,
+failed required retrieval and failed new usage capture remain blocked. A separate
+`4919591` correction reports malformed selection maps as registration failure without
+losing successful Planner status. The broader merged child gate passed **167 tests in
+99.97s** before that localized correction; its final generation gate passed **33 in
+15.46s**. These are distinct source checkpoints, not one combined final result.
+
+Tool-adapter parity tests initially used incorrect native wire names and an unfixed
+quality-report clock. Corrections use native output names and a fixed generated time,
+without normalizing source/status/hash differences. The explicit tools-offline guard
+preserves SDK class types while rejecting runtime construction and credential access;
+it permits only Windows asyncio's local socketpair connection. External DNS/socket
+attempts remain recorded even when caught, and strict default guard behavior is retained.
+The post-integration tool/core/collector gate passed **111 tests in 124.34s**; prior
+representative new/legacy parity, group/leaf help and explicit mocked incremental opening
+acceptance remain evidence for those unchanged paths.
+
+#102's documentation tracer first failed because the root guide omitted generation and
+material handoff. Appending `--help` to a registration execution example then hit the
+intentional registration/help boundary; the checker now reads leaf help and verifies
+actual documented options. The integrated tracer initially asserted a run ID in the
+native inventory, which exposes projected material rather than that field; it now reads
+selected IDs from the accepted manifest and verifies the native four-version inventory.
+These were acceptance-harness corrections, not production defects. The corrected public
+suite passed **3 tests in 26.12s**. The integrated/native intake/evaluation-run/planner-usage
+gate then passed **176 tests, 1 skipped in 60.17s**. Adding direct exact-byte assertions for
+author draft, reviewed final, execution and transcript files was followed by the final
+public suite: **3 passed in 25.64s** on the source committed as `c268859`.
+
+### Public integration observations and documentation
+
+Installed public commands collect explicit existing sources into `pending_review`, attach
+synthetic external reviewed material, finalize through native intake and validate the
+accepted four-version manifest. MockTransport one-step evaluation emits the native report,
+with **five Google sends, one V0 model send and zero retries**. No implicit supplemental
+opening request occurs. Processing and acquisition complete while evidence remains
+unresolved, FAIL/UNKNOWN and unavailable totals remain visible, and explicit unavailable
+producer usage stays unavailable. Preparation/report/receipt digests agree. Guarded offline
+installed replay returns the complete saved report and preserves all execution files.
+Original source/config/handoff bytes and copied author/draft/review/transcript lineage are
+unchanged. The selected V3 injected generation case preserves normal partial Repair,
+qualifies its required workflow, registers without RequirementSpec, and re-collects the
+exact capture through the installed public command while missing versions remain visible.
+
+The root README now gives a concise command/network/output table, shortest accepted
+manifest execute/replay route, selected generation and existing-material handoff examples.
+Detailed operational schemas and parameters remain in `backend/evaluation/README.md`;
+durable producer/review lineage rules belong to the current intake contract. Development
+smoke and historical module commands retain their owners, anchors and original meaning.
+No CLI dispatch of external author/reviewer is implied. Completion, quality/PASS, staging,
+registration, invocation, unavailable usage and processing exit codes remain distinct.
+
+Ruff lint/format and whitespace checks pass for the new test. Documentation verification
+checked six current owners, **15 new local links**, **eight parseable JSON templates**,
+and preservation of every baseline heading/explicit anchor; public help checks cover the
+actual root/material workflow flags. Local historical evidence identifiers are
+`artifacts/rtpeval-95/102-native-gate.xml`, `102-stable-public.xml` and `doccheck-102.py`.
+They are ignored diagnostics, not published dependencies. Exhaustive child red/green
+commands and durations remain local handoff aids; the event summary above is the public
+engineering account. No full backend or frontend gate was run by #102.
+
+### Combined review and final backend acceptance
+
+The merger retained every implementation, child integration and separate correction
+commit. Primary integration checks passed **98 in 105.74s** for collection/core/evaluation,
+**133 in 183.49s** for tools/collection/evaluation, **87 in 71.13s** for collection/finalization,
+**81 in 28.19s** for generation/native usage/evidence/core CLI, and **3 in 24.38s** for the
+final public workflow. These overlapping scopes are not added together. Initial primary
+collection setup needed an existing basetemp parent; Windows sandbox `uv` console-launcher
+canonicalization failures were resolved by host execution, without source changes.
+
+Two independent read-only agents reviewed the complete 19-file fixed-base diff and all
+eleven outgoing commits from `93ab3ba24049dd5321fea1c755e354f054c0625e` through
+`c1280a1d3bde034809d2cb813975c5a571d2354d`. **Initial implementation review: Standards
+zero findings; Spec zero findings.** No implementation correction was required.
+Final documentation recheck subsequently found one Standards P3 issue: `PROJECT.md`
+section 5 still presented the earlier #97 gate as current while section 6 carried the
+new #98–#102 result, contrary to the file's single-current-checkpoint rule. A separate
+documentation-only correction replaces section 5 with the dated, scoped unchanged-source
+`c1280a1` gate and references it from section 6. Earlier #97 results remain in their
+existing acceptance section. Separate correction `e7fa98e` passed focused documentation
+recheck: **Standards zero remaining findings; Spec zero findings**. No new source change
+or test/full-suite run was required. The combined implementation
+conclusion is reused for PR delivery;
+no second PR-wide code review is performed. All thirteen changed Python files passed
+Ruff lint and format checks; fixed-base whitespace checks passed. Mypy and pyright are
+not configured. No frontend gate is claimed because the frontend and application API
+are unchanged. The final documentation check also verifies each new local link with
+the Git index: sixteen tracked destinations, eight JSON templates and retained anchors.
+
+The first complete backend invocation incorrectly used `D:/Workspace/Capstone` as its
+working directory. It finished **52 failed, 3418 passed, 11 skipped, 2 warnings in 662.22s**.
+JUnit and tracebacks identify 46 missing relative `config/runtime.yaml` paths, four
+relative version-runner paths, one relative PowerShell script and one `Path.cwd()`-relative
+implementation inventory. The wrong-script output also caused two GBK reader warnings.
+This invocation error is retained as a failed gate, not reported as a source defect or
+as successful validation. The additional skip was an absent parent-relative historical
+artifact; its existing offline test runs from the proper repository root.
+
+Without changing source, tests or dependencies, the corrected complete command ran from
+`D:/Workspace/Capstone/Reliable-Trip-Plan-Agent` using the primary editable environment:
+
+```powershell
+.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider --basetemp D:/Workspace/Capstone/artifacts/rtpeval-95/final-root --junitxml D:/Workspace/Capstone/artifacts/rtpeval-95/final-root.xml
+```
+
+Final result on unchanged `c1280a1`: **3471 passed, 10 skipped in 673.89s**, with no failures
+or warnings reported. The skips are nine opt-in isolated PostgreSQL cases and the existing
+host symlink-creation privilege case. Local JUnit identifiers are
+`D:/Workspace/Capstone/artifacts/rtpeval-95/final-95.xml` and `final-root.xml`; they are
+ignored diagnostic evidence, not published navigation dependencies. The complete rerun
+was required to replace the invalid-cwd gate. Earlier #97 full-suite evidence keeps its
+original scope and is not substituted for this final result.
+
+Only final acceptance documentation follows this tested code state. Git delivery uses
+the existing PR, publishes the combined review/check conclusion, and checks existing
+child Acceptance criteria against these results before closure. No actual external
+author/reviewer session, paid/live provider request, formal benchmark or version freeze
+is established by this synthetic/offline acceptance.

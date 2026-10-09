@@ -124,7 +124,11 @@ lives outside preparation-bound evaluator files. Budgets, credentials, source/re
 integrity, one-use rules, version-specific identity/reasoning policies and separate statuses
 remain native. No retries or implicit opening supplement are added. See
 [installed evaluation](backend/evaluation/README.md#installed-automatic-evaluation).
-Remaining material-handoff and command-group capabilities are pending.
+The integrated implementation also exposes explicit offline collection, external reviewed
+requirements attachment/native finalization, selected generation registration and task-oriented
+adapters to the existing tools. Collection stays unqualified until reviewed four-version
+finalization; external agents are separately operated. See
+[material handoff](backend/evaluation/README.md#installed-generation-and-material-handoff).
 
 | Capability | Current behavior | Detailed owner |
 | --- | --- | --- |
@@ -183,15 +187,21 @@ latest result. Commands and preparation: [evaluation package guide](backend/eval
 budgets are distinct. Dated execution allowances do not become runtime defaults.
 [Development guide](docs/guides/development.md) owns runnable commands.
 
-Full backend checkpoint: **3293 passed, 10 skipped** on 2026-10-09 for one-step
-evaluation #97. Its affected CLI/native evaluation gate passes **1327 tests, 1 skipped**,
-including **42 new public evaluation CLI tests**. The full gate covers the final
-implementation/test source committed as `4044dab`. Independent Standards and Spec
-implementation reviews have zero findings; a documentation command-prefix correction
-is included in the final documentation group. No evaluator/planner Python file or
-dependency version changed. See
+Current full backend checkpoint: **3471 passed, 10 skipped in 673.89s** on
+2026-10-09 for integrated #98–#102, run from the repository root on unchanged
+`c1280a1`. The gate covers the complete backend suite, including **178 new public CLI
+cases** for collection, finalization, generation registration, task-oriented tools and
+integrated workflows. Nine opt-in isolated PostgreSQL cases and the existing host
+symlink-creation privilege case are skipped. Ruff lint/format and documentation checks
+passed; no new frontend validation is claimed. Initial independent combined implementation
+reviews found zero Standards and zero Spec findings. Final documentation recheck found
+a stale current checkpoint; the separate documentation correction passed focused review
+with zero remaining findings on both axes.
+See [unified acceptance](docs/records/evaluation/intake-identity-usage.md#unified-rtpeval-material-workflow-acceptance-2026-10-09)
+for the invalid-working-directory invocation, unchanged-source full rerun and review
+history. Earlier #97 checks retain their original scope in
 [one-step acceptance](docs/records/evaluation/intake-identity-usage.md#one-step-rtpeval-evaluation-acceptance-2026-10-09)
-and retained [validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09).
+and [validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09).
 Earlier fresh native evaluator/opening and manifest-based quality CLI agreement and
 exact zero-network replay remain retained evidence; #97 made no new live run.
 Historical packets retain their original implementation for exact replay.
@@ -235,20 +245,27 @@ or guaranteed fresh-clone assets.
 
 ## 6. Next work and authorization boundary
 
-The locally implemented [CLI entry/validation #96](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/96)
+[CLI entry/validation #96](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/96)
 and [one-step evaluation #97](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/97)
-are the first two slices of [unified CLI parent #95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95).
-Local implementation, tests, review and documentation are complete. On 2026-10-09,
-the human also authorized branch rename, push, PR creation, merge after verification,
-and evidence-backed Acceptance criteria updates and closure for #96/#97. Delivery reuses
-the completed Standards/Spec reviews at the human's explicit request; PR code-review is
-not repeated. Paid execution remains excluded. Live Issues and the delivery PR own publication
-and lifecycle outcomes. Material collection (#98), finalization (#99),
-generation registration (#100), other command groups (#101) and integrated acceptance
-(#102) remain separate pending work. Each new implementation scope needs approval.
-Local validation and review evidence is retained in
-[validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09)
-and [one-step acceptance](docs/records/evaluation/intake-identity-usage.md#one-step-rtpeval-evaluation-acceptance-2026-10-09).
+were delivered as the first slices of
+[unified CLI parent #95](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/95).
+On 2026-10-09 the human approved the remaining #98–#102 implementation, tests, local
+commits, combined Standards/Spec review, corrections, documentation and full Git delivery.
+Collection, finalization, generation registration and task-oriented tools are integrated;
+#102 adds complete public synthetic workflow acceptance and operational guidance.
+[PR #105](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/105) contains the
+completed implementation and offline acceptance. Initial independent combined review
+against `93ab3ba...c1280a1` found zero Standards and zero Spec findings. The
+current validation checkpoint in section 5 records the
+final unchanged-source full backend gate. Final documentation recheck identified one
+P3 stale-checkpoint finding; its documentation-only correction passed focused review
+with zero remaining findings.
+See [unified acceptance](docs/records/evaluation/intake-identity-usage.md#unified-rtpeval-material-workflow-acceptance-2026-10-09).
+Paid/live execution, actual external author/reviewer sessions, formal research and
+version freeze remain excluded. Live Issues and the PR own delivery and lifecycle
+state. Retained earlier evidence:
+[validation acceptance](docs/records/evaluation/intake-identity-usage.md#installed-rtpeval-validation-acceptance-2026-10-09),
+[one-step acceptance](docs/records/evaluation/intake-identity-usage.md#one-step-rtpeval-evaluation-acceptance-2026-10-09).
 
 Current local implementation and acceptance cover
 [public-landmark access #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91),

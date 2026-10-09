@@ -991,3 +991,110 @@ Available local evidence is distinct from producer completion, independent sourc
 qualified four-version intake, quality PASS and actual billing. Storage limits are capture
 capacity, not a spending guard. Live dispatch still requires the prepared, explicitly
 approved [smoke handoff](../agents/smoke-tests.md), and performs no independent evaluation.
+
+
+## Producer material handoff
+
+The installed producer flow uses `rtpeval_collection_1` configuration and
+`rtpeval_staging_1` staging independently of native `rtpeval_batch_1` intake. Explicit
+batch/revision/time/policy fields, ordered groups and selected run IDs own selection.
+No newest/best selection, replacement, retries, generation or cohort reduction occurs.
+All references resolve relative to their declaring artifact's root and must remain
+within it. Required source artifacts use exact byte SHA-256, JSON media type,
+`availability=available` and the applicable envelope schema. Input, result, usage,
+provenance and optional generation evidence retain exact bytes and relative layout.
+Generation evidence remains producer evidence, not independent evaluator ground truth.
+
+A group declares its original `input_ref` and `selected_runs` keyed by V0–V3. Each
+existing run supplies result/usage/provenance refs and completion. Missing result/usage
+may be retained as blocked material; a no-result producer provenance records
+`result_sha256=null`. Missing provenance requires a traceable source-bound
+`rtpeval_provenance_1` `producer_declaration`, with actual declarer/time/rationale;
+it cannot coexist with `provenance_ref` or be inferred from filenames.
+Explicit unavailable usage uses the existing usage envelope and remains unavailable.
+
+Completion declares `declared_by`, `declared_at`, `policy_ref`, `workflow_status` and
+`required_mechanisms`. The policy must match `qualification_policy_ref` and the workflow
+must be completed. Required generation is completed for every version; retrieval is
+completed for V2/V3; validation is completed and Repair completed/not-applicable for V3.
+Any additional required mechanism must also complete. A normally finished V3 may qualify
+with partial/rejected/skipped Repair, retained draft or unresolved internal findings.
+Whole-workflow failure/cancellation/timeout, required retrieval failure/degraded fallback,
+validation failure and failed new usage capture do not automatically qualify.
+Completion is distinct from exit 0, file existence, quality/PASS, `policy_completion`
+and Repair acceptance. Native intake consumes producer qualification; it does not rerun
+Planner or independently select/requalify the cohort.
+
+Selected generation may declare pending slots with only `run_id` and `capture_directory`.
+The chosen version/group/run/output must exactly match one slot; explicit registration
+requires execution and a fresh destination. Observed required workflows use fixed
+`selected_workflow_1`, binding exact native provenance/manifest, completion and original
+operator selection snapshots. An unrelated operator policy remains unchanged and blocks
+with `completion_policy_mismatch`. Normally completed bounded partial entity resolution
+can qualify; unavailable/deadline-limited retrieval cannot. Other declared slots remain
+selected, including unstarted attempts. Planner invocation and registration statuses are
+separate; registration failure does not replace a successful Planner result.
+
+Staging always has `qualified_four_version_batch=false` and
+`pending_requirement_review=true`. Its `incomplete`, `blocked` or `pending_review`
+status reports missing versions/material or completion blockers. Successful collection
+can exit 0 without qualification. Saved source/config bindings and reconstructed
+metadata protect both originals and copied files against drift. Original source and
+selection/capture/config files must remain accessible and unchanged through finalization.
+No collection or finalization step loads credentials or constructs an online runtime.
+
+## External requirements handoff
+
+`rtpeval_requirement_handoff_1` explicitly declares batch identity and ordered groups
+matching staging. Each group binds original `input_ref`, final `requirement_spec_ref`,
+`authoring_ref`, `review_ref` and normally `authored_requirement_spec_ref`. The latter
+may be omitted only when the exact final artifact was accurately the author output.
+Native specs remain `rtpeval_requirements_1`; author/review record artifacts use
+`rtpeval_requirement_agent_execution_1`.
+
+External author and reviewer are separately operated Codex `gpt-6.1-sol` with reasoning
+effort `high`. Requirements derive from the complete original request, excluding Planner
+interpretation, generated outputs, scores and mechanisms. Explicit obligations, soft
+preferences and unresolved meaning retain native source-reference rules; review does
+not invent quotas. The CLI does not launch/message an agent, author/review requirements
+or replace this work with model requests. Agent review is not human review. This external
+configuration does not change Planner/evaluator model settings.
+
+Each execution record contains `operation=authoring|review`, `origin=external_codex`,
+actual `actor_ref` and `execution_id`, `group_id`, exact `input_sha256` and output
+`requirement_spec_sha256`, offset-aware `started_at/completed_at`, configuration with
+`agent=Codex`, `model=gpt-6.1-sol`, `reasoning_effort=high`, and context with
+`source=complete_original_request` and `excluded` containing exactly
+`planner_interpretation`, `generated_outputs`, `scores`, `mechanisms`. Additional actual
+configuration is retained. `source_input_ref` and `requirement_spec_ref` bind the complete
+original request and actual output spec. Author/reviewer actor and execution identities
+must differ. Each start precedes or equals completion; author completion precedes or
+equals review start. Equal times can be valid at the recorded clock precision.
+
+Review additionally binds `input_requirement_spec_ref` and
+`input_requirement_spec_sha256` to the exact authored draft. The final spec's
+`review.status=reviewed`, `reviewer_ref` and `reviewed_at` match reviewer actor and
+completion. An author output already marked reviewed cannot record review after author
+completion. The original author artifact, reviewer input and final reviewer output remain
+unchanged; do not back-edit the draft or fabricate times for a same-artifact route.
+
+`transcript_ref` binds available JSON `rtpeval_requirement_agent_transcript_1`: its
+`execution` is the exact execution object excluding `transcript_ref`, and `messages`
+is a nonempty array of nonempty textual messages with native system/developer/user/
+assistant/tool roles. Actual transcript exports/sidecars may be retained through standard
+artifact refs and are copied recursively with original layouts. A transcript bound to
+old input/spec/config/time cannot be reused by changing only envelope hashes.
+Offline verification establishes recorded byte/hash/configuration lineage. It cannot
+authenticate a real external-agent session, message truth, semantic completeness,
+independent review quality or absence of invented quotas; actual provenance and complete
+original-request review remain operator responsibilities.
+
+Attachment emits `attached_pending_finalization`. Finalization rechecks original and
+copied staging/handoff sources, copies all bound material and submits a candidate native
+manifest to intake. Only accepted complete four-version material publishes
+`manifest.json` in a fresh directory. Native rejection leaves retained diagnostic
+material without an accepted manifest; another attempt needs a different fresh destination.
+A changed original request requires fresh requirements authoring/review rather than edited
+hashes. Accepted standardized input does not establish a formal benchmark or research
+selection policy. Runnable schema templates and parameters belong to the
+[material guide](../../backend/evaluation/README.md#installed-generation-and-material-handoff).

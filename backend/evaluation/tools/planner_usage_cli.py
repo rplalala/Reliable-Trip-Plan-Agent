@@ -44,7 +44,7 @@ def _sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def main(argv=None, *, runtime=None, date_provider=None):
+def main(argv=None, *, runtime=None, date_provider=None, result_observer=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", required=True, choices=["v0", "v1", "v2", "v3"])
     parser.add_argument("--input-json", required=True, type=Path)
@@ -130,6 +130,8 @@ def main(argv=None, *, runtime=None, date_provider=None):
         for field in ("destination", "start_date", "end_date", "traveler_count", "budget"):
             if getattr(value.requirements, field) != getattr(request, field):
                 raise ValueError("Selected planner returned different structured trip facts")
+        if result_observer is not None:
+            result_observer(value)
         return value
 
     raw = None

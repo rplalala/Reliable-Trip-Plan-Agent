@@ -23,6 +23,7 @@ from pathlib import Path
 events = Path(os.environ["RTPEVAL_TEST_EVENTS"])
 block_intake = os.environ.get("RTPEVAL_TEST_BLOCK_INTAKE") == "1"
 evaluation_offline = os.environ.get("RTPEVAL_TEST_EVALUATION_OFFLINE") == "1"
+tools_offline = os.environ.get("RTPEVAL_TEST_TOOLS_OFFLINE") == "1"
 events.write_text("", encoding="utf-8")
 
 def deny(kind, detail):
@@ -35,14 +36,24 @@ def network(*args, **kwargs):
 
 for name in ("getaddrinfo", "gethostbyname", "gethostbyname_ex", "create_connection"):
     setattr(socket, name, network)
+original_connect = socket.socket.connect
 for name in ("connect", "connect_ex", "sendto"):
     setattr(socket.socket, name, network)
+
+if tools_offline:
+    def local_connect(self, address):
+        if isinstance(address, tuple) and address[0] in ("127.0.0.1", "::1"):
+            return original_connect(self, address)
+        return network()
+    socket.socket.connect = local_connect
 
 forbidden = ("backend.app", "dotenv", "httpx", "openai", "pydantic_settings",
              "backend.evaluation.evaluation_run")
 if evaluation_offline:
     forbidden = ("backend.app.versions", "backend.app.llm",
                  "backend.app.services", "openai", "backend.evaluation.opening_run")
+if tools_offline:
+    forbidden = ()
 if block_intake:
     forbidden += ("backend.evaluation",)
 
@@ -66,16 +77,22 @@ def audit(event, args):
             deny("credential_file", args[0])
 sys.addaudithook(audit)
 
-if evaluation_offline:
+if evaluation_offline or tools_offline:
     import dotenv
     import httpx
     from backend.app.runtime import RuntimeSettings, token_counting
 
     def online_runtime(*args, **kwargs):
         deny("runtime_init", "HTTP client or runtime settings")
-    httpx.Client = httpx.AsyncClient = online_runtime
+    if tools_offline:
+        httpx.Client.__init__ = httpx.AsyncClient.__init__ = online_runtime
+    else:
+        httpx.Client = httpx.AsyncClient = online_runtime
     RuntimeSettings.__init__ = online_runtime
     dotenv.load_dotenv = dotenv.dotenv_values = online_runtime
+    if tools_offline:
+        import openai
+        openai.OpenAI.__init__ = openai.AsyncOpenAI.__init__ = online_runtime
 
     class FixtureEncoding:
         def encode_ordinary(self, text):
@@ -114,6 +131,7 @@ def installed_cli(tmp_path):
         probe=False,
         evaluation_offline=False,
         missing_tokenizer=False,
+        tools_offline=False,
         legacy_module="backend.evaluation",
     ):
         env = {
@@ -123,6 +141,7 @@ def installed_cli(tmp_path):
             "RTPEVAL_TEST_EVENTS": str(events),
             "RTPEVAL_TEST_BLOCK_INTAKE": "1" if block_intake else "0",
             "RTPEVAL_TEST_EVALUATION_OFFLINE": "1" if evaluation_offline else "0",
+            "RTPEVAL_TEST_TOOLS_OFFLINE": "1" if tools_offline else "0",
             "RTPEVAL_TEST_MISSING_TOKENIZER": "1" if missing_tokenizer else "0",
         }
         command = [sys.executable, "-m", legacy_module] if legacy else [str(executable)]
