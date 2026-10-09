@@ -320,6 +320,20 @@ decision for an absent/null/blank original location requires `not_supplied` and 
 enum excludes `claim.location`; decisions with a supplied address cannot use `not_supplied`.
 Instructions and import enforce the same rule. Absence alone does not prove an address error.
 Complete unique reference coverage and candidate ownership remain mandatory.
+Current requests encode `decisions` as an object keyed by every prepared short reference:
+all keys are required and extra keys are forbidden. Shared address-present/absent `$defs`
+retain the citation and assessment alternatives. Instructions enumerate the exact count
+and IDs, including every visit and requirement subject; insufficient facts require an
+explicit UNKNOWN decision rather than an omitted case.
+Import requires the exact owned key set and each value's `reference_id` equal to its key.
+Duplicate raw JSON keys, duplicate/foreign references, incomplete objects and arrays
+are rejected before converting valid judgments to the existing internal rows. Saved
+request strings, raw responses and receipts are never rewritten by that conversion.
+Historical uniform and legacy V0 request arrays remain unchanged. Earlier current-policy
+packets retain their original producer implementation for replay; the new request schema
+does not rebind or relabel their consumed responses. Correspondence and scoring policies
+remain unchanged. Azure's supported structured-output subset supplies required objects
+and references; array cardinality/uniqueness keywords are not used as a coverage guarantee.
 Validated V0 records expose `candidate_correspondence` (restored candidate ID and decision)
 separately from `grounding_verdict` and original claims. Supported `incorrect_claim` or
 `different_place` assessments remain FAIL even for a recognized candidate; they require

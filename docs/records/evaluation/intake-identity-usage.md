@@ -4128,3 +4128,159 @@ All four original output hashes remain unchanged. Google/model sends and additio
 are zero. This is an identity-only engineering recalculation, not a newly bound four-version
 quality report. New implementation bindings and any additional live judgments require
 separate preparation and authorization; the old report/receipt are never relabeled.
+
+<a id="complete-v0-identity-coverage-acceptance-2026-10-09"></a>
+
+## Complete V0 identity coverage and same-output evaluator (2026-10-09)
+
+Status: implementation, independent live evaluation and complete native/quality CLI
+acceptance validated. Residual itinerary judgments remain visible.
+The human authorized strengthening complete identity coverage and
+direct evaluator execution, with current execution approvals defaulted. Review fixed
+point is `a452aa5089d4e79781ede289d8a07434bbf3deb6`; implementation is
+`779dc8aaef8f88c6801e0391344fc639cce2a586`. The unrelated pre-existing `.gitignore`
+change remains excluded. No planner regeneration, scoring-rule change, automatic retry,
+remote Git delivery, formal comparison or version freeze belongs to this task.
+
+### Failure, correction and offline checks
+
+The preceding completed model response judged one of eight required V0 cases and
+omitted all seven visits. Strict import stopped rather than accepting incomplete
+coverage. The original generation, both stopped reports and raw responses remain
+historical evidence; this correction does not edit or relabel them. Their full account
+is retained in the [source-protected execution record](../v0-v3/v3-development.md#source-protected-v3-cli-execution-2026-10-09).
+
+An actual CLI regression first failed because the request allowed an arbitrary-length
+array instead of requiring every case. The request now uses a strict `decisions` object
+with all owned short IDs required. Shared address-presence definitions avoid repeating
+all judgment properties for every reference. Exact count/IDs, visit and subject coverage,
+key/value identity agreement and explicit UNKNOWN on insufficient evidence are stated
+before dispatch. Import rejects incomplete/foreign/duplicate coverage, old arrays and
+foreign candidates, while retaining original citation/address/destination validation.
+Only a validated object is converted to internal rows; provider bytes stay unchanged.
+Historical uniform/legacy V0 array requests retain their original branches.
+
+The red CLI test passed after the minimal fix. Final affected validation passed
+**204 tests in 136.27 seconds**, including synthetic provider responses, success and
+six invalid-response CLI cases, source binding, historical paths, opening integration
+and exact zero-network stopped/successful replay. Ruff and diff checks pass.
+An earlier full run was stopped after the legacy compatibility correction so the
+complete gate would test the final implementation. Independent Standards and Spec
+implementation reviews report zero findings. The final full backend passed
+**3231 tests, 10 skipped, in 672.12 seconds**. No frontend test is implied.
+
+### Frozen execution package
+
+Original V0-V2, reviewed Input/RequirementSpec and the source-protected V3 remain
+unchanged. V3 result SHA256 is
+`ecd6d368b4467fc3a49995dc925d983475fa14cf08beb9cdd4870e7d69ea7e6f`.
+The separate package preserves batch revision 4 and source-linked role/occupancy,
+route and density reviews. Offline preview against retained candidate facts measures
+**15,606** complete request tokens including framing, below the 24,000 allowance;
+those preview facts will not be used as new independent execution evidence.
+The prepared implementation and digest match, and native credential presence checks
+pass without exposing keys or sending provider requests.
+
+Preparation SHA256 is
+`2979edd919a3ac0572d33385a47c83ace4768bd8fb7d3d918ad12989fa771da3`.
+Limits are **86 Google**, **one gpt-6-luna identity call**, medium, 24,000 input /
+3,000 output tokens, 120-second request / 900-second overall and **USD 2.76** reference
+allowance, with zero retries. A separate eligible missing-hours assessment may use
+zero Google, one medium model call, 32,000 input / 8,000 output tokens and USD 0.05.
+These are reference-price reservations, not account billing caps. Current-session
+execution children must use `gpt-6.1-sol` / medium and only their frozen handoff.
+
+Local evidence identifier:
+`artifacts/sydney-v3-identity-coverage-evaluator-20261009-r1`.
+It is ignored evidence, not a published dependency.
+
+### Output-budget stop and separate correction
+
+The one-use initial execution exited 2 in **34.326 seconds**. It acquired 35 Google
+requests and made one model call, without retries. The provider returned `incomplete`
+with `max_output_tokens`: **15,132 input / 3,000 output**, including **2,346 reasoning
+tokens** within output. Strict import rejected the incomplete response. No identity,
+route or quality report was completed; omission coverage cannot be inferred from this
+truncated material. Reference usage was **USD 0.967391425**, actual billing unavailable.
+The stopped receipt is
+`d71e8f9621dad7fe91f690070cf80f4bbc984283a13ee7ffb19bf9bbf3f3f2e8`.
+
+The parent prepared a separate corrected package under the current default approval,
+raising only the output allowance to **8,000**. Medium reasoning, the 24,000 input
+limit, original sources, source reviews, code, scoring rules and time limits remain
+unchanged. Fresh independent acquisition is required; the consumed package is not
+resumed or overwritten. Previewing the just-acquired packet measures **17,564** input
+tokens including framing. Conservative reservation is **USD 2.759** for at most 86 Google
+and one model, within the unchanged USD 2.76 allowance. Including the first stop, the
+current step's bound is 121 Google and **USD 3.727391425**, below USD 5.50. It contains
+two separate prepared identity attempts, with zero automatic transport retries.
+New preparation SHA256 is
+`a0a86549b778aba37c576d59536d0742fbc77fd5e3123bae93d38eb37e510774`.
+The corrected execution exited zero in **42.969 seconds**. The response is `completed`
+and supplies all **eight** owned decisions exactly once. Actual usage is **67 Google**,
+one model, **12,635 input / 2,640 output** tokens, including 1,552 reasoning tokens
+within output, and **USD 1.3818993** reference cost. Processing and acquisition complete;
+there are no acquisition failures. The native report retains 13 missing-hours checks
+before supplemental access assessment. Its receipt is
+`bb21c07cd07c3d8d6fb0d9592c653d5d6e739530ec7c590040dfeb9a4d423040`.
+
+### Missing-hours assessment and final acceptance
+
+Opening preparation initially rejected the inherited identity-only `reasoning_effort`
+options field, without a provider send or execution directory. Removing that field
+retained the opening workflow's fixed medium policy; no production change was needed.
+The rejected options are preserved separately. The valid packet freezes 13 cases,
+16,638 complete input tokens including framing and USD 0.008 maximum price reservation.
+Preparation SHA256 is
+`959445ff374d1cd0da96e5d77baa30b8e9844a281d89bb6cf7156c47c8da44db`.
+
+One opening model call, zero Google and zero retries completed in **25.468 seconds**.
+Actual usage is 14,905 input / 2,364 output tokens, with 807 reasoning tokens already included
+in output, and **USD 0.00304505** incremental reference cost. Twelve judgments PASS for
+ordinary public-landmark or outdoor viewing under the existing common policy; these
+are `llm_access_reasonableness` judgments, not API-certified opening hours. V0 Powerhouse
+indoor admission remains UNKNOWN. Neither missing hours nor undated temporary closure
+was converted into confirmed future opening or closure.
+
+With credentials removed and DNS/TCP blocked, actual `replay`, `replay-opening` and
+manifest-based quality CLI all exit zero and reproduce the same source-bound component
+reports and totals. Repeated quality CLI JSON is byte-identical. All three stopped
+attempts also retain their expected exit 2 reports and unchanged closed receipts.
+All **832** generation/preparation/execution files checked before and after replay are
+unchanged. Original Input, V0-V2, prior/current V3 and `.gitignore` hashes match.
+Opening receipt is
+`76e09abfa9d95b93e4b9bf4e04280295d42dfb087a9751ef07a9f6c89dca2ce2`;
+final native report is
+`b45d2b5af5d817a73420a9bf06f44b589bb68ee69976a794177c911acbe5df7d`.
+
+| Version | Overall score | Grounding FAIL | Opening UNKNOWN | Mean soft pace deduction |
+| --- | ---: | ---: | ---: | ---: |
+| V0 | 89.2857 | 1 | 1 | 5 |
+| V1 | 80.0000 | 0 | 0 | 20 |
+| V2 | 85.0000 | 0 | 0 | 15 |
+| V3 | 100.0000 | 0 | 0 | 0 |
+
+All four Opera House exact-once requirements PASS. V1-V3 have no factual FAIL/UNKNOWN
+under the current rules. V0's address FAIL is the model's `incorrect_claim` assessment
+of Australian Museum's original `College Street, Sydney` against the independent
+candidate's William Street address; recognizing the venue does not repair that claim.
+V0 `day4_powerhouse`, 2026-10-17 10:00-12:15 Sydney time, remains UNKNOWN because
+`Explore the Powerhouse Museum` implies indoor admission and neither applicable hours
+nor admission evidence is supplied. Its reasons are `hours_missing` and
+`llm_access_reasonableness_unknown`; HTTP acquisition itself succeeded.
+Five auxiliary daily pace deductions remain: V0 Oct 17 (count 1, 20 points), V1 Oct 14/16
+(count 3, 40 points each), V2 Oct 14 (count 3, 40 points) and Oct 17 (count 1, 20 points).
+Daily means produce the table's final deductions; they are distinct from factual failures.
+The unchanged new V3 already has zero initial/final pace deduction and no Repair round;
+this acceptance does not demonstrate a new Repair improvement or a formal quality ranking.
+
+This evaluator task used **102 Google**, **three model calls** (initial truncated identity,
+corrected identity and opening), **zero automatic retries**, and **USD 2.352335775**
+reference cost. Combined saved executions since source-protected V3 generation,
+including the two prior stopped evaluator packages, total **USD 6.634772835**.
+Actual account billing remains unavailable. Evidence identifiers are the package's
+`evaluator/run`, `evaluator/run-output8k`, `opening/execution` and
+`final-acceptance/acceptance.json`, `quality-cli-report.json`, `factual-failures.json`,
+`unknowns.json`, `soft-pace-deductions.json` and closed receipts. They are local artifacts,
+not published assets. Documentation publication, further official evidence acquisition
+and formal comparisons remain separate scopes.

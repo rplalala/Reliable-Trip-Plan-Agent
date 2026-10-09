@@ -2776,9 +2776,11 @@ formal research, remote Git delivery and version freeze remain outside this acce
 <a id="source-protected-v3-cli-execution-2026-10-09"></a>
 ## Source-protected V3 and CLI execution 2026-10-09
 
-Status: Serialization correction implemented and validated offline; fresh V3 generation
+Recorded checkpoint: Serialization correction implemented and validated offline; fresh V3 generation
 complete. Complete live evaluator acceptance is blocked by incomplete V0 model coverage.
-No final scores are available for this latest batch; older scores were not substituted.
+No final scores were available at this checkpoint; older scores were not substituted.
+The subsequent coverage correction and accepted full CLI run over the same outputs
+are recorded in [identity coverage acceptance](../evaluation/intake-identity-usage.md#complete-v0-identity-coverage-acceptance-2026-10-09).
 
 Review base was `6ad619c23ed159e67487f7e805ac0041a4929a50`; implementation is
 `db92930c9848aee1a80d1f87301fb6c68b50221e`. The unrelated pre-existing `.gitignore`

@@ -132,49 +132,37 @@ opening and route checks while original grounding FAILs remain visible. Requirem
 targets belong to their own version. Historical reports retain their original policies,
 code and source bindings; a rule change produces a separate recalculation.
 
-The latest Sydney engineering case has four original outputs, reviewed requirements,
-fresh independent evidence and a completed native evaluator flow. V2/V3 generation
-includes captured embedding/SQL retrieval; V3 exercised Repair. Zero-network replay
-preserves all originals and the original execution receipt. The authorized incremental
-missing-hours model assessment under current rules 4 has completed with a separately
-authorized policy-2 response. Exact network-free replay reproduces the retained #91
-report below, whose identity policy remains version 3. The separate version-4 address
-recalculation is not a replacement full quality report:
+The latest Sydney development case uses the original V0-V2 and the source-protected
+V3 without changing submitted outputs. Fresh independent acquisition and the complete
+native evaluator, supplemental opening and manifest-based quality CLI agree; exact
+zero-network replay verifies source hashes and closed receipts. Current V0 identity
+requests require every prepared reference as an object key, with strict complete
+coverage and existing correspondence checks. Legacy uniform/V0 paths retain their
+original request format; older current packets retain their producer implementation.
 
-| Version | Overall score | Opening UNKNOWN | Grounding FAIL |
-| --- | ---: | ---: | ---: |
-| V0 | 92.1429 | 1 | 0 |
-| V1 | 76.0000 | 0 | 2 |
-| V2 | 85.0000 | 0 | 0 |
-| V3 | 90.0000 | 0 | 0 |
+| Version | Overall score | Opening UNKNOWN | Grounding FAIL | Mean soft pace deduction |
+| --- | ---: | ---: | ---: | ---: |
+| V0 | 89.2857 | 1 | 1 | 5 |
+| V1 | 80.0000 | 0 | 0 | 20 |
+| V2 | 85.0000 | 0 | 0 | 15 |
+| V3 | 100.0000 | 0 | 0 | 0 |
 
-The hard Opera House exact-once obligation is PASS for all four outputs. Fourteen
-opening checks lack both current and regular hours; successful HTTP acquisition does
-not supply those missing facts. The retained #91 report's two V1 literal-address FAILs
-reflect API abbreviations; the current equivalence policy accepts both from retained
-Google component pairs in a separate offline identity recalculation.
-All fourteen missing-hours occurrences were assessed: thirteen PASS with explicit
-`llm_access_reasonableness` basis and one remains UNKNOWN: V0 Powerhouse indoor admission.
-Ordinary Harbour Bridge/Opera House viewing passes under the same rule for all versions.
-Factual hours coverage and API duration quantities remain unchanged.
-Six density FAILs are auxiliary soft pace penalties. Powerhouse's undated temporary
-closure is retained without proving access on the planned date. This one engineering
-case establishes runnable integration, not a formal ranking or version freeze.
-The implemented public-landmark default permits ordinary viewing inferred from original
-text and venue category, without interpreting a generic visit as a paid activity. Museum
-admission and explicit restricted activities retain their access-evidence requirements.
-The complete source-bound report and exact replay are accepted as engineering flow evidence;
-residual judgments remain visible for human review.
+All four Opera House exact-once obligations PASS. The latest V3 has eight independently
+verified visits and no factual FAIL/UNKNOWN or pace deduction. Its initial generation
+already met the pace objective, so this output does not exercise Repair. The model's
+Australian Museum address assessment remains a V0 FAIL; V0 Powerhouse indoor admission
+remains UNKNOWN because applicable opening/admission evidence is missing. Twelve other
+missing-hours checks PASS on the existing public-landmark/outdoor access policy, with
+explicit model-reasoning basis rather than certified API hours. Residual judgments and
+five auxiliary daily pace deductions remain source-linked in the final report. This is
+bounded engineering integration evidence, not a formal ranking or version freeze.
 
-Evidence: [generation and host resumption](docs/records/v0-v3/development-pilots.md#sydney-generation-host-resumption-2026-10-08),
-[fresh evaluator acceptance](docs/records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09),
-[requirement correction](docs/records/evaluation/intake-identity-usage.md#requirement-physical-association-correction-2026-10-09),
-and [opening fallback acceptance](docs/records/evaluation/opening.md#regular-opening-fallback-acceptance-2026-10-09).
-Commands and input preparation: [evaluation package guide](backend/evaluation/README.md).
-Missing-hours implementation and live acceptance:
-[access acceptance](docs/records/evaluation/opening.md#missing-hours-access-acceptance-2026-10-09).
-Public-landmark revision:
-[policy acceptance](docs/records/evaluation/opening.md#public-landmark-default-acceptance-2026-10-09).
+Current acceptance and actual failure/correction/retest sequence:
+[identity coverage and complete CLI acceptance](docs/records/evaluation/intake-identity-usage.md#complete-v0-identity-coverage-acceptance-2026-10-09).
+Earlier unchanged outputs, policies and reports remain historical evidence in the
+[evaluator record](docs/records/evaluation/intake-identity-usage.md) and
+[opening record](docs/records/evaluation/opening.md); they are not substituted for the
+latest result. Commands and preparation: [evaluation package guide](backend/evaluation/README.md).
 
 ## 5. Configuration, evidence and limitations
 
@@ -183,12 +171,13 @@ Public-landmark revision:
 budgets are distinct. Dated execution allowances do not become runtime defaults.
 [Development guide](docs/guides/development.md) owns runnable commands.
 
-Full backend checkpoint: **3224 passed, 10 skipped** on 2026-10-09 after the opening
-request serialization correction. The **57-test** affected gate and independent
-Standards/Spec implementation reviews pass. Native opening execution/replay and
-manifest-based quality CLI composition agree offline without weakening evidence binding.
-Historical packets retain their original implementation for exact replay.
-Acceptance details: [source facts](docs/records/v0-v3/v3-development.md#google-backed-output-facts-2026-10-09)
+Full backend checkpoint: **3231 passed, 10 skipped** on 2026-10-09 after complete V0
+identity-request coverage. The **204-test** affected gate and independent Standards/Spec
+implementation reviews pass. Fresh native evaluator/opening and manifest-based quality
+CLI agree; their exact zero-network replay preserves evidence binding. Historical
+packets retain their original implementation for exact replay.
+Acceptance details: [complete CLI flow](docs/records/evaluation/intake-identity-usage.md#complete-v0-identity-coverage-acceptance-2026-10-09),
+[source facts](docs/records/v0-v3/v3-development.md#google-backed-output-facts-2026-10-09)
 and [serialization and fresh execution](docs/records/v0-v3/v3-development.md#source-protected-v3-cli-execution-2026-10-09).
 The latest recorded frontend gate is **98 passed**, with TypeScript, build and lint
 passing; this backend task does not rerun or imply new frontend validation.
@@ -210,10 +199,11 @@ Remaining limitations:
 - Provider invoices and some billed quantities are unavailable; explicit retail/proxy
   estimates are not actual bills. RAG coverage and retrieval performance remain bounded
   by corpus/runtime evidence, not a general availability guarantee.
-- Opening request serialization is corrected for newly prepared material. Latest fresh
-  live evaluator acceptance remains blocked: the V0 identity response contains one of
-  eight required decisions. Import correctly rejects incomplete coverage; no current
-  final scores or FAIL/UNKNOWN inventory exist for the latest V3.
+- Opening serialization and complete V0 identity coverage are corrected for newly
+  prepared material. A 3,000-token identity response truncated during the latest live
+  run; a separate 8,000-token package completed within its bounds. Output allowances
+  include reasoning tokens. Incomplete responses still stop and preserve their receipts;
+  successful processing can retain genuine factual UNKNOWN judgments.
 - Blinded, controlled-Repair and official-audit interfaces exist, but the latest Sydney
   automatic run did not execute those separate tracks or a formal benchmark.
 
@@ -226,32 +216,24 @@ or guaranteed fresh-clone assets.
 
 ## 6. Next work and authorization boundary
 
-The completed [public-landmark access scope #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91)
-revises inference while preserving original outputs, prior reports and API factual coverage.
-Its separately authorized one-use package is consumed. The automatic four-output flow
-produces a source-bound final report, saved accounting and exact network-free replay.
-Processing and binding acceptance do not require every itinerary check to PASS.
+Current local implementation and acceptance cover
+[public-landmark access #91](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/91),
+[address equivalence #92](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/92),
+[V3 soft pace optimization #93](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/93)
+and [planner source protection #94](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/94),
+plus the separately requested opening serialization and identity-coverage corrections.
+The complete CLI flow over the unchanged original V0-V2 and source-protected V3 is
+accepted as engineering integration evidence. Final scores, check inventories and usage
+are saved; repeated native/quality replay preserves all originals and stopped attempts.
 
-Current local implementation and offline acceptance cover
-[address equivalence #92](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/92)
-and [V3 soft pace optimization #93](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/93),
-plus shared [planner source protection #94](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/94).
-The latest source-protected V3 has eight visits with exact captured Google names/addresses
-and zero draft/final pace deduction; Repair did not run because the draft already met
-the objective. Generation evidence capture is complete. The previous live Repair
-reduction and older final scores remain historical evidence, not this output's evaluation.
-
-Next work is to bind complete V0 identity-decision coverage into the model request,
-then prepare another bounded evaluator package. Current importer rejection, both stopped
-receipts, original V0-V2 and the new V3 remain immutable. No opening assessment was
-executed for this latest batch. Details belong in
-[the execution record](docs/records/v0-v3/v3-development.md#source-protected-v3-cli-execution-2026-10-09).
-The historical Powerhouse admission UNKNOWN still needs applicable access evidence or
-human disposition. Further official acquisition, business-status policy, V0 baseline
-changes and formal research are separate follow-ups. Current bounded execution allowances
-do not authorize automatic retries, a version freeze or remote Git delivery.
-GitHub Issues own specifications and live task state; earlier approvals and deliveries
-remain in their dated records rather than a chronological status diary here.
+Remaining itinerary follow-ups are the V0 Australian Museum address assessment and
+Powerhouse indoor-access uncertainty. Further official evidence acquisition or policy
+changes need their own scope. The latest V3 starts with zero pace deduction and makes
+no Repair attempt; earlier actual Repair improvement remains separate dated evidence.
+V0 baseline changes and formal research also remain separate. Consumed one-use packages
+are not retry authority, and this acceptance grants no version freeze or remote Git
+delivery. GitHub Issues own specifications and live task state; detailed execution
+history belongs in the [acceptance record](docs/records/evaluation/intake-identity-usage.md#complete-v0-identity-coverage-acceptance-2026-10-09).
 
 ## 7. Keeping this file current
 

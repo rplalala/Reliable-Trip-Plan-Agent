@@ -74,6 +74,14 @@ the Responses request and checked against the captured HTTP journal during repla
 Invalid values fail during offline preparation. The separately fixed-medium opening
 workflow does not admit this identity-only option.
 
+New current V0 identity requests require a `decisions` object with one required key per
+prepared short reference, covering visits and requirement subjects. Each judgment's
+`reference_id` must equal its key; an explicit UNKNOWN is valid when evidence is
+insufficient, while an omitted judgment is not. Incomplete, duplicate or foreign IDs
+stop execution without retry and preserve the original HTTP response. Historical
+uniform/legacy arrays retain their original paths; earlier current packets require
+their retained producer implementation rather than conversion to the new request.
+
 Supply a dated USD `rtpeval_prices_1` book covering exact Google operations/masks and the
 selected model. Credentials are loaded only for execution from `GOOGLE_MAPS_API_KEY`
 and `AZURE_OPENAI_API_KEY`; they are excluded from preparation and receipt data. Prices
