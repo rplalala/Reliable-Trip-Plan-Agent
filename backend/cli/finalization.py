@@ -80,7 +80,14 @@ def _handoff(staging, handoff_path):
                 _require(item.get("availability") != "unavailable", "Unavailable handoff evidence")
                 capture(item, parent, json_required=False)
                 return
-            for child in item.values():
+            for key, child in item.items():
+                # This is an exact execution snapshot, whose refs belong to the separately
+                # verified execution artifact directory, not the transcript directory.
+                if (
+                    item.get("schema_version") == "rtpeval_requirement_agent_transcript_1"
+                    and key == "execution"
+                ):
+                    continue
                 dependencies(child, parent)
         elif isinstance(item, list):
             for child in item:

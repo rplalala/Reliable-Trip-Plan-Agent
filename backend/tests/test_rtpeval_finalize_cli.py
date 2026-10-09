@@ -649,3 +649,31 @@ def test_authored_lineage_rejects_mismatched_or_stale_evidence(
         )
         assert not attached.exists()
     assert result.returncode == 2, result.stdout + result.stderr
+
+
+def test_execution_transcripts_can_use_their_own_retained_directory_layout(
+    installed_cli, handoff, batch
+):
+    value, write, save, root = handoff
+    artifact = batch[3]
+    (root / "transcripts").mkdir()
+    for operation in ("authoring", "review"):
+        record = json.loads((root / (operation + "-execution.json")).read_bytes())
+        transcript = json.loads((root / (operation + "-transcript.json")).read_bytes())
+        record["transcript_ref"] = artifact(
+            "transcripts/" + operation + ".json", transcript, transcript["schema_version"]
+        )
+        value["groups"][0][operation + "_ref"] = artifact(
+            operation + "-execution.json", record, record["schema_version"]
+        )
+    staging, attached, final = root / "staging", root / "attached", root / "final"
+    assert installed_cli("batch", "collect", save(), "--directory", staging).returncode == 0
+    result = installed_cli(
+        "batch", "attach-requirements", staging / "staging.json", write(), "--directory", attached
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    result = installed_cli("batch", "finalize", attached / "attachment.json", "--directory", final)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert (final / "requirements/transcripts/review.json").read_bytes() == (
+        root / "transcripts/review.json"
+    ).read_bytes()
