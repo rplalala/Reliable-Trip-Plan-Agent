@@ -30,8 +30,9 @@ The separate approval requirements for publication and other restricted Git acti
 
 ### Self-contained documentation update reports
 
-When updating project documentation, also include a brief, self-contained Chinese summary of
-the updated content in the final chat response. The user forwards these responses to ChatGPT
+When updating project documentation, include a brief, self-contained Chinese summary in
+the final chat response. This chat report does not require a permanent task report;
+maintain durable documentation under [AGENTS.md Documentation](../../AGENTS.md#documentation). The user forwards these responses to ChatGPT
 on the web, where local repository links and files are not available.
 
 - Explain the substantive changes, current status, important boundaries and remaining limitations.

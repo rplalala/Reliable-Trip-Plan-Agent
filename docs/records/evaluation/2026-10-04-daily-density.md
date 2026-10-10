@@ -1,179 +1,45 @@
-# Daily density scoring development acceptance — 2026-10-04
+# Daily density scoring decisions and validation
 
-Status: Implemented, offline validated and reviewed. This is an engineering
-acceptance record, not a formal benchmark, version freeze or thesis conclusion.
+2026-10-04, [Issue #52](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/52).
+Status: Implemented, offline Validated and reviewed. The
+[density contract](../../contracts/0005-quality-human-review.md#daily-density) owns
+current deductions and review wire. This is engineering policy validation, not formal
+benchmark calibration or a research conclusion.
 
-## Current approved table — Issue #52
+## Why density became scored
 
-The current authority is the final table in
-[Issue #52](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/52) and the
-[density contract](../../contracts/0005-quality-human-review.md#daily-density).
-`rtpeval_daily_density_2` supersedes the initial numeric policy recorded below.
+The Seoul pilot gave V1–V3 equal five-dimensional auxiliary scores despite different
+visit populations. The existing `<2`, `2..5`, `>5` categories were descriptive, including
+zero and six-plus visits. The approved change retained `auxiliary_total` and introduced
+`overall_total = max(0, auxiliary_total - mean_daily_penalty)`, weighting each requested
+date equally. Final/paired wire version 2 distinguishes it from old reports.
 
-| Primary POI count | Ordinary | Relaxed | Rich |
-| --- | ---: | ---: | ---: |
-| 0 | 100 | 100 | 100 |
-| 1 | 40 | 20 | 60 |
-| 2 | 0 | 0 | 0 |
-| 3 | 10 | 40 | 0 |
-| 4 | 50 | 70 | 30 |
-| 5 | 80 | 90 | 70 |
-| 6 or more | 100 | 100 | 100 |
+Independent source-linked pace/count review supports ordinary, relaxed and rich profiles,
+dated exceptions and explicit-count precedence. It does not copy planner interpretation
+or invent hard quotas from subjective pacing. Nonmonotonic uncertainty remains bounded;
+unavailable feasibility evidence cannot become an available score through a deduction.
 
-The final-table follow-up started from clean revision
-`e364111872cb05d0c9e5cc9a095274a5205f2a69`. Its public scoring and report seams
-use this table only. Explicit-count policy, source-occurrence population, mean
-deduction, original auxiliary score, wire shapes and uncertainty rules are retained.
-The ordinary 2..3 count interval now has cost bounds 0..10 and UNKNOWN exact deduction.
-Issue #52 is associated through current contracts, PROJECT.md, commit references and
-this acceptance owner. At the local acceptance checkpoint its GitHub specification
-was self-contained because code and updated documents had not yet been published.
+## Numeric policy revisions
 
-### Final-table follow-up validation
+The initial proposed ordinary/rich one-visit deductions of 20/30 were strengthened before
+implementation. The first implemented curves for counts 0..5 were ordinary
+`100,40,0,0,50,80`, relaxed `100,20,0,10,30,50`, rich `100,60,0,0,30,70`;
+all counts >=6 deducted 100. These are superseded historical values.
 
-The public ordinary three-visit test first failed with actual cost 0 versus expected
-10. After that change passed, the relaxed three-visit test failed with actual cost 10
-versus expected 40; updating its three/four/five costs then passed the 21 existing
-density tests. Additional public tests verify four/five cross-pace ordering, exact
-mixed 3/4/5-day means, the revised ordinary 2..3 UNKNOWN interval, and current profile
-propagation to final and paired reports. The focused scoring/workflow suite passed
-31 tests. In the synthetic three-visit report case, the original auxiliary score is
-37.5 for each pace, while overall scores are ordinary 27.5, relaxed 0 and rich 37.5;
-the identical V3 pair has zero adjusted delta. These are implementation fixtures.
+The final follow-up changed ordinary count 3 from 0 to 10 and relaxed counts 3/4/5
+from 10/30/50 to 40/70/90; all other entries remained unchanged. The ordinary 2..3
+uncertain population therefore has 0..10 bounds and an UNKNOWN exact deduction.
+Explicit-count rules, source populations, mean subtraction, original auxiliary score
+and wire shapes remained unchanged. The full active table is maintained in the contract.
 
-Fresh offline outputs are retained separately in ignored
-`artifacts/seoul-density-final/` (`replay.py`, `density-reviews.json`, `quality.json`,
-`pair.json`, `acceptance.json`). Native CLIs replayed twice with socket/DNS access
-prohibited and identical output bytes. Original Seoul source-file SHA-256 checks
-passed. Scores remain V1 85, V2 90, V3 100 and V3 draft/final 95→100; V0 remains
-unavailable. This one/two-visit population validates regression only, while synthetic
-three/four/five-visit cases validate the changed deductions.
+## Preserved Seoul replay observations
 
-The full backend suite passed **2524 tests, 10 skipped** in 266.78 seconds, with
-external connections blocked by existing fixtures. Ruff lint/format checks for all
-three changed Python files and diff whitespace checks passed. The implementation and
-direct tests were committed together as `20e7eff` (`fix: apply final approved density
-penalties (#52)`) before code review. The final-table review uses fixed point
-`e364111872cb05d0c9e5cc9a095274a5205f2a69`; documentation/acceptance changes remain
-uncommitted during that review. Two parallel code-review agents reported **Standards:
-0 findings; Spec: 0 findings** against the committed diff and current Issue #52 body.
-No code correction was required. Current contracts, usage guidance, project status and
-this acceptance record are committed as a final documentation group after review.
-At that checkpoint Issue #52 recorded accepted local implementation pending separate
-publication authorization. The publication acceptance below records the subsequent
-delivery; the initial implementation section preserves superseded numeric history.
+The source input/results/evidence under `artifacts/seoul/` were retained unchanged.
+Agent review quoted `Please keep the pace relaxed.`; the palace-once obligation was
+not a daily total-count request. Native report CLIs ran offline twice with fixed times,
+socket/DNS prohibited and byte-identical outputs. Original file SHA-256 checks passed.
 
-## Authorized publication acceptance - 2026-10-04
-
-The subsequent user authorization delivered only the five commits through
-`300ee039b3e2a2116a0b21f93eb09c9da2ade126`. Remote `feature/evaluation` was verified
-at that exact head; later `9039466`, `55ab8fc` and Issue #53 changes were excluded.
-[PR #54](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54) compared base
-`4aa76a956f55822d39c2b61f2d3105e8b1b33932` with that head. Two independent review
-agents reviewed the full release: Standards 0 findings and Spec 0 findings. The
-review reused the exact final-code evidence above; no tests/live runs were repeated.
-GitHub reported no CI checks, and mypy/pyright are not configured.
-
-The [review comment](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54#issuecomment-5979830137)
-was published and verified before merge. After confirming the same reviewed base/head,
-the merge used head matching and retained commit history. Observed merge commit:
-`69197cdc5a99c96ab94e15fa8b9313b11b1127c9`. PR state MERGED and Issue #52 CLOSED
-were re-read; its original acceptance criteria and publication criteria are checked.
-Local `main` was safely fast-forwarded without switching the implementation checkout
-or discarding Issue #53 changes. This delivery creates no new benchmark or freeze.
-Earlier local-only statements above describe the pre-publication checkpoint.
-
-## Initial implementation history (superseded numeric policy)
-
-Starting/review revision: `f09e4a1c0360ba2ef196bdfad03fd06d81f9af8b`.
-Implementation commit: `95048bf` (`feat: score reviewed daily itinerary density`).
-The starting tree was clean. The implementation and directly related tests were
-committed before the two-axis review; core contract, package guide, PROJECT.md and
-this acceptance record were uncommitted during review. Raw local evidence is ignored
-and is not committed. No push, branch change, provider call or planner modification was
-part of this task.
-
-## User request and decision sequence
-
-The original Seoul pilot produced equal 100-point V1-V3 five-dimensional auxiliary
-scores despite different daily visit populations. Inspection established that the
-existing `<2`, `2..5`, `>5` density categories were descriptive and contributed no
-penalty, including zero or more than five visits.
-
-The user requested penalties based on ordinary, relaxed and rich pace, explicit
-daily-count precedence and progressively greater busyness costs. The initial proposed
-ordinary/rich one-visit deductions were 20/30; the user requested stronger deductions,
-retaining relaxed one-visit cost 20, making six or more visits cost 100 and adjusting
-the rest of the curve. The initial, now superseded ordinary curve for counts 0..5 was
-`100,40,0,0,50,80`; relaxed is `100,20,0,10,30,50`; rich is
-`100,60,0,0,30,70`; every count >=6 costs 100. The
-[current contract](../../contracts/0005-quality-human-review.md#daily-density) owns the
-numeric policy and preparation schema.
-
-The approved formula preserves the original five-dimensional score and subtracts the
-equal-weight mean of requested-date deductions, clamping the result at zero. This
-implementation adds `overall_total` and preserves `auxiliary_total`, with report schema
-2 to distinguish historical output. V3 stages share one reviewed input policy and
-export both original and adjusted deltas. Matching explicit daily counts are exempt;
-confirmed mismatches receive a labelled 100-point daily count deduction. These are
-daily-policy outcomes, not synthetic named-place requirement checks.
-
-Independent pace/count interpretation is represented by quoted original-input review
-with batch/revision/input linkage, reviewer/time/origin/rationale and dated overrides.
-There is no planner interpretation or additional model call. Missing review of nonempty
-preferences is unresolved; a no-preference request defaults to ordinary. Uncertain
-counts retain nonmonotonic deduction bounds. UNKNOWN is not silently zero or an
-assumed count. Source-distinct primary occurrences are retained; same-venue repetition
-remains separately descriptive rather than silently changing the population.
-
-## Implementation and validation sequence
-
-Public test seams: density policy/scoring, final quality report, V3 pair report,
-report CLIs and downstream independent mechanism preparation.
-
-1. The initial density test failed because the module was absent. The scorer then
-   passed the worked ordinary 1/4/5 example, including exact mean `170/3`.
-2. Final and paired report tests failed on unsupported `density_reviews` arguments;
-   integrating the scorer and adjusted totals made them pass. A synthetic same-score
-   V3 one-to-two-visit repair changes the adjusted score by 20 points.
-3. The quality CLI test failed on an unrecognized review flag. Both CLIs gained the
-   flag, exact review-file hashing and canonical preparation hashing; the targeted
-   report/CLI suite passed 81 tests at that checkpoint.
-4. Downstream integration rejected the new pair schema. Mechanism preparation now
-   accepts pair report versions 1 and 2 with the existing exact source/hash checks.
-   An initial read-only test captured files before its argument helper wrote fixture
-   preparation; moving capture after preparation corrected the test, without changing
-   production replay. Both workflow tests then passed.
-5. Windows denied access to the default pytest temporary/cache locations. Tests were
-   rerun using unique ignored `artifacts/density-tests-*` base directories with the
-   cache provider disabled. No unrelated file permissions or implementation changed.
-6. The full backend suite passed **2516 tests, 10 skipped** in 299.62 seconds before
-   the implementation commit. External connections are blocked by existing fixtures.
-   Ruff lint passed for evaluator source/tests; format checks passed for all 11 changed
-   Python files; `git diff --check` passed. A broader format check reported one
-   pre-existing formatting difference in untouched `schedule_time.py`; it was preserved.
-
-The tests cover every pace/count table row, explicit counts including rest and six-plus
-days, date-specific overrides, mismatches, million-count bounds without range expansion,
-nonmonotonic uncertainty, missing reviews, stale/foreign material, provenance, adjusted
-score clamping, paired deltas and read-only replay. The test fixture's semantic review
-is synthetic; the existing network safeguard prevents real provider use.
-
-## Preserved Seoul evidence: offline replay observations
-
-Local evidence identifiers (historical paths, not fresh-clone dependencies):
-`artifacts/seoul-density/replay.py`, `density-reviews.json`, `quality.json`, `pair.json`
-and `acceptance.json`. Input/result/evidence sources remain the original ignored
-`artifacts/seoul/` files. The review quotes `Please keep the pace relaxed.` from
-original Input, with `review_origin=agent`; the palace-once request is not a daily
-total-count request.
-
-The actual native report CLIs were replayed offline twice with frozen timestamps;
-outputs were byte-identical. Socket connect, connection creation and DNS resolution
-were prohibited. SHA-256 checks across every original Seoul file confirmed no mutation.
-New output paths preserve the original pilot report, packet and completion audit.
-
-| Projection | Known daily primary counts | Original auxiliary score | Mean deduction | Overall score |
+| Projection | Daily primary counts | Auxiliary | Mean deduction | Overall |
 | --- | --- | ---: | ---: | ---: |
 | V0 final | 2,2,2,2 | unavailable | 0 | unavailable |
 | V1 final | 2,1,1,1 | 100 | 15 | 85 |
@@ -182,25 +48,45 @@ New output paths preserve the original pilot report, packet and completion audit
 | V3 draft | 2,2,2,1 | 100 | 5 | 95 |
 | V3 final primary | 2,2,2,2 | 100 | 0 | 100 |
 
-Observed paired adjusted delta is **+5**; original auxiliary delta remains zero.
-V0 still has unresolved source/evidence applicability from the original pilot; no
-density rule manufactures a usable total. This shows the requested scoring mechanism
-on one existing request, not general version superiority or controlled Repair efficacy.
+The paired overall delta is **+5**, auxiliary delta zero. V0 remains unavailable under
+the pilot's original applicability uncertainty. Final-table replay preserved these
+one/two-visit results; only synthetic 3/4/5 cases exercise the revised deductions.
+Local evidence: `artifacts/seoul-density/` and `artifacts/seoul-density-final/`, containing
+`replay.py`, `density-reviews.json`, `quality.json`, `pair.json`, `acceptance.json`.
+These are historical identifiers, not fresh-clone dependencies.
 
-## Review and remaining boundaries
+## Validation checkpoints
 
-Two parallel code-review agents reviewed the committed implementation against the
-starting revision and original user request. Standards reported zero findings; Spec
-reported zero code findings and one pending-document inconsistency: a later contract
-paragraph still named pair report wire 1. The final documentation now names wire 2 and
-retains wire 1 as historical mechanism-input compatibility. No code correction commit
-was required. Final documentation is committed separately after review, preserving the
-original implementation commit. Final documentation diff checks passed; the reviewers
-did not repeat the full test suite.
+Tests cover table rows, rest/six-plus explicit counts, dated overrides, mismatches,
+large-count uncertainty without range expansion, missing/stale reviews, exact means,
+clamping, paired deltas, read-only CLIs and downstream mechanism compatibility with
+pair wire 1/2. The initial integration corrected downstream rejection of pair version 2.
 
-Independent semantic review is still necessary for free-text pace/count requests;
-quote validation checks provenance, not the correctness of a reviewer's meaning.
-Counts are source occurrences, not unique canonical venues. Other quality metrics,
-human preference rankings, mechanism observations, unknown evidence and original live
-costs remain separate. The numeric deductions are user-directed engineering policy;
-no formal benchmark calibration or final research conclusion was performed.
+| Revision | Observed gate | Scope |
+| --- | --- | --- |
+| Initial policy, `95048bf`; base `f09e4a1c0360ba2ef196bdfad03fd06d81f9af8b` | **2516 passed, 10 skipped**, 299.62 seconds | Backend; earlier report/CLI subset **81 passed** |
+| Final table, `20e7eff`; base `e364111872cb05d0c9e5cc9a095274a5205f2a69` | **2524 passed, 10 skipped**, 266.78 seconds | Backend; density tests **21 passed**, focused scoring/workflow **31 passed** |
+
+A synthetic three-visit report retains auxiliary 37.5, with overall ordinary 27.5,
+relaxed 0 and rich 37.5; an identical V3 pair has zero delta. The changed ordinary and
+relaxed tests failed with old values before correction. Gates overlap, not add together.
+Ruff/format/diff checks passed for changed files; an untouched `schedule_time.py`
+formatting difference was preserved. Both review axes found no code findings. Initial
+review also identified a stale pair-wire-1 documentation sentence, corrected to wire 2
+with historical compatibility retained.
+
+## Publication and limits
+
+[PR #54](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54) delivered the
+five-commit scope through `300ee039b3e2a2116a0b21f93eb09c9da2ade126` against
+`4aa76a956f55822d39c2b61f2d3105e8b1b33932`, excluding later Issue #53 work.
+[Independent release review](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/54#issuecomment-5979830137)
+had zero findings on both axes. Merge `69197cdc5a99c96ab94e15fa8b9313b11b1127c9`
+closed #52. Existing exact-code validation was reused; hosted CI had no checks and
+mypy/pyright were not configured.
+
+Quote validation proves source linkage, not semantic correctness of pace/count review.
+Counts are source occurrences, not unique venues. Human preference, mechanisms, unknown
+facts and original live costs remain separate. One-request replay establishes no
+version superiority or controlled Repair efficacy; original pilot artifacts were not
+rewritten by this scoring change.

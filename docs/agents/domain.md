@@ -29,9 +29,9 @@ conflicts with recorded decisions explicitly rather than silently overriding the
 
 ## Record admission and topic ownership
 
-Choose a destination by purpose before writing. This section owns admission and deduplication
-rules; [AGENTS.md](../../AGENTS.md) and its linked policies own task approval,
-publication, Git and research limits.
+Use [AGENTS.md Documentation](../../AGENTS.md#documentation) for maintenance principles.
+This section defines project-specific ownership and evidence admission; AGENTS.md and
+its linked policies retain task approval, publication, Git and research limits.
 
 | Material | Owner | Admission boundary |
 | --- | --- | --- |
@@ -60,20 +60,17 @@ the existing relevant topic/event owner before creating a file. File length or t
 alone does not justify another record. Existing historical records may retain incomplete metadata
 with that limitation identified; never fabricate missing facts to make them meet the new gate.
 
-Use one full historical account per event. If both public evidence and local research context
-are needed, keep the shareable account in records and let local notes reference it plus distinct
-private material. Promotion from local notes produces a sanitized engineering record and replaces
-copied shareable prose in the local note with a pointer; retain unique private context. Raw evidence
-stays local. Maintaining tracked documents does not authorize a push, Issue publication or formal run.
+Keep shareable historical conclusions in their topic record, with local research notes
+adding only distinct private context. Promotion from local notes produces a sanitized
+public account; original evidence remains unchanged in its existing location. Published
+explanations must contain enough context to understand results without local artifacts.
 
-For deduplication, choose an existing dated event owner and keep its complete shared account.
-Replace repeated accounts elsewhere with an event-specific summary and a link to that historical
-owner; retain each version's distinct approval, result and limitation. Preserve dates, revisions,
-rejected/superseded decisions, failure/retest order and old section anchors. Current docs cannot
-replace the evidence of an older decision. Common archive warnings may stay at each reader entry.
-Keep a long record when its unique evidence is useful; neither length nor current implementation
-coverage alone is a deletion criterion. Before retiring a record, place still-valid technical rules
-in their current owner and redirect dependencies to the retained history or accessible revision.
+When consolidating an event, retain consequential decisions, results, limitations and
+necessary evidence identifiers. Preserve chronology only where it affects interpretation,
+and keep compatibility paths or anchors with actual reference dependencies. Historical
+rules need dated context; still-supported formats and replay interfaces remain technical
+contracts. Missing or overwritten evidence must be explicit. Maintaining records does
+not authorize a push, Issue publication or formal run.
 
 ## Thesis Research Archive
 
@@ -85,7 +82,7 @@ When preserving, promoting or deduplicating a record, apply the
 
 For normal development tasks:
 
-- Proactively preserve meaningful failure diagnoses, architecture decisions, rejected approaches and development validation results in the appropriate existing record owner under those admission rules, without requesting separate approval. Read only the relevant archive files needed to place or update the record. Use one full record per event; local notes may reference a public record and add distinct research context.
+- Proactively preserve meaningful failure diagnoses, architecture decisions, rejected approaches and development validation results in the appropriate existing record owner under those admission rules, without requesting separate approval. Read only the relevant archive files needed to place or update the record. Integrate lasting observations into the relevant topic summary; local notes may add distinct research context.
 - Do not use thesis notes to determine current requirements or architecture.
 - Historical notes may contain rejected, superseded, or outdated designs and must never override current project files.
 - Archive updates are part of the current development task, not a separate stage requiring approval. Summarize any archive updates in the final Chinese report.
@@ -94,7 +91,7 @@ For all archive updates:
 
 - record the date, relevant code revision and uncommitted-change context, evidence locations, and validation scope or limitations;
 - distinguish observed facts from hypotheses and inferences;
-- preserve historical sequence, including rejected and superseded approaches;
+- preserve key causal relationships, including consequential rejected or superseded approaches;
 - distinguish design status such as `Proposed`, `Accepted`, `Implemented`, `Validated`, and `Frozen`;
 - do not invent missing prompts, outputs, logs, latency, tokens, costs, or rationale;
 - do not describe development smoke tests as formal benchmarks unless they were explicitly conducted as such.

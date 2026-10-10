@@ -6,23 +6,6 @@ Shared [artifact/time](0001-evaluation-artifacts.md), [identity/snapshot](0002-i
 and [occupancy](0003-requirement-schedule.md#occupancy) contracts retain their ownership.
 The evaluator applies its emitted frozen rules rather than reading moving planner thresholds.
 
-<a id="rtpeval-opening-contract"></a>
-<a id="rtpeval-opening-contract--opening-evaluator-contract"></a>
-<a id="rtpeval-opening-contract--inputs-and-independence"></a>
-<a id="rtpeval-opening-contract--code-informed-evidence-boundary"></a>
-<a id="rtpeval-opening-contract--proposed-processing-order"></a>
-<a id="rtpeval-opening-contract--interval-and-timezone-semantics"></a>
-<a id="rtpeval-opening-contract--evidence-states-and-metrics"></a>
-<a id="rtpeval-opening-contract--accepted-decisions"></a>
-<a id="rtpeval-opening-contract--documentation-examples"></a>
-<a id="rtpeval-opening-contract--future-checks"></a>
-<a id="rtpeval-opening-contract--special-date-clarification-example"></a>
-<a id="rtpeval-opening-contract--required-unknown-explanation"></a>
-<a id="rtpeval-opening-contract--ticket-06-preflight-clarification--2026-10-02"></a>
-<a id="rtpeval-opening-contract--ticket-06-offline-implementation-wire--2026-10-02"></a>
-<a id="opening-routes"></a>
-<a id="opening-evaluator-contract"></a>
-
 <a id="opening"></a>
 
 ## Opening scope, evidence and verdicts
@@ -236,14 +219,6 @@ offline/synthetic; separately authorized local database/native checks are record
 acceptance and acquire no provider evidence. No provider availability, future factual certainty or booking/access
 claim follows from this implementation. V0-V3 planner paths remain unchanged.
 
-<a id="rtpeval-route-contract"></a>
-<a id="rtpeval-route-contract--leg-records-and-adjacency"></a>
-<a id="rtpeval-route-contract--accepted-mode-and-buffer-decisions"></a>
-<a id="rtpeval-route-contract--corrected-meaning-of-the-users-route-window"></a>
-<a id="leg-records-and-adjacency"></a>
-<a id="accepted-mode-and-buffer-decisions"></a>
-<a id="corrected-meaning-of-the-users-route-window"></a>
-
 <a id="route-wire"></a>
 
 ## Route preparation and wire
@@ -253,7 +228,7 @@ route_reviews=None, coordinate_evidence=None, *, paired=False)` returns immutabl
 `RoutePreparation`. `score_routes` additionally takes a snapshot directory and optional
 `expected_plan`, returning immutable `RouteResult`. `to_dict()` exports independent copies.
 Schemas are `rtpeval_route_preparation_1`, `rtpeval_route_report_1`; rules are
-`rtpeval_route_rules_1`. Preparation selects sources/intervals before observing route results
+`rtpeval_route_rules_2` (historical reports retain rules 1). Preparation selects sources/intervals before observing route results
 and emits both `route_contexts` and a complete Ticket 04 evidence plan. No provider is called.
 
 Reuse existing rtpeval_schedule_context_1 and rtpeval_occupancy_reviews_1 unchanged.
@@ -280,14 +255,16 @@ field/quote/occurrence/Unicode-offset validation. Extraction/review is supplied 
 preparation; the evaluator does not parse unrestricted prose or run an LLM.
 
 rtpeval_route_coordinates_1 requires batch_id, nonempty revision and records. Each
-unique adopted canonical place_id record has latitude/longitude (strict finite numeric
+unique independently associated place_id record has latitude/longitude (strict finite numeric
 values in range), lowercase 64-hex evidence_sha256, independent source_ref, reviewer_ref
 and offset-aware reviewed_at. Never borrow planner locations. This supplied review is
 a trust boundary: the hash links evidence, but the evaluator does not certify coordinate
 facts or acquire the referenced source. Exact coordinate/hash correspondence gates
 query applicability. Missing coordinates retain pending contexts and UNKNOWN.
 
-### Accepted snapshot-coordinate extension (2026-10-03)
+<a id="accepted-snapshot-coordinate-extension-2026-10-03"></a>
+
+### Snapshot-derived coordinates
 
 The implemented deterministic offline bridge provides `prepare_snapshot_coordinates(intake,
 identity_report, snapshot_directory)` and optional `identity_snapshot_directory` on route
@@ -302,7 +279,10 @@ extension supplies no journey observations, acquisition budget or new scoring th
 
 Replay the identity-phase snapshot through existing safe-path/raw-hash validation, recompute
 its identity plan from the supplied intake, and verify that its derived identity evidence
-matches the adopted report. Only exact adopted canonical IDs may contribute coordinates.
+matches the replayed report. Only exact verified physical associations may contribute
+coordinates under current policy; historical reports retain canonical-only eligibility.
+See [physical association](0002-intake-identity-usage.md#identity) for claim correctness
+versus evidence eligibility.
 Preserve the snapshot manifest hash, original response hash, request key, candidate pointer
 and retrieval timestamp. Automatic extraction is source preparation, not human review:
 do not invent reviewer names or review timestamps. Return immutable source-derived coordinate
@@ -349,7 +329,7 @@ root-level tool paths are historical identifiers, not current entry points.
 schedule_context=None, occupancy_reviews=None, route_reviews=None,
 details_snapshot_directory=None, legacy=False, region_code="KR")` returns immutable `RouteRequestPackage`, schema
 `rtpeval_v0_route_requests_2`. It replays the original V0/#66 material and the exact
-current `versioned_api_identity_2` report before using the existing occupancy/window preparation. It keeps
+current version-scoped identity report before using the existing occupancy/window preparation. It keeps
 every selected V0 leg, source endpoints/dates/mode/estimate and continuous window,
 identity blockers and coordinate readiness. Native scorers and V0-V3 planners are unchanged.
 
@@ -363,13 +343,17 @@ return `needs_material_correction` with no partial requests. The package records
 legacy selection, report origin and presence of a current V0 model result.
 
 Per-leg `identity_endpoints` retain original claims, canonical identity (or null), candidate
-correspondence and grounding verdicts. `identity_blockers` expose the failed/unresolved
-endpoint reason and verdict. Confirmed address errors retain FAIL and null endpoints;
-candidate coordinates cannot repair them. The separate route verdict remains UNKNOWN
+correspondence, physical association and grounding verdicts. `identity_blockers`
+expose endpoints without verified physical association. A confirmed address error
+retains grounding FAIL and null canonical adoption; independently verified physical
+association may still supply its endpoint. Candidate presence or coordinates alone
+cannot establish that association. The separate route verdict remains UNKNOWN
 without journey evidence. `eligible_endpoint_occurrences` counts non-null directed endpoint
 occurrences; `eligible_endpoint_venues` counts their unique IDs. Neither implies all legs
 are identity-eligible, coordinate-ready or provider-supported. Unknown identity cannot be
 replaced by historical adoptions to enlarge the request inventory.
+
+### Provider profiles and applicability
 
 The default preparation retains the KR provider profile checked 2026-10-05; it does
 not infer geographic support from names. The
@@ -389,7 +373,7 @@ independent proof that coordinates lie in Australia. The official coverage table
 Australian WALK available with good coverage/quality. WALK can be `ready_for_approval`
 only after current identity replay, independent coordinates, a resolved continuous
 window and all other leg checks pass. Missing coordinates/windows remain conditional;
-failed/unresolved identity stays blocked. Readiness leaves factual feasibility UNKNOWN.
+unverified physical association stays blocked. Readiness leaves factual feasibility UNKNOWN.
 AU TRANSIT retains the unverified-coverage and original-departure conditions. DRIVE
 remains unsupported by this WALK/TRANSIT acquisition path despite national driving
 coverage; there is no mode fallback. Unsupported region values are rejected.
@@ -402,7 +386,9 @@ occurrence. Duplicate links cannot promote a blocked/conditional query to ready.
 AU selection nor preflight creates live authority or actual route evidence. See the
 [Sydney offline acceptance](../records/evaluation/routes.md#sydney-offline-route-preparation-2026-10-07).
 
-Only adopted endpoint canonical IDs enter the venue inventory. Exact IDs deduplicate
+### Coordinates, directed requests and replay
+
+Only independently associated endpoint IDs enter the venue inventory. Exact IDs deduplicate
 Details while preserving every reference link. Replayed saved independent coordinates
 retain raw hashes, pointers, request keys and timestamps. Reused Details additionally
 require requested/returned canonical-ID equality. Missing coordinates may produce
@@ -411,7 +397,7 @@ do not automatically backfill. Planner/model points are never admitted.
 
 Supplied Details must use the package's exact `details_plan`. Offline snapshot replay
 checks its intake/identity link, plan, safe paths, raw hashes and zero-retry attempt
-ledger. Only exact requested/returned adopted IDs and strict finite numeric coordinates
+ledger. Only exact requested/returned associated IDs and strict finite numeric coordinates
 in range contribute. Evidence later than preparation is invalid. Unavailable/bad
 responses stay diagnostic without proposing retries. An invalid plan/source rejects the
 whole package rather than yielding partial requests.
@@ -422,6 +408,8 @@ coordinates/evidence and mask determine exact request keys; duplicate queries re
 leg links rather than collapsing occurrences. Every leg retains `UNKNOWN` without
 independent journey evidence; confirmed same-canonical legs retain native `N/A`.
 `ready_for_approval`, `conditional` and `blocked` describe preparation, never authorization.
+
+### Reference prices and preflight limits
 
 Masks/SKUs are frozen: Details `id,location` uses Place Details Essentials; 1x1 Compute
 Route Matrix uses `originIndex,destinationIndex,status,condition,distanceMeters,duration,fallbackInfo`
@@ -451,37 +439,11 @@ Changed readiness needs a regenerated inventory and separate budget approval. La
 authorized execution uses the current session's execution child under the
 [smoke policy](../agents/smoke-tests.md), `gpt-6.1-sol` / `medium`.
 
-The [current-policy acceptance](../records/evaluation/routes.md#versioned-v0-route-readiness-2026-10-06)
-records the zero-ready real package and synthetic revised-policy demonstration. The
-[historical preparation acceptance](../records/evaluation/routes.md#v0-route-request-preparation-2026-10-05)
-retains the older four-leg inventory and limitations; the [package guide](../../backend/evaluation/README.md#v0-route-requests)
-owns CLI invocation and exit codes.
-The subsequent [accepted-identity offline refresh](../records/evaluation/routes.md#accepted-v0-identity-route-refresh-2026-10-07)
-records four identity-eligible, coordinate-ready legs from #85 while preserving the
-same provider limitations and UNKNOWN feasibility. It adds no acquisition authority
-or new provider/price verification to this contract.
-
-<a id="rtpeval-route-contract--route-evaluator-contract--draft"></a>
-<a id="rtpeval-route-contract--purpose-and-inputs"></a>
-<a id="rtpeval-route-contract--checked-repository-contracts"></a>
-<a id="rtpeval-route-contract--departure-and-feasibility-semantics"></a>
-<a id="rtpeval-route-contract--evidence-and-result-states"></a>
-<a id="rtpeval-route-contract--explanatory-examples"></a>
-<a id="rtpeval-route-contract--future-verification"></a>
-<a id="rtpeval-route-contract--accepted-five-minute-route-tolerance"></a>
-<a id="rtpeval-route-contract--provider-fallback-clarification--official-documentation-checked"></a>
-<a id="rtpeval-route-contract--returned-route-evidence-policy-accepted--2026-09-28"></a>
-<a id="rtpeval-route-contract--accepted-default-departure-selection--2026-10-02"></a>
-<a id="rtpeval-route-contract--accepted-hard-protection-boundary--2026-10-02"></a>
-<a id="rtpeval-route-contract--accepted-decisive-failure-and-technical-preflight-closure--2026-10-02"></a>
-<a id="rtpeval-route-contract--executable-offline-route-checkpoint--2026-10-02"></a>
-<a id="route-evaluator-contract"></a>
-<a id="departure-and-feasibility-semantics"></a>
-<a id="accepted-five-minute-route-tolerance"></a>
-<a id="provider-fallback-clarification--official-documentation-checked"></a>
-<a id="returned-route-evidence-policy-accepted--2026-09-28"></a>
-<a id="accepted-default-departure-selection--2026-10-02"></a>
-<a id="executable-offline-route-checkpoint--2026-10-02"></a>
+The [package guide](../../backend/evaluation/README.md#v0-route-requests) owns CLI
+invocation and exit codes. The [route history](../records/evaluation/routes.md) records
+October 5–8 KR/AU preparations and executions, including zero-ready packages,
+identity refreshes and provider-specific UNKNOWNs. Those dated inventories do not
+establish new acquisition authority or update the frozen coverage/price references.
 
 <a id="route-verdicts"></a>
 
@@ -543,8 +505,6 @@ affected days. No route/overlap double weighting, auxiliary arithmetic, V3 repai
 or formal comparison is calculated. Synthetic development tests do not establish real
 provider availability, historical/future travel certainty or benchmark outcomes.
 
-
-
 Nominal caps are independently applied product references, not planner verification verdicts.
 The 300-second evaluation tolerance does not change planner thresholds or guarantee provider
 error bounds. WALK's 2-km and motor 5-km geographic discovery filters are not provider route
@@ -557,28 +517,6 @@ next-visit gap it also passes the separate five-minute schedule tolerance, but i
 gap schedule FAIL is decisive. A protection ending the same fragment permits no grace.
 DRIVE duration 20 plus reserve 10 needs 30 minutes; the reserve is not added to provider burden.
 These are rule illustrations, not measured provider outcomes or benchmark cases.
-
-<a id="inputs-and-independence"></a>
-<a id="code-informed-evidence-boundary"></a>
-<a id="proposed-processing-order"></a>
-<a id="interval-and-timezone-semantics"></a>
-<a id="evidence-states-and-metrics"></a>
-<a id="accepted-decisions"></a>
-<a id="documentation-examples"></a>
-<a id="future-checks"></a>
-<a id="special-date-clarification-example"></a>
-<a id="required-unknown-explanation"></a>
-<a id="ticket-06-preflight-clarification--2026-10-02"></a>
-<a id="ticket-06-offline-implementation-wire--2026-10-02"></a>
-<a id="purpose-and-inputs"></a>
-<a id="checked-repository-contracts"></a>
-<a id="evidence-and-result-states"></a>
-<a id="explanatory-examples"></a>
-<a id="future-verification"></a>
-<a id="accepted-hard-protection-boundary--2026-10-02"></a>
-<a id="accepted-decisive-failure-and-technical-preflight-closure--2026-10-02"></a>
-
-<a id="history"></a>
 
 ## Commands, code and decision history
 

@@ -5,6 +5,10 @@ V0 structured declarations added 2026-10-05.
 
 ## Scheduled activities and references
 
+Output role accounting separates scheduled identities, unlinked activities, unused supply,
+independently acquired references and unarranged REQUIRED identities. Policy completion and
+goal progress are diagnostic observations, distinct from real-world feasibility.
+
 `itinerary_2` separates dated/timed primary activities from optional unscheduled Nearby
 references. References have no scheduled occupancy, planned cost or booking implication;
 they do not fulfill a required visit or increase primary-visit counts. Empty reference
@@ -31,13 +35,9 @@ costs; raw model objects and wire captures remain unchanged. This is prospective
 generation behavior, not retroactive correction of saved outputs or independent factual
 verification. The evaluator still judges immutable submitted claims against fresh evidence.
 
-Stable within-day ordering is structural normalization. It does not repair overlap,
-move day groups, invent times or establish feasibility. Diagnostics remain associated
-with the same activity after ordering. Post-primary Nearby does not mutate accepted
-primary dates, identity, ordering, costs or requirement decisions.
-
 Normalization stably sorts each existing day's activities by start time, preserving ties;
-it does not reorder day groups. Cost-projection diagnostic paths follow the same activities
+it does not reorder day groups, repair overlap, invent times or establish feasibility.
+Cost-projection diagnostic paths follow the same activities
 through the permutation. Raw model captures stay unchanged. This output-source boundary,
 rather than standalone schema construction, owns normalization.
 
@@ -48,7 +48,8 @@ rather than standalone schema construction, owns normalization.
 | V0 | Explicitly estimated model transport activities | No Routes request; estimates remain unverified |
 | V1-V3 | Application-owned `transfers` for real adjacencies | Applicable provider facts plus separately represented reserves |
 
-V0 transport activities can carry `transport: {mode, from_activity_id, to_activity_id}`.
+V0 estimates only same-day transport between adjacent different venues; it invents no
+unspecified hotel or cross-day journey. V0 transport activities can carry `transport: {mode, from_activity_id, to_activity_id}`.
 Mode is `WALK`, `TRANSIT`, `DRIVE` or null; endpoints are nonempty activity IDs.
 The new V0 provider schema requires the nullable field on every activity. Its prompt
 requires an object on transport activities and null elsewhere, directed between
@@ -146,28 +147,6 @@ Implementation owners: [itinerary schema](../backend/app/schemas/itinerary.py),
 See [ADR: transport ownership](adr/0002-transport-ownership.md) and
 [validation and repair](0005-validation-repair%28v3%29.md).
 
-
-## Identity, ledger and reference acceptance
-
-Named primary source IDs resolve against authorized main supply; unresolved names do not
-gain identities through fuzzy matching. Truly generic activities may have null identity.
-Output role accounting separates scheduled identities, unlinked activities, unused supply,
-independently acquired references and unarranged REQUIRED identities. Unused supply is not
-the reference list. References have no scheduled time, booking or committed cost.
-
-Nearby uses actual scheduled canonical anchors with known supply coordinates. Representative
-anchor-area reuse is nontransitive and bounded; each accepted result must also be close to
-its actual anchor. This can leave later days uncovered. Discovery uses its narrow allowlisted
-fields and independent cache/budget, validates identity/type/location/exclusions and deduplicates
-before stable distance/identity ordering and anchor rotation. No additional Details, Profile,
-Routes, web or model work is authorized for references. Ordinary failure yields partial/empty
-references while preserving primary dates/times/order/identity/cost; cancellation propagates.
-
-V0 may generate model-knowledge references with null provider IDs and estimated transport
-between adjacent different venues on the same day. It invents no unspecified hotel or
-cross-day journey and adds no tool call. Policy completion and goal progress are diagnostic
-observations, distinct from real-world feasibility.
-
 ## Route evidence and projection details
 
 The baseline route catalogue preserves all directed matrix facts, including not-observed
@@ -185,6 +164,11 @@ ambiguous costs remain null, with no model retry or promotion to verified prices
 retains nonnegative money and strict validation of unrelated fields.
 
 ## Nearby acquisition details
+
+Nearby uses actual scheduled canonical anchors with known supply coordinates. Its bounded
+area budget can leave later days uncovered. It performs no additional Details, Profile,
+Routes, web or model work. Ordinary failure yields partial/empty references while preserving
+primary dates, times, order, identity, costs and requirement decisions; cancellation propagates.
 
 Anchors sort by requested date, start time and activity ID, then deduplicate canonical places.
 Representative reuse compares each anchor directly with an existing representative; chains

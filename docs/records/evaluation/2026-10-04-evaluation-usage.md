@@ -1,16 +1,9 @@
-# Evaluation offline CLI usage acceptance — 2026-10-04
+# Offline evaluation CLI workflow validation
 
-Tracker: [Issue #49](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/49).
-Status: Offline workflow checks validated; fixed-base dual-axis review completed.
-The user approved this separate usage task after Tickets 01-12 and parent #12 were closed.
-Starting review fixed point: `b003c49e7f79c9d38dd8cf896673fcf1dca4ee07` on
-`feature/evaluation`, with clean tracked worktree/index. No production module is changed.
-Unrelated concurrent documentation commits `65f151e` and `0d616c5` appeared during
-execution and are excluded from the task review. The task's committed implementation is
-`c877b6ec9dc78e4803fb7f6df10a4a31bbd8f2ed`
-(`test: validate offline evaluation CLI usage (#49)`).
+2026-10-04. Status: Offline Validated and independently reviewed. This record summarizes
+public workflow behavior and the separate renderer defect found during release review.
 
-## Scope and observed behavior
+## Public workflows and observed outcomes
 
 The new subprocess tests exercise public `python -m backend.evaluation...` commands,
 reusing the existing synthetic development fixtures. They retain input JSON, snapshots,
@@ -38,107 +31,62 @@ examples intentionally process successfully. Synthetic capture occurrences/verdi
 ranking answers demonstrate linkage and reporting only; they are not actual recorded model
 submissions, an independent human truth audit, or research observations.
 
-## Validation sequence
+## Validation and real renderer evidence
 
-The first slice initially failed at pytest setup because the parent of the requested
-`--basetemp` directory did not exist. Creating that parent allowed the intake/quality/resource
-slice to pass. Later new-test failures and inspection exposed mistaken assertions: `accepted` versus
-`complete`, `resolved` versus `resolved_conflict`, the target's `independent_outcome` field,
-the intake's `material_diagnostics` field, and per-run audit units rather than global merging.
-The assertions were corrected against existing public contracts and observed JSON.
+Implementation `c877b6ec9dc78e4803fb7f6df10a4a31bbd8f2ed` was reviewed from
+`b003c49e7f79c9d38dd8cf896673fcf1dca4ee07` for [Issue #49](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/49).
+The final synthetic usage gate selected the real built renderer: **9 passed in 92.25
+seconds**, with 40 module processes (38 exit 0; two intended invalid-input cases exit 2).
+Full backend: **2490 passed, 10 skipped in 319.18 seconds**. Existing local PostgreSQL
+opt-ins and host symlink checks skipped; no live-service acceptance is inferred.
+Ruff, formatting, diff checks and the TypeScript/Vite blind-review build passed.
 
-An attempted four-final report using the paired snapshot exited 2 with
-`unsupported_snapshot_scope`. This was correct existing behavior. The examples now use
-their separate final-only and paired scopes, and the guide makes the distinction explicit.
-These were acceptance-harness/material mistakes; no production defect is inferred.
+Embedded renderer JS/CSS matched the build bytes:
+`cab999fb2c18f5979d4a033ea4f095f61c95727817d57925d4f9b12ade5d3a7c` and
+`14c23164703086562b4fabebf5d845ede3c7713ea76058ded3e3eba5eb97b71d`.
+The harness prohibits external connections, permits event-loop loopback and uses
+structural synthetic tokenization, making no real token measurement. A paired snapshot
+correctly failed final-only quality scoring with `unsupported_snapshot_scope`; the
+examples now use distinct final/paired scopes. Other mistaken fixture assertions were
+corrected against public contracts, without changing production behavior.
 
-An intermediate complete packet passed **9 tests in 83.71 seconds**, using the real built
-renderer and the existing local tokenizer vocabulary. The final regression harness also
-uses synthetic tokenization so a clean checkout needs no tokenizer download, and tightens
-the invalid-material diagnostic assertions.
+Independent Standards/Spec reviews found no blocking issues. The PowerShell 7 JSON-saving
+example was verified as UTF-8 without BOM using accented text. Local packets and logs
+are under `artifacts/evaluation-usage/`, including `accepted-packet/`, `final-packet/`,
+`usage-gate.txt`, `backend-gate.txt` and per-test `cli-output/`. The
+[package guide](../../../backend/evaluation/README.md#start-with-the-synthetic-usage-packet)
+provides a reproducible demonstration; published observations above stand independently
+of those ignored paths.
 
-Final checks before the implementation commit:
+## Asynchronous import correction during release review
 
-- Usage file with real renderer selected: **9 passed in 92.25 seconds**. Forty actual
-  module processes completed: 38 exited 0 and the two intended invalid-input examples
-  exited 2. No external-network block appeared in their retained stderr.
-- Full backend gate: **2490 passed, 10 skipped in 319.18 seconds**. The skipped checks
-  include guarded local PostgreSQL cases and the host symlink-privilege check;
-  this was not a live-service acceptance.
-- Ruff check and format check on the new file passed; `git diff --check` passed.
-- `npm --prefix frontend run build:blind-review` passed its TypeScript check and Vite build.
-  Rebuilt JS and CSS were confirmed verbatim in the acceptance packet's HTML. Their byte
-  SHA-256 values were `cab999fb2c18f5979d4a033ea4f095f61c95727817d57925d4f9b12ade5d3a7c`
-  and `14c23164703086562b4fabebf5d845ede3c7713ea76058ded3e3eba5eb97b71d` respectively.
+[PR #50](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/50) reviewed the
+complete Evaluation/documentation release from `ecb01cc67be2d5b659747444756d606a6b2485bb`
+at initial head `59adc5ea63ba33f9ab70c7111cac5d7076feecab`. Concurrent documentation
+was incorporated separately, without overwriting it.
 
-Standards and Spec reviewed the committed implementation independently against the original
-fixed point, excluding the unrelated concurrent documentation commits. Both axes reported
-zero blocking findings; Standards found no documented violation or required smell cleanup.
-Spec also checked the actual packet and real embedded renderer. Its optional suggestion
-was to assert more non-overlap count deltas in addition to the existing exact grounding
-delta. The current packet already preserves those counts, and the guide explains that
-resolving one conflict does not establish whole-itinerary PASS. No correction was required.
-No production module changed, and there is no review-fix commit to invent or absorb.
+Standards found that delayed FileReader imports could lose a revision saved while reading
+or restore the prior task's form after navigation. Failing regressions preceded `8d3b387`,
+which uses the latest saved answers and selected task at completion, preserving Clear
+invalidation. This correction affects only the standalone renderer/component tests.
 
-Final documentation updates add the executable demo and report-reading table to the existing
-package guide, use PowerShell 7 UTF-8 JSON saving instead of encoding-dependent redirection,
-index this record, and record bounded usage acceptance in PROJECT.md. Local document links
-were checked against tracked or current-task intended files; none were missing or depended
-on ignored material. `git diff --check` passed. Local thesis notes retain a pointer and
-private evidence identifiers rather than duplicate this record.
-The PowerShell 7 saving example was also checked with an accented English JSON string;
-the resulting bytes decoded as UTF-8, had no BOM and parsed successfully.
+| Corrected checkpoint | Observed result |
+| --- | --- |
+| Frontend suite | **100 passed / 13 files**; affected component **14 passed** |
+| Real-renderer usage gate | **9 passed**, 137.05 seconds; 40 CLI subprocesses |
+| Static/build checks | Lint, TypeScript/product build and isolated blind build passed |
 
-Local evidence identifiers (not publication dependencies):
-`artifacts/evaluation-usage/first-slice-2/`, `second-slice/`, `third-slice/`,
-`accepted-packet/`, `final-packet/`, `usage-gate.txt`, `backend-gate.txt` and their
-per-test `cli-output/` folders.
-The [package guide](../../../backend/evaluation/README.md#start-with-the-synthetic-usage-packet)
-contains the reproducible demonstration command and report-reading examples.
+An interrupted rerun without selecting built assets is not passing evidence. Backend
+code was unchanged, so its earlier 2490/10 gate was reused rather than rerun. Hosted
+CI had no checks, and mypy/pyright were not configured. Release packets/logs are local
+under `artifacts/git-delivery/`; the actual merge state belongs to the PR timeline,
+not this pre-merge checkpoint.
 
-## Boundaries
+## Limits
 
-No live Google/LLM/database run, real trip generation, new API fee, budget increase,
-formal corpus construction, statistical comparison, thesis conclusion or version freeze
-is authorized or claimed. Source contracts, V0-V3 execution paths and production behavior
-remain unchanged. The existing native browser acceptance is reused; package generation
-does not establish a new native storage/download acceptance result. There is no new universal
-CLI, UI or evidence acquisition system. Publication needs separate approval; new commits
-and documents stay local until an authorized push.
-
-## Authorized PR delivery and import correction - 2026-10-04
-
-The later delivery authorization covers normal push of `feature/evaluation`, PR creation,
-independent Standards/Spec review, publication of engineering scores and merge after
-blocking findings are resolved. [PR #50](https://github.com/rplalala/Reliable-Trip-Plan-Agent/pull/50)
-contains the complete Evaluation and tracked-documentation release against `main`.
-The initial reviewed head was `59adc5ea63ba33f9ab70c7111cac5d7076feecab`;
-the fixed base was `ecb01cc67be2d5b659747444756d606a6b2485bb`.
-Concurrent documentation was subsequently committed separately as `02e11e3` and added
-to the delivery review; it was not staged or overwritten by the delivery task.
-
-Standards review found an asynchronous answer-import defect: after file reading starts,
-saving another revision could be lost when the older answer snapshot was imported.
-Navigation during reading could also restore the previous task's form into the selected
-task. Each delayed-FileReader regression failed before its respective correction and
-passed afterward. Separate correction commit `8d3b387` reads the latest saved answers
-and current task at completion, retaining the existing Clear invalidation behavior.
-This changes only the standalone blind-review renderer and its component tests.
-
-Validation at the corrected code revision:
-
-- Frontend suite: **100 passed across 13 files**; the affected component has 14 passing tests.
-- Frontend lint, TypeScript/product build and isolated blind-review build passed.
-- The rebuilt renderer was selected explicitly for the offline usage suite:
-  **9 passed in 137.05 seconds**, with 40 actual CLI subprocesses. No live provider,
-  model or database execution was introduced. An earlier rerun without selecting the
-  built renderer was interrupted and is not counted as passing evidence.
-- The unchanged backend implementation reuses the earlier **2490 passed / 10 skipped**
-  full-suite result. Ruff and release diff checks passed. Mypy/pyright are not configured.
-
-Delivery logs and generated packets are ignored local evidence under
-`artifacts/git-delivery/`; this record and the PR discussion are the shareable summary.
-Hosted CI returned no runs or checks, so it is not described as passing CI.
-The final review outcome and actual merge revision are recorded in the PR timeline;
-this pre-merge record does not claim a merge before it occurs. Engineering acceptance
-does not establish a formal comparison, research conclusion or version freeze.
+These synthetic workflows demonstrate linkage, reporting and successful processing,
+including UNKNOWN and deliberate regression. They are not actual model submissions,
+human truth audits, real rater sessions or research observations. No production module,
+planner behavior or scoring policy changed in the usage task. Prior user-reported native
+storage/download acceptance was reused; packet generation is not a new browser pass.
+No live provider/model/database execution or formal comparison was performed.

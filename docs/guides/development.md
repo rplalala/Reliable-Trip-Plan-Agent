@@ -5,14 +5,6 @@ and authorization; [architecture](../0001-system-architecture.md) and
 [application contracts](../0007-application-operations.md) explain the code and APIs.
 Commands below are references, not evidence of execution or approval for a live run.
 
-<a id="b-4cf18c540a96-0"></a>
-<a id="b-4cf18c540a96-1"></a>
-<a id="b-4cf18c540a96-2"></a>
-<a id="setup"></a>
-
-<a id="current-local-api-and-input-assistance-2026-09-26"></a>
-<a id="setup-and-ordinary-development"></a>
-
 ## Environment and local application
 
 Use Python 3.12 and the existing uv environment. From the repository root:
@@ -58,18 +50,6 @@ V2/V3 require the compatible TripWorld database and artifact/embedding sidecars.
 The pinned vocabulary under `.cache/tokenizer` must also exist; the planner does not
 download it. `python -m tools.data.prepare_tokenizer --help` describes explicit preparation.
 
-<a id="b-61a2c7801de0-0"></a>
-<a id="b-61a2c7801de0-2"></a>
-<a id="b-61a2c7801de0-3"></a>
-<a id="b-61a2c7801de0-4"></a>
-<a id="b-61a2c7801de0-5"></a>
-<a id="b-61a2c7801de0-6"></a>
-<a id="b-61a2c7801de0-7"></a>
-<a id="versions"></a>
-
-<a id="reproducible-development-entry-points"></a>
-<a id="weatherdate-execution-boundary-2026-09-22"></a>
-
 ## Independent version execution
 
 Save one complete `planning_request_2` object as a local `request.json`, not a batch
@@ -113,15 +93,6 @@ loaders. For example, the main-generation input ceiling is 252000 tokens; old ac
 budgets/hashes describe their own revisions. Use the configuration reference rather
 than copying checkpoint hashes into a new run.
 
-<a id="b-9276e33ca3cc-0"></a>
-<a id="b-9276e33ca3cc-1"></a>
-<a id="data"></a>
-
-<a id="what-git-does-and-does-not-save"></a>
-<a id="shared-runtime-contracts-and-offline-implementations"></a>
-<a id="checkpoint-reconstruction-boundary"></a>
-<a id="first-generation-checkpoint-configuration"></a>
-
 ## Retrieval restore and reproducibility
 
 Use the [TripWorld release/restore instructions](../../README.md#tripworld-database-release)
@@ -137,12 +108,6 @@ historical builds, failures and validation. Deleted source/config recovery snaps
 unavailable; historical paths are not recovery instructions. The old broad `validate`
 operation uses historical query artifacts and maintenance ANALYZE, so it is not a default
 read-only clean-clone check. Do not rebuild vectors or destroy a volume to follow this guide.
-
-<a id="b-5aacb36d6308-0"></a>
-<a id="tools"></a>
-
-<a id="script-inventory"></a>
-<a id="current-tool-boundaries-after-repository-cleanup"></a>
 
 ## Code and tool navigation
 
@@ -176,8 +141,6 @@ repository-level `tools/validation` helpers. Ordinary evaluator CLIs remain in
 `backend.evaluation`; they are command entries into actual evaluator functionality.
 Neither location makes smoke a required product execution step.
 
-<a id="preference-smoke-provider-diagnostics"></a>
-
 ## Verification and evidence
 
 For implementation changes, choose checks for affected seams. Standard commands:
@@ -193,8 +156,9 @@ npm --prefix frontend run build:blind-review
 
 Shared schema/core changes need broader regression; milestones need the full relevant
 suite. Prefer mocks/fixtures for provider ports. Tests, a milestone and a user-approved
-freeze are separate gates. Actual failure/correction/retest evidence belongs in existing
-[version records](../records/README.md) and Issues, with its revision and scope.
+freeze are separate gates. Consequential failures, corrective decisions and scoped
+verification results belong in existing [version records](../records/README.md) and
+Issues, with their revision and scope. Routine execution belongs in Git, Issues or chat.
 Preference-provider diagnostics describe observed responses only, never reconstructed
 explanations of older failures or additional billable usage. Nothing here authorizes a
 formal benchmark, new live calls, a dataset rebuild or publication.

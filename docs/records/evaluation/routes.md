@@ -1,31 +1,100 @@
-# Routes
+# Independent route development
 
-Dated development evidence; current design and live task state remain in PROJECT.md,
-core docs and GitHub Issues. Historical commands grant no new execution permission.
+This record follows offline route scoring, coordinate bridging and bounded Seoul/Sydney
+acquisition. The [opening/route contract](../../contracts/0004-opening-routes.md)
+owns current definitions; [identity history](intake-identity-usage.md) records later
+changes to endpoint eligibility. The development tools' commands are in the
+[package guide](../../../backend/evaluation/README.md). Historical policies and
+observations below are not current execution instructions.
+
+Across these cases, UNKNOWN means evidence or applicability was insufficient; it is
+neither feasible nor infeasible. Identity correspondence, factual grounding, coordinates,
+provider coverage and journey feasibility remain separate. Original outputs/observations
+were not retimed, rewritten or replaced to obtain favorable scores. Offline/mock checks
+are distinct from real acquisition. Retail references exclude unknown account billing,
+credits, taxes and tiers. These are development cases, not formal comparisons or freezes.
+
+<a id="rtpeval-ticket-07-acceptance"></a>
+
+## October 2: same-day route scoring and boundary corrections
+
+Ticket 07 ([#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19))
+implemented immutable `prepare_routes`/`score_routes` and local JSON CLI at base
+`3427784b87d5864aba25dcba8b48430ec4de9dac`. V0 Activities and V1–V3 Transfers remained
+separate projections without fallback. Same-day occurrences stayed distinct, while
+requests deduplicated. Independent identities/coordinates and reviewed modes/occupancy
+established context. Explicit departures were retained; otherwise the longest continuous
+free fragment won, with earliest-UTC ties. This stage used canonical-only endpoints;
+later physical-association eligibility did not retroactively change its evidence.
+Material/replay errors exited 2 without partial cohort; successful scoring exited 0
+including FAIL/UNKNOWN. Neutral extraction preserved eight Ticket 05 validator definitions.
+
+Three consequential Spec findings were corrected: disjoint alternatives poisoned
+comparison, unresolved populations understated burden, and possible occupancy at a
+deadline could borrow 300-second tolerance. Public regressions preserved interval
+uncertainty: common 10:30 occupancy yields FAIL with raw 120-second deficit; alternatives
+at 10:30/10:35 yield UNKNOWN, never a fabricated continuous window. Standards centralized
+caps/tolerances/reserve/query defaults. Both axes rechecked clear.
+
+| Recorded gate | Actual result / coverage |
+| --- | --- |
+| Initial neutral extraction | 27 failed/39 passed; import correction yielded 66. |
+| Initial route/CLI and evaluator | 63 route tests;392 evaluator passed/1 skipped. |
+| Pre-review full backend | 2221 passed/10 skipped, 158.36 seconds. |
+| Initial Spec corrections | 84 route/CLI passed; intermediate full 2232/10,200.72 seconds. |
+| Deadline-boundary correction | Two RED cases; final 86 route/CLI passed, 20.35 seconds. |
+| Post-boundary broad gate | 2232 passed/10 skipped/2 deselected, 186.17 seconds after existing embedding tests hung. |
+| Separate approved test repair | Fresh unfiltered 2234 passed/10 skipped/zero deselected, 196.39 seconds. |
+| Closeout targeted subset | 166 passed, 34.26 seconds; not another full gate. |
+
+The interrupted full run and two deselections remained real limitations until the
+separately approved [embedding test repair](../v0-v3/v2-embedding-timeout.md).
+Its diagnosis established cold SDK preparation outlasting 20 ms before an unbounded
+handler wait; runtime retrieval/budgets were unchanged. Later full validation is a
+new actual gate, not a derived pass from overlapping subsets. All Ticket 07 full runs
+kept nine opt-in PostgreSQL cases and one Windows symlink case skipped; prior database
+supplements were not counted. Ruff/compilation/CLI/diff checks passed.
+Implementation `2b66c9f889ca8964f97dbc67b2a601ebb56be64c` and independent test repair
+`b18daef4af2fecba36d7b84315c8946a772aeae8` preserve the distinction.
+Evidence identifiers: `thesis_notes/evaluation/ticket-07-validation/` separate
+pre/post-review, interrupted and broad logs. Published gate details above remain
+understandable without private evidence. Synthetic trust-boundary fixtures did not
+establish provider availability or coordinate truth.
+
+<a id="snapshot-coordinate-bridge-2026-10-03"></a>
+
+## October 3: coordinates from independent snapshots
+
+At base `e8e75b01307fc5ecc39910262249a4cceb5dbaea`, public probes found eight resolved
+visits but no route context without a coordinate envelope. Preparing saved coordinates
+produced one V0 context without another send. The accepted snapshot bridge extracted
+only exact adopted IDs, bound manifest/plan/intake/identity/raw hashes and retained
+retrieval time/pointers without invented review metadata. Finite/ranged agreeing
+coordinates were usable; missing, malformed or contradictory points were local diagnostics.
+Foreign/corrupt/stale sources rejected atomically. Reviewed manual coordinates remained
+an alternative; selecting both sources rejected. Different evidence digests required
+their own prepared query plans rather than borrowing old route observations.
+
+Public regressions covered missing interfaces, malformed values, agreeing/conflicting
+duplicates and a huge integer that previously raised OverflowError. Evaluator 527/1
+passed in 85.14 seconds; full backend 2356/10 in 198.85 seconds before independent review.
+Implementation `f07b495` then Spec P2 found raw Search `places:null` invalidated the
+whole coordinate batch despite usable Details. Filtering by converted observation
+status preserved raw malformed evidence and other coordinates; 26 bridge tests passed
+and final evaluator 528/1 in 65.70 seconds. Correction `5ddf9ae` passed both rechecks; no full
+backend repeat followed this bounded correction. Old snapshots may lack coordinates;
+no automatic backfill or tolerance for slightly disagreeing points was adopted.
+This stage still used caller-owned acquisition transport, not today's installed caller.
 
 <a id="new-v0-route-plan-2026-10-05"></a>
 
-## New V0 independent-route collection plan — 2026-10-05
+## October 5: Seoul source and first bounded collection
 
-Preparation checkpoint: **Prepared only; collection budget and execution were not yet approved.** The user
-approved preparing this plan alongside offline fee accounting [#59](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/59).
-Subsequent approval and bounded execution are recorded [below](#new-v0-route-execution-2026-10-05);
-the frozen preparation artifacts retain their original checkpoint status.
-The source is the completed structured-transport V0 smoke; no model rerun, prompt change,
-retiming, endpoint substitution, mode optimization or targeted Repair is included.
-This is a single-source development diagnostic, not a formal benchmark/comparison.
-Review fixed point is `ff2085f6e6dafffa2b02f9b14bb10c89e49b3be8`; preparation occurred
-with the approved fee changes and pending documentation in the worktree. Existing route
-implementation/rules are unchanged.
-
-### Frozen source and declarations
-
-Original result: `artifacts/v0-transport-live-20261005/result.json`, SHA-256
-`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
-Input: Seoul, 2026-10-07 through 10-10, two travelers, KRW 1,200,000; SHA-256
-`07be92a51cc1db24d925e04ab16d15c15f2e501cecfd24a151ea9ee6cb6debfa`.
-All times below use `Asia/Seoul` (+09:00). The original projection has four bound
-transport claims, no unbound claims and no projection diagnostics.
+The source was the structured-transport V0 smoke, Seoul October 7–10, two travelers,
+KRW 1200000, Asia/Seoul(+09:00). Result SHA-256:
+`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`;
+Input SHA-256:`07be92a51cc1db24d925e04ab16d15c15f2e501cecfd24a151ea9ee6cb6debfa`.
+All four declarations were bound and unchanged:
 
 | Date | Original endpoints / activity IDs | Mode | Claimed transport | Next visit starts | Nominal continuous time G |
 | --- | --- | --- | --- | --- | --- |
@@ -34,279 +103,58 @@ transport claims, no unbound claims and no projection diagnostics.
 | 10-09 | Seoul Museum of History (`day3-seoul-museum-history`) → Gwangjang Market (`day3-gwangjang-market`) | TRANSIT | 12:00–12:35, 35 min | 12:45 | 45 min |
 | 10-10 | Changdeokgung Palace (`day4-changdeokgung`) → Jongmyo Shrine (`day4-jongmyo`) | WALK | 12:00–12:20, 20 min | 12:30 | 30 min |
 
-These G values are source schedule arithmetic before final native occupancy preparation;
-they are not independently measured journey durations. The source's own transport is
-excluded from competing occupancy. Protected/other commitments and unresolved occupancy
-must still pass existing preparation, rather than summing disconnected gaps.
+G is source schedule arithmetic, not independent journey duration; own transport is
+excluded from competing occupancy and disconnected gaps cannot be summed.
+The Prepared-only plan at `ff2085f6e6dafffa2b02f9b14bb10c89e49b3be8` became separately
+approved execution under [#61](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/61).
+`rtpeval_route_rules_1` used WALK/TRANSIT cap 45 min plus 5 min cap tolerance, WALK 3000m
+with zero distance tolerance, and 5 min grace at next visit but zero at hard protection.
+Provider failure stayed UNKNOWN; applicable proven component failure could FAIL.
 
-### Prepared source view and evidence protocol
+The frozen maximum was 22 sends: 9 Search, up to 9 Details and 4 single-element matrices,
+zero model/retries, 20 seconds/request, 600 seconds overall. TRANSIT bound noon Seoul October 9
+(`2026-10-09T03:00:00Z`); WALK was time-independent. Dated retail maximum USD 0.515
+used Search Enterprise 0.035, Details 0.020, Matrix 0.005. No coordinate/mode/date substitution
+was permitted. Native preparation without identities returned `identity_replay_required`.
 
-Local plan owner: `artifacts/v0-route-plan-20261005/` contains `plan.json`, the
-explicit single-source `diagnostic-view.json`, native `identity-plan.json` and
-`route-preflight.json`. Original input/result hashes were checked, and native `project`
-recomputed the V0 projection. The view reuses the previously reviewed original-input
-requirements, includes only the new V0 source and declares its diagnostic scope. It is
-a library preparation view, **not** a new accepted four-version batch or a replacement
-for the historical manifest. No old V1-V3 result is inserted to fabricate qualification.
+### Acquisition outcome and parser diagnosis
 
-Native `build_identity_plan` produced **9 references / 9 search requests**. The required
-Gyeongbokgung subject and its scheduled visit have different source/query contexts and
-therefore are not artificially deduplicated. Native `prepare_routes` without identity
-evidence returned `identity_replay_required`. No identity, coordinate or route facts have
-been acquired, and all four route verdicts remain UNKNOWN.
+Execution revision `0f0120dc63ac25b492fd5d474c1d04826c5ab22f`, tree
+`04684766d16cf2428cdefc2656f5e101c14b773e`. Three packet tests and 81 related checks
+passed in 5.36 seconds. Approval initially blocked before launch; direct human approval later
+admitted one execution. It exited 0 in 3.328 seconds with 9 Search HTTP 200, zero Details/Routes/model
+and zero retries. The frozen audit selected no automatic proposal because none reached
+that stage. All nine references remained unresolved: two high-impact review and seven
+`malformed_address_components`. Zero adoptions meant zero route contexts/requests;
+all four route verdicts stayed UNKNOWN. Mode policy alone PASS did not prove feasibility.
 
-After budget approval, execution follows the existing seams:
+Six reference searches(seven candidate rows) had numbered sublocality levels sharing
+the generic tag; the parser treated the tag as a unique slot and rejected distinct
+values. Jongmyo had a component without types and failed earlier. These were parser
+outcomes, not proof of incorrect places. [Google's component reference](https://developers.google.com/maps/documentation/places/web-service/reference/rest/v1/places#AddressComponent)
+supported the inference that normalization was too restrictive; fixing it alone would
+not satisfy identity/high-impact/audit gates. No fix or extra acquisition occurred.
 
-1. Recheck source/view/plan hashes, execution authorization, price snapshot, remaining
-   budget and original frozen bytes before creating any client or sending requests.
-2. Acquire the frozen identity search plan independently. Use returned names, addresses,
-   canonical IDs and typed identity evidence; generated V0 IDs/locations are claims,
-   not truth. Retain raw bytes/hashes and every attempt using `acquire_snapshot`.
-3. Replay through `load_snapshot`, `identity_evidence` and `resolve_identities` with the
-   existing audit/adjudication rules. Real required human adjudication must be supplied
-   as such; automated review cannot be relabeled human. Unresolved/audit-pending IDs
-   block their affected legs. Report review blockers instead of inventing adoption.
-4. Preserve the original linked identity search snapshot and use
-   `prepare_snapshot_coordinates`; only adopted, agreeing independent coordinates
-   reach route queries. The bridge replays the exact identity plan; do not insert
-   newly adopted IDs into that plan or fabricate another identity snapshot. Reusing
-   older evidence requires fresh association and applicable context, not just names.
-5. Prepare source-linked timezone and original-input mode-policy reviews, then use
-   `prepare_routes` and freeze the exact `build_evidence_plan` output before sends.
-   Its evidence phase includes at most nine adopted canonical Details requests,
-   deduplicated by actual ID, alongside the four eligible route elements.
-   Three WALK queries use existing time-independent options; the TRANSIT query uses
-   2026-10-09 **03:00 UTC** (12:00 Seoul), explicit departure, original mode and no
-   substituted date. Each requested route has one origin and one destination.
-6. Acquire the bounded Details/route evidence plan, then replay the exact frozen plan with
-   `score_routes`. Report each component/verdict, duration/distance, original claimed
-   minutes, G, deadline tolerance, evidence limitations and actual/estimated cost.
-   Preserve shortcomings as observations; no new requests seek a preferred verdict.
+Nine exact usage events matched TextSearch Enterprise SKU `E967-44BC-B44D` at USD 35/1000,
+retail USD 0.315, distinct from planner costs and the prepared USD 0.515 maximum.
+Replay matched identity/native routes exactly;9 raw hashes and 15 frozen source/packet
+hashes matched. Evidence: `artifacts/v0-route-plan-20261005/` and
+`artifacts/v0-route-execution-20261005/` snapshots, journals, reviews, diagnostics/cost.
 
-The iteration conversation owns preparation/adaptation and assessment. Only the prepared,
-authorized execution is delegated to `smoke tests`; it must report blockers without code
-changes. The ordinary route CLI expects a delivered batch; this diagnostic uses the
-existing library seams with its explicitly scoped source view, not a fabricated manifest.
+## October 5: identity-assistance pilot and specified adoption
 
-### Existing verdict rules and interpretation
+[#63](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/63) tested one Luna
+low-effort strict-JSON association request against existing independent candidates.
+Base `90d36999ee6daec2d228b21a07e9be3f530fd83e`; judge-Input SHA-256
+`afd6ad59126bf18ffdb23cf8830228a16c842bd29fa6ec612033d6838c6a6d6d` bound nine references
+(eight visits plus REQUIRED subject), fourteen candidate occurrences. Planner findings
+and version labels were excluded. Limits were one send, 10000 input/4000 output, 60 seconds request,
+300 seconds total, zero new Google/tools/retries, USD 0.01 reference; wire estimate 5646 included1024reserve.
 
-Use `rtpeval_route_rules_1` unchanged. WALK/TRANSIT duration cap is 45 minutes plus
-5-minute cap tolerance; WALK distance cap is 3,000 m with zero distance tolerance.
-The schedule check uses the independently prepared continuous G, with five-minute
-tolerance at the next visit and zero at a protected hard boundary. DRIVE's existing
-10-minute reserve is not applicable to these four declared modes.
-
-Matching successful evidence and all applicable components PASS yield PASS. Proven
-component failure is decisive FAIL, including a valid successful no-route result.
-Missing/corrupt/inapplicable mode, endpoints, date/options, unresolved identity or
-incomplete duration/distance yields UNKNOWN unless another component already proves FAIL.
-HTTP/provider failure is not proof that no route exists. Use exact existing precision,
-source hashes and deadlines; do not add a new penalty or require evidence to fail.
-
-The scorer checks schedule feasibility, not exact equality with the model's stated
-transport duration. A provider duration longer than the claimed 20 minutes can still
-fit a 30-minute G (or its existing tolerance). Record the difference descriptively
-without changing the rule or hiding it. Provider representative points for villages,
-shopping streets or markets do not prove a particular entrance, internal walk, waiting
-time or service disruption. A matched transit estimate is evidence at the requested
-context, not a guarantee of future operations.
-
-### Proposed execution budget and stopping
-
-Maximum **22 sends**: 9 Text Search + up to 9 Details + 4 single-element route requests.
-No LLM calls, no retries, one attempt/request, 20-second request timeout and **10-minute**
-overall wall limit. Reused evidence/canonical IDs may reduce sends; unused capacity
-does not authorize unrelated calls. Using the preserved collection adapter's Enterprise
-Places mask and Global first-paid-tier prices read 2026-10-05 gives a retail ceiling
-estimate of **USD 0.515**: 9 × $0.035 + 9 × $0.020 + 4 × $0.005.
-This excludes credits/free caps/tax and does not assert the eventual invoice amount.
-Sources: [Global prices](https://developers.google.com/maps/billing-and-pricing/pricing),
-[field-based SKUs](https://developers.google.com/maps/billing-and-pricing/sku-details) and
-[route billing](https://developers.google.com/maps/documentation/routes/usage-and-billing).
-
-Stop on authorization/source mismatch, exhausted send/time cap, authentication/billing
-failure or unsupported query context. Never shift dates or add fallback modes. Unresolved
-identity/coordinate/context stops only its affected leg; other eligible legs may proceed
-within the approved total. Preserve partial evidence and UNKNOWNs when limits stop work.
-Changing the budget, adding retries/providers or repairing V0 requires separate approval.
-**This preparation made zero paid provider calls.**
-
-<a id="new-v0-route-execution-2026-10-05"></a>
-
-## New V0 bounded route diagnostic — 2026-10-05
-
-Status: **Acquisition and offline replay completed; all four routes remain UNKNOWN.**
-The user explicitly approved the preceding plan, including execution delegation and
-result delivery through PR, under [#61](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/61).
-UNKNOWN is an accepted observation for this bounded execution, not a finding that
-the original V0 transport is feasible or infeasible. No evaluator rules or production
-code were changed, and the original itinerary was not rerun, repaired or retimed.
-
-The execution used revision `0f0120dc63ac25b492fd5d474c1d04826c5ab22f` on
-`feature/evaluation`, with a clean tracked worktree and tree
-`04684766d16cf2428cdefc2656f5e101c14b773e`, identical to delivered PR #60.
-The task-specific execution packet and raw evidence were ignored local artifacts;
-the subsequent tracked changes are this record and the project-status summary.
-The record date uses Australia/Sydney; acquisition timestamps are retained in UTC.
-
-### Preflight, authorization and observed acquisition
-
-The owner prepared a task-local launcher around existing snapshot/identity/coordinate/
-route APIs. It uses the preserved collector's request construction but does not invoke
-its historical retrying launcher. A shared counter and deadline cover both acquisition
-phases: at most 22 sends, one attempt per request, 20-second request timeout, 600 seconds
-overall, no redirects/transport retries and no model client. A one-shot launch marker
-prevents accidental replay of the paid collection.
-
-Offline checks verified the 23rd-send and exhausted-wall stops, native empty-result
-replay with UNKNOWN preservation, and authentication-failure stop with retained raw
-attempt evidence. The three packet tests passed; the combined packet/native snapshot/
-coordinate/resource suite passed **81 tests in 5.36 seconds**. These counts overlap.
-Initial Ruff import/format findings were corrected before passing the final lint and
-format checks. The owner verified source hashes, projection, nine-request identity
-plan, original-input mode policy and preserved IANA timezone data before delegation.
-Audit seed and sample count were frozen before acquisition; no human identity
-adjudication was supplied or fabricated.
-
-`smoke tests` initially encountered automatic approval review rejection before process
-creation: the reviewer did not accept cross-conversation authorization for the Google
-requests and possible charges. At that checkpoint there were zero sends and no launch.
-The human subsequently authorized execution and owner coordination directly in that
-conversation. Exactly one accepted prepared launch then completed with exit code 0.
-The executor acquired evidence and reported blockers without changing production code.
-The earlier blocked-dispatch evidence remains a historical checkpoint.
-
-Observed sends were **9 Places Text Search, 0 Details, 0 Routes and 0 LLM calls**,
-with **zero retries**. All nine searches returned HTTP 200 with distinct request keys.
-Measured invocation through cleanup was **3.328 seconds**; the acquisition deadline
-had **596.656 seconds** remaining. Unused budget did not authorize another launch.
-HTTP success for these searches does not verify the uncalled Details/Routes APIs.
-
-### Existing evaluator replay and identity blockers
-
-All nine identity references remain unresolved, with nine human-review queue entries:
-two `high_impact_review` references (the required Gyeongbokgung subject and its scheduled
-visit) and seven `malformed_address_components` references. The frozen audit selected
-no automatic proposal because none reached that stage. No canonical ID was adopted;
-the coordinate bridge therefore produced no eligible route context and the frozen
-evidence plan contained zero requests. Scoring an empty native evidence snapshot
-completed with the existing `rtpeval_route_rules_1`, preserving these unknowns.
-
-| Date / original leg | Mode | Claimed minutes | Prepared continuous G (minutes) | Independent duration / distance | Verdict |
-| --- | --- | ---: | ---: | --- | --- |
-| 10-07 Gyeongbokgung Palace → National Museum of Korean Contemporary History | WALK | 20 | 30 | Unavailable | UNKNOWN |
-| 10-08 Bukchon Hanok Village → Insadong | WALK | 25 | 35 | Unavailable | UNKNOWN |
-| 10-09 Seoul Museum of History → Gwangjang Market | TRANSIT | 35 | 45 | Unavailable | UNKNOWN |
-| 10-10 Changdeokgung Palace → Jongmyo Shrine | WALK | 20 | 30 | Unavailable | UNKNOWN |
-
-Each leg reports unresolved identity, missing route context and missing route evidence.
-The mode-policy component alone is PASS because the original request does not restrict
-transport modes; it is not a feasibility PASS. Independent journey times, schedule
-sufficiency and transfer burden cannot be established from this acquisition.
-
-The owner's read-only address diagnosis reproduced the seven parser rejections:
-
-- Six reference searches (seven candidate rows, including two Seoul Museum of History
-  candidates) have distinct numbered sublocality levels sharing the generic
-  `sublocality` tag. The parser treats that shared tag as a unique slot and raises
-  `Conflicting address components` when the component values differ, even though the
-  numbered hierarchy is distinct. Individual components passed the parser checks.
-- The Jongmyo candidate includes an address component without `types`; the parser
-  raises `Address component requires types` before later association checks.
-
-These are observed parser outcomes, not proof that the places are incorrect or that
-V0's schedule fails. Google documents address components as repeated hierarchical
-components whose types and representation can vary; see the
-[Places address-component reference](https://developers.google.com/maps/documentation/places/web-service/reference/rest/v1/places#AddressComponent).
-The inference is that the current normalization is too restrictive for these returned
-structures. Fixing normalization alone would not establish identity: high-impact human
-review, aliases, competing candidates and applicable audit requirements still need
-their existing checks. No normalization fix or additional acquisition is included here.
-
-### Actual-send cost, integrity and acceptance boundary
-
-The owner rebuilt the cost report from the exact captured `oracle` usage and frozen
-price context. All nine events match Places Text Search Enterprise SKU
-`E967-44BC-B44D`, with the preserved search field mask. At the Global first paid tier
-of **USD 35 per 1,000 requests**, the observed retail estimate is **USD 0.315**
-(`9 × 0.035`); Details, Routes, models and Repair had no sends in this run.
-Source: [Google Global prices](https://developers.google.com/maps/billing-and-pricing/pricing),
-read **2026-10-05**. The earlier USD 0.515 is the prepared maximum retail estimate.
-Actual billed amount remains absent; free allowances, credits, account tier and tax
-are not inferred. This oracle acquisition is distinct from original planner/model
-costs and is not allocated again to V0-V3 planner totals.
-
-Offline assessment reloaded both snapshots against their frozen expected plans,
-reproduced the identity evidence and obtained an exactly identical native route
-report. The nine usage events agree with the attempt journal and snapshot ledgers;
-zero retries and zero model calls were independently checked. All nine raw-response
-hashes and all 15 frozen source/packet hashes matched, including the original V0
-result and the protected older Seoul input/result/manifest/packet. The original
-V0 SHA-256 remains `b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
-
-Local evidence identifiers, not published file dependencies:
-`artifacts/v0-route-execution-20261005/` contains authorization/preflight, launch,
-execution/usage, attempt journal/raw hashes, identity snapshots/reports/review queue,
-route preparation/evidence plan/snapshot/report, cost report, owning assessment and
-address diagnostics. The earlier prepared view remains under
-`artifacts/v0-route-plan-20261005/`. Raw payloads and credentials are excluded from Git.
-
-This bounded execution can be accepted with UNKNOWN as specified in #61, but it does
-not complete independent route feasibility validation. Resolving structured identity
-handling and genuine required adjudication, followed by a separately authorized
-route-evidence acquisition, remains future work. No formal comparison, research
-conclusion or version freeze follows from this diagnostic.
-
-<a id="v0-identity-assistance-pilot-2026-10-05"></a>
-
-## V0-only identity-assistance pilot — 2026-10-05
-
-Status: **Executed and owner-assessed bounded development trial** under
-[Issue #63](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/63).
-The user explicitly approved Issue creation and the proposed model budget after
-the bounded route diagnostic above. Execution used developer revision
-`90d36999ee6daec2d228b21a07e9be3f530fd83e`, with a clean tracked worktree and
-task-local ignored preparation/runner/checks. Production evaluator and planner
-V0-V3 code were unchanged. This is not an accepted production identity policy,
-formal benchmark, human accuracy measurement, route verification or version freeze.
-
-### Question, frozen inputs and safeguards
-
-Test whether one model request can associate the original V0 place claims with
-already acquired independent Google candidates despite name variants and restrictive
-native address parsing. The original V0 result remains SHA-256
-`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
-The judge input remains
-`afd6ad59126bf18ffdb23cf8830228a16c842bd29fa6ec612033d6838c6a6d6d`:
-nine references (eight visits and the linked required-place subject), fourteen
-candidate occurrences sorted by candidate ID. Candidate text is supplied data;
-the prompt excludes planner findings and version labels. Model proposals are
-separate from native adopted identities and genuine human adjudication.
-
-Authorized limits: at most one `gpt-6-luna` request, zero retries/tools/new Google
-requests, 10,000 input tokens, 4,000 output tokens including reasoning, a 60-second
-request timeout and five-minute total deadline. Retail-estimate budget: USD 0.01,
-not a provider invoice cap. The isolated runner uses the configured Foundry v1
-Responses endpoint, low reasoning effort, strict JSON output and a one-shot launch
-marker. It retains failures without a repair request and checks complete unique
-reference coverage and supplied candidate membership before retaining proposals.
-The serialized request/schema estimate plus 1,024-token framing reserve was 5,646;
-this was an estimate, while actual input usage below was provider-reported.
-
-### Execution and per-reference assessment
-
-`smoke tests` executed the owner-prepared package once after offline preflight.
-Observed: HTTP 200, model `gpt-6-luna`, one send, zero retries, zero tools and zero
-new Google sends. Request through output capture took **6.094 seconds**, not the
-whole process duration. Reported usage: **4,213 input / 1,007 output / 5,220 total**,
-zero cached input and zero reasoning tokens. All nine references received `match`
-proposals, with unique complete coverage and only supplied candidate IDs.
-
-Before reading the model output, the owner agent separately recorded expected
-candidate selections from the existing snapshot's names and addresses. Subsequent
-checking found all nine proposals consistent with those field-based assessments;
-no incorrect selection or unsupported candidate ID was observed in this sample.
-This is agent consistency checking, not independent human gold or an accuracy claim.
+HTTP 200 completed in 6.094 seconds request-to-capture, with 4213 input/1007 output/5220 total,
+zero cached/reasoning. All nine matched supplied candidates with unique complete coverage.
+Before seeing output, the owner agent independently recorded expected name/address matches;
+all nine agreed. This was agent consistency, not human gold or measured accuracy.
 
 | Reference | Native blocker | Model candidate | Owner field assessment |
 | --- | --- | --- | --- |
@@ -320,234 +168,34 @@ This is agent consistency checking, not independent human gold or an accuracy cl
 | Changdeokgung Palace | `malformed_address_components` | Changdeokgung | Supported distinctive name with generic Palace omitted |
 | Jongmyo Shrine | `malformed_address_components` | Jongmyo Shrine | Exact name/formatted location despite incomplete typed components |
 
-The model's reasons reference supplied names and Seoul/Jongno addresses. Seven
-references have exact candidate names and two have name variants; two references
-have multiple candidates. No live adversarial/no-supported-match population or
-alternative prompt/order/model run was executed. These observations do not establish
-general semantic reliability or that all current blockers require an LLM.
+Seven exact names, two variants and two competing-candidate references were observed;
+no adversarial/no-match population or alternate order/prompt/model was tested.
+October 5 [Luna retail prices](https://developers.openai.com/api/docs/models/gpt-6-luna)
+yielded USD 0.0009248, not an invoice. Seven runner tests passed in 2.36 seconds; all 61 protected
+hashes and response SHA-256 `d32064b69732271cd0d89c3aa735df162c7fad4af95ef634183eaa5bec57f00a`
+matched. Native adoption stayed zero and four routes UNKNOWN. Evidence:
+`artifacts/v0-identity-prototype-20261005/`.
 
-### Cost, validation and remaining boundary
-
-Using [official GPT-6 Luna pricing](https://developers.openai.com/api/docs/models/gpt-6-luna)
-accessed 2026-10-05, USD 0.10 input / 0.01 cached input / 0.50 output per million,
-the observed-token retail estimate is **USD 0.0009248**:
-`4,213 * 0.10 / 1,000,000 + 1,007 * 0.50 / 1,000,000`.
-Actual Foundry invoice amount is unavailable; this evaluator-only estimate is
-separate from planner, V3 Repair and prior Google acquisition costs.
-
-Actual offline sequence: the first HTTP-boundary check failed while the runner
-was absent; after implementation, pytest's default temporary/cache location was
-unwritable. Using an ignored task-local temporary directory and disabling cache
-allowed the first check to pass. Expanded checks initially had three failures from
-misplaced HTTP-429 assertions in the test file; correcting their placement produced
-**7 passed in 2.36 seconds**. These checks cover HTTP failure without retries,
-duplicate launch prevention, redirects/timeouts/invalid output without follow-up,
-and unobserved candidates/duplicate or missing references. Runner/check/builder
-Ruff checks passed after formatting and bounded lint corrections. Owner-assessment
-lint corrections likewise passed. No production/full-suite rerun was needed for
-this isolated diagnostic; no model or provider calls occurred during these checks.
-
-Owner replay verified all **61 frozen file hashes**, the captured response SHA-256
-`d32064b69732271cd0d89c3aa735df162c7fad4af95ef634183eaa5bec57f00a`, actual
-request/token limits, and an identical native identity replay. Original V0, earlier
-Seoul evidence, Google snapshots and existing reports remained unchanged. The
-native report still has nine unresolved references, **zero adopted identities**,
-and the four existing route verdicts remain **UNKNOWN**. No genuine human review,
-Details/coordinates, Routes duration/distance, opening validation or itinerary
-optimization was added. The required-place review and audit gates remain intact.
-
-Ignored local evidence identifier: `artifacts/v0-identity-prototype-20261005/`,
-containing authorization/request/preflight, one-shot launch, raw response and its
-hash, proposals, source verification, executor report, owner expectations and
-`owning-assessment.json`. Raw provider/model payloads, credentials and temporary
-checks are excluded from Git; these identifiers are not fresh-checkout dependencies.
-
-The bounded trial supports proposing a V0-only integration, with explicit model
-provenance and residual uncertainty. Production address compatibility, proposal
-adoption and mandatory genuine human/audit review still need an approved design.
-Independent route acquisition requires its own prepared budget and approval after
-sufficient endpoint identities are adopted. No additional live request is authorized
-by this record. Issue lifecycle and Git delivery remain distinct from these results.
-
-<a id="v0-adoption-design-preparation-2026-10-05"></a>
-
-## V0 adoption design preparation — 2026-10-05
-
-Status: **Proposed; preparation approved, policy implementation and acquisition pending.**
-The user approved creating two follow-ups and preparing their plans.
-[Issue #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67) owns
-the adoption specification and acceptance; [#66](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/66)
-owns the new short-reference response validation. Offline design/implementation
-can proceed independently of that live run; adoption of its new response requires
-its validation. Closed #63/#64 retain their original completed scopes.
-
-Preparation revision: `def635c7914ce5ca6ddc73c604110e75abfc9c8b` on
-`feature/evaluation`, initially clean. Only planning documentation and ignored
-offline receipts change at this checkpoint. This record does not replace the
-current independent identity contract or introduce an operational model caller.
-
-### Existing obstacle and recommended seam
-
-Observed baseline: the prior model suggested nine matches, while native identity
-resolution adopted zero. Two references require high-impact review; seven had
-malformed typed-address diagnostics. A shorter ID solves the copying boundary,
-not adoption or coordinates. The current coordinate bridge also verifies the
-native policy and recomputed report; passing a proposal or relabeling a model as
-human would not be a valid extension.
-
-The recommendation is a default-off, separately versioned V0 model-assisted
-association policy. Keep native accepted associations and genuine human decisions
-first. For unresolved ordinary visits, let the model match the structured V0 claim
-against frozen independent candidates using name/location/address evidence. The
-program checks exact references, per-reference ownership, hash linkage and actual
-allowlisted evidence fields rather than interpreting rationale prose or adding
-title/fuzzy-name rules. A valid match remains fallible; no model confidence cutoff
-or additional judge is proposed.
-
-Adopt eligible ordinary matches through an explicit `model_assisted` path after
-review/audit gates. Keep REQUIRED/EXCLUDED/fixed-time subjects and their high-impact
-possible visit matches subject to genuine review. The positive-count, predeclared
-audit must also cover model-assisted automatic proposals; sampled cases remain
-pending review. In this source, the required Gyeongbokgung subject and its visit
-therefore remain review-required, and the audit may block other visits. Approval
-of this proposed integration alone would not establish all four route endpoints.
-
-This alternative association policy deliberately permits independently supported
-name variants or candidate choice that the default exact-name rule cannot accept.
-It leaves the shared policy and V1-V3 unchanged. Optional malformed address
-components remain diagnosed and cannot be cited as verified typed facts; valid
-independent name/formatted-address fields can support the separate model-assisted
-path. Original snapshots are immutable and no synthetic components are introduced.
-Unsupported matches preserve UNKNOWN; a missing match is not proof of fabrication.
-
-Hash-bind source/intake/reference population, independent observations, complete
-judging instructions/schema/map/response and audit inputs. Extend downstream replay
-validation explicitly for this policy; do not replace a policy string to bypass
-the current bridge. TDD must cover human precedence, high-impact/audit pending,
-wrong/stale/foreign identities and missing cited fields, plus default/V1-V3
-invariance. Implementation and tests must be committed before Standards/Spec review.
-Score formulas and masks remain unchanged; the report must expose the association
-policy and evidence when availability changes.
-
-### Independent route handoff and preparation checks
-
-The four original directed legs/modes/time windows remain exactly those in the
-[frozen source table](#new-v0-route-plan-2026-10-05). Acquire new independent Details
-only for adopted endpoint IDs, checking requested/returned identity and contradictions,
-numeric coordinates and snapshot linkage. Never use model/planner coordinates.
-Deduplication by exact adopted venue would allow at most **eight Details plus four
-Routes requests** if every endpoint cleared its gates. This is a planning upper
-bound, not an approved budget; pending reviews or unsupported modes reduce eligibility.
-Freeze actual eligible requests, field masks/SKUs, dated official prices, timeouts,
-total deadline and stop conditions before separate acquisition approval.
-
-Use native route preparation/scoring with the original WALK/TRANSIT, direction
-and temporal context. Preserve provider limitations as UNKNOWN; do not switch modes,
-retime, rerun or optimize V0. Report independent duration, original claimed duration,
-available continuous window, rule/margin and evidence limitations separately. An
-incorrect time estimate alone is distinct from an infeasible itinerary. Model
-matching is not evidence of opening hours or journey duration.
-
-The offline preparation check passed on its first run: all **61** original
-pilot-authorized files retained their hashes, the original V0 hash remained
-`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`,
-and nine prior proposals were exactly restored through the new map. The check made
-no model/provider requests and added no adopted identity or route evidence.
-Local evidence identifier: `artifacts/followup-plans-20261005/offline-preflight.json`;
-the linked Issues contain self-contained public plans, not local-file dependencies.
-Current observed status stays **zero adopted identities; four UNKNOWN routes**.
-
-<a id="v0-adoption-specification-finalization-2026-10-05"></a>
-
-## V0 adoption specification finalization — 2026-10-05
-
-Status: **Specified; implementation and acquisition not yet approved.** The user
-approved finalizing [parent #67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67)
-and publishing implementation slices. The first is
-[offline identity adoption #69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69);
-the second is [route request preparation #70](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/70).
-GitHub native sub-issue links attach both to #67; a native blocking dependency
-makes #70 wait for #69. All three remain open. The preceding Proposed record is
-historical; the finalized specification and ticket acceptance live in GitHub.
-
-Inspected revision: `1326970a2aff91248761a16290288d3cd62a2a67` on
-`feature/evaluation`. An unrelated untracked `.archify/` directory was present
-and excluded; an unrelated `.gitignore` change appeared during planning and was
-also excluded. This checkpoint changes planning records and project status only,
-with ignored tracker drafts/receipts; no implementation or runtime policy changed.
-
-Observed during targeted inspection: identity readiness and evidence-plan
-preparation currently require the native association policy. A proposal cannot
-become an accepted downstream report merely by replacing its policy stamp. The
-first slice therefore includes explicit replay-aware consumer validation along
-with offline adoption. The second consumes that handoff to prepare actual Details
-and conditional/ready directed route requests. Neither slice includes live collection.
-
-The saved #66 response cites claim fields and independent candidate name/address
-fields, including raw address components. The earlier seven ordinary-reference
-diagnostics report `Conflicting address components`, with no shape-invalid items
-listed in their diagnostic examples. The native comparator requires one consistent
-value set per address type; repeated provider types can violate that comparison
-rule. The accepted specification distinguishes this comparison limitation from
-invalid wire shapes. The new policy will validate field presence/types and preserve
-diagnostics without giving the native comparator another semantic veto; it will
-not declare cited raw geography programmatically verified. Structurally invalid
-cited fields remain ineligible, and historical snapshots/citations cannot be repaired
-to force adoption. This is a specified boundary, not a validated accuracy claim.
-
-The audit seed/count were already included in the saved #63 authorization and
-#66 frozen packet. Implementation must verify that linkage and pre-response freeze,
-not retrospectively choose a favorable audit. Genuine human decisions, high-impact
-review and selected audits retain precedence. Actual adoption and eligible-leg counts
-may remain partial; ticket acceptance does not require nine adoptions or four PASS results.
-
-Checks at this planning checkpoint: parent/child bodies were read back exactly,
-existing labels and native relationships verified, original V0 and the 61 pilot
-source hashes checked, and tracked documentation links/whitespace checked. No
-implementation tests or new model/Google calls were run. Local evidence identifiers:
-`artifacts/short-id-live-20261005/packet/live/execution.json`,
-`artifacts/v0-route-execution-20261005/address-diagnostics.json` and
-`artifacts/v0-identity-prototype-20261005/authorization.json`.
-Current observed state remains **zero adopted identities; four UNKNOWN routes**.
+The subsequent [#67](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/67)
+design was first Proposed, then Specified with offline slices #69 and #70. It allowed an
+explicit default-off, versioned V0 model-assisted path with exact candidate/citation/hash
+replay, while native/genuine human decisions, high-impact and predeclared positive audit
+retained precedence. This historical policy deliberately differed from later current
+version-specific identity. Raw partial/repeated component comparison limitations were
+separated from invalid cited wire shapes; independent support was not programmatically
+certified geography. Model confidence, title heuristics and policy-stamp substitution
+could not create adoption. Short references fixed copying, not adoption or coordinates.
+[#66 short-reference validation](../v0-v3/semantic-reference-correction.md) remained
+separate. Planning restored nine old proposals and 61 hashes without requests/adoptions.
 
 <a id="v0-identity-adoption-acceptance-2026-10-05"></a>
 
-## V0 offline identity adoption acceptance — 2026-10-05
+## October 5: offline adoption and route readiness
 
-Status: **Implemented and offline validated; Git delivery pending.** The user explicitly
-authorized [#69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69) through
-`implement`, after specification finalization. This authorization covers offline adoption,
-consumer handoff, tests, local commits, review and related documentation; it does not cover
-[#70](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/70), new live calls or Git
-publication. Parent #67 and both children remain open at this local checkpoint.
-
-Review fixed point: `5449afc5ef7b5fede61d564cf66b6e0f36d39be8` on `feature/evaluation`.
-Implementation/tests were committed before review as `6055905` (`feat: adopt V0 identity
-proposals through offline replay (#69)`). Review corrections are separately retained in
-`481d531` (`fix: preserve native decisions and exact audit chronology (#69)`). An unrelated
-pre-existing `.gitignore` change remains excluded. Ignored sources/new derived artifacts
-are local evidence, not fresh-clone dependencies; raw payloads were not force-added.
-The [identity contract](../../contracts/0002-intake-identity-usage.md#v0-only-model-assisted-offline-adoption)
-owns current policy; this dated record preserves observed validation.
-
-### Implemented boundary and actual replay
-
-The explicit resolver and CLI replay original V0 input/result/provenance/projection,
-independent snapshot, saved judge request/schema, short-reference map and actual #66
-response. Candidate facts are matched by exact canonical ID rather than provider ordering.
-Saved raw partial/repeated address components retain their wire facts and native diagnosis;
-no components/citations are invented or stripped. Allowlisted field presence/types and
-independent name/address support gate model adoption without a rationale/title classifier.
-Consumers recompute the whole bound report before identity readiness, coordinate extraction
-and evidence/route preparation. Changed IDs, policy labels or audit/review state are rejected.
-Default/native and V1-V3 paths, score/mask formulas and all planner entry points are unchanged.
-
-Actual replay has nine references: **six adopted, three review-pending, zero
-unknown/ineligible**. No genuine human decisions were fabricated. The saved historical
-audit seed/count were retained; its authorized packet and exact send/response binding were
-verified. Local receipts are supplied evidence, not cryptographic certification of time or
-reviewer identity. Six existing independent snapshot coordinates passed the native bridge,
-with zero diagnostics; native route preparation produced two query contexts.
+[#69](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/69) implemented the
+replay-aware resolver/CLI and consumer handoff at base
+`5449afc5ef7b5fede61d564cf66b6e0f36d39be8`. Saved #66 material yielded six adopted,
+three review-pending, zero unknown/ineligible, without invented human decisions.
 
 | Reference | Original structured claim | Result | Reason |
 | --- | --- | --- | --- |
@@ -561,775 +209,103 @@ with zero diagnostics; native route preparation produced two query contexts.
 | Planned visit | Changdeokgung Palace | Adopted | `model_supported_association` |
 | Planned visit | Jongmyo Shrine | Pending | `audit_pending` |
 
-| Date | Directed endpoints | Mode | Declared / nominal gap minutes | Identity/context result | Route feasibility |
-| --- | --- | --- | --- | --- | --- |
-| 2026-10-07 | Gyeongbokgung -> National Museum of Korean Contemporary History | WALK | 20 / 30 | Blocked by origin high-impact review | UNKNOWN |
-| 2026-10-08 | Bukchon Hanok Village -> Insadong | WALK | 25 / 35 | Both adopted; verified saved coordinates; query context prepared | UNKNOWN |
-| 2026-10-09 | Seoul Museum of History -> Gwangjang Market | TRANSIT | 35 / 45 | Both adopted; verified saved coordinates; query context prepared | UNKNOWN |
-| 2026-10-10 | Changdeokgung -> Jongmyo | WALK | 20 / 30 | Blocked by destination audit review | UNKNOWN |
-
-No new journey observations or route feasibility score were produced. UNKNOWN describes
-the unchanged absence of independent route evidence, not a newly measured journey result.
-The original itinerary was preserved, including its estimated durations and nominal gaps.
-Issue #70 still must prepare concrete requests, budget and conditional dependencies; these
-two contexts alone do not authorize or define live collection.
-
-Original V0 SHA-256 remains
-`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
-All 61 protected historical pilot hashes are unchanged. This task made **zero model,
-Places or Routes sends**, adding no charges for those APIs and fetching no bill. Existing
-historical usage/cost records remain unchanged. Local evidence identifiers are
-`artifacts/v0-identity-adoption-20261005/{material.json,identity-report.json,coordinate-preparation.json,route-preparation.json,offline-acceptance.json,execution-report.md}`.
-The bundle and its source files must remain locally available for consumer replay.
-
-### Development failures, corrections and checks
-
-1. Public-boundary TDD began with a missing resolver/import gate. Windows global-temp
-   permissions required task-local pytest temp/cache directories; fixture transport had
-   to match the existing async acquisition interface and snapshot filename convention.
-2. Actual saved-material replay exposed candidate ordering and historical provenance
-   compatibility. Match complete candidate facts by exact ID, verify original provenance
-   independently, and retain the original historical freeze's actual source population.
-   Existing SDK wire hashes use their saved JSON serialization, distinct from compact
-   RTPEval digests. UTC send dates use the declared Sydney authorization timezone.
-3. Raw partial address components initially left one proposal ineligible. The accepted
-   wire policy allows absent optional provider types, preserves raw fields and rejects
-   malformed cited types; no synthetic components or semantic comparator veto were added.
-   Actual replay then became six adopted/three pending. Initial expectations about missing
-   coordinates were corrected after inspecting the saved independent snapshot: it already
-   contains six valid adopted-venue coordinates, yielding two contexts without Details calls.
-4. Consumer regressions exposed a substituted native policy stamp and malformed native
-   `records` handling. Structured assistance markers require replay even when relabeled;
-   malformed native reports retain the existing replay-required result. Response provenance
-   and unexpected tool output are checked. Provider timestamp skew cannot substitute for
-   the saved authorized preflight/send binding.
-5. First full backend gate: **2745 passed, 10 skipped, 1 failed in 336.65s**. The evaluator
-   dependency guard rejected new framework/typing dependencies. The guard was retained;
-   strict saved-schema validation now uses only permitted standard-library imports.
-   Related retest: **382 passed, 1 skipped**; the corrected full run passed **2747 with
-   10 skips in 357.18s**, before subsequent review regressions.
-6. Initial Standards review: zero findings. Initial Spec review: two findings—precise
-   authorization timestamps were reduced to dates, and missing model freeze downgraded
-   accepted native decisions. Three regression cases reproduced the errors. The separate
-   correction commit compares offset-aware precise timestamps and retains native decisions/
-   audit selection when model freeze is absent. Additional cases cover naive timestamps
-   and valid earlier authorization. Related retest: **388 passed, 1 skipped in 38.18s**;
-   the adoption suite now contains **47 cases**. Both review rechecks have zero findings.
-7. Actual module CLI replay returns exit 3 and exactly the saved identity report. The first
-   subprocess used Windows GBK and failed on Korean output; the documented UTF-8 environment
-   setting produced valid JSON without changing production behavior. Ruff passes. Final
-   full backend validation after review corrections: **2752 passed, 10 skipped in 250.11s**.
-   The skips are existing environment/opt-in cases. Tracked link/anchor and whitespace
-   checks passed; the final documentation/acceptance commit is separate from implementation
-   and review corrections.
-
-These are implementation checks over one saved development sample, not formal accuracy,
-human gold, a version freeze or evidence that any journey is feasible. Genuine high-impact
-and audit review remains the blocker for three references; collecting independent route
-evidence remains separate from matching and preparation.
-
-<a id="snapshot-coordinate-bridge-2026-10-03"></a>
-
-## Snapshot-coordinate bridge — 2026-10-03
-
-Review fixed point: e8e75b01307fc5ecc39910262249a4cceb5dbaea on feature/evaluation;
-the starting tracked tree was clean. The user adopted the preceding audit recommendation,
-authorizing a bounded offline coordinate bridge, relevant tests, local commits, dual-axis
-review/corrections and related documentation. No live acquisition or publication is included.
-Current behavior is owned by the [opening/route contract](../../contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03).
-
-### Reproduction and implemented boundary
-
-The audit's three public probes showed 8 resolved visits but no route query context without
-a separate coordinate envelope. Preparing already-saved coordinates yielded 1 V0 context
-without any additional send. Existing relevant tests passed 48 cases (67 unrelated cases
-deselected). These fixtures establish a missing preparation bridge, not live coverage or
-a scoring defect. Source/raw preservation and manual route preparation already worked.
-
-`prepare_snapshot_coordinates` now replays an identity-phase snapshot, recomputes its intake
-plan and verifies derived evidence against the adopted identity report. Only exact adopted
-IDs contribute coordinates. Its immutable `rtpeval_snapshot_coordinates_1` output preserves
-manifest/plan/intake/identity hashes and each request/raw hash, candidate pointer and retrieval
-time. It declares independent_snapshot provenance without inventing human review metadata.
-Finite/ranged agreeing coordinates are usable; missing, malformed or contradictory points
-remain local diagnostics, retaining candidate populations. Foreign/corrupt/stale sources
-reject preparation atomically. Unresolved identities stay unresolved.
-
-Route prepare/score and the final quality-report API/CLI accept optional
-identity_snapshot_directory / --identity-snapshot. Existing reviewed --coordinates remains
-supported; selecting both sources is rejected. Automatic extraction uses existing default
-query options. Manual and automatic evidence digests differ, so replay uses the corresponding
-prepared query plan rather than borrowing an old query. Planner runtime, budgets, provider
-field masks, acquisition policy, source IDs and final score/mask rules remain unchanged.
-
-### Actual development validation
-
-1. Initial test setup could not create a nested basetemp because its parent did not exist.
-   Creating only the ignored task artifact parent enabled the actual red test.
-2. Snapshot-to-route preparation initially failed at the missing keyword interface, then
-   passed with linked extraction. Four malformed-coordinate cases then failed; local
-   invalid diagnostics fixed them without dropping the unaffected place.
-3. Conflicting repeated coordinates incorrectly produced a query; the regression failed,
-   then passed after exact agreement checks. Matching duplicates remained accepted.
-4. Route CLI, route scoring, quality-report API and quality CLI each failed at the missing
-   interface before being connected. A scoring fixture initially omitted independent mode
-   review and therefore produced UNKNOWN; supplying its existing review made the intended
-   PASS assertion valid without a production scoring change.
-5. Additional public checks cover corruption/linkage, absent coordinates, paired optional
-   tracks, Search/Details agreement, source-only provenance, competing source inputs,
-   unadopted IDs, unresolved identities, deterministic no-socket replay and unchanged bytes.
-   A huge out-of-range integer exposed OverflowError in the finite-number check; checking
-   range first fixed the reproduction and retained local coordinate uncertainty.
-6. Complete evaluator regression: 527 passed, 1 Windows symlink-privilege skip in 85.14s.
-   All 25 new cases participate; existing reviewed-coordinate/quality behavior remains
-   covered. Ruff and six-file format checks pass; no static typechecker is configured.
-
-Complete backend gate: 2356 passed, 10 skipped in 198.85s, no deselections. Nine opt-in
-PostgreSQL tests and one Windows symlink privilege test were skipped; no database supplement
-or native elevation was run. Implementation and direct tests were committed before review:
-f07b495 — feat: prepare route coordinates from independent snapshots.
-
-Standards review reported 0 hard violations and 0 actionable smells. Spec review found one P2:
-Search `places: null` was unavailable in converted identity evidence but raw coordinate
-iteration raised TypeError, wrongly rejecting the whole batch even with valid Details.
-The public route-preparation regression first failed (1 failed / 25 deselected), then passed
-after filtering requests by the existing converted observation status. Valid Details and
-other places remain usable; malformed Search evidence remains in the original snapshot.
-All 26 coordinate tests passed in 2.69s. Separate correction commit:
-5ddf9ae — fix: retain usable coordinates beside malformed search evidence.
-Both axes rechecked this committed correction: Standards 0 new findings; Spec P2 closed,
-0 new findings. The final evaluator gate passed 528 tests with 1 Windows symlink-privilege
-skip in 65.70s. Ruff/format and diff checks passed. The earlier full-backend result above
-precedes this bounded correction; the full backend was not repeated after it.
-
-Initial patch inspection found a duplicated contract section after a patch retry; it was
-deduplicated before final document validation. No ignored file is a published dependency.
-
-### Remaining limits
-
-Only linked identity-phase snapshots are read. Old snapshots may omit coordinates; no
-automatic backfill or follow-up request is made. Independent acquisition still uses a
-caller-owned injected transport; no built-in operational Google client is supplied.
-Coordinates prove correspondence to observed evidence, not factual perfection or future
-route guarantees. Close agreeing-but-different coordinates remain explicitly conflicting,
-without an unapproved tolerance policy. Manual reviewed coordinates remain an alternative.
-No formal comparison, database/model/provider live call, Ticket 10 implementation, Issue
-mutation, push or freeze is claimed by this extension.
-
-<a id="rtpeval-ticket-07-acceptance"></a>
-
-<a id="rtpeval-ticket-07-acceptance--ticket-07-offline-same-day-route-acceptance"></a>
-
-## Ticket 07 offline same-day route acceptance
-
-Date: 2026-10-02, Australia/Sydney. Base revision:
-`3427784b87d5864aba25dcba8b48430ec4de9dac` on `feature/evaluation`, plus the
-uncommitted approved preflight, implementation, tests and documentation.
-Status: Implemented and offline-validated; both review axes are clear. The original
-existing-test exception below was subsequently resolved under separate user-approved
-repair scope: latest unfiltered gate 2234 passed / 10 skipped / zero deselections.
-See the supplemental repair section; original checkpoint results remain historical.
-Implementation and the independent test repair are committed locally under the
-subsequently approved three-group closeout below. All changes remain unpublished;
-this acceptance belongs to the approved documentation group. No freeze is implied.
-
-<a id="rtpeval-ticket-07-acceptance--authority-and-scope"></a>
-
-### Authority and scope
-
-[PROJECT](../../../PROJECT.md), the [approved preflight](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19#issuecomment-5955699412),
-[route contract](../../contracts/0004-opening-routes.md#rtpeval-route-contract), [time contract](../../contracts/0001-evaluation-artifacts.md#rtpeval-evidence-time-contract),
-[snapshot contract](../../contracts/0002-intake-identity-usage.md#rtpeval-snapshot-contract) and [metrics contract](../../contracts/0005-quality-human-review.md#rtpeval-metrics-contract)
-own the approved offline behavior. GitHub [#19](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/19)
-owns live task state; [#12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12)
-owns overall progress. Historical local ticket/import statements remain dated history.
-
-The user approved preparation/scoring/local CLI, synthetic TDD, relevant and full offline
-regressions, Standards/Spec review and corrections, and related docs/archive/Issue updates.
-No provider/model/database live call, formal case, experiment, auxiliary total, V3 delta,
-commit/push, branch switch, freeze or later-ticket implementation was included.
-V0-V3 planner behavior and independent entry points are unchanged.
-
-<a id="rtpeval-ticket-07-acceptance--implemented-behavior-and-interfaces"></a>
-
-### Implemented behavior and interfaces
-
-`backend.evaluation.routes` exposes immutable public `prepare_routes` and `score_routes`
-results with independent `to_dict()` copies. `backend.evaluation.route_cli` exposes local
-JSON `prepare`/`score` commands. Exit 0 includes quality FAIL/UNKNOWN; exit 2 identifies
-material correction/identity replay without a partial cohort. Inputs are never rewritten.
-The [package guide](../../../backend/evaluation/README.md#ticket-07-offline-same-day-routes)
-owns signatures, new route review/coordinate formats and query defaults.
-
-- Preserve same-day consecutive primary occurrences, independent canonical identities
-  and version-selected transport: V0 Activity, V1-V3 Transfer, no ignored-source fallback.
-  Inter-day legs are excluded; confirmed same-canonical transitions are N/A. Repeated
-  occurrences stay separate even when acquisition requests are deduplicated.
-- Prepare occupancy, reviewed Input mode restrictions and independently reviewed coordinates
-  without route observations. Extract only neutral Ticket 05 validators into
-  `_schedule_preparation.py`; keep existing obligation wire/policies unchanged.
-- Honor explicit departure. Otherwise allow waiting, select the longest continuous free
-  fragment and break ties by earliest UTC start before seeing provider outcomes. Do not
-  concatenate gaps, seek a better departure after failure or silently switch modes.
-- Applicable non-travel/fixed occupancy deadlines have zero grace. The separate 300-second
-  schedule tolerance applies only to the next visit. DRIVE reserve is 600 seconds once;
-  cap tolerance is independently 300 seconds, with no WALK distance tolerance. Shared
-  `_route_rules.py` constants drive both arithmetic and reported rules/hash.
-- Preserve uncertainty locally: known disjoint alternative occupancies do not contaminate
-  another leg. A guaranteed common occupation starting at its deadline is a hard boundary;
-  a merely possible boundary cannot borrow the next-visit tolerance and stays UNKNOWN.
-- Verify raw snapshot integrity and entire identity/occurrence/request/paired linkage.
-  Foreign or corrupt material yields no partial cohort; valid inapplicable mode, departure,
-  coordinate or option context is UNKNOWN. Deliberate time-independent WALK/basic DRIVE
-  and applicable explicit departure contexts stay distinguishable without date shifts.
-- Independently parse raw element status/condition and nanosecond duration. Accept valid
-  traffic-calculation fallback; explicit no-route FAILs without invented duration.
-  Missing WALK distance/duration remains UNKNOWN for that component. Any independently
-  proved component FAIL is decisive; all required components must PASS for combined PASS.
-- Report components, raw overruns/deficits, source/query/attempt/hash provenance, separate
-  structural/response/full-component/decisive/duration coverage and conditional P/(P+F).
-  Partial decisive FAIL is not complete evidence. Unknown travel stays null, never zero.
-  Daily/request duration sum/median/max are observed subtotals with missing and unresolved
-  population counts; reserve stays separate. Unresolved potential legs suppress relevant
-  full-scope rates and complete burden claims without discarding observed measurements.
-
-<a id="rtpeval-ticket-07-acceptance--actual-development-and-correction-sequence"></a>
-
-### Actual development and correction sequence
-
-Public preparation/scorer/CLI seams drove synthetic tests. No third-party network was used.
-Initial tracer tests were RED for missing modules, then implemented. A default temporary
-directory attempt emitted setup errors without a retained complete result; no count or
-cause is inferred. Subsequent runs use explicit repository-local `--basetemp`.
-
-1. Neutral validator extraction initially omitted `OBLIGATION_FIELDS`: **27 failed /
-   39 passed**, then the import correction yielded **66 passed** across new baseline and
-   existing requirement/schedule tests. No Ticket 05 policy change was made.
-2. Malformed status message: **1 failed / 21 passed**, corrected to **22 passed**.
-   Expanded context tests exposed a fixture carrying modified source state between builds:
-   **1 failed / 39 passed**; each build now restores its original source results, and the
-   combined subset passed **41 tests**. This fixture correction does not change production.
-3. Unresolved adjacency: **1 failed / 44 passed**, corrected to **45 passed**. Missing
-   tolerance classification and non-string clock handling produced two RED cases;
-   corrections yielded **48 passed**. Further route cases passed **63 tests**.
-4. Expanded local CLI and evaluation regression: **392 passed / 1 skipped**. First full
-   backend gate before review corrections: **2221 passed / 10 skipped in 158.36s**.
-5. Spec review regressions for disjoint alternatives and unresolved population burden:
-   **2 failed / 1 passed**, corrected to **3 passed**. Added applicability, provenance,
-   precision and repeated-occurrence cases yielded **84 route/CLI tests passed**.
-   The intermediate full backend run passed **2232 / 10 skipped in 200.72s**.
-6. Follow-up Spec review found possible occupancy starting exactly at a deadline could
-   borrow the 300-second tolerance. Both new boundary cases were RED (**2 failed**).
-   Guaranteed-boundary/possible-boundary handling corrected them. Final route/CLI subset:
-   **86 passed in 20.35s**. Common 10:30 occupation gives FAIL with a raw 120-second deficit;
-   alternatives at 10:30/10:35 give UNKNOWN, never a fabricated free interval.
-7. A subsequent bare `python` invocation selected host Python 3.13 without pytest and ran
-   no tests. Verification immediately used the existing project `.venv` Python 3.12;
-   dependencies and host settings were not changed.
-
-The first post-boundary full run stopped making progress in the unchanged
-`test_httpx2_embedding_timeout_and_cancel_close_owned_client` cases. Independent execution
-also failed to complete; a 10-second faulthandler dump shows the test's asyncio run waiting.
-Only these verified test processes were stopped, with exact PID/command identity checks.
-The original test has an unbounded `entered.wait()` alongside a 20ms timeout. A handshake
-timing race is a hypothesis, not a confirmed runtime diagnosis. No Retrieval code, test
-assertion or product budget was changed. Earlier complete full runs passed these cases.
-
-Final broad backend result: **2232 passed / 10 skipped / 2 deselected in 186.17s** after
-the boundary correction, explicitly deselecting both parameters of that existing test.
-This is a documented validation exception, not a claim that the final workspace passed
-every backend test. The earlier unfiltered run was **2232 passed / 10 skipped in 200.72s**
-before the last two new boundary tests/fix; these counts must not be merged. Remaining
-tests are unchanged. A subsequent English/document link check found **165 existing local
-Markdown targets**; AST comparison confirmed all **eight extracted definitions unchanged**.
-Backend-wide Ruff, evaluation compilation, route CLI help and diff checks
-passed. Incidental formatter changes to unchanged baseline files were removed.
-
-All full-suite checkpoints deliberately set `TRIPWORLD_TEST_DATABASE=0`. Their ten skips
-are nine opt-in PostgreSQL integration tests and one host symlink-privilege case. Earlier
-Ticket 06 database/UAC supplements do not count as Ticket 07 verification. No new live,
-database or elevated-native execution was performed or inferred from prior permissions.
-
-<a id="rtpeval-ticket-07-acceptance--review-axes"></a>
-
-### Review axes
-
-**Standards:** no documented-standard breach. One initial nonblocking duplicated-rule
-smell was corrected by centralizing caps, tolerances, reserve and query defaults.
-Follow-up review found no remaining Standards issue.
-
-**Spec:** two initial P2 findings (disjoint alternative poisoning and incomplete-population
-burden) plus one follow-up P2 deadline-boundary finding were fixed with public regressions.
-Final read-only follow-up confirmed all three resolved, with no remaining actionable
-Spec issue or scope expansion. Tests are reported by the primary agent, not by reviewers.
-
-<a id="rtpeval-ticket-07-acceptance--evidence-and-remaining-limits"></a>
-
-### Evidence and remaining limits
-
-Ignored local evidence: `thesis_notes/evaluation/ticket-07-validation/` contains separate
-pre-review, post-initial-review, interrupted and final broad-regression logs. The local research record
-`thesis_notes/evaluation/2026-10-02-ticket-07-implementation.md` preserves development
-decisions and failures; neither is a fresh-checkout dependency or project authority.
-
-Synthetic response/coordinate/review fixtures verify engineering behavior, not real
-provider availability or coordinate facts. External mode/coordinate review is a supplied
-trust boundary; unknown facts remain visible. No formal evaluation, historical/future
-travel guarantee, cross-version ranking or version-level retrospective is claimed.
-Ticket 08 report/auxiliary-score work requires its own approved preflight/scope.
-
-<a id="rtpeval-ticket-07-acceptance--tracker-closeout"></a>
-
-### Tracker closeout
-
-Issue #19 was updated/read back as closed/completed with all five current acceptance
-checks complete, actual validation exception and local/unpublished boundary. Parent #12
-was updated/read back as open with 01-07 complete and later tickets unchanged. Imported
-ticket/preflight/commit history was preserved. No new Issue, comment, assignment or label
-was created. Research evidence remains ignored; no Git staging or commit was performed.
-
-<a id="rtpeval-ticket-07-acceptance--final-workspace-checks"></a>
-
-### Final workspace checks
-
-All six generated Ticket 07 test/diagnostic roots were removed after their processes
-ended and four archived regression logs were verified. Final English/local-link check:
-**167 existing targets**. Index remains empty; HEAD remains 3427784b on feature/evaluation.
-The actual content diff contains only approved Ticket 07 files. Four unchanged baseline
-files touched by the formatter show checkout line-ending status entries but have zero
-content diff against HEAD; they are not implementation changes or staged content.
-
-<a id="rtpeval-ticket-07-acceptance--subsequent-diagnosis--2026-10-02"></a>
-
-### Subsequent diagnosis — 2026-10-02
-
-After Ticket 07 closeout, the user separately authorized diagnosis of the existing
-embedding timeout-test hang. The [record](../v0-v3/v2-embedding-timeout.md#timeout-test-diagnosis-diagnosis) confirms
-that SDK cold request preparation can outlast 20ms, leaving the test waiting forever for
-a handler event after the embedding task already timed out. A bounded test-only candidate
-passed both parameters in memory; no source repair/full-suite retest is yet authorized or
-claimed. The Ticket 07 actual skip/deselection checkpoint above remains unchanged.
-
-<a id="rtpeval-ticket-07-acceptance--approved-timeout-test-repair-supplement--2026-10-02"></a>
-
-### Approved timeout-test repair supplement — 2026-10-02
-
-The user subsequently approved applying the concrete test-only patch and targeted/full
-offline validation. [Repair acceptance](../v0-v3/v2-embedding-timeout.md#timeout-test-diagnosis-repair-acceptance)
-records one affected test function changed, direct timeout observation, bounded cancel
-handshake/scenario and child cleanup, with a five-second synthetic deadline and original
-assertions retained. Production Retrieval, usage hooks and runtime config are unchanged.
-
-Actual-source feedback loop: pre-fix 1 failed/1 passed/14 deselected in 15.76s, post-fix
-2 passed/14 deselected in 8.24s. Both parameters pass alone in separate cold processes;
-all 16 module tests pass. Standards and Spec each report zero findings. The new unfiltered
-full offline backend gate is **2234 passed / 10 skipped in 196.39s, zero deselections**.
-Both formerly excluded parameters now participate and pass. Database/native skips are
-not supplemented. Earlier numbers are distinct historical runs, not retroactive passes.
-No provider/model/database live call, formal experiment, Git action, freeze or Ticket 08.
-
-<a id="rtpeval-ticket-07-acceptance--approved-local-git-closeout--2026-10-02"></a>
-
-### Approved local Git closeout — 2026-10-02
-
-The user explicitly approved finishing Ticket 07 with the previously proposed three
-local groups. This later approval supersedes only the earlier no-commit boundary;
-push, branch switching, live/database/native supplements, freezes and Ticket 08 remain
-outside scope. No executable correction was made during Git closeout.
-
-1. **2b66c9f889ca8964f97dbc67b2a601ebb56be64c** —
-   `feat: evaluate same-day routes from frozen evidence`.
-   Seven new route/preparation modules, neutral validator extraction in the existing
-   requirement/schedule module, and the two directly related test modules; ten files.
-2. **b18daef4af2fecba36d7b84315c8946a772aeae8** —
-   `test: bound embedding timeout and cancellation checks`.
-   Only the independently approved existing test function; one file.
-3. Approved documentation group — `docs: record route validation and local closeout`.
-   Current route/metrics contracts, preflight/acceptance, permanent diagnosis/proposal/
-   repair records, PROJECT, documentation index/glossary and package guide. The commit
-   containing this entry supplies its own revision through Git history; ignored archive
-   probes/logs, credentials, raw payloads and generated pytest files are excluded.
-
-Pre-commit offline check: route tests, CLI tests, shared requirement/schedule tests and
-the runtime retrieval module passed **166 tests in 34.26s**. Backend Ruff and diff checks
-passed. The full unfiltered **2234 passed / 10 skipped / zero deselections** gate remains
-the earlier actual run; it was not rerun or supplemented, and no code changed afterward.
-The ten skips remain nine opt-in database cases and one host symlink privilege case.
-Earlier filtered gates and red/correction/retest sequences remain dated history.
-Four baseline files with zero normalized content diff require only index-stat refresh;
-they contribute no staged content or commit changes. Generated closeout pytest files
-are removed after process completion. No version freeze or later ticket is implied.
-Closeout documentation check: English content and **180 existing local Markdown
-targets** across ten documents passed. The permanent historical proposal passes
-reverse-apply validation against the committed repair. Its unified-diff context markers
-are preserved as patch syntax; they are not ordinary prose whitespace.
-
-
-<a id="v0-route-request-preparation-2026-10-05"></a>
-
-## V0 independent route request and budget preparation — 2026-10-05
-
-Issue #69 was merged through PR #71 at merge commit `5d21d6b4685c7793f27954d7c175bed9524b3803`.
-Issue #70 is implemented locally for offline preparation only; Git publication and live execution remain unapproved.
-Review base: `f011a2929f9235f30a546f872f3a879cd6aaeed6`.
-
-The unchanged saved V0/#66 material replays six adopted identities and three genuine-review-pending references.
-All four original legs remain UNKNOWN. Native occupancy, continuous windows, mode, original estimate and timing remain in the JSON package.
-
-| Date | Directed endpoints | Mode | Original estimate / nominal gap (min) | Identity / coordinates | Request state | Reasons |
-| --- | --- | --- | --- | --- | --- | --- |
-| 2026-10-07 | Gyeongbokgung Palace -> National Museum of Korean Contemporary History | WALK | 20 / 30 | False / False | blocked | identity_unresolved, regional_walk_unavailable_or_low_quality, independent_coordinates_missing |
-| 2026-10-08 | Bukchon Hanok Village -> Insadong | WALK | 25 / 35 | True / True | blocked | regional_walk_unavailable_or_low_quality |
-| 2026-10-09 | Seoul Museum of History -> Gwangjang Market | TRANSIT | 35 / 45 | True / True | conditional | regional_transit_coverage_unverified |
-| 2026-10-10 | Changdeokgung Palace -> Jongmyo Shrine | WALK | 20 / 30 | False / False | blocked | identity_unresolved, regional_walk_unavailable_or_low_quality, independent_coordinates_missing |
-
-Six independent saved coordinates were reused. Two legs have adopted identities and complete coordinates.
-Missing coordinate venues: zero. Proposed Details: zero. Directed request inventory: two;
-one WALK request is blocked by regional coverage and one TRANSIT request is conditional on verified region support.
-Executable/approval-ready Routes: zero. Identity-blocked legs have no invented request or endpoint ID.
-
-### Frozen request and price assumptions
-
-- Details: `id,location`, Place Details Essentials; exact returned ID must match the replay-adopted canonical ID.
-- Routes: 1x1 Compute Route Matrix, preserving WALK or TRANSIT. Mask:
-  `originIndex,destinationIndex,status,condition,distanceMeters,duration,fallbackInfo`.
-  TRANSIT retains its original `2026-10-09T03:00:00+00:00` departure; WALK sends no historical departure.
-- Global first paid tier checked 2026-10-05: USD 5 per 1,000 Details requests or matrix elements;
-  USD 0.005 per item. No free credit, volume discount, tax or actual invoice is assumed.
-- Current proposed retail budget: **USD 0.00**, zero sends. Two unready inventory items total USD 0.01 hypothetically;
-  this is not an allowance. The ticket's 8 Details + 4 Routes ceiling would be USD 0.06 at these rates.
-- Single-call timeout: 20 seconds; total deadline: 300 seconds; zero retries/searches/model calls.
-  Counters reserve the next item before a send; changed input/inventory, unsupported context, identity/coordinate mismatch,
-  any provider failure/timeout or limit stops execution. No acquisition executor was implemented.
-
-### Provider limitations and approval boundary
-
-The [official country coverage table](https://developers.google.com/maps/coverage) labels KR walking/driving
-unavailable or low quality and omits transit coverage. This is not proof that a route does not exist.
-TRANSIT is in the [matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix),
-but country support and actual schedule availability are unverified. The matrix reference allows past TRANSIT times
-without a guaranteed horizon; the Compute Routes 7/100-day horizon is not imported.
-No mode substitution, retiming, itinerary optimization, genuine review fabrication or new feasibility score occurred.
-[Official prices](https://developers.google.com/maps/billing-and-pricing/pricing) and
-[SKU triggers](https://developers.google.com/maps/billing-and-pricing/sku-details) support the dated estimates.
-
-Actual module CLI exits 3 with a complete blocked/conditional JSON package. Exact library replay and request preflight
-passed with network/DNS blocked and zero attempts. All 61 protected original hashes are unchanged.
-Local evidence identifiers: `artifacts/v0-route-requests-20261005/request-package.json`, `offline-acceptance.json` and `preparation-report.md`. These ignored artifacts are not fresh-clone dependencies; the synthetic fixture suite is tracked.
-
-Later execution needs a revised, demonstrably supported exact inventory, a separately approved budget and a current-session
-execution child configured `gpt-6.1-sol` / `medium`. Genuine pending identity/audit reviews remain prerequisites for their legs.
-This is engineering preparation, not a formal benchmark, accuracy result or version freeze.
-
-
-### Implementation, validation and review sequence
-
-Review fixed point: `f011a2929f9235f30a546f872f3a879cd6aaeed6`.
-Implementation/tests were committed as `677a7e2` before independent Standards and Spec review.
-TDD first failed at the absent public request entry point. Later red cases exposed missing
-Details/conditional inventories, supplied-Details validation, same-canonical N/A handling,
-evidence chronology and absent preflight. Those boundaries were implemented without changing
-native scoring or relaxing existing snapshot/identity guards. Focused request gate: 23 passed;
-then CLI/conflicting-coordinate checks brought the suite to 25 and the combined adoption/request
-gate to **72 passed**. Ruff passed. The full backend gate passed **2777, 10 skipped in 399.30s**.
-The skips are existing environment/opt-in cases. No mypy/pyright gate is configured.
-Actual public module execution produced complete JSON and exit 3; exact library replay,
-network/DNS blocking and budget preflight passed. Zero network attempts/sends were observed;
-all 61 protected source hashes remain unchanged and original V0 SHA-256 is still
-`b9cf2d4c5ed9b50d2a73e87f93d3631021a0abf7cdea19d1fcc9d5c83d87582b`.
-
-Standards and Spec independent reviews both found zero actionable findings; no correction
-commit was needed. The final contract, CLI instructions, PROJECT state and dated evidence
-were checked for tracked links/anchors, English additions and whitespace before their
-separate documentation commit. Issue #70 acceptance describes this local checkpoint and
-remains OPEN pending separate Git publication. Its prior dedicated `smoke tests` wording
-was updated to the current-session `gpt-6.1-sol` / `medium` execution-child policy.
-No acquisition executor or paid request was implemented or run; execution needs separate approval.
-
-<a id="versioned-v0-route-readiness-2026-10-06"></a>
-
-## Version-specific V0 route readiness (#78, 2026-10-06)
-
-The user authorized #78 implementation with offline work only and zero paid calls,
-after #75/#76 corrections and #77 preparation. Fixed review base is
-`769a066ac73f71fb4bbc4b6987522a42d57bb0ea`, on `feature/evaluation`.
-Implementation/tests are committed as `571ed9506ae08cbd70cb5cce736a5acbab05d59a`.
-The unrelated existing `.gitignore` edit remains excluded. This is local development
-acceptance, not a live smoke, route feasibility result, score comparison, formal benchmark,
-version freeze or Git publication. #79 requires separate scope and action authorization.
-
-The existing #70 preparation capability is reused. Package schema is now
-`rtpeval_v0_route_requests_2`: the default requires exact current version-specific identity
-replay, and explicit `legacy=True`/`--legacy` preserves historical input replay. Historical
-saved artifacts are not relabeled or rewritten. An omitted current report derives pending
-identity from verified independent material with no model result, retaining original legs
-and model-evidence blockers. Current reports have no mandatory human identity/audit gate.
-Per-leg endpoint declarations retain original claims, candidate correspondence and separate
-grounding verdicts. FAIL/UNKNOWN exclude canonical endpoints and candidate-coordinate repair;
-they do not manufacture a route-feasibility FAIL. Eligible occurrence and unique-venue
-counts remain separate from coordinate readiness and deduplicated request counts.
-
-Public-interface TDD reproduced four integration gaps: missing current evidence discarded
-all original legs; a historical adoption report was accepted by default; output omitted
-current policy/endpoint counts; and endpoint blockers omitted grounding verdict metadata.
-Each slice was corrected and retested through `prepare_v0_route_requests`. The CLI test
-first failed because the identity-report positional argument was mandatory; it now supports
-the same missing-evidence preparation and explicit historical selection. Historical tests
-select legacy replay instead of silently exercising it as current policy.
-
-The synthetic current-policy suite demonstrates PASS without human review, confirmed
-wrong-address FAIL and legitimate UNKNOWN exclusion, stale/forged reports, corrupt original
-or snapshot sources, invalid/missing/wrong-ID/conflicting coordinates, exact Details ID
-checks, repeated occurrence/query deduplication, original TRANSIT departures, blocked DRIVE
-coverage and preflight that never grants execution. A repeated-visit fixture retains three
-directed legs and six endpoint occurrences while deduplicating to two venue IDs and two
-WALK matrix queries. No planner or model coordinate backfill is supplied. The related
-current/historical identity, adoption, route request and snapshot-coordinate gate passed
-**178 tests in 55.46s**. Global Ruff lint passed; `.scratch/pytest-78-related.txt` is an
-ignored local evidence identifier.
-
-The real package uses #77's exact current pending identity report with eight V0 UNKNOWN
-references, not the six historical #70 adoptions. Ignored evidence identifier:
-`artifacts/v0-route-requests-78-20261006`. Preparation timestamp is
-`2026-10-05T23:53:05.083299+00:00` (2026-10-06 in the user's Australia/Sydney timezone).
-It binds the verified original bundle and original reviewed context. All **four original
-directed legs** retain their source IDs, mode, date/time, estimates, occupancy, gap and
-selected window values. They remain **UNKNOWN/blocked** with zero identity-eligible legs,
-eligible endpoint occurrences/venues, reused coordinates, Details, conditional/ready
-Routes or directed request inventory. Proposed and hypothetical inventory budgets are
-**USD 0**. Zero missing-coordinate venues describes the empty eligible population; it
-does not establish complete endpoints or coordinate readiness. The old 8-Details/4-Routes
-planning ceiling and 2026-10-05 price assumptions remain a historical bound, not a new
-allowance or provider invoice. Actual model/Google/Routes/planner sends and incremental
-charges during preparation are **zero**.
-
-Inventory SHA-256:
+Six existing snapshot coordinates supplied two contexts: October 8 Bukchon→Insadong WALK
+and October 9 History Museum→Gwangjang TRANSIT. Gyeongbokgung-origin and Jongmyo-destination
+legs remained review-blocked. No new journey evidence existed; all four routes UNKNOWN.
+Consumers recomputed full bound reports; changed policy/IDs/audit/review could not bypass
+replay. Optional partial address fields retained their actual facts/diagnostics.
+
+| Gate / correction | Actual result |
+| --- | --- |
+| First full backend | 2745 passed/10 skipped/1 import-guard failure, 336.65 seconds. |
+| Guard retained; permitted stdlib schema validation | 382 evaluator/1 skipped; corrected full 2747/10,357.18 seconds before review. |
+| Spec P2 corrections | Precise offset-aware authorization timestamps and native decision/audit retention when model freeze absent. |
+| After review | 388 evaluator/1 skipped, 38.18 seconds;47 adoption cases; final full 2752/10,250.11 seconds. |
+
+Saved-material replay also exposed provider-order assumptions and provenance compatibility;
+complete facts were matched by exact ID, with original wire serialization/timezone binding.
+Native-policy relabeling and malformed reports retained replay-required outcomes.
+Implementation `6055905`, correction `481d531`; both review rechecks clear. CLI exited 3
+and matched the saved report. Evidence: `artifacts/v0-identity-adoption-20261005/`;
+all 61 original hashes unchanged. UTF-8 remained necessary for Korean JSON display.
+
+### Route inventory after historical adoption
+
+[#70](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/70), base
+`f011a2929f9235f30a546f872f3a879cd6aaeed6`, followed #69 publication through PR 71,
+merge `5d21d6b4685c7793f27954d7c175bed9524b3803`. Two adopted legs had saved coordinates,
+zero missing-coordinate venues/Details. The October 8 WALK inventory was region-blocked;
+October 9 TRANSIT conditional; two review-blocked legs had no invented endpoints.
+Ready Routes were zero, proposed USD 0; two unready items hypothetical USD 0.01, not allowance.
+Historical 8 Details+4 Routes ceiling was USD 0.06 at dated USD 0.005 Essentials/item.
+
+Preparation used exact-ID `id, location` Details and 1×1 Matrix indices/status/condition/
+distance/duration/fallback. It preserved original TRANSIT departure and did not import
+Compute Routes' 7/100-day horizon into Matrix. [Country coverage](https://developers.google.com/maps/coverage)
+marked KR WALK/DRIVE unavailable or low quality and did not attest TRANSIT support.
+No NO_ROUTE or infeasibility was inferred from that coverage table.
+
+Focused 25 request tests, 72 adoption/request and full 2777/10 in 399.30 seconds passed;
+implementation `677a7e2` passed both independent reviews. Actual CLI exited 3 with
+blocked/conditional inventory. Evidence: `artifacts/v0-route-requests-20261005/`.
+No acquisition executor existed; 20 seconds per-call/300 seconds total/zero retries were proposed bounds.
+
+## October 6–7: current identity and regional readiness
+
+#78 introduced `rtpeval_v0_route_requests_2` at base
+`769a066ac73f71fb4bbc4b6987522a42d57bb0ea`, implementation
+`571ed9506ae08cbd70cb5cce736a5acbab05d59a`. Current version-specific replay became
+the default; explicit `legacy=True`/`--legacy` preserved historical adoption replay.
+Current policy had no mandatory human/audit identity gate. An absent report retained
+all original legs and missing-model blockers instead of silently using six old adoptions.
+Grounding FAIL/UNKNOWN excluded canonical endpoints and did not manufacture route FAIL.
+
+Public regressions covered missing current evidence, legacy-report rejection, grounding
+metadata and optional CLI reports. Related 178 tests passed in 55.46 seconds; full 2945/10 in
+414.43 seconds; both reviews clear. Repeated synthetic visits retained 3 legs/6 endpoint occurrences
+but 2 venue IDs/2 queries. The real #77 material had eight V0 UNKNOWNs, zero eligible endpoints,
+coordinates/Details/routes/inventory and USD 0 proposed/hypothetical. Empty-population zero
+missing venues did not mean coordinate completeness. All 81 protected hashes remained.
+Package/inventory SHA-256:
+`239df2ee99c95540fc6ff37835c9ad51c080dccc40f23058a8bbb442f98fffb3` /
 `d085383d3250835891b2b67e8e7a95418bd30445d4de14f0f495f6c97c21ab61`.
-Request-package file SHA-256:
-`239df2ee99c95540fc6ff37835c9ad51c080dccc40f23058a8bbb442f98fffb3`.
-The private offline audit confirms **81 protected file hashes unchanged**, including
-original #70/#73/#77 material and the consumed #73 execution evidence. These ignored paths
-are historical evidence identifiers, not fresh-clone or published documentation dependencies.
-No real provider payload is promoted into reusable test fixtures or tracked docs.
-
-Actual module CLI replay, with DNS and socket connections prohibited, produced the same
-JSON package as the library and **exit 3**, meaning complete blocked preparation. The
-first CLI harness incorrectly supplied a JSON-null optional occupancy-review file, which
-was rejected as a non-object envelope. Its output is preserved as `cli-package.json`;
-the corrected harness omits that absent optional flag and saves `cli-package-corrected.json`.
-No production code change was needed for this harness correction. Exact preflight is
-stopped/not authorized because no ready request exists. No acquisition executor is added.
-
-Independent implementation Standards and Spec reviews each found **zero findings**;
-no tracked correction commit was needed. The final serial full backend gate at `571ed95`
-passed **2945 tests, 10 skipped in 414.43s**:
-`.venv/Scripts/python.exe -m pytest backend/tests -q -p no:cacheprovider
---basetemp .scratch/pytest-78-full --tb=short --show-capture=no`.
-The evidence identifier `.scratch/pytest-78-full.txt` is ignored and not a public dependency.
-Global Ruff and five changed Python format checks pass. No configured mypy/pyright or
-remote CI outcome is claimed. Independent final documentation Standards and Spec reviews
-each found **zero findings**. All 162 tracked local Markdown targets and anchors pass;
-added documentation is English, and the 81 protected file hashes remain unchanged.
-Documentation is committed separately from implementation and tests. The pre-existing
-unrelated `.gitignore` edit is excluded from both commits.
-The [official coverage table](https://developers.google.com/maps/coverage) and
-[matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
-were reread on 2026-10-06: KR WALK/DRIVE remain unavailable or low quality, transit is
-absent from the coverage table, and the matrix accepts past TRANSIT departure timestamps
-without certifying actual historical schedule availability. Unsupported context remains
-UNKNOWN; no alternate DRIVE query, date shift, planner rerun or route score is introduced.
-
-The preserved #77 plan and request hashes remain unchanged, but #78 modifies two files
-in its frozen implementation set (`route_requests.py`, `route_requests_cli.py`). That old
-manifest therefore cannot pass current execution preflight. No new smoke manifest is
-generated under #78; future execution requires a fresh exact freeze and separate approval,
-then the current-session `gpt-6.1-sol` / `medium` execution child. Only genuinely accepted
-new current identity evidence can remove actual endpoint blockers. Any future Places or
-Routes acquisition also needs a demonstrably supported exact inventory and separate budget
-approval. Original artifacts, planner V0-V3 behavior and score arithmetic are unchanged.
+Evidence: `artifacts/v0-route-requests-78-20261006/`. The old #77 implementation freeze
+was stale after two preparation files changed; it could not authorize execution.
 
 <a id="accepted-v0-identity-route-refresh-2026-10-07"></a>
 
-## Offline route refresh from accepted #85 identity (#86, 2026-10-07)
+#86 refreshed only offline evidence at `d26be76b111ed275e0cde70658a0bbecebf018a4` using
+accepted #85 `versioned_api_identity_2`/`v0_identity_correspondence_3`: eight V0 visits plus
+one requirement PASS. Eight independent coordinates made all 4 legs identity/coordinate
+ready, with zero Details. Three WALK remained blocked and TRANSIT conditional under the
+unchanged October 5 KR profile. Four materialized unready requests cost hypothetical
+USD 0.020000; ready budget USD 0, historical upper bound USD 0.060000.
+Actual CLI/library replay matched at exit 3; preflight stayed unauthorised. Focused 182
+passed in 39.58 seconds; prior unchanged-code 2998/10 full gate was reused. Both reviews clear.
+All 120 protected files/69 implementation hashes and 10 newly prepared outputs verified.
 
-Status: prepared and verified offline. The user approved Issue creation and route-package
-refresh with zero paid calls on 2026-10-07 in Australia/Sydney. Fixed source revision:
-`d26be76b111ed275e0cde70658a0bbecebf018a4`. No production implementation, test fixture,
-generation, V1-V3 identity behavior, score formula or dependency changes are required.
-The only pre-existing tracked change is the unrelated `.gitignore` edit; it remains
-excluded and byte-identical. The Issue owns lifecycle and the approved preparation scope;
-no live, Git publication, research comparison or version-freeze authorization is added.
-
-The previous #78 real package used a current pending report and had zero eligible
-endpoints. This fresh package uses #85's accepted `versioned_api_identity_2` report and
-its `v0_identity_correspondence_3` saved response: eight V0 primary visits and one
-V0-owned requirement target PASS. The response, model envelope and report replay exactly
-through the public resolver against the original bundle and API evidence. The historical
-#70/#78 packages and #82/#85 consumed executions are preserved, not overwritten or
-relabeled. The V0 target's original missing address stays null; target identity is not
-substituted for endpoint occurrences or turned into another journey leg.
-
-The parent blocks DNS, connection APIs and live SDK construction while preparing.
-Preparation timestamp is `2026-10-06T13:05:17.093816+00:00`, or 00:05:17 AEDT on
-2026-10-07. Both `prepare_v0_route_requests` and the actual module CLI use this exact
-time and the original bundle, accepted #85 report, schedule context and route reviews.
-The absent optional occupancy review is omitted from the CLI rather than written as
-a JSON-null review envelope. No new human review is fabricated.
-
-All four original directed legs retain source reference IDs, modes, dates/times,
-estimates, occupancy/blocker fields, gap and selected continuous interval. Eight
-endpoint occurrences have eight distinct canonical venues, and all four legs are
-identity-eligible with no identity blockers. Eight source-linked independent snapshot
-coordinates pass replay, exact-ID, strict numeric and timestamp checks. All four legs
-are coordinate-ready, with zero missing-coordinate venues and zero proposed Details
-requests. No model/planner coordinate is accepted and no additional Details is fetched.
-
-| Original day | Mode | Original gap (minutes) | Identity / coordinates | Request state | Feasibility |
-| --- | --- | --- | --- | --- | --- |
-| 2026-10-07 | WALK | 30 | Eligible / ready | blocked | UNKNOWN |
-| 2026-10-08 | WALK | 35 | Eligible / ready | blocked | UNKNOWN |
-| 2026-10-09 | TRANSIT | 45 | Eligible / ready | conditional | UNKNOWN |
-| 2026-10-10 | WALK | 30 | Eligible / ready | blocked | UNKNOWN |
-
-All four directed Routes requests have materialized coordinate-backed bodies and exact
-keys, without execution. The existing KR preparation profile remains explicitly dated
-2026-10-05: WALK carries `regional_walk_unavailable_or_low_quality`, TRANSIT carries
-`regional_transit_coverage_unverified`. These are frozen contract assumptions, not a
-fresh coverage check on the event date or an API NO_ROUTE observation. Provider-supported
-legs and `ready_for_approval` Routes are both zero. No mode substitution, DRIVE fallback,
-date shift, planner rerun, removal of blocked legs or favorable route score is introduced.
-
-The package's existing price profile is also dated 2026-10-05, global first paid tier
-USD 5/1,000 Details requests or matrix elements, without credits/discounts. **Proposed
-ready-send budget is USD 0** (zero Details and zero ready Routes). The **four unready
-requests have hypothetical inventory cost USD 0.020000**; this field includes all three
-blocked WALK requests and the one conditional TRANSIT, not just the TRANSIT request.
-The **historical eight-Details/four-Routes planning bound is USD 0.060000**, not this
-package's proposed budget, an approved allowance or actual billing. No live pricing or
-coverage fetch occurs; account tier, free usage, taxes and invoice remain unavailable.
-
-The zero-send ledger remains empty. Prepared limits allow zero Details, zero Routes,
-zero search/model/retry sends and USD 0, with the unchanged 20-second per-call timeout
-and 300-second deadline. Preflight recomputes the exact frozen package for each of its
-four request keys, stops each as not ready with the zero-send limit exhausted, and
-always returns `live_authorized=false`. No live acquisition executor or execution child
-is created. Actual provider/model/planner sends and incremental charges are **zero**.
-
-The actual module CLI runs in a separate process with DNS and connections prohibited.
-Its UTF-8 output exactly matches the library package and its stderr is empty. Exit
-**3** means a complete inventory containing blocked/conditional applicable legs, not
-invalid material or completed route acquisition. No production correction is needed.
-The unchanged-code full backend gate remains **2998 passed / 10 skipped / zero failures**
-from the approved clock correction; it is reused and not rerun for this preparation.
-The focused identity adoption, current V0 contract, historical/current route preparation
-and smoke-tool gate passed **182 tests / zero failures in 39.58s** under the repository's
-external-network guard and mock transports. Two sandbox launches returned no pytest
-output before interruption; no test result is claimed for them. Running the same offline
-gate with an approved sandbox override produced the successful result. These launcher
-attempts did not send provider requests or alter the package; no code correction was
-needed. Local check evidence is `focused-tests-01.txt` (empty interrupted launch) and
-`focused-tests-03.txt` (command, successful terminal result and explicit capture limits)
-under the private package directory.
-
-The fresh private evidence identifier is `artifacts/v0-route-requests-86-20261007`.
-It contains the request package, exact present context/review envelopes, source binding,
-protected/output hashes, empty ledger, four preflight results, actual CLI output/stderr,
-offline acceptance, focused check log and a non-executable handoff. The handoff explicitly
-forbids sending and states remaining support/budget/approval prerequisites; private raw
-payloads, credentials and endpoints stay untracked. **120 protected original/source/
-preparation/execution files** and **69 implementation/dependency hashes** verify unchanged,
-including all #85 raw/model/report/receipt outputs and consumed-directory evidence.
-Ten new prepared output files are frozen separately, without overwriting old receipts.
-
-Inventory SHA-256:
-`3d138539bb3fafdb218f53313028450913bc86839f838b95c0669758ef1617b1`.
-Request-package file SHA-256:
-`ff16aa3bd539a08938df691e43d9b5645914282e3d6b78c3a34061884c10a3f5`.
-Accepted #85 identity-report file SHA-256:
-`068631d1a1a484f9be25074401f560d08861f0435007060b62280a6f4f254da9`.
-This is a new offline identity/coordinate-readiness observation, not independent journey
-validation. All four original route UNKNOWN results remain. Any future acquisition must
-first establish exact provider/method support and original departure applicability,
-regenerate the supported inventory and obtain separate budget/execution approval under
-the smoke policy. No all-PASS route requirement or paid retry is implied by preparation.
-
-
-Independent Standards and Spec reviews of fixed base
-`d26be76b111ed275e0cde70658a0bbecebf018a4` through preparation-document commit
-`a4dfc2e5cec282d218ab832f7ca24fc3647fa688` each report **zero findings**. Both independently
-verify the 120 protected files, 69 implementation/dependency hashes and 10 prepared
-outputs; Spec also checks preserved leg fields, coordinate provenance and input binding.
-No correction is required. Final tracked-document checks validate **183 local targets/
-anchors**, English additions and excluded private endpoint. The review acceptance is
-recorded separately after the reviewed commit; it changes no implementation or frozen
-preparation. #86's six offline acceptance criteria are satisfied, with its reconciled
-lifecycle owned by GitHub. The zero-ready inventory and route UNKNOWN outcomes remain
-explicit limitations, not unfinished work inside this preparation-only scope.
+Evidence: `artifacts/v0-route-requests-86-20261007/`.
+Inventory SHA-256:`3d138539bb3fafdb218f53313028450913bc86839f838b95c0669758ef1617b1`;
+package: `ff16aa3bd539a08938df691e43d9b5645914282e3d6b78c3a34061884c10a3f5`;
+accepted identity: `068631d1a1a484f9be25074401f560d08861f0435007060b62280a6f4f254da9`.
+The requirement's null address was retained, not substituted for an endpoint.
+All four route verdicts remained UNKNOWN despite identity/coordinate readiness.
 
 <a id="kr-route-support-budget-2026-10-07"></a>
 
-## Free Korean route-source verification and budget preparation (2026-10-07)
+### Alternative Korean sources: assessed, not integrated
 
-Status: public-documentation assessment complete; budget proposed, no provider
-integration or execution. The user approved free support verification, independent
-source selection and budget preparation. Fixed source revision is
-`49a6fef135945e3612722a10b4394e6afe49d846`; the unrelated pre-existing `.gitignore` edit
-is excluded and unchanged. The client date is 2026-10-07 in Australia/Sydney. Only
-public official documentation was browsed. No account/credential probe, provider API,
-model, planner, paid request, provider contact or tracker/Git publication occurred.
-This engineering assessment is not a formal benchmark or a comparison of V0-V3.
-
-Inputs remain #86's four original directed Seoul legs and accepted #85 identity report:
-WALK at noon KST on October 7, 8 and 10, with gaps of 30, 35 and 30 minutes; TRANSIT at
-noon KST on October 9, with a 45-minute gap. Eight independent coordinates are already
-bound to exact endpoint identities. No Details lookup is needed. The assessment does
-not repair original names, IDs, dates, modes, estimates, occupancy, windows or gaps.
-Public documentation supports technical candidates; it does not establish successful
-responses for these exact pairs, account entitlement or independently measured travel.
-
-### Sources and applicability
-
-Google's current [coverage table](https://developers.google.com/maps/coverage) still
-marks KR Walking Directions with a dash: unavailable or low quality/availability.
-It explicitly excludes public transit coverage and consumer Google Maps availability.
-Thus three Google WALK requests remain blocked, without a NO_ROUTE observation.
-The [Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
-accepts TRANSIT and RFC3339 departure time, including past departures, but the reviewed
-documentation does not confirm this KR transit pair or its timetable availability.
-The separate [Compute Routes transit guide](https://developers.google.com/maps/documentation/routes/transit-route)
-documents a seven-day past/100-day future window; that window is not transferred to
-Matrix. No method switch or API support probe occurred.
-
-The current [Kakao Map REST reference](https://developers.kakao.com/docs/en/kakaomap/rest-api)
-documents `GET /v2/routing/walk` and `/v2/routing/publictraffic`, with coordinate endpoints
-and WGS84. WALK success returns one route with distance in meters and time in seconds.
-The proposed WALK option is fixed `BROAD_FIRST`, with WGS84 input/output, before any
-response; alternative route modes are not tried after failure. Neither endpoint exposes
-a departure date/time parameter. WALK is therefore a candidate for the existing
-time-independent route-estimate contract, with the original itinerary time retained in
-the evidence envelope, not a claim of future conditions. General TRANSIT output cannot
-prove service at the original October 9 noon departure. These public V2 endpoints must
-not be confused with Kakao Mobility's separately contracted affiliate walking API.
-
-[TMAP pedestrian routing](https://tmap-skopenapi.readme.io/reference/%EB%B3%B4%ED%96%89%EC%9E%90-%EA%B2%BD%EB%A1%9C%EC%95%88%EB%82%B4)
-is a WALK alternative: it requires an app key, endpoint coordinates and encoded endpoint
-names, and supports WGS84GEO. Its [response specification](https://tmap-skopenapi.readme.io/reference/%EA%B2%BD%EB%A1%9C%EC%95%88%EB%82%B4-%EC%83%98%ED%94%8C%EC%98%88%EC%A0%9C)
-provides meters/seconds and route geometry. Its request has no departure date/time;
-the automobile time-machine API is not a WALK substitute. Reviewed
-[Naver Directions 5](https://api.ncloud-docs.com/docs/en/ai-naver-mapsdirections-driving)
-is driving routing, so it cannot preserve these WALK/TRANSIT modes. This is a conclusion
-about the reviewed public APIs, not all possible private products.
-
-ODsay's [reference](https://lab.odsay.com/guide/releaseReference) supports Seoul transit,
-general WALK and `maasRP` mode selection. The ordinary transit endpoint has no date/time
-input. `maasRP` accepts `SearchTime=yyyyMMddHHmm`, but the
-[operator clarification dated 2026-07-21](https://lab.odsay.com/community/boardView?seq=718)
-explicitly says this only constructs displayed departure/arrival fields by applying
-segment durations; it does not perform timetable-based routing. Consequently the
-presence of that parameter is not evidence of applicability to the original TRANSIT
-departure. Its total time is minutes, unlike Kakao/TMAP seconds; straight-line
-`pointDistance` is not a journey measurement. Subway timetable-only searches also do
-not establish a complete POI-to-POI leg with access/egress and the original date.
+Free official-documentation assessment at `49a6fef135945e3612722a10b4394e6afe49d846`
+retained the four original legs/options and eight source coordinates. No API/account
+probe was performed. [Kakao REST](https://developers.kakao.com/docs/en/kakaomap/rest-api)
+WALK/publictraffic used WGS84 and meters/seconds without departure-time parameters;
+proposed WALK fixed BROAD_FIRST before results. [TMAP pedestrian](https://tmap-skopenapi.readme.io/reference/%EB%B3%B4%ED%96%89%EC%9E%90-%EA%B2%BD%EB%A1%9C%EC%95%88%EB%82%B4)
+was a `WGS84GEO` alternative with encoded endpoint names. Neither attested future TRANSIT.
+[ODsay](https://lab.odsay.com/guide/releaseReference) MaaS SearchTime only constructs
+displayed times from durations per its [July 21 clarification](https://lab.odsay.com/community/boardView?seq=718),
+not timetable routing; total minutes differ from Kakao/TMAP seconds and pointDistance
+is not a journey. Reviewed [Naver Directions 5](https://api.ncloud-docs.com/docs/en/ai-naver-mapsdirections-driving)
+was DRIVE, not a compatible substitute.
 
 | Source / method | Current engineering use | Remaining limitation |
 | --- | --- | --- |
@@ -1340,41 +316,13 @@ not establish a complete POI-to-POI leg with access/egress and the original date
 | Kakao TRANSIT / ODsay general or MaaS TRANSIT | General route references only | Do not bind the original explicit departure |
 | Naver reviewed Directions API | No compatible inventory | DRIVE mode does not preserve submitted mode |
 
-Source independence also requires future acquisition directly from the selected
-provider for the preserved directed coordinates, with acquisition time, exact options,
-raw byte hash and source-linked normalization. The planner's own estimates, a map page,
-model inference or straight-line distance cannot substitute. Raw response formats must
-not be labeled as Google Matrix output. An alternative adapter is not implemented by
-this assessment. Error/status semantics require source-specific offline regressions;
-authentication, search-limit, snapping and malformed-response errors must not all be
-mapped to factual NO_ROUTE FAIL. The current route/scoring contract is unchanged.
-
-### Access, evidence retention and cost
-
-[Kakao usage policy](https://developers.kakao.com/docs/en/kakaomap/common) grants the
-free allowance only to the first activated app per developer account; other apps or
-excess use need the applicable paid configuration. The policy changed on July 21, 2026.
-The [quota/price page](https://developers.kakao.com/docs/en/getting-started/quota) lists
-1,000 daily calls each for WALK/TRANSIT and 10 KRW per additional call. No account was
-inspected, so eligibility and unused allowance remain unknown; free usage is not assumed.
-The reviewed price page does not establish tax treatment for this budget.
-
-[Kakao Operating Policy](https://developers.kakao.com/terms/en/site-policies) Article
-5(20) restricts caching purposes/currentness, and Article 5(30) restricts copying/use of
-obtained information without the applicable prior approval. Public documentation does
-not establish that this evaluator may keep immutable raw responses for long-lived
-replay. Applicability and an admissible retention strategy remain unresolved, rather
-than a finding that all evaluator use is prohibited. TMAP's
-[public terms entry](https://openapi.sk.com/stplat/usage/indexView) did not expose
-substantive retention clauses to the browsing tool; permission is likewise unconfirmed.
-No inquiry was sent or permanent archival right assumed.
-
-[ODsay prices and use-purpose conditions](https://lab.odsay.com/contact/contact) list
-Basic 30 calls/day free for specified users and Flex 25 KRW/call, VAT excluded. The
-same page requires prior consultation for analysis/research or other uses outside
-building its route-search service. That advertised unit price is not a quote or
-license for this evaluator purpose; its free allowance cannot be assumed applicable.
-No provider consultation, payment-card registration or account setup occurred.
+[Kakao usage/price](https://developers.kakao.com/docs/en/getting-started/quota) offered
+1000 daily WALK/TRANSIT only for the first activated app; eligibility/remaining quota
+were unknown. Its [operating policy](https://developers.kakao.com/terms/en/site-policies)
+5(20)/5(30) did not establish immutable long-term raw retention for this evaluator.
+[TMAP terms](https://openapi.sk.com/stplat/usage/indexView) were not accessible enough
+to confirm retention. [ODsay conditions](https://lab.odsay.com/contact/contact) required
+consultation for analysis/research;25 KRW/call plus VAT was not a purpose license.
 
 | Mutually exclusive planning scenario | Units | Published retail reference | Selected proposal |
 | --- | --- | --- | --- |
@@ -1383,366 +331,82 @@ No provider consultation, payment-card registration or account setup occurred.
 | ODsay Flex general TRANSIT | One call at 25 KRW | 25 KRW plus VAT; purpose quote unresolved | No; not date-applicable evidence |
 | Google Matrix conditional TRANSIT | One Essentials element | USD 0.005, account/taxes unknown | No; support unresolved |
 
-TMAP's [published pricing](https://openapi.sk.com/products/calc?menuSeq=5&svcSeq=4) places
-pedestrian routing in the route-guidance group with Free 1,000/day and Premium 11 KRW
-per call. Group sharing, remaining quota and applicable tax treatment are unverified.
-Google's [current pricing](https://developers.google.com/maps/billing-and-pricing/pricing)
-lists Matrix Essentials at USD 5/1,000 elements with 10,000 monthly free units; the
-[SKU conditions](https://developers.google.com/maps/billing-and-pricing/sku-details)
-distinguish higher-feature pricing. The unchanged simple TRANSIT matrix options have
-no higher-feature trigger identified. Neither published allowance is assumed available.
-These figures are separate currency scenarios, not summed or converted, provider quotes,
-guaranteed invoice ceilings or approved execution budgets. The original #86 USD 0.02
-unready inventory and USD 0.06 historical bound remain historical figures, not replaced
-with a false all-supported four-route budget.
-
-### Prepared draft and validation boundary
-
-The new private identifier is `artifacts/kr-route-support-budget-20261007`. Its
-`kr_route_support_budget_draft_1` contains three WALK draft parameter sets linked to
-the original source coordinates, an exact copy of all four original legs, source binding,
-protected/output hashes, empty ledger and non-executable handoff. It is not an
-`rtpeval_v0_route_requests_2` acquisition manifest or authenticated HTTP request.
-The proposed future inventory is at most **three Kakao WALK sends**, zero TRANSIT,
-alternative-provider, Details, geocoding, model, planner, health/probe or retry sends.
-Suggested limits retain 20 seconds per call and a 300-second total deadline, with
-one attempt reserved before each send and no automatic source switching. The 30 KRW
-reference needs confirmed account/tax/use conditions before an enforceable ceiling.
-No new source is `ready_for_execution`; current authorized sends and incremental
-spend are **zero**, including calls that might qualify for a free quota.
-
-Before execution, separately approved work must resolve admissible raw retention/use
-and account costs, implement/test the source-specific offline adapter, then freeze
-exact sources, parameters, units, time basis, implementation and budget for approval.
-Any later live task follows the current-session smoke execution policy. The TRANSIT
-leg needs a confirmed independent source preserving its original explicit departure;
-general route duration is not promoted into that evidence. No formal comparison,
-new Issue, provider contact, push, PR, merge or branch switch is included here.
-
-The original #86 request package and all 16 files in that completed preparation remain
-byte-identical. Together with the prior 120 protected files, **136 protected files** and
-**69 implementation/dependency hashes** pass preservation checks; the unrelated
-`.gitignore` hash also matches. Six new preparation outputs are frozen separately.
-The budget arithmetic and original-leg/coordinate bindings pass offline checks.
-All **168 tracked local Markdown targets/anchors** in the three changed documents,
-English additions and whitespace checks pass before commit;
-private endpoints/raw payloads remain excluded. This is a documentation-only assessment:
-no pytest gate is rerun and no new runtime validation is claimed. Prior focused
-182-pass and full 2998-pass/10-skipped gates describe the unchanged implementation.
-All four original route feasibility results remain **UNKNOWN**; generation, identity
-behavior for independently runnable V0-V3 and score formulas are unchanged.
+These are mutually exclusive currency scenarios, not summed or approved budgets.
+TMAP's [price](https://openapi.sk.com/products/calc?menuSeq=5&svcSeq=4) listed 1,000 free/day;
+Google's [price](https://developers.google.com/maps/billing-and-pricing/pricing) listed
+Matrix Essentials 5 USD/1000 with 10000 monthly free; neither available quota was assumed.
+The non-executable draft proposed at most 3 Kakao WALK, zero TRANSIT/alternatives/Details/models/
+retries, 20 seconds/request/300 seconds total and 30 KRW reference, pending account/tax/use/retention and
+source-specific adapter tests. No ready source or new route evidence resulted.
+Evidence: `artifacts/kr-route-support-budget-20261007/`; 136 protected files/69 code hashes
+passed. No runtime suite was rerun for this documentary assessment.
 
 <a id="sydney-offline-route-preparation-2026-10-07"></a>
 
-## Sydney AU preparation and preserved KR replay (2026-10-07)
+## October 7: Australian preparation and development-tool boundary
 
-Status: implemented and prepared offline; live execution is not authorized. The user
-approved a new Sydney V0 scenario, explicit AU preparation/CLI selection, evidence and
-budget preparation, regressions, local commits and independent Standards/Spec review,
-with unchanged generation/scoring and zero paid calls. They first requested squashing
-the five latest consecutive docs commits. Those were `eac3b621`, `d26be76`, `a4dfc2e`,
-`49a6fef` and `bc4de3e`, all unpublished locally. They are replaced by `c49e9819f69ce2465d43cdc5bd6d2176a35f5028`
-(`docs: consolidate V0 smoke acceptance and route readiness`), whose parent is the
-unchanged `f4499f2` test commit. Its tree equals the former `bc4de3e` tree exactly.
-Original objects remain under local recovery ref
-`refs/codex-backups/docs-before-squash-20261007`; historical evidence hashes are not
-rewritten. The source/review fixed point for this implementation is `c49e981`.
-The unrelated `.gitignore` edit remains excluded and byte-identical. No remote history,
-branch switch, push, PR, merge, tracker operation or provider contact is included.
+The explicit AU profile at review base `c49e9819f69ce2465d43cdc5bd6d2176a35f5028`
+required an original declaration such as Sydney, Australia; it did not infer country
+from names/coordinates. Default/explicit KR retained exact old serialization and dated
+metadata. AU profile changed inventory digest and was replay-bound. AU WALK required
+current identity, independent coordinates, free span and no leg blocker; missing coordinates
+could propose Details, TRANSIT stayed conditional and DRIVE unsupported. Same-canonical
+N/A got no allowance. Deduplicated request budgeting retained occurrence population.
+Three synthetic legs with two queries reserved two sends/USD 0.010000, not three.
 
-### Explicit country profile and preserved behavior
+The original tracked [Sydney request](../../../tools/validation/packets/sydney-v0-route-smoke/request.json)
+for October 14–17, two travelers, AUD 1600 included exactly-two daily visits. It was a
+preparation input, not established user intent. The later [generation stop and correction](../v0-v3/development-pilots.md#sydney-v0-generation-smoke-2026-10-07)
+removed this confounding count; the original counted source/evidence remained preserved.
+A September 25 five-day output lacked a reusable identity bundle and was not truncated
+into an 8 venue/4 leg plan. At preparation, no new output, reviewed requirements, identity
+snapshot or real route inventory existed; synthetic outputs could not fill those gaps.
 
-[Google's current coverage table](https://developers.google.com/maps/coverage) marks AU
-WALK/DRIVE available with good quality/availability, while excluding TRANSIT coverage.
-The [Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix)
-supports explicit TRANSIT departure, but national or pair-level transit support is not
-assumed from the consumer map or that coverage row. No API probe occurred.
+Hypothetical non-generation pricing was 9 Search Pro USD 0.288, one identity USD 0.0042,
+up to 8 Details USD 0.040 and four Matrix USD 0.020, total USD 0.3522. Generation cost/explicit wire caps
+were not yet frozen, so no complete execution allowance existed. The identity limit
+18000 input/3000 output low-effort estimated USD 0.003750 (all cache-write) or USD 0.004125 regional,
+within USD 0.0042. Dated masks/rates differed from October 5 Enterprise collection;
+no free quotas/pagination/retries were assumed. Actual inventories had to follow raw
+output; exceeding 8 venues/4 legs stopped preparation rather than choosing a favorable subset.
 
-The public `prepare_v0_route_requests(..., region_code="AU")` and CLI `--region AU`
-select the new dated Australian profile. The original input must explicitly declare
-Australia, such as `Sydney, Australia`; other/unknown declarations and unsupported
-region values reject all inventory. This binds a declared country, not geographic
-inference, geocoding or proof of coordinate-country membership. Default/explicit KR
-retains its dated 2026-10-05 metadata and exact serialization, including omission of
-a new region replay field. AU selection is replay-bound and participates in the
-inventory digest; changing it stops preflight.
+Public region/CLI/dedup regressions passed 121 in 28.46 seconds; full 3017/10 in 341.21 seconds.
+Implementation `6fc9a2a091f19e757c8f3ed0dcbd6345f18f3635` passed both reviews.
+All 146 original/preparation files and 7 new outputs stayed intact; 67/69 code hashes
+matched, with only authorized preparation/CLI changes. Evidence: `artifacts/sydney-offline-20261007/`.
 
-AU WALK needs replayed current identity, independent coordinates, a continuous free
-span and no original leg blocker before becoming ready for approval. Missing points
-can propose exact Details and keep the route conditional; failed/unknown identity
-remains blocked without model/planner coordinate repair. A same-canonical N/A leg
-gets no route allowance. TRANSIT stays conditional with original explicit departure
-and additional historical-availability checks when applicable. DRIVE remains unsupported
-by this existing WALK/TRANSIT acquisition path, without a new route implementation.
-There is no regional, mode, time or model fallback. All factual route components remain
-UNKNOWN without acquired independent route observations, and original FAIL/UNKNOWN
-identity outcomes continue downstream unchanged.
-
-Matrix budgets/counters count deduplicated sends, not repeated leg occurrences. Three
-synthetic legs containing two unique WALK queries therefore reserve two sends and
-USD 0.010000, retaining all three occurrences and their source links. A duplicate link
-cannot promote a blocked/conditional query into a ready query. Request options, masks,
-WALK time-independence, TRANSIT time binding, scoring formulas, V0-only LLM identity
-and deterministic V1-V3 identity remain unchanged. No generation/runtime or shared
-score implementation was modified.
-
-### New scene and output-dependent budget
-
-The tracked [Sydney request](../../../tools/validation/packets/sydney-v0-route-smoke/request.json)
-uses October 14-17, 2026, two travelers, AUD 1600, exactly two primary sightseeing
-visits per day and a required Sydney Opera House visit, with architecture, museums,
-harbour views, food and walking/public transport preferences. Its schema and trip-date
-window pass offline validation against the trusted planning reference October 7 in
-Australia/Sydney. Later execution must validate the actual trusted day; frozen dates
-must not be silently shifted after expiry. The request is scenario input, not a
-guarantee of what the unchanged generator will produce.
-
-A historical five-day Sydney V0 `itinerary_2` result exists from September 25, but no
-current reusable identity bundle/snapshot/report accompanies it. It is protected and
-not truncated into the current eight-Details/four-leg ceiling, regenerated, repaired or
-presented as a new result. There is currently no new Sydney V0 output, independently
-reviewed RequirementSpec, identity API snapshot, current V0 correspondence response,
-canonical venue list or actual route package. Synthetic test output cannot fill those
-gaps. Original Seoul packages and all four original UNKNOWN route results remain intact.
-
-The fresh private identifier `artifacts/sydney-offline-20261007` contains source binding,
-protected/output hashes, a staged price draft, empty ledger, exact default-KR replay,
-foreign-AU rejection and non-executable handoff. It is not a live acquisition manifest.
-The source input and request inventory are separate: the latter must be frozen from
-actual future raw output and eligible independent evidence. Exceeding the existing
-eight endpoint venues/four original legs stops preparation; it never selects a favorable
-subset or increases limits automatically.
-
-| Future stage / hypothetical inventory | Public-price reference | Present readiness |
-| --- | --- | --- |
-| V0 two-node generation | Unknown; no exact wire/token/output ceilings frozen | No generation allowance |
-| Nine initial identity Text Searches (8 visits + 1 named subject) | USD 0.288 | Queries/output-dependent; not acquired |
-| V0-only identity correspondence, one send | USD 0.0042 reference allowance | Exact packet absent |
-| Up to eight missing-coordinate Details | USD 0.040 | May be zero with valid future search coordinates |
-| Up to four unique matrix elements | USD 0.020 | Hypothetical; TRANSIT not counted as ready |
-| Non-generation scenario subtotal | **USD 0.3522** | Not executable or an invoice ceiling |
-
-The [Google price list](https://developers.google.com/maps/billing-and-pricing/pricing)
-gives global first paid-tier Text Search Pro at USD 32/1,000 and Details/Matrix
-Essentials at USD 5/1,000. The proposed identity
-[Text Search mask](https://developers.google.com/maps/documentation/places/web-service/text-search)
-contains ID, display name, formatted address/components, business status, coordinates
-and next-page token, without opening/review fields that elevate the SKU. No remaining
-free allowance, tax, discount or invoice is assumed. No pagination or retry sends are
-reserved; incomplete evidence is retained as unresolved, not repaired by another send.
-Actual distinct reference/query counts may differ, so this is a bounded planning
-scenario for later exact preparation, not a claim that nine queries are already ready.
-
-[OpenAI's current GPT-6 Luna page](https://developers.openai.com/api/docs/models/gpt-6-luna)
-lists per-million token references USD 0.10 input, 0.01 cached input, 0.125 cache write
-and 0.50 output. Keeping the existing identity proposal at 18,000 input/3,000 output
-with low reasoning gives USD 0.003750 worst retail reference when all input is cache
-write, or USD 0.004125 under the regional +10% scenario, within the unchanged USD
-0.0042 reference allowance. Reasoning is included in output, not added twice. That
-identity-only limit does not cap generation. The current V0 two-node default generation
-calls have no explicit per-call output ceiling or frozen payload in this preparation;
-their actual model configuration/usage and Foundry billing remain unverified. A bounded
-generation handoff must precede any paid approval, without changing generation flow.
-No total execution ceiling is claimed by summing an unknown generation cost with the
-non-generation subtotal. Existing #85's consumed allowance is not reused.
-
-All current provider/model/probe/retry send limits and incremental spend are **zero**;
-no SDK client, live executor or execution child is constructed by preparation. Future
-approved stages require exact inputs, usable evidence, implementation/request hashes,
-masks/SKUs, supported departure/mode and separate budgets under the smoke policy.
-Changing to Sydney does not waive uncertainty, certify every route or authorize another
-request. This development preparation introduces no formal benchmark or version freeze.
-
-### Validation sequence
-
-Public-interface TDD first failed for the missing `region_code` keyword, then passed
-after explicit AU preparation was implemented (31 tests including current KR checks).
-The CLI slice failed for missing `--region AU`, then its two public-interface checks
-passed. The duplicate-query slice failed because three leg occurrences reserved three
-sends rather than two; deduplicated budgeting made all three slices pass. Negative
-regressions cover invalid/foreign region, unchanged default KR, missing current model
-evidence/coordinates, TRANSIT original time, unsupported DRIVE, N/A and tampered profile.
-The focused route/identity-adoption gate passes **121 tests / zero failures** in 28.46s.
-A Ruff ambiguous test variable was corrected before final global lint and four-file
-format checks passed. No configured mypy/pyright gate is present.
-
-The first local preparation launch lacked the repository import path and stopped before
-writing outputs. Correcting its local launcher path allowed network-prohibited preparation
-to pass. The saved #86 package replays exactly under default KR, and attempting AU on
-the original Seoul input rejects it without partial inventory. **146 protected original
-and preparation files** remain byte-identical; of the prior 69 implementation/dependency
-hashes, **67 are unchanged** and only the two authorized route-preparation/CLI files
-changed. Seven new preparation outputs are frozen separately; `.gitignore` is unchanged.
-The fresh full backend offline gate passes **3017 tests, 10 skipped, zero failures**
-in 341.21s. The repository external-network guard remains active; provider/model tests
-use synthetic or mocked evidence. The log is preserved separately from the seven frozen
-preparation outputs. The implementation, direct regressions and tracked Sydney source
-request were committed together as `6fc9a2a091f19e757c8f3ed0dcbd6345f18f3635`
-(`feat(evaluation): prepare Sydney routes with explicit AU profile`) before review.
-
-Independent read-only Standards and Spec agents reviewed all five committed files
-from fixed point `c49e9819f69ce2465d43cdc5bd6d2176a35f5028` through that implementation
-commit. Standards reports **zero documented-standard violations and zero actionable
-code smells**; Spec reports **zero missing/incorrect requirements or scope expansions**.
-Both checked explicit AU selection, conservative readiness and unique-request budgets,
-profile replay and default-KR preservation against the approved offline scope. Neither
-review ran tests or contacted providers; the reported test gate is the preserved parent
-run. Uncommitted final docs and the unrelated `.gitignore` were outside their review
-scope. No implementation correction commit is needed.
-
-The final four-document check validates **190 actual tracked local targets/anchors**,
-English additions, retained existing anchors and whitespace. Protected source files,
-all seven frozen preparation outputs and `.gitignore` pass SHA-256 preservation again.
-Final acceptance documentation is committed separately after implementation review.
-Remaining execution prerequisites are a bounded generation plan, actual new Sydney V0
-output, reviewed independent requirements, API identity evidence and an exact separately
-approved route inventory/budget; this acceptance does not certify live AU routes.
-
-<a id="evaluation-development-tool-boundary-2026-10-07"></a>
-
-## Development tool boundary within evaluation (2026-10-07)
-
-The user clarified that V0 smoke is a development verification activity, not an actual
-system execution stage, and requested `tools/` inside `backend/evaluation` to separate
-responsibilities. The approved local migration starts from
-`0e52c28691ebd1775b254c646f13c38a4f01a500`. The pre-existing `.gitignore` edit remains
-outside scope. No paid/live call, push, PR, merge, branch switch or tracker update is
-authorized or performed. This is a directory boundary, not a new country-inference
-feature, execution plan or formal benchmark.
-
-The V0 `route_requests.py` and `route_requests_cli.py` development utilities now live
-under `backend/evaluation/tools/`, with a package marker. They prepare smoke request
-inventories, budgets and preflight checks using existing evaluator materials. Neither
-Product planning nor final quality scoring imports them. Core identity/snapshots,
-schedule/opening/route scorers, quality consumers and their legitimate CLI entries stay
-at the evaluation root. V3's internal validation/repair stays in `backend/app` as part
-of planning. Repository-level data/validation/diagnostic tools are not moved.
-
-Current callers use `backend.evaluation.tools.route_requests`; the development command
-uses `python -m backend.evaluation.tools.route_requests_cli`. The former root-level tool
-modules are retired. Current guide/contracts/README navigation give the new paths;
-historical commands, raw artifacts and frozen manifests retain the identifiers/hashes
-of their original revisions. They are not rewritten to pretend the migration existed
-when their evidence was acquired. Preparation behavior, AU/KR rules, wire schema,
-source integrity, limits, uncertainty and scoring formulas are unchanged.
-
-The existing public regression import was first pointed at the new package and failed
-collection because it did not yet exist. Moving the two modules, fixing relative core
-imports and updating the four existing test consumers resolved that missing-package
-failure. An initial focused run then had **109 fixture setup errors** because its new
-basetemp parent directory had not been created; no behavior assertion ran. Creating
-the dedicated parent and using a fresh basetemp yielded **109 passed / zero failures**
-in 23.92s. Initial lint found three import-order issues; Ruff fixed them and normalized
-the changed files. Global Ruff, the seven-file format check and the new module's actual
-`--help` entry all pass. No new behavior or mirror tests were added for this relocation.
-
-Static AST comparison against the fixed base confirms the two tool bodies and four
-existing regression bodies differ only in import paths and test import ordering. Its
-first comparison treated Ruff's sorted imports as a body mismatch; normalizing import
-order in that local checker resolves the diagnostic without a source behavior change.
-**146 protected original/preparation files** and **seven frozen Sydney preparation
-outputs** remain byte-identical, as does the excluded `.gitignore`. Private evidence is
-kept under the new identifier `artifacts/evaluation-tools-move-20261007`, separate from
-earlier frozen evidence. Implementation-path hashes from old manifests continue to
-describe their old revisions; they are not relabeled as current bindings.
-
-With DNS/socket connections prohibited, the moved public library replays the original
-saved #86 KR request package exactly, including its inventory digest and all four
-UNKNOWN route verdicts. This is a replay of existing independent material, not new
-route acquisition or authority to execute a frozen manifest at a changed code revision.
-
-The fresh full backend offline gate passes **3017 tests, 10 skipped, zero failures**
-in 435.91s, with the external-network test guard active. Its new log is retained separately
-from old frozen outputs. The pure module migration and four existing regression import
-updates were committed before review as
-`2a2b1e1a04a052b84ff51911871486a41af307d7`
-(`refactor(evaluation): isolate development route tools`). No planner or evaluator
-scoring implementation changed.
-
-Independent read-only Standards and Spec agents reviewed the complete committed diff
-from the fixed base through `2a2b1e1`. Standards reports **zero documented-standard
-violations and zero actionable code smells**. Spec reports **zero missing/incorrect
-requirements or scope expansions**. Both excluded unstaged final documentation and
-the unrelated `.gitignore`, and neither independently executed tests or network calls.
-No correction commit is needed. Final acceptance documentation follows separately.
-
-The six-document check passes **242 actual tracked local targets/anchors**, English
-additions, retained historical anchors and whitespace. The migration-only AST and
-original/frozen file checks pass again after the implementation commit. Existing source
-claims, FAIL/UNKNOWN outcomes and Sydney's pending live prerequisites are unchanged.
-This completes the requested development-tool directory boundary, without making smoke
-a product stage, changing evaluation formulas or authorizing another execution.
+The later directory-boundary migration at `0e52c28691ebd1775b254c646f13c38a4f01a500`
+moved two utilities into `backend/evaluation/tools/`, retaining core scorers/legitimate
+CLIs and V3's planning repair. Product/final scoring did not import development tools.
+AST comparison showed only import/path/order changes in 2 modules/4 test consumers.
+Focused 109 passed in 23.92 seconds; full 3017/10 in 435.91 seconds, not the earlier full receipt.
+Implementation `2a2b1e1a04a052b84ff51911871486a41af307d7` passed both reviews.
+Default KR library replay matched old digest/four UNKNOWNs without rebinding old code
+manifests.146 protected files/7 outputs remained exact. Evidence:
+`artifacts/evaluation-tools-move-20261007/`. Historical paths/hashes still describe
+original revisions; current callers use `backend.evaluation.tools.route_requests`.
 
 <a id="sydney-v0-opening-routes-smoke-2026-10-08"></a>
 
-## Sydney V0 opening and route smoke (2026-10-08)
+## October 8: Sydney component acquisition and physical follow-up
 
-Status: executed and assessed as bounded development evidence. Source revision:
-`8b70852431631f32a87c2c49bd0838c2570f38b4`. The unrelated `.gitignore` change retains
-its original bytes and is excluded. No tracked system/evaluator implementation changed.
-The approved scope acquires independent opening and route evidence over the saved natural
-Sydney V0 result. Identity-FAIL venues and their dependent routes are excluded from live
-acquisition; original failures, unavailable checks and denominators remain in reports.
-No address diagnosis, candidate-address repair or replacement itinerary is included.
+Natural V0 generation and [identity assessment](intake-identity-usage.md#sydney-v0-identity-smoke-2026-10-07)
+provided a single-source diagnostic, not qualified four-version intake. Requirement
+review was identity-focused and agent-origin. Reviewed IANA Sydney timezone and soft,
+nonexclusive walking/public-transport preference did not introduce a default mode.
+The original fourth WALK pointed to unnamed generic food; it stayed unbound instead
+of becoming a fictitious venue/leg. Six adopted IDs provided saved coordinates; the
+failed Australian Museum endpoint had no request under the then-canonical policy.
 
-The source is the [natural generation](../v0-v3/development-pilots.md#sydney-v0-natural-generation-smoke-2026-10-07)
-and [identity assessment](intake-identity-usage.md#sydney-v0-identity-smoke-2026-10-07).
-Current `versioned_api_identity_2` replay matches before preparation. The single-source
-library view remains an explicit diagnostic scope, not qualified four-version intake.
-RequirementSpec review remains identity-focused and agent-supplied, not full human
-acceptance. Independently reviewed [IANA Sydney timezone](https://data.iana.org/time-zones/tzdb/zone1970.tab)
-supports offset interpretation. Source review finds no hard transport-mode restriction:
-walking/public transport is a soft preference, and actual WALK modes come from the raw
-output. No default mode or daily visit quota is injected.
-
-The existing snapshot-coordinate bridge provides six adopted venue coordinates without
-new coordinate requests. Native route preparation retains three primary-pair legs;
-Australian Museum to QVB has a null failed endpoint and no query. Opera House to MCA
-and Art Gallery to Mrs Macquarie's Chair produce two time-independent WALK queries.
-The fourth raw transport activity points at an unnamed generic food activity and remains
-unbound; it is not converted into an invented fourth route or named Haymarket venue.
-Six unique accepted venue IDs generate Details requests, with Opera House visit/target
-deduplicated. Australian Museum has no Details request.
-
-Details uses `id,businessStatus,timeZone,currentOpeningHours,regularOpeningHours`, not
-wildcard fields. Hours trigger [Place Details Enterprise](https://developers.google.com/maps/documentation/places/web-service/place-details).
-Each independent Matrix is 1x1 with `originIndex,destinationIndex,status,condition,distanceMeters,duration`.
-WALK bodies use independently acquired coordinates, no departure or regional override.
-[AU coverage](https://developers.google.com/maps/coverage) and
-[Matrix wire](https://developers.google.com/maps/documentation/routes/compute_route_matrix)
-were rechecked on the execution date. Time-independent walking estimates cannot certify
-conditions on the future itinerary date. No Search, model, planner, database or embedding
-request is included.
-
-Prepared limits: eight sends, zero retries/redirects, 20-second HTTP and 200-second total
-timeout. [Published global first-tier pricing](https://developers.google.com/maps/billing-and-pricing/pricing)
-gives six Enterprise Details at USD 0.020 each plus two Matrix Essentials elements at
-USD 0.005 each: USD 0.130 reference allowance. Free quotas are not assumed. Actual
-account allowance, invoice, taxes and volume tier are unavailable.
-
-The first offline preflight read opening checks at the wrong private report path and
-stopped with KeyError after mock evidence collection; no live send occurred. A fresh r2
-adapter/preparation corrected the nested report path and retained the original preparation
-and mock evidence. Two fixture snapshots make sixteen synthetic sends, separated from live
-evidence: complete regular hours yield six PASS plus the failed-identity UNKNOWN; missing
-hours yield seven UNKNOWN. Exact HTTP serialization/masks were intercepted for all eight
-wires with DNS/outbound sockets prohibited. Source/endpoint/mode/count guards pass without
-repairing missing evidence. No production implementation or frozen original source was patched.
-
-Executable preparation canonical SHA-256:
-`e29f7d9fa5bfb1ed9edb1e63c6a53879432e7b6c2c38ec5357b3ba438112d036`.
-Adapter SHA-256:
+At `8b70852431631f32a87c2c49bd0838c2570f38b4`, bounded execution made 6 Enterprise Details
+and 2 Essentials Matrix sends, all HTTP 200, zero retries in 2.551 seconds (00:44:27.270733–29.821421 UTC).
+Masks were `id, businessStatus, timeZone, currentOpeningHours, regularOpeningHours` and
+Matrix indices/status/condition/distance/duration. Limits 8 sends, 20 seconds HTTP/200 seconds overall,
+retail USD 0.130. Two mock snapshots separately made 16 synthetic sends; they were not live
+evidence. Executable preparation/adapter SHA-256:
+`e29f7d9fa5bfb1ed9edb1e63c6a53879432e7b6c2c38ec5357b3ba438112d036` /
 `e9546af3c32189a277e85ee79a852ade56760e77dd9ee938957f454f2e0c06d4`.
-The required current-session execution child used `gpt-6.1-sol` / `medium`; no model was
-called by this smoke. It verified HEAD, trusted Sydney date, unused output directory,
-manifest and 182 bound file hashes before one execution. The process exits zero,
-receipt completed, with six Details and two Matrix requests, all HTTP 200 and zero retries.
-UTC execution spans `2026-10-08T00:44:27.270733+00:00` to
-`2026-10-08T00:44:29.821421+00:00`. Retail reference is USD 0.130, not an observed invoice.
-Raw response bytes precede interpretation; all eight raw hashes and 182 source hashes
-remain unchanged afterward. The consumed execution directory/allowance is not reusable.
-
-Native offline results:
+All 8 raw hashes/182 source hashes remained exact.
 
 | Check | Result | Evidence or limitation |
 | --- | --- | --- |
@@ -1755,195 +419,48 @@ Native offline results:
 | Art Gallery to Mrs Macquarie's Chair WALK | PASS | 1,083 seconds / 1,384 metres against the original 20-minute interval |
 | Australian Museum to QVB route | UNKNOWN, not queried | Failed canonical endpoint remains null |
 
-Opening totals are four PASS, zero FAIL, three UNKNOWN; routes retain two PASS, zero FAIL,
-one UNKNOWN among three primary-pair checks. The separate fourth unbound transport and
-unresolved generic role remain visible. Source PASS only denotes each contract's evidence
-and rule scope, not booking certainty or overall itinerary acceptance.
+Totals 4 opening PASS/0 FAIL/3 UNKNOWN; two route PASS/0 FAIL/1 UNKNOWN among 3 primary-pair checks.
+Exact-once Opera House remained UNKNOWN (one confirmed, upper 3 from failed museum and
+unresolved generic), despite target identity PASS. Ten known commitment checks passed,
+but 2 unresolved units/null denominator left non-overlap UNKNOWN. Main counts 2/2/2/1
+and generic uncertainty were retained. [Powerhouse official inspection](https://powerhouse.com.au/visit/ultimo)
+confirmed current revitalisation closure without a reopening date/literal October 17
+period; it was not imported into Google hours as fabricated factual FAIL.
+Twice native replay matched; quality consumer rejected `Exactly four versions required`
+with `needs_material_correction`, not an overall score. Evidence:
+`artifacts/sydney-v0-opening-routes-smoke-20261008-r2/` plus initial preparation.
+Prior unchanged-code 3017/10 gate was reused, not rerun.
 
-The native requirement report retains exact-once Opera House as UNKNOWN: one confirmed
-occurrence, upper bound three due to the failed-identity museum occurrence and unresolved
-generic food occurrence. Target identity PASS is distinct from a complete exact-count proof.
-Non-overlap has ten known commitment checks passing, two unresolved candidate units and a
-null complete denominator; its full verdict remains UNKNOWN. Density retains original main
-counts 2/2/2/1 and the unresolved generic possibility on day four. No record is removed or
-reclassified to obtain a score.
+<a id="sydney-museum-follow-up-preparation-2026-10-08"></a>
+<a id="sydney-museum-follow-up-execution-2026-10-08"></a>
 
-Free [Powerhouse official-source inspection](https://powerhouse.com.au/visit/ultimo) confirms
-current closure for revitalisation. It supplies no reopening date or literal opening period
-for October 17. This observation is retained separately; the native scorer consumes saved
-Google hours and does not import website prose or turn missing periods into a synthetic FAIL.
-The original identity FAIL remains accepted for this smoke, without a new address review.
+### Incremental Museum acquisition after physical-association correction
 
-Parent assessment runs the unchanged opening, routes and requirement/schedule libraries
-twice with networking prohibited and obtains identical reports. Saved raw bytes, canonical
-snapshot linkage, original outputs, FAIL/null endpoints, earlier generation/identity artifacts
-and all 182 bound sources pass preservation. The quality consumer is exercised separately
-and correctly rejects the V0-only material: `needs_material_correction`,
-`Exactly four versions required`. No overall score, forged companion versions or modified
-score formula is produced. The unchanged code retains its prior 3017-pass/10-skip offline
-backend gate; this task adds preflight, exact replay and documentation checks, not another
-full code test run or independent implementation review.
+At base `cc454bb292cbc099c823b32dc231eb6d6122c1ed`, current `versioned_api_identity_3`
+kept Museum grounding FAIL/null canonical claim but verified physical ID
+`ChIJlwsH0RWuEmsR3Cg3WEDw76I`, QVB `ChIJISz8NjyuEmsRFTQ9Iw7Ear8`.
+Original October 15 Museum→QVB was WALK, departure `2026-10-15T01:15:00Z`, 1,200 seconds;
+no conditional DRIVE adaptation was needed. Existing saved coordinates made Details
+coordinate acquisition unnecessary. The full plan now had 7 Details/3 matrices; eight old
+observations were reused byte/time-exact in a separate union plus 2 incremental sends.
+Cumulative 10 sends and fresh 2 remained distinct.
 
-Local evidence identifiers are `artifacts/sydney-v0-opening-routes-smoke-20261008`
-(initial offline preflight) and `artifacts/sydney-v0-opening-routes-smoke-20261008-r2`
-(executable preparation, receipt/raw bytes/snapshot, three native reports, quality-scope
-diagnostic, parent assessment and supplemental closure observation). Private adapters and
-runtime payloads stay ignored. Tracked status/navigation and this record are committed
-locally after English, target/anchor and whitespace checks. No push, PR, merge, tracker
-mutation, version freeze, formal comparison or paid retry is included. This completes the
-bounded acquisition and V0 component replay; incomplete opening/occupancy evidence and
-qualified four-version final acceptance remain outstanding.
+Prepared 2 send/zero-retry/USD 0.025,20 seconds whole HTTP/60 seconds total. 69 existing public tests passed
+in 29.30 seconds. Four mock scenarios preserved address FAIL while hours/route yielded PASS/PASS,
+UNKNOWN/PASS, PASS/FAIL(3600 seconds) and PASS/FAIL(valid NO_ROUTE). Reviews found a P2:
+the generic collector swallowed timeout and advanced, while HTTPX bounded individual
+phases. One real stopping exception plus whole HTTP deadline corrected it; isolated mock
+collector/HTTP timeouts each sent once, stopped and made no second request. A normal
+2 request mock still completed, with receipt/raw/snapshot/native linkage verified.
+The 240 protected files and prior raw sources stayed exact; no product implementation changed.
 
-## Sydney Museum follow-up preparation, 2026-10-08
-
-Date: 2026-10-08, Australia/Sydney. Status: **Prepared and offline validated;
-live execution requires exact-plan approval.** Fixed source/review base is
-`cc454bb292cbc099c823b32dc231eb6d6122c1ed`, branch `feature/evaluation`.
-The unrelated existing `.gitignore` modification is preserved and excluded from
-commits. The human approved bounded preparation after the physical-association
-correction, including conditional DRIVE adaptation only if the original leg requires
-it, and separately confirmed the public preparation/preflight/CLI and mock-HTTP
-scoring boundaries. No tracker mutation, Git publication or real provider send is
-included. The final execution freeze is refreshed against the local delivery HEAD;
-its private manifest, rather than this historical base, owns the executable revision.
-
-The preserved original Museum-to-QVB leg is **WALK**, on October 15, with departure
-`2026-10-15T01:15:00+00:00` and a 1,200-second reserved interval. All three evaluable
-Sydney primary-pair legs are WALK. No DRIVE implementation is necessary; the existing
-development acquisition path retains its DRIVE limitation. Original activity order,
-times, durations, preferences, requirement counting and score arithmetic remain intact.
-
-Current `versioned_api_identity_3` replay uses the existing validated V0 correspondence:
-Australian Museum address grounding stays FAIL, canonical claim ID stays null, and
-the verified physical association is `ChIJlwsH0RWuEmsR3Cg3WEDw76I`. QVB's independent ID
-is `ChIJISz8NjyuEmsRFTQ9Iw7Ear8`. Existing independently acquired coordinates support
-the original route without another coordinate query. The earlier speculative address
-inspection is not reopened, and no new Search, model, planner or database work occurs.
-
-The current full evidence plan has seven Details and three directed Matrix requests.
-Eight identical request keys/parameters already have saved observations: six Details
-and two WALK matrices. The new private incremental plan contains only the two missing
-requests. Reuse verifies the original snapshot and copies its exact raw bytes,
-summaries and attempt timestamps into a separately labelled derived union; the original
-snapshot is untouched. The combined observation ledger records ten cumulative sends
-(eight historical plus two incremental), while the fresh acquisition ledger records
-only two. Reuse does not claim eight new requests or fresh observations. The original
-V0-only source remains a library view, not qualified four-version intake or a legacy
-adoption bundle; actual preparation uses existing core libraries without forged runs.
-
-Official [AU coverage](https://developers.google.com/maps/coverage),
-[Matrix method](https://developers.google.com/maps/documentation/routes/reference/rest/v2/TopLevel/computeRouteMatrix),
-[Details fields/SKUs](https://developers.google.com/maps/documentation/places/web-service/place-details)
-and [global first-tier prices](https://developers.google.com/maps/billing-and-pricing/pricing)
-were rechecked on the preparation date. AU walking is documented; exact pair success
-is unobserved. Time-independent walking estimates cannot certify future-day conditions.
-
-| Incremental request | Frozen wire scope | Retail reference |
-| --- | --- | --- |
-| Museum Details | `id,businessStatus,timeZone,currentOpeningHours,regularOpeningHours` | Enterprise: USD 0.020 |
-| Museum to QVB WALK Matrix | Directed 1x1 independently sourced coordinates, `travelMode=WALK`; no departure or routing options; indices/status/condition/distance/duration/fallback mask | Essentials: USD 0.005 |
-
-Proposed reference allowance: **USD 0.025**. No free quota, tax treatment, volume tier
-or actual invoice is assumed. Limits are two sends, zero retries/redirects, 20-second
-HTTP timeout and 60-second total deadline. No exact-plan live approval exists yet.
-The one-use execution directory is absent. A future dispatch must bind the final
-manifest hash, source/day/HEAD and protected hashes, use the required current-session
-`gpt-6.1-sol`/medium execution child, and stop on drift, an existing output directory,
-timeout, HTTP/provider error, mismatched returned ID, duplicate/foreign request or
-exhausted count/cost/time. Missing hours and valid NO_ROUTE results remain evidence;
-they do not authorize a retry, alternate mode or favorable verdict.
-
-Validation is offline with outbound sockets and DNS prohibited. Existing public
-`prepare_v0_route_requests`, `preflight_v0_route_requests`, CLI and physical-association
-regressions passed **69 tests** in 29.30 seconds. Those synthetic bundle regressions
-are distinct from real source-view replay. The private adapter checks exact HTTP
-serialization for both incremental wires and four synthetic incremental snapshots:
-
-| Scenario | Museum opening | Museum route |
-| --- | --- | --- |
-| Sufficient regular hours, 900-second WALK | PASS | PASS |
-| Missing hours, 900-second WALK | UNKNOWN | PASS |
-| Sufficient hours, 3,600-second WALK | PASS | FAIL |
-| Sufficient hours, valid NO_ROUTE | PASS | FAIL |
-
-Each synthetic acquisition has two sends and zero retries; the eight synthetic sends
-across four scenarios are not external requests or real evidence. Existing observations
-retain their raw bytes/timestamps in each derived union. All reports replay exactly;
-address FAIL remains visible even when physical checks PASS. Mode substitution,
-departure addition and routing-option changes are rejected. Separate negative guards
-reject duplicate/foreign sends, exhausted count/cost/time, an unapproved manifest and
-file/day/HEAD drift. The first preflight used the old opening report field name and
-stopped with KeyError after the initial simulated reports; correcting the private
-assertion to `identity_grounding_verdict` made the complete rehearsal pass. No product
-or evaluator implementation was changed. Ruff passes for the private adapter.
-
-Independent Standards and Spec review each identified the same P2 timeout-stop gap
-in the initial private adapter: the generic collector catches its own TimeoutError
-and advances to the next request, while HTTPX's timeout applies per network phase.
-An isolated mock-HTTP regression first reproduced two sends and an incorrect
-`completed` receipt after collector timeout. The private correction adds an overall
-20-second HTTP deadline and converts deadline/cancellation into a stopping exception;
-completion also requires two available HTTP-200 records. Separate simulated collector
-and HTTP deadline tests now each produce one mock send, a `stopped` receipt and no
-second request or completed snapshot. These tests use isolated temporary directories,
-mock credentials, shortened test clocks and blocked networking; the actual execution
-directory remains absent. Assessment also binds the incremental snapshot raw hashes
-to the execution receipt before deriving the union. The four scoring scenarios and
-all stopping/source guards pass again after correction, with zero external sends.
-An isolated normal two-request execution through mock HTTP also completes and passes
-the full receipt-to-snapshot-to-native-report assessment path. The separate private
-timeout-check receipt records both stopping regressions and this successful path.
-
-The manifest protects 240 implementation/dependency/source files, including the
-adapter and prior generation/identity/opening-route artifacts; all protected hashes
-pass before/after rehearsal. Current local-only evidence identifiers are
-`artifacts/sydney-v0-museum-followup-20261008` (current/full and incremental plans,
-reuse provenance, frozen manifest and offline receipt) and
-`.scratch/sydney_museum_followup.py` (one-use adapter). Raw payloads and commands
-remain local; this record provides shared scope and results without publishing them.
-No new full backend gate is claimed: unchanged implementation retains its earlier
-full/evaluator validation, and this task adds specific preparation/replay checks.
-
-Actual external sends and incremental charges are **zero**. Real Museum opening and
-route results remain unobserved; Opera House/Powerhouse hours, unresolved generic
-occupancy and qualified V0-V3 final acceptance remain outstanding. This preparation
-is neither a final quality score, version freeze nor formal comparison.
-
-## Sydney Museum follow-up execution, 2026-10-08
-
-Date: 2026-10-08, Australia/Sydney. Status: **Bounded acquisition complete;
-native component replay validated.** Source HEAD is
-`3f608c7a76be31054cdfd18ab088eec47399c64f`, branch `feature/evaluation`.
-The unrelated pre-existing `.gitignore` change remains unchanged and excluded.
-The human approved the exact two-send/zero-retry/USD 0.025 plan after preparation
-and independent Standards/Spec rechecks closed the timeout-stop P2 finding.
-The frozen manifest canonical SHA-256 is
-`081a118ae8adfec91e0c53c618beceecd3fe9288437261b8be3f23cdcb38001a`.
-The prepared adapter SHA-256 is
+The exact approved execution at `3f608c7a76be31054cdfd18ab088eec47399c64f` used manifest
+`081a118ae8adfec91e0c53c618beceecd3fe9288437261b8be3f23cdcb38001a`, adapter
 `9e1af279e3ac33d4c6532fb90a52a859253071777371df95431c4c26e688a924`.
-
-The required current-session `gpt-6.1-sol`/medium execution child checked HEAD,
-Sydney day, all 240 protected files, adapter and both check receipts, exact request
-scope/budget and an absent execution directory before running the command once.
-The process exited zero and the receipt is `completed`: one Museum-to-QVB WALK
-Matrix and one Museum Details, both HTTP 200, zero retries and no added requests.
-Receipt timestamps span `2026-10-08T02:38:51.344865+00:00` to
-`2026-10-08T02:38:52.390529+00:00`, about 1.046 seconds. The 20-second whole-HTTP
-and 60-second total limits were respected. Retail reference is **USD 0.025**;
-actual provider billing, account free allowance, tier and tax treatment remain unknown.
-No Search, evaluator model, planner rerun, database request, alternate mode or repair
-was performed. The execution directory and two-request allowance are consumed.
-
-The two received raw-response SHA-256 values are:
-
-- Matrix: `225e6432b6093c91a28531f851b2065c4d8b5202f07cd5125c1ccb7df486f9b1`.
-- Details: `a975a321e4b627e6d566060f5217b8337d0778d49cb5f11c30410a8362620ad5`.
-
-Parent assessment checks receipt/raw linkage and the incremental snapshot, then
-derives a current-plan union with the eight historical observations. Their exact
-raw bytes, attempt timestamps and summaries remain intact; no observation is relabelled
-fresh. The cumulative snapshot ledger is ten sends, versus two fresh sends in this
-execution. The original snapshots and earlier verdicts are preserved.
+Two HTTP 200 completed in 1.046 seconds (02:38:51.344865–52.390529 UTC), zero retries,
+retail USD 0.025. Raw SHA-256 Matrix/Details:
+`225e6432b6093c91a28531f851b2065c4d8b5202f07cd5125c1ccb7df486f9b1` /
+`a975a321e4b627e6d566060f5217b8337d0778d49cb5f11c30410a8362620ad5`.
 
 | Native check | Result | Evidence and boundary |
 | --- | --- | --- |
@@ -1953,34 +470,12 @@ execution. The original snapshots and earlier verdicts are preserved.
 | Combined opening | Five PASS, zero FAIL, two UNKNOWN | Opera House and Powerhouse still lack usable opening periods |
 | Combined evaluable routes | Three PASS, zero FAIL/UNKNOWN | The separate day-four transport to an unnamed generic food activity stays unbound |
 
-Regular-hour fallback is weaker than date-specific current-hour evidence, and the
-time-independent WALK does not certify conditions on the future visit date. Component
-PASS does not revise the address FAIL or establish overall itinerary acceptance.
-
-With networking and DNS prohibited, native opening, route and requirement/schedule
-reports replay exactly, including a second fresh library replay against the saved
-union. Requirements, non-overlap, schedule measures, descriptive metrics and occupancy
-sections equal the earlier report exactly. The Opera House exact-once obligation
-remains UNKNOWN, and non-overlap remains UNKNOWN despite ten known checks passing,
-because its complete denominator and generic occupancy remain unresolved. Original
-main counts 2/2/2/1 remain unchanged. The quality consumer correctly rejects this
-V0-only view with `needs_material_correction` / `Exactly four versions required`;
-no artificial companion runs or overall score are produced.
-
-All **240 frozen hashes** pass after acquisition and assessment, before the intentional
-documentation updates. Both new raw hashes and all eight reused raw-byte/record/time
-checks pass; offline assessment makes zero network attempts. Product/evaluator code,
-generation, requirements and score formulas are unchanged. No new full backend suite
-or independent implementation review is claimed: the unchanged code retains its prior
-gates, and this execution adds exact wire/source preservation and real saved-evidence
-consumer replay. Prepared public-boundary tests and timeout-stop rechecks remain valid.
-
-Local-only evidence identifier: `artifacts/sydney-v0-museum-followup-20261008`, containing
-the execution receipt/raw bytes, incremental and derived combined snapshots, native
-reports, quality-scope diagnostic, assessment and preservation check. The frozen
-manifest/check receipts and consumed execution directory remain intact. Current status,
-navigation and this event are grouped in one documentation commit after English,
-tracked-link/anchor and whitespace checks. No push, PR, merge, tracker mutation,
-version freeze or formal comparison is included. Remaining work is usable missing
-opening evidence, genuine requirement/occupancy review and qualified V0-V3 intake;
-this bounded V0 follow-up does not complete final evaluator acceptance.
+Twice native replay preserved requirements/non-overlap/descriptive/occupancy sections
+exactly. Opera House exact-once and full non-overlap remained UNKNOWN; main 2/2/2/1
+unchanged. The V0-only quality consumer still rejected without invented companion runs.
+Regular hours are weaker than current date-specific hours; time-independent WALK cannot
+certify future conditions. Physical PASS did not change grounding FAIL.
+All 240 frozen hashes and 8 reused byte/record/time checks passed. Evidence:
+`artifacts/sydney-v0-museum-followup-20261008/`. No new full backend gate was claimed.
+Missing-hours, occupancy review and qualified intake remained unresolved at this dated
+checkpoint; subsequent four-version acceptance is in the identity history.

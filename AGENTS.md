@@ -39,6 +39,13 @@ Normalize provider payloads into internal schemas; use service/client abstractio
 rather than direct third-party calls from LangGraph nodes where appropriate. Avoid
 unrelated refactors, unnecessary complexity and premature future-stage mechanisms.
 
+## Documentation
+
+GitHub Issues own specs, tickets and live task state; current contracts belong in
+tracked `docs/`, dated evidence in `docs/records/`. `.scratch/`, raw runtime artifacts
+and thesis notes are local aids, not competing project authorities or published
+requirements.
+
 ## Required policies on demand
 
 These linked rules are binding. Read the applicable sections before the listed
@@ -53,7 +60,4 @@ operation; do not preload every policy or historical record.
 | Live smoke planning or execution | [Smoke policy](docs/agents/smoke-tests.md): current-session execution child, `gpt-6.1-sol`, `medium`; prepared/approved scope only |
 | Documentation, evidence or archive maintenance | [Document ownership/admission](docs/agents/domain.md), including [archive rules](docs/agents/domain.md#thesis-research-archive); proactively preserve meaningful events within approved work |
 
-GitHub Issues own specs, tickets and live task state; current contracts belong in
-tracked `docs/`, dated evidence in `docs/records/`. `.scratch/`, raw runtime artifacts
-and thesis notes are local aids, not competing project authorities or published
-requirements. Final documentation reports must be self-contained in Chinese.
+Final documentation reports must be self-contained in Chinese.

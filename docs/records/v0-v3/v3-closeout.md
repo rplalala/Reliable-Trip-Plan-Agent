@@ -1,31 +1,38 @@
-> Archived source snapshot, relocated 2026-10-03 from `docs/v3_closeout.md`.
-> Current design is indexed in [docs/README.md](../../README.md).
-> Original Current/Next statements and historical defaults below are dated evidence,
-> not current system authority or renewed execution permission.
+# V3 final engineering checkpoint — 2026-09-25
 
-# V3 final engineering closeout — 2026-09-25
-
-Status: V3 ENGINEERING CLOSED — FINAL ENGINEERING CHECKPOINT RECORDED. Benchmark Frozen: NO. Formal Evaluation: NOT STARTED.
-Next stage: Evaluation Readiness Audit, not started or authorized by this checkpoint.
+Status: V3 ENGINEERING CLOSED. Benchmark Frozen: NO; Formal Evaluation: NOT STARTED
+at this checkpoint. It established combined shared/V3 engineering behavior, not every
+intermediate commit or universally correct trips. Later current behavior belongs to
+[validation/repair](../../0005-validation-repair(v3).md) and
+[application operations](../../0007-application-operations.md).
 
 <a id="shared-milestone-notice-2026-09-25"></a>
 
 ## Shared milestone notice - 2026-09-25
 
-Current shared/V3 engineering checkpoint (2026-09-25): see [closeout](v3-closeout.md)
-for current configuration, shared ownership and artifact-verified evidence. Earlier dated
-implementation/live statements below retain their original scope. V0 remains tool-free;
-V1/V2 do not run Repair; the product default remains V0. Provider recovery UI is offline-only.
+At this checkpoint V0 remained tool-free, V1/V2 did not run Repair and Product
+defaulted to V0. Provider recovery UI had only offline validation. These statements
+were shared with V0/V1/V2 and frontend milestone records; later product defaults
+are documented in [current application operations](../../0007-application-operations.md).
 
-This notice was shared by the V0/V1/V2 and frontend records at this dated checkpoint.
-Its Product/default and provider-recovery statements describe 2026-09-25 only.
+## Mechanism boundaries and shared corrections
 
-## Authorized post-checkpoint review corrections — 2026-09-25
+V3 reused primary tools/RAG planning, preserved draft/original reports and validated
+before Nearby. Hard conflicts and minimum one-visit coverage preceded optional reviews.
+Target-specific permissions, application-owned identity/evidence and dependency-aware
+transactional components controlled adoption; same-validator rechecks and business
+comparison preserved the latest adopted state after rejection. Nearby remained references.
+Shared initial mixed transport, Preference Gate, output and startup fixes were baseline
+changes, not V3-exclusive research contributions. V0 stayed tool-free; V1/V2 had no Repair.
 
-Status: implemented + offline-validated; no new live evidence. The review used committed
-checkpoint `c339b832799c6e186792f91b988da293ad767c71`. The authorized fixes were applied on
-the current `feature/frontend` working tree while preserving its existing uncommitted work.
-They do not retroactively change historical smoke outcomes or increase any runtime limit.
+Closeout restored normalized route-evidence recording lost in shared mixed-route
+preparation, migrated stale tests to approved limits/Gate/full_day contracts and added
+two missing mocked prompt 13 budget cases: accommodation-only and flights-only exclusions.
+Prompts, configuration and limits were unchanged. Mocked cases do not establish real-model
+classification reliability or new serializer sizing.
+
+The subsequent offline review at `c339b832799c6e186792f91b988da293ad767c71`
+identified three corrections without changing historical live observations:
 
 - Shared V1/V2/V3 transfer checking now uses the continuous interval containing the actual
   bound departure for WALK and basic DRIVE as well as time-dependent modes. A 20-minute
@@ -45,71 +52,13 @@ They do not retroactively change historical smoke outcomes or increase any runti
   supplied both values. This change does not claim to remove every legacy diagnostics
   configuration read elsewhere in the application.
 
-Offline execution order:
+Regressions cover injected Repair policy, continuous windows and accepted-then-rejected
+net comparison. The affected selection passed **261 tests** and the final focused set
+**8 tests**; Ruff/diff checks passed. No full repository run or live service was performed for those later corrections.
 
-1. New focused regressions: 6 passed, 1 failed. A global configuration-loader mock also
-   blocked the fixture's existing diagnostics read. The mock was narrowed to budget
-   construction; the real stage still checks injected policy execution.
-2. Focused tests plus Repair, multi-round, B/C targets, mixed transport, shared initial
-   routes, V3 wiring and API-evidence regressions: 261 passed.
-3. Ruff initially reported two overlong lines in the new test file; formatting that file
-   resolved them. The targeted Ruff check passed; the initial diff whitespace check passed.
-4. An additional accepted-then-rejected deletion regression yielded 7 passed, 1 failed:
-   its assertion incorrectly treated all count reductions as coverage violations. The
-   assertion was corrected to preserve the existing allowed six-to-five comparison meaning.
-5. Final focused regressions: 8 passed. Targeted Ruff passed. No model, HTTP, embedding,
-   database or live calls were made; no full-repository regression was run.
+## Frozen configuration at this checkpoint
 
-Implementation: `route_options.py`, `repair_budget.py`, `repair_service.py`.
-Regression coverage: `backend/tests/versions/v3/test_closeout_corrections.py`.
-Historical artifacts, budgets, prompts, V0 behavior and the product default are unchanged.
-
-## Authority and checkpoint identity
-
-Current code and parsed runtime configuration establish implementation facts. Accepted user
-contracts establish intended behavior; a discrepancy is not legalized by editing documentation.
-This checkpoint covers the combined shared and V3 tree, not independently validated intermediate
-commits. Exact final commit hashes are recorded in the completion report, avoiding self-reference.
-Later correctness fixes require authorization, validation and a new distinguishable checkpoint.
-
-## Delivered flow and ownership
-
-V0-V3 remain independent runners. The product default remains V0. One shared preference
-interpreter enforces typed assessment, source quotations and canonical requirements. Provider
-rejection, malformed output and domain contract failure are distinct from user-input dispositions.
-V0 does not acquire travel evidence. V1 adds tools; V2 adds request-owned TripWorld retrieval,
-canonical resolution and merged supply. V3 reuses that primary flow through a post-primary hook.
-
-Shared initial mixed transport prepares directed options and binds actual timed adjacencies after
-one primary generation. Provider duration, application reserve and UNKNOWN remain separate.
-V1/V2 report diagnostics without targeted Repair. These baseline changes, the CLI import-cycle
-fix, shared output and Preference Gate are not V3-exclusive research contributions.
-
-V3 preserves draft and original report, then validates before Nearby. Hard conflicts and minimum
-one-primary-visit coverage precede optional quantity/repetition/overfull reviews. Minimum coverage
-is not the default two-visit review goal. Active target worksheets localize acquisition, operation
-authorization and projection; deferred targets do not silently request resources. A provides elastic
-free-time authorization, atomic consumption and real-place adjacency. B provides demand-based
-REQUIRED protection, adjacent moves and scoped compensation. C provides evidence-supported
-opening/transfer conflict repair. Public access and unbound semantics are not invented facts.
-
-Candidate context, target-specific options, identity/source ledger and actual input stay separate.
-UNKNOWN may be selected without becoming verified. Preparation reference counts do not prove
-schedulability. Presentation history rotates opportunities; evidence-backed conflicts have narrow
-scope. No-progress causes material-opportunity reassessment, not an identical automatic retry.
-Fingerprints omit incidental round/audit changes. The latest adopted draft is the next input.
-
-One patch may contain multiple targets. Dependency-aware components are applied transactionally;
-illegal/dependent edits cannot be silently salvaged as independent. Same-validator revalidation and
-business comparison determine adoption. Evidence-only changes are not arrangement improvement.
-Fair reassessment applies new evidence to both sides. Rejected components/rounds retain the latest
-adopted state and unresolved compensation. Final identities, dates, costs and diagnostics use the
-adopted primary and application-managed whitelist. One final Nearby stage only adds references.
-Request deadlines, cache/attempt/failure history and cancellation span phases; owned resources close.
-
-## Current effective limits
-
-The authority is `config/runtime.yaml` schema 6, parsed once per request. Current normalized
+The checkpoint used `config/runtime.yaml` schema 6, parsed once per request. Its normalized
 snapshot SHA-256: `a4a9c9d7f388dbf78f172651d4c8b46b609bf044490b0cffe96f01beeea50ba2`.
 
 - Ordinary initial Details 60; initial RAG Details 30 and resolution 30; K maximum 20.
@@ -132,7 +81,7 @@ snapshot SHA-256: `a4a9c9d7f388dbf78f172651d4c8b46b609bf044490b0cffe96f01beeea50
 - Whole-request600 seconds only with explicit development activation; YAML alone does not grant it.
 
 No limits or runtime policies changed during closeout. See `config/README.md` for full key semantics.
-Current preference markers: prompt13, draft9, strict `PreferenceDraftV9`, assessment2;
+Checkpoint preference markers: prompt 13, draft 9, strict `PreferenceDraftV9`, assessment 2;
 `interpreted_requirements_3` and `itinerary_2` remain the downstream contracts.
 
 ## Artifact-verified development evidence
@@ -159,94 +108,36 @@ Review-off/exemptions, all C operation combinations, cancellation/provider-failu
 dependency combinations remain offline-only or not naturally observed live as individually noted.
 No broad all-branch live claim is made.
 
-## Closeout changes and limitations
+## Validation of the combined closeout tree
 
-Only two missing prompt13 offline input cases were added: accommodation-only and flights-only
-expense exclusions. Existing combined exclusions and true amount/currency/per-person conflicts
-remain tested through wire/domain/interpreter paths. Mocked DTOs prove path preservation, not
-real-model classification reliability. Closeout also restored the normalized route-evidence payload lost when shared mixed-route
-preparation replaced the old acquisition method. This is a shared V1/V2/V3 observability
-regression fix, not new Repair capability. Stale tests were migrated to approved current limits,
-Gate outcomes and the full_day wire field; four long test lines were wrapped. No prompt,
-configuration or budget changed. Documentation aligns current status while preserving earlier dated checkpoints.
+Network-deny execution guards blocked outbound sockets/psycopg, with only event-loop
+internal socketpair exempted; frontend used a fetch/connection-deny preload.
+`TRIPWORLD_TEST_DATABASE=0`, fake providers and MockTransport remained active.
+The chronological checkpoints below are not summed:
 
-Public access, admission, reservations and costs may remain UNKNOWN. Full expense-scope and
-verified whole-trip accounting are unsupported. Model/provider classification is not universally
-stable; a provider can preempt a non-travel-control classification. Suitability of a legal primary
-visit and different-ID experiential duplication remain limitations. One visit/day is not two,
-and completed targets do not establish complete trip feasibility or superiority over V2.
-Nearby cannot fill primary coverage. RTPEval research OPEN/DEFER items, including provider-blocked
-outcome taxonomy, are unchanged; the unconfirmed evaluator document is excluded from this commit.
+| Checkpoint | Observed result | Explanation |
+| --- | --- | --- |
+| Initial backend | **1442 passed, 21 failed, 9 skipped**, 1472 collected, 76.65 seconds, exit 1 | Eight stale quality-limit assertions, seven shared-input/outcome assumptions, five absent `full_day` fixture fields and one real missing normalized route-evidence artifact; no stopped-database cause |
+| Affected correction selection | **273 passed**, 23.27 seconds | Trace, shared planning/quality/protection/routes/recovery and V3 B/multiround/Repair |
+| Final combined backend | **1463 passed, 9 skipped**, 1472 collected, 73.46 seconds, exit 0 | No failure/error/xfail/xpass; disabled optional PostgreSQL tests |
+| Frontend | **33 passed / 6 files**, 15.42 seconds | Lint, TypeScript and Vite build also passed |
+| Fresh startup | All V0–V3 `--help` processes and six shared service exports succeeded | Startup compatibility, not live execution |
 
-## Validation and Git preservation
+Final Ruff/diff checks passed; no later full run is claimed.
+Configuration/content manifests and normalized hashes are local under
+`logs/v3_final_engineering_closeout_20260925/`; raw historical logs and unrelated `.gitignore`,
+thesis notes and unconfirmed evaluator work were excluded. Intermediate commits were
+not independently certified checkpoints.
 
-Final combined-tree validation passed; chronology is recorded below. Execution-only guards under ignored
-closeout logs deny socket connections including loopback services (internal socketpair exempted),
-and psycopg connections; DB opt-in is disabled. Existing fake providers/MockTransport remain active.
-Tests do not count as new serializer sizing; historical measured payloads retain their own scope.
-The intended file manifest/ownership and working-tree/content hashes are retained in local logs.
-Original `.gitignore`, thesis notes, historical logs and unconfirmed evaluator work are excluded.
-Git's existing line-ending normalization is distinguished from substantive content changes.
+## Remaining evidence and research limits
 
-## Final validation chronology
+Public access, admission, reservations and costs may stay UNKNOWN; verified whole-trip
+expense accounting is unsupported. Legal primary visits may be unsuitable and different
+IDs may represent experiential duplication. One visit/day is not two; completed targets
+prove neither complete feasibility nor superiority over V2. Model/provider classification
+can vary and the provider can preempt a non-travel classification.
 
-All commands used local installed dependencies. Python ran with the execution-only
-`logs/v3_final_engineering_closeout_20260925/guard` on PYTHONPATH. The guard denies outbound
-socket connections (including local services) and psycopg connections, except the internal
-Windows socketpair used by event loops. `TRIPWORLD_TEST_DATABASE=0`; fake providers and
-MockTransport remained in use. Frontend used NODE_OPTIONS with a connection/fetch-deny preload.
-No live external service calls were possible/allowed during closeout validation.
-
-1. First complete backend: `python -B -X utf8 .../run_offline.py` invokes
-   `pytest backend/tests -q --junitxml=.../backend.xml`. Collected1472:1442 passed,
-   21 failed,9 skipped,76.65 seconds,exit1. Failures:8 stale quality-limit assertions,
-   7 shared-input fixture/outcome assumptions,5 missing full_day wire fields,1 missing
-   normalized route-evidence artifact. No failure was caused by a stopped database.
-2. First `python -B -m ruff check backend scripts tools`:4 existing long test lines.
-3. Frontend `npm --prefix frontend test`:6 files/33 tests passed,15.42 seconds,exit0.
-4. `npm --prefix frontend run lint`:exit0; `npm --prefix frontend run build`:TypeScript
-   and Vite passed,exit0. Vite build1.01 seconds; this is not the combined command duration.
-5. Migrated stale fixtures/assertions to approved current contracts/limits, wrapped the four
-   lines and restored shared normalized route recording. No scheduling/policy thresholds changed.
-6. Targeted pytest: observability/test_run_trace; services/test_quality_first,
-   test_shared_planning_input,test_time_protection,test_initial_mixed_routes,
-   test_preference_recovery; versions/v3/test_b_targets,test_multiround,test_repair:
-   273 passed,23.27 seconds,exit0. Ruff then passed. Scopes overlap; counts are not summed.
-7. Final complete backend on corrected combined tree:1472 collected,1463 passed,
-   0 failed/errors,9 skipped,0 xfail/xpass,73.46 seconds,exit0. Nine skips are explicitly
-   disabled optional PostgreSQL tests; no DB connection was attempted.
-8. Separate fresh processes: `python -B scripts/run_v0.py --help`, V1, V2 and V3 variants,
-   all exit0 (3.53/3.67/3.93/3.88 seconds). All six public shared service exports import,exit0.
-9. Final Ruff and `git diff --check`:passed. Post-validation edits only record factual
-   documentation; no further functional rerun is required for those addenda.
-
-The only newly added behavioral cases are separate accommodation-only and flights-only budget
-exclusions; combined exclusion and real monetary/currency/per-person conflicts already existed.
-All pass through current mocked wire/domain/interpreter paths. This is not prompt13 real-model
-acceptance. No new serializer sizing or live request was performed during closeout.
-
-## Checkpoint preservation
-
-Files are grouped into shared planning/transport/output/configuration, V3 repair/validation,
-shared Preference Gate/provider/runtime correctness, and documentation. Direct tests accompany
-implementation; mixed dependency files stay together rather than being cosmetically refactored.
-The complete per-file ownership matrix and tested normalized-content hashes are stored in ignored
-closeout records. Final Git blobs are compared against that frozen manifest under the repository's
-existing CRLF/LF normalization. Intermediate commits are not independently certified states.
-`.gitignore` user edits, unconfirmed `docs/evaluator_design.md`, logs and thesis notes remain out.
-
-This closes the approved engineering scope, not every possible semantic capability. No unresolved
-blocking divergence was found after the recorded correction/regressions. Known limitations above
-remain explicit. Benchmark Frozen: NO. Formal Evaluation: NOT STARTED. Evaluation Readiness Audit
-is the next proposed stage and has not begun. Future correctness changes require a new authorized
-checkpoint; the exact final HEAD is supplied by the completion report, not this same commit.
-
-### Staging-time static correction
-
-The cached diff check additionally found one trailing space in the previously untracked
-`test_preference_smoke_harness.py` (not covered by the unstaged tracked-file diff check).
-The Gate commit was paused. Only that whitespace was removed; its focused offline suite then
-passed22 tests in8.00 seconds,exit0, under the same network-deny guard. No test logic changed.
-The final checkpoint therefore combines the complete1463-pass run with this affected-file retest.
-The manifest was re-locked after this correction; the earlier lock is preserved in local records.
-All intended files were subsequently scanned for trailing whitespace, with none remaining.
+The checkpoint closed approved engineering scope with no unresolved blocking divergence,
+while preserving those limitations. Evaluation Readiness Audit was the proposed next
+stage, not an execution started by closeout. Subsequent work requires a distinguishable
+approved checkpoint; later changes do not retroactively validate earlier outputs.

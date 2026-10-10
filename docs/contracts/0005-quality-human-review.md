@@ -5,29 +5,6 @@ paired diagnostics, human preference, resources and mechanism/controlled-Repair 
 [Evaluation architecture](../0006-independent-evaluation.md) owns status; formal comparative
 analysis and new implementation require separately authorized work.
 
-<a id="rtpeval-metrics-contract"></a>
-<a id="rtpeval-metrics-contract--rtpeval-unified-metrics-contract--draft"></a>
-<a id="rtpeval-metrics-contract--population-sources-and-units"></a>
-<a id="rtpeval-metrics-contract--common-report-contract"></a>
-<a id="rtpeval-metrics-contract--a-independent-itinerary-metrics"></a>
-<a id="rtpeval-metrics-contract--b-resource-metrics"></a>
-<a id="rtpeval-metrics-contract--ticket-05-specification-closure--2026-10-01"></a>
-<a id="rtpeval-metrics-contract--ticket-06-preflight-metric-clarification--2026-10-02"></a>
-<a id="rtpeval-metrics-contract--ticket-06-executable-measurements--2026-10-02"></a>
-<a id="rtpeval-metrics-contract--ticket-07-specification-preflight-closure--2026-10-02"></a>
-<a id="rtpeval-metrics-contract--ticket-07-executable-route-measurements--2026-10-02"></a>
-<a id="rtpeval-metrics-contract--ticket-08-specificationinterface-preflight--2026-10-02"></a>
-<a id="rtpeval-metrics-contract--ticket-08-implemented-report--2026-10-02"></a>
-<a id="rtpeval-unified-metrics-contract--draft"></a>
-<a id="population-sources-and-units"></a>
-<a id="common-report-contract"></a>
-<a id="a-independent-itinerary-metrics"></a>
-<a id="b-resource-metrics"></a>
-<a id="ticket-06-preflight-metric-clarification--2026-10-02"></a>
-<a id="ticket-08-implemented-report--2026-10-02"></a>
-
-<a id="metrics"></a>
-
 ## Units, states and metric ownership
 
 Each metric preserves sources, unit/scope, applicable/known/unresolved populations, raw
@@ -51,24 +28,6 @@ the auxiliary score formula. Unresolved lookup is not a hallucination rate; shor
 more activities and fewer repetitions are not automatic subjective improvement. Visits and
 six within-group version pairs are correlated; request-level records remain the comparison
 unit. Formal aggregation, inference and post-result weight tuning are not implemented here.
-
-<a id="rtpeval-score-profile"></a>
-<a id="rtpeval-metrics-contract--d-subscores-and-auxiliary-total"></a>
-<a id="rtpeval-score-profile--dimension-scores-and-auxiliary-total--accepted-scoring-structure"></a>
-<a id="rtpeval-score-profile--purpose"></a>
-<a id="rtpeval-score-profile--accepted-five-dimensions"></a>
-<a id="rtpeval-score-profile--accepted-verified-compliance-score"></a>
-<a id="rtpeval-score-profile--accepted-applicability-and-zero-opportunity-rules"></a>
-<a id="rtpeval-score-profile--accepted-structure-and-implementation-boundary"></a>
-<a id="rtpeval-score-profile--terminology-and-companion-rates"></a>
-<a id="rtpeval-score-profile--ticket-05-unit-specialization--2026-10-01"></a>
-<a id="rtpeval-score-profile--ticket-08-specification-preflight--2026-10-02"></a>
-<a id="rtpeval-score-profile--ticket-08-implemented-specialization--2026-10-02"></a>
-<a id="d-subscores-and-auxiliary-total"></a>
-<a id="dimension-scores-and-auxiliary-total--accepted-scoring-structure"></a>
-<a id="accepted-verified-compliance-score"></a>
-<a id="accepted-applicability-and-zero-opportunity-rules"></a>
-<a id="terminology-and-companion-rates"></a>
 
 <a id="scores"></a>
 
@@ -120,8 +79,10 @@ Grounding uses source occurrences/validated identity records rather than caller 
 counts. Under the current version-specific policy, replayed `grounding_verdict` supplies PASS,
 FAIL or UNKNOWN: confirmed incorrect addresses and different venues are FAIL without canonical
 adoption. A separately verified physical association can support opening/routes while
-grounding FAIL remains counted. It never changes requirement fulfillment or the original
-output, and downstream PASS never cancels a claim error. Earlier explicitly replayed legacy
+grounding FAIL remains counted. Occurrence matching follows the separate
+[requirement count contract](0003-requirement-schedule.md#count-bounds-and-completeness);
+physical association alone does not prove fulfillment or change the original output.
+Downstream PASS never cancels a claim error. Earlier explicitly replayed legacy
 reports retain their original resolved/unresolved classification. This changes claim classification, not
 score arithmetic or denominators. Missing evidence remains UNKNOWN. Claimed-ID conflicts and
 unknown role populations remain separate records.
@@ -140,8 +101,8 @@ V3 internal findings add no additional penalties.
 Findings-only source changes preserve numeric scores after correct relinking/replay;
 source/report hashes may change, and stale evidence remains invalid.
 
-[Acceptance](../records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) records actual red/green,
-regression, review, commits and limits. The [preflight](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20#issuecomment-5955702362)
+[Acceptance](../records/evaluation/quality-report.md#rtpeval-ticket-08-acceptance) records consequential
+defects, bounded regressions and limitations. The [preflight](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/20#issuecomment-5955702362)
 preserves the original no-implementation checkpoint and subsequent scope approval.
 
 For a fixed established population, replacing PASS with UNKNOWN reduces verified credit;
@@ -223,10 +184,6 @@ penalty, retaining minimum/maximum bounds: penalty curves are nonmonotonic. Emit
 exact deduction only when all possible counts produce the same value. UNKNOWN is never
 automatically zero, FAIL, or an assumed midpoint.
 
-<a id="rtpeval-metrics-contract--c-human-and-independent-repair-reporting"></a>
-<a id="quality-human-review"></a>
-<a id="c-human-and-independent-repair-reporting"></a>
-
 <a id="human"></a>
 
 ## Anonymous packages, answers and descriptive human reports
@@ -279,30 +236,20 @@ Source text renders as inert text and dates/offsets are preserved. Missing arriv
 add an explicitly labelled inferred arrival from supplied valid departure/duration;
 the original arrival remains absent and inference never feeds automatic scoring.
 
-The approved time-zone display extension adds a Time zone dropdown, default UTC, using
-the browser's available IANA zones (a small common-zone fallback on older runtimes).
-Explicit-offset start/end/departure/supplied-arrival/inferred-arrival timestamps display
-their converted date and a 24-hour HH:mm clock, including midnight and daylight-saving
-changes. Source day headings retain original grouping; they are not converted dates.
-Following the user's display-cleanup request, the optional Original timestamp control
-and its instructions are removed. Exact source strings remain in the frozen material.
-Local timestamps/clocks without a supplied offset are not converted; invalid dates/
-clocks remain original values and missing values display Not supplied.
-Date-only request values and free-text notes are unchanged. Zone selection is a view
-preference for the current window; it does not rewrite frozen public/private artifacts,
-answer revisions/exports or automatic reports. Runtime time-zone names/rules come from
-local Intl data; the renderer makes no external request or inferred destination zone.
-[Time-zone scope and validation](../records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-timezone-display)
-records this separately approved extension.
-[Display cleanup](../records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-display-cleanup) records the user's
-subsequent timestamp-control removal and HH:mm format correction.
+The Time zone dropdown defaults to UTC and uses browser IANA zones, with a small
+common-zone fallback on older runtimes. Explicit-offset start/end/departure and supplied/
+inferred arrivals display converted dates and HH:mm clocks, including midnight/DST.
+Original day headings retain source grouping. Local clocks without an offset remain
+unconverted; invalid values retain their original text and missing values show Not supplied.
+Date-only request fields and free text are unchanged. Zone selection affects only the
+current view, not frozen artifacts, answers or scoring; local Intl supplies the rules.
 
-The user's subsequent [uncertainty hint removal](../records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-uncertainty-display)
-hides the dedicated Uncertainty/unknowns field, all item notices and time-conversion
-warning text. Inferred arrival remains labelled, while HH:mm clocks, dates and the
-time-zone selector remain. Ordinary source notes/preferences and duration basis remain
-source text. Frozen public/private material still retains unknowns/notices and exact
-hashes; UI suppression neither verifies a claim nor rewrites answers/scoring.
+The renderer hides dedicated uncertainty fields, item notices, conversion warnings and
+original-timestamp controls. It retains the Inferred arrival label, ordinary notes/
+preferences and duration basis. Frozen material still retains exact strings, unknowns,
+notices and hashes; suppression does not verify a claim. The
+[display history](../records/evaluation/blinded-ranking-record.md#integrated-display-revisions)
+records the separately approved changes.
 
 Preparation is researcher-only. Its `fields` list records `field_ref`, exact source-file
 `source_sha256`, source pointer, `original`, canonical `original_sha256` and likely leakage
@@ -334,11 +281,6 @@ are correlated. No overall human score, inferential analysis or automatic-qualit
 integration is supplied. Frozen mapping hashes verify integrity, not cryptographic
 authorship. [Acceptance](../records/evaluation/blinded-ranking-record.md#rtpeval-ticket-09-acceptance) records actual
 test/review/browser evidence and remaining limitations.
-
-<a id="rtpeval-metrics-contract--e-remaining-decisions-and-technical-work"></a>
-<a id="e-remaining-decisions-and-technical-work"></a>
-
-<a id="planned"></a>
 
 ## Follow-up reporting boundary
 
@@ -465,20 +407,6 @@ availability, mask, exact deltas, correspondence and continuity. Content hashing
 creation time. CLI file-byte hashes remain distinct from canonical preparation digests.
 Exit 0 means complete processing, including unavailable pairs and quality FAIL/UNKNOWN;
 material/replay correction exits 2. Commands are in the [package guide](../../backend/evaluation/README.md).
-
-<a id="ticket-05-specification-closure--2026-10-01"></a>
-<a id="ticket-06-executable-measurements--2026-10-02"></a>
-<a id="ticket-07-specification-preflight-closure--2026-10-02"></a>
-<a id="ticket-07-executable-route-measurements--2026-10-02"></a>
-<a id="ticket-08-specificationinterface-preflight--2026-10-02"></a>
-<a id="purpose"></a>
-<a id="accepted-five-dimensions"></a>
-<a id="accepted-structure-and-implementation-boundary"></a>
-<a id="ticket-05-unit-specialization--2026-10-01"></a>
-<a id="ticket-08-specification-preflight--2026-10-02"></a>
-<a id="ticket-08-implemented-specialization--2026-10-02"></a>
-
-<a id="history"></a>
 
 ## Implementation and historical decisions
 

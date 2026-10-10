@@ -5,16 +5,11 @@ core docs and GitHub Issues. Historical commands grant no new execution permissi
 
 <a id="preference-landmark-balance-pilot-assessment"></a>
 
-<a id="preference-landmark-balance-pilot-assessment--v3-preference-and-landmark-pilot-assessment"></a>
-
 ## V3 preference and landmark pilot assessment
 
 Date: 2026-09-28, Australia/Sydney. Base: `cc4d5a0` plus the frozen uncommitted
-ticket 03 implementation and pilot adapter. No commit, freeze or formal comparison.
-The user authorized preparation and three sequential single attempts through completion.
-Iteration 2 owns this assessment; the `smoke tests` conversation owns execution/reporting.
-
-<a id="preference-landmark-balance-pilot-assessment--evidence-and-preparation"></a>
+ticket 03 implementation and pilot adapter. This was a development pilot, not a formal comparison.
+The approved pilot covered three sequential single attempts.
 
 ### Evidence and preparation
 
@@ -30,8 +25,6 @@ actual byte accounting and local RAG readiness gaps. These were corrected before
 successful retest and final Standards/Spec reviews. No production change was made during
 the live batch. New lineage capture has separate 1 MiB/artifact and 4 MiB/case limits;
 the existing capture streams retain their own limits.
-
-<a id="preference-landmark-balance-pilot-assessment--results"></a>
 
 ### Results
 
@@ -71,8 +64,6 @@ not pass**, because the required focus-target interpretation failed. Sydney prov
 limited positive evidence for ordinary preferences coexisting with nominated landmarks.
 Brisbane provides limited evidence for bounded output and truthful uncertainty reporting.
 
-<a id="preference-landmark-balance-pilot-assessment--observed-focus-interpretation-failure"></a>
-
 ### Observed focus interpretation failure
 
 Melbourne input explicitly says `This trip is mainly about museums.` This is also the
@@ -95,9 +86,7 @@ classification), while acquisition and selection retain existing `themed` /
 `exclusive` branches that bypass general exploration. The model's theme classification
 therefore bypasses the intended soft saturation behavior. This is a code-supported
 diagnosis, not a counterfactual experiment proving the sole cause of every chosen visit.
-No fix, prompt tuning, source modification or live rerun was performed.
-
-<a id="preference-landmark-balance-pilot-assessment--scope-of-conclusions"></a>
+No correction was applied to this original pilot; the distinct later revalidation follows.
 
 ### Scope of conclusions
 
@@ -105,11 +94,9 @@ These are development pilot observations, not a V0-V3 comparison or a formal ben
 Landmark nomination is model knowledge, semantic coverage is model judgment, and neither
 proves opening, access or price facts. Successful execution is separate from engineering
 acceptance and from travel feasibility. Missing billed usage is not zero expenditure.
-Additional fixes or live attempts require a separately agreed scope after this report.
+The subsequent approved correction is recorded in [focus convergence](preference-landmark-balance.md#preference-landmark-balance-focus-convergence).
 
 <a id="preference-landmark-balance-pilot-focus-revalidation-assessment"></a>
-
-<a id="preference-landmark-balance-pilot-focus-revalidation-assessment--melbourne-v3-focus-revalidation-assessment"></a>
 
 ## Melbourne V3 focus revalidation assessment
 
@@ -117,8 +104,6 @@ Date: 2026-09-28 Australia/Sydney. Status: bounded case engineering acceptance p
 not a general quality claim or freeze. Base cc4d5a0 plus frozen uncommitted ticket03,
 focus convergence and follow-up tooling. User authorized exactly one new attempt, using
 the unchanged original Melbourne input and existing budgets. No retry or production edit.
-
-<a id="preference-landmark-balance-pilot-focus-revalidation-assessment--observed-outcome"></a>
 
 ### Observed outcome
 
@@ -144,12 +129,10 @@ Gardens, Royal Exhibition Building and Melbourne Skydeck. This supplies bounded 
 that focused preference coverage can coexist with independent nominated landmarks. The
 different outcome from the earlier run is descriptive, not a controlled causal comparison.
 
-<a id="preference-landmark-balance-pilot-focus-revalidation-assessment--budgets-validation-and-limitations"></a>
-
 ### Budgets, validation and limitations
 
 No recorded primary used/limit exceeded its limit. Semantics used one call. Initial RAG
-used one embedding, one query,20 returned positions,8 Details and4 fallback sends; these
+used one embedding, one query,20 returned positions,8 Details and four fallback sends; these
 are separate from primary acquisition counters. Nearby sent3 requests. Nomination reported
 225 input/293 output tokens; full requirement/generation billed usage remains unavailable.
 Application/outer600/660s bounds were respected. No monetary cost total is inferred.
@@ -161,14 +144,11 @@ violations and11 UNKNOWNs:8 access/reservation/special-area,1 structured-hours m
 prices, operational access or overall feasibility. No universal focus-classification or
 landmark-quality reliability is established by a single sample.
 
-<a id="preference-landmark-balance-pilot-focus-revalidation-assessment--evidence-and-preparation-checks"></a>
-
 ### Evidence and preparation checks
 
 Evidence root: logs/focus_revalidation_20260928/; manifest captures current dirty source,
 runtime and input hashes. The smoke execution report,12-row lineage.csv and Markdown
 final_itinerary.md supplement per-case result/Product and independent budget artifacts.
-The prior three-case pilot remains unchanged. The follow-up launcher has a separate
-single-case output and child entry; its test initially intercepted Git with a process
-stub, then passed after test-only correction. Launcher/capture suite11 passed, Ruff passed;
-prior full production suite1807 passed/9 skipped. No commit or new version freeze.
+The prior three-case pilot remains unchanged. The follow-up used a distinct single-case output. Launcher/capture checks passed **11**,
+Ruff passed, and the prior production gate was **1807 passed, 9 skipped**. This preparation
+check is not a new full gate or freeze.

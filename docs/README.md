@@ -2,7 +2,7 @@
 
 [PROJECT.md](../PROJECT.md) owns current scope and authorization. Start with the
 [project proposal](proposal.md), then read the responsibility relevant to your task.
-These core files consolidate current behavior; dated implementation diaries do not
+These core files consolidate current behavior; development diaries do not
 belong in this directory. Task specifications and iteration state live in GitHub Issues.
 
 ## Core designs
@@ -33,8 +33,8 @@ Evaluation has five consolidated contract references: [artifacts](contracts/0001
 [requirements/schedule](contracts/0003-requirement-schedule.md),
 [opening/routes](contracts/0004-opening-routes.md), and
 [quality/human review and V3 pairs](contracts/0005-quality-human-review.md).
-These are continuous current rules with one owner per topic. Superseded proposals and
-approval/validation history remain in records and linked Issues; legacy deep links resolve
+These are continuous current rules with one owner per topic. Important decisions, results and limitations remain in topic histories and linked Issues;
+legacy deep links resolve
 to the corresponding current topic. Implementation status stays explicit in the evaluation
 core design. Read only relevant contract sections.
 
@@ -51,11 +51,8 @@ LLM reports retain an explicit replay path.
   [version lifecycle](agents/versions.md) and [live smoke delegation](agents/smoke-tests.md).
   [Tracker conventions](agents/issue-tracker.md), [triage labels](agents/triage-labels.md)
   and [document ownership/archive rules](agents/domain.md) configure the engineering skills.
-- [Current consolidation Issue #36](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/36)
-  records this task's specification and acceptance; old-design comments identify successors.
 
-Use numbered responsibility names for core design/ADRs. Add a version suffix only for
-version-specific documents, such as `(v3)` or `(v2v3)` before `.md`. Shared documents
-need no artificial all-version suffix. Merge related design into its existing owner.
-Published links target tracked assets or accessible remote revisions; optional local
-scratch and raw runtime evidence are not published dependencies.
+For documentation maintenance, use [AGENTS.md](../AGENTS.md#documentation).
+Historical records summarize decisions and evidence; they are not prerequisites for
+understanding current behavior. Local artifact identifiers in records locate retained
+evidence but do not replace the public explanation or command guides.

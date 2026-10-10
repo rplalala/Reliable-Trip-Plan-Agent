@@ -283,15 +283,17 @@ changes need their own scope. The latest V3 starts with zero pace deduction and 
 no Repair attempt; earlier actual Repair improvement remains separate dated evidence.
 V0 baseline changes and formal research also remain separate. Consumed one-use packages
 are not retry authority, and this acceptance grants no version freeze or remote Git
-delivery. GitHub Issues own specifications and live task state; detailed execution
-history belongs in the [acceptance record](docs/records/evaluation/intake-identity-usage.md#complete-v0-identity-coverage-acceptance-2026-10-09).
+delivery. GitHub Issues own specifications and live task state; consequential decisions, results
+and evidence are summarized in the [acceptance record](docs/records/evaluation/intake-identity-usage.md#complete-v0-identity-coverage-acceptance-2026-10-09).
 
 ## 7. Keeping this file current
 
 Maintain current capability, version boundaries, latest validation, unresolved limits
 and authorized next work in place. Keep one current validation checkpoint, with explicit
-scope and date. Put request counts, cost inventories, commit diaries, approval sequences
-and failure/correction/retest details in their existing dated record owners, then link
-them from the relevant current topic. Do not append each completed task to this file.
+scope and date. Summarize consequential decisions, failures, results, limitations and
+evidence in existing topic records, retaining causal sequence only where it explains
+the result. Routine operations belong in Git, Issues or chat. Follow
+[AGENTS.md Documentation](AGENTS.md#documentation); do not append each completed task
+to this file.
 Historical records and previous PROJECT revisions do not override current scope or
 renew execution authority. Use [docs/README.md](docs/README.md) for detailed navigation.

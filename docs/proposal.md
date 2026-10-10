@@ -150,7 +150,7 @@ belong to the linked design and acceptance records.
 | --- | --- | --- |
 | US-08 | As a developer, I want to run V0-V3 independently so that I can inspect a mechanism without replacing earlier versions. | Separate runners remain available. V0 has no external travel acquisition or RAG; V1/V2 do not invoke V3 repair. Diagnostics remain separate from the Product presentation contract. |
 | US-09 | As an evaluation operator, I want submitted artifacts and obligations to retain their provenance so that an assessment can be traced to its actual inputs. | Original artifact identity and hashes are preserved. Projection and reviewed associations retain source references; scoring does not rewrite original results or use planner verdicts as ground truth. |
-| US-10 | As an evaluation operator, I want evidence availability reported alongside compliance so that missing facts do not create misleading scores. | Implemented scorers expose applicable populations, denominators and UNKNOWN outcomes. Snapshot acquisition uses supplied/injected transport; an operational collection client and a formal collection campaign are not implied. |
+| US-10 | As an evaluation operator, I want evidence availability reported alongside compliance so that missing facts do not create misleading scores. | Implemented scorers expose applicable populations, denominators and UNKNOWN outcomes. The snapshot primitive accepts supplied transport; the installed automatic evaluator supplies fresh bounded acquisition with frozen inputs, receipts and offline replay. A formal collection campaign still requires separate authorization. |
 | US-11 | As a human reviewer, I want anonymous itinerary alternatives so that my judgment is recorded separately from version attribution and automatic scores. | Review material hides version attribution and automatic scores. The researcher holds the mapping; imported answers retain package/rater/revision context and human preferences remain separate from automatic metrics. |
 | US-12 | As an evaluation operator, I want to compare a saved V3 draft with its final primary plan so that I can inspect changes and their independently assessed outcomes. | Same-run source lineage, paired masks/deltas and independent continuity remain separate. Missing stages or unresolved correspondence remain visible; the draft is not an independently executed V2 result. |
 | US-13 | As an evaluation operator, I want to replay a supplied V3 Repair case under frozen capabilities so that I can inspect detection, adoption and independently reviewed target/control outcomes. | The real post-primary path recomputes permissions. Script mismatches fail replay integrity; lawful changes, regressions and unresolved evidence remain distinct. No formal case corpus is generated. |
@@ -189,54 +189,23 @@ success rate.
 
 ## 8. Technical approach
 
-The solution is a modular monolith. React owns interaction and rendering; FastAPI
-owns API and application boundaries; backend services own model calls, provider
-integration, retrieval, orchestration, validation and repair. PostgreSQL with
-pgvector is the primary retrieval store. Integration clients normalize provider
-responses before domain policies consume them.
-
-Models propose interpretations, itinerary content or edits. Application code owns
-authoritative facts, identities, evidence applicability, resource accounting,
-permissions and adoption. Retrieval contributes discovery candidates; corpus
-relevance does not establish current feasibility.
-
-| Version | Mechanism | Implementation boundary |
-| --- | --- | --- |
-| V0 | Plain LLM planning with shared input interpretation | Estimated transport; no external travel acquisition, RAG or repair |
-| V1 | External places, weather, routes and supported official/current evidence | Shared bounded evidence/supply pipeline; no V3 repair |
-| V2 | V1 plus TripWorld retrieval and canonical merge | Compatible geographically filtered exact retrieval; no automatic corpus/vector rebuild |
-| V3 | V2 plus validation, targeted repair and re-validation | Bounded permissions, adoption checks and safe fallback |
-
-Product invokes V3 and presents an allowlisted final result. Developer execution
-preserves all four versions. The detailed algorithms, schemas and tunable limits
-remain in their core owners and configuration rather than being duplicated here.
+The [system architecture](0001-system-architecture.md) defines the modular monolith,
+independent V0-V3 mechanisms and model/application responsibility boundary.
+[Retrieval](0004-retrieval-persistence%28v2v3%29.md) contributes discovery candidates;
+[V3 validation and Repair](0005-validation-repair%28v3%29.md) governs permitted corrections.
+The functional traceability table above connects user needs to those detailed owners.
 
 ## 9. Development and validation approach
 
-Development follows scoped GitHub specifications and parent/child tickets,
-implementation at testable boundaries, proportionate regression checks and
-Standards/Spec review. Dated records preserve failures, corrections and retest
-outcomes. Current task state remains in GitHub; current project scope remains in
-PROJECT.md.
+[AGENTS.md](../AGENTS.md) owns scoped development, proportionate checks and review rules.
+[Dated records](records/README.md) distinguish implementation from observed validation and
+approved freezes. Routine external-boundary tests use fixtures or mocks; live pilots need
+an approved attempt and budget.
 
-Routine external-boundary tests use controlled fixtures or mocks. Shared
-schema/core changes require broader affected-version checks. UI checks cover both
-automated behavior and relevant browser interaction. Development pilots require
-explicitly approved attempts and resource budgets; their outcomes are bounded
-engineering evidence.
-
-Independent evaluation consumes an explicitly selected batch, preserves original
-artifacts and reviewed obligations, and uses separately sourced observations.
-Tickets 01-12 provide approved offline implementations, including source-driven V3
-before/after reporting, frozen real Repair execution and selected-source mechanism/audit
-reporting. Synthetic CLI usage acceptance exercises their delivered interfaces.
-These checks do not establish a formal dataset, sampling protocol, truth audit or
-comparative result; detailed scope remains in the [evaluation design](0006-independent-evaluation.md).
-
-Formal evaluation requires its own approved plan, collection scope, budget and
-analysis method. Research questions may concern independently measured outcomes,
-repair regressions and resource/availability trade-offs; no experimental protocol,
-effect size or final conclusion is supplied by this proposal.
+The [independent evaluator](0006-independent-evaluation.md) assesses selected original
+artifacts using reviewed obligations and separately sourced observations. Its implemented
+workflows do not establish a formal dataset, sampling protocol or comparative conclusion.
+Formal evaluation requires a separately approved collection scope, budget and analysis plan.
 
 ## 10. Deliverables and delivery gates
 

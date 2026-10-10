@@ -33,46 +33,6 @@ historical absent/null metadata stays unassessed. `PreferenceDraftV10` and
 `preference_prompt_19` identify the current wire/prompt. Only V3 Repair uses this
 metadata as an optimization target; initial generation gains no zero-penalty constraint.
 
-## Preference policy
-
-An ordinary count-free positive POI interest has a soft target of one distinct qualifying
-POI. An explicitly sourced trip focus has target two. The application requires exact
-focus provenance; it does not infer a themed quota from general enthusiasm. Explicit
-counts, dated obligations, exclusions and exclusive restrictions take priority. Broad
-enjoyment creates no invented numerical obligation. Explicit exclusive scope and ordinary
-interests remain distinguishable. Candidate opportunity is not final scheduled fulfillment.
-
-V0 receives shared interpretation/generation guidance but has no externally grounded
-candidate-semantic verification. Name-based observations are proxies. V1-V3 can report
-grounded coverage against canonical identities and actual visit-object judgments.
-
-## Supply pipeline
-
-The shared V1-V3 pipeline discovers bounded candidates, resolves/deduplicates identities,
-acquires normalized details and permitted supplementary evidence, assesses semantics,
-and selects a bounded supply. Destination landmark nomination is an independent bounded
-opportunity source, not a substitute for satisfying requirements. Landmark opportunities
-remain eligible after preference targets are met. Discovery source and factual evidence
-source are recorded separately; Google resolution does not imply Google discovery.
-
-TripWorld adds retrieval candidates in V2/V3 before canonical merge. Admission still
-requires the applicable identity and evidence checks. A retrieval score, category label
-or review signal does not independently prove current availability or suitability.
-
-## Semantic and identity boundaries
-
-Models receive compact application-owned references; strict mapping restores canonical
-identities. A model cannot create a new identity, evidence citation or exception by naming
-one in its answer. Responses are validated before caching/admission. Bounded correction
-is restricted to its declared invalid/missing-reference cases; ordinary semantic rejection
-or an unrelated failure does not authorize arbitrary retries. Missing assessment remains
-unauthorized rather than silently qualifying a candidate.
-
-The application distinguishes an actual visit object from an address, generic activity,
-same-site subvenue or contextual reference. UNKNOWN is retained where evidence cannot
-justify a claim. Existing policy and current schemas own exact supported categories;
-the documentation does not infer newly supported obligations from natural-language breadth.
-
 ## Evidence ownership
 
 | Source | Appropriate use | Limit |
@@ -95,7 +55,6 @@ Implementation owners include [interpretation](../backend/app/services/preferenc
 Task histories are [preference/landmark #26](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/26)
 and [semantic correction #28](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/28).
 
-
 ## Input gate and provenance contract
 
 Schema/date validation precedes interpretation. A current wire response must include
@@ -117,8 +76,8 @@ source links. Canonicalization rewrites duplicate links without duplicate reward
 subjects are not silently party-wide. Named counts/dates belong to named visit obligations;
 category goals use semantic assessment. Unsupported hard semantics require clarification;
 ordinary rich/varied/enjoyable wishes stay soft without invented quotas or luxury budgets.
-The narrowed experience scope is ordinary/exclusive; exact trip-focus provenance supplies
-the soft target of two. Historical themed payloads are not silently upgraded.
+The narrowed experience scope is ordinary/exclusive. Historical themed payloads are
+not silently upgraded.
 
 Typed requested-place information, transport restrictions and experience dimensions keep
 their acquisition meanings while semantic text stays open vocabulary. Preferred/avoided
@@ -137,6 +96,23 @@ Developer contract failures use HTTP 502 versus clarification 422; CLI failure a
 clarification have distinct exit outcomes. Default telemetry excludes raw preference quotes.
 
 ## Semantic qualification and multiplicity
+
+An ordinary count-free positive POI interest has a soft target of one distinct qualifying
+POI. An explicitly sourced trip focus has target two, requiring exact focus provenance. Explicit
+counts, dated obligations, exclusions and exclusive restrictions take priority. Broad
+enjoyment creates no invented numerical obligation. Explicit exclusive scope and ordinary
+interests remain distinguishable. Candidate opportunity is not final scheduled fulfillment.
+
+V0 receives shared interpretation/generation guidance but has no externally grounded
+candidate-semantic verification. Name-based observations are proxies. V1-V3 can report
+grounded coverage against canonical identities and actual visit-object judgments.
+
+Models receive compact application-owned references; strict mapping restores canonical
+identities. A model cannot create a new identity, evidence citation or exception by naming
+one in its answer. Responses are validated before caching/admission. Bounded correction
+is restricted to its declared invalid/missing-reference cases; ordinary semantic rejection
+or an unrelated failure does not authorize arbitrary retries. Missing assessment remains
+unauthorized rather than silently qualifying a candidate.
 
 All factual-gate-qualified candidates competing for main supply receive bounded semantic
 assessment. Actual visit object, role, scoped exception, per-requirement relation and supplied
@@ -161,6 +137,17 @@ counts distinct supported scheduled identities, not candidate matches or repeate
 one place may satisfy multiple goals. Soft gaps do not create new confirmed Repair targets.
 
 ## Admission, acquisition and deterministic supply
+
+The shared V1-V3 pipeline discovers bounded candidates, resolves/deduplicates identities,
+acquires normalized details and permitted supplementary evidence, assesses semantics,
+and selects a bounded supply. Destination landmark nomination is an independent bounded
+opportunity source, not a substitute for satisfying requirements. Landmark opportunities
+remain eligible after preference targets are met. Discovery source and factual evidence
+source are recorded separately; Google resolution does not imply Google discovery.
+
+TripWorld adds retrieval candidates in V2/V3 before canonical merge. Admission still
+requires the applicable identity and evidence checks. A retrieval score, category label
+or review signal does not independently prove current availability or suitability.
 
 Discovery provenance gives an opportunity, not proof of a preference match. Soft targets
 receive one additional distinct candidate alternative; saturation reduces priority without
@@ -265,7 +252,6 @@ limits and allowlisted statuses. Missing billed usage stays missing. Existing 32
 and 64-KiB artifact limits remain; no names, prompts or raw provider envelopes are added
 to the compact summary. Token engineering estimates are not billed usage.
 
-
 Landmark nomination is one destination-only auxiliary names call after gate acceptance in
 V1-V3, with no retry/correction; V0 and V3 Repair do not call it. Limits are configured under
 `landmark_nomination`. A nomination is neither REQUIRED nor evidence of visit feasibility.
@@ -279,8 +265,7 @@ The frontend end-date maximum is min(start+9, allowedEnd); backend submission va
 The developer page initializes its explicitly editable research reference date from the same endpoint.
 Unavailable date-policy loading disables product submission; no browser-local fallback is guessed.
 
-Same-day remaining-hour planning remains unsupported. Accepting today's date does not claim that
-past hours will be avoided. The earlier proposal for future evaluation (start >= reference+2)
-was constrained to eight days under the old +9 window. That arithmetic is historical: delayed
-10-day trips now fit. No formal evaluation protocol is implemented or authorized by this extension.
-The historical Sydney ten-day smoke and its original checkpoint remain unchanged.
+Same-day remaining-hour planning remains unsupported: accepting today does not ensure past
+hours are avoided. The earlier +9 calendar window is recorded in
+[V1 history](records/v0-v3/v1-development.md); it does not constrain the current +13 window
+or authorize a formal evaluation protocol.

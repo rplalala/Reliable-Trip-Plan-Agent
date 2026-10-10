@@ -4,11 +4,9 @@ Status: Implemented V2/V3 retrieval architecture, consolidated 2026-10-03.
 
 ## Offline corpus versus runtime discovery
 
-TripWorld metadata is prepared offline into deterministic entity/text artifacts. Entities
-group by nonblank Google Place ID, otherwise FSQ identity, preserving source identifiers,
-aliases and geographic conflicts. Source identity does not certify a current Google venue.
-Coordinates and IDs are metadata rather than embedding prose. Enriched categories support
-retrieval meaning, not invented visit experiences or official facts.
+TripWorld metadata is prepared offline into deterministic entity/text artifacts. The
+[entity and text rules](#retrieval-entities-and-text) define grouping and representation;
+retrieval relevance does not establish current factual availability.
 
 Only the established metadata input is required; reviews, travel-behavior and place-attribute
 datasets are not implicitly part of the corpus. Exact revision, checksums, field selection
@@ -120,7 +118,7 @@ vector(1536) per exact text hash/space, plus vector hash and generation metadata
 maps each eligible entity to its compatible text vector: text dedup saves physical storage without
 merging distinct entity result identities or Top-K slots. RAW vectors are not imported.
 
-Migration filenames/checksums are recorded; applied files cannot be edited. Initial migration
+Applied migration files cannot be edited. Initial migration
 is transactional and advisory-locked. Ingestion validates Parquet hash, builder/text versions and
 row provenance, COPY-loads staging, validates counts/duplicates, then performs transactional
 content/version-aware upsert and removes stale entities for a full snapshot. Build locks prevent
@@ -141,14 +139,10 @@ billing. Runtime queries never execute ingestion, migration or this global embed
 
 ## Resolution, merge and evidence
 
-<a id="b-6e22a34753f8-0"></a>
-
 Known Google IDs reuse compatible evidence or request required current Details. Missing/failed
 IDs may use bounded name/location fallback (one fallback per entity, up to three results).
 Unresolved ordinary RAG candidates are recorded and skipped; unresolved REQUIRED identity keeps
 the shared clarification boundary. No corpus-wide Google validation occurs.
-
-<a id="b-6e22a34753f8-1"></a>
 
 Canonical Google ID determines one shared candidate. Preserve all real discovery origins and
 intent references without duplicate rewards. Google resolution of a RAG place is not itself
@@ -156,12 +150,9 @@ Google discovery. Do not invent Google rank or equate cosine with rank. Early RA
 be reused in shared acquisition, while cheap admission fields remain stage-aligned. Static
 categories/enrichment cannot become current opening, price or Review/Profile facts.
 
-<a id="b-6e22a34753f8-2"></a>
-
 RAG failure retains acquired Google and resolved RAG evidence and continues the same request;
 it does not rerun V1, interpretation or paid work. V1 has no retrieval extension. Nearby remains
 post-primary and uses actual scheduled anchors with unchanged independent budgets.
-
 
 ## Query construction and reproducibility boundary
 

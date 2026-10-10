@@ -6,8 +6,6 @@ owns implemented/deferred boundaries. GitHub owns task state. This reference sta
 rules together; dated proposals, approvals and validation remain in linked history.
 
 <a id="rtpeval-spec"></a>
-<a id="scope"></a>
-
 ## Batch ownership and reader separation
 
 The final-quality workflow consumes an explicitly selected, producer-attested batch of
@@ -27,20 +25,6 @@ request/itinerary material; RequirementSpec, automatic scores and private mappin
 The request/group is the comparison unit; visits, obligations and legs are nested observations.
 Formal selection, sampling, cross-request inference and research conclusions remain separately
 authorized work. Shared normalized DTOs do not make planner decisions independent evidence.
-
-<a id="rtpeval-artifact-contract"></a>
-<a id="rtpeval-artifact-contract--batch-layout-and-integrity"></a>
-<a id="rtpeval-artifact-contract--requirementspec-wire-shape"></a>
-<a id="rtpeval-artifact-contract--selected-run-provenance-wire---2026-09-30"></a>
-<a id="rtpeval-spec--ownership-and-batch-lifecycle"></a>
-<a id="rtpeval-spec--requirementspec-field-proposal--2026-09-28"></a>
-<a id="batch-layout-and-integrity"></a>
-<a id="requirementspec-wire-shape"></a>
-<a id="selected-run-provenance-wire---2026-09-30"></a>
-<a id="ownership-and-batch-lifecycle"></a>
-<a id="requirementspec-field-proposal--2026-09-28"></a>
-
-<a id="integrity"></a>
 
 ## Material integrity and source identity
 
@@ -79,37 +63,6 @@ submitted inputs. Missing optional V3 draft/final-primary projections disable de
 work only; they are not reconstructed. Usage may explicitly be unavailable, rather than zero.
 Exact parsing/projection wire is owned by [intake](0002-intake-identity-usage.md#rtpeval-intake-projection-contract).
 
-<a id="rtpeval-activity-scope-contract"></a>
-<a id="rtpeval-activity-scope-contract--activity-scope-and-route-adjacency--draft"></a>
-<a id="rtpeval-activity-scope-contract--purpose-and-ownership"></a>
-<a id="rtpeval-activity-scope-contract--one-poi-delivery-constraint"></a>
-<a id="rtpeval-activity-scope-contract--shared-inventory-and-confirmed-scope"></a>
-<a id="rtpeval-activity-scope-contract--adjacency-and-occupancy"></a>
-<a id="rtpeval-activity-scope-contract--scope-decisions-and-code-confirmation"></a>
-<a id="rtpeval-activity-scope-contract--simple-examples"></a>
-<a id="rtpeval-activity-scope-contract--remaining-technical-contracts"></a>
-<a id="rtpeval-activity-scope-contract--future-checks"></a>
-<a id="rtpeval-activity-scope-contract--day-boundary-source-references"></a>
-<a id="rtpeval-activity-scope-contract--generic-no-poi-activities-superseding-user-decision"></a>
-<a id="rtpeval-activity-scope-contract--ticket-01-specialization--2026-09-29"></a>
-<a id="rtpeval-activity-scope-contract--superseding-transport-source-decision---2026-09-30"></a>
-<a id="rtpeval-activity-scope-contract--transport-responsibility-correction---2026-09-30"></a>
-<a id="rtpeval-activity-scope-contract--ticket-05-occupancy-specialization--2026-10-01"></a>
-<a id="rtpeval-spec--activity-scope-and-adjacency-draft--2026-09-28"></a>
-<a id="rtpeval-spec--superseding-generic-activity-decision--2026-09-28"></a>
-<a id="activity-scope-and-route-adjacency--draft"></a>
-<a id="one-poi-delivery-constraint"></a>
-<a id="adjacency-and-occupancy"></a>
-<a id="day-boundary-source-references"></a>
-<a id="generic-no-poi-activities-superseding-user-decision"></a>
-<a id="superseding-transport-source-decision---2026-09-30"></a>
-<a id="transport-responsibility-correction---2026-09-30"></a>
-<a id="ticket-05-occupancy-specialization--2026-10-01"></a>
-<a id="activity-scope-and-adjacency-draft--2026-09-28"></a>
-<a id="superseding-generic-activity-decision--2026-09-28"></a>
-
-<a id="activity"></a>
-
 ## Activity, transport and occupancy scope
 
 Each primary visit is one concrete place occurrence with its own interval. A confirmed
@@ -140,21 +93,6 @@ independent review. Planner lineage cannot authorize that classification. Scoped
 retain their original obligations and block applicable commitments without adding non-overlap
 units. Detailed occupancy/counting is owned by
 [requirements and schedule](0003-requirement-schedule.md#rtpeval-requirement-schedule-contract).
-
-<a id="rtpeval-evidence-time-contract"></a>
-<a id="rtpeval-evidence-time-contract--evidence-and-time-parsing-contract"></a>
-<a id="rtpeval-evidence-time-contract--verified-provider-facts"></a>
-<a id="rtpeval-evidence-time-contract--time-interpretation"></a>
-<a id="rtpeval-evidence-time-contract--opening-parsing-truth-table"></a>
-<a id="rtpeval-evidence-time-contract--route-response-truth-table"></a>
-<a id="rtpeval-evidence-time-contract--identity-and-role-handling"></a>
-<a id="rtpeval-evidence-time-contract--implementation-checks-and-limits"></a>
-<a id="rtpeval-evidence-time-contract--opening-technical-follow-up--2026-10-02"></a>
-<a id="rtpeval-evidence-time-contract--ticket-06-implemented-timeevidence-checkpoint--2026-10-02"></a>
-<a id="verified-provider-facts"></a>
-<a id="time-interpretation"></a>
-<a id="opening-parsing-truth-table"></a>
-<a id="route-response-truth-table"></a>
 
 <a id="time"></a>
 
@@ -187,27 +125,6 @@ usable without silently switching endpoints, mode or date. The complete truth ta
 applicability and independent tolerances live in
 [opening/routes](0004-opening-routes.md), rather than a second rule copy here.
 
-<a id="rtpeval-artifact-contract--evaluation-artifact-and-human-answer-contract"></a>
-<a id="rtpeval-artifact-contract--reports-and-numeric-serialization"></a>
-<a id="rtpeval-artifact-contract--human-presentation-and-answers"></a>
-<a id="rtpeval-artifact-contract--ticket-08-proposed-quality-report-specialization--2026-10-02"></a>
-<a id="rtpeval-spec--automatic-checks-and-human-judgment"></a>
-<a id="rtpeval-spec--human-assessment-boundary"></a>
-<a id="rtpeval-spec--detailed-accepted-metric-and-reporting-constraints"></a>
-<a id="rtpeval-spec--quality-checks-and-scorecard"></a>
-<a id="rtpeval-spec--score-profile-proposal--2026-09-28"></a>
-<a id="evaluation-artifact-and-human-answer-contract"></a>
-<a id="reports-and-numeric-serialization"></a>
-<a id="human-presentation-and-answers"></a>
-<a id="ticket-08-proposed-quality-report-specialization--2026-10-02"></a>
-<a id="automatic-checks-and-human-judgment"></a>
-<a id="human-assessment-boundary"></a>
-<a id="detailed-accepted-metric-and-reporting-constraints"></a>
-<a id="quality-checks-and-scorecard"></a>
-<a id="score-profile-proposal--2026-09-28"></a>
-
-<a id="reports"></a>
-
 ## Report and track boundaries
 
 Reports retain source/rule/preparation/review hashes, units, applicable populations, raw states,
@@ -223,14 +140,9 @@ Not every optional track is integrated into the quality report. Its availability
 not manufacture resource/human/mechanism aggregation. Paired snapshot support in preparation/
 individual scorers alone is distinct from the implemented Ticket 10 paired report.
 
-<a id="rtpeval-spec--repair-and-controlled-cases"></a>
-<a id="rtpeval-spec--presentation-of-mechanism-comparisons"></a>
-<a id="rtpeval-spec--out-of-scope"></a>
-<a id="rtpeval-spec--further-notes"></a>
-
 <a id="planned"></a>
 
-## Accepted follow-up design and deferred coverage
+## Optional diagnostics and controlled studies
 
 Ticket 10 retains independently evaluated V3 draft/final-primary under one compatible snapshot,
 validated adopted-edit/activity/split provenance before content fallback and residual review,
@@ -249,11 +161,10 @@ for separately authorized work. No controlled cases or rates are created by this
 
 ### Ticket 11 controlled replay contract
 
-**Status: offline implementation approved and implemented; validation/review recorded separately.** The control and
-human-review decisions were accepted on 2026-10-03. This section closes the local technical
-preflight for [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23);
-it does not change the live Issue state or authorize publication, formal case construction,
-execution or analysis. The accepted 24-target/8-control composition remains unchanged.
+The offline V3-only executor and independent report are implemented. The accepted
+study basis is 24 target cases plus 8 controls; formal construction/execution is
+separate from the synthetic development checks in the
+[implementation record](../records/evaluation/2026-10-04-controlled-repair.md).
 
 #### Cases, targets and controls
 
@@ -345,26 +256,11 @@ live cost or a model-quality estimate.
 The existing `tools/validation/repair_replay.py` is evidence-only scope/candidate preparation;
 it does not replay model proposals or adoption. Reuse its capture concepts where applicable,
 but preserve that diagnostic contract and do not claim old snapshots contain complete replay
-capabilities. A small shared production initialization/finalization seam can avoid maintaining
-a second Repair implementation. Default live clocks, policies and version entry paths must
-retain their behavior.
-
-#### Approved implementation and validation boundary
-
-The approved implementation is an offline V3-only case reader/preparation, frozen
-execution adapters, controlled outcome report and CLI under `backend/evaluation/`, with a
-small behavior-preserving shared seam in `backend/app/versions/v3/wiring.py` if needed.
-Reuse the existing independent identity, requirement/schedule, opening, route and paired
-correspondence checks. Add explicit controlled goal/invariant linkage rather than a second
-general quality scorer or fake four-version batch. No formal 32-case corpus is generated.
-
-Use synthetic development fixtures after implementation approval to verify real detection
-misses, valid no-change, legitimate additions, explicit one-visit violations, reviewed and
-unresolved evidence, rejected/adopted component lineage, newly introduced problems, strict
-script errors and deterministic time/cache conditions. Follow TDD, implementation commits,
-fixed-base Standards/Spec review, separate correction commits and final documentation.
-Run relevant evaluator/V3 regressions and the required full backend gate for the shared seam.
-No live service, budget increase, Ticket 12 work or formal benchmark is included.
+capabilities. The isolated executor reuses production initialization/finalization and independent
+identity, requirement/schedule, opening, route and paired checks. Controlled goal/
+invariant linkage adds no second general quality scorer or fabricated four-version
+batch. Default live clocks, policies and version entry paths retain their behavior;
+this interface does not generate the formal 32-case corpus.
 
 #### Controlled executable wire
 
@@ -471,21 +367,13 @@ See [Ticket 11](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23) 
 
 <a id="mechanism-official-audit"></a>
 
-### Ticket 12 technical checkpoint — 2026-10-04
+### Mechanism and official-fact reporting
 
-**Status: implemented, offline validated and fixed-base review completed.**
 The selected-source reader, mechanism report, exact official-fact audit and default-off
-local capture are implemented within the boundaries below. Missing optional observations
-remain partial/unavailable without invalidating independent quality material. The
-[dated implementation record](../records/evaluation/2026-10-04-mechanism-official-audit.md)
-owns preflight findings, approval, validation and engineering delivery; this contract
-grants no new execution, collection, publication or Issue-mutation authority.
-
-#### Preflight interfaces and gaps before implementation
-
-The [historical inspection](../records/evaluation/2026-10-04-mechanism-official-audit.md#preflight-interfaces-and-gaps-before-implementation)
-records the pre-implementation sources and capture gaps. Current supported interfaces are
-in the [executable wire](#mechanism-audit-executable-wire); newly replayed rules cannot
+local capture are implemented. Missing optional observations remain partial/unavailable
+without invalidating independent quality material. The
+[development record](../records/evaluation/2026-10-04-mechanism-official-audit.md)
+explains the original capture gap and consequential corrections. New rule replay cannot
 establish which facts an older execution actually used.
 
 #### Accepted mechanism units and denominators
@@ -572,22 +460,13 @@ paired metrics and anonymous review unchanged. No frontend or new acquisition sy
 The extension adds local serialization/storage work; it adds no model input/output
 tokens or provider/model calls by design. Offline regressions must verify identical
 prompts/call counts with capture disabled/enabled and best-effort failure behavior;
-real overhead is not measured by this preflight.
-
-Preflight checks, the initial temporary-directory setup errors and subsequent scope
-approval are preserved in the [dated approval sequence](../records/evaluation/2026-10-04-mechanism-official-audit.md#preflight-validation-and-approval).
+real overhead was not measured by the offline development checks.
 
 <a id="ticket12-implementation-scope"></a>
 
-#### Implementation approval proposal — 2026-10-04
-
-This is a historical approval anchor. The [complete approved scope](../records/evaluation/2026-10-04-mechanism-official-audit.md#implementation-approval-proposal--2026-10-04)
-retains the delivery plan, exclusions and development gates. The current executable
-interfaces and observation contracts follow below; the approval adds no new task or run.
-
 <a id="mechanism-audit-executable-wire"></a>
 
-#### Executable wire — 2026-10-04
+#### Executable wire
 
 The [mechanism CLI](../../backend/evaluation/mechanism_cli.py) has `prepare`, `report`,
 `audit-queue` and `audit-report` commands. `prepare --manifest` reuses the existing
@@ -659,102 +538,6 @@ Offline acceptance and implementation/review history are recorded in the
 Whole-trip factual budget PASS, verified access/fees and false-certainty metrics remain deferred.
 Amounts can be descriptive; source role does not certify affordability. V0-V3 comparisons are
 incremental system comparisons; no extra strict module-ablation study is introduced.
-
-<a id="rtpeval-artifact-contract--usage-file-shape-and-ownership"></a>
-<a id="rtpeval-artifact-contract--verification-seams"></a>
-<a id="rtpeval-artifact-contract--projection-specialization--2026-09-29"></a>
-<a id="rtpeval-artifact-contract--ticket-02-implementation-specialization--2026-09-29"></a>
-<a id="rtpeval-artifact-contract--ticket-05-semantic-wire-specialization--2026-10-01"></a>
-<a id="rtpeval-artifact-contract--ticket-08-executable-wire--2026-10-02"></a>
-<a id="rtpeval-artifact-contract--ticket-09-preflight-decisions--2026-10-02"></a>
-<a id="rtpeval-artifact-contract--ticket-09-executable-wire--2026-10-02"></a>
-<a id="rtpeval-artifact-contract--ticket-09-approved-time-zone-display-extension--2026-10-02"></a>
-<a id="rtpeval-artifact-contract--subsequent-user-display-cleanup--2026-10-02"></a>
-<a id="rtpeval-artifact-contract--subsequent-user-uncertainty-hint-removal--2026-10-02"></a>
-<a id="rtpeval-spec--rtpeval-evaluation-module-specification"></a>
-<a id="rtpeval-spec--problem-statement"></a>
-<a id="rtpeval-spec--solution"></a>
-<a id="rtpeval-spec--user-stories"></a>
-<a id="rtpeval-spec--implementation-decisions"></a>
-<a id="rtpeval-spec--input-contract"></a>
-<a id="rtpeval-spec--illustrative-division-of-work"></a>
-<a id="rtpeval-spec--automatic-evaluation-boundary"></a>
-<a id="rtpeval-spec--output-contract"></a>
-<a id="rtpeval-spec--resource-metrics"></a>
-<a id="rtpeval-spec--accepted-usage-handoff-and-collection-gap"></a>
-<a id="rtpeval-spec--testing-decisions"></a>
-<a id="rtpeval-spec--comments"></a>
-<a id="rtpeval-spec--input-contract-review-checkpoint--2026-09-28"></a>
-<a id="rtpeval-spec--identity-contract-draft--2026-09-28"></a>
-<a id="rtpeval-spec--opening-contract-draft--2026-09-28"></a>
-<a id="rtpeval-spec--route-contract-draft--2026-09-28"></a>
-<a id="rtpeval-spec--route-outcome-and-requested-tolerance-update--2026-09-28"></a>
-<a id="rtpeval-spec--unified-metrics-contract--2026-09-28"></a>
-<a id="rtpeval-spec--specification-closeout-audit--2026-09-28"></a>
-<a id="rtpeval-spec--undefined-activities-and-fallback-clarification--2026-09-28"></a>
-<a id="rtpeval-spec--google-route-result-simplification-accepted--2026-09-28"></a>
-<a id="rtpeval-spec--technical-contract-checkpoint--2026-09-28"></a>
-<a id="rtpeval-spec--ticket-05-specification-specialization--2026-10-01"></a>
-<a id="rtpeval-spec--ticket-05-implementation-follow-up--2026-10-02"></a>
-<a id="rtpeval-spec--ticket-05-closeout-follow-up--2026-10-02"></a>
-<a id="rtpeval-spec--ticket-09-approved-offline-implementation--2026-10-02"></a>
-<a id="evaluation-artifacts"></a>
-<a id="purpose-and-ownership"></a>
-<a id="shared-inventory-and-confirmed-scope"></a>
-<a id="scope-decisions-and-code-confirmation"></a>
-<a id="simple-examples"></a>
-<a id="remaining-technical-contracts"></a>
-<a id="future-checks"></a>
-<a id="ticket-01-specialization--2026-09-29"></a>
-<a id="usage-file-shape-and-ownership"></a>
-<a id="verification-seams"></a>
-<a id="projection-specialization--2026-09-29"></a>
-<a id="ticket-02-implementation-specialization--2026-09-29"></a>
-<a id="ticket-05-semantic-wire-specialization--2026-10-01"></a>
-<a id="ticket-08-executable-wire--2026-10-02"></a>
-<a id="ticket-09-preflight-decisions--2026-10-02"></a>
-<a id="ticket-09-executable-wire--2026-10-02"></a>
-<a id="ticket-09-approved-time-zone-display-extension--2026-10-02"></a>
-<a id="subsequent-user-display-cleanup--2026-10-02"></a>
-<a id="subsequent-user-uncertainty-hint-removal--2026-10-02"></a>
-<a id="evidence-and-time-parsing-contract"></a>
-<a id="identity-and-role-handling"></a>
-<a id="implementation-checks-and-limits"></a>
-<a id="opening-technical-follow-up--2026-10-02"></a>
-<a id="ticket-06-implemented-timeevidence-checkpoint--2026-10-02"></a>
-<a id="rtpeval-evaluation-module-specification"></a>
-<a id="problem-statement"></a>
-<a id="solution"></a>
-<a id="user-stories"></a>
-<a id="implementation-decisions"></a>
-<a id="input-contract"></a>
-<a id="illustrative-division-of-work"></a>
-<a id="automatic-evaluation-boundary"></a>
-<a id="output-contract"></a>
-<a id="resource-metrics"></a>
-<a id="accepted-usage-handoff-and-collection-gap"></a>
-<a id="repair-and-controlled-cases"></a>
-<a id="presentation-of-mechanism-comparisons"></a>
-<a id="testing-decisions"></a>
-<a id="out-of-scope"></a>
-<a id="further-notes"></a>
-<a id="comments"></a>
-<a id="input-contract-review-checkpoint--2026-09-28"></a>
-<a id="identity-contract-draft--2026-09-28"></a>
-<a id="opening-contract-draft--2026-09-28"></a>
-<a id="route-contract-draft--2026-09-28"></a>
-<a id="route-outcome-and-requested-tolerance-update--2026-09-28"></a>
-<a id="unified-metrics-contract--2026-09-28"></a>
-<a id="specification-closeout-audit--2026-09-28"></a>
-<a id="undefined-activities-and-fallback-clarification--2026-09-28"></a>
-<a id="google-route-result-simplification-accepted--2026-09-28"></a>
-<a id="technical-contract-checkpoint--2026-09-28"></a>
-<a id="ticket-05-specification-specialization--2026-10-01"></a>
-<a id="ticket-05-implementation-follow-up--2026-10-02"></a>
-<a id="ticket-05-closeout-follow-up--2026-10-02"></a>
-<a id="ticket-09-approved-offline-implementation--2026-10-02"></a>
-
-<a id="history"></a>
 
 ## Decision and acceptance history
 

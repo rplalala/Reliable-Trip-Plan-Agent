@@ -1,151 +1,71 @@
-# V3 paired report development evidence
+# V3 paired diagnostic development
 
-Date: 2026-10-03, Australia/Sydney. Branch: `feature/evaluation`.
-Review fixed point: `d08083d5d50573e0bec6345f45ed12beb2b77855`.
-The index/worktree was clean at that fixed point. Status: Implemented;
-validation/review closeout is recorded below. Not Frozen or a formal benchmark.
+Ticket [10 / #22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22),
+2026-10-03. Status: Implemented, offline Validated and independently reviewed.
+The [paired contract](../../contracts/0005-quality-human-review.md#v3-pairs) owns current
+wire and semantics. The accepted [source-driven preflight](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22#issuecomment-5955706453)
+separated occurrence lineage, independently established venue identity and compliance.
 
-## Authority and delivered scope
+## Source lineage and population accounting
 
-The user approved implementation of the [accepted source-driven Ticket 10 preflight](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22#issuecomment-5955706453)
-after the coordinate bridge. [Issue #22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22)
-owns live tracker state; [PROJECT](../../../PROJECT.md) and the
-[paired contract](../../contracts/0005-quality-human-review.md#v3-pairs) own current scope
-and behavior. Approved work includes offline TDD, local implementation/test commits,
-independent Standards/Spec review, in-scope corrections and durable documentation.
-No live provider/model/database runs, planner instrumentation, extra budget, frontend,
-Tickets 11-12, formal evaluation, push, PR, merge, branch change or tracker mutation.
+The immutable preparation/report/CLI reads exact same-run V3 draft/final-primary sources,
+paired snapshots and public scorers. Validated adopted rounds/components and free-time
+fragments establish edit lineage, including repeated visits, moves, replacement and
+splits. Rejected, pending and rolled-back components do not count as adopted edits.
+Producer sorting, source-ledger name normalization and refreshed transfers are reconciled
+without changing source records. Missing/inconsistent lineage retains local diagnostics;
+aggregate deltas can remain available when particular correspondence is unresolved.
 
-The immutable preparation/report and CLI reuse current intake, identity replay, paired
-frozen snapshots and public scorers. Original source IDs and adopted rounds/components/
-window fragments establish occurrence lineage; independent identity establishes venue
-continuity, and independent checks establish compliance. Repeated visits, moves,
-replacement and splits do not require manual review solely due to their complexity.
-Residual ambiguity stays local while defined aggregate stage deltas remain available.
-No internal Repair success/PASS verdict becomes an independent outcome.
+Global canonical uniqueness replaced greedy leftover matching that falsely resolved
+repeated venues. Same-slot replacement with UNKNOWN venue identity initially certified
+a protection fix; correction requires independently established same-venue continuity.
+A valid source lineage never makes an internal Repair PASS independent truth.
 
-The new report uses a separate two-stage union mask, exact rational signed deltas,
-retained raw checks/coverage, losses/replacements and participant/route continuity.
-Missing pairs remain visible; absent facts, empty masks and unresolved denominators
-are not zero-filled. Quality arithmetic was extracted unchanged into a shared internal
-adapter; Ticket 08 retains its final-only wire, rules, masks and paired-scope rejection.
-The changes introduce no runtime planner imports or V0-V3 execution-path changes.
+The two-stage union mask uses exact rational signed deltas, retains unavailable totals,
+raw checks, coverage, losses and replacements, and remains separate from the four-final
+mask. Shared arithmetic was extracted without changing Ticket 08's final-only policy.
 
-## Observed test and correction sequence
+## Review corrections and causal attribution
 
-1. Public report and source-preparation tests first failed on missing modules/interfaces.
-   Minimal slices established explicit missing-pair records, unchanged-pair exact zeros,
-   existing scorer composition and repeated-visit retime lineage.
-2. Deletion, same-slot replacement and cross-day movement exposed missing supported edit
-   fields and correspondence wiring. Added validated state/patch membership, loss context
-   and the pair-union accounting rule. A split test failed without root/fragment composition;
-   complement validation and composed origins then preserved free-time lineage without
-   inventing primary visits.
-3. Partially accepted component tests initially treated rejected/pending/rolled-back adds
-   as adopted. Restrict effective edits to actually accepted component membership and
-   observed states. Inconsistent embedded round inputs fall back with diagnostics, while
-   stale/foreign supplied source material remains a correction error.
-4. Independent continuity first lacked conflict tracking. Fixture corrections supplied the
-   required fixed-time match field and a real 15-minute query window: a zero-gap route was
-   correctly UNKNOWN, so production scoring was preserved. Opening FAIL-to-PASS is reported
-   alongside requirement/route regressions; retained participants support conflict resolution,
-   and original protection obligations/scopes remain present.
-5. Duplicate-venue fallback initially greedily matched a leftover occurrence. Global canonical
-   uniqueness now prevents that false certainty. Review wiring briefly had a signature mismatch;
-   completing the public preparation/review boundary restored all tests. Residual reviews use
-   exact stage refs and cannot override established lineage or label changed content unchanged.
-6. The CLI test failed until preparation/report commands existed. A normalization test exposed
-   the difference between adopted snapshots and producer output sorting, ledger name changes
-   and refreshed transfers. Explicit source-backed reconciliation now preserves lineage.
-   Population/subtotal tests then added exact observed differences with null/coverage retention.
-7. Additional source/route tests exposed missing replacement/loss counts and deletion topology.
-   Route connection lineage is now separate from venue-compatible quality comparison; insertion
-   reports the removed direct leg and two added legs. Ordered replacements retain both round
-   pointers without multiplying final visit-loss counts. No-Repair/skipped/rejected source
-   snapshots remain eligible. Two skipped/rejected tests used the wrong output key initially;
-   expectations were corrected to `auxiliary_total`.
-8. Material tests cover stale/foreign source bytes, forged preparation, invalid review refs,
-   duplicate participation, naive timestamps, cardinality, corrupt snapshots and stale identity.
-   Replay tests prohibit socket construction, compare source bytes before/after, repeat CLI JSON
-   and prove creation-time changes do not change semantic content hashes. Properly relinked
-   internal-findings-only changes preserve independent scores and correspondence facts.
-9. Opening/route lower bounds and observed subtotals remain labelled. Partial improvement uses
-   exact comparable FAIL magnitudes, excluding incomplete route evidence. An added regression
-   found that a same-slot replacement with UNKNOWN venue identity could falsely certify a
-   retained protection fix. Primary participant continuity now requires independently confirmed
-   same-venue identity; the test changed from `resolved` to `unresolved_correspondence`, and the
-   15-test edge suite passed afterward.
+| Finding | Correction |
+| --- | --- |
+| Multi-occurrence manual additions/removals were counted once per relation. | Count source occurrences while retaining the reviewed relation. |
+| Traffic conflict removal compared Transfer references with Activity references. | Link independent endpoints and topology before attributing a change. |
+| Complex many-to-many sets falsely established concrete new journeys or venue-change participants. | Require unique endpoint correspondence or explicit additions/removals; require 1:1 venue-change attribution. Complex groups retain unresolved attribution. |
 
-All fixtures are synthetic, local development evidence. Snapshot acquisition used injected
-transport; no real Google client, LLM, PostgreSQL, live Repair or formal cases were executed.
-Ruff import/format/line-length issues were corrected. Accidental formatting of unrelated
-existing modules was restored; only intended task changes are staged.
+The first two P2 corrections were committed in `e24ce0e`; the third, found on recheck,
+in `45b13d9`. Four public regressions reproduced the first defects; the final independent
+Spec recheck passed nine original/correction cases. Standards' P3 duplicated content
+comparison was consolidated through `_content`. Final reviews closed all three P2 findings
+and the maintenance finding.
 
-## Validation, review and local delivery
+## Validation checkpoints
 
-- Intermediate evaluator gate: **571 passed, 1 skipped in 84.20s**.
-- First full backend gate: **2402 passed, 10 skipped in 230.18s**, before the final
-  UNKNOWN-replacement protection correction. This is intermediate evidence, not the final gate.
-- Pre-review full backend gate after that correction: **2403 passed, 10 skipped in 211.62s**,
-  zero deselections. Its JUnit inventory contains **574 passed, 1 skipped** evaluator
-  cases, including all **46 new paired tests**. These subset counts are from the same
-  full run, not an additional evaluator run. Backend Ruff, ten-file formatting, CLI help
-  and diff whitespace checks passed.
-- Implementation/direct-test commit: `f65cd0f` —
-  `feat: report independent V3 draft and final diagnostics`, before code review.
-- Standards: zero documented-standard violations; one nonblocking P3 duplicated-content
-  comparison smell. `_content` now supplies both fallback and review semantics; targeted
-  independent recheck confirmed the finding resolved.
-- Spec: two reproduced P2 findings, multi-occurrence manual removal/addition counted as
-  one relation, and traffic conflict removal compared transfer refs against activity refs.
-  Four public regressions initially failed, then passed after per-occurrence counting and
-  independently linked endpoint/topology attribution. Paired/Ticket 08 regression:
-  **76 passed in 19.09s**. Commit `e24ce0e` —
-  `fix: attribute paired visit and journey changes correctly` preserves the original commit.
-  Both original findings passed independent recheck. Full evaluator after this first fix:
-  **578 passed, 1 skipped in 92.49s**.
-- Spec recheck exposed one new P2: a complex many-to-many set could supply a false new
-  journey attribution through structural-leg flags. A public regression failed; a same/
-  changed canonical-venue parameterization exposed the equivalent membership inference.
-  Only unique endpoint correspondence or explicit added/removed endpoints now establishes
-  concrete leg changes. Venue-change participant/loss attribution also requires 1:1
-  correspondence. Complex groups retain constituent observations and unresolved attribution.
-  Paired/Ticket 08 regression: **78 passed in 16.89s**. Commit `45b13d9` —
-  `fix: preserve uncertainty in complex route correspondence` is a separate second correction.
-- Targeted independent Spec recheck: original three public repros plus six formal correction
-  regressions **9 passed**; the third P2 is resolved, with no new issue in the limited recheck.
-  Both axes are closed: Standards 0 hard violations/1 P3 addressed; Spec 3 P2 findings across
-  two rounds, all addressed. No original implementation/correction commit was rewritten.
-- Final post-review full backend: **2409 passed, 10 skipped in 216.22s**, zero
-  deselections. Its JUnit inventory contains **580 passed, 1 skipped** evaluator cases
-  and all **52 new paired tests**. These are subset counts from that full run.
-  Backend Ruff, eleven-file formatting, CLI help and diff whitespace checks passed.
-  Seven changed documents and 143 local link targets passed the tracked-target/English
-  checks; no new formal document depends on ignored scratch or raw local evidence.
+Implementation: `f65cd0f`. Review base:
+`d08083d5d50573e0bec6345f45ed12beb2b77855`.
 
-Existing skips are nine opt-in PostgreSQL cases and one Windows symlink privilege case;
-no supplement was inferred or run. Temporary fixture directories and JUnit evidence remain
-ignored under `artifacts/ticket10-dev/`; these are local evidence identifiers, not published
-document dependencies. The ignored thesis archive preserves this development decision history.
+| Checkpoint | Observed result | Scope |
+| --- | --- | --- |
+| Before final UNKNOWN-venue protection fix | **2402 passed, 10 skipped**, 230.18 seconds | Intermediate backend evidence |
+| Pre-review after that fix | **2403 passed, 10 skipped**, 211.62 seconds | Backend; contained **574 passed, 1 skipped** evaluator and 46 new pair tests |
+| First review correction | **76 passed**, 19.09 seconds; **578 passed, 1 skipped**, 92.49 seconds | Pair/quality selection, then evaluator |
+| Complex correspondence correction | **78 passed**, 16.89 seconds | Pair/quality selection |
+| Final post-review | **2409 passed, 10 skipped**, 216.22 seconds; zero deselections | Backend; contained **580 passed, 1 skipped** evaluator and 52 new pair tests |
 
-GitHub #22 remains open/read-only in this task; implementation approval did not authorize
-tracker mutation or publication. No claim is made that local commits are remotely available.
+Contained subsets and overlapping checkpoints are not additional independent runs.
+Skips were nine PostgreSQL opt-ins and one Windows symlink case. Tests cover source/hash
+atomicity, stage availability, accepted component membership, edits/topology, protection
+and other independent continuity, partial magnitudes, immutable CLI and findings-only
+numeric invariance after relinking. Ruff, formatting, CLI help and diff checks passed;
+seven changed documents and 143 local targets were checked. Synthetic snapshots used
+injected transport; no live model, provider, database or formal case was executed.
+Local fixture/JUnit evidence is under `artifacts/ticket10-dev/`.
 
-## Remaining limits
+## Equivalent delivery revisions
 
-Legacy/contradictory embedded edit metadata can disable source-lineage claims; unique content
-and independent canonical fallback/review remain available. No history can be reconstructed
-uniquely from indistinguishable observations without sufficient original evidence. A valid
-aggregate delta describes two observed populations, not causal Repair efficacy or an overall
-success rate. Controlled Repair and mechanism reporting remain separate Tickets 11-12.
-Existing injected-transport and formal-run authorization boundaries remain in force.
-
-## Delivery revision correspondence — 2026-10-04
-
-Read-only delivery preflight at `296460dfbab442f066a87798e44b800800f995d8`
-found that the historical review revisions above are no longer ancestors of the current
-delivery head. Their corresponding reachable revisions have exactly identical Git
-tree hashes, verified with local Git objects and empty pairwise tree diffs:
+Read-only preflight at `296460dfbab442f066a87798e44b800800f995d8` found the original
+review revisions outside the delivery ancestry. Local Git tree hashes and empty tree
+diffs established these exact correspondences:
 
 | Historical evidence revision | Reachable delivery revision | Role |
 | --- | --- | --- |
@@ -154,8 +74,13 @@ tree hashes, verified with local Git objects and empty pairwise tree diffs:
 | `e24ce0ee628a7e8de99aab6f82bf36a7a336ecda` | `645becd09bc1637a8527f46c676b51f0bfd9d92b` | First review correction |
 | `45b13d926ff8b2d6b667c599f3c812fcfe24d995` | `bd406b3007552cf7ea6e26ee4e1fe97f294e1cfb` | Second review correction |
 
-Original revision identifiers, validation counts and review chronology are preserved
-as historical evidence. Publication must reference the reachable delivery revisions;
-the identical-tree check supports reusing existing code validation without claiming a
-new test run. This preflight neither rewrites commits nor publishes code or tracker
-updates. These local revisions are not remote links until publication is verified.
+These bindings support reusing validation of identical code, not claiming a new test
+run or relabeling old evidence. Later Ticket 12 publication is recorded in the
+[engineering closeout](2026-10-04-mechanism-official-audit.md#publication-checkpoint).
+
+## Limits
+
+Indistinguishable or contradictory legacy observations cannot uniquely reconstruct
+history. Partial/lower-bound magnitudes do not establish exact improvement. Removal is
+not resolution; aggregate changes describe observed populations, not causal Repair
+success. Controlled Repair and official audit retain separate studies and denominators.

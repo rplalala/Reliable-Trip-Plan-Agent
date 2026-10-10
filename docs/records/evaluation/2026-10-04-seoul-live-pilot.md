@@ -2,22 +2,16 @@
 
 Status: **Validated engineering chain with explicit metric uncertainty**. This is
 one authorized development smoke, not a formal benchmark, human participant study,
-version freeze or research conclusion. Starting revision was
-`21e971e98e91d5fbb3bb539f8e2cf0e8601b50bb` on `feature/evaluation`; the tracked worktree
-and index were clean. Production code and `config/runtime.yaml` were unchanged.
-Temporary producer/adaptation scripts and raw evidence are ignored local artifacts.
-This record and its navigation/current-state summaries are the task's tracked changes.
+version freeze or research conclusion. Execution revision was
+`21e971e98e91d5fbb3bb539f8e2cf0e8601b50bb` on `feature/evaluation`. Production code and `config/runtime.yaml` were unchanged.
+Producer/adaptation scripts and raw evidence remain local artifacts.
 
 ## Authorization, input and execution
 
-The user requested one four-day Seoul live smoke through final V0-V3, saved output,
-independent evidence, Evaluator and final applicable reports. Review portions were
-explicitly delegated to agents. Required network access was allowed, with at most
-three network retries and a two-hour whole-task limit. Automatic approval initially
-rejected the live start twice because it did not recognize goal-mode authorization.
-The user then explicitly confirmed the exact input and live scope; no planner or
-external provider request had preceded that confirmation. Local configuration,
-tokenizer and read-only database compatibility checks had passed.
+The approved smoke covered one four-day final V0-V3 submission, saved outputs,
+independent acquisition and applicable evaluator reports. Reviews were delegated to
+agents. The confirmed limits were at most three network retries and two hours overall;
+no external request preceded confirmation of the exact input/live scope.
 
 Producer-selected, subsequently user-confirmed input: Seoul, South Korea,
 2026-10-07 through 2026-10-10, two travelers, whole-trip budget 1,200,000 KRW.
@@ -142,25 +136,19 @@ queue/report contains zero eligible accepted/qualifying official claims; its emp
 population is not official-fact validation. Both unavailable scopes are explicit
 in the local readable summary and track-availability record.
 
-## Failures, corrections and final verification
+## Trace integrity, association limitations and verification
 
-1. Identity-review import initially failed because `batch_revision` was numeric
-   `1`, whereas intake used string `"1"`. The wire type was corrected without
-   changing decisions. Library adjudication and actual identity CLI replay passed.
-2. Initial full redacted trace import failed with `Trace usage contradicts saved
-   round`: the generic tracer had redacted nested token-detail objects. Original
-   trace and result bytes were retained. The producer then supplied an explicitly
-   partial projection containing only observed round status, continuation and
-   counters; exact provider usage remained in its separate capture channel. The
-   native linked mechanism report replay passed with partial trace coverage.
-3. Native blind renderer TypeScript and production build passed. The completed
-   public package used those actual built assets; no placeholder renderer was used.
-4. Final completion audit checked 29 requirements against current files: packet
-   hashes; four live outcomes and exact capture/provenance links; all three native
-   snapshot/raw replays and retry bounds; separate evidence scope; explicit agent
-   origin and controlled-case unavailability; readable outputs; exact native CLI
-   replays of final quality, pair, usage, mechanism, empty audit and review report.
-   All passed. No broad unrelated test suite or additional live run was needed.
+Full redacted trace import failed with `Trace usage contradicts saved round`: the
+tracer had redacted nested token-detail objects. Original trace/result bytes were
+retained. An explicitly partial projection of observed status, continuation and
+counters replayed successfully, while exact provider usage stayed in its own channel.
+This supports partial trace coverage, not a reconstructed complete trace.
+
+The actual built native renderer was embedded, after TypeScript/production build checks.
+Final completion audit checked 29 requirements: source/capture hashes, four outcomes,
+three raw snapshot replays/retry limits, distinct evidence scopes, actual agent origin,
+controlled-case unavailability and native CLI replays. All passed. This was scoped
+verification of the existing chain, not a new live run or broad suite.
 
 Observed Korean address evidence frequently includes different hierarchical
 components sharing broad `sublocality` types; the current strict typed parser
@@ -183,7 +171,7 @@ material, credentials and ignored generated files are not committed.
 Task completion is the applicable live-to-evaluator chain and honest availability
 reports. It does not imply every itinerary fact is verified, nonempty official
 auditing, controlled replay, formal evaluation, final research conclusions or a
-version freeze. No push, merge, branch switch, PR or issue mutation occurred.
+version freeze.
 
 Recommended separately scoped follow-up: improve V0 transport association and
 Korean address handling; then prepare bounded controlled/official-claim cases if

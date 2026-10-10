@@ -45,26 +45,10 @@ persists evidence/failures; replay sends nothing. Final-only scope explicitly ex
 optional V3 and human/controlled/official tracks. Processing, acquisition and unresolved
 evidence are separate fields. Fresh execution requires a prepared, approved allowance.
 
-The Sydney four-original automatic flow completed fresh execution and network-blocked
-CLI replay on 2026-10-09. All originals and receipt-covered evidence verify; current-policy
-FAIL/UNKNOWN outcomes and conservative semantic limits remain visible in the
-[acceptance record](records/evaluation/intake-identity-usage.md#sydney-four-final-fresh-acceptance-2026-10-09).
-This establishes an engineering execution path, not a formal version comparison or
-all-facts-verified result.
-
-Opening rules evaluate the planned visit interval. Applicable current open/closed facts
-take precedence; valid regular hours determine unresolved time, including current-field
-defects and special-date markers without a usable schedule. Regular hours produce ordinary
-PASS/FAIL with explicit basis and fallback provenance. Query-time `openNow=false` does not
-establish closure at a later visit. Missing both schedules permits an explicitly imported
-independent LLM access assessment: ordinary public-landmark sightseeing can be inferred
-from original text and venue category. Reasonable outdoor/exterior visits can PASS;
-explicit restricted activity, museum admission and genuinely unresolved access need their
-own applicable evidence. Unsupported access remains UNKNOWN. Factual
-hours coverage and durations stay missing, with model judgment coverage separately shown.
-The incremental execution CLI reuses completed evidence without another Google or V0
-identity call; live execution requires its own prepared allowance.
-The [opening contract](contracts/0004-opening-routes.md#opening) owns these current rules.
+The [opening/route contract](contracts/0004-opening-routes.md) owns schedule precedence,
+missing-hours access assessments and snapshot-coordinate reuse. Model-supported access PASS
+remains distinct from verified API hours. Dated execution outcomes are in
+[acceptance records](records/README.md), rather than this current module map.
 
 Development smoke helpers are separate from ordinary evaluator consumers. The
 [V0 route request preparer](../backend/evaluation/tools/route_requests.py) and its CLI
@@ -75,61 +59,16 @@ schedule/opening/route scorers and report CLIs stay in `backend/evaluation/`. Pr
 planning does not import this evaluation package. V3's internal validation/repair remains
 part of planning and is distinct from independent evaluation.
 
-Route preparation can extract coordinates offline from a verified identity-phase snapshot
-whose evidence matches verified physical associations. This reuses saved independent
-observations with separate coordinate provenance; it does not borrow planner coordinates or
-acquire missing points. Missing, invalid or conflicting points retain local uncertainty and
-route candidates. The existing reviewed-coordinate source remains supported; details and
-acceptance are in the [opening/route contract](contracts/0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03)
-and [dated bridge record](records/evaluation/routes.md#snapshot-coordinate-bridge-2026-10-03).
-
 ## Scoring semantics and uncertainty
 
-The user accepted a [version-specific evaluator requirement](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
-on 2026-10-06: V0 introduces an LLM primarily for generated-POI correspondence with
-independent API candidates; V1-V3 identity and requirements use API evidence and program
-rules without an identity model or fallback. The subsequently approved
-[opening-only exception](contracts/0004-opening-routes.md#missing-hours-access-judgment)
-introduces model access assessments when both schedules are missing. Original API-backed
-unexplained name/address differences count as errors, without repairing original outputs.
-Google-supported address aliases use a binary, auditable equivalence comparison.
-[Parent #74](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/74)
-owns the classified follow-ups. Version dispatch (#75) and the V0 citation/missing-address
-response correction (#76) are implemented locally; fresh-smoke preparation, offline route integration and delivery
-remain separate follow-ups. Historical evidence is not reclassified.
-
-Implemented identity uses the [version-specific contract](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement):
-V1-V3 use ID-linked API Details, literal name equality and same-observation address
-equivalence. RequirementSpec
-meaning and API acquisition evidence are shared, but target identities are version-owned
-under [#83](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/83). V1-V3 targets
-use independent Details bindings or complete search evidence with a unique strict matching
-ID after filtering by name, destination and supplied address. V0-only packets match
-generated claims and user-requested targets with their independent candidates.
-Requirement checks compare IDs within the same version before counting visits or
-evaluating dates/time conditions. Citation enums and address-presence alternatives
-agree with import validation; absent addresses require `not_supplied` without claiming an error.
-Candidate correspondence and original-claim correctness remain separate in verified reports.
-Reports require exact source-bound replay. High-impact
-references and sampling no longer require human identity confirmation. Address correctness
-remains a separate assessment: recognizing a venue does not repair the delivered address
-or establish opening/route feasibility. Both a recognizable venue with an incorrect submitted
-address and an address identifying another venue produce grounding FAIL and prohibit canonical
-claim adoption. Under `versioned_api_identity_3` and current policy 4, the separately
-verified physical association may permit requirement occurrence matching and opening/routes despite claim
-FAIL: V0 uses existing validated
-correspondence, V1-V3 independently verify the original API ID. Untrusted associations
-remain UNKNOWN. Original time, order, transport mode and reserved duration are unchanged;
-physical PASS cannot cancel grounding FAIL. Requirement occurrence matching uses the
-verified association against the target's version-owned adopted canonical identity;
-the target's grounding FAIL and all count/date/time components remain independently
-applicable. A physical association alone does not establish full requirement fulfillment.
-Historical policy-2 reports retain canonical-only downstream eligibility through
-explicit `--historical-association` replay. Insufficient evidence stays UNKNOWN.
-Supported V0 destination conflicts also remain FAIL even when the original address is absent.
-All versions use the same standard; evaluation does not hide baseline errors or presume a version must fail.
-Explicit historical human and uniform LLM identity replay is retained.
-Blinded preference review and other human supplements keep their separate responsibilities.
+[Version-specific identity](contracts/0002-intake-identity-usage.md#version-specific-identity-requirement)
+uses V0-only model correspondence and V1-V3 independent API/program checks, with explicit
+historical replay. Grounding assesses original claims; a separately verified physical
+association can support occurrence matching, opening and routes while grounding FAIL stays
+visible. [Requirement count bounds](contracts/0003-requirement-schedule.md#count-bounds-and-completeness)
+define fulfillment; recognizing a venue never establishes every requirement component.
+[Missing-hours access assessment](contracts/0004-opening-routes.md#missing-hours-access-judgment)
+is a separate opening-only model exception.
 
 | Term | Meaning |
 | --- | --- |
@@ -161,8 +100,6 @@ display material, holds the hidden mapping and imports revision-aware answers. T
 uses IANA time-zone selection and HH:mm, with confirmed clearing scoped to the active package
 and rater. User-reported browser acceptance is distinct from automated test evidence.
 
-<a id="proposed-follow-up-boundaries"></a>
-
 ## Paired, controlled and mechanism boundaries
 
 Ticket 10's offline preparation/report uses validated existing activity/adopted-edit/split
@@ -177,46 +114,30 @@ calls or tokens by design; its local normalization/storage overhead is unmeasure
 historical observations cannot be inferred from final outputs or current gate replay.
 This document authorizes no formal run, comparison or final conclusion.
 
-Ticket 11's [accepted controlled replay contract](contracts/0001-evaluation-artifacts.md#controlled-repair)
-uses the real V3 Repair path with frozen capabilities and independently reviewed outcomes.
-Controls permit lawful changes while checking preserved user obligations and newly introduced
-problems; explicit one-visit restrictions override generic quantity recommendations. Human
-supplements remain separate from planner inputs, and unresolved verdicts remain visible.
-The offline implementation recomputes production permissions and uses strict frozen
-external scripts, restored caches/semantic state and logical async timeouts. Raw paired
-scores remain separate from supplemented check outcomes. Formal case construction,
-live execution and Issue synchronization remain separately authorized; no formal cases
-have been built. See the [executable wire](contracts/0001-evaluation-artifacts.md#controlled-executable-wire).
+The [controlled replay contract](contracts/0001-evaluation-artifacts.md#controlled-repair)
+owns frozen real V3 execution, control invariants and independently reviewed outcomes.
+The [mechanism/audit contract](contracts/0001-evaluation-artifacts.md#mechanism-official-audit)
+owns observation units and actual submission/selection capture. Neither creates a formal
+corpus or proves causal improvement.
 
-Task authority: [parent #12](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/12),
-[Ticket 10 #22](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/22),
-[Ticket 11 #23](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/23), and
-[Ticket 12 #24](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/24).
-Commands and exact implemented outputs belong to the
-[evaluation package guide](../backend/evaluation/README.md).
-The editable repository installation exposes `rtpeval validate` for offline native
-batch intake and `rtpeval evaluate execute` for one-step native automatic evaluation.
-The latter accepts qualified material and explicit options/prices/reviewed contexts,
-reuses preparation and execution, and emits the existing quality report. Optional offline
-prepare/replay and prepared-directory/exact-digest execution remain available. Its internal
-digest proves integrity, not independent authorization; existing budgets, one-use rules,
-statuses and scoring semantics remain unchanged. Dispatch is outside the preparation-bound
-evaluator file set. No implicit supplemental assessment or retry is added. See
-[installed evaluation](../backend/evaluation/README.md#installed-automatic-evaluation).
-See [ADR: evaluation independence](adr/0004-independent-evaluation.md).
-
+Commands, installed task groups, explicit options and one-use execution are documented in
+the [evaluation package guide](../backend/evaluation/README.md). Optional preparation/replay
+remain offline. No implicit supplemental assessment or retry is added. See
+[ADR: evaluation independence](adr/0004-independent-evaluation.md).
 
 ## Batch and benchmark terminology
 
 **Qualifying group**: One request and the four V0-V3 outputs whose respective workflow completion has been established by benchmark construction. Qualification is not a claim of itinerary quality.
-_Avoid_: Correct group, evaluator-approved run
 
 **Benchmark candidate list**: The collection of qualifying groups available for later user selection. Adding a candidate does not initiate evaluation.
 
 **Evaluation batch**: The explicitly selected collection of groups handed over by the user for evaluation. Its size is not fixed by the evaluation module.
-_Avoid_: Automatically evaluated candidate stream
 
-**Requirement Specification**: Human-reviewed obligations derived independently from the original request. It is distinct from a planner's interpretation of that request.
+**Requirement Specification**: Independently authored and reviewed obligations from the
+complete original request, separate from planner interpretation. The native artifact
+records review provenance; the installed material handoff uses separately operated
+external author/reviewer agents, which must not be described as human review. See the
+[requirement ownership contract](contracts/0003-requirement-schedule.md#rtpeval-requirement-spec-contract).
 
 **Evaluation snapshot**: Preserved independent external evidence used consistently to assess the submitted itineraries. It is an evidence basis, not absolute real-world truth.
 
@@ -247,7 +168,6 @@ user obligations.
 
 **Potential match**: A source-preserved occurrence whose unresolved role or identity
 could affect a reviewed place obligation; it is not a confirmed visit to that place.
-
 
 ## Route evaluation concepts
 

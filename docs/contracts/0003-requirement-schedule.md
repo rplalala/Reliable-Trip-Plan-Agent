@@ -8,31 +8,17 @@ can be scored independently; the implemented [Ticket 10 paired report](0005-qual
 owns cross-stage deltas and continuity.
 
 <a id="rtpeval-requirement-spec-contract"></a>
-<a id="rtpeval-requirement-spec-contract--requirementspec-contract--draft"></a>
-<a id="rtpeval-requirement-spec-contract--ownership-and-authority"></a>
-<a id="rtpeval-requirement-spec-contract--envelope-field-draft"></a>
-<a id="rtpeval-requirement-spec-contract--obligation-field-draft"></a>
-<a id="rtpeval-requirement-spec-contract--already-accepted-interpretation-constraints"></a>
-<a id="rtpeval-requirement-spec-contract--deterministic-requirements-versus-subjective-preferences"></a>
-<a id="rtpeval-requirement-spec-contract--completeness-and-unresolved-content-handling"></a>
-<a id="rtpeval-requirement-spec-contract--code-informed-boundaries"></a>
-<a id="rtpeval-requirement-spec-contract--accepted-simplifications--2026-09-28"></a>
-<a id="rtpeval-requirement-spec-contract--future-acceptance-checks"></a>
-<a id="rtpeval-requirement-spec-contract--ticket-05-executable-specialization--2026-10-01"></a>
-<a id="rtpeval-requirement-spec-contract--superseding-visit-cardinality--2026-10-01"></a>
-<a id="ownership-and-authority"></a>
-<a id="envelope-field-draft"></a>
-<a id="obligation-field-draft"></a>
-<a id="already-accepted-interpretation-constraints"></a>
-<a id="deterministic-requirements-versus-subjective-preferences"></a>
-<a id="completeness-and-unresolved-content-handling"></a>
-
-<a id="authoring"></a>
-
 ## RequirementSpec ownership and source linkage
 
-Upstream preparation authors `requirement_spec.json` from the original Input only and obtains
-user review. It is never copied from planner interpretation or injected into planning.
+Upstream preparation authors `requirement_spec.json` from the complete original Input
+and obtains independent review before intake. Native `rtpeval_requirements_1` records
+the actual reviewer and time; it does not establish that the reviewer is human. The
+installed producer handoff requires separately operated external Codex author/reviewer
+agents and bound execution/transcript provenance under the
+[external handoff contract](0002-intake-identity-usage.md#external-requirements-handoff).
+Direct reviewed material and historical user-reviewed preparation retain their actual
+provenance. No agent execution is relabelled human review. Requirements are never copied
+from planner interpretation or injected into planning.
 Reviewed meaning, independent identity and external facts are separate. The rater sees the
 original request, not this preparation file. Soft preferences remain descriptive, and an
 unimplemented measurable obligation is retained as unsupported rather than silently softened.
@@ -64,16 +50,6 @@ Mechanically contradictory executable payloads require upstream correction; sema
 does not become a planner quality failure merely because the specification was reviewed.
 
 <a id="rtpeval-requirement-schedule-contract"></a>
-<a id="rtpeval-requirement-schedule-contract--obligation-wire-and-checks"></a>
-<a id="rtpeval-requirement-schedule-contract--default-visit-cardinality--user-correction-2026-10-01"></a>
-<a id="rtpeval-requirement-schedule-contract--occurrence-date-scope"></a>
-<a id="rtpeval-requirement-schedule-contract--cardinality-correction-verification-scope--2026-10-01"></a>
-<a id="obligation-wire-and-checks"></a>
-<a id="default-visit-cardinality--user-correction-2026-10-01"></a>
-<a id="occurrence-date-scope"></a>
-<a id="cardinality-correction-verification-scope--2026-10-01"></a>
-<a id="superseding-visit-cardinality--2026-10-01"></a>
-
 <a id="obligations"></a>
 
 ## Executable obligations and cardinality
@@ -91,10 +67,10 @@ operator is returned for specification correction instead of silently executing 
 
 | Kind | Executable fields |
 | --- | --- |
-| `required_visit` | `subject_ref`; `count={mode:minimum|exact,value:positive integer}`; optional `distinct_dates` boolean (omission means no extra distinct-date constraint); `date_obligations` array of `{date,count_mode:minimum|exact,count:positive integer}` (omission means none). |
-| `excluded_visit` | `subject_ref`; `scope=whole_trip|specified_dates`; `dates` is required and nonempty for specified dates, absent for whole-trip scope. |
-| `protected_time` | `date`; `interval={kind:full_day}` or `{kind:clock,start:HH:MM[:SS],end:HH:MM[:SS]}`; explicit `scope=primary_visits|scheduled_commitments`. Clock endpoints are same-day, strictly increasing; `24:00` is allowed only as the end. |
-| `fixed_visit_time` | `subject_ref`, `date`, `match=single_visit|at_least_one` and nonempty `conditions`; the multiple-visit mode also requires `repeat_permission_refs` as defined below. |
+| `required_visit` | `subject_ref`; `count={mode:minimum\|exact,value:positive integer}`; optional `distinct_dates` boolean (omission means no extra distinct-date constraint); `date_obligations` array of `{date,count_mode:minimum\|exact,count:positive integer}` (omission means none). |
+| `excluded_visit` | `subject_ref`; `scope=whole_trip\|specified_dates`; `dates` is required and nonempty for specified dates, absent for whole-trip scope. |
+| `protected_time` | `date`; `interval={kind:full_day}` or `{kind:clock,start:HH:MM[:SS],end:HH:MM[:SS]}`; explicit `scope=primary_visits\|scheduled_commitments`. Clock endpoints are same-day, strictly increasing; `24:00` is allowed only as the end. |
+| `fixed_visit_time` | `subject_ref`, `date`, `match=single_visit\|at_least_one` and nonempty `conditions`; the multiple-visit mode also requires `repeat_permission_refs` as defined below. |
 
 Booleans are not integers. Counts must be finite positive integers; dates are ISO
 calendar dates within inclusive Input trip dates. Duplicate date entries for one
@@ -142,11 +118,6 @@ declared days with contradictory potentially in-trip timestamps. Do not choose w
 date helps PASS. Invalid/missing clocks need not erase a consistent declared calendar
 count; precise fixed-time/occupancy checks still require valid temporal interpretation.
 These are structural scheduled-visit counts, not proof of actual attendance.
-
-<a id="rtpeval-requirement-schedule-contract--identity-uncertainty-and-count-bounds"></a>
-<a id="identity-uncertainty-and-count-bounds"></a>
-
-<a id="bounds"></a>
 
 ## Count bounds and completeness
 
@@ -208,11 +179,6 @@ Malformed source/parent linkage requires correction. A partial known-obligation 
 may still be returned, but no complete denominator or score is asserted until this
 unlinked content is resolved or explicitly classified upstream.
 
-<a id="rtpeval-requirement-schedule-contract--fixed-visit-time-scope-q2-corrected-by-user-on-2026-10-01"></a>
-<a id="fixed-visit-time-scope-q2-corrected-by-user-on-2026-10-01"></a>
-
-<a id="fixed-time"></a>
-
 ## Dated fixed-visit conditions
 
 For an explicit date and subject, support a conjunction of any nonempty selection of:
@@ -261,13 +227,6 @@ occurrences violate its single-visit rule. "Visit A twice, with a Wednesday visi
 10:00 for at least 60 minutes" retains exact two in the reviewed count obligation;
 at least one Wednesday A must meet all the time conditions. Two visits with neither
 meeting the conjunction do not satisfy the time obligation.
-
-<a id="rtpeval-requirement-schedule-contract--independent-time-and-occupancy-preparation"></a>
-<a id="rtpeval-requirement-schedule-contract--commitments-and-transport"></a>
-<a id="rtpeval-requirement-schedule-contract--protected-blockers-q1-accepted-by-user"></a>
-<a id="independent-time-and-occupancy-preparation"></a>
-<a id="commitments-and-transport"></a>
-<a id="protected-blockers-q1-accepted-by-user"></a>
 
 <a id="occupancy"></a>
 
@@ -372,9 +331,6 @@ exclude duplicate occupancy. Timestamp precision supports six fractional digits;
 precision is unsupported. Original-aware instants can support whole-request overlap without
 local context; local-clock duties and per-day attribution need independent context.
 
-<a id="rtpeval-requirement-schedule-contract--non-overlap-checks-and-duration-reporting"></a>
-<a id="non-overlap-checks-and-duration-reporting"></a>
-
 <a id="non-overlap"></a>
 
 ## Non-overlap units and interval measurements
@@ -412,9 +368,6 @@ Non-overlap covers all submitted commitments, including extra output dates; revi
 and descriptive denominators use requested dates. Missing journeys affect structural coverage,
 not an invented interval. Opening, route feasibility and auxiliary scores have separate owners.
 
-<a id="rtpeval-requirement-schedule-contract--descriptive-schedule-metrics"></a>
-<a id="descriptive-schedule-metrics"></a>
-
 <a id="descriptive"></a>
 
 ## Descriptive coverage, density and repetition
@@ -443,15 +396,6 @@ not an invented interval. Opening, route feasibility and auxiliary scores have s
   ratio. Minimum revisits and visits beyond a minimum are not automatic violations;
   explicit exact-count excess is already assessed in its parent requirement check.
 
-<a id="rtpeval-requirement-schedule-contract--authority-and-inputs"></a>
-<a id="rtpeval-requirement-schedule-contract--current-code-facts-and-implementation-seams"></a>
-<a id="rtpeval-requirement-schedule-contract--report-and-implementation-scope"></a>
-<a id="authority-and-inputs"></a>
-<a id="current-code-facts-and-implementation-seams"></a>
-<a id="report-and-implementation-scope"></a>
-
-<a id="report"></a>
-
 ## Report, replay and code boundaries
 
 Report schema `rtpeval_requirement_schedule_report_1` preserves batch/group/run/projection,
@@ -461,12 +405,14 @@ magnitudes, known/candidate units, denominator availability and descriptive meas
 Null is unavailable, never NaN/Infinity or invented zero. Repeated replay preserves semantic
 content; generation time is metadata. Material correction returns no partial cohort.
 
-Identity preflight requires the complete original reference population and current
+Identity preflight requires the complete original reference population, current
 `subject_scope_version=required_excluded_fixed_time_1`, `reference_set_digest` and
-`association_policy_version=structural_claims_typed_addresses_3`. Missing/stale references
-require `identity_replay_required`; replay frozen evidence/reviews/audit offline. A newly
-included fixed-time subject can alter high-impact review, so old automatic decisions do not
-bypass recomputation. Missing observation remains UNKNOWN, distinct from missing preparation.
+exact replay under the [identity policy](0002-intake-identity-usage.md#identity).
+The historical native policy `structural_claims_typed_addresses_3`, uniform-LLM and
+V0-adoption reports retain their explicit replay paths; a policy string alone is
+insufficient. Missing/stale references require `identity_replay_required`. A newly
+included fixed-time subject requires recomputation of affected identity/review scope.
+Missing observations remain UNKNOWN, distinct from missing preparation.
 Scorer semantic validation follows tolerant intake, preserving original records.
 
 Code owners: [requirement_schedule](../../backend/evaluation/requirement_schedule.py),
@@ -475,27 +421,10 @@ Code owners: [requirement_schedule](../../backend/evaluation/requirement_schedul
 [shared preparation](../../backend/evaluation/_schedule_preparation.py).
 The immutable public report and CLI are described in [package commands](../../backend/evaluation/README.md#ticket-05-offline-requirement-and-schedule-metrics).
 
-<a id="rtpeval-requirement-schedule-contract--ticket-05-requirement-and-schedule-contract"></a>
-<a id="rtpeval-requirement-schedule-contract--future-offline-acceptance-slices"></a>
-<a id="rtpeval-requirement-schedule-contract--documentation-verification-record"></a>
-<a id="rtpeval-requirement-schedule-contract--specification-verification-and-authorization"></a>
-<a id="requirement-schedule"></a>
-<a id="ticket-05-requirement-and-schedule-contract"></a>
-<a id="future-offline-acceptance-slices"></a>
-<a id="documentation-verification-record"></a>
-<a id="specification-verification-and-authorization"></a>
-<a id="requirementspec-contract--draft"></a>
-<a id="code-informed-boundaries"></a>
-<a id="accepted-simplifications--2026-09-28"></a>
-<a id="future-acceptance-checks"></a>
-<a id="ticket-05-executable-specialization--2026-10-01"></a>
-
-<a id="history"></a>
-
 ## Decision and acceptance history
 
 [Ticket 05](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/17) and
 [acceptance](../records/evaluation/requirements.md#rtpeval-ticket-05-acceptance) retain the
 exact-one/single-visit correction, protection-as-boundary decision, implementation, review
 and regression evidence. The earlier minimum-one authoring/default at-least-one proposals
-are superseded. This consolidation adds no live run, formal case, new rule or version freeze.
+are superseded.

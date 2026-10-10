@@ -10,7 +10,7 @@ transport in their primary DTO and shared output acceptance; initial and Repair
 prompts reserve mode selection and transfer timing to the application. Existing
 Routes binding and Repair permissions remain unchanged. Independent evaluation
 selects V0 activities or V1-V3 transfers, retaining ignored-source provenance
-without using it as transport occupancy or fallback. Ticket 05 scoring remains pending.
+without using it as transport occupancy or fallback. Ticket 05 scoring had not yet been implemented at this checkpoint.
 
 ## Live evidence
 
@@ -43,23 +43,18 @@ positions; both RAG outcomes were partial. Recorded tool budgets were within
 limits; primary and requirement billed token usage was missing, not zero.
 No total cost claim is made. There was no retry, blind review or extra live case.
 
-## Actual verification sequence
+## Verification and source integrity
 
-1. Prepared a new bounded launcher and structural inspector; corrected initial
-   lint/format issues. Ten mocked packet tests and 60 related readiness tests passed.
-2. The first read-only preflight falsely reported environment drift because it
-   omitted `local_dependencies()` before hashing. Matching the launcher's local
-   environment-loading order resolved it; no live attempt had been consumed and
-   no manifest, source or budget was reset.
-3. Executed V0-V3 once each. Final manifest was `finished`; the executor confirmed
-   frozen hashes still matched and no live process remained.
-4. Before the user-authorized workspace commits, ran the full backend suite plus
-   the packet tests: **1983 passed, 10 skipped in 125.06 seconds**. Skips were nine
-   opt-in database cases and one Windows symlink privilege case. Ruff check,
-   format checks for new Python files and diff whitespace checks passed.
+The bounded launcher/inspector passed **10 mocked packet tests** and **60 related
+readiness tests**. Preparation initially reported environment drift because its hash
+probe omitted the launcher's `local_dependencies()` loading order. Matching that order
+resolved the discrepancy before execution, without resetting frozen sources or budgets.
+Each V0-V3 invocation then ran once. The finished manifest verified unchanged source/
+configuration hashes and no remaining process.
 
-Earlier Ticket 04 and transport-correction failures, fixes and retests remain in
-their acceptance records; their counts overlap this combined run and are not additive.
+Full backend plus packet tests: **1983 passed, 10 skipped**, 125.06 seconds. Nine database
+opt-ins and one Windows symlink case skipped. Ruff, changed-file formatting and diff
+checks passed. Earlier Ticket 04/transport gates overlap this result and are not additive.
 
 ## Evidence and preservation
 
@@ -70,10 +65,3 @@ Local evidence remains under `logs/transport_responsibility_20260930/`:
 `manifest.json`, `report.md`, `itineraries.md`, per-version result/execution/pair
 observations and captures. Logs, raw output, environment files and local research
 archives stay Git-ignored and are not included in a fresh checkout.
-
-The historical plan's no-Git execution restriction applied during the smoke. The
-user subsequently explicitly authorized classifying and committing all eligible
-workspace changes without another approval. This does not authorize a push,
-formal evaluation, new ticket, extra live run or version freeze.
-
-Historical execution specification: [Issue #39](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/39).

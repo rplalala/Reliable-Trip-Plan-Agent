@@ -1,18 +1,11 @@
-> Archived source snapshot, relocated 2026-10-03 from `docs/v2_milestone.md`.
-> Current design is indexed in [docs/README.md](../../README.md).
-> Original Current/Next statements and historical defaults below are dated evidence,
-> not current system authority or renewed execution permission.
-
 # V2 milestone checkpoints
 
 V2 retains its original milestone scope below. The [shared 2026-09-25 notice](v3-closeout.md#shared-milestone-notice-2026-09-25)
 records the historical Product default, version isolation and recovery-UI limitations.
 
+## Implementation acceptance - 2026-09-20
 
-<a id="current-implementation-acceptance-2026-09-20"></a>
-## Current implementation acceptance - 2026-09-20
-
-**V2 current implementation checkpoint accepted.**
+**V2 implementation checkpoint accepted on 2026-09-20.**
 
 The core research mechanism is implemented and has bounded end-to-end evidence. Primary V2
 implementation/smoke validation is complete; the next authorized direction is formal-evaluation
@@ -43,8 +36,8 @@ corpus/space and provider/deployment state. It locks intended experimental mecha
 forever. Shared correctness fixes must affect every dependent version; record a new checkpoint
 and assess which completed evaluations need rerunning. No case-specific tuning or higher-version-only
 repair of shared bugs. V3 remains unimplemented: explicit validation -> structured violations ->
-targeted repair -> re-validation. This is not production-ready, universal correctness, benchmark
-completion, demonstrated RAG superiority, a Git save or permanent re-freeze.
+targeted repair -> re-validation. This checkpoint did not establish production readiness, universal correctness,
+benchmark completion, RAG superiority or a permanent re-freeze.
 
 [Detailed joint evidence and limitations](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/development_record.md)
 are maintained once. Dated historical checkpoints below keep their original scope.
@@ -53,10 +46,10 @@ are maintained once. Dated historical checkpoints below keep their original scop
 
 Phase 1-5 corpus/retrieval foundation was accepted in September 2026. Phase 6 normal RAG now has bounded live evidence. Latest quality run: 16 RAG Details, 15 admitted cache-qualified plus 24 ordinary successes, 39 compared, 12 supplied, eight scheduled including two RAG-only.
 
-Status: implemented + bounded development-live-validated where covered, not production-ready, formal benchmark or automatic re-freeze. Current explicit configuration is quality_first_1 with 160k input guard and 16,384 output. This does not rewrite earlier frozen configurations. Exact implementation/config hashes, offline history, live inputs, failures, artifacts and limitations are maintained once in the [joint event](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/development_record.md). Reviews/Profile and ten-day K16 live were not covered; unknown Web reasoner usage stays unknown. No new validation is performed by this migration.
-
-Dated records below preserve original scope, status and evidence; they are not current runtime instructions. Current design is maintained separately. Proposed or unexecuted steps remain unexecuted unless a later explicitly identified record establishes otherwise.
-
+The explicit quality-first configuration had a **160k input guard** and **16384 output**.
+Reviews/Profile and ten-day K16 were not covered in this earlier pair; unknown Web
+reasoner usage stayed unknown. Later Tokyo/Sydney checks above extended specific paths,
+without rewriting this earlier checkpoint or implying a new freeze.
 
 ## Earlier accepted foundations and functional checks
 
@@ -77,12 +70,10 @@ contradictions remain possible. [V3 design](https://github.com/rplalala/Reliable
 and targeted-repair boundary, not implemented capability. K20/default targets/sorting
 and connection tolerance are shared/V2 baseline work, not V3 research contributions.
 
-
 ## Compatible transfer output update (2026-09-25)
 
 V2 participated in the 2026-09-25 optional-transfer compatibility update;
 its existing execution path and Product-selection scope were preserved. [Shared DTO/presentation boundary and verification](v1-development.md#compatible-transfer-output-update-2026-09-25).
-
 
 ## Shared first-generation mixed transport (current offline checkpoint)
 

@@ -1,6 +1,6 @@
 # Historical engineering evidence
 
-This archive retains dated milestones, observed failures, validation sequences and research
+This archive retains dated milestones, observed failures, scoped validation results and research
 design history. It is not a second current specification or a task tracker. PROJECT.md owns
 current scope; [core docs](../README.md) own current technical contracts; GitHub Issues
 own specifications, task discussion and live state. Historical Current/Next statements are
@@ -12,23 +12,32 @@ bounded by their recorded date and never grant another execution or freeze.
 | [V1](v0-v3/v1-milestone.md) | Milestone, development evidence and retired selector studies |
 | [V2](v0-v3/v2-milestone.md) | Retrieval integration, database observations and timeout diagnosis |
 | [V3](v0-v3/v3-milestone.md) | Validation/Repair development, closeout and bounded pilots |
-| [Evaluation](evaluation/intake-identity-usage.md) | Offline evaluator acceptance, readiness audit and [benchmark design history](evaluation/benchmark-design.md) |
-| [V3 paired evaluation](evaluation/v3-pair-report.md) | Ticket 10 source-driven correspondence, independent deltas, TDD and review evidence |
-| [Controlled V3 repair](evaluation/2026-10-04-controlled-repair.md) | Ticket 11 frozen real execution, independently reviewed outcomes, offline TDD and review corrections |
+| [Evaluation](evaluation/intake-identity-usage.md) | Offline evaluator acceptance, [readiness audit](evaluation/evaluation-readiness-audit.md) and [benchmark design history](evaluation/benchmark-design.md) |
+| [V3 paired evaluation](evaluation/v3-pair-report.md) | Ticket 10 source-driven correspondence, independent deltas and corrected defects |
+| [Controlled V3 repair](evaluation/2026-10-04-controlled-repair.md) | Ticket 11 frozen real execution, independently reviewed outcomes and corrected material/clock boundaries |
 | [Mechanism and official audit](evaluation/2026-10-04-mechanism-official-audit.md) | Ticket 12 selected-source observations, opt-in capture, independent exact-unit reviews and offline validation |
 | [Evaluation CLI usage](evaluation/2026-10-04-evaluation-usage.md) | Issue #49 synthetic subprocess workflows, report interpretation, material correction examples and offline acceptance |
 | [Seoul real chain pilot](evaluation/2026-10-04-seoul-live-pilot.md) | One authorized four-day live V0-V3 request, independent snapshots, applicable native reports, actual agent reviews and retained uncertainty |
 | [Daily density scoring](evaluation/2026-10-04-daily-density.md) | Final approved table (#52), explicit count precedence, offline Seoul evidence replay and implementation/review acceptance |
-| [Frontend](frontend/product-v3-acceptance.md) | Original MVP milestone and Product V3 acceptance/failure/retest evidence |
+| [Frontend](frontend/product-v3-acceptance.md) | [Original MVP milestone](frontend/frontend-milestone.md) and Product V3 acceptance/failure/retest evidence |
 | [Shared](v0-v3/poi-semantics-closeout.md) | Cross-version semantic, supply and transport observations |
 | [Model references](v0-v3/semantic-reference-correction.md#model-reference-audit-2026-10-05) | Earlier semantic reference correction and the later cross-chain short-ID audit, offline validation and preserved V0 pilot evidence |
 
-For new records, promotion from local notes and deduplication, apply the
-[record admission and ownership rules](../agents/domain.md#record-admission-and-topic-ownership).
-Keep one shareable, evidence-backed account per historical event; local `thesis_notes/` adds
-distinct private research context. A record summarizes a dated event, not a full backup of a
-current design, raw runtime output or a live task packet. Prefer an existing owner and retain
-unique decisions and failure/retest evidence when replacing repeated prose with historical links.
+Detailed evaluation history is organized by responsibility:
+[intake, identity and usage](evaluation/intake-identity-usage.md),
+[requirements/schedule](evaluation/requirements.md),
+[opening/access](evaluation/opening.md), [routes](evaluation/routes.md),
+[quality reports](evaluation/quality-report.md) and
+[blinded ranking](evaluation/blinded-ranking-record.md).
+
+Version details are in [V1 development](v0-v3/v1-development.md),
+[retired selector studies](v0-v3/v1-selector-experiments.md),
+[V2 development](v0-v3/v2-development.md), [embedding timeout diagnosis/repair](v0-v3/v2-embedding-timeout.md),
+[V3 development](v0-v3/v3-development.md) and [engineering closeout](v0-v3/v3-closeout.md).
+Shared records cover [development pilots](v0-v3/development-pilots.md),
+[transport smoke](v0-v3/transport-responsibility-smoke.md),
+[preference/landmark policy](v0-v3/preference-landmark-balance.md) and its
+[V3 pilot](v0-v3/v3-preference-landmark-pilot.md).
 
 The original full design/development snapshots remain accessible through the historical
 [V0 #42](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/42),

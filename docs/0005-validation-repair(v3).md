@@ -58,18 +58,9 @@ output fails before adoption; partial malformed JSON is not salvaged as an itine
 
 ## Components, adoption and fallback
 
-Related edits form atomic components using concrete activity, identity, date/adjacency,
-protected-cost, compensation and target dependencies. Same-date edits are conservatively
-related; merely sharing a validator kind does not merge unrelated dates. Components use
-deterministic ordering and the latest accepted working state, so new-identity conflicts
-across components remain visible.
-
-Each component passes authorization, patch construction, schedule/route/occupancy checks,
-re-validation and business comparison. Acceptance requires an authorized improvement
-without forbidden regression. Rejected independent components do not erase earlier
-accepted improvements. Global checks guard the combined result; fallback uses the appropriate
-previous accepted state rather than inventing a successful repair. Actual sends, consumed
-budgets and acquired evidence remain recorded even when an edit is rejected.
+The [joint component contract](#joint-repair-and-component-atomicity) defines dependencies,
+ordering, adoption and safe fallback. Independent rejected components preserve earlier
+accepted improvements; missing facts never become a successful repair claim.
 
 ## Transport and resource boundaries
 
@@ -98,9 +89,7 @@ or retiming a visit preserves its provider name and complete address just as add
 does. This application normalization requires no extra model/Google call and does not
 make the read-only validator mutate its input or certify independent ground truth.
 
-## Verification scope
-
-### Soft pace objective
+## Soft pace objective
 
 V3 Repair aims for zero soft pace deductions under the existing daily-density table.
 Zero is an optimization objective, not output validity or a failure gate. The
@@ -216,7 +205,6 @@ The nearest-anchor preparation is provisional, not exhaustive; exact final TRANS
 may need a fresh bounded query. Conservative same-date components can reject more edits than
 a finer proven dependency partition. Budget exhaustion can leave legitimate goals unresolved.
 Offline evidence does not prove real provider availability, model throughput or quality gains.
-
 
 ## Target priority and stage accounting
 

@@ -1,106 +1,41 @@
-> Archived source snapshot, relocated 2026-10-03 from `docs/v0_milestone.md`.
-> Current design is indexed in [docs/README.md](../../README.md).
-> Original Current/Next statements and historical defaults below are dated evidence,
-> not current system authority or renewed execution permission.
+# V0 milestone and later shared changes
 
-# V0 milestone checkpoints
+V0's original milestone was completed on 2026-09-11 at `34943c7`. It established a
+plain-LLM baseline; later shared changes do not rewrite that historical freeze or
+validate earlier runs. Current behavior belongs to the [design index](../../README.md).
 
-## Authorized prompt alignment - 2026-09-28
+## Original frozen research boundary
 
-The user requested V0 transport and Nearby content while retaining plain LLM plus
-prompt. The generation prompt now explicitly requests estimated inter-visit transport
-as existing transport activities and suitable nearby references linked to planned
-dates/areas, with model-knowledge uncertainty. No extra call, tool, validator or Repair
-was added; provider-backed transfer records remain outside V0 model output. This is
-a later prompt change, not a rewrite of earlier milestones or a new freeze. The
-[shared output record](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/shared_itinerary_output.md)
-documents the contract and initial 80 passing offline checks. Subsequent authorized
-Berlin revalidation returned six days, 17 main visits, 11 estimated transport activities
-and one optional Nearby reference, passing this bounded content check. Standards/Spec
-reviews were clear and the combined regression passed 176 tests. See the
-[acceptance record](development-pilots.md#v0-transport-nearby-assessment). No real-world route,
-opening, price or general quality verification is implied; this is not a new freeze.
+Successful runs used requirement extraction then itinerary generation in a two-node
+graph with exactly two LLM calls. The frozen boundary covered semantic prompt/planning
+behavior, reference-date handling, strict Azure DTO/domain mapping, fail-fast missing
+critical requirements, shared `PlanningResult` / `SystemVersion.V0` and independent
+`scripts/run_v0.py`. It excluded tools, external information, retry/regeneration,
+constraint-validation loops and Repair. Compatible shared changes required preserving
+that intended research behavior and passing V0 regressions; a freeze was not file immutability.
 
-V0 retains its original milestone scope below. The [shared 2026-09-25 notice](v3-closeout.md#shared-milestone-notice-2026-09-25)
-records the historical Product default, version isolation and recovery-UI limitations.
+The original offline gate passed **50 tests**, Ruff and diff checks. Coverage included
+topology/call order, provider configuration, strict mapping, failure behavior, CLI exits,
+network isolation and cp 936 Unicode round-trip.
 
+## Consequential later changes
 
-## Latest accepted boundary - 2026-09-20
+| Date | Change | Validation boundary |
+| --- | --- | --- |
+| 2026-09-19 | Authorized common `planning_request_2`, authoritative structured facts and optional semantic preference interpretation; empty preferences skip interpretation. | Shared **769 passed, 9 skipped**, Ruff/diff; no live or old-output parity claim. Old-input V0 and revised V1 cannot be a tools-only matched comparison. Frontend alignment was then pending. |
+| 2026-09-20 | V0 remained tool-free while the joint V1/V2 quality-first work continued. | V0 was not rerun in that joint event; quality-first limits did not extend its CLI or rewrite old freeze configuration. |
+| 2026-09-25 | Optional transfer-output compatibility and shared startup correction. | Fresh V0 CLI failed before `--help` from eager service exports reentering its graph. Lazy exports fixed the cycle; fresh-process checks covered V0–V3. Shared prompt 13 budget scope was offline-only. |
+| 2026-09-28 | Authorized prompt request for estimated transport Activities and nearby references by date/area. | Plain LLM plus prompt retained; no new call/tool/validator/Repair. Berlin revalidation returned six days, **17 main visits, 11 estimated transport activities, 1 Nearby reference**; combined **176-pass** regression and clear reviews. |
 
-V0 retains tool-free shared-input/output execution; the latest joint quality run did not rerun V0.
+The [transfer compatibility record](v1-development.md#compatible-transfer-output-update-2026-09-25)
+and [shared closeout](v3-closeout.md) locate startup/output boundaries. The
+[transport/Nearby acceptance](development-pilots.md#v0-transport-nearby-assessment)
+locates the Berlin result; the original [shared output design](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/shared_itinerary_output.md)
+records its initial **80-pass** offline check. The
+[shared milestone notice](v3-closeout.md#shared-milestone-notice-2026-09-25)
+locates Product/default and recovery limits at that checkpoint.
 
-Status: implemented + bounded development-live-validated where covered, not production-ready, formal benchmark or automatic re-freeze. The latest joint V1/V2 event used explicit quality_first_1; these configuration limits do not extend the V0 CLI. This does not rewrite earlier frozen configurations. Exact implementation/config hashes, offline history, live inputs, failures, artifacts and limitations are maintained once in the [joint event](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/development_record.md). Reviews/Profile and ten-day K16 live were not covered; unknown Web reasoner usage stays unknown. No new validation is performed by this migration.
-
-Dated records below preserve original scope, status and evidence; they are not current runtime instructions. Current design is maintained separately. Proposed or unexecuted steps remain unexecuted unless a later explicitly identified record establishes otherwise.
-
-<a id="m-cad8591a7c35"></a>
-## Authorized shared-foundation migration - 2026-09-19
-
-_Source context: V0 As-Built Milestone. Preserved checkpoint wording; apply its recorded date and status._
-
-<a id="b-cad8591a7c35-0"></a>
-
-The historical freeze and results below are preserved. Current V0/V1 now share
-PlanningRequest (planning_request_2), authoritative structured trip facts and optional
-semantic-only preference interpretation. V0 remains plain LLM without external evidence;
-V1 retains its external tools and deterministic candidate supply. Empty preferences skip
-interpretation. This intentionally changes old free-text input behavior, not the research
-mechanism distinction. No exact old-output parity, new live acceptance or re-freeze is
-claimed. Shared-foundation offline validation: 769 passed, 9 skipped; Ruff/diff passed.
-No live calls were made. Current contracts/validation: docs/v1_design.md and README. Do not combine old-input
-V0 measurements with revised V1 as a tools-only comparison. Frontend alignment is outstanding.
-
-<a id="m-13e4fb9a2522"></a>
-## Status
-
-_Source context: V0 As-Built Milestone. Preserved checkpoint wording; apply its recorded date and status._
-
-<a id="b-13e4fb9a2522-0"></a>
-
-- Completion date: 2026-09-11
-- Baseline commit: `34943c7` (`docs: document V0 setup and usage`)
-
-<a id="m-120ec257da76"></a>
-## Testing Strategy and Milestone Status
-
-_Source context: V0 As-Built Milestone. Preserved checkpoint wording; apply its recorded date and status._
-
-<a id="b-120ec257da76-0"></a>
-
-The V0 test suite covers:
-
-<a id="b-120ec257da76-1"></a>
-
-- The exact two-node graph topology and two intended LLM stages
-- Missing-critical-requirement handling
-- No-retry and no-repair behavior
-- The shared `PlanningResult` contract and `SystemVersion.V0`
-- Azure Foundry DTO schema compatibility and strict validation
-- Deterministic DTO-to-domain mapping and preservation of domain validation
-- Provider abstraction and deployment configuration
-- Unit-test isolation from external network access
-- CLI JSON output, exit codes, and cp936 Unicode round-trip behavior
-
-<a id="b-120ec257da76-2"></a>
-
-At the V0 milestone freeze:
-
-<a id="b-120ec257da76-3"></a>
-
-- `pytest`: 50 passed
-- Ruff: passed
-- `git diff --check`: passed
-
-<a id="b-120ec257da76-4"></a>
-
-Subsequent repository-wide regression runs have continued to pass all V0 tests.
-
-<a id="m-670d804821bf"></a>
 ## Known Limitations
-
-_Source context: V0 As-Built Milestone. Preserved checkpoint wording; apply its recorded date and status._
-
-<a id="b-670d804821bf-0"></a>
 
 - Travel facts come only from model pretraining and may be outdated or inaccurate.
 - Opening hours, availability, prices, routes, travel times, weather, and disruptions
@@ -113,46 +48,6 @@ _Source context: V0 As-Built Milestone. Preserved checkpoint wording; apply its 
 - Provider, DTO, mapping, or domain failures terminate the run without recovery.
 - V0 has no persistence, memory, or repair mechanism.
 
-<a id="m-7414be5440b3"></a>
-## Frozen V0 Research Behavior
-
-_Source context: V0 As-Built Milestone. Preserved checkpoint wording; apply its recorded date and status._
-
-<a id="b-7414be5440b3-0"></a>
-
-V0 freezes research behavior, not the literal contents of its files. The following
-research behavior must remain stable for V0/V1 comparison:
-
-<a id="b-7414be5440b3-1"></a>
-
-- The two-node graph and requirement-extraction-to-itinerary-generation order
-- Exactly two LLM calls in a successful run
-- Plain-LLM generation without external information
-- The prompts' semantic behavior and planning objective, rather than their exact text
-- Fail-fast handling of missing critical requirements
-- Reference-date behavior
-- Strict DTO validation and deterministic DTO-to-domain mapping
-- No retry, regeneration, constraint-validation loop, or repair
-- The shared `PlanningResult` contract and `SystemVersion.V0`
-- The independent `scripts/run_v0.py` execution path
-
-<a id="b-7414be5440b3-2"></a>
-
-Necessary backward-compatible shared infrastructure changes are allowed only when
-they do not change V0 research behavior and all V0 regression tests continue to pass.
-
-
-## Compatible transfer output update (2026-09-25)
-
-V0 participated in the 2026-09-25 optional-transfer compatibility update;
-its existing execution path and Product-selection scope were preserved. [Shared DTO/presentation boundary and verification](v1-development.md#compatible-transfer-output-update-2026-09-25).
-
-
-### Post-milestone shared startup correction (2026-09-25)
-
-A fresh standard V0 CLI process failed before --help due to eager services package exports
-re-entering the partially initialized V0 graph. Lazy planning exports now preserve public imports
-without that cycle. Fresh-process --help regressions cover V0-V3. This is shared correctness,
-not a V3 mechanism benefit; previous milestones/live records are not rewritten. Shared prompt13
-also distinguishes party trip-budget totals from expense scope; explicit provider filtering has
-an independent public rewrite action. See shared_preference_input.md for boundaries and tests.
+These limitations distinguish baseline output from independently verified travel facts.
+Prompt-level estimated transport supplies no provider-backed journey evidence, and
+bounded content validation establishes neither real-world feasibility nor a new freeze.

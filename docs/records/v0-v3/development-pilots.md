@@ -3,192 +3,68 @@
 Dated development evidence; current design and live task state remain in PROJECT.md,
 core docs and GitHub Issues. Historical commands grant no new execution permission.
 
-<a id="berlin-six-day-smoke-assessment"></a>
+## Berlin six-day smoke assessment — 2026-09-28
 
-<a id="berlin-six-day-smoke-assessment--berlin-smoke-assessment"></a>
+The four independent applications each ran once at revision
+`e68d8e6a4297d50a98fcacb3241d392781dec022` with the frozen development launcher.
+All exited zero with six ordered, nonempty days, but the batch's evidence gate failed.
 
-## Berlin smoke assessment
+| Version | Scheduled activities | Observed boundary |
+| --- | ---: | --- |
+| V0 | 16 | Policy completion unassessed; generation success does not verify feasibility. |
+| V1 | 14 | Four unauthorized cross-day repeats and one below-target day. |
+| V2 | 14 | No repeat-policy failure; two below-target days. |
+| V3 | 17 | One accepted Repair changed counts from 4/4/3/1/1/1 to 4/4/3/2/2/2 and improvement targets from three to zero. |
 
-<a id="berlin-six-day-smoke-assessment--later-itinerary-only-blind-review-authorization-and-result---2026-09-28"></a>
+V2/V3 RAG contributed scheduled places with partial identity resolution. This is not
+causal evidence of benefit. V3 retained 22 UNKNOWNs: opening 3, visitor suitability
+17, budget 1 and semantic requirements 1. All 61 scheduled costs were unknown;
+the shared EUR 3000 budget remained unverified.
 
-### Later itinerary-only blind review authorization and result - 2026-09-28
+V3's standalone `budget.json` was complete and its recorded counters stayed within
+limits. Its `run.json` recorded `truncated=true`, `original_bytes=6041655` against
+the frozen 1,000,000-byte trace cap. The oversized-payload preview explains the
+missing full trace, not application failure or excessive spending. The manifest's
+`stopped_budget_evidence` and `blind_review_eligible=false` remain unchanged.
 
-After the original evidence-gated stop, the user explicitly instructed `smoke tests`
-to evaluate itinerary quality and ignore budget for this blind review. Iteration 2
-verified that user message and the executor's saved review/mapping. The executor used
-one no-history reviewer with only the common input and four anonymous full itinerary
-projections, saving the anonymous response before revealing the mapping.
+The assessment proposed an 8 MB capture cap and an offline V1 repeat investigation.
+The user instead selected 10 MB (10,000,000 bytes) for subsequent runs and declined
+repeat investigation: repeats remain an intermediate-version limitation. Offline
+validation passed 92 tests in 9.68 seconds. Synthetic 6,041,655- and 9,999,000-byte payloads
+were preserved; 10,001,000 bytes triggered truncation, with redaction passing in
+all three cases. This did not recover the frozen trace or authorize a retry.
 
-The reported order A > C > B > D maps to V0 > V3 > V2 > V1. The simulated traveler
-favored V0's variety and relaxed pacing; V3 offered richer content but more museums
-and cross-district movement; V2's final two days were sparse; V1 repeated venues.
-These are the reviewer's judgments, not verified geography, general traveler preferences
-or causal conclusions. All costs and venue access remained unverified.
+A later, separately authorized itinerary-only blind review ignored budget. One
+reviewer without history saw the common input and four anonymous full itinerary
+projections before the mapping was revealed. A > C > B > D mapped to V0 > V3 > V2 >
+V1: the simulated traveler favored V0's variety/pacing, found V3 richer but more
+museum-heavy and dispersed, V2 sparse late in the trip, and V1 repetitive. These
+are reviewer judgments, not verified geography or general traveler preferences.
+The original failed evidence gate was not repaired. The reviewed V0 predates its
+subsequent transport/Nearby change, which this ranking cannot validate.
 
-Evidence: `logs/berlin_six_day_20260928/blind_packet.md`, `blind_mapping.json`,
-`blind_review.md` and the execution report addendum. The original manifest stays
-`stopped_budget_evidence`, with its original `blind_review_eligible=false`; the later
-review is separately authorized and does not repair that evidence gap. No rerun occurred.
-The reviewed V0 itinerary predates the subsequent transport/Nearby prompt adjustment;
-the ranking cannot be attributed to or validate that change. V1 repeats remain an
-accepted version limitation, not a current implementation task.
-
-<a id="berlin-six-day-smoke-assessment--subsequent-user-decision---2026-09-28"></a>
-
-### Subsequent user decision - 2026-09-28
-
-The user considers V1 repeats normal for the scope of that intermediate version;
-they remain observed output limitations, not a current fix task or a new requirement
-for V1. The proposed repeat investigation below is not proceeding.
-The user selected a 10 MB (10,000,000-byte) runtime capture threshold instead of the
-earlier proposed 8 MB. This configuration-only change is implemented for subsequent
-runs; the frozen Berlin artifacts, cap and failed evidence gate are unchanged.
-No new live execution or blind assessment was authorized by this adjustment.
-Validation: observability, runtime configuration and V3 wiring tests passed (92 tests,
-9.68s); `git diff --check` passed. Offline synthetic payloads with 6,041,655 and
-9,999,000 data bytes were preserved, while 10,001,000 data bytes triggered truncation;
-secret redaction passed in all three cases. No provider was called.
-
-Date: 2026-09-28, Australia/Sydney. Status: Assessed; execution complete, evidence gate
-failed. Revision: `e68d8e6a4297d50a98fcacb3241d392781dec022` plus the frozen development
-launcher. Documentation-only working changes and older unrelated scratch work remain.
-No production change, extra attempt, blind reviewer, commit, or freeze was authorized
-or performed during this assessment.
-
-<a id="berlin-six-day-smoke-assessment--verified-observations"></a>
-
-### Verified observations
-
-Iteration 2 checked the executor report against the batch manifest, all four result
-files, V1-V3 run/budget records, and V3 original/final validation target counts.
-The four independent applications each ran once and exited zero with six nonempty
-ordered days. Scheduled activity counts are V0 16, V1 14, V2 14, V3 17.
-
-- V0 policy completion is unassessed by design; successful generation is not policy
-  or feasibility validation.
-- V1 reports four unauthorized cross-day repeats and one below-target day. It failed
-  that output policy despite structural completion. The executor's brief pause was
-  corrected by referring to this batch's actual stop conditions; the original V2/V3
-  allowance continued without changing the policy, budget, or input.
-- V2 reports no repeat-policy failure but two below-target days. V2/V3 RAG ran and
-  contributed scheduled places, with partial identity-resolution outcomes. Neither
-  contribution nor the four independent stochastic outputs establishes causal benefit.
-- V3 changed daily counts from 4/4/3/1/1/1 to 4/4/3/2/2/2 through one accepted Repair
-  round. Original validation had three improvement targets; final validation has zero.
-  Final findings still include 22 UNKNOWNs: opening 3, visitor suitability 17, budget
-  1, semantic requirements 1. This supports targeted shortage repair in this case,
-  not fully verified travel feasibility or universal reliability.
-- All 61 scheduled cost fields are unknown; the shared EUR 3000 budget is unverified.
-
-<a id="berlin-six-day-smoke-assessment--evidence-gate-and-bounded-diagnosis"></a>
-
-### Evidence gate and bounded diagnosis
-
-V3's standalone `budget.json` is complete, and the recorded counters reported by the
-executor stayed within limits. However, `run.json` explicitly records `truncated=true`
-and `original_bytes=6041655`. The frozen `trace.max_payload_bytes` was 1000000.
-`backend/app/observability/run_trace.py` wraps an oversized serialized payload in a
-truncated preview at that threshold. This directly explains the missing full run
-record; it is not evidence of application failure or excessive provider spending.
-
-The frozen launcher therefore correctly recorded `stopped_budget_evidence` and
-`blind_review_eligible=false`. The state name includes budget evidence because the
-gate inspects both run and budget records; the budget summary itself is not truncated.
-Do not rename this as a successful batch, reconstruct missing trace content, relax
-the gate after observing results, or present a winner. No blind review was performed.
-The full final itineraries remain readable in the executor's `itineraries.md`.
-
-<a id="berlin-six-day-smoke-assessment--recommended-next-scope-proposed-not-implemented"></a>
-
-### Recommended next scope (proposed, not implemented)
-
-First address evidence capture offline. Compare a bounded capture-only increase from
-1,000,000 to 8,000,000 bytes against reducing duplicated nested run data. The observed
-6,041,655-byte record fits the former with headroom, making it a simpler candidate
-before adding new trace mechanisms. This changes local serialization/storage limits,
-not LLM tokens, API call allowances, or acceptance requirements. Expected API cost
-increase is zero; local I/O, memory, and retained diagnostic volume may increase.
-It is not a guarantee that all future records fit, nor permission to enable raw data.
-
-Any approved implementation should use offline synthetic payloads around both limits,
-preserve truncation and secret-redaction behavior, and keep the hard cap. Reject or
-revert the increase if it causes unacceptable local resource use or capture safety
-regression. Do not silently change this frozen batch or use a new cap to claim the
-missing old trace was captured. A new live attempt requires a separate bounded scope.
-
-Separately, investigate V1's repeat-policy failure offline with the saved request,
-supply and output before proposing changes. V0/V1/V2 version boundaries remain intact;
-do not add V3 validation/Repair to earlier versions just to make this case pass.
-
-<a id="berlin-six-day-smoke-assessment--evidence"></a>
-
-### Evidence
-
-- `logs/berlin_six_day_20260928/report.md`: execution process, budgets and limitations.
-- `logs/berlin_six_day_20260928/manifest.json`: attempts, freeze and failed evidence gate.
-- `logs/berlin_six_day_20260928/v*/result.json`: saved outputs and available diagnostics.
-- `logs/berlin_six_day_20260928/itineraries.md`: faithful user-readable projections.
-
-This is development smoke assessment, not a formal benchmark or thesis conclusion.
-
-<a id="food-sparse-diagnosis-diagnosis"></a>
-
-<a id="food-sparse-diagnosis-diagnosis--food-preference-and-sparse-day-offline-diagnosis"></a>
+Evidence identifiers: `logs/berlin_six_day_20260928/{report.md,manifest.json,itineraries.md}`,
+`v*/result.json`, `blind_packet.md`, `blind_mapping.json` and `blind_review.md`.
+The published observations above do not depend on access to those private files.
+This was development smoke evidence, not a formal benchmark or thesis conclusion.
 
 ## Food preference and sparse-day offline diagnosis
 
-<a id="food-sparse-diagnosis-diagnosis--archival-status---2026-09-28"></a>
+### Scope and replay
 
-### Archival status - 2026-09-28
+Diagnosed on 2026-09-27 at `8f5e9b3`; improvement options remained Proposed and
+were deferred on September 28. No production fix or stochastic regeneration was
+performed. Saved outputs were replayed through the actual `observe_generation`.
+The explicit `--assert-no-sparse` observation failed on four below-target dates;
+this was not a hard-quota assertion or evidence of an implementation regression.
+Ordinary replay matched captured counts. A one-date probe counted one main identity,
+remained one after adding a generic activity, and became two after a distinct main
+identity. These counting counterfactuals establish no route/time feasibility.
+Twelve existing diagnostics/supply tests passed; there is no red-to-green quality claim.
 
-The user deferred this investigation after the checkpoint below; it is not an active
-implementation task. This record and its scripts describe the 8f5e9b3 contracts and
-saved local evidence. Do not treat the historical commands as current-policy validation.
-Workspace cleanup only normalized script formatting and preserved the generated replay
-output at `logs/food_sparse_diagnosis_20260927/replay-result.json` (ignored local evidence).
-The historical data was not regenerated or rewritten under newer policy. The user's
-2026-09-28 workspace-wide commit authorization permits archiving these source records;
-the older no-commit/no-implementation statement below records its original authorization.
-
-Date: 2026-09-27. Status: Diagnosed; improvement options Proposed, not implemented.
-Base revision: `8f5e9b3`; this task changes documentation and local diagnostic artifacts only.
-User authorization: update acceptance documents, then diagnose offline. No production edits,
-network calls, budget adjustments, commits or new smoke execution.
-
-<a id="food-sparse-diagnosis-diagnosis--acceptance-synchronized-first"></a>
-
-### Acceptance synchronized first
-
-The development record now owns the current three-case wire acceptance, 45-check budget audit,
-1727-passed / 9-skipped final combined-tree regression and five local commits. PROJECT and the
-index link it. Earlier failures, limited correction evidence and UNKNOWNs remain historical facts.
-
-<a id="food-sparse-diagnosis-diagnosis--feedback-loop-and-validation"></a>
-
-### Feedback loop and validation
-
-From repository root:
-
-```
-.venv\Scripts\python.exe tools/validation/packets/food-sparse-diagnosis/replay.py --assert-no-sparse
-.venv\Scripts\python.exe tools/validation/packets/food-sparse-diagnosis/replay.py
-.venv\Scripts\python.exe tools/validation/packets/food-sparse-diagnosis/probes.py
-.venv\Scripts\python.exe -m pytest backend/tests/policies/test_generation_diagnostics.py backend/tests/services/test_planning_supply_pipeline.py -q
-```
-
-The first command exited 1 on the observed four-day target gap. It is an explicit quality
-observation assertion, NOT a claim that every day must meet a hard quota. Typed saved outputs
-are passed through actual `observe_generation`; current counts must equal captured counts.
-The ordinary replay succeeded and saved `replay-result.json` (now retained at the local
-path above); it does not invoke an LLM or
-reproduce a stochastic generation decision. The minimal one-date/one-activity probe reproduced
-count 1; adding a generic activity left 1; adding a distinct main identity yielded 2. Those
-counterfactuals test counting only, with no assertion of temporal/route feasibility. The 12
-existing diagnostics/supply-pipeline tests passed. No production fix was applied, so there is
-no red-to-green claim for the observed quality gap. Phases involving a fix are deferred under
-the user's diagnosis-only authorization.
-
-<a id="food-sparse-diagnosis-diagnosis--observed-facts"></a>
+Replay source: `tools/validation/packets/food-sparse-diagnosis/{replay.py,probes.py}`.
+Its output, `logs/food_sparse_diagnosis_20260927/replay-result.json`, describes the
+historical contracts, not validation under subsequent policy.
 
 ### Observed facts
 
@@ -215,8 +91,6 @@ Track. Unused Melbourne attractions: Docklands Sunset Point, Galatea Point, Webb
 Their existence disproves a raw selected-count shortage; it does not prove compatibility with
 any specific sparse date. No candidate-specific insertion feasibility replay was performed.
 
-<a id="food-sparse-diagnosis-diagnosis--ranked-hypotheses-and-checks"></a>
-
 ### Ranked hypotheses and checks
 
 1. Role-policy exclusion blocks named food choices. Prediction: supported food judgments exist,
@@ -230,8 +104,6 @@ any specific sparse date. No candidate-specific insertion feasibility replay was
 4. Interpretation loss or exhausted acquisition is the primary cause. Prediction: food missing
    from normalized requirements or no adequate selected capacity. Contradicted for loss and
    raw count capacity. Specific date/route/opening limitations remain possible.
-
-<a id="food-sparse-diagnosis-diagnosis--root-cause-versus-specification"></a>
 
 ### Root cause versus specification
 
@@ -255,37 +127,20 @@ Relevant sources: `backend/app/services/planning_supply_pipeline.py`,
 `backend/app/schemas/poi_semantics.py`, `backend/app/services/poi_semantics_prompts.py`,
 `backend/app/versions/v1/prompts.py`, `backend/app/policies/generation_policy.py`,
 `backend/app/policies/generation_diagnostics.py`, `backend/app/policies/poi_semantic_output.py`;
-contracts: `docs/shared_poi_semantics_plan.md`, `docs/shared_itinerary_output.md`.
+current contract navigation:
+[requirements/evidence](../../0002-requirements-evidence.md) and
+[itinerary/transport](../../0003-itinerary-transport.md).
 
-<a id="food-sparse-diagnosis-diagnosis--minimum-next-proposal-and-tdd-points"></a>
+### Deferred improvement options
 
-### Minimum next proposal and TDD points
-
-No mandatory production correction is justified solely by these samples. Prefer a small shared
-first-generation guidance/projection improvement, subject to a new approved Spec:
-
-- Expose uncovered continuing preference evidence as a factual limitation, without counting it
-  as a mandatory visit, declaring it satisfied, or conflating it with policy_completion.
-- Clarify that an expressed food interest may receive a transparent generic self-directed stop
-  when named support is unavailable; it remains optional, does not count toward main coverage,
-  and must not invent venues, prices or proof of fulfillment.
-- Ask the existing first generation to consider unused eligible candidates across sparse dates
-  and state supported reasons for shortfalls. Keep relaxed pace and feasibility authoritative.
-  No extra model call, automatic V1 Repair, case/date hardcoding or new restaurant exception.
-
-This can improve transparency and model guidance, not guarantee richer output. If the product
-requires evidence-linked named restaurants, define a separate non-main support role/ledger and
-its routing, costs and output semantics first; simply admitting restaurants as main POIs would
-violate the current rule. That larger option is not implementation-authorized here.
-
-TDD for an approved small change: use synthetic mixed-interest contracts (not city strings) to
-verify supported-but-ineligible food remains excluded and its limitation survives projection;
-continuing preferences never become mandatory counts; generic stops cannot clear quantity or
-claim verified food fulfillment; supplied unused candidates and explicit pace/uncertainty reach
-the prompt; V0-V3 keep their existing independent execution and V1/V2 gain no Repair call.
-Offline contract tests cannot prove the new prompt improves actual stochastic selection.
-
-<a id="food-sparse-diagnosis-diagnosis--budget-comparison-and-missing-evidence"></a>
+No mandatory fix was justified by these samples. The proposed minimum was shared
+first-generation guidance exposing unsupported continuing preferences and asking
+for supported reasons for sparse output. Generic food stops would remain optional,
+unverified and outside primary coverage; V1/V2 would gain no Repair. Evidence-backed
+named restaurants would need a separate non-main support role/ledger rather than
+admission as primary attractions. These options were deferred, not implemented or
+shown to improve stochastic generation. Offline tests could verify retained
+permissions and projection, but not live efficacy.
 
 ### Budget comparison and missing evidence
 
@@ -306,15 +161,11 @@ original capture files are not modified; local replay output contains only selec
 
 <a id="v0-transport-nearby-assessment"></a>
 
-<a id="v0-transport-nearby-assessment--v0-transport-and-nearby-acceptance"></a>
-
 ## V0 transport and Nearby acceptance
 
 Date: 2026-09-28, Australia/Sydney. Status: Passed for this bounded implementation check.
 Frozen live base: e68d8e6a4297d50a98fcacb3241d392781dec022 plus the source hashes in
 logs/v0_transport_nearby_20260928/manifest.json. No extra attempt is authorized.
-
-<a id="v0-transport-nearby-assessment--observed-result"></a>
 
 ### Observed result
 
@@ -340,16 +191,9 @@ improvement. V1/V2 Nearby behavior remains unchanged.
 The original 16 activities were 15 main visits and one generic activity, as confirmed
 by the executor's role-aware comparison. All 28 new scheduled costs remain unknown.
 The executor's report.md and faithful itinerary.md are saved in the evidence directory;
-the final handoff confirmed no retry, code edit, other-version run or commit there.
-
-<a id="v0-transport-nearby-assessment--checks-and-limits"></a>
+no live retry or other-version run followed.
 
 ### Checks and limits
-
-Standards: zero findings. Spec: zero findings. Combined relevant regression: 176 passed
-in 11.27s; Ruff passed. Earlier prompt-fixture and launcher-mock issues were test-only,
-corrected and retested as documented in the shared output record and plan. No production
-fixes were needed after review or live execution.
 
 This is one prompt adherence check, not verified venue access, travel duration,
 proximity, cost, enjoyment, a benchmark, or a freeze. V0 has no injected trace or usage
@@ -357,20 +201,10 @@ capture. The 10 MB capture change has offline validation; this V0 case does not 
 V3 trace serialization. The old four-version batch and its separately authorized blind
 review remain historical and unchanged.
 
-The user authorized two logical local commits: capture threshold with documentation;
-V0 prompt/output-preservation test, revalidation tooling/input and direct documentation.
-Exclude unrelated dirty files, secrets, ignored evidence and archives. No push or merge.
-
-### Preparation validation chronology
-
-Standards review: zero findings. Spec review: zero findings. Relevant combined tests:
-176 passed in 11.27s, including observability/config/V3 wiring, V0, V1 references, V2,
-Nearby/output roles/DTOs and the four launcher gates. Ruff passed. The first launcher
-test run accidentally intercepted its Git HEAD subprocess with the fake planning
-process; the test fixture was corrected to supply a fixed offline HEAD. All four
-launcher tests then passed, followed by the combined selection. No production fix
-or live retry resulted from this test-only correction. Preparation and a separate
-preflight check passed without external requests.
+Preparation validation passed 176 combined tests in 11.27 seconds, covering
+observability/config/V3 wiring, V0, V1 references, V2, Nearby/roles/DTOs and four
+launcher gates; Ruff and both independent reviews passed. These are preparation
+checks, distinct from this one live prompt-adherence observation.
 
 Historical execution specification: [Issue #39](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/39).
 
@@ -381,7 +215,7 @@ Historical execution specification: [Issue #39](https://github.com/rplalala/Reli
 Date: 2026-10-07, Australia/Sydney. Outcome: stopped, not passed. Source revision:
 `c2750d57b7b2f8e8c3ee6641bb7cd81edf3755c9`. Production code was unchanged; an
 ignored one-use execution helper applied transport/token limits to the existing V0
-runner. The unrelated unstaged `.gitignore` addition `.archify/` was preserved.
+runner.
 The user authorized prepared smoke execution without another approval. The parent
 prepared and assessed this run; a current-session execution child used
 `gpt-6.1-sol` with `medium` effort and executed only the frozen handoff.
@@ -431,9 +265,7 @@ and `execution/{execution.json,request-1.json,response-1.bin,capture/}`. Origina
 response SHA256: `cdc2e2b18bd7312a011cf8c121ed6971b4602d2ec1f24dc4b62b7ec4f64266b5`.
 The assessment verified all 206 frozen source/input files, the helper/first-wire/input
 hashes, 146 protected original files and seven earlier frozen Sydney preparation
-files. The first sandboxed replay produced no result before it was interrupted;
-the same network-blocked replay then passed outside the sandbox. Neither assessment
-attempt made a network request or changed the original receipts or provider bytes.
+files. Neither offline replay nor assessment changed the original receipts or provider bytes.
 
 No `result.json`, accepted itinerary, identity snapshot, route evidence, final score
 or four-version acceptance result exists. No production fix was made; the prior
@@ -441,7 +273,6 @@ or four-version acceptance result exists. No production fix was made; the prior
 not this live result. The consumed execution directory remains one-use. The parent's
 initial suggestion to soften the daily count or add hard-count support was superseded
 by the user's boundary clarification below; it grants no implementation authority.
-No formal benchmark, version freeze, tracker mutation, push, PR or merge occurred.
 
 ### User clarification: density scoring is not a generation quota
 
@@ -452,11 +283,11 @@ independent scoring table. The model faithfully extracting that hard wording doe
 not justify a shared-input feature fix or reinterpret it as the user's requirement.
 The preparation error is separate from the observed, contract-consistent gate stop.
 
-The corrected next-step recommendation is to omit the added daily count entirely
-from a new smoke input, keeping the natural relaxed-pace preference. Replacing it
-with a suggested count would still steer generation. Preserve this consumed input,
-response and receipt; do not rewrite history or use evaluator scores to select a
-replacement output. No new input or paid execution was performed by this correction.
+The correction removed the added daily count from the separately prepared natural
+input below, keeping the relaxed-pace preference without a suggested count. The
+consumed counted input, response and receipt were preserved; evaluator scores were
+not used to select a replacement output. The clarification itself involved no new
+input execution or paid call.
 
 Current code already shares a soft first-generation target of 2-5 main POIs; it is
 explicitly not an unconditional quota or hard user requirement. V3 alone has internal
@@ -470,14 +301,13 @@ an uncontaminated benchmark or authorize formal comparison.
 
 ## Sydney V0 natural-input generation smoke - 2026-10-07
 
-Date: 2026-10-07, Australia/Sydney. Outcome: generation completed; independent
-evaluator acceptance remains pending. The user approved starting the corrected
+Date: 2026-10-07, Australia/Sydney. Generation completed; independent evaluator
+acceptance had not yet occurred at this checkpoint. The user approved the corrected
 preparation/execution after clarifying that daily density scoring must not supply
 generation quotas. Input preparation commit: `3ae6a070ae6ab7134906720e4ff1be6cb2c7214b`.
 Only the new [natural request](../../../tools/validation/packets/sydney-v0-route-smoke/request-natural.json)
 and evaluator usage documentation changed at that revision. Production V0-V3,
 prompts, shared requirements policy, Repair and score formulas were unchanged.
-The unrelated unstaged `.gitignore` addition `.archify/` was preserved.
 
 The new input removes only `with exactly two primary sightseeing visits per day`
 from the earlier preference text. Four days, dates October 14-17, two travelers,
@@ -565,8 +395,7 @@ This one-use execution plan is consumed. Independent identity candidate acquisit
 opening/route evidence, applicable reviewed RequirementSpec and final scoring still
 need preparation against this actual original output. The earlier eight-venue/four-leg
 scenario is not a source of replacement output or permission to drop difficult claims.
-No independent API sends, V1-V3 live execution, formal comparison, version freeze,
-tracker mutation, push, PR or merge occurred.
+No independent API sends or V1-V3 live execution occurred in this case.
 
 <a id="sydney-v1-v3-generation-execution-2026-10-08"></a>
 
@@ -574,8 +403,7 @@ tracker mutation, push, PR or merge occurred.
 
 Date: 2026-10-08, Australia/Sydney. Status: V1 and V2 original generation completed;
 execution stopped after a V2 RAG connection timeout, before V3. Source revision:
-`12a56de7b9f7d0bd4c24951f7273016ac62aa845`. The unrelated unstaged `.gitignore`
-change was preserved. No production code, configuration, prompts or limits changed.
+`12a56de7b9f7d0bd4c24951f7273016ac62aa845`. No production code, configuration, prompts or limits changed.
 
 ### Approved execution and admission
 
@@ -665,15 +493,8 @@ was performed. The V3 output directory remains absent. Restoring RAG prerequisit
 refreshing the execution package and any new paid attempt require a separate approved
 scope; the consumed V2 invocation cannot be silently reused.
 
-Local assessment initially encountered null trace payload and empty catalog assumptions;
-the checks were corrected offline. The parent's initial policy check also conflated a
-canonical configuration digest with the serialized snapshot file digest. Checking the
-canonical configuration and its separate provenance file hash resolved that false alarm.
-Original evidence and the failed assessment receipt were preserved; none of these local
-inspection corrections sent provider requests or changed implementation. Final offline
-source/dependency/date checks passed; the parent V2 assessment records the RAG stop.
-No backend suite was rerun for this execution-only task; prior implementation validation
-remains scoped to its recorded revision, rather than being represented as a new live gate.
+No backend suite was rerun for this execution-only task; prior implementation
+validation remains scoped to its recorded revision, rather than being a new live gate.
 
 Private historical evidence identifiers, not published dependencies:
 `artifacts/sydney-four-version-live-20261008-r1/{v1,v2}` and
@@ -682,11 +503,10 @@ authorization receipt, original consoles/process receipts, child assessments, pa
 assessments and `parent-live-summary.json`. Each version retains original result,
 usage, RAW trace, credential-filtered HTTP, mechanism, cost report, index and provenance.
 
-This is bounded generation development evidence. V2 genuine retrieval and V3 generation
-remain unfulfilled; producer completion, final-source review bindings, changed-intake
-V0 independent identity and exact independent final-evidence planning remain pending.
-No independent evaluator request, total score, qualified four-version intake, formal
-comparison, version freeze, tracker mutation, push, PR or merge occurred.
+This stopped package was bounded generation development evidence. V2 genuine retrieval
+and V3 generation had not completed; producer completion, final-source review bindings,
+changed-intake V0 independent identity and independent final-evidence planning were pending.
+No independent evaluator request, total score or qualified four-version intake followed this stopped package.
 
 ### Subsequent host connectivity diagnosis
 
@@ -721,7 +541,7 @@ after the host connectivity diagnosis. The refreshed one-use package authorized 
 new V2 invocation, assessment, then one V3 invocation on the host. V0, completed V1
 and the earlier degraded V2 remained unchanged; the new V2 was explicitly authorized
 after the stop, rather than an automatic retry. Production code, configuration,
-prompts and limits were unchanged; the unrelated `.gitignore` modification was preserved.
+prompts and limits were unchanged.
 
 The package froze 286 files, checked six dependency versions and the actual Sydney
 date, and recorded hashes for 541 prior original files. Offline V2/V3 CLI preparation
@@ -758,10 +578,8 @@ the refresh did not expand that total. No independent evaluator call was authori
 
 Both embedding batches reported two input tokens; embedding output/cache fields were
 not reported and were not relabelled as observed zero. Chat token totals and embedding
-input are distinct observations. Cache-ledger hits and the framework metric also remain
-separate instrumentation scopes. V2's initial read-only aggregation assumed an embedding
-cache field existed; correcting that local inspection preserved absent fields and made
-no extra request or original-evidence change.
+input are distinct observations. Cache-ledger hits and the framework metric remain
+separate instrumentation scopes.
 
 RAG runtime connection, compatibility, embedding, capture and SQL stages all completed.
 Both discovery reports were `partial` because bounded candidate identity resolution
@@ -816,8 +634,9 @@ Raw provider/model data and credentials remain untracked. No production code cha
 so no new backend suite is claimed; checks covered runtime compatibility, actual
 execution, evidence lineage, vector/wire consistency and documentation.
 
-All four versions now have linked original generation material. This binding does not
-qualify a four-version evaluator intake, attest producer/final-source review completion,
-supply changed-intake V0 independent identity or establish a final score. Exact independent
-final-evidence planning remains pending. No formal comparison, version freeze, tracker
-mutation, push, PR or merge occurred.
+At this checkpoint, all four versions had linked original generation material. The
+binding alone did not qualify an evaluator intake, attest producer/final-source review
+completion, supply changed-intake V0 independent identity or establish a final score.
+Subsequent material qualification and evaluation are documented in the
+[Sydney evaluation history](../evaluation/intake-identity-usage.md#sydney-material-qualification-and-four-final-evaluation);
+those later results do not turn this generation binding into an evaluation receipt.

@@ -8,21 +8,6 @@ implemented/deferred scope. This file owns preparation wire and provenance; scor
 live in the related topic contracts.
 
 <a id="rtpeval-intake-projection-contract"></a>
-<a id="rtpeval-intake-projection-contract--batch-intake-and-independent-projection-contract"></a>
-<a id="rtpeval-intake-projection-contract--scope-and-inspected-facts"></a>
-<a id="rtpeval-intake-projection-contract--intake-result-and-parsing-boundary"></a>
-<a id="rtpeval-intake-projection-contract--stable-source-identity-and-reader-separation"></a>
-<a id="rtpeval-intake-projection-contract--time-occupancy-and-display-consequences"></a>
-<a id="rtpeval-intake-projection-contract--reason-categories-and-future-acceptance-examples"></a>
-<a id="rtpeval-intake-projection-contract--closure-and-remaining-ownership"></a>
-<a id="rtpeval-intake-projection-contract--implemented-preparation-interface--2026-09-29"></a>
-<a id="rtpeval-intake-projection-contract--follow-up-correction-boundary---2026-09-30"></a>
-<a id="batch-intake-and-independent-projection-contract"></a>
-<a id="intake-result-and-parsing-boundary"></a>
-<a id="stable-source-identity-and-reader-separation"></a>
-
-<a id="intake"></a>
-
 ## Intake and stable projection
 
 Accept one explicitly selected batch. Emit material_diagnostics, inventory, projection_diagnostics and track_availability. A material error returns needs_material_correction for the submitted batch; do not silently evaluate a smaller cohort. Projection uncertainty does not revoke benchmark qualification. No producer runner, validator, requirement interpreter or workflow-completion check is invoked.
@@ -38,29 +23,6 @@ Representable content issues remain diagnostic observations: date gaps, empty ac
 A source reference is (batch_id, group_id, run_id, artifact_sha256, JSON pointer). Derived record IDs use this tuple and projection-contract version, not canonical place ID. Preserve original array positions, declared day, original activity ID and raw values. Sorting makes a separate view; it never changes source pointers. Same activity IDs in draft/final or two runs do not imply correspondence.
 
 Quality view exposes itinerary fields, reviewed requirements and later independent records only. Planner requirements, supply, RAG origins, validation findings, cost projections, route diagnostics and Repair records remain outside it. Preserve Transfer mode, endpoint/time/duration claims as claims; validation_state, unknowns, evidence_refs, mode_source and calculation_basis cannot decide quality. Mechanism readers access their own data channel. Human rendering must strip private source/version/provider identifiers while retaining meaningful itinerary text and uncertainty.
-
-<a id="rtpeval-ticket-01-03-simplification"></a>
-<a id="rtpeval-intake-projection-contract--independent-activity-classification"></a>
-<a id="rtpeval-intake-projection-contract--order-and-candidate-transitions"></a>
-<a id="rtpeval-intake-projection-contract--transport-correspondence-association-is-not-factual-agreement"></a>
-<a id="rtpeval-intake-projection-contract--superseding-transport-source-decision---2026-09-30"></a>
-<a id="rtpeval-intake-projection-contract--transport-responsibility-correction---2026-09-30"></a>
-<a id="rtpeval-ticket-01-03-simplification--tickets-0103-structural-claims-and-ordinary-output-compatibility"></a>
-<a id="rtpeval-ticket-01-03-simplification--authority-and-scope"></a>
-<a id="rtpeval-ticket-01-03-simplification--observed-facts-and-limits"></a>
-<a id="rtpeval-ticket-01-03-simplification--1-v0-occurrence-association"></a>
-<a id="rtpeval-ticket-01-03-simplification--2-structural-role-and-place-claims"></a>
-<a id="rtpeval-ticket-01-03-simplification--4-accepted-cost-boundary"></a>
-<a id="rtpeval-ticket-01-03-simplification--5-acceptance-examples-for-later-implementation"></a>
-<a id="rtpeval-ticket-01-03-simplification--documentation-validation"></a>
-<a id="rtpeval-ticket-01-03-simplification--subsequent-implementation-approval-and-checkpoint"></a>
-<a id="independent-activity-classification"></a>
-<a id="order-and-candidate-transitions"></a>
-<a id="transport-correspondence-association-is-not-factual-agreement"></a>
-<a id="superseding-transport-source-decision---2026-09-30"></a>
-<a id="transport-responsibility-correction---2026-09-30"></a>
-<a id="tickets-0103-structural-claims-and-ordinary-output-compatibility"></a>
-<a id="2-structural-role-and-place-claims"></a>
 
 <a id="claims"></a>
 
@@ -149,31 +111,6 @@ Replay derived identity/evidence/report preparations when classification changes
 original source artifacts and historical reports. The density table remains
 `rtpeval_daily_density_2`.
 
-<a id="rtpeval-identity-contract"></a>
-<a id="rtpeval-identity-implementation-contract"></a>
-<a id="rtpeval-identity-contract--independent-identity-resolution-contract--draft"></a>
-<a id="rtpeval-identity-contract--purpose-and-boundary"></a>
-<a id="rtpeval-identity-contract--code-facts"></a>
-<a id="rtpeval-identity-contract--inputs-and-preserved-records"></a>
-<a id="rtpeval-identity-contract--common-resolution-process"></a>
-<a id="rtpeval-identity-contract--downstream-behavior"></a>
-<a id="rtpeval-identity-contract--accepted-idname-conflict-handling"></a>
-<a id="rtpeval-identity-contract--simple-examples"></a>
-<a id="rtpeval-identity-contract--future-verification"></a>
-<a id="rtpeval-identity-contract--ticket-03-specialization--2026-09-29"></a>
-<a id="rtpeval-identity-implementation-contract--ticket-03-offline-identity-implementation-contract"></a>
-<a id="rtpeval-identity-implementation-contract--scope-and-source-boundary"></a>
-<a id="rtpeval-identity-implementation-contract--offline-wire-inputs"></a>
-<a id="rtpeval-identity-implementation-contract--strict-automatic-acceptance"></a>
-<a id="rtpeval-identity-implementation-contract--review-outcome-and-reporting"></a>
-<a id="rtpeval-identity-implementation-contract--verification-and-limits"></a>
-<a id="rtpeval-identity-implementation-contract--ticket-05-subject-scope-extension--specification-only-2026-10-01"></a>
-<a id="rtpeval-ticket-01-03-simplification--3-independent-structured-address-evidence"></a>
-<a id="accepted-idname-conflict-handling"></a>
-<a id="offline-wire-inputs"></a>
-<a id="strict-automatic-acceptance"></a>
-<a id="3-independent-structured-address-evidence"></a>
-
 <a id="identity"></a>
 
 ## Independent identity and adjudication
@@ -238,13 +175,15 @@ conflicting candidate observations or unverifiable provenance leave association 
 Candidate presence/rank alone never establishes eligibility. An `incorrect_claim` address
 remains grounding FAIL while a trustworthy association permits independent physical checks.
 
-Only snapshot, coordinate, opening and route consumers use this physical association.
+Snapshot, coordinate, opening and route consumers use this physical association.
 Opening checks the associated API venue's hours against the original visit interval;
 routes use its API coordinates with the original order, mode, departure and reserved duration.
 WALK, DRIVE and TRANSIT remain their original modes. No original output is repaired.
-Requirement targets, fulfillment/counting, canonical repetition and venue correspondence retain
-their existing canonical-identity rules; a downstream PASS never cancels grounding FAIL
-or proves requirement fulfillment. The report policy versions this change; the unchanged
+Requirement occurrence matching also uses verified associations under the
+[requirement count contract](0003-requirement-schedule.md#count-bounds-and-completeness),
+against each version's adopted target identity. Target grounding, count/date/time conditions,
+canonical repetition and paired venue correspondence remain separately applicable.
+A downstream PASS never cancels grounding FAIL or proves full requirement fulfillment. The report policy versions this change; the unchanged
 V0 correspondence packet remains `v0_identity_correspondence_3` and existing validated
 material can be consumed offline without another model request.
 
@@ -350,7 +289,7 @@ The new V0 instructions/schema/policy produce new packet and request hashes; cur
 requires that exact packet and response provenance. The historical uniform schema/instructions
 remain unchanged under explicit replay. Old V0 policy-1 packets and the rejected #73 envelope
 cannot be relabeled as accepted current reports. Raw responses and consumed execution evidence
-are retained unchanged. #78/#79 remain separate scopes; this contract grants no new call.
+are retained unchanged. This contract grants no new call.
 
 Fresh preparation under #77 uses `rtpeval_identity_smoke_preparation_2`, recomputes the
 current V0 primary population, and freezes original/candidate material, implementation,
@@ -386,86 +325,6 @@ Status is `complete` when all identity verdicts are decisive (including FAIL), o
 Explicit historical replay preserves the old policies and evidence, without relabeling
 them as current programmatic reports. New implementation does not rewrite original files
 or grant paid execution, publication, formal-run or freeze authorization.
-
-<a id="uniform-llm-identity"></a>
-<a id="current-uniform-llm-identity-judgment"></a>
-
-### Historical uniform LLM identity judgment
-
-Accepted 2026-10-05 under [Issue #72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72).
-Explicit `resolve_llm_identities(intake, evidence, *, model_result=None)` uses
-`association_policy_version=llm_identity_judgment_2` for every V0-V3 primary visit,
-relevant REQUIRED/EXCLUDED/fixed-time subject, and available V3 optional projection.
-High-impact metadata remains descriptive. No reference requires human identity confirmation
-or sampling. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
-
-`prepare_identity_judgment(intake, evidence, *, model, historical=True)` returns an immutable
-`rtpeval_identity_judgment_packet_1` with the complete source-bound request and short-ID map.
-Cases contain original name/title, destination, location and claimed ID, independent
-candidates, supplied provider observations and source references. Equal IDs are deduplicated
-for selection while conflicting observations remain visible. The caller supplies an explicit
-model. The request uses no tools and a strict `IdentityJudgments` output schema. Preparing a
-packet does not execute a model/provider. Planner claims and provider rank are not evidence.
-
-Supply a saved `rtpeval_identity_model_result_1` envelope with `packet`, offset-aware
-`requested_at`/`retrieved_at`, `response` and `response_sha256`. Its packet must exactly equal
-fresh preparation for the current intake/evidence/model. The response must be completed,
-have a nonempty ID and matching model, and have exactly one assistant `output_text` in
-message/reasoning output; tool output is rejected. The response digest is
-`canonical_digest(response)`. These supplied receipts support reproducibility, not
-cryptographic proof of a send or model accuracy. New paid collection requires authorization.
-
-Every decision contains `reference_id`, `decision` (`match`, `unknown`, `no_supported_match`),
-`candidate_id`, nonempty `rationale`, `evidence_fields`, `address_assessment` and
-`destination_assessment`. Exact short-ID restoration requires complete unique reference
-coverage and per-reference candidate ownership. Address assessments are `equivalent`,
-`different_precision`, `incorrect_claim`, `different_place`, `unknown` and `not_supplied`.
-Destination assessments are `consistent`, `contradictory` and `unknown`. Only a `match` with
-a consistent destination and an `equivalent`, `different_precision` or `not_supplied`
-address assessment adopts. `not_supplied` must agree with the absence of an original location.
-Under the user's subsequent 2026-10-05 clarification, both `incorrect_claim` (recognizable
-intended venue, wrong submitted address) and `different_place` are delivered-claim failures.
-They receive `grounding_verdict=FAIL`, an unresolved identity and a null canonical ID;
-recognizing an intended venue must not provide corrected addresses, coordinates or downstream
-route endpoints. Evidence insufficiency remains `UNKNOWN`. The same rule applies to V0-V3,
-without presuming that any particular version must fail. Geographic meaning is judged by the
-LLM; structural checks cannot guarantee semantic correctness. Opening/route evidence is still
-independently needed. Score arithmetic, denominators and planner outputs are unchanged.
-
-Every match cites `claim.place_name`, `claim.destination`, `candidate.display_name` and
-`candidate.formatted_address`; supplied location/ID additionally require `claim.location`
-and `claim.claimed_place_id`. Optional supported paths are `claim.original_title`,
-`candidate.address_components` and `candidate.observations`. Every address failure additionally
-requires original name, destination and location plus independent candidate name/address
-citations. A failure without a selected candidate instead cites nonempty `case.candidates`,
-the complete supplied independent set. Unsupported or insufficient failure support rejects
-the import; it does not establish FAIL. Unsupported/empty citations,
-malformed cited components (including non-string optional `shortText`), foreign/partial
-decisions, stale packets and response-hash
-changes reject material without partial adoption. Unknown/no-match and contradictory
-assessments retain unresolved identities and their denominators. A missing result never
-enables automatic name matching or a human fallback.
-
-Reports retain `grounding_verdict` (`PASS`, `FAIL`, `UNKNOWN`), original claims, model judgments
-and saved provenance; adopted records retain `decision_route=llm_judgment`. Claimed-ID
-association can remain diagnostic against a selected candidate without adopting that ID.
-`review_queue` and review histories are empty; `review_hash` and `audit_plan_hash`
-are null and no human audit is selected. `judgment_queue` describes unresolved references,
-not a retry instruction or human workload, and contains only UNKNOWN references. Confirmed
-address failures are completed judgments, never automatic repair/retry requests. Status is
-`complete` when no UNKNOWN references remain, otherwise `needs_model_judgment`; complete
-processing can include FAIL. Consumers replay `identity_llm_replay` against the current
-intake and require exact report equality before coordinates, evidence, schedule, quality
-and routes. Substituting an earlier policy stamp cannot bypass replay. Policy 1 packets/reports
-cannot establish current-policy judgments; historical files remain unchanged and require their
-original code revision for reproduction. V0 route-request packages
-also bind the original snapshot evidence. Schema/packet fingerprints identify this policy.
-
-Current `resolve_v0_identities(intake, bundle_path, *, model_result=None)` verifies the
-source-linked V0 material before applying version-specific dispatch. The historical proposal
-response is not reinterpreted as a new-schema judgment. All identity CLIs support
-`--prepare --model MODEL` and `--model-result FILE` without live execution; add
-`--historical-llm` only for an explicitly selected uniform historical replay.
 
 ### Complete V0 case-set binding
 
@@ -520,6 +379,12 @@ acquisition and evidence completion, retaining every in-scope UNKNOWN's check/re
 and a separate acquisition-failure inventory. Excluded optional/human/controlled/official
 tracks are not acquired-but-UNKNOWN units. Costs cover evaluator-only observed sends and
 reported tokens against dated references; unavailable actual billing is null, never zero.
+
+## Historical identity replay and supported legacy formats
+
+These paths reproduce explicitly selected older policies. They do not define the
+default version-specific identity workflow above. Saved facts, decisions and wire
+formats retain their original policy; legacy selection does not certify current acceptance.
 
 ### Explicit historical replay
 
@@ -660,16 +525,82 @@ Score/mask formulas are unchanged. Identity eligibility proves neither coordinat
 route feasibility. See the [CLI guide](../../backend/evaluation/README.md#intake-and-identity)
 and [dated acceptance](../records/evaluation/routes.md#v0-identity-adoption-acceptance-2026-10-05).
 
-<a id="rtpeval-snapshot-contract"></a>
-<a id="rtpeval-snapshot-contract--ticket-04-snapshot-implementation-contract"></a>
-<a id="rtpeval-snapshot-contract--public-seams"></a>
-<a id="rtpeval-snapshot-contract--acquisition-and-persistence"></a>
-<a id="rtpeval-snapshot-contract--ticket-03-bridge-and-response-interpretation"></a>
-<a id="rtpeval-snapshot-contract--validation-and-limits"></a>
-<a id="rtpeval-snapshot-contract--concrete-route-context-wire"></a>
-<a id="acquisition-and-persistence"></a>
-<a id="ticket-03-bridge-and-response-interpretation"></a>
-<a id="concrete-route-context-wire"></a>
+### Historical uniform LLM identity judgment
+
+Accepted 2026-10-05 under [Issue #72](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/72).
+Explicit `resolve_llm_identities(intake, evidence, *, model_result=None)` uses
+`association_policy_version=llm_identity_judgment_2` for every V0-V3 primary visit,
+relevant REQUIRED/EXCLUDED/fixed-time subject, and available V3 optional projection.
+High-impact metadata remains descriptive. No reference requires human identity confirmation
+or sampling. Planner behavior, score formulas and unrelated human quality tasks are unchanged.
+
+`prepare_identity_judgment(intake, evidence, *, model, historical=True)` returns an immutable
+`rtpeval_identity_judgment_packet_1` with the complete source-bound request and short-ID map.
+Cases contain original name/title, destination, location and claimed ID, independent
+candidates, supplied provider observations and source references. Equal IDs are deduplicated
+for selection while conflicting observations remain visible. The caller supplies an explicit
+model. The request uses no tools and a strict `IdentityJudgments` output schema. Preparing a
+packet does not execute a model/provider. Planner claims and provider rank are not evidence.
+
+Supply a saved `rtpeval_identity_model_result_1` envelope with `packet`, offset-aware
+`requested_at`/`retrieved_at`, `response` and `response_sha256`. Its packet must exactly equal
+fresh preparation for the current intake/evidence/model. The response must be completed,
+have a nonempty ID and matching model, and have exactly one assistant `output_text` in
+message/reasoning output; tool output is rejected. The response digest is
+`canonical_digest(response)`. These supplied receipts support reproducibility, not
+cryptographic proof of a send or model accuracy. New paid collection requires authorization.
+
+Every decision contains `reference_id`, `decision` (`match`, `unknown`, `no_supported_match`),
+`candidate_id`, nonempty `rationale`, `evidence_fields`, `address_assessment` and
+`destination_assessment`. Exact short-ID restoration requires complete unique reference
+coverage and per-reference candidate ownership. Address assessments are `equivalent`,
+`different_precision`, `incorrect_claim`, `different_place`, `unknown` and `not_supplied`.
+Destination assessments are `consistent`, `contradictory` and `unknown`. Only a `match` with
+a consistent destination and an `equivalent`, `different_precision` or `not_supplied`
+address assessment adopts. `not_supplied` must agree with the absence of an original location.
+Under the user's subsequent 2026-10-05 clarification, both `incorrect_claim` (recognizable
+intended venue, wrong submitted address) and `different_place` are delivered-claim failures.
+They receive `grounding_verdict=FAIL`, an unresolved identity and a null canonical ID;
+recognizing an intended venue must not provide corrected addresses, coordinates or downstream
+route endpoints. Evidence insufficiency remains `UNKNOWN`. The same rule applies to V0-V3,
+without presuming that any particular version must fail. Geographic meaning is judged by the
+LLM; structural checks cannot guarantee semantic correctness. Opening/route evidence is still
+independently needed. Score arithmetic, denominators and planner outputs are unchanged.
+
+Every match cites `claim.place_name`, `claim.destination`, `candidate.display_name` and
+`candidate.formatted_address`; supplied location/ID additionally require `claim.location`
+and `claim.claimed_place_id`. Optional supported paths are `claim.original_title`,
+`candidate.address_components` and `candidate.observations`. Every address failure additionally
+requires original name, destination and location plus independent candidate name/address
+citations. A failure without a selected candidate instead cites nonempty `case.candidates`,
+the complete supplied independent set. Unsupported or insufficient failure support rejects
+the import; it does not establish FAIL. Unsupported/empty citations,
+malformed cited components (including non-string optional `shortText`), foreign/partial
+decisions, stale packets and response-hash
+changes reject material without partial adoption. Unknown/no-match and contradictory
+assessments retain unresolved identities and their denominators. A missing result never
+enables automatic name matching or a human fallback.
+
+Reports retain `grounding_verdict` (`PASS`, `FAIL`, `UNKNOWN`), original claims, model judgments
+and saved provenance; adopted records retain `decision_route=llm_judgment`. Claimed-ID
+association can remain diagnostic against a selected candidate without adopting that ID.
+`review_queue` and review histories are empty; `review_hash` and `audit_plan_hash`
+are null and no human audit is selected. `judgment_queue` describes unresolved references,
+not a retry instruction or human workload, and contains only UNKNOWN references. Confirmed
+address failures are completed judgments, never automatic repair/retry requests. Status is
+`complete` when no UNKNOWN references remain, otherwise `needs_model_judgment`; complete
+processing can include FAIL. Consumers replay `identity_llm_replay` against the current
+intake and require exact report equality before coordinates, evidence, schedule, quality
+and routes. Substituting an earlier policy stamp cannot bypass replay. Policy 1 packets/reports
+cannot establish current-policy judgments; historical files remain unchanged and require their
+original code revision for reproduction. V0 route-request packages
+also bind the original snapshot evidence. Schema/packet fingerprints identify this policy.
+
+The V0 bundle resolver `resolve_v0_identities(intake, bundle_path, *, model_result=None)` verifies the
+source-linked V0 material before applying version-specific dispatch. The historical proposal
+response is not reinterpreted as a new-schema judgment. All identity CLIs support
+`--prepare --model MODEL` and `--model-result FILE` without live execution; add
+`--historical-llm` only for an explicitly selected uniform historical replay.
 
 <a id="snapshots"></a>
 
@@ -699,8 +630,9 @@ The snapshot is an evaluation-owned immutable collection interval, not a simulta
 
 `identity_evidence(snapshot)` creates the existing identity envelope with source-linked per-reference records, requested IDs/query/page size and actual raw search count. Malformed search candidates remain represented so Ticket 03 can block acceptance. Raw response files and hashes remain auditable via observation references. Details retain timezone/current/regular hours and coordinates in snapshot raw data for later tickets; no opening verdict is computed.
 
-The accepted [snapshot-coordinate bridge](0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03)
-reads linked raw identity-snapshot coordinates after canonical identity adoption. The identity
+The [snapshot-coordinate bridge](0004-opening-routes.md#accepted-snapshot-coordinate-extension-2026-10-03)
+reads linked raw identity-snapshot coordinates after verified physical association
+(or canonical adoption under explicitly historical policies). The identity
 wire remains unchanged; coordinate extraction preserves separate provenance and uncertainty.
 This removes duplicate preparation when existing evidence suffices, without live acquisition.
 
@@ -717,20 +649,6 @@ association policy. It does not normalize them into manufactured evidence. Query
 applicability belongs to [opening/routes](0004-opening-routes.md). Formal automatic execution
 supplies the Google client and per-run raw capture. Credentials and a new live execution
 allowance remain caller-owned.
-
-<a id="rtpeval-usage-capture-contract"></a>
-<a id="rtpeval-usage-capture-contract--ticket-02-usage-capture-and-resource-reporting-contract"></a>
-<a id="rtpeval-usage-capture-contract--checked-seams-and-ownership"></a>
-<a id="rtpeval-usage-capture-contract--events-and-meanings"></a>
-<a id="rtpeval-usage-capture-contract--envelope-and-missingness"></a>
-<a id="rtpeval-usage-capture-contract--researcher-report"></a>
-<a id="rtpeval-usage-capture-contract--verification-boundary"></a>
-<a id="rtpeval-usage-capture-contract--report-validation-follow-up---2026-09-30"></a>
-<a id="intake-identity-usage"></a>
-<a id="ticket-02-usage-capture-and-resource-reporting-contract"></a>
-<a id="events-and-meanings"></a>
-<a id="envelope-and-missingness"></a>
-<a id="researcher-report"></a>
 
 <a id="usage"></a>
 
@@ -766,42 +684,6 @@ Each selected group/version retains elapsed scope/outcome, complete comparable t
 
 Within-request comparisons give absolute difference and candidate/baseline ratio only for compatible namespace/outcome and, for latency, the same selected-invocation-through-cleanup boundary. Zero baselines have a difference but no ratio; missing observations remain unavailable. Descriptive medians include available counts and separate namespace/outcome/scope cohorts; the request rows remain available. There is no efficiency score, PASS threshold, inferential test, cost conversion or claim that lower usage is better quality.
 
-<a id="independent-identity-resolution-contract--draft"></a>
-<a id="purpose-and-boundary"></a>
-<a id="code-facts"></a>
-<a id="inputs-and-preserved-records"></a>
-<a id="common-resolution-process"></a>
-<a id="downstream-behavior"></a>
-<a id="simple-examples"></a>
-<a id="future-verification"></a>
-<a id="ticket-03-specialization--2026-09-29"></a>
-<a id="ticket-03-offline-identity-implementation-contract"></a>
-<a id="scope-and-source-boundary"></a>
-<a id="review-outcome-and-reporting"></a>
-<a id="verification-and-limits"></a>
-<a id="ticket-05-subject-scope-extension--specification-only-2026-10-01"></a>
-<a id="scope-and-inspected-facts"></a>
-<a id="time-occupancy-and-display-consequences"></a>
-<a id="reason-categories-and-future-acceptance-examples"></a>
-<a id="closure-and-remaining-ownership"></a>
-<a id="implemented-preparation-interface--2026-09-29"></a>
-<a id="follow-up-correction-boundary---2026-09-30"></a>
-<a id="ticket-04-snapshot-implementation-contract"></a>
-<a id="public-seams"></a>
-<a id="validation-and-limits"></a>
-<a id="authority-and-scope"></a>
-<a id="observed-facts-and-limits"></a>
-<a id="1-v0-occurrence-association"></a>
-<a id="4-accepted-cost-boundary"></a>
-<a id="5-acceptance-examples-for-later-implementation"></a>
-<a id="documentation-validation"></a>
-<a id="subsequent-implementation-approval-and-checkpoint"></a>
-<a id="checked-seams-and-ownership"></a>
-<a id="verification-boundary"></a>
-<a id="report-validation-follow-up---2026-09-30"></a>
-
-<a id="history"></a>
-
 ## Code, commands and acceptance
 
 Implementation owners: [intake](../../backend/evaluation/intake.py),
@@ -819,7 +701,7 @@ Earlier title-equivalence/equal-transport-authority restrictions are not current
 
 <a id="offline-cost-accounting"></a>
 
-## Offline cost accounting — accepted extension 2026-10-05
+## Offline cost accounting
 
 [Issue #59](https://github.com/rplalala/Reliable-Trip-Plan-Agent/issues/59) supplements
 completed usage Ticket 02. `build_cost_report` and `python -m
@@ -890,9 +772,7 @@ cache/service-tier details must be stated. The [package guide](../../backend/eva
 contains runnable import examples; dated acceptance belongs to the existing
 [usage record](../records/evaluation/intake-identity-usage.md#offline-cost-acceptance-2026-10-05).
 
-<a id="planner-usage-development-cli"></a>
-
-### Selected-version usage preparation and capture — 2026-10-08
+### Selected-version usage preparation and capture
 
 `backend.evaluation.tools.planner_usage_cli` prepares a one-use output directory with
 original input/configuration bytes, the effective runtime policy/digest, source revision,
@@ -940,7 +820,7 @@ a completed four-version batch. Runnable instructions belong to the
 
 <a id="planner-generation-evidence"></a>
 
-### Opt-in generation evidence — 2026-10-08
+### Opt-in generation evidence
 
 `--capture-evidence` records evidence intent during offline preparation and enables capture
 only with explicit execution. Existing mechanism observations, a RAW local run tracer,
@@ -991,7 +871,6 @@ Available local evidence is distinct from producer completion, independent sourc
 qualified four-version intake, quality PASS and actual billing. Storage limits are capture
 capacity, not a spending guard. Live dispatch still requires the prepared, explicitly
 approved [smoke handoff](../agents/smoke-tests.md), and performs no independent evaluation.
-
 
 ## Producer material handoff
 

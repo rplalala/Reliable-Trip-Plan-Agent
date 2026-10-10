@@ -80,16 +80,10 @@ from execution plans. Usage counters, actual HTTP sends, output tokens and bille
 are separate measurements. Missing evidence stays unknown. Opt-in captures and ignored
 raw artifacts support development diagnosis without becoming a fresh-clone dependency.
 
-Run checks proportionate to affected seams: shared core/schema changes require broader
-regression; version milestones require the full relevant suite. External ports use mocks
-or fixtures when practical. A live pilot has a specific approved plan, budget and owner;
-stored commands do not authorize another attempt. This documentation consolidation adds
-no live calls or executable change.
-
-Operational commands are in [guides/development.md](guides/development.md).
-Dated failure/correction/retest evidence belongs in [records](records/README.md),
-while GitHub Issues own task status and accepted implementation scope.
-
+Operational commands and verification entry points are in
+[the development guide](guides/development.md). Dated engineering evidence is indexed in
+[records](records/README.md); collaboration and testing rules belong to
+[AGENTS.md](../AGENTS.md).
 
 ## Product projection and optional introductions
 

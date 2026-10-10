@@ -1,21 +1,16 @@
-> Archived source snapshot, relocated 2026-10-03 from `docs/evaluation_readiness_audit.md`.
-> Current design is indexed in [docs/README.md](../../README.md).
-> Original Current/Next statements and historical defaults below are dated evidence,
-> not current system authority or renewed execution permission.
-
 # RTPEval evaluation readiness audit
 
 Status: **DESIGN AUDIT, NOT BENCHMARK FROZEN**. Audited 2026-09-28 against clean `HEAD` `8a435e2db0198e4fc8928b85e333b45b66c0c981`. This is a read-only code and contract review. No provider, model, database, or formal benchmark run was performed.
 
-## Decision and scope
+## Historical decision and scope
 
-The current checkpoint is suitable for specifying an independent evaluation module. It is not yet ready for formal held-out execution. V3 engineering was closed in the [V3 closeout](../v0-v3/v3-closeout.md), and subsequent shared/V0 work is recorded in [PROJECT.md](../../../PROJECT.md). No version or benchmark freeze follows from either record.
+The 2026-09-28 checkpoint was suitable for specifying an independent evaluation module. It was not ready for formal held-out execution. V3 engineering was closed in the [V3 closeout](../v0-v3/v3-closeout.md), and subsequent shared/V0 work is recorded in [PROJECT.md](../../../PROJECT.md). No version or benchmark freeze follows from either record.
 
 This audit covers the module's interfaces, source data, independence boundary, run capture, and changes since the [accepted research design](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/evaluator_design.md). It does not revisit the accepted overall research architecture or select benchmark cases.
 
 ## Readiness by boundary
 
-| Boundary | Current evidence | Readiness decision |
+| Boundary | Evidence at the audit checkpoint | Readiness decision then |
 | --- | --- | --- |
 | Common input | [`PlanningRequest`](../../../backend/app/schemas/request.py) has a shared versioned request, typed trip fields, optional preferences, and optional request ID. Date validity also depends on the runtime reference date and product window. | **Usable.** The collector must retain the complete materialized JSON and reference date. `structured_hash()` excludes preference text and is insufficient as the benchmark fingerprint. |
 | Common output | [`Itinerary`](../../../backend/app/schemas/itinerary.py) has dated activities, roles, optional place IDs, optional transfers, route diagnostics, and unscheduled references. All four runners return a `PlanningResult` subtype. | **Usable with an independent adapter.** Do not use planner diagnostics or transfer `validation_state` as evaluation answers. |
@@ -28,7 +23,7 @@ This audit covers the module's interfaces, source data, independence boundary, r
 | Usage and latency | V1–V3 budget/trace data are useful but best-effort and stage-specific; V0 has no symmetric trace. `budget.json` describes application counters and explicitly does not establish provider billing. | **Recording contract required.** Separate attempted calls, actual sends, cache hits, reported tokens, elapsed wall time, missing usage, and evaluation oracle cost. Preserve failure attempts. |
 | Benchmark and analysis | The [design](https://github.com/rplalala/Reliable-Trip-Plan-Agent/blob/a6aff13a00af35467b9c88ec2906d10a96095f04/docs/evaluator_design.md) specifies the accepted structure but leaves opening/route semantics, outcomes, identity, controlled fixtures, exact analysis, and optional repeats open. | **Not frozen.** Resolve and version these contracts before held-out results are exposed. |
 
-## Current-code changes affecting the specification
+## Changes considered at the audit checkpoint
 
 1. The V0 prompt now requests estimated same-day transport activities and optional Nearby suggestions. Treat transport activities as planner claims; compute independent route feasibility from the applicable place visits and oracle evidence. References remain unscheduled and outside primary quality denominators.
 2. Shared primary-visit semantics now distinguish valid POI roles, `minimum`/`exact` visit counts, dates, source-grounded category goals, and incomplete adopted outputs. The independent requirement specification must model supported obligations without copying the runtime interpreter's conclusions. Planner `policy_completion` is a product diagnostic, not the evaluator result.
@@ -52,4 +47,8 @@ Collect the four outputs of a matched request block before collecting the union 
 - Dimension subscores and an auxiliary reliability/constraint-compliance total are accepted as secondary presentation measures. Normalization, weights, missingness, coverage gates and sensitivity rules remain OPEN and must be frozen before use; the primary results stay multi-metric.
 - Analysis plan, held-out eligibility, complete artifact/cost capture gate, and optional 144/192-run decision. Development evidence, not held-out results, should inform the latter.
 
-The next deliverable is a draft module specification with explicit interfaces, failure behavior and acceptance checks. It remains a draft until the open evaluation rules and analysis plan are resolved and approved. The readiness audit neither authorizes implementation nor starts formal evaluation.
+The proposed next deliverable was an independently specified module. Later implementation
+and approved rule changes are indexed in the [current evaluation architecture](../../0006-independent-evaluation.md);
+this audit preserves the earlier gaps and intentions rather than asserting they remain
+unimplemented. Formal analysis, held-out selection and freeze decisions remain separate
+from engineering acceptance. No execution was performed by this audit.

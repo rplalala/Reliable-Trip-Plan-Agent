@@ -13,16 +13,6 @@ corpus. Provider-specific payloads are normalized by integration adapters before
 policies consume them. LangGraph expresses version orchestration rather than embedding
 vendor HTTP calls throughout graph nodes.
 
-| Layer | Owner and responsibility |
-| --- | --- |
-| User interaction | frontend/src: shared input, Product and Developer pages, streamed progress, presentation |
-| API | backend/app/api: Product/Developer/input-assistance endpoints, validation and streaming |
-| Application services | backend/app/services: request lifecycle, evidence acquisition and Product projection |
-| Orchestration | backend/app/versions: separate V0-V3 graph/config/runner paths |
-| Domain | schemas and policies: source-linked requirements, normalized evidence, itinerary and acceptance |
-| External boundaries | integrations and tripworld: model/provider clients, persistence and retrieval |
-| Independent evaluation | backend/evaluation: submitted-artifact evaluation, outside planner execution |
-
 ## Version mechanisms
 
 | Version | Mechanism | Independent command |
@@ -175,5 +165,6 @@ describe setup; acceptance records preserve actual executed test scope.
 - [Application boundaries](0007-application-operations.md)
 - [ADR: version isolation](adr/0001-version-isolation.md)
 
-Original design texts and their obsolete defaults are preserved under
-[historical records](records/README.md), not maintained as competing current designs.
+Consequential design changes and historical defaults are summarized in
+[historical records](records/README.md). Current definitions remain in their core
+contracts.

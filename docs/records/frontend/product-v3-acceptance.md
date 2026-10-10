@@ -2,11 +2,9 @@
 
 Historical development observations from September 2026; not a version freeze or benchmark.
 
-### Live acceptance attempt and client-lifecycle blocker
+## Live acceptance attempt and client-lifecycle blocker
 
-The local API (scripts/run_api.py with the existing environment) and React were started for a
-bounded browser acceptance attempt. Browser permission review initially timed out; the permitted
-single retry succeeded. Product input: Beijing, 2026-10-01 through 2026-10-03, two travelers,
+The bounded local API/browser acceptance used Product input: Beijing, 2026-10-01 through 2026-10-03, two travelers,
 2000 AUD, preferences "Local food and quiet mornings." Invalid reversed dates disabled submission;
 an invalid direct streaming request returned HTTP 422 at request-schema validation.
 
@@ -27,14 +25,13 @@ other, and a later adapter receives the already-closed transport. Request owners
 level is insufficient. Existing mocked dependency tests did not cover this real SDK behavior.
 No evidence of provider quota exhaustion was observed. The proposed fix is optional explicit HTTP
 client injection in the shared LLM adapter, used by the API to own independent transports while
-leaving research entry-point defaults unchanged. Implementation is paused for approval because
-backend/app/llm was explicitly excluded from changes. No workaround, cache-clearing patch or
-protected-file modification was applied.
+leaving research entry-point defaults unchanged. The adapter was outside the original change scope, so diagnosis preceded separate
+approval; the fix described below was not yet implemented at this first checkpoint.
 
 Full offline backend regression during this attempt: 1541 passed, 9 skipped. Passing offline tests
-does not override this live blocker. No commit, push or additional phase was started.
+does not override this live blocker.
 
-### Approved transport isolation fix and bounded live retest
+## Approved transport isolation fix and bounded live retest
 
 Following explicit approval, the shared Azure adapter gained optional sync/async HTTP-client
 injection. The API dependency factory supplies and owns fresh transports per request, including
@@ -43,8 +40,7 @@ and all four research launcher scripts have no diff.
 
 A no-network regression using real SDK objects first reproduced shared transport identity and
 then passed with independent clients: closing one request leaves another and subsequent requests
-usable. An initial test invocation hit existing temporary-directory permissions; a fresh test
-directory resolved that environment issue. The next targeted run exposed 25 harness failures from
+usable. The next targeted run exposed 25 harness failures from
 forwarding absent injection keywords; omitting those keywords when unset restored compatibility.
 The targeted suite then passed 191 tests. Final offline snapshot: 1542 backend tests passed,
 9 skipped; 48 frontend tests passed in 7 files. Ruff, frontend lint, production build and
@@ -66,4 +62,3 @@ The earlier invalid-date frontend block and direct HTTP 422 remain the live vali
 offline boundary tests establish that invalid requests do not construct planner dependencies.
 Page-exit cancellation and every repair/retrieval branch were not live-tested in this retest.
 This is development acceptance, not a benchmark, itinerary-quality conclusion or version freeze.
-No commit or push was performed.
